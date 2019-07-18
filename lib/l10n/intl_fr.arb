@@ -1,0 +1,21 @@
+{
+  "@@last_modified": "2019-06-20T17:19:37.014798",
+  "app_name": "KABA",
+  "@app_name": {
+    "description": "Title for the Kaba application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "connexion": "CONNEXION",
+  "@connexion": {
+    "description": "connexion",
+    "type": "text",
+    "placeholders": {}
+  },
+  "recover_password": "Mot de Passe Perdu",
+  "@recover_password": {
+    "description": "recover_password",
+    "type": "text",
+    "placeholders": {}
+  }
+}
