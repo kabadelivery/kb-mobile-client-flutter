@@ -95,6 +95,7 @@ class RestaurantListWidget extends StatelessWidget {
 
   _comingSoon() {
     /* show the coming soon dialog */
+
   }
 
   void _jumpToRestaurantMenu(BuildContext context,  RestaurantModel restaurantModel) {}
