@@ -38,7 +38,7 @@ class RestaurantListWidget extends StatelessWidget {
                 ListTile(
                     contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
                     leading: Container(
-                      height:50, width: 50,
+                        height:50, width: 50,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: new DecorationImage(
@@ -47,7 +47,7 @@ class RestaurantListWidget extends StatelessWidget {
                             )
                         )
                     ),
-                    trailing: IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor,), onPressed: (){}),
+                    trailing: restaurantModel.coming_soon == 0 ? IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor,), onPressed: (){_jumpToRestaurantMenu(context, restaurantModel);}) : null,
                     title:Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,23 +63,40 @@ class RestaurantListWidget extends StatelessWidget {
                     child:Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: restaurantModel.is_open == 1 ? Colors.greenAccent.shade700 : Colors.blueAccent.shade700),
-                            child:Text(
-                                restaurantModel.is_open == 1 ? "Open":"Closed",
-                                style: TextStyle(color: Colors.white, fontSize: 12)
-                            )),
-                        Text("2.15km", style: TextStyle(color: Colors.grey.shade700, fontSize: 12))
+                        Row(children:[
+                          Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: restaurantModel.is_open == 1 ? Colors.greenAccent.shade700 : Colors.blueAccent.shade700),
+                              child:Text(
+                                  restaurantModel.is_open == 1 ? "Open":"Closed",
+                                  style: TextStyle(color: Colors.white, fontSize: 12)
+                              )),
+                          SizedBox(width: 5),
+                          restaurantModel.coming_soon == 1 ?
+                          Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
+                              child:Text(
+                                  "Coming Soon",
+                                  style: TextStyle(color: Colors.white, fontSize: 12)
+                              )) : SizedBox(width: 0),
+                        ]),
+                        Text("2.15km", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, fontSize: 12))
                       ],
                     ))
               ])
-          ))
-        , onTap: (){_jumpToRestaurantDetails(context, restaurantModel.id);}));
+          )),
+          onTap: (){restaurantModel.coming_soon==0?_jumpToRestaurantDetails(context, restaurantModel):_comingSoon();}));
   }
 
-  void _jumpToRestaurantDetails(BuildContext context, int restaurantId) {
+  void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
     Navigator.pushNamed(context, RestaurantDetailsPage.routeName);
   }
+
+  _comingSoon() {
+    /* show the coming soon dialog */
+  }
+
+  void _jumpToRestaurantMenu(BuildContext context,  RestaurantModel restaurantModel) {}
 
 }
