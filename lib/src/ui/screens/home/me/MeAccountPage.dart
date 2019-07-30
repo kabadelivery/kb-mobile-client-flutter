@@ -41,6 +41,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                 Container(
                   height:100, width: 100,
                     decoration: BoxDecoration(
+                        border: new Border.all(color: Colors.white, width: 2),
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.cover,

@@ -23,7 +23,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     restaurantBloc.fetchRestaurantList();
 
     return Scaffold(
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.white,
         body:  StreamBuilder(
             stream: restaurantBloc.restaurantList,
             builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
@@ -34,9 +34,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
               }
               return Center(child: CircularProgressIndicator());
             }));
-
-
-
     /*  */
   }
 

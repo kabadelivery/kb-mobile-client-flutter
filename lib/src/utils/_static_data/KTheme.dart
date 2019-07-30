@@ -14,6 +14,8 @@ class KColors {
   static final Color mGreen = hexToColor("#26A69A");
   static final Color mBlue = hexToColor("#1976D2");
 
+//  00695c
+
   static MaterialColor colorCustom = MaterialColor(hexToInt("#cc1641"), color);
 
   static Map<int, Color> color = {
@@ -29,10 +31,7 @@ class KColors {
     900: Color.fromRGBO(118, 15, 39, 1),
   };
 
-
-
   /* buttons i use often */
-
 }
 
 
@@ -40,5 +39,14 @@ class KStyles {
 
   static final TextStyle hintTextStyle_gray = TextStyle(color:Colors.grey.shade600, fontSize: 14);
 
+}
+
+class CommandStateColor {
+
+  static final Color waiting = hexToColor("#666666");
+  static final Color cooking = hexToColor("#e65100");
+  static final Color shipping = hexToColor("#e2ae01");
+  static final Color delivered = hexToColor("#00695c");
+  static final Color cancelled = hexToColor("#000000");
 }
 

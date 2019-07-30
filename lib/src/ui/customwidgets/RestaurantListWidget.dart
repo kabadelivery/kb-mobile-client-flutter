@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:kaba_flutter/src/ui/screens/message/DialogPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -38,8 +39,9 @@ class RestaurantListWidget extends StatelessWidget {
                 ListTile(
                     contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
                     leading: Container(
-                        height:50, width: 50,
+                        height:45, width: 45,
                         decoration: BoxDecoration(
+                            border: new Border.all(color: KColors.primaryColor, width: 2),
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
@@ -66,7 +68,7 @@ class RestaurantListWidget extends StatelessWidget {
                         Row(children:[
                           Container(
                               padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: restaurantModel.is_open == 1 ? Colors.greenAccent.shade700 : Colors.blueAccent.shade700),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: restaurantModel.is_open == 1 ? CommandStateColor.delivered : Colors.blueAccent.shade700),
                               child:Text(
                                   restaurantModel.is_open == 1 ? "Open":"Closed",
                                   style: TextStyle(color: Colors.white, fontSize: 12)
@@ -86,16 +88,28 @@ class RestaurantListWidget extends StatelessWidget {
                     ))
               ])
           )),
-          onTap: (){restaurantModel.coming_soon==0?_jumpToRestaurantDetails(context, restaurantModel):_comingSoon();}));
+          onTap: (){restaurantModel.coming_soon==0?_jumpToRestaurantDetails(context, restaurantModel):_comingSoon(context, restaurantModel);}));
   }
 
   void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
-    Navigator.pushNamed(context, RestaurantDetailsPage.routeName);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel),
+      ),
+    );
   }
 
-  _comingSoon() {
+  void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
     /* show the coming soon dialog */
-
+    showDialog(context: context, builder: (BuildContext context)=>DialogPage(
+        message:"Hello, This restaurant will be soon available on the platform.\n Please remain patient.",
+        pic: Utils.inflateLink(restaurantModel.pic),
+        nbAction: 1,
+        button1Name: "OK",
+        onClickAction1: (){print(restaurantModel.name);}
+    ));
   }
 
   void _jumpToRestaurantMenu(BuildContext context,  RestaurantModel restaurantModel) {}

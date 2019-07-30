@@ -11,6 +11,7 @@ import 'package:kaba_flutter/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -40,12 +41,21 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   String hint = "";
+  HomeScreenModel data;
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     /* init fetch data bloc */
-    homeScreenBloc.fetchHomeScreenModel();
+
+    if (data == null)
+      homeScreenBloc.fetchHomeScreenModel();
 
     return Scaffold(
         appBar: AppBar(
@@ -85,7 +95,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
               if (snapshot.hasData) {
                 return _buildHomeScreen(snapshot.data);
               } else if (snapshot.hasError) {
-//                return Text(snapshot.error.toString());
                 return ErrorPage(onClickAction: (){homeScreenBloc.fetchHomeScreenModel();});
               }
               return Center(child: CircularProgressIndicator());
@@ -109,27 +118,30 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
   }
 
   _mainRestaurantWidget({RestaurantModel restaurant}) {
-    return Container (
-      padding: EdgeInsets.only(top:20, right:15, left:15),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container (
-                width: 60.0,
-                height: 60.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
-                    )
-                )
-            ),
-            SizedBox(height: 10),
-            Text(restaurant.name, style:TextStyle(color: Colors.grey, fontSize: 12), textAlign: TextAlign.center),
-            SizedBox(height: 10),
-            ShinningTextWidget(text: "NEW")
-          ]
+    return GestureDetector(
+      onTap: ()=>{_jumpToRestaurantDetails(context, restaurant)},
+      child: Container (
+        padding: EdgeInsets.only(top:20, right:15, left:15),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container (
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
+                      )
+                  )
+              ),
+              SizedBox(height: 10),
+              Text(restaurant.name, style:TextStyle(color: Colors.grey, fontSize: 12), textAlign: TextAlign.center),
+              SizedBox(height: 10),
+              ShinningTextWidget(text: "NEW")
+            ]
+        ),
       ),
     );
   }
@@ -149,6 +161,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
   Widget _buildHomeScreen(HomeScreenModel data) {
 
     hint = data.feed;
+    this.data = data;
 
     return RefreshIndicator(
         key: _refreshIndicatorKey,
@@ -357,4 +370,15 @@ class KabaRoundTopClipper extends CustomClipper<Path> {
   }
   @override
   bool shouldReclip(KabaRoundTopClipper oldClipper) => true;
+}
+
+
+void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel),
+    ),
+  );
 }

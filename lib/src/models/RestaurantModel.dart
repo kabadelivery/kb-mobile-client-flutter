@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 
 
 class RestaurantModel {
@@ -69,6 +71,4 @@ class RestaurantModel {
   String toString() {
     return toJson().toString();
   }
-
-
 }

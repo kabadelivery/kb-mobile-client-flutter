@@ -27,10 +27,10 @@ class _HomePageState extends State<HomePage> {
   static final List<String> popupMenus = ["Settings"];
   var _selectedIndex = 0;
 
-  HomeWelcomePage homeWelcomePage = HomeWelcomePage();
-  RestaurantListPage restaurantListPage = RestaurantListPage();
-  DailyOrdersPage dailyOrdersPage = DailyOrdersPage();
-  MeAccountPage meAccountPage = MeAccountPage();
+  HomeWelcomePage homeWelcomePage;
+  RestaurantListPage restaurantListPage;
+  DailyOrdersPage dailyOrdersPage;
+  MeAccountPage meAccountPage;
 
   List<StatefulWidget> pages;
 
@@ -38,6 +38,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+      homeWelcomePage = HomeWelcomePage();
+      restaurantListPage = RestaurantListPage();
+      dailyOrdersPage = DailyOrdersPage();
+      meAccountPage = MeAccountPage();
+
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
   }
 
