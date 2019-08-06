@@ -1,7 +1,8 @@
+import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 
 
-class Restaurant_SubMenuEntity {
+class RestaurantSubMenuModel {
 
    int id;
    String name;
@@ -10,16 +11,19 @@ class Restaurant_SubMenuEntity {
    int promotion = 0;
    List<RestaurantFoodModel> foods;
 
-   Restaurant_SubMenuEntity({this.id, this.name, this.restaurant_id, this.description, this.promotion,
+   RestaurantSubMenuModel({this.id, this.name, this.restaurant_id, this.description, this.promotion,
       this.foods});
 
-   Restaurant_SubMenuEntity.fromJson(Map<String, dynamic> json) {
+   RestaurantSubMenuModel.fromJson(Map<String, dynamic> json) {
+
       id = json['id'];
       name = json['name'];
       restaurant_id = json['restaurant_id'];
       description = json['description'];
       promotion = json['promotion'];
-      foods = json['foods'];
+
+      l = json["foods"];
+      foods = l?.map((food) => RestaurantFoodModel.fromJson(food))?.toList();
    }
 
    Map toJson () => {

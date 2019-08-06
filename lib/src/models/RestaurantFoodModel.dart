@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 
 class RestaurantFoodModel {
@@ -7,7 +8,6 @@ class RestaurantFoodModel {
     String name;
     String price;
     String pic;
-    String details;
     String promotion_price;
     int menu_id;
     int restaurant_id;
@@ -19,7 +19,7 @@ class RestaurantFoodModel {
     /* restaurant entity */
     RestaurantModel restaurant_entity;
 
-    RestaurantFoodModel({this.id, this.name, this.price, this.pic, this.details,
+    RestaurantFoodModel({this.id, this.name, this.price, this.pic,
         this.promotion_price, this.menu_id, this.restaurant_id,
         this.description, this.food_details_pictures, this.is_favorite,
         this.stars, this.promotion, this.restaurant_entity});
@@ -29,16 +29,20 @@ class RestaurantFoodModel {
         id = json['id'];
         name = json['name'];
         pic = json['pic'];
-        details = json['details'];
         promotion_price = json['promotion_price'];
-        menu_id = json['menu_id'];
+        price = json['price'];
+        menu_id = int.parse(json['menu_id']);
         restaurant_id = json['restaurant_id'];
         description = json['description'];
-        food_details_pictures = json['food_details_pictures'];
+
+        l = json["food_details_pictures"];
+        food_details_pictures = l?.map((pic_link) => "${pic_link}")?.toList();
+
         is_favorite = json['is_favorite'];
         stars = json['stars'];
         promotion = json['promotion'];
-        restaurant_entity = json['restaurant_entity'];
+
+        restaurant_entity = RestaurantModel.fromJson(json['restaurant_entity']);
     }
 
 
@@ -46,8 +50,8 @@ class RestaurantFoodModel {
         "id" : (id as int),
         "name" : name,
         "pic" : pic,
-        "details" : details,
         "promotion_price" : promotion_price,
+        "price" : price,
         "menu_id" : menu_id,
         "restaurant_id" : restaurant_id,
         "description" : description,

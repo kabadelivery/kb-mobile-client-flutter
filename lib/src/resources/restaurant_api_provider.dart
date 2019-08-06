@@ -1,27 +1,46 @@
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:http/http.dart' show Client;
+import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'dart:convert';
+
+import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
+import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 //import '../models/RestaurantModel.dart';
 
 class RestaurantApiProvider {
 
   Client client = Client();
-//  final _apiKey = 'your_api_key';
 
-  Future<_RestaurantModel> fetchRestaurantHomeList() async {
+  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(RestaurantModel restaurantModel) async {
 
-    print("entered");
-    final response = await client
-        .get("http://api.themoviedb.org/3/movie/popular?api_key=$_apiKey");
-    print(response.body.toString());
-    if (response.statusCode == 200) {
-      // If the call to the server was successful, parse the JSON
-      return _RestaurantModel.fromJson(json.decode(response.body));
+    DebugTools.iPrint("entered fetchRestaurantMenuList");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
+          body: json.encode({'id': restaurantModel.id.toString()}),
+//          headers: Utils.getHeadersWithToken()
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"]["menus"];
+          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
+          return restaurantSubModel;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
     } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      throw Exception(-2); // you have no network
     }
-
   }
+
+  /* get a list of submenus. */
+
 }

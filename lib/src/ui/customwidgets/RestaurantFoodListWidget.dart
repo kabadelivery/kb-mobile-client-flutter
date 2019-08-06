@@ -3,31 +3,55 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 class RestaurantFoodListWidget extends StatefulWidget {
 
   String text;
 
-  RestaurantFoodListWidget({this.text});
+  // ignore: non_constant_identifier_names
+  Offset basket_offset;
+
+  RestaurantFoodModel food;
+
+  RestaurantFoodListWidget({this.text, this.basket_offset, this.food});
 
   @override
   _RestaurantFoodListWidgetState createState() {
     // TODO: implement createState
-    return _RestaurantFoodListWidgetState();
+    return _RestaurantFoodListWidgetState(basket_offset: basket_offset, food: food);
   }
 
 }
 
-class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> {
+class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> with SingleTickerProviderStateMixin {
 
+  AnimationController controller;
+
+  Animation<Offset> animation;
+
+  Offset basket_offset;
+
+  RestaurantFoodModel food;
+
+  _RestaurantFoodListWidgetState({this.basket_offset, this.food});
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animation = Tween<Offset>(begin: Offset(0, 0), end: Offset(400, -400)).animate(controller);
+//    animation.drive(child)
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +63,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> {
           margin: EdgeInsets.only(left: 10, right: 70, top: 6, bottom: 6),
           child: Container(
               decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1),   boxShadow: [
-                new BoxShadow(
+                BoxShadow(
                   color: Colors.grey..withAlpha(50),
                   offset: new Offset(0.0, 2.0),
                 )
@@ -48,42 +72,85 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> {
               Column(children: <Widget>[
                 ListTile(
                     contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
-                    leading: Container(
-                        height:50, width: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider("https://www.bp.com/content/dam/bp-careers/en/images/icons/graduates-interns-instagram-icon-16x9.png")
-                            )
-                        )
+                    leading: Stack(
+                      children: <Widget>[
+                        Container(
+                          height:50, width: 50,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                              )
+                          ),
+                        ),
+                        AnimatedBuilder(
+                            animation: animation,
+                            builder: (context, child) => Transform.translate(
+                              offset: animation.value,
+                              child: child,
+                            ),
+                            child: Container(
+                              height:50, width: 50,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                                  )
+                              ),
+                            )) // invisible view
+                      ],
                     ),
                     trailing: IconButton(icon: Icon(Icons.add_shopping_cart, color: KColors.primaryColor), onPressed: (){_addFoodToChart();}),
                     title:Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("SPAGHETTI DOSÉ ROUGE", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+                        Text("${food?.name}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
                         SizedBox(height: 5),
-                        Row(children: <Widget>[
-                          Text("300", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                          Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
-                        ]),
+                        Row(
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+
+                              (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                  : Container()),
+
+                              Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                            ]),
+
+
+                          ],
+                        ),
                       ],
                     )
                 )
               ])
           ))
-        , onTap: _jumpToRestaurantDetails,));
+        , onTap: ()=>_jumpToFoodDetails(context, food), key: ValueKey(food)));
   }
 
-  void _jumpToRestaurantDetails() {
-    Navigator.pushNamed(context, RestaurantDetailsPage.routeName);
-  }
+
 
   void _addFoodToChart() {
     /* besoin de la position de la vue et ensuite de la position de destination */
+//    print("basket_offset ${basket_offset}");
+    controller.forward();
+  }
 
+  /* get position of icon */
+  int getImagePosition () {
+    return 0;
+  }
+
+  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantFoodDetailsPage (food: food),
+      ),
+    );
   }
 
 }

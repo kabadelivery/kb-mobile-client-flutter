@@ -93,7 +93,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                   title: Text("See the Menu", style: TextStyle(color:KColors.primaryColor)),
                                   leading: IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor), onPressed: null),
                                   trailing: IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: null),
-                                  onTap: (){_jumpToRestaurantMenuPage(context);}), color: Colors.white),
+                                  onTap: (){_jumpToRestaurantMenu(context, restaurant);}), color: Colors.white),
                         ),
                         SizedBox(height:20),
                         Container(
@@ -141,12 +141,9 @@ class RestaurantDetailsPage extends StatelessWidget {
                                                 Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: <Widget>[
-                                                      Row(children: <Widget>[]
-                                                        ..addAll(
-                                                            List<Widget>.generate(restaurant.stars.toInt(), (int index) {
-                                                              return Icon(Icons.star, color: KColors.primaryYellowColor);
-                                                            })
-                                                        )
+                                                      Row(children:  List<Widget>.generate(restaurant.stars.toInt(), (int index) {
+                                                        return Icon(Icons.star, color: KColors.primaryYellowColor);
+                                                      })
                                                       ),
                                                       Text("${restaurant.votes} Votes", style: TextStyle(color:Colors.grey))
                                                     ])
@@ -180,11 +177,17 @@ class RestaurantDetailsPage extends StatelessWidget {
             )));
   }
 
-  void _jumpToRestaurantMenuPage(BuildContext context) {
-    Navigator.pushNamed(context, RestaurantMenuPage.routeName);
+  void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel),
+      ),
+    );
   }
 
-  List<Widget> _buildCommentsList(List<CommentModel> comments) {
+  _buildCommentsList(List<CommentModel> comments) {
     var list = List<Widget>.generate(comments.length, (int index) {
       if (!comments[index].hidden)
         return RestaurantCommentWidget(comment: comments[index]);

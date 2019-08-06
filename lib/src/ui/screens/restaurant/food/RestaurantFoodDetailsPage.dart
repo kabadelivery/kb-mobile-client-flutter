@@ -1,19 +1,22 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {
 
   static var routeName = "/RestaurantFoodDetailsPage";
 
-  RestaurantFoodDetailsPage({Key key, this.title}) : super(key: key);
+  RestaurantFoodModel food;
 
-  final String title;
+  RestaurantFoodDetailsPage({Key key, this.food}) : super(key: key);
+
 
   @override
-  _RestaurantFoodDetailsPageState createState() => _RestaurantFoodDetailsPageState();
+  _RestaurantFoodDetailsPageState createState() => _RestaurantFoodDetailsPageState(food);
 }
 
 class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
@@ -22,13 +25,17 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
 
   int _carousselPageIndex = 0;
 
-  List<String> mImages = [
+/*  List<String> mImages = [
     "https://smppharmacy.com/wp-content/uploads/2019/02/food-post.jpg",
     "https://www.restoconnection.fr/wp-content/uploads/2018/11/les-tendances-2019-dans-la-restauration.jpg",
     "https://100jewishfoods.tabletmag.com/wp-content/uploads/2018/02/Social-Share-v1@2x.png",
     "https://www.goodfood.com.au/content/dam/images/h/1/e/d/m/5/image.related.wideLandscape.940x529.h1dua5.png/1558922095436.jpg",
     "https://cdn.shopify.com/s/files/1/2620/2784/files/slide-1_1400x.progressive.jpg?v=1538539622"
-  ];
+  ];*/
+
+  RestaurantFoodModel food;
+
+  _RestaurantFoodDetailsPageState(this.food);
 
   @override
   void initState() {
@@ -75,7 +82,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                               height: 9*MediaQuery.of(context).size.width/16,
                               width: 9*MediaQuery.of(context).size.width,
                               child:CachedNetworkImage(
-                                  imageUrl: mImages[i%mImages.length],
+                                  imageUrl: Utils.inflateLink(food.food_details_pictures[i%food.food_details_pictures.length]),
                                   fit: BoxFit.cover
                               )
                           );
@@ -89,13 +96,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                       child:Row(
                         children: <Widget>[]
                           ..addAll(
-                              List<Widget>.generate(mImages.length, (int index) {
+                              List<Widget>.generate(food.food_details_pictures.length, (int index) {
                                 return Container(
                                     margin: EdgeInsets.only(right:2.5, top: 2.5),
                                     height: 10,width:10,
                                     decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
                                         border: new Border.all(color: Colors.white),
-                                        color: (index==_carousselPageIndex || index==mImages.length)?Colors.white:Colors.transparent
+                                        color: (index==_carousselPageIndex || index==food.food_details_pictures.length)?Colors.white:Colors.transparent
                                     ));
                               })
                             /* add a list of rounded views */
@@ -128,21 +135,28 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text("SALADE DU CHEF", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+                                    Text("${food?.name}", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
                                     SizedBox(height: 20),
                                     /* either promotion or not we can use different type */
 //                                    Text("3000FCFA", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
                                     Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text("3500", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)),
-                                          SizedBox(width: 10),
-                                          Text("1750", style: TextStyle(color: KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.bold)),
+
+                                          food.promotion==0 ?
+                                          Text("${food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${food?.price}", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+
+                                          food.promotion!=0 ? Row(children: <Widget>[
+                                            SizedBox(width: 10),
+                                            Text("${food?.promotion_price}", style: TextStyle(color: KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.bold)),
+                                          ]) : Container(),
+
                                           SizedBox(width: 10),
                                           Text("FCFA", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
+
                                         ]),
                                     SizedBox(height: 10),
-                                    Text("Chicken wings barbecue épicé (10 pièces). 50% de Remise chaque Mardi su tous les Chicken Wings.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 14)),
+                                    Text("${food?.description}", textAlign: TextAlign.center, style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 14)),
                                     SizedBox(height: 20)
                                   ]
                               )),
@@ -157,8 +171,15 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                                       Row(
                                         children: <Widget>[
                                           Container(
-                                            height:35, width: 35,
-                                            child:CachedNetworkImage(fit:BoxFit.cover,imageUrl: "https://www.bp.com/content/dam/bp-careers/en/images/icons/graduates-interns-instagram-icon-16x9.png"),
+                                              height:45, width: 45,
+                                              decoration: BoxDecoration(
+                                                  border: new Border.all(color: KColors.primaryColor, width: 2),
+                                                  shape: BoxShape.circle,
+                                                  image: new DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                                                  )
+                                              )
                                           ),
                                           Container(
                                               padding: EdgeInsets.all(10),
@@ -167,7 +188,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                                                   Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
                                                   SizedBox(height: 5),
                                                   SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
-                                                  Text("LA MAISON DES PETITES SAVEURS",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
+                                                  Text("${food?.restaurant_entity.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
                                                   )
                                                 ],
                                               ))

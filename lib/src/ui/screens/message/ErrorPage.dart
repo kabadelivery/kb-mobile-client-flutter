@@ -36,7 +36,8 @@ class ErrorPage extends StatelessWidget {
                 /* text / image
                     * button */
                 Text("Sorry, the network is having an issue."),
-                MaterialButton(padding: EdgeInsets.only(top: 10,bottom: 10),child:Text("TRY AGAIN",
+                SizedBox(height:10),
+                MaterialButton(padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("TRY AGAIN",
                     style: TextStyle(color: Colors.white)),
                     onPressed: onClickAction, color: KColors.primaryColor)
               ])

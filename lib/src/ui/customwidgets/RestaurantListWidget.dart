@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/DialogPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
@@ -101,6 +102,16 @@ class RestaurantListWidget extends StatelessWidget {
     );
   }
 
+  void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel),
+      ),
+    );
+  }
+
   void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
     /* show the coming soon dialog */
     showDialog(context: context, builder: (BuildContext context)=>DialogPage(
@@ -111,7 +122,5 @@ class RestaurantListWidget extends StatelessWidget {
         onClickAction1: (){print(restaurantModel.name);}
     ));
   }
-
-  void _jumpToRestaurantMenu(BuildContext context,  RestaurantModel restaurantModel) {}
 
 }
