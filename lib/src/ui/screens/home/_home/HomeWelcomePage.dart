@@ -47,15 +47,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    homeScreenBloc.fetchHomeScreenModel();
   }
 
   @override
   Widget build(BuildContext context) {
 
     /* init fetch data bloc */
-
-    if (data == null)
-      homeScreenBloc.fetchHomeScreenModel();
 
     return Scaffold(
         appBar: AppBar(

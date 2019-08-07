@@ -42,7 +42,7 @@ class RestaurantListWidget extends StatelessWidget {
                     leading: Container(
                         height:45, width: 45,
                         decoration: BoxDecoration(
-                            border: new Border.all(color: KColors.primaryColor, width: 2),
+                            border: new Border.all(color: KColors.primaryYellowColor, width: 2),
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
@@ -57,10 +57,19 @@ class RestaurantListWidget extends StatelessWidget {
                       children: <Widget>[
                         Text(restaurantModel.name, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 18, fontWeight: FontWeight.w500)),
                         SizedBox(height:10),
-                        Text(restaurantModel.description, maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 14, color: Colors.black.withAlpha(150))),
+                        Text(restaurantModel.address, maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 14, color: Colors.black.withAlpha(150))),
                       ],
                     )
                 ),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right:15),
+                    color: Colors.grey.withAlpha(120),
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height:1
+                      /* height is max*/
+                    )),
+                SizedBox(width: 5),
                 Container(
                     padding: EdgeInsets.all(5),
                     child:Row(

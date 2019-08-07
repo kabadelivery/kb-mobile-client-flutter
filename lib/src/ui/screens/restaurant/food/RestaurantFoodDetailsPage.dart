@@ -201,14 +201,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                                               height:100
                                             /* height is max*/
                                           )),
-                                      Text("3.000", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
+                                      Text("${food.promotion==0 ? food?.price : food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
                                     ]
                                 )
                             )
                         )
                       ]
-                  ),
-
+                  )
                 )
             )
         )

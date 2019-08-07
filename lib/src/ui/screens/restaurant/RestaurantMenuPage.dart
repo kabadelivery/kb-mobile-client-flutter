@@ -6,17 +6,20 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
+import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/MessagePage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/RestaurantFoodListWidget.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
 
@@ -33,7 +36,6 @@ class RestaurantMenuPage extends StatefulWidget {
 }
 
 class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
-
 
   final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<InnerDrawerState>();
 
@@ -55,26 +57,38 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
         .addPostFrameCallback((_) => _computeBasketOffset());
     super.initState();
     _menuBasketKey = GlobalKey();
+    restaurantBloc.fetchRestaurantMenuList(restaurant);
   }
 
 
   @override
   Widget build(BuildContext context) {
 
-    restaurantBloc.fetchRestaurantMenuList(restaurant);
+    var appBar =  AppBar (
+      backgroundColor: KColors.primaryColor,
+      title:  GestureDetector(child:  Row(children: <Widget>[Text("MENU", style:TextStyle(fontSize:14, color:Colors.white)),
+        SizedBox(width: 10),
+        Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(10))),
+            padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+            child: Text(restaurant.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)))]), onTap: _openDrawer),
+      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
+      actions: <Widget>[
+        IconButton(key: _menuBasketKey,icon: Icon(Icons.shopping_cart, color: Colors.white), onPressed: () {})
+      ],
+    );
 
     return InnerDrawer(
         key: _innerDrawerKey,
-        position: InnerDrawerPosition.end, // required
+        position: InnerDrawerPosition.start, // required
         onTapClose: true, // default false
-        swipe: true, // default true
+//        swipe: true, // default true
         offset: 0.1, // default 0.4
         animationType: InnerDrawerAnimation.quadratic, // default static
         innerDrawerCallback: (a) => print(a), // return bool
         child:  data?.length == null ? Container() : Material(
             child: SafeArea(
                 child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(color: Colors.grey.withAlpha(150)),
+                    separatorBuilder: (context, index) => Divider(color: Colors.grey.withAlpha(150),height: 1),
                     itemCount: data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
@@ -82,7 +96,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
                             _innerDrawerKey.currentState.toggle();
                             this.currentIndex = index;
                           });},
-                          child: Container(color: data[currentIndex].promotion!=0 ? KColors.primaryYellowColor:Colors.transparent, padding: EdgeInsets.only(top: 10, bottom: 10), child: Text(data[index].name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[currentIndex].promotion==0 ? Colors.black : KColors.primaryColor), textAlign: TextAlign.center)));
+                          child: index == this.currentIndex ? Container(color: KColors.primaryColor, padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8), child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white), textAlign: TextAlign.center)) :
+                          Container(color: data[currentIndex].promotion!=0 ? KColors.primaryYellowColor:Colors.transparent, padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8), child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[currentIndex].promotion==0 ? Colors.black : KColors.primaryColor), textAlign: TextAlign.center)));
                     })
             )
         ),
@@ -90,31 +105,54 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
         // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
         scaffold: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar (
-              backgroundColor: KColors.primaryColor,
-              title:  GestureDetector(child:  Row(children: <Widget>[Text("MENU", style:TextStyle(fontSize:14, color:Colors.white)),
-                SizedBox(width: 10),
-                Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(10))),
-                    padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                    child: Text(restaurant.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)))]), onTap: _openDrawer),
-              leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
-              actions: <Widget>[
-                IconButton(key: _menuBasketKey,icon: Icon(Icons.shopping_cart, color: Colors.white), onPressed: () {})
-              ],
-            ),
-            body: StreamBuilder(
-                stream: restaurantBloc.restaurantMenu,
-                builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.length != 0)
-                      return _buildRestaurantMenu(snapshot.data);
-                    else
-                      return MessagePage(message: "Empty content");
-                  } else if (snapshot.hasError) {
-                    return ErrorPage(onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);});
-                  }
-                  return Center(child: CircularProgressIndicator());
-                }
+            appBar: appBar,
+            body:  Container(
+              height: (MediaQuery.of(context).size.height - appBar.preferredSize.height),
+              child: Stack(
+                children: <Widget>[
+                  StreamBuilder(
+                      stream: restaurantBloc.restaurantMenu,
+                      builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data.length != 0)
+                            return _buildRestaurantMenu(snapshot.data);
+                          else
+                            return MessagePage(message: "Empty content");
+                        } else if (snapshot.hasError) {
+                          return ErrorPage(onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);});
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      }
+                  ),
+                  Positioned(
+                    right:15,
+                    top: 10,
+                    child: Column(children: <Widget>[
+                      SizedBox(height: 10),
+                      RotatedBox(child: FlatButton.icon(onPressed: (){_openDrawer();},
+                          icon: Icon(Icons.fastfood, color:Colors.white),
+                          label: Text("REPAS", style: TextStyle(color: Colors.white)),
+                          color: KColors.primaryYellowColor,
+                          splashColor: KColors.primaryYellowColor,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                        quarterTurns: -1,
+                      ),
+                      SizedBox(height: 10),
+                      RotatedBox(child: FlatButton.icon(onPressed: (){_openDrawer();},
+                          icon: Icon(Icons.fastfood, color:Colors.white),
+                          label: Text("SUPP.", style: TextStyle(color: Colors.white)),
+                          color: Colors.blue,
+                          splashColor: KColors.primaryYellowColor,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                        quarterTurns: -1,
+                      ),
+                      /*  FloatingActionButton(backgroundColor: KColors.mBlue, child: Icon(Icons.fastfood, color:Colors.white), onPressed: () {},),
+                      SizedBox(height: 10),
+                      FloatingActionButton(backgroundColor: KColors.primaryYellowColor, child: Icon(Icons.fastfood, color:Colors.white), onPressed: () {},)*/
+                    ]),
+                  ),
+                ],
+              ),
             ),
             floatingActionButton:   this.data != null ?  RotatedBox(child: FlatButton.icon(onPressed: (){_openDrawer();},
                 icon: Icon(Icons.fastfood, color:Colors.white),
@@ -166,12 +204,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
-  Widget _buildRestaurantMenu(List<RestaurantSubMenuModel> data) {
+  _buildRestaurantMenu(List<RestaurantSubMenuModel> data) {
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {this.data= data;}));
-    return SingleChildScrollView(
-        child: Column(
-            children: <Widget>[
-              /*          Card(
+    /* return  ListView.builder(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      itemCount: data[currentIndex].foods.length,
+      itemBuilder: (BuildContext context, int index) {
+        return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
+      },
+      key: new Key(new DateTime.now().toIso8601String()),
+    );*/
+
+
+//      SingleChildScrollView(
+//        child: Column(
+//            children: <Widget>[
+    /*          Card(
                               margin: EdgeInsets.all(10),
                               child: Container(
                                   padding: EdgeInsets.all(10),
@@ -205,14 +254,96 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
                                   )
                               )
                           ),*/
-              Container(
-                child: Column(
-                    children:  List<Widget>.generate(data[currentIndex].foods.length, (int index) {
+//              Container(
+//                child: Column(
+    /*children:  List<Widget>.generate(data[currentIndex].foods.length, (int index) {
                       return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
-                    })
-                ),
-              )
-            ]
-        ));
+                    })*/
+//                ),
+//              )
+//            ]
+//        ));
+
+    return SingleChildScrollView (
+      child:
+      ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemCount: data[currentIndex].foods.length,
+        itemBuilder: (BuildContext context, int index) {
+//          return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
+          return _buildFoodListWidget(food:data[currentIndex].foods[index]);
+        },
+        key: new Key(new DateTime.now().toIso8601String()),
+      ),
+    );
   }
+
+  _buildFoodListWidget({RestaurantFoodModel food}) {
+    return (InkWell(child:Card(
+        margin: EdgeInsets.only(left: 10, right: 70, top: 6, bottom: 6),
+        child: Container(
+            decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1),   boxShadow: [
+              BoxShadow(
+                color: Colors.grey..withAlpha(50),
+                offset: new Offset(0.0, 2.0),
+              )
+            ]),
+            child:
+            Column(children: <Widget>[
+              ListTile(
+                  contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
+                  leading: Stack(
+                    children: <Widget>[
+                      Container(
+                        height:50, width: 50,
+                        decoration: BoxDecoration(
+                            border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                            )
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: IconButton(icon: Icon(Icons.add_shopping_cart, color: KColors.primaryColor), onPressed: (){_addFoodToChart();}),
+                  title:Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+                      SizedBox(height: 5),
+                      Row(
+                        children: <Widget>[
+                          Row(children: <Widget>[
+                            Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+
+                            (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                : Container()),
+
+                            Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  )
+              )
+            ])
+        ))
+        , onTap: ()=>_jumpToFoodDetails(context, food)));
+  }
+
+
+  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantFoodDetailsPage (food: food),
+      ),
+    );
+  }
+
+    _addFoodToChart() {}
 }

@@ -58,7 +58,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
     // TODO: implement build
     return
       (InkWell(child:Card(
-          elevation: 8.0,
+//          elevation: 8.0,
 //          margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
           margin: EdgeInsets.only(left: 10, right: 70, top: 6, bottom: 6),
           child: Container(
@@ -107,7 +107,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${food?.name}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+                        Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
                         SizedBox(height: 5),
                         Row(
                           children: <Widget>[
@@ -119,8 +119,6 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
 
                               Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                             ]),
-
-
                           ],
                         ),
                       ],
@@ -128,7 +126,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                 )
               ])
           ))
-        , onTap: ()=>_jumpToFoodDetails(context, food), key: ValueKey(food)));
+        , onTap: ()=>_jumpToFoodDetails(context, food)));
   }
 
 
