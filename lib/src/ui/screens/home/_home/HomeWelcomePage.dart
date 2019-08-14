@@ -25,7 +25,7 @@ class HomeWelcomePage extends StatefulWidget {
   _HomeWelcomePageState createState() => _HomeWelcomePageState();
 }
 
-class _HomeWelcomePageState extends State<HomeWelcomePage> {
+class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAliveClientMixin {
 
   static final List<String> popupMenus = ["Settings"];
 
@@ -200,20 +200,23 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
                     Positioned(
                         bottom: 10,
                         right:0,
-                        child:Row(
-                          children: <Widget>[]
-                            ..addAll(
-                                List<Widget>.generate(data.slider.length, (int index) {
-                                  return Container(
-                                      margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                      height: 10,width:10,
-                                      decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                          border: new Border.all(color: Colors.white),
-                                          color: (index==_carousselPageIndex || index==data.slider.length)?Colors.white:Colors.transparent
-                                      ));
-                                })
-                              /* add a list of rounded views */
-                            ),
+                        child:Padding(
+                          padding: const EdgeInsets.only(right:9.0),
+                          child: Row(
+                            children: <Widget>[]
+                              ..addAll(
+                                  List<Widget>.generate(data.slider.length, (int index) {
+                                    return Container(
+                                        margin: EdgeInsets.only(right:2.5, top: 2.5),
+                                        height: 9,width:9,
+                                        decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            border: new Border.all(color: Colors.white),
+                                            color: (index==_carousselPageIndex || index==data.slider.length)?Colors.white:Colors.transparent
+                                        ));
+                                  })
+                                /* add a list of rounded views */
+                              ),
+                          ),
                         )),
                   ],
                 ),
@@ -353,6 +356,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> {
           ),
         ));
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 

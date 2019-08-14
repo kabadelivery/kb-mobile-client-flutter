@@ -192,7 +192,7 @@ class RestaurantDetailsPage extends StatelessWidget {
       if (!comments[index].hidden)
         return RestaurantCommentWidget(comment: comments[index]);
       return Container();
-    });
+    })?.reversed;
     if (list!= null && list != Container()) {
       return list;
     }

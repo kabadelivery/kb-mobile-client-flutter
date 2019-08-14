@@ -34,23 +34,30 @@ class _HomePageState extends State<HomePage> {
 
   List<StatefulWidget> pages;
 
+  final PageStorageBucket bucket = PageStorageBucket();
+
+  final PageStorageKey homeKey = PageStorageKey("homeKey"),
+      restaurantKey = PageStorageKey("restaurantKey"),
+      orderKey = PageStorageKey("orderKey"),
+      meKey = PageStorageKey("meKey");
+
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-      homeWelcomePage = HomeWelcomePage();
-      restaurantListPage = RestaurantListPage();
-      dailyOrdersPage = DailyOrdersPage();
-      meAccountPage = MeAccountPage();
-
+    homeWelcomePage = HomeWelcomePage(key: homeKey);
+    restaurantListPage = RestaurantListPage(key: restaurantKey);
+    dailyOrdersPage = DailyOrdersPage(key: orderKey);
+    meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: pages[_selectedIndex],
+      body: PageStorage(
+        child:   pages[_selectedIndex],
+        bucket: bucket,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

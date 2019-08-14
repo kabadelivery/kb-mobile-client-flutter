@@ -93,20 +93,23 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                   Positioned(
                       bottom: 10,
                       right:0,
-                      child:Row(
-                        children: <Widget>[]
-                          ..addAll(
-                              List<Widget>.generate(food.food_details_pictures.length, (int index) {
-                                return Container(
-                                    margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                    height: 10,width:10,
-                                    decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                        border: new Border.all(color: Colors.white),
-                                        color: (index==_carousselPageIndex || index==food.food_details_pictures.length)?Colors.white:Colors.transparent
-                                    ));
-                              })
-                            /* add a list of rounded views */
-                          ),
+                      child:Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: Row(
+                          children: <Widget>[]
+                            ..addAll(
+                                List<Widget>.generate(food.food_details_pictures.length, (int index) {
+                                  return Container(
+                                      margin: EdgeInsets.only(right:2.5, top: 2.5),
+                                      height: 9,width:9,
+                                      decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          border: new Border.all(color: Colors.white),
+                                          color: (index==_carousselPageIndex || index==food.food_details_pictures.length)?Colors.white:Colors.transparent
+                                      ));
+                                })
+                              /* add a list of rounded views */
+                            ),
+                        ),
                       )),
                 ],
               )
