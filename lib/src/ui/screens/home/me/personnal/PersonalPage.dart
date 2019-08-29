@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+//import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 
 class PersonalPage extends StatefulWidget {
@@ -21,17 +21,11 @@ class _PersonalPageState extends State<PersonalPage> {
   
   int _genderRadioValue = 0;
 
-  final formats = {
-    InputType.both: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-    InputType.date: DateFormat('dd - MM - yyyy'),
-    InputType.time: DateFormat("HH:mm"),
-  };
 
-  // Changeable in demo
-  InputType inputType = InputType.date;
   bool editable = false;
   DateTime date;
 
+  final format = DateFormat("yyyy-MM-dd");
 
   @override
   Widget build(BuildContext context) {
@@ -80,22 +74,6 @@ class _PersonalPageState extends State<PersonalPage> {
                       border: InputBorder.none,
                     )),
               ),
-              /*SizedBox(height: 10),
-              Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(10),
-                  child:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Select Position", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            IconButton(icon: Icon(Icons.check_circle, color: KColors.primaryColor), onPressed: () {}),
-                            SizedBox(width: 10),
-                            IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: () {})
-                          ])],
-                  )),*/
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(10),
@@ -122,17 +100,17 @@ class _PersonalPageState extends State<PersonalPage> {
               Container(
                 padding: EdgeInsets.only(left: 10, right: 10,  bottom: 10),
                 color: Colors.white,
-                child:
-                DateTimePickerFormField(
-                  inputType: inputType,
-                  format: formats[inputType],
-                  editable: editable,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      labelStyle: TextStyle(color: KColors.primaryColor),
-                      labelText: 'Date', hasFloatingPlaceholder: false),
-                  onChanged: (dt) => setState(() => date = dt),
-                )),
+               /* child: DateTimeField(
+                  format: format,
+                  onShowPicker: (context, currentValue) {
+                    return showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100));
+                  },
+                ),*/
+              ),
               SizedBox(height: 20)
             ]
         ),
@@ -148,3 +126,24 @@ class _PersonalPageState extends State<PersonalPage> {
     });
   }
 }
+
+class BasicTimeField extends StatelessWidget {
+  final format = DateFormat("HH:mm");
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: <Widget>[
+      Text('Basic time field (${format.pattern})'),
+ /*     DateTimeField(
+        format: format,
+        onShowPicker: (context, currentValue) async {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+          );
+          return DateTimeField.convert(time);
+        },
+      ),*/
+    ]);
+  }
+}
+

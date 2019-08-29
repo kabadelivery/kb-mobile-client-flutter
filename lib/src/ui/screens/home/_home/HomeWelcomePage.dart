@@ -175,11 +175,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
                         child:CarouselSlider(
                           onPageChanged: _carousselPageChanged,
                           viewportFraction: 1.0,
-                          autoPlay: true,
-                          reverse: true,
-                          enableInfiniteScroll: true,
+                          autoPlay: data.slider.length > 1 ? true:false,
+                          reverse: data.slider.length > 1 ? true:false,
+                          enableInfiniteScroll: data.slider.length > 1 ? true:false,
                           autoPlayInterval: Duration(seconds: 5),
-                          autoPlayAnimationDuration: Duration(milliseconds: 300),
+                          autoPlayAnimationDuration: Duration(milliseconds: 150),
                           autoPlayCurve: Curves.fastOutSlowIn,
                           height: 9*MediaQuery.of(context).size.width/16,
                           items: data.slider.map((admodel) {

@@ -16,6 +16,7 @@ class RestaurantFoodModel {
     int is_favorite = 0;
     double stars;
     int promotion;
+    bool is_addon = false;
     /* restaurant entity */
     RestaurantModel restaurant_entity;
 

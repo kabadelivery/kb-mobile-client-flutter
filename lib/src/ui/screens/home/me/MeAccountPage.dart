@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 
@@ -22,7 +26,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
   Widget build(BuildContext context) {
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     var flexibleSpaceWidget = new SliverAppBar(
-      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
+//      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
       expandedHeight: expandedHeight,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -148,7 +152,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-                                                 IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () {}),
+                                                 IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage())),
                                                 SizedBox(height:10),
                                                 Text("PERSONNAL", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                               ],
@@ -167,7 +171,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                                     child: SvgPicture.asset(
                                                       VectorsData.ic_voucher,
                                                       color: KColors.primaryColor,
-                                                    )),iconSize: 50, onPressed: (){_jumpToScanPage();}),
+                                                    )),iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage())),
                                                 SizedBox(height:10),
                                                 Text("VOUCHERS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                               ],
@@ -180,7 +184,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-                                                IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () {}),
+                                                IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage())),
                                                 SizedBox(height:10),
                                                 Text("ADRESSES", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                               ],
@@ -197,7 +201,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-                                                IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () {}),
+                                                IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage())),
                                                 SizedBox(height:10),
                                                 Text("COMMAND", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                               ],
@@ -210,7 +214,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-                                                IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50,  onPressed: () {}),
+                                                IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage())),
                                                 SizedBox(height:10),
                                                 Text("FEEDS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                               ],
@@ -223,7 +227,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-                                                IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () {}),
+                                                IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
                                                 SizedBox(height:10),
                                                 Text("ABOUT", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                               ],
@@ -242,4 +246,13 @@ class _MeAccountPageState extends State<MeAccountPage> {
   }
 
   void _jumpToScanPage() {}
+
+  void _jumpToPage (BuildContext context, page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
 }
