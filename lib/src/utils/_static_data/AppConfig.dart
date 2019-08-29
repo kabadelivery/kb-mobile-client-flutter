@@ -1,0 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+
+class AppConfig {
+
+  static final String GOOGLE_MAP_API_KEY = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
+}
+

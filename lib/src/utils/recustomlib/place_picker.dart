@@ -68,6 +68,8 @@ class PlacePicker extends StatefulWidget {
   /// [here](https://cloud.google.com/maps-platform/)
   final String apiKey;
 
+  LatLng initialTarget;
+
   PlacePicker(this.apiKey);
 
   @override
@@ -80,7 +82,9 @@ class PlacePicker extends StatefulWidget {
 class PlacePickerState extends State<PlacePicker> {
   /// Initial waiting location for the map before the current user location
   /// is fetched.
-  static final LatLng initialTarget = LatLng(6.2510, 1.3812);
+
+//  static final LatLng initialTarget = LatLng(6.221316, 1.188478);
+  static final  LatLng initialTarget = LatLng(6.221316, 1.188478);
 
   final Completer<GoogleMapController> mapController = Completer();
 
@@ -110,8 +114,6 @@ class PlacePickerState extends State<PlacePicker> {
 
   String previousSearchTerm = '';
 
-  // constructor
-  PlacePickerState();
 
   void onMapCreated(GoogleMapController controller) {
     this.mapController.complete(controller);
@@ -169,7 +171,7 @@ class PlacePickerState extends State<PlacePicker> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SelectPlaceAction(getLocationName(), () {
-                  Navigator.of(context).pop(this.locationResult);
+                  Navigator.of(context).pop(this.target);
                 }),
                 Divider(
                   height: 8,
@@ -508,11 +510,11 @@ class PlacePickerState extends State<PlacePicker> {
 
     getNearbyPlaces(latLng);
   }
-
+  LatLng target;
   void moveToCurrentUserLocation() {
     var location = Location();
     location.getLocation().then((locationData) {
-      LatLng target = LatLng(locationData.latitude, locationData.longitude);
+      target = LatLng(locationData.latitude, locationData.longitude);
       moveToLocation(target);
     }).catchError((error) {
       // TODO: Handle the exception here

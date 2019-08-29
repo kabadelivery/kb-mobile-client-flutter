@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
+import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart' as Pp;
+import 'package:location_permissions/location_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as prefix0;
 
 
 class EditAddressPage extends StatefulWidget {
 
   static var routeName = "/EditAddressPage";
 
-  EditAddressPage({Key key, this.title}) : super(key: key);
+  EditAddressPage({Key key}) : super(key: key);
 
-  final String title;
 
   @override
   _EditAddressPageState createState() => _EditAddressPageState();
 }
 
 class _EditAddressPageState extends State<EditAddressPage> {
+
+  String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
+
+  LatLng initialCenter = LatLng(6.221316, 1.188478);
 
 
   @override
@@ -64,7 +74,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                               SizedBox(width: 10),
                               IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: () {})
                             ])],
-                    )),onTap: () => showPlacePicker(),
+                    )),onTap: () => showPlacePicker(context),
               ),
               SizedBox(height: 10),
               Container(
@@ -99,17 +109,64 @@ class _EditAddressPageState extends State<EditAddressPage> {
     );
   }
 
- void showPlacePicker() async {
+  /* void showPlacePicker() async {
 
-/*  LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+*//*  LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             PlacePicker("AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs")));
     // Handle the result in your way
-    print(result);*/
+    print(result);*//*
+//   GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
 
-   GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
+//    PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
 
-   print(geolocationStatus);
+    GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
+
+    if(geolocationStatus != GeolocationStatus.granted) {
+
+      Map<PermissionGroup, PermissionStatus> permissions =
+      await PermissionHandler().requestPermissions([PermissionGroup.location]);
+
+      geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
+      if(geolocationStatus != GeolocationStatus.granted) {
+        _jumpToMapPage();
+      } else {
+
+      }
+    } else {
+      _jumpToMapPage();
+    }
+    _jumpToMapPage();
+  }*/
+
+  void showPlacePicker (BuildContext context) async {
+
+    /* get last know position */
+    GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
+
+    if(geolocationStatus != GeolocationStatus.granted) {
+      Map<PermissionGroup, prefix0.PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
+      geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
+      if(geolocationStatus != GeolocationStatus.granted) {
+        _jumpToPickAddressPage();
+      }
+    } else {
+      _jumpToPickAddressPage();
+    }
+  }
+
+  void _jumpToPickAddressPage() async {
+
+    /* get my position */
+//    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
+
+/* use this location to generate details about the place the user lives and so on. */
+
+//    print(result);
 
   }
+
 }
