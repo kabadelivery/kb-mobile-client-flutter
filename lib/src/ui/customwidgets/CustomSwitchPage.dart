@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
+import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -43,7 +44,9 @@ class _CustomSwitchPageState extends State<CustomSwitchPage> {
   Color active_text_color, unactive_text_color;
   Color active_button_color, unactive_button_color;
 
-  int position = 1; // 1 is active; 2 is unactive
+  int position = 1;
+
+  PreOrderConfiguration preOrderConfiguration; // 1 is active; 2 is unactive
 
   _CustomSwitchPageState( this.button_1_name,
       this.button_2_name,

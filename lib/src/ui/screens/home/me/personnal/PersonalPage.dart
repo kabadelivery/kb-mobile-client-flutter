@@ -31,7 +31,7 @@ class _PersonalPageState extends State<PersonalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check), onPressed: (){_confirmContent();})],
+        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
         backgroundColor: Colors.white,
         title: Text("ME", style:TextStyle(color:KColors.primaryColor)),
       ),

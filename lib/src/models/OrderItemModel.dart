@@ -1,5 +1,7 @@
 
 
+import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
+
 class OrderItemModel {
 
    int id;
@@ -16,6 +18,7 @@ class OrderItemModel {
    List<String> food_details_pictures;
    double stars;
 
+
    OrderItemModel({this.id, this.name, this.price, this.promotion,
       this.promotion_price, this.pic, this.details, this.quantity,
       this.menu_id, this.restaurant_id, this.food_description,
@@ -30,9 +33,13 @@ class OrderItemModel {
       quantity = json['quantity'];
       pic = json['pic'];
       details = json['details'];
-      menu_id = json['menu_id'];
+
+      menu_id = int.parse(json['menu_id']);
       restaurant_id = json['restaurant_id'];
-      food_details_pictures = json['food_details_pictures'];
+
+      l = json["food_details_pictures"];
+      food_details_pictures = l?.map((f) => "${f}")?.toList();
+
       food_description = json['food_description'];
       stars = json['stars'];
       promotion = json['promotion'];

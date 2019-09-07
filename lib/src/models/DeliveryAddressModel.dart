@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/foundation.dart';
+import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 
 
  class DeliveryAddressModel {
@@ -27,7 +28,10 @@ import 'package:flutter/foundation.dart';
    phone_number = json['phone_number'];
    user_id = json['user_id'];
    description = json['description'];
-   picture = json['picture'];
+
+   l = json["picture"];
+   picture = l?.map((f) => "${f}")?.toList();
+
    quartier = json['quartier'];
    near = json['near'];
    updated_at = json['updated_at'];

@@ -2,6 +2,7 @@ import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
+import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -31,9 +32,9 @@ class RestaurantBloc {
     }
   }
 
-  fetchCommentList(RestaurantModel restaurantModel) async {
+  fetchCommentList(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     try {
-      List<CommentModel> commentList = await _repository.fetchRestaurantComment(restaurantModel);
+      List<CommentModel> commentList = await _repository.fetchRestaurantComment(restaurantModel, userToken);
       _commentListFetcher.sink.add(commentList);
     } catch (_) {
       _commentListFetcher.sink.addError(_.message);

@@ -7,6 +7,7 @@ import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/RestaurantCommentWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
@@ -30,7 +31,7 @@ class RestaurantDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    restaurantBloc.fetchCommentList(restaurant);
+    restaurantBloc.fetchCommentList(restaurant, UserTokenModel.fake());
 
     /* use silver-app-bar first */
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;

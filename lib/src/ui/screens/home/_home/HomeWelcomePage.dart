@@ -29,13 +29,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
 
   static final List<String> popupMenus = ["Settings"];
 
-/*  List<String> mImages = [
-    "http://app1.kaba-delivery.com/slider/Fditr1kfuV2nVmf.jpg",
-    "http://app1.kaba-delivery.com/slider/slider_1061552403092.jpg",
-    "http://app1.kaba-delivery.com/slider/Lk8nmkLoqzgvEIR.jpg",
-    "http://app1.kaba-delivery.com/slider/slpUfVfXivO4uZd.jpg",
-  ];*/
-
   int _carousselPageIndex = 0;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
@@ -43,18 +36,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
   String hint = "";
   HomeScreenModel data;
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     homeScreenBloc.fetchHomeScreenModel();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
 
     /* init fetch data bloc */
-
     return Scaffold(
         appBar: AppBar(
           title: Container(
@@ -226,13 +218,25 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
                   children: <TableRow>[]
                     ..addAll(
                       // ignore: null_aware_before_operator
-                        List<TableRow>.generate((data.resto.length~/3), (int rowIndex) {
+                        List<TableRow>.generate(_getRestaurantRowCount(data.resto.length), (int rowIndex) {
                           return TableRow(
                               children:<TableCell>[]
                                 ..addAll(
-                                    List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
+                                  /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
                                       return
                                         TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
+                                    })*/
+                                    List<TableCell>.generate (3, (int cell_index) {
+                                      if (data.resto.length > rowIndex*3+cell_index) {
+                                        return
+                                          TableCell(
+                                              child: _mainRestaurantWidget(
+                                                  restaurant: data
+                                                      .resto[rowIndex*3+cell_index]));
+                                      } else {
+                                        return TableCell(
+                                            child: Container());
+                                      }
                                     })
                                 ));
                         })
@@ -360,6 +364,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+  int _getRestaurantRowCount(int restaurantCount) {
+
+    int i;
+    for(i = 1; i*3 < restaurantCount; i++);
+    return i;
+  }
+
 }
 
 

@@ -6,6 +6,7 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'dart:convert';
 
 import 'package:kaba_flutter/src/models/TransactionModel.dart';
+import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -15,13 +16,13 @@ class ClientPersonalApiProvider {
 
   Client client = Client();
 
-  Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel) async {
+  Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     DebugTools.iPrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS,
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
-          headers: Utils.getHeadersWithToken()).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

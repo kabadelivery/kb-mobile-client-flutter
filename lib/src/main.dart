@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
@@ -12,6 +14,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/map/GoogleMapsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -46,7 +49,8 @@ class MyApp extends StatelessWidget {
 //      KabaLocalizations.of(context).app_name.toString(),
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
-      home: EditAddressPage(),
+//      home: MyOrderWidget(command: CommandModel.fake()),
+      home: OrderDetailsPage(),
       routes: generalRoutes,
     );
   }

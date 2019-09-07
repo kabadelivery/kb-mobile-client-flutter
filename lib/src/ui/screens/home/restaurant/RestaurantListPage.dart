@@ -20,8 +20,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     restaurantBloc.fetchRestaurantList();
+    super.initState();
   }
 
   @override
