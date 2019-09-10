@@ -43,6 +43,31 @@ class CommandsApiProvider {
     }
   }
 
-/* get a list of submenus. */
 
+  /* order details */
+  Future<CommandModel> fetchOrderDetails(UserTokenModel userToken, int orderId) async {
+
+    DebugTools.iPrint("entered fetchOrderDetails");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
+          body: json.encode({"command_id": orderId}),
+          headers: Utils.getHeadersWithToken(userToken.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          CommandModel commandModel = CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
+          return commandModel;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 }

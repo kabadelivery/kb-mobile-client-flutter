@@ -39,8 +39,14 @@ class CommandModel {
         passphrase = json['passphrase'];
         reason = json['reason'];
 
-        livreur = KabaShippingMan.fromJson(json['livreur']);
+        if (json['livreur'] != null)
+            livreur = KabaShippingMan.fromJson(json['livreur']);
+        else
+            livreur = null;
+
         shipping_address = DeliveryAddressModel.fromJson(json['shipping_address']);
+
+        if (json['restaurant_entity'] != null)
         restaurant_entity = RestaurantModel.fromJson(json['restaurant_entity']);
 
         l = json["food_list"];

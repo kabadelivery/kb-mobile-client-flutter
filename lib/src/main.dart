@@ -1,28 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:kaba_flutter/src/models/CommandModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
-import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/money/MySoldePage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/DailyOrdersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/map/GoogleMapsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
-import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart';
+
 import 'locale/locale.dart';
 
 void main() => runApp(MyApp());

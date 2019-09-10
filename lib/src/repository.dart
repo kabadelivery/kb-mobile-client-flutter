@@ -29,6 +29,8 @@ class Repository {
   /* command api provider */
   final commandApiProvider = CommandsApiProvider();
   Future<List<CommandModel>> fetchDailyOrders(UserTokenModel userToken) => commandApiProvider.fetchDailyOrders(userToken);
+  /* command details provider */
+  Future<CommandModel> fetchOrderDetails(UserTokenModel userToken, int orderId) => commandApiProvider.fetchOrderDetails(userToken, orderId);
 
 
 }

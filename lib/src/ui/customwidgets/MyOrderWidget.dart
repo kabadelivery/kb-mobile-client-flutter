@@ -5,12 +5,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/OrderItemModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 class MyOrderWidget extends StatefulWidget {
 
-  CommandModel command = CommandModel.fake();
+  CommandModel command;
 
   MyOrderWidget({this.command});
 
@@ -39,7 +40,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
     // TODO: implement build
     return
       InkWell(
-        onTap: _jumpToCommandDetails(command),
+        onTap: ()=> _jumpToCommandDetails(command),
         child: Container(
           padding: EdgeInsets.only(top:100, bottom:100),
           child: Center(
@@ -152,8 +153,12 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   _jumpToCommandDetails(CommandModel command) {
-
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OrderDetailsPage(orderId: command.id),
+      ),
+    );
   }
 }
 
