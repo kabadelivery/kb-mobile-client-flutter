@@ -13,7 +13,7 @@ class UserDataBloc {
 
 /* order details */
   final _orderDetailsFetcher = PublishSubject<CommandModel>();
-  Observable<CommandModel> get _orderDetails => _orderDetailsFetcher.stream;
+  Observable<CommandModel> get orderDetails => _orderDetailsFetcher.stream;
 
 
   fetchDailyOrders(UserTokenModel userToken) async {

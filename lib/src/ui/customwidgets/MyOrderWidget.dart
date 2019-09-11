@@ -32,7 +32,6 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    command.is_payed_at_arrival = false;
   }
 
   @override
@@ -149,7 +148,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   String _getLastModifiedDate(CommandModel command) {
-   return Utils.timestampToDate(command.last_update);
+   return Utils.readTimestamp(int.parse(command?.last_update));
   }
 
   _jumpToCommandDetails(CommandModel command) {
@@ -206,7 +205,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                 text: 'X ',
                 style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                 children: <TextSpan>[
-                  TextSpan(text: " ${food.quantity}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                  TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
                 ],
               ),
             ),
@@ -215,58 +214,3 @@ class SingleOrderFoodWidget extends StatelessWidget {
     );
   }
 }
-
-
-
-/*
-*
-*
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return
-      (Card(
-          elevation: 8.0,
-          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-          child: Container(
-              child:
-              Column(children: <Widget>[
-                ListTile(
-                    contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
-                    leading: Container(
-                      height:50, width: 50,
-                      child:CachedNetworkImage(fit:BoxFit.cover,imageUrl: "https://www.bp.com/content/dam/bp-careers/en/images/icons/graduates-interns-instagram-icon-16x9.png"),
-                    ),
-                    trailing: IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor,), onPressed: (){}),
-                    title:Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("CHEZ ARMANDINE", textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 18, fontWeight: FontWeight.w500)),
-                        SizedBox(height:10),
-                        Text("Qtier Agoe Plateaux; Agence-annexe - We are not very far from carefour assigomé! Turn right and we are there", style: TextStyle(fontSize: 14, color: Colors.grey.shade700)),
-                      ],
-                    )
-                ),
-                Container(
-                    padding: EdgeInsets.all(5),
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: Colors.blueAccent.shade700),
-                            child:Text(
-                                "Closed",
-                                style: TextStyle(color: Colors.white, fontSize: 12)
-                            )),
-                        Text("2.15km", style: TextStyle(color: Colors.grey.shade700, fontSize: 12))
-                      ],
-                    ))
-              ])
-          ))
-      );
-  }
-
-*
-* */

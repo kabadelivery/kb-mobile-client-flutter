@@ -1,7 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
+import 'package:intl/intl.dart';
+
 
 Color hexToColor(String code) {
   return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
@@ -13,8 +15,7 @@ int hexToInt(String code) {
 
 
 class Utils {
-  static Map<String, String> getHeaders () {
-
+  static Map<String, String> getHeaders() {
     String token = "";
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
@@ -25,19 +26,18 @@ class Utils {
     return headers;
   }
 
-  static Map<String, String> getHeadersWithToken (String token) {
-
+  static Map<String, String> getHeadersWithToken(String token) {
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
 
-    headers["Authorization"] = "Bearer "+token;
+    headers["Authorization"] = "Bearer " + token;
 
     return headers;
   }
 
   static inflateLink(String link) {
-    return ServerConfig.SERVER_ADDRESS+"/"+link;
+    return ServerConfig.SERVER_ADDRESS + "/" + link;
   }
 
   static Future hasNetwork() async {
@@ -52,19 +52,83 @@ class Utils {
 
   static String token = "eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiI5MDYyODcyNSIsImlhdCI6MTU2MzQ4MjExNSwiZXhwIjoxNTk0NTg2MTE1fQ.DP2qV_BpF8NzT7cMA6_6nDIIep7A_vL7UqVhOK4-JVOFhkOrpm6aj8MRLP0D6V40GbfT-np12tNh-UKJlokE7txtM-Y1vSRh41JV3FuFxKSblpmXhi-RYF7V-TcAJWJp3AslUJjB50NyjTe-GQ1mK758RpfX-fwUt6T0jvOJqU8nny8DmqWtpbwPH3PRii3lLlDreXz696raktXIFmobZ7pqH5gbTAQ_t5BCtYijhF8QvbIxIXyQ_RDNutzOuPEQLZLBXhqJmo5gB90EMYJzRzeZLlsJ6rlcQ_aCW0acxSC7hnXpRycQE1NFXSGF3i502KriFOC_lwN8oJxfdtyOSYvn6ZcA_JCVD58DoWk3qBwXBFJ2_z0luQzxrY0IeB8fROJTd5jaLR01JO7KtA4f1-AdaR8t7vL1yA6v-T7LtWFyIapSdoiyTaaluGHHp7vB_Ccn-qwT5LoMZraQq2nBv33SB6KNZGwQHnTrYhIypNMhBuHcEiXUBTZXtEKDgU3FQy2f6RsZmw5jtF49i7YVNLZkh4_-tKNy5ZPcjhhwZL2-MC7-klHJI6KBkcf01tWZa45wzMY14U5OTc6ZaHnB10KwmgD0dZcjhW--_6mKLC2pBQY-t-lm8PuOyXZzFjh68vsN9I3e2jJDhkRrgAbFU12gsTUrqu1SPsk9xSa3L0g";
 
-static String timestampToDate (String timestamp) {
 
-   return "";
+  static getStateColor(int state) {
+    switch (state) {
+      case 0:
+        return CommandStateColor.waiting;
+      case 1:
+        return CommandStateColor.cooking;
+      case 2:
+        return CommandStateColor.shipping;
+      case 3:
+        return CommandStateColor.delivered;
+      default:
+        return CommandStateColor.cancelled;
+    }
+  }
+
+ /* static String readTimestamp(int timestamp) {
+    var now = new DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var diff = now.difference(date);
+    var time = '';
+
+    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 ||
+        diff.inMinutes > 0 && diff.inHours == 0 ||
+        diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else if (diff.inDays > 0 && diff.inDays < 7) {
+      if (diff.inDays == 1) {
+        time = diff.inDays.toString() + ' DAY AGO';
+      } else {
+        time = diff.inDays.toString() + ' DAYS AGO';
+      }
+    } else {
+      if (diff.inDays == 7) {
+        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
+      } else {
+        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
+      }
+    }
+
+    return time;
+  }
+*/
+
+  static String readTimestamp (int timestamp) {
+
+//      long unixSeconds = Long.parseLong(timeStamp);
+    DateTime commandTime = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);;
+
+    DateTime currentTime = new DateTime.now();
+
+    String pattern_not_today = "yyyy-MM-dd HH:mm:ss";
+    String pattern_today = "HH:mm:ss";
+
+    DateFormat sdf = DateFormat();
+//      sdf..setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    String formattedDate = "";
+
+    if (commandTime.month == currentTime.month &&
+        commandTime.year == currentTime.year) {
+
+      sdf = new DateFormat(pattern_today);
+      formattedDate = sdf.format(commandTime);
+      if (commandTime.day == currentTime.day) {
+        formattedDate = "TODAY" + " " + formattedDate;
+      } else if (commandTime.day + 1 == currentTime.day) {
+        formattedDate = "Yesterday" + " " + formattedDate;
+      } else {
+        sdf = DateFormat(pattern_not_today);
+        formattedDate = sdf.format(commandTime);
+      }
+    }
+    return formattedDate;
+    return "-- --";
+  }
+
+
 }
-}
 
-/*
-* final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String numbersJson = prefs.getString(_kFavoritePhoneNumbersPrefs)
-
-     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(_kFavoritePhoneNumbersPrefs, json.encode(numbersList));
-
-
-*
-* */
