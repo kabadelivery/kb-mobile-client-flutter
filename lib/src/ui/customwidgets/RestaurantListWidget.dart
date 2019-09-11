@@ -93,7 +93,7 @@ class RestaurantListWidget extends StatelessWidget {
                                   style: TextStyle(color: Colors.white, fontSize: 12)
                               )) : SizedBox(width: 0),
                         ]),
-                        Text("2.15km", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, fontSize: 12))
+                        restaurantModel?.distance == null ? Container() : Text("${restaurantModel?.distance}km", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
                       ],
                     ))
               ])

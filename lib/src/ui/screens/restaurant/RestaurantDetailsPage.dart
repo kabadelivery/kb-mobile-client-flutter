@@ -72,6 +72,19 @@ class RestaurantDetailsPage extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        Container(color:Colors.white, padding: EdgeInsets.only(left: 10, right:10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
+                              Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                                IconButton(icon:Icon(Icons.access_time), onPressed: () {},),
+                                Text(restaurant.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
+                              ])
+                            ],
+                          ),
+                        ),
+//                        SizedBox(height: 10),
                         SizedBox(height:20),
                         /* rounded image - */
                         Container(
@@ -107,25 +120,24 @@ class RestaurantDetailsPage extends StatelessWidget {
                                   style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
-                                    Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                                      IconButton(icon:Icon(Icons.access_time), onPressed: () {},),
-                                      Text(restaurant.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
-                                    ])
-                                  ],
-                                ),
-                                SizedBox(height: 10),
                                 Container(
                                   child: Row(children: <Widget>[
                                     IconButton(icon:Icon(Icons.location_on, color: Colors.blue), onPressed: () {}),
                                     Flexible (child: Text(restaurant.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
                                   ]),
                                 ),
-                                SizedBox(height: 10),
-                                Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+
+                                /* note this application part - */
+
+
+                                SizedBox(height: 20),
+                                Container(height: 1, width: MediaQuery.of(context).size.width, color: Colors.grey.withAlpha(100)),
+                                SizedBox(height: 20),
+                                Row(mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+                                  ],
+                                ),
                                 SizedBox(height:10),
                                 /* 4.0 - stars */
                                 StreamBuilder<List<CommentModel>>(

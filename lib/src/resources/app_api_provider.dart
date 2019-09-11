@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:http/http.dart' show Client;
 import 'dart:convert';
@@ -39,12 +40,12 @@ class AppApiProvider {
     }
   }
 
-  Future<List<RestaurantModel>> fetchRestaurantList() async {
+  Future<List<RestaurantModel>> fetchRestaurantList(Position position) async {
     DebugTools.iPrint("entered fetchRestaurantList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_RESTO_LIST_V2,
-//        .post(ServerRoutes.LINK_HOME_PAGE,
+      body: position == null ? "" : json.encode({"location" : "${position.latitude}:${position.longitude}"}),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {

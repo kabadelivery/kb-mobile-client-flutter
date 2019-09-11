@@ -22,9 +22,17 @@ class CommandModel {
   String passphrase = "~";
   int reason;
 
+  String promotion_shipping_pricing;
+  String command_pricing;
+  String price_command;
+  String promotion_pricing;
+  String remise;
+
+
   CommandModel({this.id, this.restaurant_id, this.state, this.shipping_address,
     this.restaurant_entity, this.food_list, this.total_pricing,
-    this.shipping_pricing, this.last_update, this.livreur,
+    this.shipping_pricing,this.promotion_pricing, this.promotion_shipping_pricing, this.command_pricing, this.price_command, this.remise,
+    this.last_update, this.livreur,
     this.is_payed_at_arrival, this.passphrase, this.reason});
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -34,10 +42,16 @@ class CommandModel {
     state = json['state'];
     total_pricing = "${json['total_pricing']}";
     shipping_pricing = "${json['shipping_pricing']}";
+    promotion_shipping_pricing = "${json['promotion_shipping_pricing']}";
+    promotion_pricing = "${json['promotion_pricing']}";
+    command_pricing = "${json['command_pricing']}";
+    price_command = "${json['price_command']}";
+    remise = "${json['remise']}";
     last_update = "${json['last_update']}";
     is_payed_at_arrival = json['is_payed_at_arrival'];
     passphrase = json['passphrase'];
     reason = json['reason'];
+
 
     if (json['livreur'] != null)
       livreur = KabaShippingMan.fromJson(json['livreur']);
@@ -62,6 +76,11 @@ class CommandModel {
     "food_list" : food_list,
     "total_pricing" : total_pricing,
     "shipping_pricing" : shipping_pricing,
+    "promotion_shipping_pricing" : promotion_shipping_pricing,
+    "promotion_pricing" : promotion_pricing,
+    "command_pricing" : command_pricing,
+    "price_command" : price_command,
+    "remise" : remise,
     "last_update" : last_update,
     "livreur" : livreur.toJson(),
     "is_payed_at_arrival" : is_payed_at_arrival,

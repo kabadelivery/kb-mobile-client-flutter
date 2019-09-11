@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
@@ -22,6 +23,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     // TODO: implement initState
     restaurantBloc.fetchRestaurantList();
     super.initState();
+    _getLastKnowLocation();
   }
 
   @override
@@ -55,6 +57,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           ),
       ),
     );
+  }
+
+  Future _getLastKnowLocation() async {
+    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    /* now that we are good, we must launch again */
+    if (position != null) {
+      restaurantBloc.fetchRestaurantList(position: position);
+    }
   }
 }
 

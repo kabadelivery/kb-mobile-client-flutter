@@ -12,12 +12,12 @@ import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
   String user_id;
   String description;
   List<String> picture;
-  String quartier;
+  String district;
   String near;
   String updated_at;
 
   DeliveryAddressModel({this.id, this.name, this.location, this.phone_number,
-      this.user_id, this.description, this.picture, this.quartier, this.near,
+      this.user_id, this.description, this.picture, this.district, this.near,
       this.updated_at});
 
   DeliveryAddressModel.fromJson(Map<String, dynamic> json) {
@@ -32,20 +32,20 @@ import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
    l = json["picture"];
    picture = l?.map((f) => "${f}")?.toList();
 
-   quartier = json['quartier'];
+   district = json['district'];
    near = json['near'];
-   updated_at = json['updated_at'];
+   updated_at = "${json['updated_at']}";
   }
 
   Map toJson () => {
-   "id" : (id as int),
+   "id" : id,
    "name" : name,
    "location" : location,
    "phone_number" : phone_number,
    "user_id" : user_id,
    "description" : description,
    "picture" : picture,
-   "quartier" : quartier,
+   "district" : district,
    "near" : near,
    "updated_at" : updated_at,
   };

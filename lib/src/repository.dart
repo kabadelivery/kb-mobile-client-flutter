@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
@@ -15,12 +17,15 @@ class Repository {
 
   final appApiProvider = AppApiProvider();
   Future<HomeScreenModel> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
-  Future<List<RestaurantModel>> fetchRestaurantList() => appApiProvider.fetchRestaurantList();
+  Future<List<RestaurantModel>> fetchRestaurantList(Position position) => appApiProvider.fetchRestaurantList(position);
 
 
   /* client personal api provider */
   final clientApiProvider = ClientPersonalApiProvider();
   Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) => clientApiProvider.fetchRestaurantComment(restaurantModel, userToken);
+  Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) => clientApiProvider.fetchMyAddresses(userToken);
+
+
 
   /* restaurant personal api provider */
   final restaurantApiProvider = RestaurantApiProvider();

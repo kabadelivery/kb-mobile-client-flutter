@@ -42,15 +42,17 @@ class RestaurantCommentWidget extends StatelessWidget {
                     Text(comment.name_of_client.trim(), textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   ],
                 ),
+                SizedBox(height: 5),
                 Row(children: <Widget>[]
                   ..addAll(
                       List<Widget>.generate(comment.stars.toInt(), (int index) {
                         return Icon(Icons.star, color: KColors.primaryYellowColor, size: 16);
                       })
                   )),
+                SizedBox(height: 5),
                 Row(
                   children: <Widget>[
-                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 16))),
+                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 15))),
                   ],
                 )
               ]

@@ -31,7 +31,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    userDataBloc.fetchOrderDetails(UserTokenModel.fake(), 3805 /*orderId*/);
+    userDataBloc.fetchOrderDetails(UserTokenModel.fake(), orderId);
   }
 
   @override
@@ -118,7 +118,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Kaba-man Phone", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  MaterialButton(padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: Colors.blue,splashColor: Colors.white, child: Row(
+                  MaterialButton(padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: KColors.primaryColor, splashColor: Colors.white, child: Row(
                     children: <Widget>[
                       Icon(Icons.phone, color: Colors.white),
                       SizedBox(width: 5),
@@ -127,7 +127,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   ), onPressed: () {}),
                 ]),
               ),
-
             ]
                 : <Widget>[Container()]
             )..addAll(<Widget>[
@@ -176,46 +175,69 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               Card(
                   child: Container(padding: EdgeInsets.all(10),
                     child: Column(children:<Widget>[
-                      SizedBox(height: 10),
+//                      SizedBox(height: 10),
+//                      "/web/assets/app_icons/promo_large.gif"
+                      (int.parse(command?.remise) > 0 ? Container (
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                            )
+                        )
+                    ): Container ()),
                       Container(),
                       /* content */
                       SizedBox(height: 10),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Montant Commande:"),
+                        Text("Montant Commande:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                         /* check if there is promotion on Commande */
                         Row(
                           children: <Widget>[
-                            Text("(3700) "),
-                            Text("3200 FCFA"),
+                            Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "(${command?.price_command})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                           SizedBox(width: 5),
+                            Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "${command?.promotion_pricing} FCFA" : "${command?.price_command} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                           ],
                         )
                       ]),
                       SizedBox(height: 10),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Montant Livraison:"),
+                        Text("Montant Livraison:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                         /* check if there is promotion on Livraison */
                         Row(
                           children: <Widget>[
-                            Text("(3700) "),
-                            Text("3200 FCFA"),
+                            Text(int.parse(command?.shipping_pricing) > int.parse(command?.promotion_shipping_pricing) ? "(${command?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                            Text(int.parse(command?.shipping_pricing) > int.parse(command?.promotion_shipping_pricing) ? "${command?.promotion_shipping_pricing} FCFA" : "${command?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                           ],
                         )
                       ]),
                       SizedBox(height: 10),
+                      int.parse(command?.remise) > 0 ?
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Remise:"),
+                        Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
                         /* check if there is remise */
-                        Text("-11%")
-                      ]),
+                        Text("-${command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
+                      ]) : Container(),
 
                       SizedBox(height: 10),
                       Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
                       SizedBox(height: 10),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Total:"),
-                        Text("3200 FCFA")
+                        Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                        Text("${command?.total_pricing} F", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
                       ]),
                       SizedBox(height: 10),
+                      (int.parse(command?.remise) > 0 ? Container (
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                              )
+                          )
+                      ): Container ()),
                     ]),
                   )),
             ]

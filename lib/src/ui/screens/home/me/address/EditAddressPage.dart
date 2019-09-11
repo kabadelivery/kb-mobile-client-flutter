@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart' as Pp;
@@ -14,11 +15,12 @@ class EditAddressPage extends StatefulWidget {
 
   static var routeName = "/EditAddressPage";
 
-  EditAddressPage({Key key}) : super(key: key);
+  DeliveryAddressModel address;
 
+  EditAddressPage({Key key, this.address}) : super(key: key);
 
   @override
-  _EditAddressPageState createState() => _EditAddressPageState();
+  _EditAddressPageState createState() => _EditAddressPageState(address);
 }
 
 class _EditAddressPageState extends State<EditAddressPage> {
@@ -27,6 +29,18 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
   LatLng initialCenter = LatLng(6.221316, 1.188478);
 
+  DeliveryAddressModel address;
+
+  var _locationNameController = TextEditingController(), _phoneNumberController = TextEditingController(),
+      _nearController = TextEditingController(), _descriptionController = TextEditingController();
+
+  _EditAddressPageState(this.address) {
+    if (address != null && address.location != null) {
+      String latitude =  address.location.split(":")[0];
+      String longitude =  address.location.split(":")[1];
+      initialCenter = LatLng(double.parse(latitude), double.parse(longitude));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +54,22 @@ class _EditAddressPageState extends State<EditAddressPage> {
         child: Column(
             children: <Widget>[
               /* boxes to show the pictures selected. */
-
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
+                child:TextField(controller: _locationNameController,
                     decoration: InputDecoration(labelText: "Name of Location",
                       border: InputBorder.none,
-                    )),
+                    ))..controller.text=address?.name,
               ),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
+                child:TextField(controller: _phoneNumberController,
                     decoration: InputDecoration(labelText: "Phone number",
                       border: InputBorder.none,
-                    )),
+                    ))..controller.text=address?.phone_number,
               ),
               SizedBox(height: 10),
               InkWell(
@@ -80,19 +93,19 @@ class _EditAddressPageState extends State<EditAddressPage> {
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
+                child:TextField(controller: _nearController,
                     decoration: InputDecoration(labelText: "Not so far from",
                       border: InputBorder.none,
-                    )),
+                    ))..controller.text=address?.near,
               ),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
+                child:TextField(controller: _descriptionController, maxLines: 4,
                     decoration: InputDecoration(labelText: "Address Details",
                       border: InputBorder.none,
-                    )),
+                    ))..controller.text=address?.description,
               ),
               SizedBox(height: 20),
               Row(mainAxisAlignment: MainAxisAlignment.center,

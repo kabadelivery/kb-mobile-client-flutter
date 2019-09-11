@@ -1,4 +1,5 @@
 import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -15,6 +16,10 @@ class UserDataBloc {
   final _orderDetailsFetcher = PublishSubject<CommandModel>();
   Observable<CommandModel> get orderDetails => _orderDetailsFetcher.stream;
 
+  /* my addresses */
+  final _deliveryAddressFetcher = PublishSubject<List<DeliveryAddressModel>>();
+  Observable<List<DeliveryAddressModel>> get deliveryAddress => _deliveryAddressFetcher.stream;
+
 
   fetchDailyOrders(UserTokenModel userToken) async {
     try {
@@ -24,6 +29,16 @@ class UserDataBloc {
       _myDailyOrderFetcher.sink.addError(_.message);
     }
   }
+
+  fetchMyAddresses (UserTokenModel userToken) async {
+    try {
+      List<DeliveryAddressModel> deliveryAddresses = await _repository.fetchMyAddresses(userToken);
+      _deliveryAddressFetcher.sink.add(deliveryAddresses);
+    } catch (_) {
+      _deliveryAddressFetcher.sink.addError(_.message);
+    }
+  }
+
 
   fetchOrderDetails (UserTokenModel userToken, int orderId) async {
     try {
@@ -36,6 +51,8 @@ class UserDataBloc {
 
   dispose() {
     _myDailyOrderFetcher.close();
+    _orderDetailsFetcher.close();
+    _deliveryAddressFetcher.close();
   }
 
 }

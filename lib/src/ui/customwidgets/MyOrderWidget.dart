@@ -86,7 +86,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                         Center(child: Container(decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             color: Colors.grey
-                        ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.quartier}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
+                        ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.district}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
                         Container(padding: EdgeInsets.only(top:10),
                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                             Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
@@ -192,8 +192,10 @@ class SingleOrderFoodWidget extends StatelessWidget {
               Column(mainAxisAlignment: MainAxisAlignment.start,children: <Widget>[
                 Text("${food.name}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16, color: KColors.primaryColor, fontWeight: FontWeight.bold)),
                 Row(children: <Widget>[
-                  Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                  (food?.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                  /* price has a line on top in case */
+                  Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
+                 SizedBox(width: 5),
+                  (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
                       : Container()),
                   Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                 ]),
