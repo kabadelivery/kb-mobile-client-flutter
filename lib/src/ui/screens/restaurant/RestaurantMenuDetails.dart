@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:toast/toast.dart';
 
@@ -140,7 +141,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Wrap(children: bottomSheetView)
             ),
           ),
-          Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child: RaisedButton(child: Text("ACHETER", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {})))
+         totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child: RaisedButton(child: Text("ACHETER", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
         ],
       );
   }
@@ -221,6 +222,17 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
       }
     }
     _updateCounts();
+  }
+
+  void _continuePurchase() {
+
+    /* data */
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OrderConfirmationPage(totalPrice: totalPrice,foods: food_selected, addons: adds_on_selected),
+      ),
+    );
   }
 
 }

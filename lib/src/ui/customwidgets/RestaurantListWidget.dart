@@ -78,7 +78,7 @@ class RestaurantListWidget extends StatelessWidget {
                         Row(children:[
                           Container(
                               padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: restaurantModel.is_open == 1 ? CommandStateColor.delivered : Colors.blueAccent.shade700),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: restaurantModel.is_open == 1 ? CommandStateColor.delivered : Colors.blueAccent.shade700),
                               child:Text(
                                   restaurantModel.is_open == 1 ? "Open":"Closed",
                                   style: TextStyle(color: Colors.white, fontSize: 12)
@@ -87,7 +87,7 @@ class RestaurantListWidget extends StatelessWidget {
                           restaurantModel.coming_soon == 1 ?
                           Container(
                               padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryColor),
                               child:Text(
                                   "Coming Soon",
                                   style: TextStyle(color: Colors.white, fontSize: 12)

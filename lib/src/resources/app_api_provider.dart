@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:http/http.dart' show Client;
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'dart:convert';
 
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -65,5 +67,34 @@ class AppApiProvider {
     }
   }
 
+
+  /* send the location and get back the not far from */
+  Future<DeliveryAddressModel> checkLocationDetails(UserTokenModel userToken, Position position) async {
+    DebugTools.iPrint("entered checkLocationDetails");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
+          body: position == null ? "" : json.encode({"coordinates" : "${position.latitude}:${position.longitude}"}),
+          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+         String description_details = json.decode(response.body)["data"]["display_name"];
+         String quartier = DeliveryAddressModel.fromJson(json.decode(response.body)["data"]["address"]).suburb;
+        /* return only the content we need */
+         DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(description: description_details, quartier: quartier);
+         print("${description_details} , ${quartier}");
+         return deliveryAddressModel;
+        }
+        else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 
 }

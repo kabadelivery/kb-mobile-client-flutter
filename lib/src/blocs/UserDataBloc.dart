@@ -1,7 +1,9 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/repository.dart';
+import 'package:kaba_flutter/src/ui/customwidgets/MyVoucherListWidget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserDataBloc {
@@ -20,6 +22,13 @@ class UserDataBloc {
   final _deliveryAddressFetcher = PublishSubject<List<DeliveryAddressModel>>();
   Observable<List<DeliveryAddressModel>> get deliveryAddress => _deliveryAddressFetcher.stream;
 
+  /* vouchers subscriptions */
+  final _subcribedVouchersFetcher = PublishSubject<List<MyVoucherListWidget>>();
+//  Observable<List<DeliveryAddressModel>> get subscribedVouchers => _subcribedVouchersFetcher.stream;
+
+  /* check location details */
+  final _locationDetailsChecker = PublishSubject<DeliveryAddressModel>();
+  Observable<DeliveryAddressModel> get locationDetails => _locationDetailsChecker.stream;
 
   fetchDailyOrders(UserTokenModel userToken) async {
     try {
@@ -39,7 +48,6 @@ class UserDataBloc {
     }
   }
 
-
   fetchOrderDetails (UserTokenModel userToken, int orderId) async {
     try {
       CommandModel orderDetails = await _repository.fetchOrderDetails(userToken, orderId);
@@ -49,10 +57,22 @@ class UserDataBloc {
     }
   }
 
+  checkLocationDetails({UserTokenModel userToken, Position position}) async {
+    try {
+      DeliveryAddressModel deliveryAddressModel = await _repository.checkLocationDetails(userToken, position);
+      _locationDetailsChecker.sink.add(deliveryAddressModel);
+    } catch (_) {
+      _locationDetailsChecker.sink.addError(_.message);
+    }
+  }
+
+
+
   dispose() {
     _myDailyOrderFetcher.close();
     _orderDetailsFetcher.close();
     _deliveryAddressFetcher.close();
+    _locationDetailsChecker.close();
   }
 
 }

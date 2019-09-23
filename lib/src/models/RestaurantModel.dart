@@ -16,6 +16,7 @@ class RestaurantModel {
    String main_contact;
    String working_hour;
    String distance;
+   String menu_foods;
    int is_open;
    int coming_soon;
    double stars;
@@ -36,6 +37,7 @@ class RestaurantModel {
     contactId = json['contactId'];
     email = json['email'];
     distance = json['distance'];
+    menu_foods = json['menu_foods'];
     is_open = json['is_open'];
     stars = double.parse("${json['stars']}");
     votes = json['votes'];
@@ -56,6 +58,7 @@ class RestaurantModel {
     "contactId" : contactId,
     "email" : email,
     "distance" : distance,
+    "menu_foods" : menu_foods,
     "is_open" : is_open,
     "stars" : stars,
     "theme_pic" : theme_pic,

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/DailyOrdersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
@@ -34,7 +39,7 @@ class MyApp extends StatelessWidget {
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: MyOrderWidget(command: CommandModel.fake()),
-      home: MyAddressesPage(),
+      home: MyVouchersPage(),
       routes: generalRoutes,
     );
   }

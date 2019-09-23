@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
@@ -18,13 +19,13 @@ class RestaurantBloc {
   final _restaurantMenuFetcher = PublishSubject<List<RestaurantSubMenuModel>>();
   Observable<List<RestaurantSubMenuModel>> get restaurantMenu => _restaurantMenuFetcher.stream;
 
-
   /* comment list fetcher */
   final _commentListFetcher = PublishSubject<List<CommentModel>>();
   Observable<List<CommentModel>> get commentList => _commentListFetcher.stream;
 
 
-  fetchRestaurantList({Position position = null}) async {
+
+  fetchRestaurantList({Position position}) async {
     try {
       List<RestaurantModel> restaurantList = await _repository.fetchRestaurantList(position);
       _restaurantListFetcher.sink.add(restaurantList);

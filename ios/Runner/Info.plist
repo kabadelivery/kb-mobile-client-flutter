@@ -47,6 +47,8 @@
 <string>Need Current Location Access</string>
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Get current location for delivery</string>
+<key>NSCameraUsageDescription</key>
+<string>Camera permission is required for barcode scanning.</string>
 
 </dict>
 </plist>

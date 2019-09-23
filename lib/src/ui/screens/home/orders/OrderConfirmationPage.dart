@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/models/MyAddressModel.dart';
 import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
 import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
+import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -11,11 +12,14 @@ class OrderConfirmationPage extends StatefulWidget {
 
   static var routeName = "/OrderConfirmationPage";
 
-  OrderConfirmationPage({Key key}) : super(key: key);
+  Map<RestaurantFoodModel, int> addons, foods;
 
+  int totalPrice;
+
+  OrderConfirmationPage({Key key, this.foods, this.addons, this.totalPrice}) : super(key: key);
 
   @override
-  _OrderConfirmationPageState createState() => _OrderConfirmationPageState();
+  _OrderConfirmationPageState createState() => _OrderConfirmationPageState(totalPrice, foods, addons);
 }
 
 class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
@@ -33,6 +37,11 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
   /* pricing configuration */
   OrderBillConfiguration orderBillConfiguration = OrderBillConfiguration.fake();
 
+  Map<RestaurantFoodModel, int> addons, foods;
+
+  int totalPrice;
+
+  _OrderConfirmationPageState(this.totalPrice, this.foods, this.addons);
 
   @override
   Widget build(BuildContext context) {
@@ -42,77 +51,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
           backgroundColor: KColors.primaryYellowColor ,
           title: Text("Confirm Order")
       ),
-      body: SingleChildScrollView (
-
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text("Prix Commande", style: TextStyle(color: Colors.black, fontSize: 14)),
-                  Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                    IconButton(icon:Icon(Icons.attach_money, color: KColors.primaryColor), onPressed: () {},),
-                    Text("3.500 F", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
-                  ])
-                ],
-              ),
-              SizedBox(height: 10),
-              /*     Container(padding: EdgeInsets.only(top:10, bottom: 10, right: 15, left: 15), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
-                border: new Border.all(color: KColors.primaryColor, width: 1),
-              ), child: Row(mainAxisSize: MainAxisSize.min,children: <Widget>[Text("Prix Commmande", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)) ,SizedBox(width: 10),
-                Text("3.500FCFA", style: TextStyle(color: KColors.primaryYellowColor, fontWeight: FontWeight.bold, fontSize: 18))])),
-              SizedBox(height: 10),*/
-              Container(
-                color: Colors.transparent,
-                child: Container(
-                    child: _pay_prepayed_switch
-                ),
-              ),
-            ]..addAll( _preorderLayout())
-              ..addAll(<Widget>[
-                SizedBox(height: 5),
-                _cookingTimeEstimation(),
-                SizedBox(height: 10),
-                InkWell(
-                    splashColor: Colors.white,
-                    child:Container(padding: EdgeInsets.only(top:5,bottom: 5), color: KColors.primaryColor,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children: <Widget>[
-                          Text("Choisir l'adresse de Livraison", style: TextStyle(fontSize: 16,color:Colors.white)),
-                          Row(children: <Widget>[
-                            IconButton(icon: Icon(Icons.my_location, color: Colors.white), onPressed: null),
-                          ])
-                        ])), onTap: (){_pickDeliveryAddress();}
-                ),
-                SizedBox(height: 10),
-                _buildAddress(MyAddressModel.fake()),
-                SizedBox(height: 15),
-                Center(child: Text("Utilisez un bon ? ",style: TextStyle(color: Colors.black.withAlpha(150)))),
-                SizedBox(height: 15),
-                /* set up the boxes for the bills */
-                Row(children: <Widget>[
-                  SizedBox(width: 10),
-                  Expanded(flex: 1,child: Container(height: 120, decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: _buildRestaurantCoupon(),
-                  )),
-                  SizedBox(width: 10),
-                  Expanded(flex: 1,child: Container(height: 120, decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: _buildDeliveryCoupon(),
-                  )),  SizedBox(width: 10),
-                ]),
-                SizedBox(height: 10),
-                _buildBill(orderBillConfiguration),
-                SizedBox(height: 10),
-                /* solde insuffisant  - CLIGNOTER CE CONTAINER */
-                Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Row(children: <Widget>[
-                    Text("295 FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
-                    SizedBox(width: 10),
-                    Text("Solde insuffisant ! ", style: TextStyle(color: Colors.black, fontSize: 18))
-                  ]))
-              ])
-        ),
-      ),
+      body: _buildOrderConfirmationPage(null)
     );
   }
 
@@ -128,6 +67,8 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
 
 
   void _pickDeliveryAddress() {
+
+    /* jump and get it */
 
   }
 
@@ -242,6 +183,83 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
 //      Center(child: Icon(Icons.add_circle, color: Colors.white)),
     Center(child: Text("-50%", style: TextStyle(fontSize: 40, color: Colors.white)),)
     ]);
+  }
+
+  Widget _buildOrderConfirmationPage(PreOrderConfiguration data) {
+
+    /* we get this one ... then we tend to select and address to end the purchase. */
+
+    return SingleChildScrollView (
+
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text("Prix Commande", style: TextStyle(color: Colors.black, fontSize: 14)),
+                Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                  IconButton(icon:Icon(Icons.attach_money, color: KColors.primaryColor), onPressed: () {},),
+                  Text("${totalPrice}F", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
+                ])
+              ],
+            ),
+            SizedBox(height: 10),
+            /*     Container(padding: EdgeInsets.only(top:10, bottom: 10, right: 15, left: 15), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
+                border: new Border.all(color: KColors.primaryColor, width: 1),
+              ), child: Row(mainAxisSize: MainAxisSize.min,children: <Widget>[Text("Prix Commmande", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)) ,SizedBox(width: 10),
+                Text("3.500FCFA", style: TextStyle(color: KColors.primaryYellowColor, fontWeight: FontWeight.bold, fontSize: 18))])),
+              SizedBox(height: 10),*/
+            Container(
+              color: Colors.transparent,
+              child: Container(
+                  child: _pay_prepayed_switch
+              ),
+            ),
+          ]..addAll( _preorderLayout())
+            ..addAll(<Widget>[
+              SizedBox(height: 5),
+              _cookingTimeEstimation(),
+              SizedBox(height: 10),
+              InkWell(
+                  splashColor: Colors.white,
+                  child:Container(padding: EdgeInsets.only(top:5,bottom: 5), color: KColors.primaryColor,
+                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children: <Widget>[
+                        Text("Choisir l'adresse de Livraison", style: TextStyle(fontSize: 16,color:Colors.white)),
+                        Row(children: <Widget>[
+                          IconButton(icon: Icon(Icons.my_location, color: Colors.white), onPressed: null),
+                        ])
+                      ])), onTap: (){_pickDeliveryAddress();}
+              ),
+              SizedBox(height: 10),
+              _buildAddress(MyAddressModel.fake()),
+              SizedBox(height: 15),
+              Center(child: Text("Utilisez un bon ? ",style: TextStyle(color: Colors.black.withAlpha(150)))),
+              SizedBox(height: 15),
+              /* set up the boxes for the bills */
+              Row(children: <Widget>[
+                SizedBox(width: 10),
+                Expanded(flex: 1,child: Container(height: 120, decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: _buildRestaurantCoupon(),
+                )),
+                SizedBox(width: 10),
+                Expanded(flex: 1,child: Container(height: 120, decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: _buildDeliveryCoupon(),
+                )),  SizedBox(width: 10),
+              ]),
+              SizedBox(height: 10),
+              _buildBill(orderBillConfiguration),
+              SizedBox(height: 10),
+              /* solde insuffisant  - CLIGNOTER CE CONTAINER */
+              Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Row(children: <Widget>[
+                    Text("295 FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
+                    SizedBox(width: 10),
+                    Text("Solde insuffisant ! ", style: TextStyle(color: Colors.black, fontSize: 18))
+                  ]))
+            ])
+      ),
+    );
   }
 
 

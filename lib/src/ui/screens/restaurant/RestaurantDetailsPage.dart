@@ -58,7 +58,7 @@ class RestaurantDetailsPage extends StatelessWidget {
     );
 
     return Scaffold(
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.grey.shade100,
         body: new DefaultTabController(
             length: 1,
             child: NestedScrollView(
@@ -78,7 +78,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                             children: <Widget>[
                               Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
                               Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                                IconButton(icon:Icon(Icons.access_time), onPressed: () {},),
+                                Icon(Icons.access_time),
                                 Text(restaurant.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
                               ])
                             ],
@@ -100,14 +100,15 @@ class RestaurantDetailsPage extends StatelessWidget {
                         ),
                         SizedBox(height:20),
                         /* see the menu entry */
-                        InkWell(
-                          splashColor: Colors.red,
-                          child:Container(padding: EdgeInsets.only(top:5,bottom: 5),
-                              child:ListTile(
-                                  title: Text("See the Menu", style: TextStyle(color:KColors.primaryColor)),
-                                  leading: IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor), onPressed: null),
-                                  trailing: IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: null),
-                                  onTap: (){_jumpToRestaurantMenu(context, restaurant);}), color: Colors.white),
+                        Container(color: Colors.white,
+                          child: InkWell( onTap: (){_jumpToRestaurantMenu(context, restaurant);},
+                            child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("See the Menu", style: TextStyle(color:KColors.primaryColor))]),
+                                  Icon(Icons.chevron_right, color: KColors.primaryColor),
+                              ]),
+                            )
+                          ),
                         ),
                         SizedBox(height:20),
                         Container(
@@ -122,7 +123,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                 SizedBox(height: 10),
                                 Container(
                                   child: Row(children: <Widget>[
-                                    IconButton(icon:Icon(Icons.location_on, color: Colors.blue), onPressed: () {}),
+                                     Icon(Icons.location_on, color: Colors.blue),
                                     Flexible (child: Text(restaurant.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
                                   ]),
                                 ),
@@ -181,7 +182,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                IconButton(iconSize: 20,onPressed: (){}, icon: Icon(Icons.star, size: 20, color: Colors.grey)),
+                                  Icon(Icons.star, size: 20, color: Colors.grey),
                                 Text("Powered by >> Kaba Technlogies")
                               ],
                             )

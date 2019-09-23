@@ -1,7 +1,10 @@
+import 'dart:collection';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
@@ -254,7 +257,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
                             IconButton(icon: Icon(Icons.add_circle, color: Colors.black), onPressed: () => _increaseQuantity())
                           ]
                       )),
-                      RaisedButton(onPressed: () {}, elevation: 0, color: Colors.white, child: Row(
+                      RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
                         children: <Widget>[
                           Text("ACHETER", style: TextStyle(color: KColors.primaryColor)),
                           IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),
@@ -289,4 +292,24 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
   void menuChoiceAction(String value) {
 
   }
+
+  void _continuePurchase() {
+
+    Map<RestaurantFoodModel, int> adds_on_selected = HashMap();
+    Map<RestaurantFoodModel, int> food_selected = HashMap();
+    int totalPrice = 0;
+
+    /* init */
+    food_selected.putIfAbsent(food, () => quantity);
+    totalPrice = int.parse(food.promotion == 0  /* no promotion */ ? food.price : food.promotion_price) * quantity;
+
+    /* data */
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OrderConfirmationPage(totalPrice: totalPrice,foods: food_selected, addons: adds_on_selected),
+      ),
+    );
+  }
+
 }

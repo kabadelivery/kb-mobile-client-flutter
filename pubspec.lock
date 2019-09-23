@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.38.2"
-  android_intent:
-    dependency: transitive
-    description:
-      name: android_intent
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.3+1"
   args:
     dependency: transitive
     description:
@@ -130,6 +123,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_qr_reader:
+    dependency: "direct main"
+    description:
+      name: flutter_qr_reader
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   flutter_redux:
     dependency: "direct main"
     description:
@@ -191,13 +191,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  google_map_location_picker:
-    dependency: "direct main"
-    description:
-      name: google_map_location_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5+3"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -226,6 +219,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
+  image_picker:
+    dependency: transitive
+    description:
+      name: image_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.1+4"
   intl:
     dependency: transitive
     description:
@@ -338,20 +338,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.9"
-  platform:
-    dependency: transitive
-    description:
-      name: platform
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.2.1"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0"
   pub_semver:
     dependency: transitive
     description:

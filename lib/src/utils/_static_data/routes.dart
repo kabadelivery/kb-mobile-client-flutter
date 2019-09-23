@@ -12,6 +12,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -37,7 +38,8 @@ var generalRoutes = {
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   MySoldePage.routeName : (BuildContext context) => MySoldePage(),
-  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(),
+  QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
+//  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(),
 //  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),
 //  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),
 //  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),

@@ -86,7 +86,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                         Center(child: Container(decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             color: Colors.grey
-                        ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.district}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
+                        ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.quartier}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
                         Container(padding: EdgeInsets.only(top:10),
                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                             Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),

@@ -171,7 +171,10 @@ class PlacePickerState extends State<PlacePicker> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SelectPlaceAction(getLocationName(), () {
-                  Navigator.of(context).pop(this.target);
+                  if (markers.first.position != null) {
+                    Navigator.of(context).pop(markers.first.position);
+                  } else
+                    Navigator.of(context).pop(this.target);
                 }),
                 Divider(
                   height: 8,
