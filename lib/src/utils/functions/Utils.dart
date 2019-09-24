@@ -68,7 +68,7 @@ class Utils {
     }
   }
 
- /* static String readTimestamp(int timestamp) {
+  /* static String readTimestamp(int timestamp) {
     var now = new DateTime.now();
     var format = DateFormat('HH:mm a');
     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
@@ -127,6 +127,22 @@ class Utils {
     }
     return formattedDate;
     return "-- --";
+  }
+
+  static bool isPhoneNumber_TGO (String phone_no) {
+    if (phone_no == null || phone_no.length == 0)
+      return false;
+    final regex = RegExp(r'^[9,7]{1}[0,1,2,3,6,7,8,9]{1}[0-9]{6}$');
+    bool res = regex.hasMatch(phone_no);
+    return res;
+  }
+
+  static bool isEmailValid (String email) {
+    if (email == null || email.length == 0)
+      return false;
+    final regex = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
+    bool res = regex.hasMatch(email);
+    return res;
   }
 
 

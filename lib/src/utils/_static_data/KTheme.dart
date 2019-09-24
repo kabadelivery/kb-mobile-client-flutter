@@ -37,7 +37,7 @@ class KColors {
 
 class KStyles {
 
-  static final TextStyle hintTextStyle_gray = TextStyle(color:Colors.grey.shade600, fontSize: 14);
+  static final TextStyle hintTextStyle_gray = TextStyle(color:Colors.grey.shade600, fontSize: 12);
 
 }
 

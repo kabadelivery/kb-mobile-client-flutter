@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_qr_reader/flutter_qr_reader.dart';
-import 'my_qrcode_reader_view.dart';
+import 'package:kaba_flutter/src/utils/recustomlib/my_qrcode_reader_view.dart';
 
 class QrCodeScannerPage extends StatefulWidget {
 
@@ -19,24 +18,10 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
 
    GlobalKey<QrcodeReaderViewState> qrViewKey = GlobalKey();
 
-  var qrReaderView =  QrReaderView(
-    width: 320,
-    height: 350,
-    callback: (container) {},
-  );
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-              flex: 5,
-              child:  QrcodeReaderView(key: qrViewKey, onScan: onScan) // 嵌入视图
-          ),
-        ],
-      ),
+      body: QrcodeReaderView(key: qrViewKey, onScan: onScan)
     );
   }
 

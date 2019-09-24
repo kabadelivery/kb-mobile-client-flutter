@@ -38,6 +38,7 @@ dependencies:
   place_picker: ^0.9.9
   font_awesome_flutter: ^8.5.0
   flutter_qr_reader: ^1.0.2
+  qr_flutter: ^3.0.1
 #  flutter_places_dialog: ^1.0.5
 
   # The following adds the Cupertino Icons font to your application.
@@ -65,6 +66,9 @@ flutter:
     - assets/images/vectors/ic_kaba_main_logo.svg
     - assets/images/vectors/ic_voucher.svg
     - assets/fonts/MyFlutterApp.ttf
+    - assets/images/png/kaba_ico.png
+    - assets/images/png/kaba_logo_red_man.png
+    - assets/images/png/kaba_log_red_man_square.png
 
   #  - images/a_dot_ham.jpeg
 

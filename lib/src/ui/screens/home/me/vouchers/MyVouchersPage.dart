@@ -29,6 +29,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> {
           onPressed: () {_jumpToAddNewVoucher();},
           child: Icon(Icons.add, color: KColors.primaryColor)),
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
         backgroundColor: Colors.white,
         title: Text("MY VOUCHERS", style:TextStyle(color:KColors.primaryColor)),
       ),
@@ -53,17 +54,22 @@ class _MyVouchersPageState extends State<MyVouchersPage> {
   }
 
   Future _jumpToAddNewVoucher() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QrCodeScannerPage(),
+      ),
+    ).then((results)=>kk(results));
+  }
 
-    Map results = await Navigator.of(context).pushNamed(QrCodeScannerPage.routeName);
-
-    if (results != null && results.containsKey('data')) {
-      setState(() {
-        String _data = results['data'];
-        print(_data);
-      });
-    }
-
-
+  /// Deal with QRCode data
+  ///
+  ///  launch a stream request to redirect to the related voucher ; we need to see if
+  ///  - have we dont have it, subscribe
+  ///  - if can't just, tell the customer that you cant subscribe to this because ....
+  ///  - if already subscribe, just show the details of the voucher to the client
+  kk(Map results) {
+    Toast.show(results['data'], context, duration: Toast.LENGTH_LONG);
   }
 
 }
