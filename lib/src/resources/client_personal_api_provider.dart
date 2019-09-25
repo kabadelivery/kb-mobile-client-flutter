@@ -17,6 +17,10 @@ class ClientPersonalApiProvider {
 
   Client client = Client();
 
+
+  /// COMMENTS
+  ///
+  /// Get restaurants comments list
   Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     DebugTools.iPrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
@@ -41,12 +45,14 @@ class ClientPersonalApiProvider {
     }
   }
 
+  /// User Delivery Addresses
+  ///
+  /// Get customer account's delivery address
   Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) async {
     DebugTools.iPrint("entered fetchMyAddresses");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_ADRESSES,
-//          body: json.encode({'token': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {
@@ -64,5 +70,9 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+
+
+
+
 
 }

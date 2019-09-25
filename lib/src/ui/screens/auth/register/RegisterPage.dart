@@ -153,7 +153,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
     /* _save request params */
     _saveRequestParams();
-
   }
 
   _saveRequestParams () async {
@@ -163,7 +162,6 @@ class _RegisterPageState extends State<RegisterPage> {
     /* save login */
     /* save start-time */
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     await prefs.setInt('register_type', _registerModeRadioValue);
     await prefs.setString('register_login', _loginFieldController.text);
     await prefs.setInt('register_last_action_time', DateTime.now().millisecond);

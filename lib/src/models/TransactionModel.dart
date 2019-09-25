@@ -1,6 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-
 
 class TransactionModel {
 
