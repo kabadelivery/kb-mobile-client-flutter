@@ -10,6 +10,10 @@ class UserDataBloc {
 
   final _repository = Repository();
 
+  /* register - send code */
+  final _sendRegisterCodeAction = PublishSubject<int>();
+  Observable<int> get sendRegisterCodeGetter => _sendRegisterCodeAction.stream;
+
   /* dailyOrder */
   final _myDailyOrderFetcher = PublishSubject<List<CommandModel>>();
   Observable<List<CommandModel>> get mDailyOrders => _myDailyOrderFetcher.stream;
@@ -66,6 +70,15 @@ class UserDataBloc {
     }
   }
 
+  sendRegisterCode({String login}) async {
+    try {
+      int error = await _repository.registerSendingCodeAction(login);
+      /*_locationDetailsChecker.sink.add(deliveryAddressModel);*/
+      _sendRegisterCodeAction.sink.add(error);
+    } catch (_) {
+      _sendRegisterCodeAction.sink.addError(_.message);
+    }
+  }
 
 
   dispose() {
@@ -73,6 +86,7 @@ class UserDataBloc {
     _orderDetailsFetcher.close();
     _deliveryAddressFetcher.close();
     _locationDetailsChecker.close();
+    _sendRegisterCodeAction.close();
   }
 
 }

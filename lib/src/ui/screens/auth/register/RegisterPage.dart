@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,14 +41,18 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isEmailError = false;
   bool isCodeError = false;
 
+  /* circle loading progressing */
+  bool isCodeSending = false;
+  bool isAccountCreating = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-      title: Text("REGISTER", style:TextStyle(color:KColors.primaryColor)),
-      leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-      ),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("REGISTER", style:TextStyle(color:KColors.primaryColor)),
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        ),
         backgroundColor: Colors.white,
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -92,24 +97,57 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:<Widget>[
                           isCodeSent ?
-                        SizedBox(width: 80,
-                            child: Container(
-                                padding: EdgeInsets.all(14),
-                                child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
+                          SizedBox(width: 80,
+                              child: Container(
+                                  padding: EdgeInsets.all(14),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                                decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                        ) : Container(),
+                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
+                          ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlineButton(
+                         OutlineButton(
                               borderSide: BorderSide(
                                 color: KColors.primaryColor, //Color of the border
                                 style: BorderStyle.solid, //Style of the border
                                 width: 0.8, //width of the border
                               ),
-                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Text("CODE", style: TextStyle(fontSize: 14, color: KColors.primaryColor)), onPressed: () {_sendCodeAction();}),
+                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Column(
+                            children: <Widget>[
+                              Text("CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              /* stream builder, that shows that the code is been sent */
+                              StreamBuilder<int>(
+                                  stream: userDataBloc.sendRegisterCodeGetter,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      int error  = snapshot.data;
+                                      switch(error) {
+                                        case 0:
+                                          /* means message sent ! */
+//                                          setState(() {
+                                            isCodeSent = true;
+//                                          });
+                                          break;
+                                        case -1:
+                                        /* account exists already */
+                                       mToast("This account already exists ! ");
+                                          break;
+                                        case 500:
+                                          /* means code already sent... wait and send later. */
+//                                          setState(() {
+                                            isCodeSent = true;
+//                                          });
+                                          break;
+                                      }
+                                      isCodeSending = false;
+                                    }
+                                    return isCodeSending ? CircularProgressIndicator() : Container();
+                                  }
+                              )
+                            ],
+                          ), onPressed: () {_sendCodeAction();}),
                         ]),
                     SizedBox(height: 30),
-                   isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {}) : Container(),
+                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {}) : Container(),
                   ]
               ),
             ),
@@ -127,19 +165,20 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _sendCodeAction() {
+    String login = _loginFieldController.text;
     /* check the fields */
     if (_registerModeRadioValue == 0) {
       /* phone number */
-     String phoneNumber = _loginFieldController.text;
-     if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
-       setState(() {
-         isLoginError = true;
-       });
-       return;
-     }
+      String phoneNumber = login;
+      if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
+        setState(() {
+          isLoginError = true;
+        });
+        return;
+      }
     } else {
       /* email */
-      String email = _loginFieldController.text;
+      String email = login;
       if (!Utils.isEmailValid(email)) {
         setState(() {
           isLoginError = true;
@@ -148,9 +187,12 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     }
 
+    setState(() {
+      isCodeSending = true;
+    });
+
     /* send request, to the server, and if ok, save request params and update fields. */
-
-
+    userDataBloc.sendRegisterCode(login: login);
     /* _save request params */
     _saveRequestParams();
   }
@@ -184,4 +226,6 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoginError = false;
     });
   }
+
+  void mToast(String message) { Toast.show(message, context);}
 }

@@ -17,6 +17,8 @@ class ClientPersonalApiProvider {
 
   Client client = Client();
 
+  var TGO = "228";
+
 
   /// COMMENTS
   ///
@@ -71,7 +73,28 @@ class ClientPersonalApiProvider {
     }
   }
 
-
+  Future<int> registerSendingCodeAction (String login) async {
+    DebugTools.iPrint("entered registerSendingCodeAction");
+    if (await Utils.hasNetwork()) {
+      await Future.delayed(const Duration(seconds: 1));
+      final response = await client
+          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS,
+          body:
+          Utils.isEmailValid(login) ?
+          json.encode({"email": login}) :  json.encode({"phone_number": TGO + login})
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int error = json.decode(response.body)["error"];
+       return error;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 
 
 
