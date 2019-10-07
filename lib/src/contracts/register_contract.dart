@@ -1,0 +1,106 @@
+import 'dart:convert';
+import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
+
+
+/* Register contract */
+class RegisterContract {
+
+  void register(String phone_number, String password, String username, String requestId){}
+  void sendVerificationCode(String phoneNumber){}
+  void checkVerificationCode(String code, String requestId){}
+}
+
+
+class RegisterView {
+  void showLoading(bool isLoading){}
+
+  void registerSuccess(String phone_number, String password){}
+
+  void toast(String message){}
+
+  void onNetworkError(){}
+
+  void onSysError({String message=""}){}
+
+  void keepRequestId(String phone_number, String request_id){}
+
+  void disableCodeButton(bool isDisabled){}
+
+  void codeIsOk(bool isOk){}
+
+  void userExistsAlready(){}
+
+  void codeRequestSentOk(){}
+}
+
+
+/* Register presenter */
+class RegisterPresenter implements RegisterContract {
+
+  bool isWorking = false;
+
+  ClientPersonalApiProvider provider;
+
+  RegisterView _registerView;
+
+  RegisterPresenter () {
+    provider = new ClientPersonalApiProvider();
+  }
+
+  @override
+  Future checkVerificationCode(String code, String requestId) async {
+
+    /* */
+    if (isWorking)
+      return;
+    isWorking = true;
+
+    String jsonContent = await provider.checkRequestCodeAction(code, requestId);
+    int error = json.decode(jsonContent)["error"];
+
+    try {
+      if (error == 0) {
+        _registerView.codeIsOk(true);
+      } else {
+        _registerView.codeIsOk(false);
+      }
+    } catch (_) {
+      _registerView.codeIsOk(false);
+    }
+
+    isWorking = false;
+    _registerView.codeRequestSentOk(); /*  */
+  }
+
+  @override
+  void register(String login, String password, String username, String requestId) {
+  }
+
+  @override
+  Future sendVerificationCode(String login) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+
+    String jsonContent = await provider.registerSendingCodeAction(login);
+    int error = json.decode(jsonContent)["error"];
+
+    if (error == 500) {
+      _registerView.userExistsAlready();
+    } else if (error == 0) {
+      String requestId = json.decode(jsonContent)["data"]["request_id"];
+      _registerView.keepRequestId(login, requestId);
+    } else{
+      _registerView.onSysError(message: json.decode(jsonContent)["message"]);
+    }
+    isWorking = false;
+    _registerView.codeRequestSentOk(); /*  */
+  }
+
+  @override
+  set registerView(RegisterView value) {
+    _registerView = value;
+  }
+
+}

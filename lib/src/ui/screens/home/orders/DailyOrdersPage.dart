@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 
 
 class DailyOrdersPage extends StatefulWidget {

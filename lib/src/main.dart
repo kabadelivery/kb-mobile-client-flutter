@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/contracts/register_contract.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
@@ -41,7 +43,8 @@ class MyApp extends StatelessWidget {
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: MyOrderWidget(command: CommandModel.fake()),
-      home: RegisterPage(),
+      home: RegisterPage(presenter: RegisterPresenter()),
+//     home: RetrievePasswordPage(),
       routes: generalRoutes,
     );
   }

@@ -70,15 +70,15 @@ class UserDataBloc {
     }
   }
 
-  sendRegisterCode({String login}) async {
+ /* sendRegisterCode({String login}) async {
     try {
-      int error = await _repository.registerSendingCodeAction(login);
-      /*_locationDetailsChecker.sink.add(deliveryAddressModel);*/
+      *//*int error = await _repository.registerSendingCodeAction(login);*//*
+      *//*_locationDetailsChecker.sink.add(deliveryAddressModel);*//*
       _sendRegisterCodeAction.sink.add(error);
     } catch (_) {
       _sendRegisterCodeAction.sink.addError(_.message);
     }
-  }
+  }*/
 
 
   dispose() {

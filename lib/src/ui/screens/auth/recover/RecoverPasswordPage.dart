@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
 
 class RecoverPasswordPage extends StatefulWidget {

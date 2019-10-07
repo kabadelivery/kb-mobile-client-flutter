@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
+import 'package:kaba_flutter/src/contracts/register_contract.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -11,7 +14,9 @@ class RegisterPage extends StatefulWidget {
 
   static var routeName = "/RegisterPage";
 
-  RegisterPage({Key key, this.title}) : super(key: key);
+  final RegisterPresenter presenter;
+
+  RegisterPage({Key key, this.presenter, this.title}) : super(key: key);
 
   final String title;
 
@@ -19,8 +24,7 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-
+class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   int _registerModeRadioValue = 0;
 
@@ -45,6 +49,19 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isCodeSending = false;
   bool isAccountCreating = false;
 
+  int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
+  int timeDiff = 0;
+
+  String _requestId;
+
+  @override
+  void initState() {
+    super.initState();
+    this.widget.presenter.registerView = this;
+    /* retrieve state of the app */
+    _retrieveRequestParams();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +79,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 30),
-                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 20),
+//                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
+                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
+//                    SizedBox(height: 10),
                     /* radiobutton - check who are you */
                     !isCodeSent ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, onChanged: _onLoginFieldTextChanged, maxLength: _loginMaxLength[_registerModeRadioValue],decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor),  keyboardType: _loginFieldInputType[_registerModeRadioValue],),
+                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged, maxLength: _loginMaxLength[_registerModeRadioValue],decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor),  keyboardType: _loginFieldInputType[_registerModeRadioValue],),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 30),
@@ -105,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                         OutlineButton(
+                          OutlineButton(
                               borderSide: BorderSide(
                                 color: KColors.primaryColor, //Color of the border
                                 style: BorderStyle.solid, //Style of the border
@@ -113,41 +131,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Column(
                             children: <Widget>[
-                              Text("CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} s" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
-                              StreamBuilder<int>(
-                                  stream: userDataBloc.sendRegisterCodeGetter,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      int error  = snapshot.data;
-                                      switch(error) {
-                                        case 0:
-                                          /* means message sent ! */
-//                                          setState(() {
-                                            isCodeSent = true;
-//                                          });
-                                          break;
-                                        case -1:
-                                        /* account exists already */
-                                       mToast("This account already exists ! ");
-                                          break;
-                                        case 500:
-                                          /* means code already sent... wait and send later. */
-//                                          setState(() {
-                                            isCodeSent = true;
-//                                          });
-                                          break;
-                                      }
-                                      isCodeSending = false;
-                                    }
-                                    return isCodeSending ? CircularProgressIndicator() : Container();
-                                  }
-                              )
+                              isCodeSent == false &&  isCodeSending ? CircularProgressIndicator() : Container(),
                             ],
-                          ), onPressed: () {_sendCodeAction();}),
+                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
                         ]),
                     SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {}) : Container(),
+                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width: 10),
+                        isCodeSending==true && isCodeSent==true ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)) : Container(),
+                      ],
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
                   ]
               ),
             ),
@@ -158,6 +155,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void _handleRadioValueChange (int value) {
     setState(() {
       /* clean the content */
+      if (isCodeSent)
+        return;
       this._registerModeRadioValue = value;
       this._loginFieldController.text = "";
       this._codeFieldController.text = "";
@@ -190,36 +189,82 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       isCodeSending = true;
     });
-
     /* send request, to the server, and if ok, save request params and update fields. */
-    userDataBloc.sendRegisterCode(login: login);
+    ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
+    this.widget.presenter.sendVerificationCode(login);
     /* _save request params */
-    _saveRequestParams();
   }
 
-  _saveRequestParams () async {
 
+
+  _saveRequestParams (String login, String requestId) async {
     /* check the content */
     /* save type of request */
     /* save login */
     /* save start-time */
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('register_type', _registerModeRadioValue);
-    await prefs.setString('register_login', _loginFieldController.text);
-    await prefs.setInt('register_last_action_time', DateTime.now().millisecond);
+    await prefs.setString('last_code_sent_time', DateTime.now().toString()); /*DateTime.now().*/
+    await prefs.setString('login', login);
+    await prefs.setString('request_id', requestId);
   }
 
-  _retrieveRequestParams () {
+  _retrieveRequestParams () async {
 
     /* get type of request saved */
     /* get login */
     /* get start-time */
+
+    String login;
+    int registerType;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    registerType = prefs.getInt("register_type");
+    String tmp = prefs.getString("last_code_sent_time");
+    login = prefs.getString("login");
+
+
+    if (!(registerType != null && registerType >= 0 && registerType < recoverModeHints.length))
+      return;
+
+    DateTime lastCodeSentDatetime = DateTime.now();
+
+    try {
+      if(tmp != null)
+        lastCodeSentDatetime = DateTime.parse(tmp);
+    } catch (_) {
+      print("ERROR");
+      return;
+    }
+
+    _registerModeRadioValue = registerType;
+    _loginFieldController.text = login;
+
+    if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+
+      /* if code sent, do something else,  */
+      isCodeSent = true;
+      this._requestId = prefs.getString("request_id");
+      _loginFieldController.text = prefs.getString("login");
+
+      Timer.periodic(Duration(seconds: 1), (timer) {
+        if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+          setState(() {
+            isCodeSent = false;
+          });
+          timer.cancel();
+        } else {
+          /* update text;;; if codeIsSent */
+          setState(() {
+            /* convert into minutes, and show it */
+            Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
+            timeDiff = duration.inSeconds;
+          });
+        }
+      });
+    }
   }
 
-
-  static void _loginFieldListener() {
-
-  }
 
   void _onLoginFieldTextChanged(String value) {
     setState(() {
@@ -227,5 +272,106 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  void mToast(String message) { Toast.show(message, context);}
+  void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
+
+  @override
+  Future codeIsOk(bool isOk) async {
+
+    /* jump to setup code activity */
+    setState(() {
+      isCodeSending = false;
+    });
+    String _mCode1, _mCode2;
+    if (isOk) {
+      var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return new RetrievePasswordPage(type: 1);
+        },
+      ));
+      if (results != null && results.containsKey('code') && results.containsKey('type')) {
+        _mCode1 = results['code'];
+        int type = results['type'];
+        /* launch confirmation */
+        _mCode2 = "";
+        do {
+          var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) {
+              return new RetrievePasswordPage(type: 2);
+            },
+          ));
+          if (results != null && results.containsKey('code') && results.containsKey('type')) {
+            _mCode2 = results['code'];
+          }
+        } while (_mCode1 != _mCode2);
+      }
+      mToast("$_mCode1 got ! ");
+    }
+  }
+
+  @override
+  void disableCodeButton(bool isDisabled) {
+  }
+
+  @override
+  void keepRequestId(String login, String requestId) {
+    /* save the id somewhere in my .... */
+    mToast("request Id ${requestId}");
+
+    this._requestId = requestId;
+    /* start minute-count of the seconds into the message thing */
+    _saveRequestParams(login, requestId);
+    setState(() {
+      isCodeSent = true;
+    });
+    _retrieveRequestParams();
+  }
+
+  @override
+  void onNetworkError() {
+    mToast("onNetworkError");
+  }
+
+  @override
+  void onSysError({String message = ""}) {
+    mToast(message);
+  }
+
+  @override
+  void registerSuccess(String phone_number, String password) {}
+
+  @override
+  void showLoading(bool isLoading) {}
+
+  @override
+  void toast(String message) {
+    mToast(message);
+  }
+
+  @override
+  void userExistsAlready() {
+    mToast("user Exists Already");
+  }
+
+  @override
+  void codeRequestSentOk() {
+    setState(() {
+      isCodeSending = false;
+    });
+  }
+
+  _checkCodeAndCreateAccount() {
+
+    setState(() {
+      isCodeSending = true;
+    });
+
+    /* check request id and the code */
+    String _code = _codeFieldController.text;
+    if (Utils.isCode(_code)) {
+      this.widget.presenter.checkVerificationCode(
+          _codeFieldController.text, this._requestId);
+    } else {
+      mToast("CODE IS WRONG");
+    }
+  }
 }

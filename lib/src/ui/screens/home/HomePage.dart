@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
-//import CustomIcons from '../lib/utils/_static_data/custom_icons_icons.dart';
-import 'package:kaba_flutter/src/utils/_static_data/my_flutter_app_icons.dart';
 
 import '_home/HomeWelcomePage.dart';
 import 'me/MeAccountPage.dart';

@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:http/http.dart' show Client;
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'dart:convert';
-
-import 'package:kaba_flutter/src/models/TransactionModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
@@ -73,7 +71,8 @@ class ClientPersonalApiProvider {
     }
   }
 
-  Future<int> registerSendingCodeAction (String login) async {
+  /* register sending code */
+  Future<String> registerSendingCodeAction (String login) async {
     DebugTools.iPrint("entered registerSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
@@ -86,8 +85,7 @@ class ClientPersonalApiProvider {
           .timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {
-        int error = json.decode(response.body)["error"];
-       return error;
+        return response.body;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -96,6 +94,26 @@ class ClientPersonalApiProvider {
     }
   }
 
+  Future<String> checkRequestCodeAction(String code, String requestId) async {
+
+    /*  */
+    DebugTools.iPrint("entered checkRequestCodeAction");
+    if (await Utils.hasNetwork()) {
+      await Future.delayed(const Duration(seconds: 1));
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_VERIFCATION_CODE,
+          body: json.encode({"code": code, "request_id": requestId}))
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 
 
 }

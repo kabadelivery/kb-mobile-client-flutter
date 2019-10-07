@@ -25,7 +25,7 @@ Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Pos
   final clientApiProvider = ClientPersonalApiProvider();
   Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) => clientApiProvider.fetchRestaurantComment(restaurantModel, userToken);
   Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) => clientApiProvider.fetchMyAddresses(userToken);
-  Future<int> registerSendingCodeAction(String login) => clientApiProvider.registerSendingCodeAction(login);
+//  Future<int> registerSendingCodeAction(String login) => clientApiProvider.registerSendingCodeAction(login);
 
 
 

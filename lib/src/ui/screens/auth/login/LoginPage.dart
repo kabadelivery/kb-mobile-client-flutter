@@ -3,7 +3,6 @@ import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
 class LoginPage extends StatefulWidget {
 

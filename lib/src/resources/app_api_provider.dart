@@ -1,17 +1,15 @@
-import 'package:flutter/foundation.dart';
-import 'package:geolocator/geolocator.dart';
 import 'dart:async';
-import 'package:http/http.dart' show Client;
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'dart:convert';
 
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' show Client;
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
-//import '../models/RestaurantModel.dart';
 
 
 class AppApiProvider {

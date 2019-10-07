@@ -145,6 +145,14 @@ class Utils {
     return res;
   }
 
+  static bool isCode /* 4 digits string */ (String code) {
+    if (code == null || code.length != 4)
+      return false;
+    final regex = RegExp(r'^[0-9]{4}$');
+    bool res = regex.hasMatch(code);
+    return res;
+  }
+
 
 }
 

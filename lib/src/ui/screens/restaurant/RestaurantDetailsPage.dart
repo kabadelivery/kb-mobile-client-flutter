@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -31,7 +30,7 @@ class RestaurantDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    restaurantBloc.fetchCommentList(restaurant, UserTokenModel.fake());
+//    restaurantBloc.fetchCommentList(restaurant, UserTokenModel.fake());
 
     /* use silver-app-bar first */
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
@@ -141,7 +140,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                 ),
                                 SizedBox(height:10),
                                 /* 4.0 - stars */
-                                StreamBuilder<List<CommentModel>>(
+                             /*   StreamBuilder<List<CommentModel>>(
                                     stream: restaurantBloc.commentList,
                                     builder: (context, AsyncSnapshot<List<CommentModel>> snapshot) {
                                       if (snapshot.hasData) {
@@ -151,7 +150,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: <Widget>[
                                                 Text("${restaurant.stars.toStringAsFixed(1)}", style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
-                                                /* stars */
+                                                *//* stars *//*
                                                 Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: <Widget>[
@@ -163,7 +162,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                                     ])
                                               ],
                                             ),
-                                            /* the list of comments */
+                                            *//* the list of comments *//*
                                           ]..addAll(
                                               _buildCommentsList(snapshot.data)
                                           ),
@@ -173,7 +172,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                       }
                                       return Center(child: CircularProgressIndicator());
                                     }
-                                ),
+                                ),*/
                               ],
                             )
                         ),
