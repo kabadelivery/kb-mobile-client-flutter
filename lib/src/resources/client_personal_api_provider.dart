@@ -80,7 +80,7 @@ class ClientPersonalApiProvider {
           .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS,
           body:
           Utils.isEmailValid(login) ?
-          json.encode({"email": login}) :  json.encode({"phone_number": TGO + login})
+          json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
           .timeout(const Duration(seconds: 10));
       print(response.body.toString());
@@ -112,6 +112,27 @@ class ClientPersonalApiProvider {
       }
     } else {
       throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id}) async {
+
+
+    DebugTools.iPrint("entered registerCreateAccountAction");
+    if (await Utils.hasNetwork()) {
+    await Future.delayed(const Duration(seconds: 1));
+    final response = await client
+        .post(ServerRoutes.LINK_USER_REGISTER,
+    body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id}))
+        .timeout(const Duration(seconds: 10));
+    print(response.body.toString());
+    if (response.statusCode == 200) {
+    return response.body;
+    } else {
+    throw Exception(response.statusCode); // you have no right to do this
+    }
+    } else {
+    throw Exception(-2); // you have no network
     }
   }
 

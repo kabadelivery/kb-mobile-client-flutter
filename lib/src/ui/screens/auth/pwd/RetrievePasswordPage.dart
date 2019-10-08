@@ -106,7 +106,11 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       setState(() {
         pwd = "${pwd}${char}";
       });
-    } else {
+    }
+
+    if (pwd.length != 4)
+    return;
+
       switch (this.widget.type) {
         case 0:
         /* enter password.
@@ -129,7 +133,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
           break;
       }
-    }
+
   }
 
   void _removeChar() {

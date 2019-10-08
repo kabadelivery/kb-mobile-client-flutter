@@ -8,13 +8,14 @@ class RegisterContract {
   void register(String phone_number, String password, String username, String requestId){}
   void sendVerificationCode(String phoneNumber){}
   void checkVerificationCode(String code, String requestId){}
+  void createAccount({String nickname, String password, String phone_number="", String email="", String request_id}) {}
 }
 
 
 class RegisterView {
   void showLoading(bool isLoading){}
 
-  void registerSuccess(String phone_number, String password){}
+  void registerSuccess(String login, String password){}
 
   void toast(String message){}
 
@@ -101,6 +102,28 @@ class RegisterPresenter implements RegisterContract {
   @override
   set registerView(RegisterView value) {
     _registerView = value;
+  }
+
+  @override
+  Future createAccount({String nickname, String password, String phone_number="", String email="", String request_id}) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+
+    String jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, phone_number: phone_number, email: email, request_id: request_id);
+    int error = json.decode(jsonContent)["error"];
+
+    if (error == 0) {
+      /* successfully created account */
+      /* jump to the login page to login the customer */
+      _registerView.registerSuccess(phone_number.trim().length == 0 ? email : phone_number, password);
+    } else{
+      _registerView.onSysError(message: json.decode(jsonContent)["message"]);
+    }
+
+    isWorking = false;
+
   }
 
 }

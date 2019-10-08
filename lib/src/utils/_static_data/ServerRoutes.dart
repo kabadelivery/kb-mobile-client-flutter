@@ -150,8 +150,7 @@ class ServerRoutes {
       "/api/code/request";
 
   static const String LINK_SEND_VERIFCATION_EMAIL_SMS = ServerConfig.SERVER_ADDRESS+
-      "/api/code/request/mail";
-
+      "/api/code/request";   //"/api/code/request/mail";
 
   static const String LINK_SEND_RECOVER_VERIFCATION_SMS = ServerConfig.SERVER_ADDRESS+
       "/api/password/code/request";

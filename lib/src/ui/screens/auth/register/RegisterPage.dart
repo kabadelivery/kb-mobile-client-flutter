@@ -33,17 +33,21 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   List<String> _loginFieldHint = ["90 XX XX XX", "xxxxxx@yyy.zzz"];
 
+  String _nicknameFieldHint = "Nickname";
+
   List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress, TextInputType.emailAddress];
 
   List<int> _loginMaxLength = [8, 100];
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
+  TextEditingController _nicknameFieldController = new TextEditingController();
 
   bool isCodeSent = false;
   bool isLoginError = false;
   bool isEmailError = false;
   bool isCodeError = false;
+  bool isNicknameError = false;
 
   /* circle loading progressing */
   bool isCodeSending = false;
@@ -110,6 +114,13 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged, maxLength: _loginMaxLength[_registerModeRadioValue],decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor),  keyboardType: _loginFieldInputType[_registerModeRadioValue],),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
+                    SizedBox(height: 10),
+                    SizedBox(width: 250,
+                        child: Container(
+                            padding: EdgeInsets.all(14),
+                            child: TextField(controller: _nicknameFieldController, enabled: !isCodeSent, onChanged: _onNicknameFieldTextChanged, decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:KColors.primaryColor),  keyboardType: TextInputType.text),
+                            decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                        )),
                     SizedBox(height: 30),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -164,6 +175,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   void _sendCodeAction() {
+
+    /* logins */
     String login = _loginFieldController.text;
     /* check the fields */
     if (_registerModeRadioValue == 0) {
@@ -186,6 +199,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       }
     }
 
+    /* nicknames */
+    String _nickname = _nicknameFieldController.text;
+    /* check the fields */
+    if (_nickname.trim().length==0) {
+      setState(() {
+        isNicknameError = true;
+      });
+      return;
+    }
+
+
     setState(() {
       isCodeSending = true;
     });
@@ -195,7 +219,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     /* _save request params */
   }
 
-
+  _clearSharedPreferences () async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("register_type");
+    prefs.remove("last_code_sent_time");
+    prefs.remove("login");
+    prefs.remove("request_id");
+    prefs.clear();
+  }
 
   _saveRequestParams (String login, String requestId) async {
     /* check the content */
@@ -206,6 +237,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     await prefs.setInt('register_type', _registerModeRadioValue);
     await prefs.setString('last_code_sent_time', DateTime.now().toString()); /*DateTime.now().*/
     await prefs.setString('login', login);
+    await prefs.setString('nickname', _nicknameFieldController.text);
     await prefs.setString('request_id', requestId);
   }
 
@@ -246,6 +278,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       isCodeSent = true;
       this._requestId = prefs.getString("request_id");
       _loginFieldController.text = prefs.getString("login");
+      _nicknameFieldController.text = prefs.getString("nickname");
 
       Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
@@ -272,6 +305,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
   }
 
+  void _onNicknameFieldTextChanged (String value) {
+    setState(() {
+      isNicknameError = false;
+    });
+  }
+
   void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
 
   @override
@@ -283,6 +322,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
     String _mCode1, _mCode2;
     if (isOk) {
+      /* clear shared preferences */
+      _clearSharedPreferences();
       var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return new RetrievePasswordPage(type: 1);
@@ -304,7 +345,13 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
           }
         } while (_mCode1 != _mCode2);
       }
-      mToast("$_mCode1 got ! ");
+
+      /* launch create account request, and if success*/
+      this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
+          phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
+          email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
+          request_id: this._requestId
+      );
     }
   }
 
@@ -337,7 +384,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   @override
-  void registerSuccess(String phone_number, String password) {}
+  void registerSuccess(String phone_number, String password) {
+
+    mToast("Account created successfully");
+  }
 
   @override
   void showLoading(bool isLoading) {}
