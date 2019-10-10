@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
 
@@ -29,9 +31,22 @@ class _SplashPageState extends State<SplashPage> {
     startTimeout();
   }
 
-  void handleTimeout() {
+  Future handleTimeout() async {
+    StatefulWidget launchPage =  LoginPage(presenter: LoginPresenter());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String expDate = prefs.getString("_login_expiration_date");
+    if (expDate != null) {
+      if (DateTime.now().isAfter(DateTime.parse(expDate))) {
+        /* session expired : clean params */
+        prefs.remove("_customer");
+        prefs.remove("_token");
+        prefs.remove("_login_expiration_date");
+      } else {
+        launchPage = HomePage();
+      }
+    }
     Navigator.of(context).pushReplacement(new MaterialPageRoute(
-        builder: (BuildContext context) => HomePage()));
+        builder: (BuildContext context) => launchPage));
   }
 
   startTimeout() async {

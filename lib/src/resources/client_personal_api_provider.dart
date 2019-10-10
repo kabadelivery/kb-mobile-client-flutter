@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:http/http.dart' show Client;
+import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -117,22 +118,42 @@ class ClientPersonalApiProvider {
 
   Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id}) async {
 
-
     DebugTools.iPrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
-    await Future.delayed(const Duration(seconds: 1));
-    final response = await client
-        .post(ServerRoutes.LINK_USER_REGISTER,
-    body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id}))
-        .timeout(const Duration(seconds: 10));
-    print(response.body.toString());
-    if (response.statusCode == 200) {
-    return response.body;
+      await Future.delayed(const Duration(seconds: 1));
+      final response = await client
+          .post(ServerRoutes.LINK_USER_REGISTER,
+          body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
     } else {
-    throw Exception(response.statusCode); // you have no right to do this
+      throw Exception(-2); // you have no network
     }
+  }
+
+  Future<String> loginAction({String login, String password}) async {
+
+    DebugTools.iPrint("entered loginAction");
+    if (await Utils.hasNetwork()) {
+      await Future.delayed(const Duration(seconds: 1));
+      var request =   MultipartRequest("POST", Uri.parse(ServerRoutes.LINK_USER_LOGIN));
+      request.fields['_username'] = "${login}";
+      request.fields['_password'] = "${password}";
+      /*    request.files.add(http.MultipartFile.fromPath(
+        'package',
+        'build/package.tar.gz',
+        contentType: new MediaType('application', 'x-tar'),
+      ));*/
+      StreamedResponse send = await request.send();
+      String body = await send.stream.transform(utf8.decoder).single;
+      return body;
     } else {
-    throw Exception(-2); // you have no network
+      throw Exception(-2); // you have no network
     }
   }
 

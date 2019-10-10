@@ -13,6 +13,7 @@ class CustomerModel {
    String profile_picture;
    String theme_picture;
    int isSet = 0;
+   String token;
 
    CustomerModel({this.id, this.username, this.phone_number, this.nickname,
        this.birthday, this.job_title, this.district, this.gender,

@@ -83,7 +83,6 @@ class RegisterPresenter implements RegisterContract {
     if (isWorking)
       return;
     isWorking = true;
-
     String jsonContent = await provider.registerSendingCodeAction(login);
     int error = json.decode(jsonContent)["error"];
 
@@ -99,7 +98,6 @@ class RegisterPresenter implements RegisterContract {
     _registerView.codeRequestSentOk(); /*  */
   }
 
-  @override
   set registerView(RegisterView value) {
     _registerView = value;
   }

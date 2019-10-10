@@ -107,33 +107,31 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         pwd = "${pwd}${char}";
       });
     }
-
     if (pwd.length != 4)
     return;
-
-      switch (this.widget.type) {
-        case 0:
-        /* enter password.
-        * send back the password to the popper
-        *  */
-        Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-          break;
-        case 1:
-        /* setup password
-        *
-        * send back the password to the popper ; and launch confirmation
-        *  */
-          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-          break;
-        case 2:
-        /* confirm password creation
-        *
-        *  send back the password to the popper; and check if ok, go, or re-do the confirmation
-        * */
-          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-          break;
-      }
-
+    Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
+    //      switch (this.widget.type) {
+//        case 0:
+//        /* enter password.
+//        * send back the password to the popper
+//        *  */
+//        Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
+//          break;
+//        case 1:
+//        /* setup password
+//        *
+//        * send back the password to the popper ; and launch confirmation
+//        *  */
+//          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
+//          break;
+//        case 2:
+//        /* confirm password creation
+//        *
+//        *  send back the password to the popper; and check if ok, go, or re-do the confirmation
+//        * */
+//          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
+//          break;
+//      }
   }
 
   void _removeChar() {

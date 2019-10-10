@@ -153,7 +153,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                       children: <Widget>[
                         Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
-                        isCodeSending==true && isCodeSent==true ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)) : Container(),
+                        isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
                   ]
@@ -367,10 +367,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     this._requestId = requestId;
     /* start minute-count of the seconds into the message thing */
     _saveRequestParams(login, requestId);
+    _retrieveRequestParams();
     setState(() {
       isCodeSent = true;
     });
-    _retrieveRequestParams();
   }
 
   @override
@@ -385,12 +385,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   @override
   void registerSuccess(String phone_number, String password) {
-
+    /*  */
     mToast("Account created successfully");
   }
 
   @override
-  void showLoading(bool isLoading) {}
+  void showLoading(bool isLoading) {
+
+  }
 
   @override
   void toast(String message) {

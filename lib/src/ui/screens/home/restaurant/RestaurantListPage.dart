@@ -62,8 +62,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     this.data = d;
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.grey.shade100, title:
-      Container(
+      appBar: AppBar(
+        leading: null,
+        backgroundColor: Colors.grey.shade100,
+        title: Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
 //            border: new Border.all(color: Colors.white),
             color: Colors.white

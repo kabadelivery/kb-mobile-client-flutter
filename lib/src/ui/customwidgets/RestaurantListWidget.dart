@@ -55,9 +55,9 @@ class RestaurantListWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(restaurantModel.name, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 18, fontWeight: FontWeight.w500)),
+                        Text(restaurantModel.name, overflow: TextOverflow.ellipsis,maxLines: 2, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)),
                         SizedBox(height:10),
-                        Text(restaurantModel.address, maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 14, color: Colors.black.withAlpha(150))),
+                        Text(restaurantModel.address, maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 13, color: Colors.black.withAlpha(150))),
                       ],
                     )
                 ),
