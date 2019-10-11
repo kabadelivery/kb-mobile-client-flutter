@@ -17,6 +17,9 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 class HomeWelcomePage extends StatefulWidget {
+
+  HomeScreenModel data;
+
   HomeWelcomePage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -34,12 +37,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   String hint = "";
-  HomeScreenModel data;
 
   @override
   void initState() {
     // TODO: implement initState
-    homeScreenBloc.fetchHomeScreenModel();
+    if (widget.data == null)
+      homeScreenBloc.fetchHomeScreenModel();
     super.initState();
   }
 
@@ -79,8 +82,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
             )
           ],
         ),
-        body: StreamBuilder(
-            stream: homeScreenBloc.homeScreenModel,
+        body: widget.data != null ? _buildHomeScreen(widget.data) :  StreamBuilder(
+            stream: homeScreenBloc.homeScreenModel.take(1),
             builder: (context, AsyncSnapshot<HomeScreenModel> snapshot) {
               if (snapshot.hasData) {
                 return _buildHomeScreen(snapshot.data);
@@ -151,7 +154,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage> with AutomaticKeepAli
   Widget _buildHomeScreen(HomeScreenModel data) {
 
     hint = data.feed;
-    this.data = data;
+    widget.data = data;
 
     return RefreshIndicator(
         key: _refreshIndicatorKey,

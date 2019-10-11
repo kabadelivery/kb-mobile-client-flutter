@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
         // ... other locales the app supports
       ],
       onGenerateTitle: (BuildContext context) =>
-//      KabaLocalizations.of(context).app_name.toString(),
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: MyOrderWidget(command: CommandModel.fake()),

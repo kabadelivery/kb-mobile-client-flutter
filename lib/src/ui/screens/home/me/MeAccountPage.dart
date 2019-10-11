@@ -1,15 +1,23 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class MeAccountPage extends StatefulWidget {
+
+    CustomerModel customerData;
+
   MeAccountPage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -21,6 +29,14 @@ class MeAccountPage extends StatefulWidget {
 class _MeAccountPageState extends State<MeAccountPage> {
 
   ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    if (widget.customerData == null)
+      widget.customerData = CustomerUtils.getCustomer();
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +74,9 @@ class _MeAccountPageState extends State<MeAccountPage> {
                     child:Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("阿乐", style:TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
+                          Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
                           SizedBox(height:10),
-                          Text("XXXX8725", style:TextStyle(color: Colors.white, fontSize: 20), textAlign: TextAlign.right,),
+                          Text("XXXX${widget.customerData.username}", style:TextStyle(color: Colors.white, fontSize: 20), textAlign: TextAlign.right,),
                         ])
                 )],
             ),

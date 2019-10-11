@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginContract {
@@ -48,10 +49,10 @@ class LoginPresenter implements LoginContract {
       int error = obj["error"];
       String token = obj["data"]["payload"]["token"];
       String message = obj["message"];
-      CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
+//      CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
       if (error == 0  && token.length > 0) {
         /* login successful */
-        _persistTokenAndUserdata(token, customer);
+       _persistTokenAndUserdata(token, jsonContent);
         _loginView.loginSuccess();
       } else {
         /* login failure */
@@ -59,6 +60,7 @@ class LoginPresenter implements LoginContract {
       }
     } catch(_) {
       /* login failure */
+      print("error ${_}");
     }
     isWorking = false;
   }
@@ -67,17 +69,16 @@ class LoginPresenter implements LoginContract {
     _loginView = value;
   }
 
-  Future _persistTokenAndUserdata(String token, CustomerModel customer) async {
-
+  _persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    customer.token = token;
-    prefs.setString("_customer", customer.toJson().toString());
-    prefs.setString("_token", token);
+
+    prefs.setString("_loginResponse", loginResponse);
     /* no need to commit */
     /* expiration date in 3months */
     String expDate = DateTime.now().add(Duration(days: 90)).toIso8601String();
     prefs.setString("_login_expiration_date", expDate);
     print(expDate);
   }
+
 
 }

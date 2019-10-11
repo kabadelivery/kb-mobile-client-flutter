@@ -16,7 +16,6 @@ class AppApiProvider {
 
   Client client = Client();
 
-/* make home page look like an entity */
 
   Future<HomeScreenModel> fetchHomeScreenModel() async {
     DebugTools.iPrint("entered fetchHomeScreenModel");
@@ -45,7 +44,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_RESTO_LIST_V2,
-      body: position == null ? "" : json.encode({"location" : "${position.latitude}:${position.longitude}"}),
+          body: position == null ? "" : json.encode({"location" : "${position.latitude}:${position.longitude}"}),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {
@@ -78,12 +77,12 @@ class AppApiProvider {
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-         String description_details = json.decode(response.body)["data"]["display_name"];
-         String quartier = DeliveryAddressModel.fromJson(json.decode(response.body)["data"]["address"]).suburb;
-        /* return only the content we need */
-         DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(description: description_details, quartier: quartier);
-         print("${description_details} , ${quartier}");
-         return deliveryAddressModel;
+          String description_details = json.decode(response.body)["data"]["display_name"];
+          String quartier = DeliveryAddressModel.fromJson(json.decode(response.body)["data"]["address"]).suburb;
+          /* return only the content we need */
+          DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(description: description_details, quartier: quartier);
+          print("${description_details} , ${quartier}");
+          return deliveryAddressModel;
         }
         else
           throw Exception(-1); // there is an error in your request

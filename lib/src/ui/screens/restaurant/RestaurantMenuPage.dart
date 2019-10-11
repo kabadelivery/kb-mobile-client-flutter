@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -133,8 +134,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   appBar: appBar,
                   body: Stack(
                       children: <Widget>[
-                     /*   StreamBuilder(
-                            stream: restaurantBloc.restaurantMenu,
+                  StreamBuilder(
+                            stream: restaurantBloc.restaurantMenu.take(1),
                             builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
                               if (snapshot.hasData) {
                                 if (snapshot.data.length != 0)
@@ -146,7 +147,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                               }
                               return Center(child: CircularProgressIndicator());
                             }
-                        ),*/
+                        ),
                         Positioned(
                           right:15,
                           top: 10,

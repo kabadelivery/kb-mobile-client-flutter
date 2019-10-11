@@ -72,7 +72,7 @@ class _SplashPageState extends State<SplashPage> {
                   )),
                   /* text */
                   SizedBox(height: 10),
-                  Text(KabaLocalizations.of(context).app_name.toString().toUpperCase(),
+                  Text("KABA",
                    style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
                 ]
           )),

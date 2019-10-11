@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 
