@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
+import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,15 @@ class CustomerUtils {
     String token = obj["data"]["payload"]["token"];
     customer.token = token;
     return customer;
+  }
+
+  static Future<UserTokenModel> getUserToken () async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonCustomer = prefs.getString("_loginResponse");
+    var obj = json.decode(jsonCustomer);
+    String tok = obj["data"]["payload"]["token"];
+    UserTokenModel token = UserTokenModel(token: tok);
+    return token;
   }
 
 

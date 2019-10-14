@@ -6,6 +6,8 @@ import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyAddressListWidget.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 
 class MyAddressesPage extends StatefulWidget {
@@ -27,7 +29,9 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
   @override
   void initState() {
     // TODO: implement initState
-    userDataBloc.fetchMyAddresses(UserTokenModel.fake());
+    CustomerUtils.getUserToken().then((userTokenModel) {
+      userDataBloc.fetchMyAddresses(userTokenModel);
+    });
     super.initState();
   }
 

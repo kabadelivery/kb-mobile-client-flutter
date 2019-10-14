@@ -49,7 +49,6 @@ class LoginPresenter implements LoginContract {
       int error = obj["error"];
       String token = obj["data"]["payload"]["token"];
       String message = obj["message"];
-//      CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
       if (error == 0  && token.length > 0) {
         /* login successful */
        _persistTokenAndUserdata(token, jsonContent);
@@ -61,6 +60,7 @@ class LoginPresenter implements LoginContract {
     } catch(_) {
       /* login failure */
       print("error ${_}");
+      _loginView.loginFailure("Identifiants incorrects");
     }
     isWorking = false;
   }

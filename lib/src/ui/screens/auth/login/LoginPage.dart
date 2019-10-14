@@ -64,8 +64,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                           children: <Widget>[
                             Text("CONNEXION", style: TextStyle(fontSize: 14, color: Colors.white)),
-                            SizedBox(width: 10),
-                            isConnecting ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15)  : Container(),
+                            isConnecting ?  Row(
+                              children: <Widget>[
+                                SizedBox(width: 10),
+                                SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                              ],
+                            )  : Container(),
                           ],
                         ), onPressed: () {_launchConnexion();}),
                         SizedBox(width:20),

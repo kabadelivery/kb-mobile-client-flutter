@@ -5,6 +5,7 @@ class CustomerModel {
    int id;
    String username;
    String phone_number;
+   String email;
    String nickname;
    String birthday;
    String job_title;
@@ -15,7 +16,8 @@ class CustomerModel {
    int isSet = 0;
    String token;
 
-   CustomerModel({this.id, this.username, this.phone_number, this.nickname,
+
+   CustomerModel({this.id, this.username, this.email, this.phone_number, this.nickname,
        this.birthday, this.job_title, this.district, this.gender,
        this.profile_picture, this.theme_picture, this.isSet});
 
@@ -24,6 +26,7 @@ class CustomerModel {
       id = json['id'];
       username = json['username'];
       phone_number = json['phone_number'];
+      email = json['email'];
       nickname = json['nickname'];
       birthday = json['birthday'];
       job_title = json['job_title'];
@@ -38,6 +41,7 @@ class CustomerModel {
       "id" : (id as int),
       "username" : username,
       "phone_number" : phone_number,
+      "email" : email,
       "nickname" : nickname,
       "birthday" : birthday,
       "job_title" : job_title,

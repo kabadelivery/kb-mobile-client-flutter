@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-//import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 
 class PersonalPage extends StatefulWidget {
 
   static var routeName = "/PersonalPage";
 
-  PersonalPage({Key key, this.title}) : super(key: key);
+  CustomerModel customer;
+
+  PersonalPage({Key key, this.title, this.customer}) : super(key: key);
 
   final String title;
 
@@ -18,20 +25,48 @@ class PersonalPage extends StatefulWidget {
 }
 
 class _PersonalPageState extends State<PersonalPage> {
-  
-  int _genderRadioValue = 0;
 
+  int _genderRadioValue = 0;
 
   bool editable = false;
   DateTime date;
 
   final format = DateFormat("yyyy-MM-dd");
 
+  String localPicture;
+
+  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(), _emailFieldController = TextEditingController(), _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
+
+  bool isSaving = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _phoneNumberFieldController.text = widget.customer?.phone_number;
+    _jobTitleFieldController.text = widget.customer?.job_title;
+    _districtFieldController.text = widget.customer?.district;
+    _emailFieldController.text = widget.customer?.email;
+    _genderRadioValue = widget.customer?.gender;
+  }
+
+  File _image;
+
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+//        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
         backgroundColor: Colors.white,
         title: Text("ME", style:TextStyle(color:KColors.primaryColor)),
       ),
@@ -43,25 +78,34 @@ class _PersonalPageState extends State<PersonalPage> {
               Stack(children: <Widget>[
                 Container(
                     height:140, width: 140,
-                    decoration: BoxDecoration(
+                    decoration: BoxDecoration(color: Colors.grey.withAlpha(30),
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider("https://imgix.bustle.com/uploads/image/2018/5/9/fa2d3d8d-9b6c-4df4-af95-f4fa760e3c5c-2t4a9501.JPG?w=970&h=546&fit=crop&crop=faces&auto=format&q=70")
+                            image: (_image != null ? FileImage(_image) : CachedNetworkImageProvider(widget.customer?.profile_picture))
                         )
                     )
                 ),
                 Positioned(child: FloatingActionButton(
                   backgroundColor: KColors.primaryColor,
-                  onPressed: () {},
+                  onPressed: getImage,
                   child: Icon(Icons.photo_camera, color: Colors.white),
                 ), right: 0,bottom: 0)]),
               SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
-                    decoration: InputDecoration(labelText: "Phone Number",
+                child:TextField(controller: _phoneNumberFieldController, enabled: widget.customer.phone_number?.length != null && widget.customer.phone_number?.length > 0 ? false : true,
+                    decoration: InputDecoration(labelText: "Phone Number", /* if  already sat, we cant put nothing else */
+                      border: InputBorder.none,
+                    )),
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.white,
+                child:TextField(controller: _emailFieldController, enabled: widget.customer.email?.length != null && widget.customer.email?.length > 0 ? false : true,
+                    decoration: InputDecoration(labelText: "E-mail",
                       border: InputBorder.none,
                     )),
               ),
@@ -69,7 +113,16 @@ class _PersonalPageState extends State<PersonalPage> {
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(
+                child:TextField(controller: _nickNameFieldController,
+                    decoration: InputDecoration(labelText: "Nickname",
+                      border: InputBorder.none,
+                    )),
+              ),
+              SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.white,
+                child:TextField(controller: _jobTitleFieldController,
                     decoration: InputDecoration(labelText: "Job Title",
                       border: InputBorder.none,
                     )),
@@ -79,6 +132,7 @@ class _PersonalPageState extends State<PersonalPage> {
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(
+                    controller: _districtFieldController,
                     decoration: InputDecoration(labelText: "Your district",
                       border: InputBorder.none,
                     )),
@@ -87,8 +141,8 @@ class _PersonalPageState extends State<PersonalPage> {
               Container(
                   padding: EdgeInsets.all(10),
                   color: Colors.white,
-                  child:Column(children: <Widget>[
-                    Text("I am ?", textAlign: TextAlign.left, style: TextStyle(color: KColors.primaryColor, fontSize: 12)),
+                  child:Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+                    Container(width: MediaQuery.of(context).size.width, child: Text("Gender", textAlign: TextAlign.left, style: TextStyle(color: KColors.primaryColor, fontSize: 12))),
                     /*  */
                     Row(children: <Widget>[
                       Text("Woman", style: TextStyle(color: Colors.black, fontSize: 16)), Radio(value: 0, groupValue: _genderRadioValue, onChanged: _handleGenderRadioValueChange),
@@ -97,21 +151,52 @@ class _PersonalPageState extends State<PersonalPage> {
                   ])
               ),
               SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.only(left: 10, right: 10,  bottom: 10),
-                color: Colors.white,
-               /* child: DateTimeField(
-                  format: format,
-                  onShowPicker: (context, currentValue) {
-                    return showDatePicker(
-                        context: context,
-                        firstDate: DateTime(1900),
-                        initialDate: currentValue ?? DateTime.now(),
-                        lastDate: DateTime(2100));
-                  },
-                ),*/
+              InkWell(
+                onTap: () {
+                  DatePicker.showDatePicker(context,
+                      showTitleActions: true,
+                      onChanged: (date) {
+//                        print('change $date');
+                      }, onConfirm: (date) {
+                        print('confirm $date');
+                        setState(() {
+                          widget.customer.birthday = "${date.year} - ${date.month<10 ? "0${date.month}" : "${date.month}"} - ${date.day<10 ? "0${date.day}" : "${date.day}"}";
+                        });
+                      }, currentTime: DateTime.now(), locale: LocaleType.en);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(left: 10, right: 10,  bottom: 20, top: 20),
+                  color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Text("Birthday", style: TextStyle(color: Colors.black, fontSize: 16)),
+                      Container(width: 20),
+                      Text("${widget.customer.birthday}", style: TextStyle(color: KColors.primaryColor)),
+                    ],
+                  ),
+                ),
               ),
-              SizedBox(height: 20)
+              SizedBox(height: 20),
+              /* bouttons sauvegarder */
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:<Widget>[
+                    MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
+                      children: <Widget>[
+                        Text("SAUVEGARDER", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        isSaving ?  Row(
+                          children: <Widget>[
+                            SizedBox(width: 10),
+                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                          ],
+                        )  : Container(),
+                      ],
+                    ), onPressed: () {_saveCustomerData();}),
+                    SizedBox(width:20),
+                    MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Text("ANNULER", style: TextStyle(fontSize: 14, color: Colors.black)), onPressed: () {_cancelAll();}),
+                  ]),
+              SizedBox(height:50),
             ]
         ),
       ),
@@ -125,6 +210,19 @@ class _PersonalPageState extends State<PersonalPage> {
       this._genderRadioValue = value;
     });
   }
+
+  void _saveCustomerData() {
+
+    /* update data into the database ...
+    * 1. check if all the field are ok, otherwhise, pass.
+    *
+    *  */
+
+  }
+
+  void _cancelAll() {
+    Navigator.pop(context);
+  }
 }
 
 class BasicTimeField extends StatelessWidget {
@@ -133,7 +231,7 @@ class BasicTimeField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Text('Basic time field (${format.pattern})'),
- /*     DateTimeField(
+      /*     DateTimeField(
         format: format,
         onShowPicker: (context, currentValue) async {
           final time = await showTimePicker(

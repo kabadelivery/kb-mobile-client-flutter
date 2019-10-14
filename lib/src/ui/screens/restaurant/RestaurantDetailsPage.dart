@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
+import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -13,6 +15,7 @@ import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 class RestaurantDetailsPage extends StatelessWidget {
@@ -30,7 +33,9 @@ class RestaurantDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-//    restaurantBloc.fetchCommentList(restaurant, UserTokenModel.fake());
+    CustomerUtils.getUserToken().then((userTokenModel) {
+      restaurantBloc.fetchCommentList(restaurant, userTokenModel);
+    });
 
     /* use silver-app-bar first */
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
@@ -71,7 +76,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Container(color:Colors.white, padding: EdgeInsets.only(left: 10, right:10),
+                        Container(color:Colors.white, padding: EdgeInsets.only(left: 10, right:10, top: 15, bottom: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -99,14 +104,14 @@ class RestaurantDetailsPage extends StatelessWidget {
                         ),
                         SizedBox(height:20),
                         /* see the menu entry */
-                        Container(color: Colors.white,
+                        Container(padding: EdgeInsets.only(top: 10,bottom: 10), color: Colors.white,
                           child: InkWell( onTap: (){_jumpToRestaurantMenu(context, restaurant);},
-                            child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
-                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("See the Menu", style: TextStyle(color:KColors.primaryColor))]),
+                              child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                  Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("See the Menu", style: TextStyle(color:KColors.primaryColor))]),
                                   Icon(Icons.chevron_right, color: KColors.primaryColor),
-                              ]),
-                            )
+                                ]),
+                              )
                           ),
                         ),
                         SizedBox(height:20),
@@ -122,13 +127,12 @@ class RestaurantDetailsPage extends StatelessWidget {
                                 SizedBox(height: 10),
                                 Container(
                                   child: Row(children: <Widget>[
-                                     Icon(Icons.location_on, color: Colors.blue),
+                                    Icon(Icons.location_on, color: Colors.blue),
                                     Flexible (child: Text(restaurant.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
                                   ]),
                                 ),
 
                                 /* note this application part - */
-
 
                                 SizedBox(height: 20),
                                 Container(height: 1, width: MediaQuery.of(context).size.width, color: Colors.grey.withAlpha(100)),
@@ -140,7 +144,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                 ),
                                 SizedBox(height:10),
                                 /* 4.0 - stars */
-                             /*   StreamBuilder<List<CommentModel>>(
+                                StreamBuilder<List<CommentModel>>(
                                     stream: restaurantBloc.commentList,
                                     builder: (context, AsyncSnapshot<List<CommentModel>> snapshot) {
                                       if (snapshot.hasData) {
@@ -150,7 +154,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: <Widget>[
                                                 Text("${restaurant.stars.toStringAsFixed(1)}", style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
-                                                *//* stars *//*
+                                                /* stars */
                                                 Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: <Widget>[
@@ -162,7 +166,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                                     ])
                                               ],
                                             ),
-                                            *//* the list of comments *//*
+                                            /* the list of comments */
                                           ]..addAll(
                                               _buildCommentsList(snapshot.data)
                                           ),
@@ -172,18 +176,21 @@ class RestaurantDetailsPage extends StatelessWidget {
                                       }
                                       return Center(child: CircularProgressIndicator());
                                     }
-                                ),*/
+                                ),
                               ],
                             )
                         ),
                       ]
                         ..add(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(top: 15, bottom: 15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
                                   Icon(Icons.star, size: 20, color: Colors.grey),
-                                Text("Powered by >> Kaba Technlogies")
-                              ],
+                                  Text("Powered by >> Kaba Technlogies")
+                                ],
+                              ),
                             )
                         )
                   )),

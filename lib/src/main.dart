@@ -10,6 +10,7 @@ import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: MyOrderWidget(command: CommandModel.fake()),
-      home: SplashPage(),
+      home: HomePage(),
 //     home: RetrievePasswordPage(),
       routes: generalRoutes,
     );
