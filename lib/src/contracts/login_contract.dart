@@ -1,6 +1,3 @@
-
-
-
 /* login contract */
 import 'dart:convert';
 
@@ -41,9 +38,9 @@ class LoginPresenter implements LoginContract {
     if (isWorking)
       return;
     isWorking = true;
+    try {
     String jsonContent = await provider.loginAction(
         login: login, password: password);
-    try {
       print(jsonContent);
       var obj = json.decode(jsonContent);
       int error = obj["error"];
@@ -51,7 +48,7 @@ class LoginPresenter implements LoginContract {
       String message = obj["message"];
       if (error == 0  && token.length > 0) {
         /* login successful */
-       _persistTokenAndUserdata(token, jsonContent);
+        CustomerUtils.persistTokenAndUserdata(token, jsonContent);
         _loginView.loginSuccess();
       } else {
         /* login failure */
@@ -60,7 +57,10 @@ class LoginPresenter implements LoginContract {
     } catch(_) {
       /* login failure */
       print("error ${_}");
+      if (_ == -2)
       _loginView.loginFailure("Identifiants incorrects");
+     else
+        _loginView.loginFailure("System error");
     }
     isWorking = false;
   }
@@ -68,17 +68,5 @@ class LoginPresenter implements LoginContract {
   set loginView(LoginView value) {
     _loginView = value;
   }
-
-  _persistTokenAndUserdata(String token, String loginResponse) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.setString("_loginResponse", loginResponse);
-    /* no need to commit */
-    /* expiration date in 3months */
-    String expDate = DateTime.now().add(Duration(days: 90)).toIso8601String();
-    prefs.setString("_login_expiration_date", expDate);
-    print(expDate);
-  }
-
 
 }

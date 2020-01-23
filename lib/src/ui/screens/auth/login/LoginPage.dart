@@ -133,6 +133,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   void loginFailure(String message) {
+
+    mToast(message);
     showLoading(false);
   }
 
@@ -144,17 +146,16 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     showLoading(false);
     /* jump to home page. */
     mToast("Login Successfull");
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage (),
-      ),
-    );
+
+    Navigator.of(context).pushReplacement(new MaterialPageRoute(
+        builder: (BuildContext context) => HomePage()));
   }
 
   @override
   void showLoading(bool isLoading) {
-    isConnecting = isLoading;
+    setState(() {
+      isConnecting = isLoading;
+    });
   }
 
   void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}

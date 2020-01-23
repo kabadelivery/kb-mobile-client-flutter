@@ -36,8 +36,11 @@ class Utils {
     return headers;
   }
 
-  static inflateLink(String link) {
+  static inflateLink(var link) {
+    if (link != null)
     return ServerConfig.SERVER_ADDRESS + "/" + link;
+    else
+      return ServerConfig.SERVER_ADDRESS+"/"+ "default_pic/kaba_red_rectangle.png";
   }
 
   static Future hasNetwork() async {

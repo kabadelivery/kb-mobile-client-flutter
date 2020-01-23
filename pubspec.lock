@@ -117,7 +117,7 @@ packages:
       name: flutter_inner_drawer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.5.4"
   flutter_localizations:
     dependency: "direct main"
     description: flutter

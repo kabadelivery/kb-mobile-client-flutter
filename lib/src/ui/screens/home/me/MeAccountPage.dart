@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
@@ -27,14 +30,13 @@ class MeAccountPage extends StatefulWidget {
   _MeAccountPageState createState() => _MeAccountPageState();
 }
 
-class _MeAccountPageState extends State<MeAccountPage> {
+class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateMixin{
 
   ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-
   }
 
   static getCustomer () async {
@@ -50,20 +52,21 @@ class _MeAccountPageState extends State<MeAccountPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade100,
       body: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
           future: CustomerUtils.getCustomer(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               return _buildMyPage(snapshot.data);
+            } else if (snapshot.hasError) {
+              /* go back to login page because of error in login or so. */
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
       )
     );
   }
 
-  void _jumpToScanPage() {}
 
   void _jumpToPage (BuildContext context, page) {
     Navigator.push(
@@ -167,7 +170,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                   /* do you have  a suggestion ? */
                   Container(
                       padding: EdgeInsets.only(top:20, bottom:20),
-                      color: Colors.grey.shade300,
+                      color: Colors.grey.shade100,
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
@@ -188,7 +191,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                       elevation: 8.0,
                       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                       child: Container(
-                          decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1),   boxShadow: [
+                          decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1), borderRadius: BorderRadius.all(Radius.circular(7)),   boxShadow: [
                             new BoxShadow(
                               color: Colors.grey..withAlpha(50),
                               offset: new Offset(0.0, 2.0),
@@ -205,14 +208,14 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage(customer: widget.customerData))),
+                                              IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter(),))),
                                               SizedBox(height:10),
                                               Text("PERSONNAL", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
                                       ),
-                                      TableCell(
+                                  /*    TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
                                           child: Column(
@@ -230,7 +233,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ),*/
                                       TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
@@ -240,6 +243,19 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                               IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage())),
                                               SizedBox(height:10),
                                               Text("ADRESSES", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      TableCell(
+                                        child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, LastOrdersPage())),
+                                              SizedBox(height:10),
+                                              Text("COMMAND", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -254,20 +270,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage())),
-                                              SizedBox(height:10),
-                                              Text("COMMAND", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, PersonalPage())),
+                                              IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page())),
                                               SizedBox(height:10),
                                               Text("FEEDS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                             ],
@@ -287,6 +290,7 @@ class _MeAccountPageState extends State<MeAccountPage> {
                                           ),
                                         ),
                                       ),
+                                      TableCell(child: Container())
                                     ]
                                 )
                               ]

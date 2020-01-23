@@ -11,21 +11,22 @@ class MyAddressListWidget extends StatefulWidget {
 
   DeliveryAddressModel address;
 
-  MyAddressListWidget({this.address});
+  bool pick;
+
+  var parentContext;
+
+  MyAddressListWidget({this.address, this.pick = false, this.parentContext});
 
   @override
   _MyAddressListWidgetState createState() {
     // TODO: implement createState
-    return _MyAddressListWidgetState(address);
+    return _MyAddressListWidgetState();
   }
 
 }
 
 class _MyAddressListWidgetState extends State<MyAddressListWidget> {
 
-  DeliveryAddressModel address;
-
-  _MyAddressListWidgetState(this.address);
 
   @override
   void initState() {
@@ -38,31 +39,34 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
     // TODO: implement build
     return
       (
-          Card(child: Container(padding: EdgeInsets.all(10),
-            child: Column(
+          Card(child: InkWell(
+            child: Container(padding: EdgeInsets.all(10),
+              child: Column(
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Expanded (child: Container (child: Text("${address?.name?.toUpperCase()}", style: TextStyle(color: Colors.black.withAlpha(180), fontWeight: FontWeight.bold,fontSize: 18)))),
+                      Expanded (child: Container (child: Text("${widget.address?.name?.toUpperCase()}", style: TextStyle(color: Colors.black.withAlpha(180), fontWeight: FontWeight.bold,fontSize: 18)))),
                     ],
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Expanded (
                         child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Text("${address?.description}",maxLines: 2, overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 14, color: Colors.grey)),
+                          child: Text("${widget.address?.description}",maxLines: 2, overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 14, color: Colors.grey)),
                         ),
                       ),
-                      IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
+                      IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(widget.address)),
                     ],
                   ),
                   Row(children: <Widget>[Text("Contact", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
-                    Text("${address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
+                    Text("${widget.address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
                 ],
               ),
-          ),
+            ),
+            onTap: _pickedAddress(widget.address),
+          )
           )
       );
   }
@@ -76,6 +80,7 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
     );
   }
 
-
-
+  _pickedAddress(DeliveryAddressModel address) {
+//    Navigator.of(widget.parentContext).pop({'selection':address});
+  }
 }

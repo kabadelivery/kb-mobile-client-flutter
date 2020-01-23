@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/repository.dart';
@@ -18,6 +19,10 @@ class UserDataBloc {
   final _myDailyOrderFetcher = PublishSubject<List<CommandModel>>();
   Observable<List<CommandModel>> get mDailyOrders => _myDailyOrderFetcher.stream;
 
+  /* last all Order */
+  final _myLastOrderFetcher = PublishSubject<List<CommandModel>>();
+  Observable<List<CommandModel>> get mLastOrders => _myLastOrderFetcher.stream;
+
 /* order details */
   final _orderDetailsFetcher = PublishSubject<CommandModel>();
   Observable<CommandModel> get orderDetails => _orderDetailsFetcher.stream;
@@ -34,12 +39,21 @@ class UserDataBloc {
   final _locationDetailsChecker = PublishSubject<DeliveryAddressModel>();
   Observable<DeliveryAddressModel> get locationDetails => _locationDetailsChecker.stream;
 
-  fetchDailyOrders(UserTokenModel userToken) async {
+  fetchDailyOrders(CustomerModel customer) async {
     try {
-      List<CommandModel> mDailyOrders = await _repository.fetchDailyOrders(userToken);
+      List<CommandModel> mDailyOrders = await _repository.fetchDailyOrders(customer);
       _myDailyOrderFetcher.sink.add(mDailyOrders);
     } catch (_) {
       _myDailyOrderFetcher.sink.addError(_.message);
+    }
+  }
+
+  fetchLastOrders(CustomerModel customer) async {
+    try {
+      List<CommandModel> mLastOrders = await _repository.fetchLastOrders(customer);
+      _myLastOrderFetcher.sink.add(mLastOrders);
+    } catch (_) {
+      _myLastOrderFetcher.sink.addError(_.message);
     }
   }
 
@@ -52,9 +66,9 @@ class UserDataBloc {
     }
   }
 
-  fetchOrderDetails (UserTokenModel userToken, int orderId) async {
+  fetchOrderDetails (CustomerModel customer, int orderId) async {
     try {
-      CommandModel orderDetails = await _repository.fetchOrderDetails(userToken, orderId);
+      CommandModel orderDetails = await _repository.fetchOrderDetails(customer, orderId);
       _orderDetailsFetcher.sink.add(orderDetails);
     } catch (_) {
       _orderDetailsFetcher.sink.addError(_.message);
@@ -88,7 +102,6 @@ class UserDataBloc {
     _locationDetailsChecker.close();
     _sendRegisterCodeAction.close();
   }
-
 }
 
 final userDataBloc = UserDataBloc();

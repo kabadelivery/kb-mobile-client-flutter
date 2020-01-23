@@ -39,15 +39,28 @@ class _PersonalPageState extends State<PersonalPage> {
 
   bool isSaving = false;
 
+  TextEditingValue s ;
+
+
+  bool _isNickNameError = false,
+      _isJobTitleError = false,
+      _isDistrictError = false,
+      _isEmailError = false,
+      _isGenderError = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _phoneNumberFieldController.text = widget.customer?.phone_number;
+    _nickNameFieldController.text = widget.customer?.nickname;
     _jobTitleFieldController.text = widget.customer?.job_title;
     _districtFieldController.text = widget.customer?.district;
     _emailFieldController.text = widget.customer?.email;
     _genderRadioValue = widget.customer?.gender;
+
+
+
   }
 
   File _image;
@@ -82,7 +95,7 @@ class _PersonalPageState extends State<PersonalPage> {
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: (_image != null ? FileImage(_image) : CachedNetworkImageProvider(widget.customer?.profile_picture))
+                            image: (_image != null ? FileImage(_image) : CachedNetworkImageProvider(Utils.inflateLink(widget.customer?.profile_picture)))
                         )
                     )
                 ),
@@ -92,28 +105,33 @@ class _PersonalPageState extends State<PersonalPage> {
                   child: Icon(Icons.photo_camera, color: Colors.white),
                 ), right: 0,bottom: 0)]),
               SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.all(10),
-                color: Colors.white,
-                child:TextField(controller: _phoneNumberFieldController, enabled: widget.customer.phone_number?.length != null && widget.customer.phone_number?.length > 0 ? false : true,
-                    decoration: InputDecoration(labelText: "Phone Number", /* if  already sat, we cant put nothing else */
-                      border: InputBorder.none,
-                    )),
+              InkWell(
+                onTap: ()=> setUpLogin(1),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  color: Colors.white,
+                  /* phone number must be confirmed by another interface before setting it up. */
+                  child:TextField(controller: _phoneNumberFieldController, enabled: false,
+                      decoration: InputDecoration(labelText: "Phone Number", /* if  already sat, we cant put nothing else */
+                        border: InputBorder.none,
+                      )),
+                ),
               ),
               SizedBox(height: 20),
-              Container(
+              /*  Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _emailFieldController, enabled: widget.customer.email?.length != null && widget.customer.email?.length > 0 ? false : true,
+//             e-mail must be confirmed by another interface before setting it up.
+                child:TextField(controller: _emailFieldController, enabled: false,
                     decoration: InputDecoration(labelText: "E-mail",
                       border: InputBorder.none,
                     )),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 10),*/
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _nickNameFieldController,
+                child:TextField(controller: _nickNameFieldController, onChanged: (text){},
                     decoration: InputDecoration(labelText: "Nickname",
                       border: InputBorder.none,
                     )),
@@ -215,13 +233,29 @@ class _PersonalPageState extends State<PersonalPage> {
 
     /* update data into the database ...
     * 1. check if all the field are ok, otherwhise, pass.
-    *
     *  */
+    CustomerModel model = CustomerModel();
+    // phone number
+    String phoneNumber = _phoneNumberFieldController.text;
+    // nickname
+    String nickname = _nickNameFieldController.text;
+
 
   }
 
   void _cancelAll() {
     Navigator.pop(context);
+  }
+
+  /// set up
+  ///
+  /// 1. phone number
+  /// 2. email
+  setUpLogin (int type) {
+
+    /* jump to a page that sends a confirmation message to each of them. */
+
+
   }
 }
 

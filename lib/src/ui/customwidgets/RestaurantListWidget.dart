@@ -76,13 +76,13 @@ class RestaurantListWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(children:[
-                          Container(
+                          restaurantModel.coming_soon == 0 ? Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: restaurantModel.is_open == 1 ? CommandStateColor.delivered : Colors.blueAccent.shade700),
                               child:Text(
                                   restaurantModel.is_open == 1 ? "Open":"Closed",
                                   style: TextStyle(color: Colors.white, fontSize: 12)
-                              )),
+                              )) : Container(),
                           SizedBox(width: 5),
                           restaurantModel.coming_soon == 1 ?
                           Container(

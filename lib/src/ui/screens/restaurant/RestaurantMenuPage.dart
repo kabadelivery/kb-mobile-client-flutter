@@ -44,6 +44,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<InnerDrawerState>();
 
+  var _firstTime = true;
+
   /* app config */
   GlobalKey _menuBasketKey;
   Offset _menuBasketOffset;
@@ -68,6 +70,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   List<AnimationController> _animationController;
 
+  /* create a presenter for menu page */
 
   @override
   void initState() {
@@ -75,13 +78,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         .addPostFrameCallback((_) => _computeBasketOffset());
     super.initState();
     _menuBasketKey = GlobalKey();
-//    restaurantBloc.fetchRestaurantMenuList(restaurant);
+    restaurantBloc.fetchRestaurantMenuList(restaurant);
 
     _dynamicAnimatedFood = <Widget>[];
     _animationController = <AnimationController>[];
 //    _animationController = AnimationController(
 //        vsync: this,
 //        duration: Duration(seconds: 3));
+
+
+  /*  _innerDrawerKey.currentState.toggle(
+      // direction is optional
+      // if not set, the last direction will be used
+      //InnerDrawerDirection.start OR InnerDrawerDirection.end
+        direction: InnerDrawerDirection.end
+    );*/
   }
 
   @override
@@ -102,13 +113,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
     return InnerDrawer(
         key: _innerDrawerKey,
-        position: InnerDrawerPosition.start, // required
-        onTapClose: true, // default false
-//        swipe: true, // default true
-        offset: 0.1, // default 0.4
-        animationType: InnerDrawerAnimation.quadratic, // default static
-        innerDrawerCallback: (a) => print(a), // return bool
-        child:  data?.length == null ? Container() : Material(
+//        position: InnerDrawerPosition.start, // required
+//        onTapClose: true, // default false
+//        offset: 0.1, // default 0.4
+//        animationType: InnerDrawerAnimation.quadratic, // default static
+//        innerDrawerCallback: (a) => print(a), // return bool
+        leftChild:  data?.length == null ? Container() : Material(
             child: SafeArea(
                 child: ListView.separated(
                     separatorBuilder: (context, index) => Divider(color: Colors.grey.withAlpha(150),height: 1),
@@ -251,6 +261,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _buildRestaurantMenu(List<RestaurantSubMenuModel> data) {
+    if (_firstTime) {
+      _openDrawer();
+      _firstTime = false;
+    }
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {this.data= data;}));
     /* return  ListView.builder(
       shrinkWrap: true,

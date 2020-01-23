@@ -13,6 +13,8 @@ import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
 import 'package:kaba_flutter/src/resources/commands_api_provider.dart';
 import 'package:kaba_flutter/src/resources/restaurant_api_provider.dart';
 
+import 'models/CustomerModel.dart';
+
 class Repository {
 
   final appApiProvider = AppApiProvider();
@@ -35,9 +37,12 @@ Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Pos
 
   /* command api provider */
   final commandApiProvider = CommandsApiProvider();
-  Future<List<CommandModel>> fetchDailyOrders(UserTokenModel userToken) => commandApiProvider.fetchDailyOrders(userToken);
+  Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer) => commandApiProvider.fetchDailyOrders(customer);
+  Future<List<CommandModel>> fetchLastOrders(CustomerModel customer) => commandApiProvider.fetchLastOrders(customer);
+
+
   /* command details provider */
-  Future<CommandModel> fetchOrderDetails(UserTokenModel userToken, int orderId) => commandApiProvider.fetchOrderDetails(userToken, orderId);
+  Future<CommandModel> fetchOrderDetails(CustomerModel customer, int orderId) => commandApiProvider.fetchOrderDetails(customer, orderId);
 
 
 }

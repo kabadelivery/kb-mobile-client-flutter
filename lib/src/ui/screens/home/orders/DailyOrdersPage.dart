@@ -4,6 +4,7 @@ import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 
 
 class DailyOrdersPage extends StatefulWidget {
@@ -20,7 +21,9 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
   @override
   void initState() {
     // TODO: implement initState
-    userDataBloc.fetchDailyOrders(UserTokenModel.fake());
+    CustomerUtils.getCustomer().then((customer) {
+      userDataBloc.fetchDailyOrders(customer);
+    });
     super.initState();
   }
 
@@ -35,7 +38,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
               if (snapshot.hasData) {
                 return _buildOrderList(snapshot.data);
               } else if (snapshot.hasError) {
-                return ErrorPage(onClickAction: (){userDataBloc.fetchDailyOrders(UserTokenModel.fake());});
+                return ErrorPage(onClickAction: (){
+                  CustomerUtils.getCustomer().then((customer) {
+                    userDataBloc.fetchDailyOrders(customer);
+                  });
+                });
               }
               return Center(child: CircularProgressIndicator());
             }));

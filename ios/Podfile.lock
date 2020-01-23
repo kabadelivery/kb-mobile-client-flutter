@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_qr_reader (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -15,6 +17,8 @@ PODS:
   - GoogleMaps/Base (3.4.0)
   - GoogleMaps/Maps (3.4.0):
     - GoogleMaps/Base
+  - image_picker (0.0.1):
+    - Flutter
   - location (0.0.1):
     - Flutter
   - location_permissions (2.0.2):
@@ -33,9 +37,11 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_qr_reader (from `.symlinks/plugins/flutter_qr_reader/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -52,12 +58,16 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_qr_reader:
+    :path: ".symlinks/plugins/flutter_qr_reader/ios"
   geolocator:
     :path: ".symlinks/plugins/geolocator/ios"
   google_api_availability:
     :path: ".symlinks/plugins/google_api_availability/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
   location_permissions:
@@ -75,11 +85,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_qr_reader: 254fd9eea45a65ef461e050d6607daf9cfb753e8
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: 2d5da6891d865c0f1b4f851683eed890dd9c8bc1
   google_api_availability: 163b30f802e6148c67f092aa4501c90ddd8eec8d
   google_maps_flutter: 78a52114c898b42ea647919679a4c58b70abe876
   GoogleMaps: 67f4a604f80dd6a22d09c2a507a3a395b9f23060
+  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   location_permissions: 67cfaff583afbb027a9f9248196f4b79c40f3cdc
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259

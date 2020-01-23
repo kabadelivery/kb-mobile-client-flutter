@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
 import 'package:kaba_flutter/src/models/CommentModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
@@ -149,13 +150,48 @@ class ClientPersonalApiProvider {
         'build/package.tar.gz',
         contentType: new MediaType('application', 'x-tar'),
       ));*/
-      StreamedResponse send = await request.send();
-      String body = await send.stream.transform(utf8.decoder).single;
-      return body;
+      try {
+        StreamedResponse send = await request.send();
+        String body = await send.stream.transform(utf8.decoder).single;
+        return body;
+      } catch (_) {
+        throw Exception(-1); // system error
+      }
     } else {
       throw Exception(-2); // you have no network
     }
   }
 
+  /// UPDATE CUSTOMER INFORMATIONS -nickname, job, district ... -
+  ///
+  ///
+  Future<CustomerModel> updatePersonnalPage(CustomerModel customer) async {
+    DebugTools.iPrint("entered updatePersonnalPage");
+    if (await Utils.hasNetwork()) {
+      var _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
+      if (customer.profile_picture != null)
+        _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
+      final response = await client
+          .post(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS,
+          body: _data,
+          headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          /* return resulting customer that has to be saved in the shared preferences again. */
+          var obj = json.decode(response.body);
+          customer = CustomerModel.fromJson(obj["data"]);
+
+return customer;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 
 }

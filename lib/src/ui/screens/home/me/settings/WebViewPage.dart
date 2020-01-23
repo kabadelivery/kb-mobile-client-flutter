@@ -14,22 +14,19 @@ class WebViewPage extends StatefulWidget {
   final String title, link;
 
   @override
-  _WebViewPageState createState() => _WebViewPageState(title: title, link:link);
+  _WebViewPageState createState() => _WebViewPageState();
 }
 
 class _WebViewPageState extends State<WebViewPage> {
 
-  String link;
-  String title;
-
-  _WebViewPageState({this.title, this.link});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold (
-      appBar: AppBar(backgroundColor: Colors.white, title: Text(title, style:TextStyle(color:KColors.primaryColor))),
+      appBar: AppBar(leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          backgroundColor: Colors.white, title: Text(widget.title, style:TextStyle(color:KColors.primaryColor))),
       body: WebView (
-          initialUrl: link,
+          initialUrl: widget.link,
         javascriptMode: JavascriptMode.unrestricted
       )
     );

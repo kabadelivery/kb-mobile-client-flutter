@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -31,7 +33,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    userDataBloc.fetchOrderDetails(UserTokenModel.fake(), orderId);
+    CustomerUtils.getCustomer().then((customer) {
+      userDataBloc.fetchOrderDetails(customer, orderId);
+    });
+
   }
 
   @override
@@ -48,7 +53,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 return _inflateDetails(snapshot.data);
               } else if (snapshot.hasError) {
                 return ErrorPage(onClickAction: () {
-                  userDataBloc.fetchOrderDetails(UserTokenModel.fake(), orderId);
+                  CustomerUtils.getCustomer().then((customer) {
+                    userDataBloc.fetchOrderDetails(customer, orderId);
+                  });
                 });
               }
               return Center(child: CircularProgressIndicator());
@@ -178,15 +185,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
                       (int.parse(command?.remise) > 0 ? Container (
-                        height: 40.0,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
-                            )
-                        )
-                    ): Container ()),
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                              )
+                          )
+                      ): Container ()),
                       Container(),
                       /* content */
                       SizedBox(height: 10),
@@ -196,7 +203,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         Row(
                           children: <Widget>[
                             Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "(${command?.price_command})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
-                           SizedBox(width: 5),
+                            SizedBox(width: 5),
                             Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "${command?.promotion_pricing} FCFA" : "${command?.price_command} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                           ],
                         )

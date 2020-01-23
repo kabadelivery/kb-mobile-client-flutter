@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/painting.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
@@ -18,6 +19,83 @@ class GroupAdsWidget extends StatelessWidget {
   }): super(key:key);
 
   @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return
+      (
+          Column(
+              children: <Widget>[
+                Container(
+                    color: Colors.grey.shade100,
+                    margin: EdgeInsets.only(left:20, right:20),
+                    child: Column(
+                        children:<Widget>[
+                          Container(
+                            height: MediaQuery.of(context).size.width/2,
+                            child: Row(
+                              children: <Widget>[
+                                /* 2 views */
+                                Expanded(
+                                    flex: 1,
+                                    child: Container(width: MediaQuery.of(context).size.width/2, height: MediaQuery.of(context).size.width/2,
+                                        padding: EdgeInsets.all(5),
+                                        margin: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
+                                        child:Container(
+                                          child: FittedBox(fit: BoxFit.fitWidth,
+                                            child: Text(
+                                                groupAd.title.trim().toUpperCase(),
+//                                            "OP\ER\nA",
+                                                style: TextStyle(color: Colors.white)
+                                            ),
+                                          ),
+                                        ))),
+                                Expanded(
+                                    flex: 1,
+                                    child: Container(width: MediaQuery.of(context).size.width/2, height: MediaQuery.of(context).size.width*2,
+                                          padding: EdgeInsets.all(5),
+                                          margin: EdgeInsets.only(right: 5, top:5, bottom:5),
+                                   decoration: BoxDecoration(
+                                          border: new Border.all(
+                                              color: Colors.transparent, width: 2),
+                                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                                          shape: BoxShape.rectangle,
+                                          image: new DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: CachedNetworkImageProvider( Utils.inflateLink(groupAd.small_pub.pic))
+                                          )
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: new Border.all(
+                                    color: Colors.transparent, width: 2),
+                                borderRadius: BorderRadius.all(Radius.circular(7)),
+                                shape: BoxShape.rectangle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider( Utils.inflateLink(groupAd.big_pub.pic))
+                                )
+                            ),
+//                              color:Colors.transparent,
+                            margin: EdgeInsets.only(right:5, left:5, bottom:10),
+                            height: MediaQuery.of(context).size.width/3,
+                          )
+                        ])
+                ),
+                /* title */
+
+              ])
+      );
+  }
+
+
+/*
+
+ @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return
@@ -77,6 +155,5 @@ class GroupAdsWidget extends StatelessWidget {
       );
   }
 
-
-
+* */
 }

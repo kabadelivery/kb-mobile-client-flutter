@@ -142,7 +142,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                                     Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                                   ],
                                 ),
-                                SizedBox(height:10),
+                                SizedBox(height:20),
                                 /* 4.0 - stars */
                                 StreamBuilder<List<CommentModel>>(
                                     stream: restaurantBloc.commentList,
@@ -174,9 +174,10 @@ class RestaurantDetailsPage extends StatelessWidget {
                                       } else if (snapshot.hasError) {
                                         return Container();
                                       }
-                                      return Center(child: CircularProgressIndicator());
+                                      return Center(child: SizedBox(child: CircularProgressIndicator(), height: 20, width: 20,));
                                     }
                                 ),
+                                SizedBox(height:20),
                               ],
                             )
                         ),

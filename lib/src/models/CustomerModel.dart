@@ -35,6 +35,7 @@ class CustomerModel {
       profile_picture = json['profile_picture'];
       theme_picture = json['theme_picture'];
       isSet = json['isSet'];
+      token = json['token'];
    }
 
    Map toJson () => {
@@ -50,6 +51,7 @@ class CustomerModel {
       "profile_picture" : profile_picture,
       "theme_picture" : theme_picture,
       "isSet" : isSet,
+      'token': token
    };
 
    @override

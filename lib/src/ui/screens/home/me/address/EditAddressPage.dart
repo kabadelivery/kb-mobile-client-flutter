@@ -184,7 +184,12 @@ class _EditAddressPageState extends State<EditAddressPage> {
         _checkLocationLoading = true;
         address.location = "${result.longitude}:${result.latitude}";
       });
+
+
+      // use mvp to launch a request and place the result here.
       userDataBloc.checkLocationDetails(userToken: UserTokenModel.fake(), position: Position(longitude: result.longitude, latitude: result.latitude));
+
+
     } else {}
   }
 
