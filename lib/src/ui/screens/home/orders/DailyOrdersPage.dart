@@ -38,11 +38,18 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
               if (snapshot.hasData) {
                 return _buildOrderList(snapshot.data);
               } else if (snapshot.hasError) {
-                return ErrorPage(onClickAction: (){
-                  CustomerUtils.getCustomer().then((customer) {
-                    userDataBloc.fetchDailyOrders(customer);
+                if (snapshot.connectionState == ConnectionState.none)
+                  return ErrorPage(message: "Network Issue",onClickAction: (){
+                    CustomerUtils.getCustomer().then((customer) {
+                      userDataBloc.fetchDailyOrders(customer);
+                    });
                   });
-                });
+                else
+                  return ErrorPage(message: "System error Issue",onClickAction: (){
+                    CustomerUtils.getCustomer().then((customer) {
+                      userDataBloc.fetchDailyOrders(customer);
+                    });
+                  });
               }
               return Center(child: CircularProgressIndicator());
             }));

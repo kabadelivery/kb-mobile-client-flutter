@@ -4,37 +4,78 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 
 class OrderBillConfiguration {
 
+  int promotion_pricing;
+  int command_pricing;
+  int account_balance;
+  String shipping_pricing;
+  int total_pricing;
+  String promotion_shipping_pricing;
+  String remise;
+  bool out_of_range;
+  bool pay_at_delivery;
+  bool prepayed;
+  int trustful;
+  String max_pay;
+  int cooking_time;
+  int distance;
 
-  String order_price;
-  String delivery_price;
-  bool is_promo;
-  int discount; // %
+//      {
+//    "error": 0,
+//    "message": "",
+//    "data": {
+//      "promotion_pricing": 4500,
+//      "command_pricing": 4500,
+//      "account_balance": 9110755,
+//      "shipping_pricing": "600",
+//      "total_pricing": 4980,
+//      "promotion_shipping_pricing": "480",
+//      "remise": "3",
+//      "out_of_range": false,
+//      "pay_at_delivery": true,
+//      "prepayed": true,
+//      "trustful": 1,
+//      "max_pay": "12500",
+//      "cooking_time": 30,
+//      "distance": 4677
+//    }
+//    }
 
-  /* you balance */
-  String your_balance;
-  bool can_postpay;
-  bool can_prepay;
-
-  OrderBillConfiguration({this.order_price, this.delivery_price, this.is_promo, this.discount, this.your_balance, this.can_postpay, this.can_prepay});
+  OrderBillConfiguration({this.promotion_pricing, this.command_pricing, this.account_balance, this.shipping_pricing,
+    this.total_pricing, this.promotion_shipping_pricing, this.remise, this.out_of_range, this.pay_at_delivery,
+    this.prepayed, this.trustful, this.max_pay, this.cooking_time, this.distance});
 
   OrderBillConfiguration.fromJson(Map<String, dynamic> json) {
-    order_price = json['order_price'];
-    delivery_price = json['delivery_price'];
-    is_promo = json['is_promo'];
-    discount = json['discount'];
-    your_balance = json['your_balance'];
-    can_postpay = json['can_postpay'];
-    can_prepay = json['can_prepay'];
+    promotion_pricing = json['promotion_pricing'];
+    command_pricing = json['command_pricing'];
+    account_balance = json['account_balance'];
+  shipping_pricing = json['shipping_pricing'];
+    total_pricing = json['total_pricing'];
+    promotion_shipping_pricing = json['promotion_shipping_pricing'];
+    remise = json['remise'];
+    out_of_range = json['out_of_range'];
+    pay_at_delivery = json['pay_at_delivery'];
+    prepayed = json['prepayed'];
+    trustful = json['trustful'];
+    max_pay = json['max_pay'];
+    cooking_time = json['cooking_time'];
+    distance = json['distance'];
   }
 
   Map toJson () => {
-    "order_price" : order_price,
-    "delivery_price" : delivery_price,
-    "is_promo" : is_promo,
-    "discount" : discount,
-    "your_balance" : your_balance,
-    "can_postpay" : can_postpay,
-    "can_prepay" : can_prepay,
+    "promotion_pricing" : promotion_pricing,
+    "command_pricing" : command_pricing,
+    "account_balance" : account_balance,
+    "shipping_pricing" : shipping_pricing,
+    "total_pricing" : total_pricing,
+    "promotion_shipping_pricing" : promotion_shipping_pricing,
+    "remise" : remise,
+    "out_of_range" : out_of_range,
+    "pay_at_delivery" : pay_at_delivery,
+    "prepayed" : prepayed,
+    "trustful" : trustful,
+    "max_pay" : max_pay,
+    "cooking_time" : cooking_time,
+    "distance" : distance,
   };
 
   @override
@@ -42,8 +83,7 @@ class OrderBillConfiguration {
     return toJson().toString();
   }
 
-  static OrderBillConfiguration fake() {
-
+  /*static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration();
     p.order_price = "4500";
     p.delivery_price = "1000";
@@ -53,6 +93,6 @@ class OrderBillConfiguration {
     p.can_prepay = true;
     p.can_postpay = true;
     return p;
-  }
+  }*/
 
 } 

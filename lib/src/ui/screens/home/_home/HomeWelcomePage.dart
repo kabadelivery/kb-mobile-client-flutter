@@ -70,11 +70,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           title: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
                 border: new Border.all(color: Colors.transparent),
-                color: Colors.white.withAlpha(100)
+                color: Colors.white.withAlpha(60)
             ),
             padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
-            child:TextField(decoration:
-            InputDecoration.collapsed(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), enabled: false,),
+            child:TextField(decoration:InputDecoration.collapsed(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 8), enabled: false,),
           ),
           leading: IconButton(icon: SizedBox(
               height: 25,

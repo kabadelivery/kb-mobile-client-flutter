@@ -18,10 +18,13 @@ class ErrorPage extends StatelessWidget {
 
   var onClickAction;
 
+  String message;
+
   ErrorPage({
     Key key,
     this.type,
     this.onClickAction,
+    this.message,
   }): super(key:key);
 
 
@@ -35,7 +38,7 @@ class ErrorPage extends StatelessWidget {
               children: <Widget>[
                 /* text / image
                     * button */
-                Text("Sorry, the network is having an issue."),
+                Text(message),
                 SizedBox(height:10),
                 MaterialButton(padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("TRY AGAIN",
                     style: TextStyle(color: Colors.white)),

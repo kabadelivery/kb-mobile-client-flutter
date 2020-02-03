@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
+import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -29,8 +30,9 @@ class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
 
   RestaurantModel restaurant;
+  MenuPresenter presenter;
 
-  RestaurantMenuPage({Key key, this.title, this.restaurant}) : super(key: key);
+  RestaurantMenuPage({Key key, this.title, this.restaurant, this.presenter}) : super(key: key);
 
   final String title;
 
@@ -38,7 +40,7 @@ class RestaurantMenuPage extends StatefulWidget {
   _RestaurantMenuPageState createState() => _RestaurantMenuPageState(restaurant);
 }
 
-class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerProviderStateMixin {
+class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerProviderStateMixin implements MenuView {
 
 //  final _controllers = <AnimationController>[];
 
@@ -72,27 +74,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   /* create a presenter for menu page */
 
+  bool isLoading = false;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
+
   @override
   void initState() {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _computeBasketOffset());
     super.initState();
     _menuBasketKey = GlobalKey();
-    restaurantBloc.fetchRestaurantMenuList(restaurant);
+    widget.presenter.menuView = this;
+    widget.presenter.fetchMenuWithRestaurantId(restaurant.id);
 
     _dynamicAnimatedFood = <Widget>[];
     _animationController = <AnimationController>[];
-//    _animationController = AnimationController(
-//        vsync: this,
-//        duration: Duration(seconds: 3));
-
-
-  /*  _innerDrawerKey.currentState.toggle(
-      // direction is optional
-      // if not set, the last direction will be used
-      //InnerDrawerDirection.start OR InnerDrawerDirection.end
-        direction: InnerDrawerDirection.end
-    );*/
   }
 
   @override
@@ -144,7 +140,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   appBar: appBar,
                   body: Stack(
                       children: <Widget>[
-                  StreamBuilder(
+                      /*  StreamBuilder(
                             stream: restaurantBloc.restaurantMenu.take(1),
                             builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
                               if (snapshot.hasData) {
@@ -157,7 +153,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                               }
                               return Center(child: CircularProgressIndicator());
                             }
-                        ),
+                        ),*/
+                      isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);})
+                     : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);}) : _buildRestaurantMenu()),
                         Positioned(
                           right:15,
                           top: 10,
@@ -197,9 +195,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
                               quarterTurns: -1,
                             ),
-                            /*  FloatingActionButton(backgroundColor: KColors.mBlue, child: Icon(Icons.fastfood, color:Colors.white), onPressed: () {},),
-                          SizedBox(height: 10),
-                          FloatingActionButton(backgroundColor: KColors.primaryYellowColor, child: Icon(Icons.fastfood, color:Colors.white), onPressed: () {},)*/
                           ]),
                         ),
                       ]
@@ -260,69 +255,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
-  _buildRestaurantMenu(List<RestaurantSubMenuModel> data) {
+  _buildRestaurantMenu() {
     if (_firstTime) {
       _openDrawer();
       _firstTime = false;
     }
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {this.data= data;}));
-    /* return  ListView.builder(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      itemCount: data[currentIndex].foods.length,
-      itemBuilder: (BuildContext context, int index) {
-        return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
-      },
-      key: new Key(new DateTime.now().toIso8601String()),
-    );*/
-
-
-//      SingleChildScrollView(
-//        child: Column(
-//            children: <Widget>[
-    /*          Card(
-                              margin: EdgeInsets.all(10),
-                              child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                                padding: EdgeInsets.all(10),
-                                                child:Column(
-                                                  children: <Widget>[
-                                                    Container(height:30, width: 30, decoration: BoxDecoration(shape: BoxShape.circle,image: new DecorationImage(fit: BoxFit.cover, image: CachedNetworkImageProvider("https://www.bp.com/content/dam/bp-careers/en/images/icons/graduates-interns-instagram-icon-16x9.png")))),
-                                                    SizedBox(height: 5),
-                                                    Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
-                                                    SizedBox(height: 5),
-                                                    SizedBox(width: 2*MediaQuery.of(context).size.width/5, child: Text("WINGS'N SHAKE TOTSI",textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
-                                                    )
-                                                  ],
-                                                ))
-                                          ],
-                                        ),
-                                        Column(
-                                          children: <Widget>[
-                                            Row(children: <Widget>[Text("Working Hour:", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)), Text("11h00-21h00", style: TextStyle(fontSize: 12, color: Colors.black))]),
-                                            SizedBox(height: 5),
-                                            Container(padding: EdgeInsets.all(5), decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: Colors.blueAccent.shade700), child:Text("Closed", style: TextStyle(color: Colors.white, fontSize: 12)))
-                                          ],
-                                        )
-                                      ]
-                                  )
-                              )
-                          ),*/
-//              Container(
-//                child: Column(
-    /*children:  List<Widget>.generate(data[currentIndex].foods.length, (int index) {
-                      return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
-                    })*/
-//                ),
-//              )
-//            ]
-//        ));
 
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -345,7 +283,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   /* build food list widget */
   Widget _buildFoodListWidget({RestaurantFoodModel food}) {
     return Card(
-      elevation: 2,
+        elevation: 2,
         margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
         child:GestureDetector(
             child: Container(
@@ -505,7 +443,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }*/
 
   void _launchAddToBasketAnimation(RestaurantFoodModel food) {
-return;
+    return;
     var _myAnimationController = AnimationController (
         vsync: this,
         duration: Duration(seconds: 3));
@@ -518,21 +456,48 @@ return;
     _myAnimationController.forward();
 
     var vView = Positioned(
-     left: animation.value.dx,
+      left: animation.value.dx,
       top: animation.value.dy,
       child: Container(
-      height:50, width: 50,
-      decoration: BoxDecoration(
-          border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-          shape: BoxShape.circle,
-          image: new DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-          )
-      )),
+          height:50, width: 50,
+          decoration: BoxDecoration(
+              border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+              )
+          )),
     );
 
     _dynamicAnimatedFood.add(vView);
+  }
+
+  void showLoading (bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+    });
+  }
+
+  @override
+  void inflateMenu(List<RestaurantSubMenuModel> data) {
+
+    setState(() {
+      this.data = data;
+    });
+    showLoading(false);
+  }
+
+  @override
+  void networkError() {
+
+    showLoading(false);
+  }
+
+  @override
+  void systemError() {
+
+    showLoading(false);
   }
 
 }

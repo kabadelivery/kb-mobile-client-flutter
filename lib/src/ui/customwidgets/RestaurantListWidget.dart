@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/DialogPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
@@ -116,7 +117,7 @@ class RestaurantListWidget extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel),
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
       ),
     );
   }

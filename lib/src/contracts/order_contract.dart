@@ -45,15 +45,17 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       return;
     isWorking = true;
     try {
-      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, foods, address);
 
+
+      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, foods, address);
+      _orderConfirmationView.inflateBillingConfiguration(orderBillConfiguration);
     } catch (_) {
       /* login failure */
       print("error ${_}");
       if (_ == -2) {
-//    _loginView.loginFailure("Identifiants incorrects");
+        _orderConfirmationView.systemError();
       } else {
-//    _loginView.loginFailure("System error");
+        _orderConfirmationView.networkError();
       }
       isWorking = false;
     }

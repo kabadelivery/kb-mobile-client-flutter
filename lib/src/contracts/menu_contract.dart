@@ -1,0 +1,68 @@
+
+import 'dart:convert';
+
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
+import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
+import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
+import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
+import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:kaba_flutter/src/resources/order_api_provider.dart';
+
+class MenuContract {
+
+//  void login (String password, String phoneCode){}
+//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
+//  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
+  void fetchMenuWithRestaurantId(int restaurantId) {}
+}
+
+class MenuView {
+  void showLoading(bool isLoading) {}
+  /* void loginSuccess () {}
+  void loginFailure (String message) {}*/
+  void systemError () {}
+  void networkError () {}
+  void inflateMenu (List<RestaurantSubMenuModel> data) {}
+}
+
+
+/* login presenter */
+class MenuPresenter implements MenuContract {
+
+  bool isWorking = false;
+
+  MenuView _menuView;
+
+  MenuApiProvider provider;
+
+  MenuPresenter() {
+    provider = new MenuApiProvider();
+  }
+
+  set menuView(MenuView value) {
+    _menuView = value;
+  }
+
+  @override
+  Future fetchMenuWithRestaurantId(int restaurantId) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _menuView.showLoading(true);
+    try {
+      List<RestaurantSubMenuModel> menu = await provider.fetchRestaurantMenuList(restaurantId);
+      _menuView.inflateMenu(menu);
+    } catch (_) {
+      /* login failure */
+      print("error ${_}");
+      if (_ == -2) {
+        _menuView.systemError();
+      } else {
+        _menuView.networkError();
+      }
+      isWorking = false;
+    }
+  }
+
+}

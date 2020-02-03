@@ -27,24 +27,20 @@ class OrderApiProvider {
         food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
       });
 
+      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': foods.keys.elementAt(0).restaurant_entity.id, 'shipping_address': address.id});
+
+      print(_data.toString());
+
       final response = await client
           .post(ServerRoutes.LINK_COMPUTE_BILLING,
-        body:  json.encode({'food_command': food_quantity, 'restaurant_id': foods.keys.elementAt(0).restaurant_id, 'shipping_address': address.id}),
+        body:  _data,
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 10));
 
-//      jsonObject.put("food_id", entity.id);
-//      jsonObject.put("quantity", quantity);
-
-//      main_object.put("food_command", dataArray);
-//      main_object.put( "restaurant_id", restaurantEntity.id);
-//      main_object.put("shipping_address", deliveryAddress.id);
-
-
       print(response.body.toString());
       if (response.statusCode == 200) {
-
+        return OrderBillConfiguration.fromJson(json.decode(response.body)["data"]);
       } else
         throw Exception(-1); // there is an error in your request
     } else {

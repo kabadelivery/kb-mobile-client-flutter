@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
+import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -203,7 +204,7 @@ class RestaurantDetailsPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel),
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
       ),
     );
   }

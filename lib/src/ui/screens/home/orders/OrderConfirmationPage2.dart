@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -10,6 +11,7 @@ import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 
 
@@ -119,29 +121,95 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   _buildBill() {
 
     if (_orderBillConfiguration == null)
-      return Container(
+      return Container();
 
-
-      );
-    return Card(
+    /*return Card(
       child: Container(
         padding: EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Commande: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.order_price} FCFA", style: TextStyle(fontSize: 16))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Commande: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.command_pricing} FCFA", style: TextStyle(fontSize: 16))]),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Livraison: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontSize: 16))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Livraison: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.shipping_pricing} FCFA",  style: TextStyle(fontSize: 16))]),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${_orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${_orderBillConfiguration.remise} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
             SizedBox(height: 10),
             Container(height: 1, color: Colors.black,width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(left: 10, right: 10)),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.total_pricing} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
           ],
         ),
       ),
-    );
+    );*/
+    return Card(
+        child: Container(padding: EdgeInsets.all(10),
+          child: Column(children:<Widget>[
+//                      SizedBox(height: 10),
+//                      "/web/assets/app_icons/promo_large.gif"
+            (int.parse(_orderBillConfiguration?.remise) > 0 ? Container (
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                    )
+                )
+            ): Container ()),
+            Container(),
+            /* content */
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Montant Commande:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              /* check if there is promotion on Commande */
+              Row(
+                children: <Widget>[
+                  Text(_orderBillConfiguration?.command_pricing > _orderBillConfiguration?.promotion_pricing ? "(${_orderBillConfiguration?.command_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                  SizedBox(width: 5),
+                  Text(_orderBillConfiguration?.command_pricing > _orderBillConfiguration?.promotion_pricing ? "${_orderBillConfiguration?.promotion_pricing} FCFA" : "${_orderBillConfiguration?.command_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                ],
+              )
+            ]),
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Montant Livraison:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              /* check if there is promotion on Livraison */
+              Row(
+                children: <Widget>[
+                  Text(int.parse(_orderBillConfiguration?.shipping_pricing) > int.parse(_orderBillConfiguration?.promotion_shipping_pricing) ? "(${_orderBillConfiguration?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                  Text(int.parse(_orderBillConfiguration?.shipping_pricing) > int.parse(_orderBillConfiguration?.promotion_shipping_pricing) ? "${_orderBillConfiguration?.promotion_shipping_pricing} FCFA" : "${_orderBillConfiguration?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                ],
+              )
+            ]),
+            SizedBox(height: 10),
+            int.parse(_orderBillConfiguration?.remise) > 0 ?
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
+              /* check if there is remise */
+              Text("-${_orderBillConfiguration?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
+            ]) : Container(),
+
+            SizedBox(height: 10),
+            Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text("${_orderBillConfiguration?.total_pricing} F", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+            ]),
+            SizedBox(height: 10),
+            (int.parse(_orderBillConfiguration?.remise) > 0 ? Container (
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                    )
+                )
+            ): Container ()),
+          ]),
+        ));
   }
 
   _cookingTimeEstimation() {
@@ -253,6 +321,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     setState(() {
       _orderBillConfiguration = configuration;
     });
+    showLoading(false);
   }
 
 }

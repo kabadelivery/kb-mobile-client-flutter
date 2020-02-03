@@ -52,7 +52,6 @@ class CustomerUtils {
   }
 
 
-
   static Future<void> clearCustomerInformations () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("_loginResponse");

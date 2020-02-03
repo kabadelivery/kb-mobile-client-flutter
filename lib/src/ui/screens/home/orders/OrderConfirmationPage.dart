@@ -34,7 +34,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
   MyAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration orderBillConfiguration = OrderBillConfiguration.fake();
+  OrderBillConfiguration orderBillConfiguration;
 
   Map<RestaurantFoodModel, int> addons, foods;
 
@@ -146,15 +146,15 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Commande: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.order_price} FCFA", style: TextStyle(fontSize: 16))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Commande: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.command_pricing} FCFA", style: TextStyle(fontSize: 16))]),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Livraison: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontSize: 16))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Livraison: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.shipping_pricing} FCFA",  style: TextStyle(fontSize: 16))]),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${orderBillConfiguration.remise} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
             SizedBox(height: 10),
             Container(height: 1, color: Colors.black,width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(left: 10, right: 10)),
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.delivery_price} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.total_pricing} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
           ],
         ),
       ),

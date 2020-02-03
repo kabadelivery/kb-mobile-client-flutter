@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
@@ -28,7 +29,7 @@ var generalRoutes = {
   RetrievePasswordPage.routeName : (BuildContext context) => RetrievePasswordPage(),
   RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(),
   BestSellersPage.routeName : (BuildContext context) => BestSellersPage(),
-  RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(),
+  RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(presenter: MenuPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(),
   MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(),
   EditAddressPage.routeName : (BuildContext context) => EditAddressPage(),
