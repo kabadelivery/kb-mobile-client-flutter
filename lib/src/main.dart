@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: MyOrderWidget(command: CommandModel.fake()),
-//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter(),),
+//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
 //      home: HomeWelcomePage(presenter: HomeWelcomePresenter()),
     home: SplashPage(),
       routes: generalRoutes,

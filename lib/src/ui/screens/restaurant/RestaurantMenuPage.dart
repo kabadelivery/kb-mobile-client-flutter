@@ -125,8 +125,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                             _innerDrawerKey.currentState.toggle();
                             this.currentIndex = index;
                           });},
-                          child: index == this.currentIndex ? Container(color: KColors.primaryColor, padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8), child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white), textAlign: TextAlign.center)) :
-                          Container(color: data[currentIndex].promotion!=0 ? KColors.primaryYellowColor:Colors.transparent, padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8), child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[currentIndex].promotion==0 ? Colors.black : KColors.primaryColor), textAlign: TextAlign.center)));
+                          child: index == this.currentIndex ?
+                          Container(
+                              color: KColors.primaryColor,
+                              padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8),
+                              child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white), textAlign: TextAlign.center)) :
+                          Container(
+                              color: data[index].promotion!=0 ? KColors.primaryYellowColor:Colors.transparent,
+                              padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8),
+                              child: Text(data[index].name?.toUpperCase(),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[index].promotion==0 ? Colors.black : KColors.primaryColor),
+                                  textAlign: TextAlign.center)));
                     })
             )
         ),
@@ -140,7 +149,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   appBar: appBar,
                   body: Stack(
                       children: <Widget>[
-                      /*  StreamBuilder(
+                        /*  StreamBuilder(
                             stream: restaurantBloc.restaurantMenu.take(1),
                             builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
                               if (snapshot.hasData) {
@@ -154,8 +163,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                               return Center(child: CircularProgressIndicator());
                             }
                         ),*/
-                      isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);})
-                     : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);}) : _buildRestaurantMenu()),
+                        isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);})
+                            : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);}) : _buildRestaurantMenu()),
                         Positioned(
                           right:15,
                           top: 10,
@@ -285,7 +294,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     return Card(
         elevation: 2,
         margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
-        child:GestureDetector(
+        child:InkWell(
             child: Container(
                 decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1), /*boxShadow: [
                   BoxShadow(
@@ -312,7 +321,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           ),
                         ],
                       ),
-                      trailing: IconButton(icon: Icon(Icons.add_shopping_cart, color: KColors.primaryColor), onPressed: (){_addFoodToChart(food);}, splashColor: KColors.primaryYellowColor),
+                      trailing: InkWell(child: Container(width: 50, height: 50,color: Colors.blue,padding: EdgeInsets.all(5),child: IconButton(icon: Icon(Icons.add_shopping_cart, color: KColors.primaryColor))), onTap: (){_addFoodToChart(food);}, splashColor: KColors.primaryYellowColor),
                       title:Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,9 +331,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           Row(
                             children: <Widget>[
                               Row(children: <Widget>[
-                                Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
                                 (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
                                     : Container()),
+                                */
+
+                                Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none ,color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                SizedBox(width: 5),
+                                (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal))
+                                    : Container()),
+                                SizedBox(width: 5),
+
                                 Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                               ]),
                             ],

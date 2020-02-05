@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   MeAccountPage meAccountPage;
 
   List<StatefulWidget> pages;
-  int _selectedIndex = 2;
+  int _selectedIndex = 0;
 
   final PageStorageBucket bucket = PageStorageBucket();
 

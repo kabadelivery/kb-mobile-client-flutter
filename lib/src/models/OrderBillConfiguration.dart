@@ -19,6 +19,26 @@ class OrderBillConfiguration {
   int cooking_time;
   int distance;
 
+
+  static OrderBillConfiguration fake() {
+    OrderBillConfiguration p = OrderBillConfiguration();
+    p.command_pricing = 4500;
+    p.shipping_pricing = "1000";
+    p.promotion_pricing = 3000;
+    p.remise = "30";
+    p.account_balance = 10000;
+    p.prepayed = true;
+    p.total_pricing = 2000;
+    p.pay_at_delivery = true;
+    p.trustful = 1;
+    p.distance = 30;
+    p.max_pay = "10000";
+    p.cooking_time = 26;
+    p.promotion_shipping_pricing = "400";
+    return p;
+  }
+
+
 //      {
 //    "error": 0,
 //    "message": "",
@@ -82,17 +102,5 @@ class OrderBillConfiguration {
   String toString() {
     return toJson().toString();
   }
-
-  /*static OrderBillConfiguration fake() {
-    OrderBillConfiguration p = OrderBillConfiguration();
-    p.order_price = "4500";
-    p.delivery_price = "1000";
-    p.is_promo = true;
-    p.discount = 30;
-    p.your_balance = "10000";
-    p.can_prepay = true;
-    p.can_postpay = true;
-    return p;
-  }*/
 
 } 

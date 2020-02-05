@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
@@ -27,10 +28,10 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
   CustomerModel customer;
 
-  OrderConfirmationPage2({Key key, this.presenter, this.foods, this.addons, this.totalPrice}) : super(key: key);
+  OrderConfirmationPage2({Key key, this.presenter, this.foods, this.addons, this.totalPrice = 3000}) : super(key: key);
 
   @override
-  _OrderConfirmationPage2State createState() => _OrderConfirmationPage2State(totalPrice, foods, addons);
+  _OrderConfirmationPage2State createState() => _OrderConfirmationPage2State();
 }
 
 class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> implements OrderConfirmationView {
@@ -39,15 +40,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration;
+  OrderBillConfiguration _orderBillConfiguration; // = OrderBillConfiguration.fake();
 
-  Map<RestaurantFoodModel, int> addons, foods;
-
-  int totalPrice;
+//  Map<RestaurantFoodModel, int> addons, foods;
 
   bool isConnecting = false;
 
-  _OrderConfirmationPage2State(this.totalPrice, this.foods, this.addons);
+  _OrderConfirmationPage2State();
 
   @override
   void initState() {
@@ -63,7 +62,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar (
-            leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {}),
+            leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {Navigator.pop(context);}),
             backgroundColor: KColors.primaryYellowColor ,
             title: Text("Confirm Order")
         ),
@@ -91,7 +90,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         _selectedAddress = results['selection'];
       });
       // launch request for retrieving the delivery prices and so on.
-      widget.presenter.computeBilling(widget.customer, foods, _selectedAddress);
+      widget.presenter.computeBilling(widget.customer, widget.foods, _selectedAddress);
       showLoading(true);
     }
   }
@@ -142,7 +141,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         ),
       ),
     );*/
-    return Card(
+    return Card(margin: EdgeInsets.only(left: 10, right: 10),
         child: Container(padding: EdgeInsets.all(10),
           child: Column(children:<Widget>[
 //                      SizedBox(height: 10),
@@ -178,6 +177,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               Row(
                 children: <Widget>[
                   Text(int.parse(_orderBillConfiguration?.shipping_pricing) > int.parse(_orderBillConfiguration?.promotion_shipping_pricing) ? "(${_orderBillConfiguration?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                  SizedBox(width: 5),
                   Text(int.parse(_orderBillConfiguration?.shipping_pricing) > int.parse(_orderBillConfiguration?.promotion_shipping_pricing) ? "${_orderBillConfiguration?.promotion_shipping_pricing} FCFA" : "${_orderBillConfiguration?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
               )
@@ -250,7 +250,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 Text("Prix Commande", style: TextStyle(color: Colors.black, fontSize: 14)),
                 Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                   IconButton(icon:Icon(Icons.attach_money, color: KColors.primaryColor), onPressed: () {},),
-                  Text("${totalPrice}F", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
+                  Text("${widget.totalPrice}F", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
                 ])
               ],
             ),
@@ -278,12 +278,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               _buildBill(),
               SizedBox(height: 10),
               /* solde insuffisant  - CLIGNOTER CE CONTAINER */
+              _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ?
               Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Column(children: <Widget>[
-                    Text("295 FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
+                    Text("${_orderBillConfiguration?.account_balance} FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
                     SizedBox(height: 20),
-                    Text("Solde insuffisant ! ", style: TextStyle(color: Colors.black, fontSize: 18))
-                  ]))
+                    Text("${ _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ? "Solde insuffisant !" : "" }", style: TextStyle(color: Colors.black, fontSize: 18))
+                  ])) :
+              // we just tell him that he can prepay and stuffs.
+              Container(),
+              _buildPurchaseButtons()
             ])
       ),
     );
@@ -322,6 +326,63 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       _orderBillConfiguration = configuration;
     });
     showLoading(false);
+  }
+
+  _buildPurchaseButtons() {
+
+    if (_orderBillConfiguration == null)
+      return Container();
+
+
+    return Column(children: <Widget>[
+      // pay at arrival button
+      _orderBillConfiguration?.pay_at_delivery ?
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)),side: BorderSide(color: Colors.transparent)),
+              padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: KColors.mBlue, splashColor: Colors.white, child: Row(
+            children: <Widget>[
+              Icon(Icons.directions_bike, color: Colors.white),
+              SizedBox(width: 5),
+              Text("PAY AT DELIVERY", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ), onPressed: () {}) ,
+        ],
+      ) : Container(child: Text("you can't pay at delivery.")),
+      SizedBox(height: 20),
+      // pay immediately button
+      _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration.prepayed && _orderBillConfiguration?.account_balance > _orderBillConfiguration?.total_pricing ?
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)),side: BorderSide(color: Colors.transparent)),
+              padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),
+              color: KColors.primaryColor,
+              splashColor: Colors.white, child:
+          Row(
+            children: <Widget>[
+              Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
+              SizedBox(width: 10),
+              Text("PAY NOW", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ), onPressed: () {}),
+        ],
+      ) : Container(child: Text("You can't prepay because ... ", style: TextStyle(fontSize: 16,color: KColors.primaryColor, fontWeight: FontWeight.bold),)),
+      SizedBox(height: 50)
+    ]);
+  }
+
+  /// start activity for result and get password for the next operation
+  ///
+  /// 1 : for pay now
+  /// 2 : for pay at delivery
+  ///
+  _retrievePassword() {
+
+
   }
 
 }

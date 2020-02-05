@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kaba_flutter/src/blocs/HomeScreenBloc.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
+import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
@@ -73,7 +75,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 color: Colors.white.withAlpha(60)
             ),
             padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
-            child:TextField(decoration:InputDecoration.collapsed(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 8), enabled: false,),
+            child:TextField(decoration:InputDecoration.collapsed(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,),
           ),
           leading: IconButton(icon: SizedBox(
               height: 25,
@@ -214,13 +216,16 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                             items: data.slider.map((admodel) {
                               return Builder(
                                 builder: (BuildContext context) {
-                                  return Container(
-                                      height: 9*MediaQuery.of(context).size.width/16,
-                                      width: 9*MediaQuery.of(context).size.width,
-                                      child:CachedNetworkImage(
-                                          imageUrl: Utils.inflateLink(admodel.pic),
-                                          fit: BoxFit.cover
-                                      )
+                                  return GestureDetector(
+                                    onTap: ()=>_jumpToAdsList(data.slider),
+                                    child: Container(
+                                        height: 9*MediaQuery.of(context).size.width/16,
+                                        width: MediaQuery.of(context).size.width,
+                                        child:CachedNetworkImage(
+                                            imageUrl: Utils.inflateLink(admodel.pic),
+                                            fit: BoxFit.cover
+                                        )
+                                    ),
                                   );
                                 },
                               );
@@ -346,7 +351,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                   )
                                 ]
                             ),
-                            TableRow(
+                           false ? TableRow(
                                 children: <TableCell>[
                                   TableCell(
                                     child: Container(
@@ -379,7 +384,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                     ),
                                   )
                                 ]
-                            ),
+                            ) : Container(),
                           ],
                         ),
                       )
@@ -469,6 +474,16 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   void mToast(String message) {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  _jumpToAdsList(List<AdModel> slider) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImagesPreviewPage(data: slider),
+      ),
+    );
   }
 
 }
