@@ -147,7 +147,7 @@ class GroupAdsWidget extends StatelessWidget {
                                         shape: BoxShape.rectangle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://lh3.googleusercontent.com/proxy/tovoF2Sr6urlCZekpPEZEt3Ziihsy55UvqhBcpmsP9NQL4cwwFAngAXs_78cLwsavCoBQgTBrMFWsZntrukiz5QDwwfVXfYv")
+                                            image: CachedNetworkImageProvider("https://photosfine.files.wordpress.com/2012/04/white-background-fruit-and-vegetables-18.jpg")
                                         )
                                     )
                                 ),

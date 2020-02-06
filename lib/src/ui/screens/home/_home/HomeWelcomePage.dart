@@ -70,12 +70,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     return Scaffold(
         appBar: AppBar(
           title: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
-                border: new Border.all(color: Colors.transparent),
-                color: Colors.white.withAlpha(60)
+            decoration: BoxDecoration(
+                border: new Border(bottom: BorderSide(color: Colors.white, width: 2)),
+//                color: Colors.white.withAlpha(60)
             ),
-            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
-            child:TextField(decoration:InputDecoration.collapsed(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,),
+//            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
+
+            child:Container(child: TextField(decoration:InputDecoration(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
+//            child:TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,),
           ),
           leading: IconButton(icon: SizedBox(
               height: 25,
@@ -86,7 +88,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               )), onPressed: (){_jumpToScanPage();}),
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
-            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
+//            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
 //            IconButton(icon: Icon(Icons.search, color: Colors.white), tooltip: "Search", onPressed: () {}),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
@@ -351,7 +353,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                   )
                                 ]
                             ),
-                           false ? TableRow(
+                            // BON PLANS ET CINEMA
+                            /* TableRow(
                                 children: <TableCell>[
                                   TableCell(
                                     child: Container(
@@ -384,7 +387,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                     ),
                                   )
                                 ]
-                            ) : Container(),
+                            ) */
                           ],
                         ),
                       )

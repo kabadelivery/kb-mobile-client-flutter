@@ -103,6 +103,10 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> {
                 ),
               ),
             ),
+            Positioned(top: 0,right: 10,
+                child: OutlineButton(onPressed: () {  }, color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
+                child: Text(_getVoirMenuTextFromAd(widget.data[_carousselPageIndex]), style: TextStyle(color: Colors.white)))
+            ),
             Positioned(
                 bottom: 10,
                 left: 0,
@@ -125,6 +129,10 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> {
     setState(() {
       _carousselPageIndex = index;
     });
+  }
+
+  String _getVoirMenuTextFromAd(AdModel data) {
+
   }
 
 }
