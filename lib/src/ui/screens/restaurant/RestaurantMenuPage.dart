@@ -32,9 +32,7 @@ class RestaurantMenuPage extends StatefulWidget {
   RestaurantModel restaurant;
   MenuPresenter presenter;
 
-  RestaurantMenuPage({Key key, this.title, this.restaurant, this.presenter}) : super(key: key);
-
-  final String title;
+  RestaurantMenuPage({Key key, this.restaurant, this.presenter}) : super(key: key);
 
   @override
   _RestaurantMenuPageState createState() => _RestaurantMenuPageState(restaurant);

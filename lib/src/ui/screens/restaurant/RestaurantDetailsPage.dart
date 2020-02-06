@@ -210,14 +210,17 @@ class RestaurantDetailsPage extends StatelessWidget {
   }
 
   _buildCommentsList(List<CommentModel> comments) {
+
     var list = List<Widget>.generate(comments.length, (int index) {
       if (!comments[index].hidden)
         return RestaurantCommentWidget(comment: comments[index]);
       return Container();
     })?.reversed;
+
     if (list!= null && list != Container()) {
       return list;
     }
+
   }
 
 }

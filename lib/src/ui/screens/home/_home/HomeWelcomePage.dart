@@ -1,20 +1,19 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:kaba_flutter/src/blocs/HomeScreenBloc.dart';
+import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
-import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
@@ -69,16 +68,22 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     /* init fetch data bloc */
     return Scaffold(
         appBar: AppBar(
-          title: Container(
-            decoration: BoxDecoration(
-                border: new Border(bottom: BorderSide(color: Colors.white, width: 2)),
-//                color: Colors.white.withAlpha(60)
-            ),
+          title: SizedBox(height: 70,
+//            margin: EdgeInsets.only(bottom: 30, top: 30),
+//            decoration: BoxDecoration(
+//                border: new Border(bottom: BorderSide(color: Colors.white, width: 2)),
+//                color: Colors.yellow
+//            ),
 //            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
 
-            child:Container(child: TextField(decoration:InputDecoration(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
-//            child:TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,),
-          ),
+              child:Container( margin: EdgeInsets.only(bottom: 15, top: 20),
+                decoration: BoxDecoration(
+                  border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
+//                color: Colors.white.withAlpha(30)
+                ),
+                child:Container(child: TextField(decoration:InputDecoration(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+//                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
+              )),
           leading: IconButton(icon: SizedBox(
               height: 25,
               width: 25,
@@ -484,9 +489,21 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImagesPreviewPage(data: slider),
+        builder: (context) => ImagesPreviewPage(data: slider, presenter: AdsViewerPresenter()),
       ),
     );
+  }
+
+  _textSizeWithText(String feed) {
+
+    double ssize = 0;
+
+    if (feed != null)
+      ssize = 1.0 * feed?.length;
+    // from 8 to 16 according to the size.
+    // 8 for more than ...
+    // to 16 as maximum.
+    return  (240 - 2*ssize)/13;
   }
 
 }

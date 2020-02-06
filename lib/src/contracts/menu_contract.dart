@@ -52,6 +52,7 @@ class MenuPresenter implements MenuContract {
     _menuView.showLoading(true);
     try {
       List<RestaurantSubMenuModel> menu = await provider.fetchRestaurantMenuList(restaurantId);
+      // also get the restaurant entity here.
       _menuView.inflateMenu(menu);
     } catch (_) {
       /* login failure */

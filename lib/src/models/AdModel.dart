@@ -3,12 +3,13 @@ import 'dart:core';
 
 class AdModel {
 
-  final int TYPE_REPAS = 1;
-  final int TYPE_MENU = 2;
-  final int TYPE_ARTICLE = 3;
-  final int TYPE_RESTAURANT = 5;
-  final int BEST_SELLER = 90;
-  final int EVENEMENT = 91;
+  static const int TYPE_REPAS = 1;
+  static const int TYPE_MENU = 2;
+  static const int TYPE_ARTICLE = 3;
+  static const int TYPE_RESTAURANT = 5;
+  static const int TYPE_ARTICLE_WEB = 6;
+  static const int BEST_SELLER = 90;
+  static const int EVENEMENT = 91;
 
   int id;
   String name;
