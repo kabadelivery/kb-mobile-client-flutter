@@ -156,6 +156,11 @@ class Utils {
     return res;
   }
 
+  static String inflatePrice(String price) {
+return price;
+
+  }
+
 
 }
 

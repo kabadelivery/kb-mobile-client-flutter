@@ -46,12 +46,13 @@ class AdsViewerPresenter implements AdsViewerContract {
   @override
   Future<void> loadRestaurantFromId(int restaurantId, int DESTINATION/*can be details or menu*/) async {
 
+    _adsViewerView.showLoading(true);
     /* make network request, create a lib that makes network request. */
     if (isWorking)
       return;
     isWorking = true;
     try {
-      RestaurantModel restaurantModel = await provider.loadRestaurantFromId(restaurantId);
+      RestaurantModel restaurantModel = await provider.loadRestaurantFromId(restaurantId, DESTINATION);
       if (restaurantModel != null) {
        if (DESTINATION == 1)
         _adsViewerView.updateRestaurantForDetails(restaurantModel);
@@ -68,6 +69,7 @@ class AdsViewerPresenter implements AdsViewerContract {
   @override
   Future<void> loadFoodFromId(int foodId) async {
 
+    _adsViewerView.showLoading(true);
     /* make network request, create a lib that makes network request. */
     if (isWorking)
       return;

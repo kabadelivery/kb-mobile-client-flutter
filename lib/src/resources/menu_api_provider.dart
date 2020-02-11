@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
+import 'package:kaba_flutter/src/models/BestSellerModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
@@ -28,6 +29,34 @@ class MenuApiProvider {
           Iterable lo = json.decode(response.body)["data"]["menus"];
           List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
           return restaurantSubModel;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+
+
+  Future<List<BestSellerModel>> fetchBestSellerList() async {
+
+    DebugTools.iPrint("entered fetchBestSellerList");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_BESTSELLERS_LIST,
+        body: json.encode([]),
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"];
+          List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
+          return bestSellers;
         } else
           throw Exception(-1); // there is an error in your request
       } else {

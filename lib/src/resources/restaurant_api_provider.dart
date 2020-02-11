@@ -41,14 +41,14 @@ class RestaurantApiProvider {
   }
 
   /// load restaurant from Id
-  Future<RestaurantModel> loadRestaurantFromId(int restaurantId) async {
+  Future<RestaurantModel> loadRestaurantFromId(int restaurantIdOrMenuId, int DESTINATION) async {
+
 
     DebugTools.iPrint("entered loadRestaurantFromId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_RESTAURANT_DETAILS,
-        body: json.encode({'id': restaurantId}),
-//          headers: Utils.getHeadersWithToken()
+          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
+        body: DESTINATION == 1 ? json.encode({'id': restaurantIdOrMenuId}) : json.encode({'menu_id': restaurantIdOrMenuId}),
       )
           .timeout(const Duration(seconds: 10));
       print(response.body.toString());
@@ -57,7 +57,7 @@ class RestaurantApiProvider {
         if (errorCode == 0) {
 //          print(json.decode(response.body)["data"]);
 //          print(json.decode(response.body)["data"][0]);
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["menu"]);
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
           return restaurantModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -73,11 +73,11 @@ class RestaurantApiProvider {
   /// load food from id
   Future<RestaurantFoodModel> loadFoodFromId(int foodId) async {
 
-    DebugTools.iPrint("entered loadFoodFromId");
+    DebugTools.iPrint("entered loadFoodFromId ${foodId} ");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
-        body: json.encode({'id': foodId}),
+        body: json.encode({'food_id': foodId}),
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 10));

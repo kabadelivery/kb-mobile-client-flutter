@@ -122,7 +122,6 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                 child: OutlineButton(onPressed: () => _onAdsButtonPressed(widget.data[_carousselPageIndex]), color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
                     child: Row(
                       children: <Widget>[
-                        Text(_getVoirMenuTextFromAd(widget.data[_carousselPageIndex]), style: TextStyle(color: Colors.white)),
                         /* circular progress */
                         isLoading ? Row(
                           children: <Widget>[
@@ -130,6 +129,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                             SizedBox(height: 20, width: 20,child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)))
                           ],
                         ) : Container(),
+                        Text(_getVoirMenuTextFromAd(widget.data[_carousselPageIndex]), style: TextStyle(color: Colors.white)),
                       ],
                     ))) : Container(),
             Positioned(
@@ -190,10 +190,10 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
       case AdModel.TYPE_ARTICLE_WEB:
       // go the article page.
         break;
-      case AdModel.TYPE_MENU:
+      case AdModel.TYPE_RESTAURANT:
         widget.presenter.loadRestaurantFromId(data.entity_id, /* for menu */1);
         break;
-      case AdModel.TYPE_RESTAURANT:
+      case AdModel.TYPE_MENU:
       // use the id and get the restaurant id for here.
         widget.presenter.loadRestaurantFromId(data.entity_id, /* for details */2);
         break;

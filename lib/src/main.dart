@@ -3,11 +3,13 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/HomeWelcomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/MeAccountPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
 //      home: HomeWelcomePage(presenter: HomeWelcomePresenter()),
     home: SplashPage(),
+   //      home: BestSellersPage(presenter: BestSellerPresenter(),),
       routes: generalRoutes,
     );
   }

@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
+import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
@@ -181,7 +182,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void _jumpToBestSeller() {
-    Navigator.pushNamed(context, BestSellersPage.routeName);
+//    Navigator.pushNamed(context, BestSellersPage.routeName);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BestSellersPage (presenter: BestSellerPresenter()),
+      ),
+    );
   }
 
   Future<void> _refresh() async {
@@ -505,7 +512,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // to 16 as maximum.
     return  (240 - 2*ssize)/13;
   }
-
 }
 
 
@@ -523,6 +529,8 @@ class KabaRoundTopClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(KabaRoundTopClipper oldClipper) => true;
 }
+
+
 void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
 
   Navigator.push(
