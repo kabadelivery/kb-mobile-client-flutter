@@ -4,26 +4,28 @@ import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dar
 
 
 class RestaurantModel {
-  
-   String name;
-   int id;
-   String pic;
-   String theme_pic;
-   String description;
-   int contactId;
-   String address;
-   String email;
-   String main_contact;
-   String working_hour;
-   String distance;
-   String menu_foods;
-   int is_open;
-   int coming_soon;
-   double stars;
-   int votes;
-   int is_promo;
-   int is_new;
 
+  String name;
+  int id;
+  String pic;
+  String theme_pic;
+  String description;
+  int contactId;
+  String address;
+  String email;
+  String main_contact;
+  String working_hour;
+  String distance;
+  String menu_foods;
+  int is_open;
+  int coming_soon;
+  double stars;
+  int votes;
+  int is_promo;
+  int is_new;
+
+
+//  RestaurantModel({});
 
   RestaurantModel({this.id, this.name, this.pic, this.contactId, this.email,
     this.distance, this.is_open, this.stars, this.votes, this.theme_pic,

@@ -71,8 +71,8 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                   ]
                               )),*/
                           /* space for those white backgroud images */
-                          SizedBox(height: 3),
-                          Container(
+                          /*    SizedBox(height: 3),
+                         Container(
                             color: Colors.grey.shade300.withAlpha(50),
                             child: Row(mainAxisSize: MainAxisSize.max,children: <Widget>[
                               Expanded(
@@ -120,7 +120,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                 ),
                               ),
                             ]),
-                          )
+                          )*/
                         ])
                 ),
 //                 title

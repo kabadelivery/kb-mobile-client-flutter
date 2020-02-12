@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
+import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
@@ -22,6 +23,8 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+
+import 'events/EventsPage.dart';
 
 class HomeWelcomePage extends StatefulWidget {
 
@@ -191,6 +194,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     );
   }
 
+  void _jumpToEvents() {
+//    Navigator.pushNamed(context, BestSellersPage.routeName);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EvenementPage (presenter: EvenementPresenter()),
+      ),
+    );
+  }
+
+
   Future<void> _refresh() async {
     widget.presenter.fetchHomePage();
 //    homeScreenBloc.fetchHomeScreenModel();
@@ -337,7 +351,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: <Widget>[
-                                          GestureDetector(
+                                          InkWell(
                                               child:Container(
                                                   child: Column(
                                                     children: <Widget>[
@@ -345,19 +359,23 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                                       Container(
                                                         padding: EdgeInsets.all(5),
                                                         height:90, width: 120,
-                                                        child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://i2.wp.com/assemblee-messianique.fr/wp-content/uploads/2018/09/globe-png-transparent-background-8.png?ssl=1"),
+                                                        child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
                                                       ),
                                                     ],
                                                   )), onTap: _jumpToBestSeller),
-                                          Column(
-                                            children: <Widget>[
-                                              Text("EVENEMENTS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
-                                              Container(
-                                                padding: EdgeInsets.all(5),
-                                                height:90, width: 120,
-                                                child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://tz5spe4rrwpn7tzx-zippykid.netdna-ssl.com/wp-content/uploads/2019/05/grad-cap-1280x960.png"),
+                                          InkWell(onTap: _jumpToEvents,
+                                            child: Container(
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text("EVENEMENTS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
+                                                  Container(
+                                                    padding: EdgeInsets.all(5),
+                                                    height:90, width: 120,
+                                                    child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ],
                                       ),

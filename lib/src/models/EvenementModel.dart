@@ -5,7 +5,8 @@ import 'package:kaba_flutter/src/models/AdModel.dart';
 
 class EvenementModel extends AdModel {
 
- String category, created_at;
+ String category;
+ int created_at;
 
  EvenementModel(int id, String name, String link, String description, String pic, String food_json, int type, int entity_id,this.category, this.created_at) :
        super(id:id, name:name, link:link, description:description, pic:pic, food_json:food_json, type:type, entity_id:entity_id);
@@ -21,7 +22,7 @@ class EvenementModel extends AdModel {
    type = json['type'];
    entity_id = json['entity_id'];
    category = json['category'];
-   created_at = json['created_at'];
+   created_at = json['created_at'] as int;
  }
 
  Map toJson () => {
@@ -34,7 +35,7 @@ class EvenementModel extends AdModel {
    "type" : (id as int),
    "entity_id" : entity_id,
    "category" : category,
-   "created_at" : created_at,
+   "created_at" : created_at as int,
  };
 
 

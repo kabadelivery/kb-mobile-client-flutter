@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'dart:core';
 import 'package:kaba_flutter/src/models/AdModel.dart';
+import 'package:kaba_flutter/src/models/EvenementModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 
 
@@ -20,15 +21,17 @@ class HomeScreenModel {
   String feed;
   List<RestaurantModel> resto;
   List<AdModel> slider;
-  List<AdModel> kaba_pub;
+//  List<AdModel> kaba_pub;
   List<GroupAdsModel> groupad;
   List<HomeScreenSubMenuModel> subMenus;
+  AdModel event, promotion;
 
   HomeScreenModel({this.serial_home,
     this.feed,
     this.slider,
     this.resto,
-    this.kaba_pub,
+    this.event,
+    this.promotion,
     this.groupad,
     this.subMenus});
 
@@ -45,8 +48,9 @@ class HomeScreenModel {
     l = json["slider"];
     slider = l?.map((slider_model) => AdModel.fromJson(slider_model))?.toList();
 
-    l = json["kaba_pub"];
-    kaba_pub = l?.map((kaba_pub) => AdModel.fromJson(kaba_pub))?.toList();
+    event = EvenementModel.fromJson(json["event"]);
+
+    promotion = EvenementModel.fromJson(json["promotion"]);
 
     l = json["groupad"];
     groupad = l?.map((groupad) => GroupAdsModel.fromJson(groupad))?.toList();
@@ -60,7 +64,8 @@ class HomeScreenModel {
     "feed" : feed,
     "resto" : resto,
     "slider" : slider,
-    "kaba_pub" : kaba_pub,
+    "promotion" : promotion.toJson(),
+    "event" : event.toJson(),
     "groupad" : groupad,
     "subMenus" : subMenus,
   };

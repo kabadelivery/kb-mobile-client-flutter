@@ -30,12 +30,13 @@ class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
 
   RestaurantModel restaurant;
+
   MenuPresenter presenter;
 
-  RestaurantMenuPage({Key key, this.restaurant, this.presenter}) : super(key: key);
+  RestaurantMenuPage({Key key, this.presenter, this.restaurant}) : super(key: key);
 
   @override
-  _RestaurantMenuPageState createState() => _RestaurantMenuPageState(restaurant);
+  _RestaurantMenuPageState createState() => _RestaurantMenuPageState();
 }
 
 class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerProviderStateMixin implements MenuView {
@@ -51,7 +52,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   Offset _menuBasketOffset;
 
   /* add data */
-  RestaurantModel restaurant;
   List<RestaurantSubMenuModel> data;
   int currentIndex = 0;
 
@@ -60,7 +60,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   int ALL = 3, FOOD=1, ADDONS = 2;
 
-  _RestaurantMenuPageState(this.restaurant);
+  AnimationController _controller;
+
+  List<Widget> _animationTempViews;
+
 
   /* selected foods */
   Map<RestaurantFoodModel, int> food_selected = Map();
@@ -83,10 +86,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     super.initState();
     _menuBasketKey = GlobalKey();
     widget.presenter.menuView = this;
-    widget.presenter.fetchMenuWithRestaurantId(restaurant.id);
+    widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+
+    _animationTempViews = [];
 
     _dynamicAnimatedFood = <Widget>[];
-    _animationController = <AnimationController>[];
+//    _animationController = <AnimationController>[];
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
   }
 
   @override
@@ -98,7 +104,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         SizedBox(width: 10),
         Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-            child: Text(restaurant.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)))]), onTap: _openDrawer),
+            child: Text(widget.restaurant.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)))]), onTap: _openDrawer),
       leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
       actions: <Widget>[
         IconButton(key: _menuBasketKey,icon: Icon(Icons.shopping_cart, color: Colors.white), onPressed: () => _showMenuBottomSheet(ALL))
@@ -161,8 +167,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                               return Center(child: CircularProgressIndicator());
                             }
                         ),*/
-                        isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);})
-                            : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);}) : _buildRestaurantMenu()),
+                        isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(widget.restaurant);})
+                            : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(widget.restaurant);}) : _buildRestaurantMenu()),
                         Positioned(
                           right:15,
                           top: 10,
@@ -204,6 +210,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                             ),
                           ]),
                         ),
+                        /* list of views that i create and remove programmatically. */
                       ]
                   ),
                 ),
@@ -458,7 +465,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }*/
 
   void _launchAddToBasketAnimation(RestaurantFoodModel food) {
-    return;
+
     var _myAnimationController = AnimationController (
         vsync: this,
         duration: Duration(seconds: 3));
