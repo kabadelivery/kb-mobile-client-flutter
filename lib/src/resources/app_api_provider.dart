@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
+import 'package:kaba_flutter/src/models/EvenementModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
@@ -92,6 +93,34 @@ class AppApiProvider {
     } else {
       throw Exception(-2); // you have no network
     }
+  }
+
+  Future<List<EvenementModel>> fetchEvenementList() async {
+
+    /* get the events and show it */
+    DebugTools.iPrint("entered fetchEvenementList");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_EVENEMENTS_LIST).timeout(const Duration(seconds: 10));
+
+      print(response.body.toString());
+
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"];
+          List<EvenementModel> restaurantSubModel = lo?.map((comment) => EvenementModel.fromJson(comment))?.toList();
+          return restaurantSubModel;
+        }
+        else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+
   }
 
 }

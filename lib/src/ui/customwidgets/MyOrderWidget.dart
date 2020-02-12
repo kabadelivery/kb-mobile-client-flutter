@@ -41,7 +41,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
       InkWell(
         onTap: ()=> _jumpToCommandDetails(command),
         child: Container(
-          padding: EdgeInsets.only(top:100, bottom:100),
+          padding: EdgeInsets.only(bottom:10),
           child: Center(
             child: (Card(
                 elevation: 8.0,
@@ -148,7 +148,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   String _getLastModifiedDate(CommandModel command) {
-   return Utils.readTimestamp(int.parse(command?.last_update));
+    return Utils.readTimestamp(int.parse(command?.last_update));
   }
 
   _jumpToCommandDetails(CommandModel command) {
@@ -172,44 +172,59 @@ class SingleOrderFoodWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(padding: EdgeInsets.only(top:10,bottom:10,left:5, right:5),
+    return Container(padding: EdgeInsets.only(top:10,bottom:10,left:5, right:5), width: MediaQuery.of(context).size.width,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             /* name and picture */
-            Row(children: <Widget>[
-              Container(
-                  height: 65, width: 65,
-                  decoration: BoxDecoration(
-                      border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-                      )
-                  )
+            Flexible(flex: 7,
+              child: Row(children: <Widget>[
+
+                /* PICTURE */
+               Container(
+                      height: 65, width: 65,
+                      decoration: BoxDecoration(
+                          border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                          )
+                  ),
+                ),
+                SizedBox(width: 10),
+
+                /* NAME AND PRICE ZONE */
+              Flexible(flex: 2,
+                child: Container(
+                      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+
+                        /* food name */
+                        Text("${food.name?.toUpperCase()}", overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, maxLines: 2, style: TextStyle(fontSize: 16, color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+
+                        /* food price*/
+                        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                          /* price has a line on top in case */
+                          Text("${food?.price}", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
+                          SizedBox(width: 5),
+                          (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
+                              : Container()),
+                          Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                        ]),
+                      ]),
+                    ),
               ),
-              SizedBox(width: 10,),
-              Column(mainAxisAlignment: MainAxisAlignment.start,children: <Widget>[
-                Text("${food.name}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16, color: KColors.primaryColor, fontWeight: FontWeight.bold)),
-                Row(children: <Widget>[
-                  /* price has a line on top in case */
-                  Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
-                 SizedBox(width: 5),
-                  (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
-                      : Container()),
-                  Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
-                ]),
-              ])
-            ]),
-            /* quantity and cross */
-            RichText(
-              text: new TextSpan(
-                text: 'X ',
-                style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                children: <TextSpan>[
-                  TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                ],
-              ),
+              ]),
+            ),
+
+            /* QUANTITY */
+           RichText(
+                text: new TextSpan(
+                  text: 'X ',
+                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                  ],
+                ),
             ),
           ]
       ),

@@ -231,7 +231,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                               return Builder(
                                 builder: (BuildContext context) {
                                   return GestureDetector(
-                                    onTap: ()=>_jumpToAdsList(data.slider),
+                                    onTap: ()=>_jumpToAdsList(data.slider, data.slider.indexOf(admodel)),
                                     child: Container(
                                         height: 9*MediaQuery.of(context).size.width/16,
                                         width: MediaQuery.of(context).size.width,
@@ -491,12 +491,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
-  _jumpToAdsList(List<AdModel> slider) {
+  _jumpToAdsList(List<AdModel> slider, int position) {
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImagesPreviewPage(data: slider, presenter: AdsViewerPresenter()),
+        builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
       ),
     );
   }

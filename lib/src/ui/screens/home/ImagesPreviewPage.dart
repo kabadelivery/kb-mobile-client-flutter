@@ -19,25 +19,26 @@ import 'package:toast/toast.dart';
 //import 'package:photo_view/photo_view.dart';
 
 
-class ImagesPreviewPage extends StatefulWidget {
+class AdsPreviewPage extends StatefulWidget {
 
-  static var routeName = "/ImagesPreviewPage";
+  static var routeName = "/AdsPreviewPage";
 
   AdsViewerPresenter presenter;
 
   /* list of ads */
   List<AdModel> data;
 
-  ImagesPreviewPage({Key key, this.data, this.presenter}) : super(key: key);
+  int position;
+
+  AdsPreviewPage({Key key, this.data, this.presenter, this.position = 0}) : super(key: key);
 
 
   @override
-  _ImagesPreviewPageState createState() => _ImagesPreviewPageState();
+  _AdsPreviewPageState createState() => _AdsPreviewPageState();
 }
 
-class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsViewerView {
+class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerView {
 
-  int _carousselPageIndex = 0;
 
   bool isLoading = false;
 
@@ -46,6 +47,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
     super.initState();
     widget.presenter.adsViewerView = this;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +71,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                         child:CarouselSlider(
                           onPageChanged: _carousselPageChanged,
                           viewportFraction: 1.0,
+                          initialPage: widget.position,
 //                      autoPlay: widget.data.length > 1 ? true:false,
                           enableInfiniteScroll: widget.data.length > 1 ? true:false,
                           height:  MediaQuery.of(context).size.width,
@@ -105,7 +108,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                                         height: 9,width:9,
                                         decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
                                             border: new Border.all(color: Colors.white),
-                                            color: (index==_carousselPageIndex || index==widget.data.length)?Colors.white : Colors.transparent
+                                            color: (index==widget.position || index==widget.data.length)?Colors.white : Colors.transparent
                                         ));
                                   })
                                 /* add a list of rounded views */
@@ -117,19 +120,19 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                 ),
               ),
             ),
-            _getVoirMenuTextFromAd(widget.data[_carousselPageIndex]) != "" ?
+            _getVoirMenuTextFromAd(widget.data[widget.position]) != "" ?
              Positioned(top: 0,right: 10,
-                child: OutlineButton(onPressed: () => _onAdsButtonPressed(widget.data[_carousselPageIndex]), color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
+                child: OutlineButton(onPressed: () => _onAdsButtonPressed(widget.data[widget.position]), color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
                     child: Row(
                       children: <Widget>[
                         /* circular progress */
                         isLoading ? Row(
                           children: <Widget>[
-                            SizedBox(width: 5,),
-                            SizedBox(height: 20, width: 20,child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)))
+                            SizedBox(height: 12, width: 12,child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white))),
+                            SizedBox(width: 5),
                           ],
                         ) : Container(),
-                        Text(_getVoirMenuTextFromAd(widget.data[_carousselPageIndex]), style: TextStyle(color: Colors.white)),
+                        Text(_getVoirMenuTextFromAd(widget.data[widget.position]), style: TextStyle(color: Colors.white)),
                       ],
                     ))) : Container(),
             Positioned(
@@ -140,7 +143,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
                   child: Container(
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.all(4),
-                      child: Text(widget.data[_carousselPageIndex]?.description,
+                      child: Text(widget.data[widget.position]?.description,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 7,
                           style: TextStyle(color: Colors.white))),
@@ -152,7 +155,7 @@ class _ImagesPreviewPageState extends State<ImagesPreviewPage> implements AdsVie
 
   _carousselPageChanged(int index) {
     setState(() {
-      _carousselPageIndex = index;
+      widget.position = index;
     });
   }
 

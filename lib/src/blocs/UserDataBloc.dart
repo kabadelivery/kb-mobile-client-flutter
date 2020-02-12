@@ -96,10 +96,10 @@ class UserDataBloc {
 
 
   dispose() {
-    _myDailyOrderFetcher.close();
-    _orderDetailsFetcher.close();
-    _deliveryAddressFetcher.close();
-    _locationDetailsChecker.close();
+//    _myDailyOrderFetcher.close();
+//    _orderDetailsFetcher.close();
+//    _deliveryAddressFetcher.close();
+//    _locationDetailsChecker.close();
     _sendRegisterCodeAction.close();
   }
 }

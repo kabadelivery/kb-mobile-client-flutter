@@ -18,7 +18,6 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 
 class _LastOrdersPageState extends State<LastOrdersPage> {
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -53,7 +52,6 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
               }
               return Center(child: CircularProgressIndicator());
             }));
-
     /* instead of streams, wanna use mvp */
   }
 

@@ -1,15 +1,19 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
+import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 
-class GroupAdsWidget extends StatelessWidget {
+class GroupAdsWidget extends StatefulWidget {
 
   GroupAdsModel groupAd;
 
@@ -18,79 +22,11 @@ class GroupAdsWidget extends StatelessWidget {
     this.groupAd,
   }): super(key:key);
 
-  /*@override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return
-      (
-          Column(
-              children: <Widget>[
-                Container(
-                    color: Colors.grey.shade100,
-                    margin: EdgeInsets.only(left:20, right:20),
-                    child: Column(
-                        children:<Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.width/2,
-                            child: Row(
-                              children: <Widget>[
-                                *//* 2 views *//*
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(width: MediaQuery.of(context).size.width/2, height: MediaQuery.of(context).size.width/2,
-                                        padding: EdgeInsets.all(5),
-                                        margin: EdgeInsets.all(5),
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
-                                        child:Container(
-                                          child: FittedBox(fit: BoxFit.fitWidth,
-                                            child: Text(
-                                                groupAd.title.trim().toUpperCase(),
-//                                            "OP\ER\nA",
-                                                style: TextStyle(color: Colors.white)
-                                            ),
-                                          ),
-                                        ))),
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(width: MediaQuery.of(context).size.width/2, height: MediaQuery.of(context).size.width*2,
-                                      padding: EdgeInsets.all(5),
-                                      margin: EdgeInsets.only(right: 5, top:5, bottom:5),
-                                      decoration: BoxDecoration(
-                                          border: new Border.all(
-                                              color: Colors.transparent, width: 2),
-                                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                                          shape: BoxShape.rectangle,
-                                          image: new DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: CachedNetworkImageProvider( Utils.inflateLink(groupAd.small_pub.pic))
-                                          )
-                                      ),
-                                    )),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                border: new Border.all(
-                                    color: Colors.transparent, width: 2),
-                                borderRadius: BorderRadius.all(Radius.circular(7)),
-                                shape: BoxShape.rectangle,
-                                image: new DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider( Utils.inflateLink(groupAd.big_pub.pic))
-                                )
-                            ),
-//                              color:Colors.transparent,
-                            margin: EdgeInsets.only(right:5, left:5, bottom:10),
-                            height: MediaQuery.of(context).size.width/3,
-                          ),
-                        ])
-                ),
-              ])
-      );
-  }*/
+  @override
+  _GroupAdsWidgetState createState() => _GroupAdsWidgetState();
+}
 
-
+class _GroupAdsWidgetState extends State<GroupAdsWidget> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -108,16 +44,17 @@ class GroupAdsWidget extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
 //                                 2 views
-                                Expanded(
-                                    flex: 2,
-                                    child: GestureDetector(
-                                      child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(groupAd.big_pub.pic)),
-                                    )),
-                                Expanded(
+                                Expanded( // big add
+                                  flex: 2,
+                                  child: GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
+                                    child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                                  ),
+                                ),
+                                Expanded( // small add
                                     flex: 1,
-                                    child: GestureDetector(
+                                    child: GestureDetector(onTap:()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 1),
                                         child:Container(
-                                          child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(groupAd.small_pub.pic)),
+                                          child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
                                         ))),
                               ],
                             ),
@@ -173,7 +110,7 @@ class GroupAdsWidget extends StatelessWidget {
                                 child:Container(
                                     height: MediaQuery.of(context).size.width/3,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                        color: Colors.white,
                                         shape: BoxShape.rectangle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
@@ -194,11 +131,20 @@ class GroupAdsWidget extends StatelessWidget {
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
                         child:Text(
-                            groupAd.title?.toUpperCase(),
+                            widget.groupAd.title?.toUpperCase(),
                             style: TextStyle(color: Colors.white, fontSize: 14)
                         ))),
               ])
       );
   }
 
+  _jumpToAdsList(List<AdModel> slider, int position) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
+      ),
+    );
+  }
 }
