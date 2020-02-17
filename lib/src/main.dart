@@ -49,8 +49,8 @@ class MyApp extends StatelessWidget {
       onGenerateTitle: (BuildContext context) =>
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
-      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
-//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
+//      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
+      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
 //      home: HomeWelcomePage(presenter: HomeWelcomePresenter()),
 //    home: SplashPage(),
 //         home: EvenementPage(presenter: EvenementPresenter(),),

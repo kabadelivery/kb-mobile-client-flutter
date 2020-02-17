@@ -38,7 +38,7 @@ class Utils {
 
   static inflateLink(var link) {
     if (link != null)
-    return ServerConfig.SERVER_ADDRESS + "/" + link;
+      return ServerConfig.SERVER_ADDRESS + "/" + link;
     else
       return ServerConfig.SERVER_ADDRESS+"/"+ "default_pic/kaba_red_rectangle.png";
   }
@@ -156,9 +156,35 @@ class Utils {
     return res;
   }
 
-  static String inflatePrice(String price) {
-return price;
+  static String inflatePrice(String balance) {
+    if (balance == null || "" == (balance))
+      balance = "0";
 
+    if (int.parse(balance) < 1000) {
+      return balance;
+    }
+
+    String mbalance = reverseString(balance);
+    try {
+      print(mbalance);
+
+      String res = "";
+
+      for (int cx = 0; cx < mbalance.length; cx++) {
+        res += (mbalance[cx]);
+        if (cx % 3 == 2 && cx != 0 && cx + 1 != mbalance.length) {
+          res += ".";
+        }
+      }
+      print(reverseString(mbalance));
+      return reverseString(res);
+    } catch(_){
+      return "...";
+    }
+  }
+
+  static String reverseString(String balance) {
+    return balance.split('').reversed.join('');
   }
 
 

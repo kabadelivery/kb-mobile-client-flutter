@@ -26,13 +26,13 @@ class OrderBillConfiguration {
     p.shipping_pricing = "1000";
     p.promotion_pricing = 3000;
     p.remise = "30";
-    p.account_balance = 10000;
+    p.account_balance = 4000;
     p.prepayed = true;
-    p.total_pricing = 2000;
+    p.total_pricing = 3400;
     p.pay_at_delivery = true;
     p.trustful = 1;
     p.distance = 30;
-    p.max_pay = "10000";
+    p.max_pay = "2000";
     p.cooking_time = 26;
     p.promotion_shipping_pricing = "400";
     return p;

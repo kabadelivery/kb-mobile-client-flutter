@@ -40,7 +40,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration; // = OrderBillConfiguration.fake();
+  OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration.fake();
 
 //  Map<RestaurantFoodModel, int> addons, foods;
 
@@ -189,7 +189,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               /* check if there is remise */
               Text("-${_orderBillConfiguration?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
             ]) : Container(),
-
             SizedBox(height: 10),
             Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
             SizedBox(height: 10),
@@ -328,15 +327,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     showLoading(false);
   }
 
-  _buildPurchaseButtons() {
+  _buildPurchaseButtonsOld() {
 
     if (_orderBillConfiguration == null)
       return Container();
 
-
     return Column(children: <Widget>[
       // pay at arrival button
-      _orderBillConfiguration?.pay_at_delivery ?
+      _orderBillConfiguration?.pay_at_delivery ? // pay at delivery and not having ongoing delivery right now.
       Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -370,18 +368,95 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ],
           ), onPressed: () {}),
         ],
-      ) : Container(child: Text("You can't prepay because ... ", style: TextStyle(fontSize: 16,color: KColors.primaryColor, fontWeight: FontWeight.bold),)),
+      ) : Container(child: Text("You can't prepay because your balance is insufficient ", style: TextStyle(fontSize: 16,color: KColors.primaryColor, fontWeight: FontWeight.bold),)),
       SizedBox(height: 50)
     ]);
   }
 
-  /// start activity for result and get password for the next operation
-  ///
-  /// 1 : for pay now
-  /// 2 : for pay at delivery
-  ///
-  _retrievePassword() {
 
+  _buildPurchaseButtons() {
+
+
+    return Column(children: <Widget>[
+
+      SizedBox(height: 10),
+      /* your account balance is */
+      Container(
+          padding: EdgeInsets.all(10),
+          child: Center(
+            child: RichText(
+              text: TextSpan(
+                  text: 'Your balance is : ',
+                  style: TextStyle(
+                      color: Colors.grey, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(text: "${Utils.inflatePrice("${_orderBillConfiguration.account_balance}")} XOF",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: KColors.primaryColor, fontSize: 16),
+                    )
+                  ]
+              ),
+            ),
+          )
+      ),
+      SizedBox(height: 30),
+      /* is your balance sufficient for the purchase ?*/
+      _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration.prepayed && _orderBillConfiguration?.account_balance > _orderBillConfiguration?.total_pricing ?
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)),side: BorderSide(color: Colors.transparent)),
+              padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),
+              color: KColors.primaryColor,
+              splashColor: Colors.white, child:
+          Row(
+            children: <Widget>[
+              Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
+              SizedBox(width: 10),
+              Text("PAY NOW", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ), onPressed: () {}),
+        ],
+      ) : (!_orderBillConfiguration.prepayed ?
+      Container(margin: EdgeInsets.only(left: 20, right:20), child: Text("You can't prepay because this restaurant doesn't allow prepay.",  textAlign: TextAlign.center, style: TextStyle(fontSize: 14,color: KColors.primaryColor, fontWeight: FontWeight.bold)))
+          : Container(child: Text("You can't prepay because your balance is insufficient ",  textAlign: TextAlign.center, style: TextStyle(fontSize: 14,color: KColors.primaryColor, fontWeight: FontWeight.bold)))),
+      SizedBox(height: 50),
+      /* check if you can post pay */
+      _orderBillConfiguration.pay_at_delivery && _orderBillConfiguration.trustful ==1 ? (
+          int.parse(_orderBillConfiguration.max_pay) > _orderBillConfiguration.total_pricing ?
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              MaterialButton(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)),side: BorderSide(color: Colors.transparent)),
+                  padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: KColors.mBlue, splashColor: Colors.white, child: Row(
+                children: <Widget>[
+                  Icon(Icons.directions_bike, color: Colors.white),
+                  SizedBox(width: 5),
+                  Text("PAY AT DELIVERY", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
+              ), onPressed: () {}),
+            ],
+          ) :
+          Container(margin: EdgeInsets.only(left: 20, right:20),
+              child: Text("You can't pay at delivery because your order is more than the maximum pay at delivery amount (${_orderBillConfiguration.max_pay})",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14,color: KColors.mBlue, fontWeight: FontWeight.normal))
+          )
+      ) :
+      (_orderBillConfiguration.trustful == 0 ?
+      Container(margin: EdgeInsets.only(left: 20, right:20),child: Text("You can't pay because you already have an ungoing order. Please contact the administrator to solve this issue. \nThank you.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14,color: KColors.mBlue, fontWeight: FontWeight.normal))) :
+      (!_orderBillConfiguration.pay_at_delivery ?
+      Container(margin: EdgeInsets.only(left: 20, right:20),child: Text("Sorry this restaurant doesn't allow pay at delivery.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14,color: KColors.mBlue, fontWeight: FontWeight.normal)))
+          : Container())),
+      SizedBox(height: 30),
+    ]);
 
   }
 

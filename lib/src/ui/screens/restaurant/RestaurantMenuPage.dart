@@ -43,7 +43,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
 //  final _controllers = <AnimationController>[];
 
-  final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<InnerDrawerState>();
+  final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<
+      InnerDrawerState>();
 
   var _firstTime = true;
 
@@ -55,10 +56,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   List<RestaurantSubMenuModel> data;
   int currentIndex = 0;
 
-  int _foodCount = 0, _addOnCount = 0;
-  int FOOD_MAX = 30, ADD_ON_COUNT = 10;
+  int _foodCount = 0,
+      _addOnCount = 0;
+  int FOOD_MAX = 30,
+      ADD_ON_COUNT = 10;
 
-  int ALL = 3, FOOD=1, ADDONS = 2;
+  int ALL = 3,
+      FOOD = 1,
+      ADDONS = 2;
 
   AnimationController _controller;
 
@@ -69,7 +74,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   Map<RestaurantFoodModel, int> food_selected = Map();
   Map<RestaurantFoodModel, int> adds_on_selected = Map();
 
-  List<Widget> _dynamicAnimatedFood ;
+  List<Widget> _dynamicAnimatedFood;
 
   List<AnimationController> _animationController;
 
@@ -78,6 +83,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+
+  Map<String, GlobalKey> _keyBox = Map();
 
   @override
   void initState() {
@@ -92,22 +99,31 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
     _dynamicAnimatedFood = <Widget>[];
 //    _animationController = <AnimationController>[];
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
+    _controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
   }
 
   @override
   Widget build(BuildContext context) {
-
-    var appBar =  AppBar (
+    var appBar = AppBar(
       backgroundColor: KColors.primaryColor,
-      title:  GestureDetector(child:  Row(children: <Widget>[Text("MENU", style:TextStyle(fontSize:14, color:Colors.white)),
+      title: GestureDetector(child: Row(children: <Widget>[
+        Text("MENU", style: TextStyle(fontSize: 14, color: Colors.white)),
         SizedBox(width: 10),
-        Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(10))),
+        Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
+            borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-            child: Text(widget.restaurant.name, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)))]), onTap: _openDrawer),
-      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
+            child: Text(widget.restaurant.name, overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: Colors.white)))
+      ]), onTap: _openDrawer),
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
+        Navigator.pop(context);
+      }),
       actions: <Widget>[
-        IconButton(key: _menuBasketKey,icon: Icon(Icons.shopping_cart, color: Colors.white), onPressed: () => _showMenuBottomSheet(ALL))
+        IconButton(key: _menuBasketKey,
+            icon: Icon(Icons.shopping_cart, color: Colors.white),
+            onPressed: () => _showMenuBottomSheet(ALL))
       ],
     );
 
@@ -118,27 +134,40 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 //        offset: 0.1, // default 0.4
 //        animationType: InnerDrawerAnimation.quadratic, // default static
 //        innerDrawerCallback: (a) => print(a), // return bool
-        leftChild:  data?.length == null ? Container() : Material(
+        leftChild: data?.length == null ? Container() : Material(
             child: SafeArea(
                 child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(color: Colors.grey.withAlpha(150),height: 1),
+                    separatorBuilder: (context, index) =>
+                        Divider(color: Colors.grey.withAlpha(150), height: 1),
                     itemCount: data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
-                          onTap: (){setState(() {
-                            _innerDrawerKey.currentState.toggle();
-                            this.currentIndex = index;
-                          });},
+                          onTap: () {
+                            setState(() {
+                              _innerDrawerKey.currentState.toggle();
+                              this.currentIndex = index;
+                            });
+                          },
                           child: index == this.currentIndex ?
                           Container(
                               color: KColors.primaryColor,
-                              padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8),
-                              child: Text(data[index].name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white), textAlign: TextAlign.center)) :
-                          Container(
-                              color: data[index].promotion!=0 ? KColors.primaryYellowColor:Colors.transparent,
-                              padding: EdgeInsets.only(top: 10, bottom: 10, left: 8, right:8),
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 8, right: 8),
                               child: Text(data[index].name?.toUpperCase(),
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[index].promotion==0 ? Colors.black : KColors.primaryColor),
+                                  style: TextStyle(fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.white),
+                                  textAlign: TextAlign.center)) :
+                          Container(
+                              color: data[index].promotion != 0 ? KColors
+                                  .primaryYellowColor : Colors.transparent,
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 8, right: 8),
+                              child: Text(data[index].name?.toUpperCase(),
+                                  style: TextStyle(fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: data[index].promotion == 0 ? Colors
+                                          .black : KColors.primaryColor),
                                   textAlign: TextAlign.center)));
                     })
             )
@@ -167,45 +196,68 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                               return Center(child: CircularProgressIndicator());
                             }
                         ),*/
-                        isLoading ? Center(child: CircularProgressIndicator()) : (hasNetworkError ? ErrorPage(message: "hasNetworkError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(widget.restaurant);})
-                            : hasSystemError ? ErrorPage(message: "hasSystemError",onClickAction: (){restaurantBloc.fetchRestaurantMenuList(widget.restaurant);}) : _buildRestaurantMenu()),
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : (hasNetworkError ? ErrorPage(
+                            message: "hasNetworkError", onClickAction: () {
+                          restaurantBloc.fetchRestaurantMenuList(
+                              widget.restaurant);
+                        })
+                            : hasSystemError ? ErrorPage(
+                            message: "hasSystemError", onClickAction: () {
+                          restaurantBloc.fetchRestaurantMenuList(
+                              widget.restaurant);
+                        }) : _buildRestaurantMenu()),
                         Positioned(
-                          right:15,
+                          right: 15,
                           top: 10,
                           child: Column(children: <Widget>[
                             SizedBox(height: 10),
-                            RotatedBox(child: FlatButton.icon(onPressed: (){_showMenuBottomSheet(1);},
-                                icon: Icon(Icons.fastfood, color:Colors.white),
+                            RotatedBox(child: FlatButton.icon(onPressed: () {
+                              _showMenuBottomSheet(1);
+                            },
+                                icon: Icon(Icons.fastfood, color: Colors.white),
                                 label: Row(
                                   children: <Widget>[
-                                    Text("REPAS", style: TextStyle(color: Colors.white)),
+                                    Text("REPAS",
+                                        style: TextStyle(color: Colors.white)),
                                     SizedBox(width: 5),
                                     RotatedBox(
-                                        child: Text("${_foodCount}", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                        child: Text("${_foodCount}",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18)),
                                         quarterTurns: 1)
                                   ],
                                 ),
                                 color: KColors.primaryYellowColor,
                                 splashColor: KColors.primaryYellowColor,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
                               quarterTurns: -1,
                             ),
                             SizedBox(height: 10),
-                            RotatedBox(child: FlatButton.icon(onPressed: (){_showMenuBottomSheet(2);},
-                                icon: Icon(Icons.fastfood, color:Colors.white),
+                            RotatedBox(child: FlatButton.icon(onPressed: () {
+                              _showMenuBottomSheet(2);
+                            },
+                                icon: Icon(Icons.fastfood, color: Colors.white),
                                 label: Row(
                                   children: <Widget>[
-                                    Text("SUPP.", style: TextStyle(color: Colors.white)),
+                                    Text("SUPP.",
+                                        style: TextStyle(color: Colors.white)),
                                     SizedBox(width: 5),
                                     RotatedBox(
-                                      child: Text("${_addOnCount}", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                      child: Text("${_addOnCount}",
+                                          style: TextStyle(color: Colors.white,
+                                              fontSize: 18)),
                                       quarterTurns: 1,
                                     )
                                   ],
                                 ),
                                 color: Colors.blue,
                                 splashColor: KColors.primaryYellowColor,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
                               quarterTurns: -1,
                             ),
                           ]),
@@ -219,25 +271,27 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
               ],
 
             ),
-            floatingActionButton:   this.data != null ?  RotatedBox(child: FlatButton.icon(onPressed: (){_openDrawer();},
-                icon: Icon(Icons.fastfood, color:Colors.white),
-                label: Text("MENU", style: TextStyle(color: Colors.white)),
-                color: KColors.primaryColor,
-                splashColor: KColors.primaryYellowColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+            floatingActionButton: this.data != null ? RotatedBox(
+              child: FlatButton.icon(onPressed: () {
+                _openDrawer();
+              },
+                  icon: Icon(Icons.fastfood, color: Colors.white),
+                  label: Text("MENU", style: TextStyle(color: Colors.white)),
+                  color: KColors.primaryColor,
+                  splashColor: KColors.primaryYellowColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius
+                      .circular(20))),
               quarterTurns: -1,
             ) : Container()
         )
     );
   }
 
-  void _openDrawer()
-  {
+  void _openDrawer() {
     _innerDrawerKey.currentState.open();
   }
 
-  void _closeDrawer()
-  {
+  void _closeDrawer() {
     _innerDrawerKey.currentState.close();
   }
 
@@ -265,28 +319,43 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _computeBasketOffset() {
-    final RenderBox renderBox = _menuBasketKey.currentContext.findRenderObject();
+    final RenderBox renderBox = _menuBasketKey.currentContext
+        .findRenderObject();
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
   _buildRestaurantMenu() {
+
+    if (data == null || data.length == 0)
+      return Center(child:Text("No data"));
+
     if (_firstTime) {
       _openDrawer();
       _firstTime = false;
     }
-    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {this.data= data;}));
+    SchedulerBinding.instance.addPostFrameCallback((_) =>
+        setState(() {
+          this.data = data;
+        }));
 
     return Container(
-      height: MediaQuery.of(context).size.height,
-      child: SingleChildScrollView (
+      height: MediaQuery
+          .of(context)
+          .size
+          .height,
+      child: SingleChildScrollView(
         child:
         ListView.builder(
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           itemCount: data[currentIndex].foods.length,
           itemBuilder: (BuildContext context, int index) {
+            /* create the key*/
+//            _keyBox["${currentIndex}-${index}"] = GlobalKey();
+            _keyBox.putIfAbsent("${currentIndex}-${index}", () => GlobalKey());
+
 //          return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
-            return _buildFoodListWidget(food:data[currentIndex].foods[index]);
+            return _buildFoodListWidget(food: data[currentIndex].foods[index], foodIndex: index, menuIndex: currentIndex);
           },
           key: new Key(new DateTime.now().toIso8601String()),
         ),
@@ -295,13 +364,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   /* build food list widget */
-  Widget _buildFoodListWidget({RestaurantFoodModel food}) {
+  Widget _buildFoodListWidget({RestaurantFoodModel food, int foodIndex, int menuIndex}) {
     return Card(
         elevation: 2,
         margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
-        child:InkWell(
+        child: InkWell(
             child: Container(
-                decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1), /*boxShadow: [
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1), /*boxShadow: [
                   BoxShadow(
                     color: Colors.grey..withAlpha(50),
                     offset: new Offset(0.0, 2.0),
@@ -309,54 +379,110 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                 ]*/),
                 child:
                 Column(children: <Widget>[
-                  ListTile(
-                      contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
-                      leading: Stack(
-                        children: <Widget>[
-                          Container(
-                            height:50, width: 50,
-                            decoration: BoxDecoration(
-                                border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                                shape: BoxShape.circle,
-                                image: new DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-                                )
-                            ),
-                          ),
-                        ],
-                      ),
-                      trailing: InkWell(child: Container(width: 50, height: 50,color: Colors.blue,padding: EdgeInsets.all(5),child: IconButton(icon: Icon(Icons.add_shopping_cart, color: KColors.primaryColor))), onTap: (){_addFoodToChart(food);}, splashColor: KColors.primaryYellowColor),
-                      title:Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
-                          SizedBox(height: 5),
-                          Row(
+                  Stack(
+                    children: <Widget>[
+                      ListTile(
+                          contentPadding: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10),
+                          leading: Stack(
+//                        _keyBox.keys.firstWhere(
+//                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
+                            key: _keyBox["${menuIndex}-${foodIndex}"],
+                            /* according to the position of the view, menu - food, we have a key that we store. */
                             children: <Widget>[
-                              Row(children: <Widget>[
-                                /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
-                                    : Container()),
-                                */
-
-                                Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none ,color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                SizedBox(width: 5),
-                                (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal))
-                                    : Container()),
-                                SizedBox(width: 5),
-
-                                Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
-                              ]),
+                              Container(
+                                height: 50, width: 50,
+                                decoration: BoxDecoration(
+                                    border: new Border.all(
+                                        color: KColors.primaryYellowColor,
+                                        width: 2),
+                                    shape: BoxShape.circle,
+                                    image: new DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: CachedNetworkImageProvider(Utils
+                                            .inflateLink(food.pic))
+                                    )
+                                ),
+                              ),
                             ],
                           ),
-                        ],
+                          title: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text("${food?.name.toUpperCase()}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                              SizedBox(height: 5),
+                              Row(
+                                children: <Widget>[
+                                  Row(children: <Widget>[
+                                    /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                    (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                        : Container()),
+                                    */
+
+                                    Text("${food?.price}",
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            decoration: food.promotion != 0
+                                                ? TextDecoration.lineThrough
+                                                : TextDecoration.none,
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.normal)),
+                                    SizedBox(width: 5),
+                                    (food.promotion != 0 ? Text(
+                                        "${food?.promotion_price}",
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.normal))
+                                        : Container()),
+                                    SizedBox(width: 5),
+
+                                    Text("FCFA", overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.normal)),
+                                  ]),
+                                ],
+                              ),
+                            ],
+                          )
+                      ),
+                      Positioned(child: InkWell(
+                          child: Container(width: 50,
+                              height: 50,
+                              color: Colors.transparent,
+                              padding: EdgeInsets.all(5),
+                              child: IconButton(
+                                icon: Icon(Icons.add_shopping_cart,
+                                    color: KColors.primaryColor), onPressed: () {  _addFoodToChart(food, foodIndex, menuIndex); },)),
+                          onTap: () {
+                            _addFoodToChart(food, foodIndex, menuIndex);
+                          },
+                          splashColor: KColors.primaryYellowColor
+                      ),
+                          bottom: 0, right: 0
                       )
+                    ],
                   )
                 ])
             )
-            ,onTap: ()=>_jumpToFoodDetails(context, food))
+            , onTap: () => _jumpToFoodDetails(context, food))
     );
   }
 
@@ -365,17 +491,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantFoodDetailsPage (food: food),
+        builder: (context) => RestaurantFoodDetailsPage(food: food),
       ),
     );
   }
 
   /* add food to chart */
-  _addFoodToChart(RestaurantFoodModel food) {
+  _addFoodToChart(RestaurantFoodModel food, int foodIndex, int menuIndex) {
+
+    GlobalKey gk = _keyBox["${menuIndex}-${foodIndex}"];
+    RenderBox renderBoxRed = gk.currentContext.findRenderObject();
+    final position = renderBoxRed.localToGlobal(Offset.zero);
+    print("POSITION of Red: $position ");
+
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
         if (_foodCount < FOOD_MAX) {
-          _launchAddToBasketAnimation(food);
+          _launchAddToBasketAnimation(position, food);
           setState(() {
             food_selected.update(
                 food, (int val) => 1 + food_selected[food].toInt());
@@ -385,16 +517,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           showToast("MAX REACHEAD");
         }
       } else {
-        _launchAddToBasketAnimation(food);
+        _launchAddToBasketAnimation(position, food);
         setState(() {
-          food_selected.putIfAbsent(food, ()=>1);
+          food_selected.putIfAbsent(food, () => 1);
         });
       }
     } else {
       if (!food.is_addon) {
         if (adds_on_selected.containsKey(food)) {
           if (_addOnCount < ADD_ON_COUNT) {
-            _launchAddToBasketAnimation(food);
+            _launchAddToBasketAnimation(position, food);
             setState(() {
               adds_on_selected.update(
                   food, (int val) => 1 + adds_on_selected[food].toInt());
@@ -404,9 +536,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             showToast("MAX REACHEAD");
           }
         } else {
-          _launchAddToBasketAnimation(food);
+          _launchAddToBasketAnimation(position, food);
           setState(() {
-            adds_on_selected.putIfAbsent(food, ()=>1);
+            adds_on_selected.putIfAbsent(food, () => 1);
           });
         }
       }
@@ -415,9 +547,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   void _updateCounts() {
-
-    int fc = 0; food_selected.forEach((RestaurantFoodModel food, int quantity) {fc+=quantity;});
-    int adc = 0; adds_on_selected.forEach((RestaurantFoodModel food, int quantity) {adc+=quantity;});
+    int fc = 0;
+    food_selected.forEach((RestaurantFoodModel food, int quantity) {
+      fc += quantity;
+    });
+    int adc = 0;
+    adds_on_selected.forEach((RestaurantFoodModel food, int quantity) {
+      adc += quantity;
+    });
     setState(() {
       _foodCount = fc;
       _addOnCount = adc;
@@ -429,7 +566,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   void showToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG, gravity:  Toast.CENTER);
+    Toast.show(
+        message, context, duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
   }
 
   int _getQuantity(RestaurantFoodModel food) {
@@ -452,7 +590,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuDetails(type: type, food_selected: food_selected, adds_on_selected: adds_on_selected),
+        builder: (context) => RestaurantMenuDetails(type: type,
+            food_selected: food_selected,
+            adds_on_selected: adds_on_selected),
       ),
     );
     _updateCounts();
@@ -464,26 +604,55 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     _dynamicAnimatedFood.add(_createAnimatedFoodWidgetToDrop(food, animationController));
   }*/
 
-  void _launchAddToBasketAnimation(RestaurantFoodModel food) {
+  void _launchAddToBasketAnimation(Offset position, RestaurantFoodModel food) {
 
-    var _myAnimationController = AnimationController (
-        vsync: this,
-        duration: Duration(seconds: 3));
-
-    Animation<Offset> animation = Tween(
-      begin: Offset(0.0, 0.0),
-      end: EdgeInsets.only(left: 80.0, top: 140.0),
-    ).animate(_myAnimationController);
-
-    _myAnimationController.forward();
-
-    var vView = Positioned(
-      left: animation.value.dx,
-      top: animation.value.dy,
+return;
+    /* var vView = CustomAnimatedPosition(
+      context: context,
+      left: position.dx,
+      top: position.dy,
+      duration: Duration(seconds: 10),
       child: Container(
-          height:50, width: 50,
+          height: 50, width: 50,
           decoration: BoxDecoration(
-              border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+              border: new Border.all(
+                  color: KColors.primaryYellowColor, width: 2),
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+              )
+          )),
+    );*/
+
+
+    /*Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        vView.addToBasket();
+
+      });
+    });*/
+
+    var _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    var _offsetAnimation = Tween<Offset>(
+      begin: position,
+//      end: Offset(MediaQuery.of(context).size.width-100, 40),
+      end: Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticIn,
+    ));
+
+    var vView = SlideTransition(
+      position: _offsetAnimation,
+      child: Container(
+          height: 50, width: 50,
+          decoration: BoxDecoration(
+              border: new Border.all(
+                  color: KColors.primaryYellowColor, width: 2),
               shape: BoxShape.circle,
               image: new DecorationImage(
                   fit: BoxFit.cover,
@@ -493,9 +662,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     );
 
     _dynamicAnimatedFood.add(vView);
+
+
   }
 
-  void showLoading (bool isLoading) {
+  void showLoading(bool isLoading) {
     setState(() {
       this.isLoading = isLoading;
     });
@@ -503,7 +674,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   @override
   void inflateMenu(List<RestaurantSubMenuModel> data) {
-
     setState(() {
       this.data = data;
     });
@@ -512,14 +682,45 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   @override
   void networkError() {
-
     showLoading(false);
   }
 
   @override
   void systemError() {
-
     showLoading(false);
+  }
+}
+
+
+class CustomAnimatedPosition extends AnimatedPositioned {
+
+  var child;
+  double left;
+  double top;
+  double right;
+  double bottom;
+  Duration duration;
+  int serial;
+  var context;
+
+
+//  static CustomAnimatedPosition of(BuildContext context, AnimatedPositioned aspect) {
+//    return InheritedModel.inheritFrom<CustomAnimatedPosition>(context, aspect: aspect);
+//  }
+
+//  ABModel({ this.a, this.b, Widget child }) : super(child: child);
+
+  CustomAnimatedPosition({this.context, this.right, this.bottom, this.left, this.top, this.duration, this.child}) : super(
+      child: child, right:right, bottom:bottom, left:left, top:top, duration:duration);
+
+  bool isAdded = false;
+
+  addToBasket () {
+    isAdded = true;
+    if (isAdded) {
+      this.left = MediaQuery.of(context).size.width-100;
+      this.top = 40;
+    }
   }
 
 }
