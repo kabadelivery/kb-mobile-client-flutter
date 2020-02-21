@@ -22,15 +22,27 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera permission is needed for the user to shoot his profile picture if needed.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Need Current Location Access</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Get current location for delivery</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone permission is need so that the user could shoot a video right in case.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library permission is need so that the user could pick his profile picture from the gallery.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -43,17 +55,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>Need Current Location Access</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Get current location for delivery</string>
-<key>NSCameraUsageDescription</key>
-<string>Camera permission is required for barcode scanning.</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Photo library permission is need so that the user could pick his profile picture from the gallery.</string>
-<key>NSCameraUsageDescription</key>
-<string>Camera permission is needed for the user to shoot his profile picture if needed.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Microphone permission is need so that the user could shoot a video right in case.</string>
 </dict>
 </plist>

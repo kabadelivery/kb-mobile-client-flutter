@@ -22,7 +22,8 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
 
 
   /* create - confirm - insert */
-  List<String> retrievePasswordTitle = ["Please enter your personnal Password", "Please setup a personnal Password", "Please confirm your personnal Password"];
+  List<String> retrievePasswordTitle = ["Please enter your personnal Password", "Please setup a personnal Password", "Please confirm your personnal Password",
+  "Please confirm you personnal Password to launch the Order"];
 
   @override
   void initState() {

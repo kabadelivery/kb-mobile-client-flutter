@@ -65,4 +65,24 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     _orderConfirmationView = value;
   }
 
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+    try {
+      await provider.payAtDelivery(customer, foods, selectedAddress);
+
+    } catch (_) {
+      /* login failure */
+      print("error ${_}");
+      if (_ == -2) {
+        _orderConfirmationView.systemError();
+      } else {
+        _orderConfirmationView.networkError();
+      }
+      isWorking = false;
+    }
+  }
+
 }

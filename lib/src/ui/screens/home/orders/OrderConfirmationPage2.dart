@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -9,11 +10,16 @@ import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
 import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/_static_data/MusicData.dart';
+import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+//import 'package:vibration/vibration.dart';
+//import 'package:audioplayers/audioplayers.dart';
 
 
 class OrderConfirmationPage2 extends StatefulWidget {
@@ -40,11 +46,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration.fake();
+  OrderBillConfiguration _orderBillConfiguration; //= OrderBillConfiguration.fake();
 
 //  Map<RestaurantFoodModel, int> addons, foods;
 
   bool isConnecting = false;
+  bool isPayAtDeliveryLoading = false;
+  bool isPayNowLoading = false;
 
   _OrderConfirmationPage2State();
 
@@ -274,19 +282,22 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 15),
               isConnecting ? Center(child: CircularProgressIndicator()) : Container(),
               SizedBox(height: 10),
-              _buildBill(),
-              SizedBox(height: 10),
-              /* solde insuffisant  - CLIGNOTER CE CONTAINER */
-              _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ?
-              Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Column(children: <Widget>[
-                    Text("${_orderBillConfiguration?.account_balance} FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
-                    SizedBox(height: 20),
-                    Text("${ _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ? "Solde insuffisant !" : "" }", style: TextStyle(color: Colors.black, fontSize: 18))
-                  ])) :
-              // we just tell him that he can prepay and stuffs.
-              Container(),
-              _buildPurchaseButtons()
+              _orderBillConfiguration == null ? Container() :
+              Column(children: <Widget>[
+                _buildBill(),
+                SizedBox(height: 10),
+                /* solde insuffisant  - CLIGNOTER CE CONTAINER */
+                _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ?
+                Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Column(children: <Widget>[
+                      Text("${_orderBillConfiguration?.account_balance} FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
+                      SizedBox(height: 20),
+                      Text("${ _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ? "Solde insuffisant !" : "" }", style: TextStyle(color: Colors.black, fontSize: 18))
+                    ])) :
+                // we just tell him that he can prepay and stuffs.
+                Container(),
+                _buildPurchaseButtons()
+              ]),
             ])
       ),
     );
@@ -313,6 +324,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void showLoading(bool isLoading) {
     setState(() {
       isConnecting = isLoading;
+      if (!isLoading) {
+        isPayNowLoading = false;
+        isPayAtDeliveryLoading = false;
+      }
     });
   }
 
@@ -366,7 +381,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(width: 10),
               Text("PAY NOW", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
             ],
-          ), onPressed: () {}),
+          ), onPressed: _payNow()),
         ],
       ) : Container(child: Text("You can't prepay because your balance is insufficient ", style: TextStyle(fontSize: 16,color: KColors.primaryColor, fontWeight: FontWeight.bold),)),
       SizedBox(height: 50)
@@ -376,9 +391,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   _buildPurchaseButtons() {
 
-
     return Column(children: <Widget>[
-
       SizedBox(height: 10),
       /* your account balance is */
       Container(
@@ -390,7 +403,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   style: TextStyle(
                       color: Colors.grey, fontSize: 16),
                   children: <TextSpan>[
-                    TextSpan(text: "${Utils.inflatePrice("${_orderBillConfiguration.account_balance}")} XOF",
+                    TextSpan(text: "${Utils.inflatePrice("${_orderBillConfiguration?.account_balance}")} XOF",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: KColors.primaryColor, fontSize: 16),
@@ -416,13 +429,19 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
               SizedBox(width: 10),
               Text("PAY NOW", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              isPayNowLoading ?  Row(
+                children: <Widget>[
+                  SizedBox(width: 10),
+                  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                ],
+              )  : Container(),
             ],
-          ), onPressed: () {}),
+          ), onPressed: () => _payNow()),
         ],
       ) : (!_orderBillConfiguration.prepayed ?
       Container(margin: EdgeInsets.only(left: 20, right:20), child: Text("You can't prepay because this restaurant doesn't allow prepay.",  textAlign: TextAlign.center, style: TextStyle(fontSize: 14,color: KColors.primaryColor, fontWeight: FontWeight.bold)))
           : Container(child: Text("You can't prepay because your balance is insufficient ",  textAlign: TextAlign.center, style: TextStyle(fontSize: 14,color: KColors.primaryColor, fontWeight: FontWeight.bold)))),
-      SizedBox(height: 50),
+      SizedBox(height: 20),
       /* check if you can post pay */
       _orderBillConfiguration.pay_at_delivery && _orderBillConfiguration.trustful ==1 ? (
           int.parse(_orderBillConfiguration.max_pay) > _orderBillConfiguration.total_pricing ?
@@ -436,8 +455,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   Icon(Icons.directions_bike, color: Colors.white),
                   SizedBox(width: 5),
                   Text("PAY AT DELIVERY", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  isPayAtDeliveryLoading ?  Row(
+                    children: <Widget>[
+                      SizedBox(width: 10),
+                      SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                    ],
+                  )  : Container(),
                 ],
-              ), onPressed: () {}),
+              ), onPressed: () => _payAtDelivery(false)),
             ],
           ) :
           Container(margin: EdgeInsets.only(left: 20, right:20),
@@ -458,6 +483,142 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       SizedBox(height: 30),
     ]);
 
+  }
+
+  _payNow() async {
+    _playMusicForSuccess();return;
+    var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return RetrievePasswordPage(type: 3);
+        }
+    ));
+    // retrieve password then do it,
+    if (results != null && results.containsKey('code') && results.containsKey('type')) {
+      String _mCode = results['code'];
+      showPayNowLoading(true);
+      if (Utils.isCode(_mCode)) {
+
+      } else {
+        mToast("my code is not ok");
+      }
+    }
+    _playMusicForSuccess();
+  }
+
+  _payAtDelivery(bool isDialogShown) async {
+//    _playMusicForSuccess();return;
+
+    if (!isDialogShown) {
+      _showDialog(
+          icon: VectorsData.questions,
+          message: "By choosing this mode, you are accepting to give the right amount of money to the delivery man.",
+          isYesOrNo: true,
+          actionIfYes: () => _payAtDelivery(true)
+      );
+      return;
+    }
+
+    // 1. get password
+    var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return RetrievePasswordPage(type: 3);
+        }
+    ));
+    // retrieve password then do it,
+    if (results != null && results.containsKey('code') && results.containsKey('type')) {
+      String _mCode = results['code'];
+      showLoadingPayAtDelivery(true);
+      if (Utils.isCode(_mCode)) {
+
+        widget.presenter.payAtDelivery(widget.customer, widget.foods, _selectedAddress);
+      } else {
+        mToast("my code is not ok");
+      }
+    }
+    _playMusicForSuccess();
+  }
+
+
+
+  void _showDialog({var icon, var message, bool isYesOrNo = false, Function actionIfYes}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+//          title: new Text("Alert Dialog title"),
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  /* icon */
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                        icon,
+//                      color: Colors.green,
+                      )),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              // usually buttons at the bottom of the dialog
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("REFUSE", style: TextStyle(color:Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text("ACCEPT", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              //
+              OutlineButton(
+                child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  void showPayNowLoading(bool isLoading) {
+    /* and hide all the other buttons. */
+    setState(() {
+      isPayNowLoading = isLoading;
+    });
+  }
+
+  void showLoadingPayAtDelivery (bool isLoading){
+    setState(() {
+      isPayAtDeliveryLoading = isLoading;
+    });
+  }
+
+  Future<void> _playMusicForSuccess() async {
+
+
+    /* // play music
+    AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+    AudioPlayer.logEnabled = true;
+      int result = await audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);
+
+    // vibrate
+    if (await Vibration.hasVibrator()) {
+      Vibration.vibrate(duration: 500);
+    }*/
   }
 
 }

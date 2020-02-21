@@ -32,7 +32,7 @@ class OrderBillConfiguration {
     p.pay_at_delivery = true;
     p.trustful = 1;
     p.distance = 30;
-    p.max_pay = "2000";
+    p.max_pay = "20000";
     p.cooking_time = 26;
     p.promotion_shipping_pricing = "400";
     return p;

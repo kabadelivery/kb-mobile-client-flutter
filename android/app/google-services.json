@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1077931552915",
+    "firebase_url": "https://kaba-delivery-flutter.firebaseio.com",
+    "project_id": "kaba-delivery-flutter",
+    "storage_bucket": "kaba-delivery-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077931552915:android:072281a2e2f9c28c4a5d66",
+        "android_client_info": {
+          "package_name": "tg.tmye.kaba.kaba_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077931552915-cuui1lepabm1r1vh6qlp3fcc73okusft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7NZ3xwLmzVlfyBcRVAmEl-JPospiQlYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077931552915-cuui1lepabm1r1vh6qlp3fcc73okusft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

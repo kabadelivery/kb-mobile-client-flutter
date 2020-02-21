@@ -1,0 +1,21 @@
+import 'package:flutter/foundation.dart';
+
+
+
+class NotificationManager {
+
+ static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
+    if (message.containsKey('data')) {
+// Handle data message
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+// Handle notification message
+      final dynamic notification = message['notification'];
+    }
+
+// Or do other work.
+  }
+
+}

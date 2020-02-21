@@ -122,7 +122,8 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
   }
 
   _pickedAddress(DeliveryAddressModel address) {
-    Navigator.of(context).pop({'selection':address});
+    if (widget.pick)
+      Navigator.of(context).pop({'selection':address});
   }
 
 }
