@@ -5,6 +5,7 @@ import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
 import 'package:kaba_flutter/src/resources/order_api_provider.dart';
@@ -15,6 +16,7 @@ class MenuContract {
 //  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
   void fetchMenuWithRestaurantId(int restaurantId) {}
+  fetchMenuWithMenuId(int menuId) {}
 }
 
 class MenuView {
@@ -23,7 +25,7 @@ class MenuView {
   void loginFailure (String message) {}*/
   void systemError () {}
   void networkError () {}
-  void inflateMenu (List<RestaurantSubMenuModel> data) {}
+  void inflateMenu (RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {}
 }
 
 
@@ -51,9 +53,30 @@ class MenuPresenter implements MenuContract {
     isWorking = true;
     _menuView.showLoading(true);
     try {
-      List<RestaurantSubMenuModel> menu = await provider.fetchRestaurantMenuList(restaurantId);
+      Map<String, dynamic> res = await provider.fetchRestaurantMenuList(restaurantId);
       // also get the restaurant entity here.
-      _menuView.inflateMenu(menu);
+      _menuView.inflateMenu(res["restaurant"], res["menus"]);
+    } catch (_) {
+      /* login failure */
+      print("error ${_}");
+      if (_ == -2) {
+        _menuView.systemError();
+      } else {
+        _menuView.networkError();
+      }
+      isWorking = false;
+    }
+  }
+
+  Future<void> fetchMenuWithMenuId(int menuId) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _menuView.showLoading(true);
+    try {
+      Map<String, dynamic> res = await provider.fetchRestaurantMenuListWithMenuId(menuId);
+      // also get the restaurant entity here.
+      _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */
       print("error ${_}");

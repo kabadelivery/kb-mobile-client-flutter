@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -16,6 +17,8 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'feeds/FeedsPage.dart';
 
 
 class MeAccountPage extends StatefulWidget {
@@ -270,7 +273,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page())),
+                                              IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, FeedsPage(presenter: FeedPresenter()))),
                                               SizedBox(height:10),
                                               Text("FEEDS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                             ],

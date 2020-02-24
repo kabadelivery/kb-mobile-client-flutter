@@ -171,12 +171,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ),
               ),
               SizedBox(height: 10),
+              command?.infos == null || command?.infos?.trim()?.length == 0 ? Container() : Center(child: Text("Infos: ${command.infos}", style: TextStyle(fontWeight: FontWeight.bold,color: CommandStateColor.delivered))),
+              SizedBox(height: 10),
               /* food list*/
               Card(
                   child: Column(children:List.generate(command.food_list.length, (int index) {
                     return SingleOrderFoodWidget(command.food_list[index]);
                   }))),
-
               SizedBox(height: 10),
               /* bill */
               Card(

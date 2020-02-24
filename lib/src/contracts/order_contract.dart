@@ -12,6 +12,7 @@ class OrderConfirmationContract {
 //  void login (String password, String phoneCode){}
 //  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
   void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) {}
 }
 
 class OrderConfirmationView {
@@ -22,6 +23,8 @@ class OrderConfirmationView {
   void networkError () {}
   void logoutTimeOutSuccess() {}
   void inflateBillingConfiguration (OrderBillConfiguration configuration) {}
+
+  void launchOrderSuccess(bool isSuccessful) {}
 }
 
 
@@ -45,10 +48,9 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       return;
     isWorking = true;
     try {
-
-
       OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, foods, address);
       _orderConfirmationView.inflateBillingConfiguration(orderBillConfiguration);
+      isWorking = false;
     } catch (_) {
       /* login failure */
       print("error ${_}");
@@ -65,14 +67,14 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     _orderConfirmationView = value;
   }
 
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress) async {
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
-      await provider.payAtDelivery(customer, foods, selectedAddress);
-
+      bool res = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos);
+    _orderConfirmationView.launchOrderSuccess(res);
     } catch (_) {
       /* login failure */
       print("error ${_}");
@@ -81,6 +83,28 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       } else {
         _orderConfirmationView.networkError();
       }
+      _orderConfirmationView.launchOrderSuccess(false);
+      isWorking = false;
+    }
+  }
+
+  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+    try {
+      bool res = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos);
+      _orderConfirmationView.launchOrderSuccess(res);
+    } catch (_) {
+      /* login failure */
+      print("error ${_}");
+      if (_ == -2) {
+        _orderConfirmationView.systemError();
+      } else {
+        _orderConfirmationView.networkError();
+      }
+      _orderConfirmationView.launchOrderSuccess(false);
       isWorking = false;
     }
   }

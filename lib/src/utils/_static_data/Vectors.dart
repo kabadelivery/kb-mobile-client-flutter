@@ -7,5 +7,4 @@
   static final String delivery_nam = "assets/images/vectors/fl_deliveryman.svg";
   static final String questions = "assets/images/vectors/fl_question.svg";
 
-
  }

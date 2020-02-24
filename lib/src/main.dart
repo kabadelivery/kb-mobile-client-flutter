@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
 import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
+import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
@@ -15,9 +16,13 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/HomeWelcomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/events/EventsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/MeAccountPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/feeds/FeedsPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -42,7 +47,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -103,8 +108,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//      home: HomeWelcomePage(presenter: HomeWelcomePresenter()),
     home: SplashPage(),
+//      home: TransactionHistoryPage(),
+//      home: InfoPage(),
+//      home: FeedsPage(presenter: FeedPresenter(),),
 //         home: EvenementPage(presenter: EvenementPresenter(),),
       routes: generalRoutes,
     );

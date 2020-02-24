@@ -12,9 +12,11 @@
        [UNUserNotificationCenter currentNotificationCenter].delegate =
            (id<UNUserNotificationCenterDelegate>)self;
      }
+
     [FIRApp configure];
      [GMSServices provideAPIKey:@"AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs"];
   [GeneratedPluginRegistrant registerWithRegistry:self];
+
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

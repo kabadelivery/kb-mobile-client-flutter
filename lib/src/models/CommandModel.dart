@@ -20,6 +20,7 @@ class CommandModel {
   bool is_payed_at_arrival = false;
   /* clée de la commande */
   String passphrase = "~";
+  String infos;
   int reason;
 
   String promotion_shipping_pricing;
@@ -51,6 +52,7 @@ class CommandModel {
     is_payed_at_arrival = json['is_payed_at_arrival'];
     passphrase = json['passphrase'];
     reason = json['reason'];
+    infos = json['infos'];
 
 
     if (json['livreur'] != null)
@@ -86,6 +88,7 @@ class CommandModel {
     "is_payed_at_arrival" : is_payed_at_arrival,
     "passphrase" : passphrase,
     "reason" : reason,
+    "infos" : infos
   };
 
   @override

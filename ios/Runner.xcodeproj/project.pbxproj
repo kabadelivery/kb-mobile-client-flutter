@@ -187,7 +187,7 @@
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = J2L5766M4S;
+						DevelopmentTeam = XP242L73NS;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -402,7 +402,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = J2L5766M4S;
+				DEVELOPMENT_TEAM = XP242L73NS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -415,7 +415,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.kabaFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.test.kabaFlutter;
 				PRODUCT_NAME = Kaba;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -540,7 +540,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = J2L5766M4S;
+				DEVELOPMENT_TEAM = XP242L73NS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -553,7 +553,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.kabaFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.test.kabaFlutter;
 				PRODUCT_NAME = Kaba;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -569,7 +569,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = J2L5766M4S;
+				DEVELOPMENT_TEAM = XP242L73NS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -582,7 +582,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.kabaFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.test.kabaFlutter;
 				PRODUCT_NAME = Kaba;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;

@@ -33,7 +33,9 @@ class RestaurantMenuPage extends StatefulWidget {
 
   MenuPresenter presenter;
 
-  RestaurantMenuPage({Key key, this.presenter, this.restaurant}) : super(key: key);
+  int menuId;
+
+  RestaurantMenuPage({Key key, this.presenter, this.restaurant = null, this.menuId = -1}) : super(key: key);
 
   @override
   _RestaurantMenuPageState createState() => _RestaurantMenuPageState();
@@ -93,7 +95,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     super.initState();
     _menuBasketKey = GlobalKey();
     widget.presenter.menuView = this;
-    widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+
+    if (widget.menuId == -1)
+      widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+    else
+      widget.presenter.fetchMenuWithMenuId(widget.menuId);
 
     _animationTempViews = [];
 
@@ -113,7 +119,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
             borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-            child: Text(widget.restaurant.name, overflow: TextOverflow.ellipsis,
+            child: Text(widget.restaurant == null ? "" : widget.restaurant.name, overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.white)))
       ]), onTap: _openDrawer),
       leading: IconButton(
@@ -410,7 +416,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text("${food?.name.toUpperCase()}",
+                              Text("${food?.name?.toUpperCase()}",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 3,
                                   textAlign: TextAlign.left,
@@ -606,7 +612,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   void _launchAddToBasketAnimation(Offset position, RestaurantFoodModel food) {
 
-return;
+    return;
     /* var vView = CustomAnimatedPosition(
       context: context,
       left: position.dx,
@@ -673,8 +679,9 @@ return;
   }
 
   @override
-  void inflateMenu(List<RestaurantSubMenuModel> data) {
+  void inflateMenu(RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
+      widget.restaurant = restaurant;
       this.data = data;
     });
     showLoading(false);

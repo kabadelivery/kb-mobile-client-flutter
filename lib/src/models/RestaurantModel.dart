@@ -41,7 +41,8 @@ class RestaurantModel {
     distance = json['distance'];
     menu_foods = json['menu_foods'];
     is_open = json['is_open'];
-    stars = double.parse("${json['stars']}");
+    if (json['stars'] != null)
+      stars = double.parse("${json['stars']}");
     votes = json['votes'];
     theme_pic = json['theme_pic'];
     description = json['description'];

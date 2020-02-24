@@ -41,23 +41,25 @@ class RestaurantApiProvider {
   }
 
   /// load restaurant from Id
-  Future<RestaurantModel> loadRestaurantFromId(int restaurantIdOrMenuId, int DESTINATION) async {
+  Future<RestaurantModel> loadRestaurantFromId(int restaurantIdOrMenuId/*, int DESTINATION*/) async {
 
 
     DebugTools.iPrint("entered loadRestaurantFromId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
-        body: DESTINATION == 1 ? json.encode({'id': restaurantIdOrMenuId}) : json.encode({'menu_id': restaurantIdOrMenuId}),
+          .post(
+//        DESTINATION == 1 ?
+          ServerRoutes.LINK_GET_RESTAURANT_DETAILS/* : ServerRoutes.LINK_MENU_BY_ID*/,
+          body: /*DESTINATION == 1 ? */json.encode({'id': restaurantIdOrMenuId}) /*: json.encode({'menu_id': restaurantIdOrMenuId}),*/
       )
           .timeout(const Duration(seconds: 10));
-      print(response.body.toString());
+      print("001_ "+response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
 //          print(json.decode(response.body)["data"]);
 //          print(json.decode(response.body)["data"][0]);
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["restaurant"]);
           return restaurantModel;
         } else
           throw Exception(-1); // there is an error in your request

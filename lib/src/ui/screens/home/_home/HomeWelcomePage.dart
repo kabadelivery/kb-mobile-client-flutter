@@ -15,6 +15,7 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
@@ -94,10 +95,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               child: SvgPicture.asset(
                 VectorsData.kaba_icon_svg,
                 color: Colors.white,
-              )), onPressed: (){_jumpToScanPage();}),
+              )), onPressed: (){_jumpToInfoPage();}),
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
-//            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
+//            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToInfoPage();}),
 //            IconButton(icon: Icon(Icons.search, color: Colors.white), tooltip: "Search", onPressed: () {}),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
@@ -213,7 +214,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
 
-  void _jumpToScanPage() {}
+  void _jumpToInfoPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InfoPage(),
+      ),
+    );
+  }
 
   Widget _buildHomeScreen(HomeScreenModel data) {
 

@@ -156,13 +156,17 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                       children: <Widget>[
                                         Container(
                                             padding: EdgeInsets.only(bottom: 10),
-                                            child: Text(data[position].food_entity
-                                                .restaurant_entity.name
-                                                .toUpperCase(),
-                                                style: TextStyle(fontSize: 18,
-                                                    color: KColors.primaryColor,
-                                                    fontWeight: FontWeight
-                                                        .bold))),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(data[position].food_entity
+                                                    .restaurant_entity.name
+                                                    .toUpperCase(),
+                                                    style: TextStyle(fontSize: 18,
+                                                        color: KColors.primaryColor,
+                                                        fontWeight: FontWeight
+                                                            .bold)),
+                                              ],
+                                            )),
                                         Row(children: <Widget>[
                                           Container(
                                               padding: EdgeInsets.only(
@@ -170,12 +174,16 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                                   right: 10,
                                                   bottom: 10),
                                               child: Column(children: <Widget>[
-                                                Text(data[position].food_entity
-                                                    .name,
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight
-                                                            .bold)),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text(data[position].food_entity
+                                                        .name,
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight: FontWeight
+                                                                .bold)),
+                                                  ],
+                                                ),
                                                 Row(
                                                     mainAxisAlignment: MainAxisAlignment
                                                         .center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
@@ -20,8 +21,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(height: 2),
                   Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: null), onTap: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE), title: Text("Terms and Conditions", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: null),title: Text("App Info", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: ()=> _jumpToInfoPage()),title: Text("App Info", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
                   Container(color: Colors.white,child:ListTile(leading: IconButton(icon: Icon(Icons.question_answer, color: KColors.primaryColor), onPressed: null), onTap: ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ,title: Text("FAQ", style: TextStyle(color: Colors.black,fontSize: 16))))
                 ]),
@@ -43,11 +42,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
- void  _jumpWebPage(String title, String link) {
+  void  _jumpWebPage(String title, String link) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WebViewPage(title: title,link: link),
+      ),
+    );
+  }
+
+  void _jumpToInfoPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InfoPage(),
       ),
     );
   }

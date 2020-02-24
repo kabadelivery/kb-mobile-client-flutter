@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AdsViewerContract {
 
-  void loadRestaurantFromId (int restaurantId, int DESTINATION){}
+  void loadRestaurantFromId (int restaurantId/*, int DESTINATION*/){}
   void loadFoodFromId (int foodId) {}
 }
 
@@ -44,7 +44,7 @@ class AdsViewerPresenter implements AdsViewerContract {
   }
 
   @override
-  Future<void> loadRestaurantFromId(int restaurantId, int DESTINATION/*can be details or menu*/) async {
+  Future<void> loadRestaurantFromId(int restaurantId, /*int DESTINATIONcan be details or menu*/) async {
 
     _adsViewerView.showLoading(true);
     /* make network request, create a lib that makes network request. */
@@ -52,13 +52,13 @@ class AdsViewerPresenter implements AdsViewerContract {
       return;
     isWorking = true;
     try {
-      RestaurantModel restaurantModel = await provider.loadRestaurantFromId(restaurantId, DESTINATION);
+      RestaurantModel restaurantModel = await provider.loadRestaurantFromId(restaurantId/*, DESTINATION*/);
       if (restaurantModel != null) {
-       if (DESTINATION == 1)
+//       if (DESTINATION == 1)
         _adsViewerView.updateRestaurantForDetails(restaurantModel);
-       else if (DESTINATION == 2) {
-         _adsViewerView.updateRestaurantForMenu(restaurantModel);
-       }
+//       else if (DESTINATION == 2) {
+//         _adsViewerView.updateRestaurantForMenu(restaurantModel);
+//       }
       }
     } catch(_) {
       _adsViewerView.requestFailure("request failure");

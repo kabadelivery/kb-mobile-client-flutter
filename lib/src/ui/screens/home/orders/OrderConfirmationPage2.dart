@@ -11,6 +11,7 @@ import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/MusicData.dart';
@@ -42,11 +43,10 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
 class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> implements OrderConfirmationView {
 
-
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration; //= OrderBillConfiguration.fake();
+  OrderBillConfiguration _orderBillConfiguration; // = OrderBillConfiguration.fake();
 
 //  Map<RestaurantFoodModel, int> addons, foods;
 
@@ -54,12 +54,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   bool isPayAtDeliveryLoading = false;
   bool isPayNowLoading = false;
 
+  TextEditingController _addInfoController;
+
   _OrderConfirmationPage2State();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _addInfoController = new TextEditingController();
     this.widget.presenter.orderConfirmationView = this;
     CustomerUtils.getCustomer().then((customer){
       widget.customer = customer;
@@ -266,6 +269,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ..addAll(<Widget>[
               SizedBox(height: 5),
               _cookingTimeEstimation(),
+              SizedBox(height: 10),
+
+              Container(
+                padding: EdgeInsets.only(left:10, right: 10, top:5, bottom:5),
+                color: Colors.white,
+                child:TextField(controller: _addInfoController, maxLines: 3,
+                    decoration: InputDecoration(labelText: "Any special request about the order ?",
+                      border: InputBorder.none,
+                    )),
+              ),
               SizedBox(height: 10),
               InkWell(
                   splashColor: Colors.white,
@@ -486,7 +499,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   _payNow() async {
-    _playMusicForSuccess();return;
+//    _playMusicForSuccess();return;
+
+    // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return RetrievePasswordPage(type: 3);
@@ -494,15 +509,22 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     ));
     // retrieve password then do it,
     if (results != null && results.containsKey('code') && results.containsKey('type')) {
-      String _mCode = results['code'];
-      showPayNowLoading(true);
-      if (Utils.isCode(_mCode)) {
-
-      } else {
+      if (results == null || results['code'] == null ||
+          !Utils.isCode(results['code'])) {
         mToast("my code is not ok");
+      } else {
+        String _mCode = results['code'];
+        showLoadingPayAtDelivery(true);
+        if (Utils.isCode(_mCode)) {
+          widget.presenter.payNow(
+              widget.customer, widget.foods, _selectedAddress, _mCode, _addInfoController.text);
+        } else {
+          mToast("my code is not ok");
+        }
       }
     }
     _playMusicForSuccess();
+
   }
 
   _payAtDelivery(bool isDialogShown) async {
@@ -526,21 +548,26 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     ));
     // retrieve password then do it,
     if (results != null && results.containsKey('code') && results.containsKey('type')) {
-      String _mCode = results['code'];
-      showLoadingPayAtDelivery(true);
-      if (Utils.isCode(_mCode)) {
-
-        widget.presenter.payAtDelivery(widget.customer, widget.foods, _selectedAddress);
-      } else {
+      if (results == null || results['code'] == null ||
+          !Utils.isCode(results['code'])) {
         mToast("my code is not ok");
+      } else {
+        String _mCode = results['code'];
+        showLoadingPayAtDelivery(true);
+        if (Utils.isCode(_mCode)) {
+          widget.presenter.payAtDelivery(
+              widget.customer, widget.foods, _selectedAddress, _mCode, _addInfoController.text);
+        } else {
+          mToast("my code is not ok");
+        }
       }
     }
-    _playMusicForSuccess();
+//    _playMusicForSuccess();
   }
 
 
 
-  void _showDialog({var icon, var message, bool isYesOrNo = false, Function actionIfYes}) {
+  void _showDialog({var icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
     // flutter defined function
     showDialog(
       context: context,
@@ -585,7 +612,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               OutlineButton(
                 child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (!okBackToHome)
+                    Navigator.of(context).pop();
+                  else
+                    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+                        builder: (BuildContext context) => HomePage()), (r) => false);
                 },
               ),
             ]
@@ -619,6 +650,35 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (await Vibration.hasVibrator()) {
       Vibration.vibrate(duration: 500);
     }*/
+  }
+
+  @override
+  void launchOrderSuccess(bool isSuccessful) {
+
+    showLoadingPayAtDelivery(false);
+    mToast("launcOrderSuccessfull ${isSuccessful}");
+    if (isSuccessful) {  // dismiss all dialogs
+      _showOrderSuccessDialog();
+    } else {  // show an error or a success
+      _showOrderFailureDialog();
+    }
+  }
+
+  void _showOrderFailureDialog () {
+    _showDialog(
+      icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black),
+      message: "Sorry, there is a problem with your order. Please try again.",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showOrderSuccessDialog () {
+    _showDialog(
+      okBackToHome: true,
+      icon: VectorsData.delivery_nam,
+      message: "Congratulations for passing your order. Please keep your phone close to be able to check the command process.",
+      isYesOrNo: false,
+    );
   }
 
 }

@@ -2,10 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
@@ -14,7 +10,6 @@ import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dar
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:toast/toast.dart';
 //import 'package:photo_view/photo_view.dart';
 
@@ -194,11 +189,11 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
       // go the article page.
         break;
       case AdModel.TYPE_RESTAURANT:
-        widget.presenter.loadRestaurantFromId(data.entity_id, /* for menu */1);
+        widget.presenter.loadRestaurantFromId(data.entity_id, /* for menu 1*/);
         break;
       case AdModel.TYPE_MENU:
       // use the id and get the restaurant id for here.
-        widget.presenter.loadRestaurantFromId(data.entity_id, /* for details */2);
+       _jumpToRestaurantMenuPage(data.entity_id);
         break;
     }
   }
@@ -251,6 +246,15 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+      ),
+    );
+  }
+
+  void _jumpToRestaurantMenuPage(int entity_id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantMenuPage(menuId: entity_id, presenter: MenuPresenter()),
       ),
     );
   }

@@ -30,7 +30,7 @@ class OrderBillConfiguration {
     p.prepayed = true;
     p.total_pricing = 3400;
     p.pay_at_delivery = true;
-    p.trustful = 1;
+    p.trustful = 0;
     p.distance = 30;
     p.max_pay = "20000";
     p.cooking_time = 26;

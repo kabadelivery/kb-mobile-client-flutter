@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
 import 'package:kaba_flutter/src/models/BestSellerModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
@@ -12,7 +13,7 @@ class MenuApiProvider {
 
   Client client = Client();
 
-  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(int restaurantId) async {
+  Future<Map> fetchRestaurantMenuList(int restaurantId) async {
 
     DebugTools.iPrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
@@ -28,7 +29,46 @@ class MenuApiProvider {
         if (errorCode == 0) {
           Iterable lo = json.decode(response.body)["data"]["menus"];
           List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
-          return restaurantSubModel;
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
+
+          Map<String, dynamic> mapRes = new Map();
+          mapRes.putIfAbsent("restaurant", () => restaurantModel);
+          mapRes.putIfAbsent("menus", () => restaurantSubModel);
+
+          return mapRes;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<Map> fetchRestaurantMenuListWithMenuId(int menuId) async {
+
+    DebugTools.iPrint("entered fetchRestaurantMenuListWithMenuId");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
+        body: json.encode({'menu_id': menuId}),
+//          headers: Utils.getHeadersWithToken()
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"]["menus"];
+          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
+
+          Map<String, dynamic> mapRes = new Map();
+          mapRes.putIfAbsent("restaurant", () => restaurantModel);
+          mapRes.putIfAbsent("menus", () => restaurantSubModel);
+
+          return mapRes;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -66,5 +106,6 @@ class MenuApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+
 
 }

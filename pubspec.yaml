@@ -47,6 +47,8 @@ dependencies:
   firebase_messaging: ^6.0.9
   firebase_core: ^0.4.0
   flutter_local_notifications: ^1.1.6
+#  flutter_inappwebview: ^2.1.0+1
+  package_info: ^0.4.0+3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -82,7 +84,8 @@ flutter:
     - assets/fonts/MyFlutterApp.ttf
     - assets/images/png/kaba_ico.png
     - assets/images/png/kaba_logo_red_man.png
-    - assets/images/png/kaba_log_red_man_square.png
+    - assets/images/png/kaba_logo_red_man.png
+    - assets/images/png/kaba_copyright_presentation.png
     - assets/sound/command_success_hold_on.mp3
 
   #  - images/a_dot_ham.jpeg
