@@ -7,6 +7,7 @@ import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:kaba_flutter/src/models/TransactionModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
@@ -183,7 +184,7 @@ class ClientPersonalApiProvider {
           var obj = json.decode(response.body);
           customer = CustomerModel.fromJson(obj["data"]);
 
-return customer;
+          return customer;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -194,4 +195,87 @@ return customer;
     }
   }
 
+
+
+  /* all orders details */
+  Future<List<TransactionModel>> fetchTransactionsHistory(CustomerModel customer) async {
+
+    DebugTools.iPrint("entered fetchLastTransactions");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_TRANSACTION_HISTORY,
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"];
+          if (lo == null || lo.isEmpty || lo.length == 0)
+            return List<TransactionModel>();
+          List<TransactionModel> transactionModel = lo?.map((command) => TransactionModel.fromJson(command))?.toList();
+          return transactionModel;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  checkBalance(CustomerModel customer) async {
+
+    DebugTools.iPrint("entered checkBalance");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_BALANCE,
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          String balance = json.decode(response.body)["data"]["balance"];
+          return balance;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  launchTopUp(CustomerModel customer, String phoneNumber, String balance) async {
+
+    DebugTools.iPrint("entered launchTopUp");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ,
+          body: json.encode({"phone_number": phoneNumber, "amount": balance}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          String link = json.decode(response.body)["data"]["url"];
+          return link;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 }

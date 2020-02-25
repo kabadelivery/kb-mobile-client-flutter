@@ -6,9 +6,10 @@ class TransactionModel {
   String value;
   int state;
   int type; // 1 -> in, -1 -> out
-  String created_at;
+  int created_at;
+bool payAtDelivery;
 
-  TransactionModel({this.id, this.details, this.value, this.state, this.type,
+  TransactionModel({this.id, this.details, this.value, this.state, this.type, this.payAtDelivery,
       this.created_at}); // timestamp
 
   TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +18,7 @@ class TransactionModel {
     value = json['value'];
     state = json['state'];
     type = json['type'];
+    payAtDelivery = json["payAtDelivery"];
     created_at = json['created_at'];
   }
 
@@ -26,6 +28,7 @@ class TransactionModel {
     "value" : value,
     "state" : state,
     "type" : type,
+    "payAtDelivery" : payAtDelivery,
     "created_at" : created_at,
   };
 

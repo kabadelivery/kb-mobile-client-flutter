@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:webview_flutter/platform_interface.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -21,6 +22,15 @@ class WebViewPage extends StatefulWidget {
 class _WebViewPageState extends State<WebViewPage> {
 
   var progress;
+  
+  WebViewController _webViewController;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+//    _webViewController = new WebViewPlatformController(handler)
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +75,12 @@ class _WebViewPageState extends State<WebViewPage> {
                           )
                       ),*/
                         child: WebView (
+                          onWebViewCreated: (WebViewController webViewController) {
+                            _webViewController = webViewController;
+
+                          },
                             onPageStarted:(page){showLoading(true);},
                             onPageFinished:(page){showLoading(false);},
-
                             initialUrl: widget.link,
                             javascriptMode: JavascriptMode.unrestricted
                         )
@@ -84,9 +97,9 @@ class _WebViewPageState extends State<WebViewPage> {
   void showLoading(bool isLoading) {
     setState(() {
       if (isLoading)
-        progress = 50.0;
+        progress = 0.5;
       else
-        progress = 100.0;
+        progress = 1.0;
     });
   }
 

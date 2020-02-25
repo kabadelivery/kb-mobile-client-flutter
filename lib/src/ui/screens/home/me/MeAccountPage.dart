@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
+import 'package:kaba_flutter/src/contracts/topup_contract.dart';
+import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
@@ -149,23 +153,29 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              children: <Widget>[
-                                IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40), onPressed: () {}),
-                                SizedBox(height:10),
-                                Text("XOF ---", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-                              ],
+                          InkWell(
+                            onTap:(){ _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));},
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                children: <Widget>[
+                                  IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40), onPressed: () {}),
+                                  SizedBox(height:10),
+                                  Text("XOF ---", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                ],
+                              ),
                             ),
                           ),
-                          Container(
-                            child: Column(
-                              children: <Widget>[
-                                IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40), onPressed: () {}),
-                                SizedBox(height:5),
-                                Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-                              ],
+                          InkWell(
+                            onTap: (){_jumpToPage(context, TopUpPage(presenter: TopUpPresenter()));},
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40), onPressed: () {}),
+                                  SizedBox(height:5),
+                                  Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -303,4 +313,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           )),
     );
   }
+
+  void _jumpToTransactionHistory() {
+    _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+  }
+
+
 }

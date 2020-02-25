@@ -116,7 +116,6 @@ class Utils {
 
     if (commandTime.month == currentTime.month &&
         commandTime.year == currentTime.year) {
-
       sdf = new DateFormat(pattern_today);
       formattedDate = sdf.format(commandTime);
       if (commandTime.day == currentTime.day) {
@@ -127,9 +126,11 @@ class Utils {
         sdf = DateFormat(pattern_not_today);
         formattedDate = sdf.format(commandTime);
       }
+    } else {
+        sdf = DateFormat(pattern_not_today);
+        formattedDate = sdf.format(commandTime);
     }
     return formattedDate;
-    return "-- --";
   }
 
   static bool isPhoneNumber_TGO (String phone_no) {
@@ -140,11 +141,19 @@ class Utils {
     return res;
   }
 
-  static bool isEmailValid (String email) {
-    if (email == null || email.length == 0)
+  static bool isPhoneNumber_Tgcel (String phone_no) {
+    if (phone_no == null || phone_no.length == 0)
       return false;
-    final regex = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
-    bool res = regex.hasMatch(email);
+    final regex = RegExp(r'^[9,7]{1}[0-3]{1}[0-9]{6}$');
+    bool res = regex.hasMatch(phone_no);
+    return res;
+  }
+
+  static bool isPhoneNumber_Moov (String phone_no) {
+    if (phone_no == null || phone_no.length == 0)
+      return false;
+    final regex = RegExp(r'^[9,7]{1}[6-9]{1}[0-9]{6}$');
+    bool res = regex.hasMatch(phone_no);
     return res;
   }
 
@@ -182,6 +191,15 @@ class Utils {
       return "...";
     }
   }
+
+  static bool isEmailValid (String email) {
+    if (email == null || email.length == 0)
+      return false;
+    final regex = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
+    bool res = regex.hasMatch(email);
+    return res;
+  }
+
 
   static String reverseString(String balance) {
     return balance.split('').reversed.join('');

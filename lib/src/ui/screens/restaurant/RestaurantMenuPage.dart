@@ -69,16 +69,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   AnimationController _controller;
 
-  List<Widget> _animationTempViews;
-
-
   /* selected foods */
   Map<RestaurantFoodModel, int> food_selected = Map();
   Map<RestaurantFoodModel, int> adds_on_selected = Map();
 
-  List<Widget> _dynamicAnimatedFood;
-
-  List<AnimationController> _animationController;
+//  List<Widget> _dynamicAnimatedFood;
+//  List<AnimationController> _animationController;
 
   /* create a presenter for menu page */
 
@@ -87,6 +83,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   bool hasSystemError = false;
 
   Map<String, GlobalKey> _keyBox = Map();
+
+  Animation foodAddAnimation;
 
   @override
   void initState() {
@@ -101,12 +99,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     else
       widget.presenter.fetchMenuWithMenuId(widget.menuId);
 
-    _animationTempViews = [];
-
-    _dynamicAnimatedFood = <Widget>[];
-//    _animationController = <AnimationController>[];
     _controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
+        vsync: this, duration: Duration(milliseconds: 700));
+//    foodAddAnimation = Tween(begin: 1.5, end: 1.0).animate(_controller);
+    foodAddAnimation = Tween(begin: 0.0, end: 2*pi).animate(_controller);
   }
 
   @override
@@ -188,20 +184,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   appBar: appBar,
                   body: Stack(
                       children: <Widget>[
-                        /*  StreamBuilder(
-                            stream: restaurantBloc.restaurantMenu.take(1),
-                            builder: (context, AsyncSnapshot<List<RestaurantSubMenuModel>> snapshot) {
-                              if (snapshot.hasData) {
-                                if (snapshot.data.length != 0)
-                                  return _buildRestaurantMenu(snapshot.data);
-                                else
-                                  return MessagePage(message: "Empty content");
-                              } else if (snapshot.hasError) {
-                                return ErrorPage(onClickAction: (){restaurantBloc.fetchRestaurantMenuList(restaurant);});
-                              }
-                              return Center(child: CircularProgressIndicator());
-                            }
-                        ),*/
                         isLoading
                             ? Center(child: CircularProgressIndicator())
                             : (hasNetworkError ? ErrorPage(
@@ -229,10 +211,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                         style: TextStyle(color: Colors.white)),
                                     SizedBox(width: 5),
                                     RotatedBox(
-                                        child: Text("${_foodCount}",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18)),
+                                        child:
+                                        AnimatedBuilder(
+                                          animation: foodAddAnimation,
+                                          child: Text("${_foodCount}",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18)),
+                                          builder: (BuildContext context, Widget child) {
+                                            return Transform.rotate(angle: foodAddAnimation.value, child: child);
+                                          },
+                                        ),
                                         quarterTurns: 1)
                                   ],
                                 ),
@@ -242,7 +231,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                     borderRadius: BorderRadius.circular(20))),
                               quarterTurns: -1,
                             ),
-                            SizedBox(height: 10),
+                            /*SizedBox(height: 10),
                             RotatedBox(child: FlatButton.icon(onPressed: () {
                               _showMenuBottomSheet(2);
                             },
@@ -265,7 +254,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20))),
                               quarterTurns: -1,
-                            ),
+                            ),*/
                           ]),
                         ),
                         /* list of views that i create and remove programmatically. */
@@ -273,9 +262,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   ),
                 ),
                 /* ajouter dynamiquemnt des vues qui s'animeront uniquement sur la duree de leur vie. */
-                Stack(children: _dynamicAnimatedFood)
+//                _dynamicAnimatedFood == null || _dynamicAnimatedFood?.length == 0 ? Container() : Stack(children: _dynamicAnimatedFood)
               ],
-
             ),
             floatingActionButton: this.data != null ? RotatedBox(
               child: FlatButton.icon(onPressed: () {
@@ -294,11 +282,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   void _openDrawer() {
-    _innerDrawerKey.currentState.open();
+    if (_innerDrawerKey.currentState != null)
+      _innerDrawerKey.currentState.open();
   }
 
   void _closeDrawer() {
-    _innerDrawerKey.currentState.close();
+    if (_innerDrawerKey.currentState != null)
+      _innerDrawerKey.currentState.close();
   }
 
   Widget getRow(int i) {
@@ -470,13 +460,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           )
                       ),
                       Positioned(child: InkWell(
-                          child: Container(width: 50,
-                              height: 50,
-                              color: Colors.transparent,
-                              padding: EdgeInsets.all(5),
-                              child: IconButton(
-                                icon: Icon(Icons.add_shopping_cart,
-                                    color: KColors.primaryColor), onPressed: () {  _addFoodToChart(food, foodIndex, menuIndex); },)),
+                          child: GestureDetector(
+                            excludeFromSemantics: true,
+                            child: Container(width: 50,
+                                height: 50,
+                                color: Colors.transparent,
+                                padding: EdgeInsets.all(5),
+                                child: IconButton(
+                                  icon: Icon(Icons.add_shopping_cart,
+                                      color: KColors.primaryColor), onPressed: () {  _addFoodToChart(food, foodIndex, menuIndex); },)),
+                            onTap: () {
+                              _addFoodToChart(food, foodIndex, menuIndex);
+                            },
+                          ),
                           onTap: () {
                             _addFoodToChart(food, foodIndex, menuIndex);
                           },
@@ -565,6 +561,25 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       _foodCount = fc;
       _addOnCount = adc;
     });
+
+    _playAnimation();
+  }
+
+  Future<Null> _playAnimation() async {
+    try {
+
+      /*  _controller.addStatusListener((AnimationStatus status){
+        print(status);
+        if (status == AnimationStatus.completed) {
+          if (_controller.upperBound == 1.3)
+            _controller.reverse(from: _controller.upperBound);
+        }
+      });*/
+
+      await _controller.forward(from: 0.0).orCancel;
+
+    } on TickerCanceled {
+    }
   }
 
   void showSnack(String message) {
@@ -667,9 +682,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           )),
     );
 
-    _dynamicAnimatedFood.add(vView);
-
-
+//    _dynamicAnimatedFood.add(vView);
   }
 
   void showLoading(bool isLoading) {

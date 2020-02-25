@@ -12,6 +12,7 @@ import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
+import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage2.dart';
@@ -21,6 +22,7 @@ import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPa
 import 'package:kaba_flutter/src/ui/screens/home/_home/events/EventsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/MeAccountPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/feeds/FeedsPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -31,6 +33,7 @@ import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
+import 'contracts/topup_contract.dart';
 import 'locale/locale.dart';
 
 
@@ -109,8 +112,8 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
     home: SplashPage(),
-//      home: TransactionHistoryPage(),
-//      home: InfoPage(),
+//      home: TransactionHistoryPage(presenter: TransactionPresenter()),
+//      home: TopUpPage(presenter: TopUpPresenter()),
 //      home: FeedsPage(presenter: FeedPresenter(),),
 //         home: EvenementPage(presenter: EvenementPresenter(),),
       routes: generalRoutes,
