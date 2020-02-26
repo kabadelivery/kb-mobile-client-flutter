@@ -41,8 +41,8 @@ dependencies:
   image_picker: ^0.6.1+4
   flutter_datetime_picker: ^1.2.6
   photo_view: ^0.9.1
-#  vibration: ^1.2.4
-#  audioplayers: ^0.14.0
+  vibration: ^1.2.4
+  audioplayers: ^0.14.0
   device_info: ^0.4.1+4
   firebase_messaging: ^6.0.9
   firebase_core: ^0.4.0
@@ -86,11 +86,10 @@ flutter:
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_copyright_presentation.png
-    - assets/sound/command_success_hold_on.mp3
+#    - assets/sound/command_success_hold_on.mp3
+    - assets/
 
   #  - images/a_dot_ham.jpeg
-
-
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

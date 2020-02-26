@@ -106,7 +106,8 @@ class ClientPersonalApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_CHECK_VERIFCATION_CODE,
           body: json.encode({"code": code, "request_id": requestId}))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
+      print(json.encode({"code": code, "request_id": requestId}));
       print(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;

@@ -133,7 +133,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   Container(
-                                      height: 60, width: 60,
+                                      height: 40, width: 40,
                                       decoration: BoxDecoration(
                                           border: new Border.all(
                                               color: KColors
@@ -156,18 +156,15 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                       children: <Widget>[
                                         Container(
                                             padding: EdgeInsets.only(bottom: 10),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(data[position].food_entity
-                                                    .restaurant_entity.name
-                                                    .toUpperCase(),
-                                                    style: TextStyle(fontSize: 18,
-                                                        color: KColors.primaryColor,
-                                                        fontWeight: FontWeight
-                                                            .bold)),
-                                              ],
-                                            )),
-                                        Row(children: <Widget>[
+                                            child: Text(data[position].food_entity
+                                                .restaurant_entity.name
+                                                .toUpperCase(),
+                                                maxLines: 3,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontSize: 18,
+                                                    color: KColors.primaryColor,
+                                                    fontWeight: FontWeight
+                                                        .bold))),
                                           Container(
                                               padding: EdgeInsets.only(
                                                   left: 10,
@@ -176,12 +173,17 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                               child: Column(children: <Widget>[
                                                 Row(
                                                   children: <Widget>[
-                                                    Text(data[position].food_entity
-                                                        .name,
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight: FontWeight
-                                                                .bold)),
+                                                    Expanded(
+                                                      child: Text(data[position].food_entity
+                                                          .name,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          maxLines: 3,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontWeight: FontWeight
+                                                                  .bold)),
+                                                    ),
                                                   ],
                                                 ),
                                                 Row(
@@ -229,10 +231,8 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                                               color: KColors
                                                                   .primaryYellowColor,
                                                               fontSize: 12))
-
                                                     ]),
-                                              ]))
-                                        ]),
+                                              ])),
                                         SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment

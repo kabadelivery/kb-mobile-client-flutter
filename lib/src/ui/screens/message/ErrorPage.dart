@@ -38,9 +38,16 @@ class ErrorPage extends StatelessWidget {
               children: <Widget>[
                 /* text / image
                     * button */
-                Text(message),
+                SizedBox(width: 40, height: 40,
+                    child: IconButton(icon: Icon(Icons.error, color: KColors.primaryColor))),
+                SizedBox(height: 5),
+                Container(margin: EdgeInsets.only(left:10, right: 10),child: Text(message, textAlign: TextAlign.center)),
                 SizedBox(height:10),
-                MaterialButton(padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("TRY AGAIN",
+                MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                    ),
+                    padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("TRY AGAIN",
                     style: TextStyle(color: Colors.white)),
                     onPressed: onClickAction, color: KColors.primaryColor)
               ])

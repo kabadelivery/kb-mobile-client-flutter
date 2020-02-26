@@ -44,6 +44,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
     isWorking = true;
     try {
+      _homeWelcomeView.showLoading(true);
       HomeScreenModel _data = await provider.fetchHomeScreenModel();
         _homeWelcomeView.updateHomeWelcomePage(_data);
     } catch(_) {

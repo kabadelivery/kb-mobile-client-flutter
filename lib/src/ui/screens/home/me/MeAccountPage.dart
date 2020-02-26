@@ -22,6 +22,7 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
 
 
@@ -41,6 +42,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
   ScrollController _scrollController = ScrollController();
 
+  StateContainerState container;
+
   @override
   void initState() {
     super.initState();
@@ -57,7 +60,6 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
@@ -123,9 +125,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                     child:Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
+                          Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
                           SizedBox(height:10),
-                          Text("XXXX${widget.customerData.username.substring(4)}", style:TextStyle(color: Colors.white, fontSize: 20), textAlign: TextAlign.right,),
+                          Text("XXXX${widget.customerData.username.substring(4)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
                         ])
                 )],
             ),
@@ -153,28 +155,32 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          InkWell(
-                            onTap:(){ _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));},
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                children: <Widget>[
-                                  IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40), onPressed: () {}),
-                                  SizedBox(height:10),
-                                  Text("XOF ---", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-                                ],
+                          Expanded(flex:1,
+                            child: InkWell(
+                              onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  children: <Widget>[
+                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(height:10),
+                                    Text("XOF ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: (){_jumpToPage(context, TopUpPage(presenter: TopUpPresenter()));},
-                            child: Container(
-                              child: Column(
-                                children: <Widget>[
-                                  IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40), onPressed: () {}),
-                                  SizedBox(height:5),
-                                  Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-                                ],
+                          Expanded(flex:1,
+                            child: InkWell(
+                              onTap: () => _jumpToPage(context, TopUpPage(presenter: TopUpPresenter())),
+                              child: Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(height:5),
+                                    Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                  ],
+                                ),
                               ),
                             ),
                           ),

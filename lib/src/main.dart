@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/TestPage.dart';
 import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
 import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
 import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
@@ -33,11 +34,12 @@ import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
+import 'StateContainer.dart';
 import 'contracts/topup_contract.dart';
 import 'locale/locale.dart';
 
 
-void main() => runApp(MyApp());
+void main() => runApp(StateContainer(child: MyApp()));
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -109,6 +111,7 @@ class _MyAppState extends State<MyApp> {
       onGenerateTitle: (BuildContext context) =>
       "KABA",
       theme: ThemeData(primarySwatch: KColors.colorCustom),
+
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
     home: SplashPage(),
@@ -116,6 +119,7 @@ class _MyAppState extends State<MyApp> {
 //      home: TopUpPage(presenter: TopUpPresenter()),
 //      home: FeedsPage(presenter: FeedPresenter(),),
 //         home: EvenementPage(presenter: EvenementPresenter(),),
+//      home: TestPage(),
       routes: generalRoutes,
     );
   }

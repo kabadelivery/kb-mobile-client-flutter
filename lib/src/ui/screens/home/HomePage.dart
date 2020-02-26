@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
@@ -47,7 +48,6 @@ class _HomePageState extends State<HomePage> {
   MeAccountPage meAccountPage;
 
   List<StatefulWidget> pages;
-  int _selectedIndex = 0;
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
-        child:   pages[_selectedIndex],
+        child:   pages[  StateContainer.of(context).tabPosition],
         bucket: bucket,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('Account'),
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex:   StateContainer.of(context).tabPosition,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
     /* zwitch */
     setState(() {
 //      HomePage._selectedIndex = value;
-    _selectedIndex = value;
+    StateContainer.of(context).updateTabPosition(tabPosition: value);
     });
   }
 }

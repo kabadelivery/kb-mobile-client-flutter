@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
+import 'package:kaba_flutter/src/contracts/address_contract.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart' as Pp;
-import 'package:location_permissions/location_permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:permission_handler/permission_handler.dart' as prefix0;
 
@@ -18,27 +23,28 @@ class EditAddressPage extends StatefulWidget {
 
   DeliveryAddressModel address;
 
-  EditAddressPage({Key key, this.address}) : super(key: key);
+  AddressPresenter presenter;
+
+  CustomerModel customer;
+
+  EditAddressPage({Key key, this.address, this.presenter}) : super(key: key);
 
   @override
   _EditAddressPageState createState() => _EditAddressPageState(address);
 }
 
-class _EditAddressPageState extends State<EditAddressPage> {
+class _EditAddressPageState extends State<EditAddressPage> implements AddressView {
 
   String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
 
-//  LatLng selectedLocation = LatLng(6.221316, 1.188478);
-
   LatLng selectedLocation;
-
   DeliveryAddressModel address;
-
 
   var _locationNameController = TextEditingController(), _phoneNumberController = TextEditingController(),
       _nearController = TextEditingController(), _descriptionController = TextEditingController();
 
   bool _checkLocationLoading = false;
+  bool _isUpdateOrCreateAddressLoading = false;
 
   _EditAddressPageState(this.address) {
     if (address != null && address.location != null) {
@@ -51,6 +57,16 @@ class _EditAddressPageState extends State<EditAddressPage> {
     }
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget.address = new DeliveryAddressModel();
+    widget.presenter.editAddressView = this;
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +159,18 @@ class _EditAddressPageState extends State<EditAddressPage> {
               SizedBox(height: 20),
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Text("CONFIRM", style: TextStyle(fontSize: 16, color: Colors.white)),color: KColors.primaryColor, onPressed: () => _saveAddress()),
+                  MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Row(
+                    children: <Widget>[
+                      Text("CONFIRM", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      _isUpdateOrCreateAddressLoading ?  Row(
+                        children: <Widget>[
+                          SizedBox(width: 10),
+                          SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                          SizedBox(width: 5),
+                        ],
+                      )  : Container(),
+                    ],
+                  ),color: KColors.primaryColor, onPressed: () => _saveAddress()),
                   SizedBox(width: 10),
                   MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Text("CANCEL", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),color: Colors.white, onPressed: () => _exit())
                 ],
@@ -185,20 +212,150 @@ class _EditAddressPageState extends State<EditAddressPage> {
         address.location = "${result.longitude}:${result.latitude}";
       });
 
-
       // use mvp to launch a request and place the result here.
-      userDataBloc.checkLocationDetails(userToken: UserTokenModel.fake(), position: Position(longitude: result.longitude, latitude: result.latitude));
-
-
+//      userDataBloc.checkLocationDetails(userToken: UserTokenModel.fake(), position: Position(longitude: result.longitude, latitude: result.latitude));
+      widget.presenter.checkLocationDetails(widget.customer, position:  Position(longitude: result.longitude, latitude: result.latitude));
     } else {}
   }
 
-  void _exit() {}
+  void _exit() {
+    Navigator.of(context).pop();
+  }
 
   _saveAddress() {
     address.name = _locationNameController.text;
     address.description = _descriptionController.text;
     address.near = _nearController.text;
     address.phone_number = _phoneNumberController.text;
+
+    widget.presenter.updateOrCreateAddress(address, widget.customer);
+  }
+
+  @override
+  void addressModificationFailure(String message) {
+
+    /* error. */
+    _showDialog(
+//      okBackToHome: true,
+      icon: VectorsData.questions,
+      message: "Address modification failure",
+      isYesOrNo: false,
+    );
+  }
+
+  @override
+  void createdSuccess() {
+    /* created successful */
+    _showDialog(
+      okBackToHome: true,
+      icon: VectorsData.questions,
+      message: "Address creation success",
+      isYesOrNo: false,
+    );
+  }
+
+  @override
+  void modifiedSuccess() {
+    /* modified successful */
+    _showDialog(
+      okBackToHome: true,
+      icon: VectorsData.questions,
+      message: "Address modification success",
+      isYesOrNo: false,
+    );
+  }
+
+
+
+  void _showDialog({var icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+//          title: new Text("Alert Dialog title"),
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  /* icon */
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                        icon,
+                      )),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              // usually buttons at the bottom of the dialog
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("REFUSE", style: TextStyle(color:Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text("ACCEPT", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              //
+              OutlineButton(
+                child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: () {
+                  if (okBackToHome){
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+
+  }
+
+  @override
+  void inflateDescription(String description_details, String suburb) {
+    showAddressDetailsLoading(false);
+    setState(() {
+      address.description = description_details;
+      _descriptionController.text = description_details;
+      address.suburb = suburb;
+    });
+  }
+
+  @override
+  void inflateDetails(String addressDetails) {
+
+  }
+
+  @override
+  void showAddressDetailsLoading(bool isLoading) {
+    setState(() {
+      _checkLocationLoading = isLoading;
+    });
+  }
+
+  @override
+  void showUpdateOrCreatedAddressLoading(bool isLoading) {
+    setState(() {
+      _isUpdateOrCreateAddressLoading = isLoading;
+    });
   }
 }

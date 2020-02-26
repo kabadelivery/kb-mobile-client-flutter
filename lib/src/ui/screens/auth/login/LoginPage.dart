@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   SizedBox(width: 250,
                       child: Container(
                           padding: EdgeInsets.all(14),
-                          child: TextField(controller: _loginFieldController, decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
+                          child: TextField(controller: _loginFieldController, maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                   SizedBox(height: 30),
                   Row(
@@ -86,13 +86,23 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
   }
 
-  void _moveToRegisterPage() {
-    Navigator.push(
+  Future<void> _moveToRegisterPage() async {
+
+    Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RegisterPage (presenter: RegisterPresenter()),
       ),
     );
+
+    if (results != null && results.containsKey('phone_number') && results.containsKey('password')) {
+      setState(() {
+        _loginFieldController.text = results['phone_number'];
+      });
+      showLoading(true);
+      // launch request for retrieving the delivery prices and so on.
+      widget.presenter.login(results['phone_number'], results['password']);
+    }
   }
 
   void _moveToRecoverPasswordPage() {

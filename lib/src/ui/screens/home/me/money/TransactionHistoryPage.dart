@@ -8,6 +8,8 @@ import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
+import '../../../../../StateContainer.dart';
+
 
 class TransactionHistoryPage extends StatefulWidget {
 
@@ -67,9 +69,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
 
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
-                child: isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) : GestureDetector(
+                child: /*isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) :*/ GestureDetector(
                     onTap: () {},
-                    child: Center(child: Text("${balance == null ? "--" : balance} XOF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: KColors.primaryColor)))
+                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} XOF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: KColors.primaryYellowColor)))
                 )
             ),
           ],
@@ -190,6 +192,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   void showBalance(String balance) {
 
     print("balance ${balance}");
+    StateContainer.of(context).updateBalance(balance: int.parse(balance));
     showBalanceLoading(false);
     setState(() {
       this.balance = balance;

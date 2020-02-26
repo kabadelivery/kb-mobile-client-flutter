@@ -32,11 +32,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: <Widget>[
                   Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.security, color: KColors.primaryColor), onPressed: null),title: Text("Change Account Password", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: null), onTap: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE), title: Text("Terms and Conditions", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE),), onTap: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE), title: Text("Terms and Conditions", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: ()=> _jumpToInfoPage()),title: Text("App Info", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: ()=> _jumpToInfoPage()), onTap: ()=> _jumpToInfoPage(), title: Text("App Info", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child:ListTile(leading: IconButton(icon: Icon(Icons.question_answer, color: KColors.primaryColor), onPressed: null), onTap: ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ,title: Text("FAQ", style: TextStyle(color: Colors.black,fontSize: 16))))
+                  Container(color: Colors.white,child:ListTile(leading: IconButton(icon: Icon(Icons.question_answer, color: KColors.primaryColor), onPressed:  ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ), onTap: ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ,title: Text("FAQ", style: TextStyle(color: Colors.black,fontSize: 16))))
                 ]),
           )),
     );

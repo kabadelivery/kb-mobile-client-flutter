@@ -50,7 +50,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
               if (snapshot.hasData) {
                 return _buildRestaurantList(snapshot.data);
               } else if (snapshot.hasError) {
-                return ErrorPage(onClickAction: (){restaurantBloc.fetchRestaurantList();});
+                return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList();});
               }
               return Center(child: CircularProgressIndicator());
             }));

@@ -1,3 +1,5 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +21,7 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+import 'package:vibration/vibration.dart';
 //import 'package:vibration/vibration.dart';
 //import 'package:audioplayers/audioplayers.dart';
 
@@ -639,17 +642,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   Future<void> _playMusicForSuccess() async {
-
-
-    /* // play music
+    // play music
     AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+    audioPlayer.setVolume(1.0);
     AudioPlayer.logEnabled = true;
-      int result = await audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);
-
-    // vibrate
-    if (await Vibration.hasVibrator()) {
+    var audioCache = new AudioCache(fixedPlayer: audioPlayer);
+    audioCache.play(MusicData.command_success_hold_on);
+    if (await Vibration.hasVibrator ()
+    ) {
       Vibration.vibrate(duration: 500);
-    }*/
+    }
   }
 
   @override
@@ -673,6 +675,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   void _showOrderSuccessDialog () {
+    _playMusicForSuccess();
     _showDialog(
       okBackToHome: true,
       icon: VectorsData.delivery_nam,

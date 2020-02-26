@@ -25,6 +25,7 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 
+import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomePage extends StatefulWidget {
@@ -86,7 +87,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
                 ),
-                child:Container(child: TextField(decoration:InputDecoration(hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
               )),
           leading: IconButton(icon: SizedBox(
@@ -447,7 +448,25 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: Center(child : widget.presenter.isWorking ? CircularProgressIndicator() : Text("page empty"))
+          child: Center(child : isLoading ? CircularProgressIndicator() :
+          Container(
+            child: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(icon: Icon(Icons.flight_takeoff, color: Colors.grey)),
+                SizedBox(height: 5),
+                Container(margin: EdgeInsets.only(left:20,right:20),child: Text("Sorry, there was a mistake loading landing page. Please check your network and try again.", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
+                SizedBox(height: 5),
+
+                RaisedButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(18.0),
+//                    side: BorderSide(color: Colors.red)
+                ),
+                color: Colors.yellow,child: Text("TRY AGAIN"), onPressed: () {widget.presenter.fetchHomePage();})
+              ],
+            ),
+          )
+          )
       );
     }
 /*    setState(() {
@@ -470,11 +489,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     /*setState(() {
       HomePage.updateSelectedPage(2);
     });*/
+    StateContainer.of(context).updateTabPosition(tabPosition: 1);
   }
 
   @override
   void networkError() {
     // TODO: implement networkError
+    showLoading(false);
     mToast("please connect network");
     /* setState(() {
       hasNetworkError = true;
@@ -485,7 +506,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void showErrorMessage(String message) {
     // TODO: implement showErrorMessage
     //  hasSystemError = true;
-    mToast("error message");
+    showLoading(false);
+    mToast("Error message");
   }
 
   @override

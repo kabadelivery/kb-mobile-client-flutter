@@ -29,15 +29,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   int _registerModeRadioValue = 0;
 
   List<String> recoverModeHints = ["Insert the Phone number you are most likely to make T-MONEY or FLOOZ transactions with.\n\nOnly TOGOLESE phone numbers are allowed.",
-    "Insert your E-mail address"];
+    /*"Insert your E-mail address"*/];
 
-  List<String> _loginFieldHint = ["90 XX XX XX", "xxxxxx@yyy.zzz"];
+  List<String> _loginFieldHint = ["90 XX XX XX"/*, "xxxxxx@yyy.zzz"*/];
 
   String _nicknameFieldHint = "Nickname";
 
-  List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress, TextInputType.emailAddress];
+  List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress/*, TextInputType.emailAddress*/];
 
-  List<int> _loginMaxLength = [8, 100];
+  List<int> _loginMaxLength = [8/*, 100*/];
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
@@ -87,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
 //                    SizedBox(height: 10),
                     /* radiobutton - check who are you */
-                    !isCodeSent ? Row(
+                    /*!isCodeSent ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Radio(
@@ -104,14 +104,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           ), new Text(
                               'E-mail',
                               style: new TextStyle(fontSize: 16.0)),
-                        ]) : Container(),
+                        ]) : Container(),*/
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged, maxLength: _loginMaxLength[_registerModeRadioValue],decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor),  keyboardType: _loginFieldInputType[_registerModeRadioValue],),
+                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 10),
@@ -387,6 +387,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void registerSuccess(String phone_number, String password) {
     /*  */
     mToast("Account created successfully");
+    Navigator.of(context).pop({'phone_number':phone_number, 'password':password});
   }
 
   @override

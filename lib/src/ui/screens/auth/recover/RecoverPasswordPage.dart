@@ -38,7 +38,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                   SizedBox(width: 250,
                       child: Container(
                           padding: EdgeInsets.all(14),
-                          child: TextField(decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
+                          child: TextField(decoration: InputDecoration.collapsed(hintText: "Identifier"), maxLength: 8, keyboardType: TextInputType.number, style: TextStyle(color:KColors.primaryColor)),
                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                   SizedBox(height: 30),
                   Row(

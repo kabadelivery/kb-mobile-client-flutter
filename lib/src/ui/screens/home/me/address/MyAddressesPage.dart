@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
+import 'package:kaba_flutter/src/contracts/address_contract.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
@@ -47,6 +48,8 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
         title: Text("MY ADDRESSES", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () => _createAddress(), child: Icon(Icons.add, color: Colors.white)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: StreamBuilder<List<DeliveryAddressModel>>(
           stream: userDataBloc.deliveryAddress,
           builder:(context, AsyncSnapshot<List<DeliveryAddressModel>> snapshot) {
@@ -116,7 +119,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAddressPage(address: address),
+        builder: (context) => EditAddressPage(address: address, presenter: AddressPresenter()),
       ),
     );
   }
@@ -124,6 +127,15 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
   _pickedAddress(DeliveryAddressModel address) {
     if (widget.pick)
       Navigator.of(context).pop({'selection':address});
+  }
+
+  _createAddress() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditAddressPage(presenter: AddressPresenter()),
+      ),
+    );
   }
 
 }
