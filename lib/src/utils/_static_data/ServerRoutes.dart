@@ -216,8 +216,29 @@ class ServerRoutes {
 
   /* reset password */
   static const String LINK_PASSWORD_RESET = ServerConfig.SERVER_ADDRESS_SECURE+"/api/password/reset";
+  
   static const String common_server_address = "";
 
-  
+  // money transfer check customer identity
+  static const  String LINK_CHECK_USER_ACCOUNT = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/phone_number/valid/check";
+
+  // money transfer interface
+  static const  String LINK_MONEY_TRANSFER = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/send/credit";
+
+  /* get sponsorship configuration */
+  static const  String LINK_GET_SPONSORSHIP_CODE = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/sponsorshipcode/get";
+
+  /* get sponsored */
+  static const  String LINK_GET_SPONSORED = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/sponsor";
+
+  /* get sponsorship stats */
+  static const  String LINK_GET_LAST_SPONSORSHIP_FEEDS = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/last/sponsorship/get";
+
+  static const  String LINK_GET_ALL_SPONSORSHIP_HISTORY = ServerConfig.SERVER_ADDRESS +"/mobile/api/user/all/sponsorship/get" ;
+
+  static const  String LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/get/discussion";
+
+  static const  String LINK_CHECK_SPONSORSHIP_ENABLED = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/sponsoring/enabled/check";
+
 
 }

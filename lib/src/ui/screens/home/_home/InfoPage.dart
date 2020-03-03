@@ -6,6 +6,8 @@ import 'package:package_info/package_info.dart';
 
 class InfoPage extends StatefulWidget {
 
+  static var routeName = "/InfoPage";
+
   @override
   _InfoPageState createState() => _InfoPageState();
 }

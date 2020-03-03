@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
 
 
@@ -8,17 +10,16 @@ class NotificationItem {
   String body;
   String image_link;
   NotificationFDestination destination;
-  int priority = 0;
+  String priority;
 
   NotificationItem({this.title, this.body, this.image_link, this.destination, this.priority});
 
-  NotificationItem.fromJson(Map<String, dynamic> json) {
+  NotificationItem.fromJson(Map<String, dynamic> raw) {
 
-    title = json['title'];
-    body = json['body'];
-    image_link = json['image_link'];
-    destination = json['destination'];
-    priority = json['priority'];
+    title = raw['title'];
+    body = raw['body'];
+    image_link = raw['image_link'];
+    priority = raw['priority'];
   }
 
 
@@ -26,7 +27,7 @@ class NotificationItem {
     "title" : title,
     "body" : body,
     "image_link" : image_link,
-    "destination" : destination,
+//    "destination" : destination,
     "priority" : (priority as int),
   };
 

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client;
+import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
 import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
@@ -47,7 +48,7 @@ class OrderApiProvider {
       } else
         throw Exception(-1); // there is an error in your request
     } else {
-//      throw Exception(response.statusCode); // you have no right to do this
+      throw Exception(-2); // you have no right to do this
     }
   }
 
@@ -70,7 +71,7 @@ class OrderApiProvider {
         'version_sdk':'${androidInfo.version.sdkInt}',
         'build_model':'${androidInfo.model}',
         'build_product':'${androidInfo.product}',
-        'push_token':''
+        'push_token':'$token'
       });
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
@@ -124,6 +125,29 @@ class OrderApiProvider {
         throw Exception(-1); // there is an error in your request
     } else {
       throw Exception(-2); // you have no right to do this
+    }
+  }
+
+  loadOrderFromId(CustomerModel customer, int orderId) async {
+
+    DebugTools.iPrint("entered loadOrderFromId");
+    if (await Utils.hasNetwork()) {
+
+
+      final response = await client
+          .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
+          body:  json.encode({"command_id": orderId}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // there is an error in your request
     }
   }
 }

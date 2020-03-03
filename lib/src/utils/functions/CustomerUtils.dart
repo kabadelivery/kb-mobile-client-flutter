@@ -1,11 +1,25 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 class CustomerUtils {
+
+  static popBack(BuildContext context) {
+    if (!Navigator.pop(context)) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              SplashPage(),
+        ),
+      );
+    }
+  }
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -80,6 +94,8 @@ class CustomerUtils {
     UserTokenModel token = UserTokenModel(token: tok);
     return token;
   }
+
+
 
 
 }

@@ -13,6 +13,7 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/MessagePage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
@@ -107,6 +108,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
     var appBar = AppBar(
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(child: Row(children: <Widget>[

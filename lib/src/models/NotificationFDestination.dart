@@ -9,6 +9,8 @@ class NotificationFDestination {
  static const int RESTAURANT_MENU = 434;
  static const int MONEY_MOVMENT = 888;
  static const int SPONSORSHIP_TRANSACTION_ACTION = 889 ;
+ static const int MESSAGE_SERVICE_CLIENT = 200;
+
 
   /* get comand details */
  static const int COMMAND_PAGE = 90;
@@ -30,7 +32,6 @@ class NotificationFDestination {
 
   /* help to know which activity we're going in */
   int type;
-
   /* meta data attached with it */
   int product_id; /* cn be product / restaurant */
 
@@ -44,7 +45,7 @@ class NotificationFDestination {
   }
 
   Map toJson () => {
-    "type" : (type as int),
+    "type" : type,
     "product_id" : product_id,
   };
 
@@ -52,5 +53,12 @@ class NotificationFDestination {
   String toString() {
     return toJson().toString();
   }
+
+ String toSpecialString() {
+  return {
+   "\"type\"" : type,
+   "\"product_id\"" : product_id,
+  }.toString();
+ }
 
 }

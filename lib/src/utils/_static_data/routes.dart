@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
+import 'package:kaba_flutter/src/contracts/food_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/feeds/FeedsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/MySoldePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
@@ -14,6 +19,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -40,10 +46,14 @@ var generalRoutes = {
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   MySoldePage.routeName : (BuildContext context) => MySoldePage(),
   QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
-//  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(),
-//  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),
-//  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),
-//  PersonnalPage.routeName : (BuildContext context) => PersonnalPage(),
+  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(),
+  RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
+  FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
+  WebViewPage.routeName : (BuildContext context) => WebViewPage(),
+  OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(),
+  TopUpPage.routeName : (BuildContext context) => TopUpPage(),
+  SettingsPage.routeName : (BuildContext context) => SettingsPage(),
+  InfoPage.routeName : (BuildContext context) => InfoPage(),
 
 
 };

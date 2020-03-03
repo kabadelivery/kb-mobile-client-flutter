@@ -20,7 +20,6 @@ class ClientPersonalApiProvider {
 
   var TGO = "228";
 
-
   /// COMMENTS
   ///
   /// Get restaurants comments list
@@ -279,4 +278,38 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-}
+
+  launchTransferMoneyRequest(CustomerModel customer, String phoneNumber) async {
+
+    DebugTools.iPrint("entered launchTransferMoneyRequest");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_USER_ACCOUNT,
+          body: json.encode({"phone_number": phoneNumber}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == -2) {
+          return null;
+        } else {
+          CustomerModel customer = new CustomerModel();
+          customer.id = json.decode(response.body)["data"]["id"];
+          customer.nickname = json.decode(response.body)["data"]["username"];
+          customer.phone_number = json.decode(response.body)["data"]["phone_number"];
+          customer.profile_picture = json.decode(response.body)["data"]["pic"];
+          return customer;
+        }
+      }
+      else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+
+    }

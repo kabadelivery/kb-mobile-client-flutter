@@ -3,11 +3,15 @@ import 'dart:collection';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kaba_flutter/src/contracts/food_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
+import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
 
@@ -17,40 +21,43 @@ class RestaurantFoodDetailsPage extends StatefulWidget {
 
   RestaurantFoodModel food;
 
-  RestaurantFoodDetailsPage({Key key, this.food}) : super(key: key);
+  FoodPresenter presenter;
 
+  int foodId;
+
+  RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key);
 
   @override
-  _RestaurantFoodDetailsPageState createState() => _RestaurantFoodDetailsPageState(food);
+  _RestaurantFoodDetailsPageState createState() => _RestaurantFoodDetailsPageState();
 }
 
-class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
+class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> implements FoodView {
 
+//  SliverAppBar flexibleSpaceWidget;
   ScrollController _scrollController;
 
   int _carousselPageIndex = 0;
 
-/*  List<String> mImages = [
-    "https://smppharmacy.com/wp-content/uploads/2019/02/food-post.jpg",
-    "https://www.restoconnection.fr/wp-content/uploads/2018/11/les-tendances-2019-dans-la-restauration.jpg",
-    "https://100jewishfoods.tabletmag.com/wp-content/uploads/2018/02/Social-Share-v1@2x.png",
-    "https://www.goodfood.com.au/content/dam/images/h/1/e/d/m/5/image.related.wideLandscape.940x529.h1dua5.png/1558922095436.jpg",
-    "https://cdn.shopify.com/s/files/1/2620/2784/files/slide-1_1400x.progressive.jpg?v=1538539622"
-  ];*/
-
   static final List<String> popupMenus = ["Share"];
 
-  RestaurantFoodModel food;
-
-  _RestaurantFoodDetailsPageState(this.food);
 
   int quantity = 1;
+
+  bool isLoading = false;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _scrollController = ScrollController();
+
+    if (widget.food == null){
+      // there must be a food id.
+      widget.presenter.foodView = this;
+      widget.presenter.fetchFoodById(widget.foodId);
+    }
   }
 
   _carousselPageChanged(int index) {
@@ -62,216 +69,169 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
   @override
   Widget build(BuildContext context) {
 
-    double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
+    final int args = ModalRoute.of(context).settings.arguments;
+    if (args != null && args != 0)
+      widget.foodId = args;
+    if (widget.food == null){
+      // there must be a food id.
+      widget.presenter.fetchFoodById(widget.foodId);
+    }
+
     /* use silver-app-bar first */
-    var flexibleSpaceWidget = new SliverAppBar(
-      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: ()=>Navigator.pop(context)),
-      actions: <Widget>[
-        PopupMenuButton<String>(
-          onSelected: menuChoiceAction,
-          itemBuilder: (BuildContext context) {
-            return popupMenus.map((String menuName){
-              return PopupMenuItem<String>(value: menuName, child: Text(menuName));
-            }).toList();
-          },
-        )
-      ],
-      expandedHeight: expandedHeight,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-//        collapseMode: CollapseMode.parallax,
-          background:
-          Padding(
-              padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
-              child: Stack(
-                children: <Widget>[
-                  CarouselSlider(
-                    onPageChanged: _carousselPageChanged,
-                    viewportFraction: 1.0,
-                    autoPlay: food.food_details_pictures.length > 1 ? true:false,
-                    reverse: food.food_details_pictures.length > 1 ? true:false,
-                    enableInfiniteScroll: food.food_details_pictures.length > 1 ? true:false,
-                    autoPlayInterval: Duration(seconds: 5),
-                    autoPlayAnimationDuration: Duration(milliseconds: 300),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    height: expandedHeight,
-                    items: food.food_details_pictures?.map((pictureLink) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                              height: 9*MediaQuery.of(context).size.width/16,
-                              width: 9*MediaQuery.of(context).size.width,
-                              child:CachedNetworkImage(
-                                  imageUrl: Utils.inflateLink(pictureLink),
-                                  fit: BoxFit.cover
-                              )
-                          );
-                        },
-                      );
-                    })?.toList(),
-                  ),
-                  Positioned(
-                      bottom: 10,
-                      right:0,
-                      child:Padding(
-                        padding: const EdgeInsets.only(right:8.0),
-                        child: Row(
-                          children: <Widget>[]
-                            ..addAll(
-                                List<Widget>.generate(food.food_details_pictures.length, (int index) {
-                                  return Container(
-                                      margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                      height: 9,width:9,
-                                      decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                          border: new Border.all(color: Colors.white),
-                                          color: (index==_carousselPageIndex || index==food.food_details_pictures.length)?Colors.white:Colors.transparent
-                                      ));
-                                })
-                              /* add a list of rounded views */
-                            ),
-                        ),
-                      )),
-                ],
-              )
-          )
+    return  Scaffold(
+      body: Container(
+          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+          _buildRestaurantFoodPage())
       ),
     );
+  }
 
-    return Scaffold(
-        backgroundColor: Colors.grey.shade300,
-        body: Stack(
-          children: <Widget>[
-            DefaultTabController(
-                length: 1,
-                child: NestedScrollView(
-                    controller: _scrollController,
-                    headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[
-                        flexibleSpaceWidget,
-                      ];
-                    },
-                    body:  SingleChildScrollView(
-                        child: Column(
-                            children: <Widget>[
-                              Card(
-                                margin: EdgeInsets.all(10),
-                                child: Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text("${food?.name.toUpperCase()}", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
-                                          SizedBox(height: 20),
-                                          Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
+  _buildSysErrorPage() {
+    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+  }
 
-                                                food.promotion==0 ?
-                                                Text("${food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${food?.price}", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+  }
 
-                                                food.promotion!=0 ? Row(children: <Widget>[
-                                                  SizedBox(width: 10),
-                                                  Text("${food?.promotion_price}", style: TextStyle(color: KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.bold)),
-                                                ]) : Container(),
 
-                                                SizedBox(width: 10),
-                                                Text("FCFA", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
+  _buildRestaurantFoodPage() {
 
-                                              ]),
-                                          SizedBox(height: 10),
-                                          Text("${food?.description}", textAlign: TextAlign.center, style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 14)),
-                                          SizedBox(height: 20)
-                                        ]
-                                    )),
-                              ),
-                              Card(
-                                  margin: EdgeInsets.all(10),
-                                  child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+    if (widget.food == null)
+      return _buildSysErrorPage();
+    return Stack(
+      children: <Widget>[
+        DefaultTabController(
+            length: 1,
+            child: NestedScrollView(
+                controller: _scrollController,
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    _buildFlexibleWidget(),
+                  ];
+                },
+                body:  SingleChildScrollView(
+                    child: Column(
+                        children: <Widget>[
+                          Card(
+                            margin: EdgeInsets.all(10),
+                            child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("${widget.food?.name.toUpperCase()}", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+                                      SizedBox(height: 20),
+                                      Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                    height:45, width: 45,
-                                                    decoration: BoxDecoration(
-                                                        border: new Border.all(color: KColors.primaryColor, width: 2),
-                                                        shape: BoxShape.circle,
-                                                        image: new DecorationImage(
-                                                            fit: BoxFit.cover,
-                                                            image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-                                                        )
+
+                                            widget.food.promotion==0 ?
+                                            Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+
+                                            widget.food.promotion!=0 ? Row(children: <Widget>[
+                                              SizedBox(width: 10),
+                                              Text("${widget.food?.promotion_price}", style: TextStyle(color: KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.bold)),
+                                            ]) : Container(),
+
+                                            SizedBox(width: 10),
+                                            Text("FCFA", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
+
+                                          ]),
+                                      SizedBox(height: 10),
+                                      Text("${widget.food?.description}", textAlign: TextAlign.center, style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 14)),
+                                      SizedBox(height: 20)
+                                    ]
+                                )),
+                          ),
+                          Card(
+                              margin: EdgeInsets.all(10),
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                                height:45, width: 45,
+                                                decoration: BoxDecoration(
+                                                    border: new Border.all(color: KColors.primaryColor, width: 2),
+                                                    shape: BoxShape.circle,
+                                                    image: new DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget.food.pic))
                                                     )
-                                                ),
-                                                Container(
-//                                                    padding: EdgeInsets.all(10),
-                                                    child:Column(
-                                                      children: <Widget>[
-                                                        Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
-                                                        SizedBox(height: 5),
-                                                        SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
-                                                        Text("${food?.restaurant_entity.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
-                                                        )
-                                                      ],
-                                                    ))
-                                              ],
+                                                )
                                             ),
                                             Container(
-                                                color: KColors.primaryColor,
-                                                child: SizedBox(
-                                                    width: 6,
-                                                    height:100
-                                                )),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left:15),
-                                              child: Row(children: <Widget>[
-                                                Text("${food.promotion==0 ? food?.price : food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
-                                                Container(width: 5),
-                                                Text("FCFA", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor))
-                                              ]),
-                                            )
-                                          ]
-                                      )
+//                                                    padding: EdgeInsets.all(10),
+                                                child:Column(
+                                                  children: <Widget>[
+                                                    Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
+                                                    SizedBox(height: 5),
+                                                    SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
+                                                    Text("${widget.food?.restaurant_entity.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
+                                                    )
+                                                  ],
+                                                ))
+                                          ],
+                                        ),
+                                        Container(
+                                            color: KColors.primaryColor,
+                                            child: SizedBox(
+                                                width: 6,
+                                                height:100
+                                            )),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left:15),
+                                          child: Row(children: <Widget>[
+                                            Text("${widget.food.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
+                                            Container(width: 5),
+                                            Text("FCFA", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor))
+                                          ]),
+                                        )
+                                      ]
                                   )
                               )
-                            ]
-                        )
+                          )
+                        ]
                     )
                 )
-            ),
-            /* bottom bar for quantity and others */
-            Positioned(
-              bottom: 0,
-              child: Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(width: 10),
-                      Container(child: Row(
-                          children: <Widget>[
-                            IconButton(icon: Icon(Icons.remove_circle, color: Colors.black), onPressed: () => _decreaseQuantity()),
-                            SizedBox(width: 10),
-                            Text("${quantity}", style: TextStyle(color: Colors.black, fontSize: 18)),
-                            SizedBox(width: 10),
-                            IconButton(icon: Icon(Icons.add_circle, color: Colors.black), onPressed: () => _increaseQuantity())
-                          ]
-                      )),
-                      RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
-                        children: <Widget>[
-                          Text("ACHETER", style: TextStyle(color: KColors.primaryColor)),
-                          IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),
-                        ],
-                      ))
-                    ]),
-              ),
             )
-          ],
+        ),
+        /* bottom bar for quantity and others */
+        Positioned(
+          bottom: 0,
+          child: Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Container(width: 10),
+                  Container(child: Row(
+                      children: <Widget>[
+                        IconButton(icon: Icon(Icons.remove_circle, color: Colors.black), onPressed: () => _decreaseQuantity()),
+                        SizedBox(width: 10),
+                        Text("${quantity}", style: TextStyle(color: Colors.black, fontSize: 18)),
+                        SizedBox(width: 10),
+                        IconButton(icon: Icon(Icons.add_circle, color: Colors.black), onPressed: () => _increaseQuantity())
+                      ]
+                  )),
+                  RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
+                    children: <Widget>[
+                      Text("ACHETER", style: TextStyle(color: KColors.primaryColor)),
+                      IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),
+                    ],
+                  ))
+                ]),
+          ),
         )
+      ],
     );
   }
+
 
   _decreaseQuantity() {
     if (quantity> 1)
@@ -302,8 +262,8 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
     int totalPrice = 0;
 
     /* init */
-    food_selected.putIfAbsent(food, () => quantity);
-    totalPrice = int.parse(food.promotion == 0  /* no promotion */ ? food.price : food.promotion_price) * quantity;
+    food_selected.putIfAbsent(widget.food, () => quantity);
+    totalPrice = int.parse(widget.food.promotion == 0  /* no promotion */ ? widget.food.price : widget.food.promotion_price) * quantity;
 
     /* data */
     Navigator.push(
@@ -313,5 +273,121 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> {
       ),
     );
   }
+
+  @override
+  void inflateFood(RestaurantFoodModel food) {
+    showLoading(false);
+    setState(() {
+      this.widget.food = food;
+    });
+  }
+
+
+  @override
+  void networkError() {
+    showLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasNetworkError = true;
+    });
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+      if (isLoading == true) {
+        this.hasNetworkError = false;
+        this.hasSystemError = false;
+      }
+    });
+  }
+
+  @override
+  void systemError() {
+    showLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasSystemError = true;
+    });
+  }
+
+  _buildFlexibleWidget() {
+    double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
+    return  new SliverAppBar(
+      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: ()=> CustomerUtils.popBack(context)),
+      actions: <Widget>[
+        PopupMenuButton<String>(
+          onSelected: menuChoiceAction,
+          itemBuilder: (BuildContext context) {
+            return popupMenus.map((String menuName){
+              return PopupMenuItem<String>(value: menuName, child: Text(menuName));
+            }).toList();
+          },
+        )
+      ],
+      expandedHeight: expandedHeight,
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+//        collapseMode: CollapseMode.parallax,
+          background:
+          Padding(
+              padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
+              child: Stack(
+                children: <Widget>[
+                  CarouselSlider(
+                    onPageChanged: _carousselPageChanged,
+                    viewportFraction: 1.0,
+                    autoPlay: widget.food.food_details_pictures.length > 1 ? true:false,
+                    reverse: widget.food.food_details_pictures.length > 1 ? true:false,
+                    enableInfiniteScroll: widget.food.food_details_pictures.length > 1 ? true:false,
+                    autoPlayInterval: Duration(seconds: 5),
+                    autoPlayAnimationDuration: Duration(milliseconds: 300),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    height: expandedHeight,
+                    items: widget.food.food_details_pictures?.map((pictureLink) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                              height: 9*MediaQuery.of(context).size.width/16,
+                              width: 9*MediaQuery.of(context).size.width,
+                              child:CachedNetworkImage(
+                                  imageUrl: Utils.inflateLink(pictureLink),
+                                  fit: BoxFit.cover
+                              )
+                          );
+                        },
+                      );
+                    })?.toList(),
+                  ),
+                  Positioned(
+                      bottom: 10,
+                      right:0,
+                      child:Padding(
+                        padding: const EdgeInsets.only(right:8.0),
+                        child: Row(
+                          children: <Widget>[]
+                            ..addAll(
+                                List<Widget>.generate(widget.food.food_details_pictures.length, (int index) {
+                                  return Container(
+                                      margin: EdgeInsets.only(right:2.5, top: 2.5),
+                                      height: 9,width:9,
+                                      decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          border: new Border.all(color: Colors.white),
+                                          color: (index==_carousselPageIndex || index==widget.food.food_details_pictures.length)?Colors.white:Colors.transparent
+                                      ));
+                                })
+                              /* add a list of rounded views */
+                            ),
+                        ),
+                      )),
+                ],
+              )
+          )
+      ),
+    );
+  }
+
+
 
 }

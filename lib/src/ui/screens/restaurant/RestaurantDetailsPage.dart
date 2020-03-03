@@ -8,6 +8,7 @@ import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/RestaurantCommentWidget.dart';
@@ -19,7 +20,7 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 
-class RestaurantDetailsPage extends StatelessWidget {
+class RestaurantDetailsPage extends StatefulWidget {
 
   static var routeName = "/RestaurantDetailsPage";
 
@@ -27,16 +28,41 @@ class RestaurantDetailsPage extends StatelessWidget {
 
   ScrollController _scrollController;
 
+  CustomerModel customer;
+
   RestaurantDetailsPage({this.restaurant}) {
     _scrollController = ScrollController();
   }
 
   @override
+  _RestaurantDetailsPageState createState() => _RestaurantDetailsPageState();
+}
+
+class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+    CustomerUtils.getCustomer().then((customer) {
+//      restaurantBloc.fetchCommentList(widget.restaurant, customer.token);
+      widget.customer = customer;
+      // if there is an id, then launch here
+//      if (widget.orderId != null && widget.orderId != 0) {
+//        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId);
+//      }
+    });
+
+
+  }
+
+
+  @override
   Widget build(BuildContext context) {
 
-    CustomerUtils.getUserToken().then((userTokenModel) {
-      restaurantBloc.fetchCommentList(restaurant, userTokenModel);
-    });
 
     /* use silver-app-bar first */
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
@@ -51,14 +77,14 @@ class RestaurantDetailsPage extends StatelessWidget {
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color:KColors.primaryColor.withAlpha(100)),
             padding: EdgeInsets.all(5),
             child: Text(
-                restaurant.name,
+                widget.restaurant.name,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
                 )),
           ),
           background: Container(
-            child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(restaurant.theme_pic)),
+            child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.restaurant.theme_pic)),
           )),
     );
 
@@ -67,7 +93,7 @@ class RestaurantDetailsPage extends StatelessWidget {
         body: new DefaultTabController(
             length: 1,
             child: NestedScrollView(
-              controller: _scrollController,
+              controller: widget._scrollController,
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   flexibleSpaceWidget,
@@ -84,7 +110,7 @@ class RestaurantDetailsPage extends StatelessWidget {
                               Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
                               Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                                 Icon(Icons.access_time),
-                                Text(restaurant.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
+                                Text(widget.restaurant.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
                               ])
                             ],
                           ),
@@ -99,14 +125,14 @@ class RestaurantDetailsPage extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
+                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget.restaurant.pic))
                                 )
                             )
                         ),
                         SizedBox(height:20),
                         /* see the menu entry */
                         Container(padding: EdgeInsets.only(top: 10,bottom: 10), color: Colors.white,
-                          child: InkWell( onTap: (){_jumpToRestaurantMenu(context, restaurant);},
+                          child: InkWell( onTap: (){_jumpToRestaurantMenu(context, widget.restaurant);},
                               child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
                                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                                   Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("See the Menu", style: TextStyle(color:KColors.primaryColor))]),
@@ -122,14 +148,14 @@ class RestaurantDetailsPage extends StatelessWidget {
                             child:Column(
                               children: <Widget>[
                                 /* description of restaurant */
-                                Text(restaurant.description,
+                                Text(widget.restaurant.description,
                                   style: TextStyle(color: Colors.black, fontSize: 16),
                                 ),
                                 SizedBox(height: 10),
                                 Container(
                                   child: Row(children: <Widget>[
                                     Icon(Icons.location_on, color: Colors.blue),
-                                    Flexible (child: Text(restaurant.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
+                                    Flexible (child: Text(widget.restaurant.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
                                   ]),
                                 ),
 
@@ -154,16 +180,16 @@ class RestaurantDetailsPage extends StatelessWidget {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: <Widget>[
-                                                Text("${restaurant.stars.toStringAsFixed(1)}", style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
+                                                Text("${widget.restaurant.stars.toStringAsFixed(1)}", style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
                                                 /* stars */
                                                 Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: <Widget>[
-                                                      Row(children:  List<Widget>.generate(restaurant.stars.toInt(), (int index) {
+                                                      Row(children:  List<Widget>.generate(widget.restaurant.stars.toInt(), (int index) {
                                                         return Icon(Icons.star, color: KColors.primaryYellowColor);
                                                       })
                                                       ),
-                                                      Text("${restaurant.votes} Votes", style: TextStyle(color:Colors.grey))
+                                                      Text("${widget.restaurant.votes} Votes", style: TextStyle(color:Colors.grey))
                                                     ])
                                               ],
                                             ),
@@ -222,5 +248,4 @@ class RestaurantDetailsPage extends StatelessWidget {
     }
 
   }
-
 }

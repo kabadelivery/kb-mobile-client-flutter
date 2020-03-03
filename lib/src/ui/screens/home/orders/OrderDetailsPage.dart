@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
+import 'package:kaba_flutter/src/contracts/order_details_contract.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
@@ -15,38 +16,64 @@ class OrderDetailsPage extends StatefulWidget {
 
   static var routeName = "/OrderDetailsPage";
 
-  OrderDetailsPage ({Key key, this.orderId}) : super(key: key);
+  OrderDetailsPresenter presenter;
 
-  final int orderId;
-
-  @override
-  _OrderDetailsPageState createState() => _OrderDetailsPageState(orderId);
-}
-
-class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  OrderDetailsPage ({Key key, this.orderId, this.presenter}) : super(key: key);
 
   int orderId;
+  CustomerModel customer;
+  CommandModel command;
 
-  _OrderDetailsPageState(this.orderId);
+
+  @override
+  _OrderDetailsPageState createState() => _OrderDetailsPageState();
+}
+
+class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDetailsView {
+
+
+  bool isLoading = false;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    widget.presenter.orderDetailsView = this;
     CustomerUtils.getCustomer().then((customer) {
-      userDataBloc.fetchOrderDetails(customer, orderId);
+      widget.customer = customer;
+      // if there is an id, then launch here
+      if (widget.orderId != null && widget.orderId != 0) {
+        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId);
+      }
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final int args = ModalRoute.of(context).settings.arguments;
+    if (args != null && args != 0)
+      widget.orderId = args;
+
+    if (widget.customer != null) {
+      // there must be a food id.
+      widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId);
+    } else {
+      // postpone it to the next second by adding showing the loading button.
+      showLoading(true);
+      Future.delayed(Duration(seconds: 1)).then((onValue){
+        widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId);
+      });
+    }
+
     return Scaffold(
         appBar: AppBar(
             backgroundColor: KColors.primaryColor,
             title: Text("Command Details",
                 style: TextStyle(fontSize: 20, color: Colors.white))),
-        body: StreamBuilder<Object>(
+        body: /*StreamBuilder<Object>(
             stream: userDataBloc.orderDetails,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -59,19 +86,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 });
               }
               return Center(child: CircularProgressIndicator());
-            }));
+            })*/
+        isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+        _inflateDetails())
+    );
   }
 
-  Widget _inflateDetails(CommandModel command) {
+  Widget _inflateDetails() {
 
     return SingleChildScrollView(
         child: Column(
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(top:15, bottom:15, right:10, left:10),
-                  color: Utils.getStateColor(command.state),child: Text(_orderTopLabel(command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white))),
+                  color: Utils.getStateColor(widget.command.state),child: Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white))),
               /* Progress line */
-              Container(child: _getProgressTimeLine(command), margin: EdgeInsets.only(top:10, bottom:10),),
+              Container(child: _getProgressTimeLine(widget.command), margin: EdgeInsets.only(top:10, bottom:10),),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
@@ -81,7 +111,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       text: 'Latest Update: ',
                       style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                       children: <TextSpan>[
-                        TextSpan(text: " ${_orderLastUpdate(command)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black.withAlpha(200))),
+                        TextSpan(text: " ${_orderLastUpdate(widget.command)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black.withAlpha(200))),
                       ],
                     ),
                   ),
@@ -93,7 +123,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Your contact", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${command?.shipping_address?.phone_number}", style: TextStyle(color: Colors.black, fontSize: 14))),
+                  Flexible (child: Text("${widget.command?.shipping_address?.phone_number}", style: TextStyle(color: Colors.black, fontSize: 14))),
                 ]),
               ),
               SizedBox(height: 10),
@@ -103,10 +133,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Command key", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${command.state != COMMAND_STATE.WAITING && command.state != COMMAND_STATE.REJECTED  ?  command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
+                  Flexible (child: Text("${widget.command.state != COMMAND_STATE.WAITING && widget.command.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
                 ]),
               ),
-            ]..addAll(command.state > COMMAND_STATE.COOKING && command.state < COMMAND_STATE.REJECTED ?
+            ]..addAll(widget.command.state > COMMAND_STATE.COOKING && widget.command.state < COMMAND_STATE.REJECTED ?
             <Widget>[
               SizedBox(height: 10),
               /* KABA man name */
@@ -115,7 +145,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Kaba-man Name", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
+                  Flexible (child: Text("${widget.command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
                 ]),
               ),
               SizedBox(height: 10),
@@ -129,7 +159,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     children: <Widget>[
                       Icon(Icons.phone, color: Colors.white),
                       SizedBox(width: 5),
-                      Text("${command?.livreur?.workcontact}", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("${widget.command?.livreur?.workcontact}", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ],
                   ), onPressed: () {}),
                 ]),
@@ -150,7 +180,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       children: <Widget>[
                         Text("Not so far from", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700)),
                         SizedBox(height: 10),
-                        Text("${command?.shipping_address?.near}", style: TextStyle(color: Colors.black, fontSize: 14)),
+                        Text("${widget.command?.shipping_address?.near}", style: TextStyle(color: Colors.black, fontSize: 14)),
                       ]),
                 ),
               ),
@@ -166,17 +196,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       children: <Widget>[
                         Text("Description", style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black, fontSize: 16)),
                         SizedBox(height: 10),
-                        Text("${command?.shipping_address?.description}", style: TextStyle(color: Colors.black, fontSize: 14)),
+                        Text("${widget.command?.shipping_address?.description}", style: TextStyle(color: Colors.black, fontSize: 14)),
                       ]),
                 ),
               ),
               SizedBox(height: 10),
-              command?.infos == null || command?.infos?.trim()?.length == 0 ? Container() : Center(child: Text("Infos: ${command.infos}", style: TextStyle(fontWeight: FontWeight.bold,color: CommandStateColor.delivered))),
+              widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Center(child: Text("Infos: ${widget.command.infos}", style: TextStyle(fontWeight: FontWeight.bold,color: CommandStateColor.delivered))),
               SizedBox(height: 10),
               /* food list*/
               Card(
-                  child: Column(children:List.generate(command.food_list.length, (int index) {
-                    return SingleOrderFoodWidget(command.food_list[index]);
+                  child: Column(children:List.generate(widget.command.food_list.length, (int index) {
+                    return SingleOrderFoodWidget(widget.command.food_list[index]);
                   }))),
               SizedBox(height: 10),
               /* bill */
@@ -185,7 +215,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     child: Column(children:<Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-                      (int.parse(command?.remise) > 0 ? Container (
+                      (int.parse(widget.command?.remise) > 0 ? Container (
                           height: 40.0,
                           decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
@@ -203,9 +233,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         /* check if there is promotion on Commande */
                         Row(
                           children: <Widget>[
-                            Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "(${command?.price_command})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                            Text(int.parse(widget.command?.price_command) > int.parse(widget.command?.promotion_pricing) ? "(${widget.command?.price_command})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
                             SizedBox(width: 5),
-                            Text(int.parse(command?.price_command) > int.parse(command?.promotion_pricing) ? "${command?.promotion_pricing} FCFA" : "${command?.price_command} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text(int.parse(widget.command?.price_command) > int.parse(widget.command?.promotion_pricing) ? "${widget.command?.promotion_pricing} FCFA" : "${widget.command?.price_command} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                           ],
                         )
                       ]),
@@ -215,17 +245,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         /* check if there is promotion on Livraison */
                         Row(
                           children: <Widget>[
-                            Text(int.parse(command?.shipping_pricing) > int.parse(command?.promotion_shipping_pricing) ? "(${command?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
-                            Text(int.parse(command?.shipping_pricing) > int.parse(command?.promotion_shipping_pricing) ? "${command?.promotion_shipping_pricing} FCFA" : "${command?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text(int.parse(widget.command?.shipping_pricing) > int.parse(widget.command?.promotion_shipping_pricing) ? "(${widget.command?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                            Text(int.parse(widget.command?.shipping_pricing) > int.parse(widget.command?.promotion_shipping_pricing) ? "${widget.command?.promotion_shipping_pricing} FCFA" : "${widget.command?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                           ],
                         )
                       ]),
                       SizedBox(height: 10),
-                      int.parse(command?.remise) > 0 ?
+                      int.parse(widget.command?.remise) > 0 ?
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                         Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
                         /* check if there is remise */
-                        Text("-${command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
+                        Text("-${widget.command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
                       ]) : Container(),
 
                       SizedBox(height: 10),
@@ -233,10 +263,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       SizedBox(height: 10),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                         Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        Text("${command?.total_pricing} F", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+                        Text("${widget.command?.total_pricing} F", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
                       ]),
                       SizedBox(height: 10),
-                      (int.parse(command?.remise) > 0 ? Container (
+                      (int.parse(widget.command?.remise) > 0 ? Container (
                           height: 40.0,
                           decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
@@ -254,7 +284,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   String _orderTopLabel(CommandModel command) {
-    switch(command.state) {
+    switch(widget.command.state) {
       case 0:
         return "ORDER IS WAITING";
       case 1:
@@ -270,7 +300,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(int.parse(command?.last_update));
+    return Utils.readTimestamp(int.parse(widget.command?.last_update));
   }
 
   _getProgressTimeLine(CommandModel command) {
@@ -287,15 +317,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
 
-              command.state == COMMAND_STATE.WAITING ?
+              widget.command.state == COMMAND_STATE.WAITING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.waiting, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("En attente", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
           )),
           Expanded(flex:0,
-            child: Container(child: Icon(Icons.watch_later, size: command.state == COMMAND_STATE.WAITING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: command.state != COMMAND_STATE.WAITING ? PASSIVE_COLOR : Colors.grey)),
+            child: Container(child: Icon(Icons.watch_later, size: widget.command.state == COMMAND_STATE.WAITING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget.command.state != COMMAND_STATE.WAITING ? PASSIVE_COLOR : Colors.grey)),
           ),
           Expanded(flex: 2,child: Container()),
         ],
@@ -314,13 +344,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         children: <Widget>[
           Expanded(flex: 2,child: Container()),
           Expanded(flex: 0,
-            child: Container(child: Icon(FontAwesomeIcons.utensils, size: command.state == COMMAND_STATE.COOKING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: command.state != COMMAND_STATE.COOKING ? PASSIVE_COLOR : CommandStateColor.cooking)),
+            child: Container(child: Icon(FontAwesomeIcons.utensils, size: widget.command.state == COMMAND_STATE.COOKING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget.command.state != COMMAND_STATE.COOKING ? PASSIVE_COLOR : CommandStateColor.cooking)),
           ),
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: 10),
-              command.state == COMMAND_STATE.COOKING ?
+              widget.command.state == COMMAND_STATE.COOKING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.cooking, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("COOKING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
@@ -337,15 +367,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
 
-              command.state == COMMAND_STATE.SHIPPING ?
+              widget.command.state == COMMAND_STATE.SHIPPING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.shipping, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("SHIPPING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
           )),
           Expanded(flex:0,
-            child: Container(child: Icon(FontAwesomeIcons.biking, size: command.state == COMMAND_STATE.SHIPPING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: command.state != COMMAND_STATE.SHIPPING ? PASSIVE_COLOR : CommandStateColor.shipping)),
+            child: Container(child: Icon(FontAwesomeIcons.biking, size: widget.command.state == COMMAND_STATE.SHIPPING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget.command.state != COMMAND_STATE.SHIPPING ? PASSIVE_COLOR : CommandStateColor.shipping)),
           ),
           Expanded(flex: 2,child: Container()),
         ],
@@ -358,13 +388,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       Row(
         children: <Widget>[
           Expanded(flex: 2,child: Container()),
-          Container(child: Icon(Icons.check_circle, size: command.state == COMMAND_STATE.DELIVERED ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-              color: command.state != COMMAND_STATE.DELIVERED ? PASSIVE_COLOR : CommandStateColor.delivered)
+          Container(child: Icon(Icons.check_circle, size: widget.command.state == COMMAND_STATE.DELIVERED ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+              color: widget.command.state != COMMAND_STATE.DELIVERED ? PASSIVE_COLOR : CommandStateColor.delivered)
           ),
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: 10),
-              command.state == COMMAND_STATE.DELIVERED ?
+              widget.command.state == COMMAND_STATE.DELIVERED ?
               Container(decoration: BoxDecoration(color: CommandStateColor.delivered, borderRadius: BorderRadius.all(Radius.circular(5))),   child: Text("DELIVERED", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
@@ -372,6 +402,58 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       ),
 
     ]);
+  }
+
+  @override
+  void inflateOrderDetails(CommandModel command) {
+    showLoading(false);
+    setState(() {
+      widget.command = command;
+    });
+  }
+
+  @override
+  void logoutTimeOutSuccess() {
+    // TODO: implement logoutTimeOutSuccess
+  }
+
+
+  @override
+  void networkError() {
+    showLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasNetworkError = true;
+    });
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+      if (isLoading == true) {
+        this.hasNetworkError = false;
+        this.hasSystemError = false;
+      }
+    });
+  }
+
+  @override
+  void systemError() {
+    showLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasSystemError = true;
+    });
+  }
+
+
+  _buildSysErrorPage() {
+    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
+  }
+
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
   }
 
 }
