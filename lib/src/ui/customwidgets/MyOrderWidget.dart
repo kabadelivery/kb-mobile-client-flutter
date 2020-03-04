@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kaba_flutter/src/contracts/order_details_contract.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/OrderItemModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -155,7 +156,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(orderId: command.id),
+        builder: (context) => OrderDetailsPage(orderId: command.id, presenter: OrderDetailsPresenter()),
       ),
     );
   }

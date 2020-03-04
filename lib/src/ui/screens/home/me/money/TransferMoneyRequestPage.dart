@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:kaba_flutter/src/contracts/transfer_money_contract.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaba_flutter/src/contracts/transfer_money_amount_confirmation_contract.dart';
+import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransferMoneyAmountConfirmationPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
@@ -36,15 +40,19 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
 
   var isLaunching = false;
 
+  var isTgoNumber = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     widget.presenter.transferMoneyRequestView = this;
-//    _phoneNumberFieldController = new TextEditingController();
-//    _phoneNumberFieldController.addListener(_checkOperator);
-//    _amountFieldController = new TextEditingController();
-
+    _phoneNumberFieldController = TextEditingController();
+    _phoneNumberFieldController.addListener((){
+      setState(() {
+        isTgoNumber = Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text);
+      });
+    });
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
     });
@@ -73,8 +81,8 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
                   Text("Account"),
                   SizedBox(width:20),
                   Expanded(flex: 7, child:
-                      TextField(controller: _phoneNumberFieldController, enabled: !isLaunching,
-                      decoration: InputDecoration(labelText: "Phone Number", /* if  already sat, we cant put nothing else */
+                  TextField(controller: _phoneNumberFieldController, maxLength: 8, style: TextStyle(fontSize: 20), keyboardType: TextInputType.number, enabled: !isLaunching,
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                       ))
                   ),
@@ -88,25 +96,25 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
               SizedBox(height: 10),
 
 
-                  Container(margin: EdgeInsets.only(top:15, bottom:15, left:20, right:20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: MaterialButton(color: Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text)? KColors.primaryColor : KColors.primaryColor.withAlpha(150),  padding: EdgeInsets.only(top:5, bottom:5),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.center,
+              Container(margin: EdgeInsets.only(top:15, bottom:15, left:20, right:20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: MaterialButton(color: isTgoNumber ? KColors.primaryColor : KColors.primaryColor.withAlpha(150),  padding: EdgeInsets.only(top:5, bottom:5),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("NEXT", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
+                          isLaunching ?  Row(
                             children: <Widget>[
-                              Text("NEXT", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
-                              isLaunching ?  Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 20, width: 20) ,
-                                ],
-                              )  : Container(),
+                              SizedBox(width: 10),
+                              SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 20, width: 20) ,
                             ],
-                          ), onPressed: () {
-                            iLaunchTransaction();
-                          }),
-                    ),
-                  ),
+                          )  : Container(),
+                        ],
+                      ), onPressed: () {
+                        iLaunchTransaction();
+                      }),
+                ),
+              ),
 
             ]
         ),
@@ -135,12 +143,18 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
   void iLaunchTransaction() {
 
     String phoneNumber = _phoneNumberFieldController.text;
-
     if (Utils.isPhoneNumber_TGO(phoneNumber)) {
       // can launch
-      if (widget.customer != null)
-        widget.presenter.launchTransferMoneyRequest(widget.customer, phoneNumber);
-      else
+      if (widget.customer != null) {
+       if (widget.customer.phone_number != phoneNumber)
+        widget.presenter.launchTransferMoneyRequest(
+            widget.customer, phoneNumber);
+       else
+         _showDialog(
+             message:"Sorry, can't transfer money to your own account",
+             icon: Icon(FontAwesomeIcons.user, color: KColors.primaryColor)
+         );
+      }else
         mToast("System error. Please wait a bit and start again.");
     } else {
       // can't launch
@@ -153,12 +167,56 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
   }
 
   @override
-  void continueTransaction(CustomerModel customer) {
+  Future<void> continueTransaction(CustomerModel customer) async {
+    showLoading(false);
     if (customer == null) {
-      // user doenst exist
+      _showDialog(
+          message:"Sorry, user does'nt exist in our database.",
+          icon: Icon(FontAwesomeIcons.user, color: Colors.grey)
+      );
     } else {
       /* jump to next activity with this information */
-
+      Navigator.pop(context);
+      Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+          builder: (BuildContext context) {
+            return TransferMoneyAmountConfirmationPage(moneyReceiver: customer, presenter: TransferMoneyAmountConfirmationPresenter());
+          }
+      ));
     }
   }
+
+  void _showDialog({var icon, var message}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+//          title: new Text("Alert Dialog title"),
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  /* icon */
+                  SizedBox(
+                    height: 120,
+                    width: 120,
+                    child:
+                    icon,
+                  ),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),actions: <Widget>[
+          //
+          OutlineButton(
+            child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ]
+        );
+      },
+    );
+  }
+
 }

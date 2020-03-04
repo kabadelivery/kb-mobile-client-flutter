@@ -156,7 +156,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                   ],
                 ),
                 subtitle: Text("${data[index].details}", style: TextStyle(fontSize: 12)),
-                trailing: Text(data[index].value, style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                trailing: Text("${(data[index].type == -1 ? "-" : "+")} ${data[index].value}", style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
                   /*Row(
                     children: <Widget>[
                       Text(data[index].value, style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),

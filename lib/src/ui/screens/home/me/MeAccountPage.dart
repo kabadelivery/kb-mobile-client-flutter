@@ -7,6 +7,7 @@ import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
 import 'package:kaba_flutter/src/contracts/topup_contract.dart';
 import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
+import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
@@ -24,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
+import 'money/TransferMoneyRequestPage.dart';
 
 
 class MeAccountPage extends StatefulWidget {
@@ -179,6 +181,20 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                     IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
                                     SizedBox(height:5),
                                     Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(flex:1,
+                            child: InkWell(
+                              onTap: () => _jumpToPage(context,  TransferMoneyRequestPage(presenter: TransferMoneyRequestPresenter())),
+                              child: Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(height:5),
+                                    Text("Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
                                 ),
                               ),

@@ -311,5 +311,36 @@ class ClientPersonalApiProvider {
     }
   }
 
+  launchTransferMoneyAction(CustomerModel customer, int receiverId, String transaction_password, String amount) async {
 
+    DebugTools.iPrint("entered launchTransferMoneyAction");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_MONEY_TRANSFER,
+          body: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        Map res = Map();
+        int errorCode = json.decode(response.body)["error"];
+        res.putIfAbsent("errorCode", ()=> errorCode);
+        if (errorCode == 0) {
+          CustomerModel customer = CustomerModel.fromJson(json.decode(response.body)["data"]["customer"]);
+          res.putIfAbsent("customer", ()=>customer);
+          res.putIfAbsent("statut", ()=>json.decode(response.body)["data"]["statut"]);
+          res.putIfAbsent("amount", ()=>json.decode(response.body)["data"]["amount"]);
+        }
+        return res;
+      }
+      else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
     }
+  }
+
+
+}

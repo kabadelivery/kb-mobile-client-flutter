@@ -86,6 +86,7 @@ flutter:
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_copyright_presentation.png
+    - assets/images/png/ic_transaction_success.png
 #    - assets/sound/command_success_hold_on.mp3
     - assets/
 

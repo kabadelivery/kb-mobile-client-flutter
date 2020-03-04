@@ -127,8 +127,8 @@ class Utils {
         formattedDate = sdf.format(commandTime);
       }
     } else {
-        sdf = DateFormat(pattern_not_today);
-        formattedDate = sdf.format(commandTime);
+      sdf = DateFormat(pattern_not_today);
+      formattedDate = sdf.format(commandTime);
     }
     return formattedDate;
   }
@@ -200,9 +200,14 @@ class Utils {
     return res;
   }
 
-
   static String reverseString(String balance) {
     return balance.split('').reversed.join('');
+  }
+
+  static String hidePhoneNumber(String phone_number) {
+    if (phone_number == null)
+      return "********";
+    return phone_number.substring(0,2)+"****"+phone_number.substring(6,8);
   }
 
 

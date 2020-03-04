@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/food_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
+import 'package:kaba_flutter/src/contracts/order_details_contract.dart';
+import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
+import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
+import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
@@ -13,6 +17,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/feeds/FeedsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/MySoldePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
@@ -33,24 +38,24 @@ var generalRoutes = {
   RegisterPage.routeName : (BuildContext context) => RegisterPage(),
   RecoverPasswordPage.routeName : (BuildContext context) => RecoverPasswordPage(),
   RetrievePasswordPage.routeName : (BuildContext context) => RetrievePasswordPage(),
-  RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(),
+  RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(presenter: RestaurantDetailsPresenter()),
   BestSellersPage.routeName : (BuildContext context) => BestSellersPage(),
-  RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(presenter: MenuPresenter()),
+  RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(fromNotification: true, presenter: MenuPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(),
   MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(),
   EditAddressPage.routeName : (BuildContext context) => EditAddressPage(),
   MyVouchersPage.routeName : (BuildContext context) => MyVouchersPage(),
   AddVouchersPage.routeName : (BuildContext context) => AddVouchersPage(),
-  PersonalPage.routeName : (BuildContext context) => PersonalPage(),
+  Personal2Page.routeName : (BuildContext context) => Personal2Page(presenter: PersonnalPagePresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   MySoldePage.routeName : (BuildContext context) => MySoldePage(),
   QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
-  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(),
+  TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(presenter: TransactionPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
-  OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(),
+  OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
   TopUpPage.routeName : (BuildContext context) => TopUpPage(),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   InfoPage.routeName : (BuildContext context) => InfoPage(),

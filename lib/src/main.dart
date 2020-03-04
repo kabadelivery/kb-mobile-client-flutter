@@ -16,7 +16,8 @@ import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
-import 'package:kaba_flutter/src/contracts/transfer_money_contract.dart';
+import 'package:kaba_flutter/src/contracts/transfer_money_amount_confirmation_contract.dart';
+import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
 import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
 import 'package:kaba_flutter/src/models/NotificationItem.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -30,7 +31,9 @@ import 'package:kaba_flutter/src/ui/screens/home/me/MeAccountPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/feeds/FeedsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransferMoneyAmountConfirmationPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransferMoneyRequestPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/money/TransferMoneySuccessPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -137,14 +140,14 @@ class _MyAppState extends State<MyApp> {
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//      home: SplashPage(),
+      home: SplashPage(),
 //home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //      home: TransactionHistoryPage(presenter: TransactionPresenter()),
 //      home: TopUpPage(presenter: TopUpPresenter()),
 //      home: FeedsPage(presenter: FeedPresenter(),),
 //         home: EvenementPage(presenter: EvenementPresenter(),),
 //      home: TestPage(),
-      home: TransferMoneyRequestPage(presenter: TransferMoneyRequestPresenter()),
+//      home: TransferMoneySuccessPage(),
       routes: generalRoutes,
     );
   }
@@ -174,7 +177,7 @@ class _MyAppState extends State<MyApp> {
       return notificationItem;
     } else if (Platform.isAndroid) {
       // IOS-specific code
-      var destination = json.decode(message_entry["destination"].toString());
+      var destination = json.decode(message_entry["data"]["destination"].toString());
       NotificationItem notificationItem = new NotificationItem(
           title: message_entry["data"]["title"],
           body: message_entry["data"]["body"],
@@ -187,7 +190,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _jumpToFoodDetailsWithId(int product_id) {
-
     navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: product_id);
   }
 

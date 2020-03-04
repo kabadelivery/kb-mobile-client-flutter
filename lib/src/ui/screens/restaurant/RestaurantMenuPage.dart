@@ -36,7 +36,9 @@ class RestaurantMenuPage extends StatefulWidget {
 
   int menuId;
 
-  RestaurantMenuPage({Key key, this.presenter, this.restaurant = null, this.menuId = -1}) : super(key: key);
+  bool fromNotification;
+
+  RestaurantMenuPage({Key key, this.presenter, this.restaurant = null, this.menuId = -1, this.fromNotification=false}) : super(key: key);
 
   @override
   _RestaurantMenuPageState createState() => _RestaurantMenuPageState();
@@ -95,10 +97,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     _menuBasketKey = GlobalKey();
     widget.presenter.menuView = this;
 
-    if (widget.menuId == -1)
-      widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
-    else
-      widget.presenter.fetchMenuWithMenuId(widget.menuId);
+    if (!widget.fromNotification) {
+      if (widget.menuId == -1)
+        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+      else
+        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+    }
 
     _controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 700));
@@ -109,8 +113,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   @override
   Widget build(BuildContext context) {
 
-
-
+    if (widget.fromNotification) {
+      final int args = ModalRoute.of(context).settings.arguments;
+      if (args != null && args != 0)
+        widget.menuId = args;
+      widget.presenter.fetchMenuWithMenuId(widget.menuId);
+    }
 
     var appBar = AppBar(
       backgroundColor: KColors.primaryColor,

@@ -35,29 +35,6 @@ class TransferMoneyRequestPresenter implements TransferMoneyRequestContract {
   }
 
   @override
-  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance) async {
-
-    if (isWorking)
-      return;
-    isWorking = true;
-    _transferMoneyRequestView.showLoading(true);
-    try {
-//      String link = await provider.launchTopUp(customer, phoneNumber, balance);
-//      _transferMoneyRequestView.topUpToWeb(link);
-
-      isWorking = false;
-    } catch (_) {
-      print("error ${_}");
-      if (_ == -2) {
-        _transferMoneyRequestView.systemError();
-      } else {
-        _transferMoneyRequestView.networkError();
-      }
-      isWorking = false;
-    }
-  }
-
-  @override
   Future<void> launchTransferMoneyRequest(CustomerModel customer, String phoneNumber) async {
     if (isWorking)
       return;

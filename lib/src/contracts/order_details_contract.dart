@@ -40,7 +40,6 @@ class OrderDetailsPresenter implements OrderDetailsContract {
     provider = new OrderApiProvider();
   }
 
-
   set orderDetailsView(OrderDetailsView value) {
     _orderDetailsView = value;
   }

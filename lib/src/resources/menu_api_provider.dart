@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
 import 'package:kaba_flutter/src/models/BestSellerModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
@@ -124,6 +125,32 @@ class MenuApiProvider {
         if (errorCode == 0) {
           RestaurantFoodModel restaurantFoodModel = RestaurantFoodModel.fromJson(json.decode(response.body)["data"]["food"]);
           return restaurantFoodModel;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  fetchRestaurantWithId(CustomerModel customer, int restaurantDetailsId) async {
+
+    DebugTools.iPrint("entered fetchRestaurantWithId");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_RESTAURANT_DETAILS,
+        body: json.encode({"id": restaurantDetailsId}),
+        headers: Utils.getHeadersWithToken(customer.token),
+      )
+          .timeout(const Duration(seconds: 10));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["restaurant"]);
+          return restaurantModel;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
