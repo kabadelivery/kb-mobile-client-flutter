@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/contracts/register_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
@@ -41,46 +42,49 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child:Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 50),
-                  Text("CONNEXION", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 100),
-                  SizedBox(height: 10),
-                  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                  SizedBox(height: 30),
-                  SizedBox(width: 250,
-                      child: Container(
-                          padding: EdgeInsets.all(14),
-                          child: TextField(controller: _loginFieldController, maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
-                  SizedBox(height: 30),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:<Widget>[
-                        MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
-                          children: <Widget>[
-                            Text("CONNEXION", style: TextStyle(fontSize: 14, color: Colors.white)),
-                            isConnecting ?  Row(
-                              children: <Widget>[
-                                SizedBox(width: 10),
-                                SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
-                              ],
-                            )  : Container(),
-                          ],
-                        ), onPressed: () {_launchConnexion();}),
-                        SizedBox(width:20),
-                        MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
-                      ]),
-                  SizedBox(height: 30),
-                  GestureDetector(
-                    child:Text("Recover Password?", style: KStyles.hintTextStyle_gray),
-                    onTap: (){_moveToRecoverPasswordPage();},
-                  )
-                ]
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+          child: SingleChildScrollView(
+            child:Center(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 50),
+                    Text("CONNEXION", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 100),
+                    SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 30),
+                    SizedBox(width: 250,
+                        child: Container(
+                            padding: EdgeInsets.all(14),
+                            child: TextField(controller: _loginFieldController, maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
+                    SizedBox(height: 30),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:<Widget>[
+                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
+                            children: <Widget>[
+                              Text("CONNEXION", style: TextStyle(fontSize: 14, color: Colors.white)),
+                              isConnecting ?  Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                                ],
+                              )  : Container(),
+                            ],
+                          ), onPressed: () {_launchConnexion();}),
+                          SizedBox(width:20),
+                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
+                        ]),
+                    SizedBox(height: 30),
+                    GestureDetector(
+                      child:Text("Recover Password?", style: KStyles.hintTextStyle_gray),
+                      onTap: (){_moveToRecoverPasswordPage();},
+                    )
+                  ]
+              ),
             ),
           ),
         ));

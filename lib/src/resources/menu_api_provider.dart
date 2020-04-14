@@ -30,7 +30,7 @@ class MenuApiProvider {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
           Iterable lo = json.decode(response.body)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
+          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
           RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();

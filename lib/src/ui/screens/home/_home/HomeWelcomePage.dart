@@ -9,6 +9,7 @@ import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
 import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
+import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -584,7 +585,7 @@ void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantMo
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel),
+      builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
     ),
   );
 }

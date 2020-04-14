@@ -16,6 +16,7 @@ class RestaurantSubMenuModel {
 
    RestaurantSubMenuModel.fromJson(Map<String, dynamic> json) {
 
+
       id = json['id'];
       name = json['name'];
       restaurant_id = json['restaurant_id'];
@@ -23,6 +24,8 @@ class RestaurantSubMenuModel {
       promotion = json['promotion'];
 
       l = json["foods"];
+
+
       foods = l?.map((food) => RestaurantFoodModel.fromJson(food))?.toList();
    }
 

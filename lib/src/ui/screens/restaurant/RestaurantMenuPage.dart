@@ -410,11 +410,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           physics: ClampingScrollPhysics(),
           itemCount: data[currentIndex].foods.length,
           itemBuilder: (BuildContext context, int index) {
-            /* create the key*/
-//            _keyBox["${currentIndex}-${index}"] = GlobalKey();
             _keyBox.putIfAbsent("${currentIndex}-${index}", () => GlobalKey());
-
-//          return RestaurantFoodListWidget(basket_offset: _menuBasketOffset, food: data[currentIndex].foods[index]);
             return _buildFoodListWidget(food: data[currentIndex].foods[index], foodIndex: index, menuIndex: currentIndex);
           },
           key: new Key(new DateTime.now().toIso8601String()),
@@ -430,100 +426,107 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
         child: InkWell(
             child: Container(
-              child: ListTile(
-                contentPadding: EdgeInsets.only(
-                    top: 10, bottom: 10, left: 10),
-                leading: Stack(
-                  overflow: Overflow.visible,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    contentPadding: EdgeInsets.only(
+                        top: 10, bottom: 10, left: 10),
+                    leading: Stack(
+                      overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
 //                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
-                  key: _keyBox["${menuIndex}-${foodIndex}"],
-                  /* according to the position of the view, menu - food, we have a key that we store. */
-                  children: <Widget>[
-                    Container(
-                      height: 50, width: 50,
-                      decoration: BoxDecoration(
-                          border: new Border.all(
-                              color: KColors.primaryYellowColor,
-                              width: 2),
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(Utils
-                                  .inflateLink(food.pic))
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("${food?.name?.toUpperCase()}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500)),
-                    SizedBox(height: 5),
-                    Row(
+                      key: _keyBox["${menuIndex}-${foodIndex}"],
+                      /* according to the position of the view, menu - food, we have a key that we store. */
                       children: <Widget>[
-                        Row(children: <Widget>[
-                          /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                    (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
-                                        : Container()),
-                                    */
-
-                          Text("${food?.price}",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  decoration: food.promotion != 0
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
+                        Container(
+                          height: 50, width: 50,
+                          decoration: BoxDecoration(
+                              border: new Border.all(
                                   color: KColors.primaryYellowColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.normal)),
-                          SizedBox(width: 5),
-                          (food.promotion != 0 ? Text(
-                              "${food?.promotion_price}",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: KColors.primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.normal))
-                              : Container()),
-                          SizedBox(width: 5),
-
-                          Text("FCFA", overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: KColors.primaryYellowColor,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.normal)),
-                        ]),
+                                  width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(Utils
+                                      .inflateLink(food.pic))
+                              )
+                          ),
+                        ),
                       ],
                     ),
-                  ],
-                ),
-                trailing: InkWell(
-                  child: Container(width: 50,
-                      height: 50,
-//                      color: Colors.grey.withAlpha(80),
-                      padding: EdgeInsets.all(2),
-                      child:
-                      Icon(Icons.add_shopping_cart, color: KColors.primaryColor)
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("${food?.name?.toUpperCase()}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                        (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                            : Container()),
+                                        */
+
+                              Text("${food?.price}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      decoration: food.promotion != 0
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal)),
+                              SizedBox(width: 5),
+                              (food.promotion != 0 ? Text(
+                                  "${food?.promotion_price}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: KColors.primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal))
+                                  : Container()),
+                              SizedBox(width: 5),
+
+                              Text("FCFA", overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.normal)),
+                            ]),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  onTap: () {
-                    _addFoodToChart(food, foodIndex, menuIndex);
-                  },
-                ),
+                  // add-up the buttons at the right side of it
+                  Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(8),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: Colors.transparent),
+                          ),
+                        child: MaterialButton(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2), child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
+                          Text("ADD TO BASKET", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]), color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
+                          onPressed: () => _addFoodToChart(food, foodIndex, menuIndex),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             )
             , onTap: () => _jumpToFoodDetails(context, food))
@@ -531,6 +534,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+
+    food.restaurant_entity = widget.restaurant;
     Navigator.push(
       context,
       MaterialPageRoute(
