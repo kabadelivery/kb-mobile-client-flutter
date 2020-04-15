@@ -4,6 +4,8 @@ import 'package:kaba_flutter/src/models/KabaShippingMan.dart';
 import 'package:kaba_flutter/src/models/OrderItemModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 
+import 'DeliveryTimeFrameModel.dart';
+
 class CommandModel {
 
   int id;
@@ -13,8 +15,6 @@ class CommandModel {
   DeliveryAddressModel shipping_address;
   RestaurantModel restaurant_entity;
   List<OrderItemModel> food_list;
-  String total_pricing;
-  String shipping_pricing;
   String last_update;
   KabaShippingMan livreur;
   bool is_payed_at_arrival = false;
@@ -23,18 +23,46 @@ class CommandModel {
   String infos;
   int reason;
 
-  String promotion_shipping_pricing;
-  String command_pricing;
-  String price_command;
-  String promotion_pricing;
+
   String remise;
 
+  // normal one
+  String total_pricing;
+  String shipping_pricing;
+  String food_pricing;
 
-  CommandModel({this.id, this.restaurant_id, this.state, this.shipping_address,
-    this.restaurant_entity, this.food_list, this.total_pricing,
-    this.shipping_pricing,this.promotion_pricing, this.promotion_shipping_pricing, this.command_pricing, this.price_command, this.remise,
-    this.last_update, this.livreur,
-    this.is_payed_at_arrival, this.passphrase, this.reason});
+  // preorder case
+  String preorder_total_pricing;
+  String preorder_shipping_pricing;
+  String preorder_food_pricing;
+
+  // promotion case
+  String promotion_total_pricing;
+  String promotion_shipping_pricing;
+  String promotion_food_pricing;
+
+  // differents cases
+  int is_preorder = 0;
+  int is_promotion = 0;
+
+
+  String preorder_discount;
+  int preorder = 0;///////
+  DeliveryTimeFrameModel preorder_hour;
+
+
+  CommandModel({this.id, this.restaurant_id, this.state,
+    this.shipping_address, this.restaurant_entity, this.food_list,
+    this.last_update, this.livreur, this.is_payed_at_arrival, this.passphrase,
+    this.infos, this.reason, this.remise, this.total_pricing,
+    this.shipping_pricing, this.food_pricing, this.preorder_total_pricing,
+    this.preorder_shipping_pricing, this.preorder_food_pricing,
+    this.promotion_total_pricing, this.promotion_shipping_pricing,
+    this.promotion_food_pricing, this.is_preorder, this.is_promotion,
+    this.preorder_discount, this.preorder, this.preorder_hour});
+
+
+
 
   CommandModel.fromJson(Map<String, dynamic> json) {
 
@@ -42,11 +70,6 @@ class CommandModel {
     restaurant_id = json['restaurant_id'];
     state = json['state'];
     total_pricing = "${json['total_pricing']}";
-    shipping_pricing = "${json['shipping_pricing']}";
-    promotion_shipping_pricing = "${json['promotion_shipping_pricing']}";
-    promotion_pricing = "${json['promotion_pricing']}";
-    command_pricing = "${json['command_pricing']}";
-    price_command = "${json['price_command']}";
     remise = "${json['remise']}";
     last_update = "${json['last_update']}";
     is_payed_at_arrival = json['is_payed_at_arrival'];
@@ -54,6 +77,9 @@ class CommandModel {
     reason = json['reason'];
     infos = json['infos'];
 
+    passphrase = json['passphrase'];
+    reason = json['reason'];
+    infos = json['infos'];
 
     if (json['livreur'] != null)
       livreur = KabaShippingMan.fromJson(json['livreur']);
@@ -67,6 +93,30 @@ class CommandModel {
 
     l = json["food_list"];
     food_list = l?.map((f) => OrderItemModel.fromJson(f))?.toList();
+
+    // normal one
+    total_pricing = json["total_pricing"];
+    shipping_pricing = json["total_pricing"];
+    food_pricing = json["total_pricing"];
+
+    // preorder case
+    preorder_total_pricing = json["total_pricing"];
+    preorder_shipping_pricing = json["total_pricing"];
+    preorder_food_pricing = json["total_pricing"];
+
+    // promotion case
+    promotion_total_pricing = json["total_pricing"];
+    promotion_shipping_pricing = json["total_pricing"];
+    promotion_food_pricing = json["total_pricing"];
+
+    // differents cases
+    is_preorder = json["is_preorder"];
+    is_promotion = json["is_promotion"];
+    preorder_discount = json["preorder_discount"];
+    preorder = json["preorder"];
+
+    preorder_hour = DeliveryTimeFrameModel.fromJson(json['shipping_address']);
+
   }
 
   Map toJson () => {
@@ -79,9 +129,6 @@ class CommandModel {
     "total_pricing" : total_pricing,
     "shipping_pricing" : shipping_pricing,
     "promotion_shipping_pricing" : promotion_shipping_pricing,
-    "promotion_pricing" : promotion_pricing,
-    "command_pricing" : command_pricing,
-    "price_command" : price_command,
     "remise" : remise,
     "last_update" : last_update,
     "livreur" : livreur.toJson(),

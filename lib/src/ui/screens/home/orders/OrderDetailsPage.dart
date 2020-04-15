@@ -210,74 +210,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   }))),
               SizedBox(height: 10),
               /* bill */
-              Card(
-                  child: Container(padding: EdgeInsets.all(10),
-                    child: Column(children:<Widget>[
-//                      SizedBox(height: 10),
-//                      "/web/assets/app_icons/promo_large.gif"
-                      (int.parse(widget.command?.remise) > 0 ? Container (
-                          height: 40.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
-                              )
-                          )
-                      ): Container ()),
-                      Container(),
-                      /* content */
-                      SizedBox(height: 10),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Montant Commande:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        /* check if there is promotion on Commande */
-                        Row(
-                          children: <Widget>[
-                            Text(int.parse(widget.command?.price_command) > int.parse(widget.command?.promotion_pricing) ? "(${widget.command?.price_command})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
-                            SizedBox(width: 5),
-                            Text(int.parse(widget.command?.price_command) > int.parse(widget.command?.promotion_pricing) ? "${widget.command?.promotion_pricing} FCFA" : "${widget.command?.price_command} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                          ],
-                        )
-                      ]),
-                      SizedBox(height: 10),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Montant Livraison:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        /* check if there is promotion on Livraison */
-                        Row(
-                          children: <Widget>[
-                            Text(int.parse(widget.command?.shipping_pricing) > int.parse(widget.command?.promotion_shipping_pricing) ? "(${widget.command?.shipping_pricing})" : "", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
-                            Text(int.parse(widget.command?.shipping_pricing) > int.parse(widget.command?.promotion_shipping_pricing) ? "${widget.command?.promotion_shipping_pricing} FCFA" : "${widget.command?.shipping_pricing} FCFA", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                          ],
-                        )
-                      ]),
-                      SizedBox(height: 10),
-                      int.parse(widget.command?.remise) > 0 ?
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
-                        /* check if there is remise */
-                        Text("-${widget.command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
-                      ]) : Container(),
-
-                      SizedBox(height: 10),
-                      Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
-                      SizedBox(height: 10),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                        Text("${widget.command?.total_pricing} F", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
-                      ]),
-                      SizedBox(height: 10),
-                      (int.parse(widget.command?.remise) > 0 ? Container (
-                          height: 40.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
-                              )
-                          )
-                      ): Container ()),
-                    ]),
-                  )),
+              _buildBill()
             ]
             ))
     );
@@ -454,6 +387,117 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
+  }
+
+  _buildBill() {
+
+    String priceNormalCommand = "", priceActualCommand = "", priceTotalToPay = "", priceNormalDelivery ="", priceActualDelivery = "";
+
+    priceNormalCommand = widget.command.food_pricing;
+
+    bool showRemise = true, showDeliveryNormal=true, showFoodNormal= true;
+
+    // depends
+    if (widget.command.is_preorder == 1) {
+      priceTotalToPay = widget.command.preorder_food_pricing;
+      priceActualCommand = widget.command.preorder_food_pricing;
+      priceActualDelivery = widget.command.preorder_shipping_pricing;
+      priceNormalCommand = widget.command.food_pricing;
+      priceNormalDelivery = widget.command.shipping_pricing;
+    } else if (widget.command.is_promotion == 1) {
+      priceTotalToPay = widget.command.promotion_total_pricing;
+      priceActualCommand = widget.command.promotion_food_pricing;
+      priceActualDelivery = widget.command.promotion_shipping_pricing;
+      priceNormalCommand = widget.command.food_pricing;
+      priceNormalDelivery = widget.command.shipping_pricing;
+    } else if (widget.command.is_promotion == 0 && widget.command.is_preorder == 0) {
+      priceTotalToPay = widget.command.total_pricing;
+      priceActualCommand = widget.command.food_pricing;
+      priceActualDelivery = widget.command.shipping_pricing;
+      showRemise = false;
+      showDeliveryNormal = false;
+      showFoodNormal = false;
+    }
+
+
+    return  Card(
+        child: Container(padding: EdgeInsets.all(10),
+          child: Column(children:<Widget>[
+//                      SizedBox(height: 10),
+//                      "/web/assets/app_icons/promo_large.gif"
+            (int.parse(widget.command?.remise) > 0 ? Container (
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                    )
+                )
+            ): Container ()),
+            Container(),
+            /* content */
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Montant Commande:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              /* check if there is promotion on Commande */
+              Row(
+                children: <Widget>[
+                  Row( // only show if there is promotion on food
+                    children: <Widget>[
+                      Text("($priceNormalCommand)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                      SizedBox(width: 5),
+                    ],
+                  ),
+                  Text("$priceActualCommand", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                ],
+              )
+            ]),
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Montant Livraison:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              /* check if there is promotion on Livraison */
+              Row(
+                children: <Widget>[
+                 widget.command.is_preorder == 1 || widget.command.is_promotion==1 ?
+                  Row( // only show if there is pre-order or promotion on the fees of delivery
+                    children: <Widget>[
+                      Text("($priceNormalDelivery)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
+                      SizedBox(width: 5),
+                    ],
+                  ) : Container(),
+                  Text(priceActualDelivery, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                ],
+              )
+            ]),
+            SizedBox(height: 10),
+            int.parse(widget.command?.remise) > 0 ?
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
+              /* check if there is remise */
+              Text("-${widget.command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
+            ]) : Container(),
+
+            SizedBox(height: 10),
+            Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
+              Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text(priceTotalToPay, style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+            ]),
+            SizedBox(height: 10),
+            (int.parse(widget.command?.remise) > 0 ? Container (
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/promo_large.gif"))
+                    )
+                )
+            ): Container ()),
+          ]),
+        ));
   }
 
 }

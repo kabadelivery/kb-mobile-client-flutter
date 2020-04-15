@@ -18,7 +18,7 @@ import 'models/CustomerModel.dart';
 class Repository {
 
   final appApiProvider = AppApiProvider();
-  Future<HomeScreenModel> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
+  Future<String> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
   Future<List<RestaurantModel>> fetchRestaurantList(Position position) => appApiProvider.fetchRestaurantList(position);
 Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Position position) => appApiProvider.checkLocationDetails(userToken, position);
 

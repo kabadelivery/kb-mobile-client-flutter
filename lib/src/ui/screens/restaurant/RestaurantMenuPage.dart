@@ -198,36 +198,38 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           }),*/
                     ]..addAll(
                         List.generate(data?.length, (index){
-                          return Row(mainAxisSize: MainAxisSize.max,
+                          return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _innerDrawerKey.currentState.toggle();
-                                      this.currentIndex = index;
-                                    });
-                                  },
-                                  child: index == this.currentIndex ?
-                                  Container(
-                                      color: KColors.primaryColor,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                          textAlign: TextAlign.center)) :
-                                  Container(
-                                      color: data[index].promotion != 0 ? KColors
-                                          .primaryYellowColor : Colors.transparent,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: data[index].promotion == 0 ? Colors
-                                                  .black : KColors.primaryColor),
-                                          textAlign: TextAlign.center))),
+                              Container(
+                                child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _innerDrawerKey.currentState.toggle();
+                                        this.currentIndex = index;
+                                      });
+                                    },
+                                    child: index == this.currentIndex ?
+                                    Container(
+                                        color: KColors.primaryColor,
+                                        padding: EdgeInsets.only(
+                                            top: 10, bottom: 10, left: 8, right: 8),
+                                        child: Text(data[index].name?.toUpperCase(),
+                                            style: TextStyle(fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                            textAlign: TextAlign.center)) :
+                                    Container(
+                                        color: data[index].promotion != 0 ? KColors
+                                            .primaryYellowColor : Colors.transparent,
+                                        padding: EdgeInsets.only(
+                                            top: 10, bottom: 10, left: 8, right: 8),
+                                        child: Text(data[index].name?.toUpperCase(),
+                                            style: TextStyle(fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: data[index].promotion == 0 ? Colors
+                                                    .black : KColors.primaryColor),
+                                            textAlign: TextAlign.center))),
+                              ),
                             ],
                           );
                         })
@@ -516,11 +518,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),
-                              border: Border.all(color: Colors.transparent),
-                          ),
-                        child: MaterialButton(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2), child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                          Text("ADD TO BASKET", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]), color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),
+                          border: Border.all(color: Colors.transparent),
+                        ),
+                        child: RaisedButton(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
+                            child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
+                          Text("ADD TO BASKET", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
+                          color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
                           onPressed: () => _addFoodToChart(food, foodIndex, menuIndex),
                         ),
                       ),

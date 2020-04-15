@@ -284,6 +284,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
   }
 
   void _cancelAll() {
+    // pop and go back to the previous page. 
     Navigator.pop(context);
   }
 

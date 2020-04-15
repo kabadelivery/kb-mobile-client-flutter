@@ -56,6 +56,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   bool commentHasNetworkError = false;
   bool commentHasSystemError = false;
 
+  bool isUpdatingRestaurantOpenType = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -67,8 +69,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       if (widget.restaurant != null) {
-        // inflate
+        // fetch comments
         widget.presenter.fetchCommentList(widget.customer, widget.restaurantId);
+        // fetch if the restaurant is open
+
       }
     });
   }
@@ -149,14 +153,21 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(color:Colors.white, padding: EdgeInsets.only(left: 10, right:10, top: 15, bottom: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
                           children: <Widget>[
-                            Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
-                            Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                              Icon(Icons.access_time),
-                              Text(widget?.restaurant?.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
-                            ])
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
+                                isUpdatingRestaurantOpenType ? Container() :
+                                Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                                  Icon(Icons.access_time),
+                                  Text(widget?.restaurant?.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
+                                ])
+                              ],
+                            ),
+                            SizedBox(height: 5),
+                            isUpdatingRestaurantOpenType ? SizedBox(width: 40, height: 40,child: CircularProgressIndicator()) : _getRestaurantStateTag(widget.restaurant),
                           ],
                         ),
                       ),
@@ -370,6 +381,42 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
           _buildCommentsList(widget.commentList)
       ),
     );
+  }
+
+  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+
+    String tagText = "-- --";
+    Color tagTextColor = Colors.white;
+    Color tagColor = KColors.primaryColor;
+
+    switch(restaurantModel.open_type){
+      case 0: // closed
+        tagText = "Closed";
+        tagColor = KColors.mBlue;
+        break;
+      case 1: // open
+        tagText = "Opened";
+        tagColor = KColors.mGreen;
+        break;
+      case 2: // paused
+        tagText = "Breaktime";
+        tagColor = KColors.mBlue;
+        break;
+      case 3: // blocked
+        tagText = "Shortly blocked";
+        tagColor = KColors.primaryColor;
+        break;
+    }
+
+    return   restaurantModel.coming_soon == 0 ? Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
+            color: tagColor),
+        child:Text(
+            tagText,
+            style: TextStyle(color: tagTextColor, fontSize: 12)
+        )) : Container();
+
   }
 
 }

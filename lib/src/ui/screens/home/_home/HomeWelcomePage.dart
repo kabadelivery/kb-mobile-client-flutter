@@ -344,6 +344,34 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                           )
                         ],
                       )),
+                  Container(
+                      padding: EdgeInsets.only(top:20, bottom:20),
+                      color: Colors.grey.shade100,
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          InkWell(onTap: (){_callCustomerCare();},
+                              child:Container(
+                                  decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
+                                  padding: EdgeInsets.only(right:10),
+                                  child:
+                                  Row(children:<Widget>[
+                                    SizedBox(width: 5),
+                                    Container(height: 50, width: 40,
+                                      decoration: BoxDecoration(
+                                          image: new DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
+                                          )
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text("CALL US", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
+                                  ]))
+                          )
+                        ],
+                      )),
                   /* meilleures ventes, cinema, evenemnts, etc... */
                   Container(
                       color: Colors.grey.shade100,
@@ -459,11 +487,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 SizedBox(height: 5),
 
                 RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
 //                    side: BorderSide(color: Colors.red)
-                ),
-                color: Colors.yellow,child: Text("TRY AGAIN"), onPressed: () {widget.presenter.fetchHomePage();})
+                    ),
+                    color: Colors.yellow,child: Text("TRY AGAIN"), onPressed: () {widget.presenter.fetchHomePage();})
               ],
             ),
           )
@@ -560,6 +588,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // 8 for more than ...
     // to 16 as maximum.
     return  (240 - 2*ssize)/13;
+  }
+
+  void _callCustomerCare() {
+    Toast.show("call customer care", context);
   }
 }
 

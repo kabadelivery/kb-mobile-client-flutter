@@ -78,13 +78,7 @@ class RestaurantListWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(children:[
-                          restaurantModel.coming_soon == 0 ? Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: restaurantModel.is_open == 1 ? CommandStateColor.delivered : Colors.blueAccent.shade700),
-                              child:Text(
-                                  restaurantModel.is_open == 1 ? "Open":"Closed",
-                                  style: TextStyle(color: Colors.white, fontSize: 12)
-                              )) : Container(),
+                        _getRestaurantStateTag(restaurantModel),
                           SizedBox(width: 5),
                           restaurantModel.coming_soon == 1 ?
                           Container(
@@ -130,8 +124,48 @@ class RestaurantListWidget extends StatelessWidget {
         pic: Utils.inflateLink(restaurantModel.pic),
         nbAction: 1,
         button1Name: "OK",
-        onClickAction1: (){print(restaurantModel.name);}
+        onClickAction1: (){
+          print(restaurantModel.name);
+          Navigator.pop(context);
+        }
     ));
+  }
+
+
+  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+
+    String tagText = "-- --";
+    Color tagTextColor = Colors.white;
+    Color tagColor = KColors.primaryColor;
+
+    switch(restaurantModel.open_type){
+      case 0: // closed
+        tagText = "Closed";
+        tagColor = KColors.mBlue;
+        break;
+      case 1: // open
+        tagText = "Opened";
+        tagColor = KColors.mGreen;
+        break;
+      case 2: // paused
+        tagText = "Breaktime";
+        tagColor = KColors.mBlue;
+        break;
+      case 3: // blocked
+        tagText = "Shortly blocked";
+        tagColor = KColors.primaryColor;
+        break;
+    }
+
+    return   restaurantModel.coming_soon == 0 ? Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
+            color: tagColor),
+        child:Text(
+            tagText,
+            style: TextStyle(color: tagTextColor, fontSize: 12)
+        )) : Container();
+
   }
 
 }

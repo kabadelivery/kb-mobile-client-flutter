@@ -18,7 +18,7 @@ class AppApiProvider {
   Client client = Client();
 
 
-  Future<HomeScreenModel> fetchHomeScreenModel() async {
+  Future<String> fetchHomeScreenModel() async {
     DebugTools.iPrint("entered fetchHomeScreenModel");
     if (await Utils.hasNetwork()) {
       final response = await client
@@ -29,7 +29,7 @@ class AppApiProvider {
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0)
-          return HomeScreenModel.fromJson(json.decode(response.body)["data"]);
+         return response.body;
         else
           throw Exception(-1); // there is an error in your request
       } else {

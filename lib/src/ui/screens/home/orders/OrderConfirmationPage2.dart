@@ -7,11 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/MyAddressModel.old';
 import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
-import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -38,6 +35,8 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
   CustomerModel customer;
 
+  int orderOrPreorderChoice = 0;
+
   OrderConfirmationPage2({Key key, this.presenter, this.foods, this.addons, this.totalPrice = 3000}) : super(key: key);
 
   @override
@@ -49,7 +48,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration; // = OrderBillConfiguration.fake();
+  OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration.fake();
 
 //  Map<RestaurantFoodModel, int> addons, foods;
 
@@ -132,29 +131,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   _buildBill() {
-
     if (_orderBillConfiguration == null)
       return Container();
-
-    /*return Card(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Commande: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.command_pricing} FCFA", style: TextStyle(fontSize: 16))]),
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Montant Livraison: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.shipping_pricing} FCFA",  style: TextStyle(fontSize: 16))]),
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${_orderBillConfiguration.remise} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
-            SizedBox(height: 10),
-            Container(height: 1, color: Colors.black,width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(left: 10, right: 10)),
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${_orderBillConfiguration.total_pricing} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
-          ],
-        ),
-      ),
-    );*/
     return Card(margin: EdgeInsets.only(left: 10, right: 10),
         child: Container(padding: EdgeInsets.all(10),
           child: Column(children:<Widget>[
@@ -273,7 +251,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 5),
               _cookingTimeEstimation(),
               SizedBox(height: 10),
-
+              _buildRadioPreorderChoice(),
+              SizedBox(height: 10),
+              Container(child:  _buildDeliveryTimeFrameList(), color: Colors.white),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(left:10, right: 10, top:5, bottom:5),
                 color: Colors.white,
@@ -300,19 +281,26 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               _orderBillConfiguration == null ? Container() :
               Column(children: <Widget>[
-                _buildBill(),
+//                _buildBill(),
+                Container(width: MediaQuery.of(context).size.width,
+                  color:Colors.white,
+                  padding: EdgeInsets.only(left: 10, right: 10, top:20, bottom:20),
+                  child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text("Your balance:", style: TextStyle(fontSize: 17),),
+                      SizedBox(width: 10),
+                      Text("${_orderBillConfiguration.account_balance} XOF", style: TextStyle(color: KColors.primaryColor, fontSize: 18, fontWeight: FontWeight.normal),),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 10),
-                /* solde insuffisant  - CLIGNOTER CE CONTAINER */
-                _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ?
-                Container(margin: EdgeInsets.all(20), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: Column(children: <Widget>[
-                      Text("${_orderBillConfiguration?.account_balance} FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
-                      SizedBox(height: 20),
-                      Text("${ _orderBillConfiguration?.account_balance!=null && _orderBillConfiguration?.account_balance < _orderBillConfiguration?.total_pricing ? "Solde insuffisant !" : "" }", style: TextStyle(color: Colors.black, fontSize: 18))
-                    ])) :
-                // we just tell him that he can prepay and stuffs.
-                Container(),
-                _buildPurchaseButtons()
+                // purchase buttons are becoming cards.
+                _buildPreOrderButton(),
+                SizedBox(height: 10),
+                _buildOrderNowButton(),
+                SizedBox(height: 10),
+                _buildOrderPayAtArrivalButton(),
+                SizedBox(height: 30),
               ]),
             ])
       ),
@@ -684,4 +672,136 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     );
   }
 
+  _buildRadioPreorderChoice() {
+    return  Container(
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          Row(children: <Widget>[
+            Radio(value: 0, groupValue: widget.orderOrPreorderChoice, onChanged: _handleOrderTypeRadioValueChange),
+            Expanded(child: Container(margin:EdgeInsets.only(left:10, right:10), child: Text("Order and get delivered now", style: TextStyle(color: widget.orderOrPreorderChoice == 0 ? KColors.primaryColor : Colors.black, fontSize: widget.orderOrPreorderChoice == 0 ? 16 : 14)))),
+          ]),
+          SizedBox(height: 10),
+          Row(children: <Widget>[
+            Radio(value: 1, groupValue: widget.orderOrPreorderChoice, onChanged: _handleOrderTypeRadioValueChange),
+            Expanded(child: Container(margin:EdgeInsets.only(left:10, right:10), child: Text("Pre-order and get delivered in a future time frame", style: TextStyle(color: widget.orderOrPreorderChoice == 1 ? KColors.primaryColor : Colors.black, fontSize: widget.orderOrPreorderChoice == 1 ? 16 : 14)))),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  /* pre order button */
+  _buildPreOrderButton() {
+
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10),
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.access_time),
+                SizedBox(width: 5),
+                Text("Confirm Pre - Order", style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text("Delivery discount (-20%)", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),
+            SizedBox(height: 10),
+            Container(child: Text("Preorder now and get delivered at a specific time in the future", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey)), margin: EdgeInsets.only(left:10, right:10),),
+            SizedBox(height: 10),
+            Text("(600 XOF)", style: TextStyle(fontSize: 18, color: KColors.primaryYellowColor)),
+          ]),
+        ),
+      ),
+    );
+  }
+
+
+  /* order and pay now */
+  _buildOrderNowButton() {
+
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10),
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.restaurant),
+                SizedBox(width: 5),
+                Text("PAY NOW", style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(child: Text("Pay now with your Kaba balance", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey)), margin: EdgeInsets.only(left:10, right:10),),
+            SizedBox(height: 10),
+            Text("(600 XOF)", style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+          ]),
+        ),
+      ),
+    );
+  }
+
+
+  /* order and pay at arrival */
+  _buildOrderPayAtArrivalButton() {
+
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10),
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.directions_bike),
+                SizedBox(width: 5),
+                Text("PAY AT ARRIVAL", style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(child: Text("Pay at delivery with ca\$h to the delivery man directly", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey)), margin: EdgeInsets.only(left:10, right:10),),
+            SizedBox(height: 10),
+            Text("(600 XOF)", style: TextStyle(fontSize: 18, color: Colors.black)),
+          ]),
+        ),
+      ),
+    );
+  }
+
+
+
+  void _handleOrderTypeRadioValueChange(int value) {
+    setState(() {
+      widget.orderOrPreorderChoice = value;
+    });
+  }
+
+  _buildDeliveryTimeFrameList() {
+    int count = 3;
+
+    return Container(
+      margin: const EdgeInsets.only(top:8.0,bottom:8, left: 16,right:16),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          // left date, time,
+          // right checkbox
+          Row(children: <Widget>[
+            Container(child: Text("Mon", style: TextStyle(color:Colors.white)),
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: CommandStateColor.delivered),),
+            SizedBox(width: 10),
+            Text("11h30 - 12h30"),
+          ]),
+          Checkbox(value: true, onChanged: _timeFrameCheckBoxOnChange(), activeColor: Colors.white, checkColor: KColors.primaryColor)
+        ],
+      ),
+    );
+  }
+
+  _timeFrameCheckBoxOnChange() {}
 }

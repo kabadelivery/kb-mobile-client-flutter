@@ -11,6 +11,7 @@ import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
 import 'package:kaba_flutter/src/models/NotificationItem.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -22,6 +23,7 @@ import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
 import 'StateContainer.dart';
+import 'contracts/order_contract.dart';
 import 'locale/locale.dart';
 
 
@@ -112,8 +114,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
-//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-      home: SplashPage(),
+      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
+//      home: SplashPage(),
 //home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //      home: TransactionHistoryPage(presenter: TransactionPresenter()),
 //      home: TopUpPage(presenter: TopUpPresenter()),

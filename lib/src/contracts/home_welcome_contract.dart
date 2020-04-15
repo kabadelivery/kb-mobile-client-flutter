@@ -45,8 +45,11 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
     isWorking = true;
     try {
       _homeWelcomeView.showLoading(true);
-      HomeScreenModel _data = await provider.fetchHomeScreenModel();
-        _homeWelcomeView.updateHomeWelcomePage(_data);
+      // retrieve from the sharedPreferences, and keep the version code.
+      String _dataResponse = await provider.fetchHomeScreenModel();
+      // save it to the shared preferences
+       HomeScreenModel _model = HomeScreenModel.fromJson(json.decode(_dataResponse)["data"]);
+        _homeWelcomeView.updateHomeWelcomePage(_model);
     } catch(_) {
       if (_ == -2) {
         _homeWelcomeView.networkError();

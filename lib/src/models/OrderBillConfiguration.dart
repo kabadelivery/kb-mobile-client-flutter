@@ -19,6 +19,10 @@ class OrderBillConfiguration {
   int cooking_time;
   int distance;
 
+int can_preorder;
+int open_type;
+// get delivery frames
+
 
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration();
