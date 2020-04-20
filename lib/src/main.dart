@@ -114,8 +114,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(primarySwatch: KColors.colorCustom),
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
-      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//      home: SplashPage(),
+//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
+      home: SplashPage(),
 //home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //      home: TransactionHistoryPage(presenter: TransactionPresenter()),
 //      home: TopUpPage(presenter: TopUpPresenter()),

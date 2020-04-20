@@ -33,16 +33,19 @@ class OrderItemModel {
       quantity = json['quantity'];
       pic = json['pic'];
       details = json['details'];
-
-      menu_id = int.parse(json['menu_id']);
-      restaurant_id = json['restaurant_id'];
-
-      l = json["food_details_pictures"];
-      food_details_pictures = l?.map((f) => "${f}")?.toList();
-
-      food_description = json['food_description'];
-      stars = json['stars'];
       promotion = json['promotion'];
+
+      try {
+         menu_id = int.parse(json['menu_id']);
+         restaurant_id = json['restaurant_id'];
+         l = json["food_details_pictures"];
+         food_details_pictures = l?.map((f) => "${f}")?.toList();
+         food_description = json['food_description'];
+         stars = json['stars'];
+      } catch(e){
+         print(e);
+      }
+
    }
 
 

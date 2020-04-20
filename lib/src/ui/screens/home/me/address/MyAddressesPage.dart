@@ -19,6 +19,8 @@ class MyAddressesPage extends StatefulWidget {
 
   bool pick;
 
+  UserTokenModel userTokenModel;
+
   MyAddressesPage({Key key, this.title, this.pick = false}) : super(key: key);
 
   final String title;
@@ -35,6 +37,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
   void initState() {
     // TODO: implement initState
     CustomerUtils.getUserToken().then((userTokenModel) {
+      widget.userTokenModel = userTokenModel;
       userDataBloc.fetchMyAddresses(userTokenModel);
     });
     super.initState();
@@ -48,18 +51,38 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
         title: Text("MY ADDRESSES", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () => _createAddress(), child: Icon(Icons.add, color: Colors.white)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StreamBuilder<List<DeliveryAddressModel>>(
-          stream: userDataBloc.deliveryAddress,
-          builder:(context, AsyncSnapshot<List<DeliveryAddressModel>> snapshot) {
-            if (snapshot.hasData) {
-              return _buildAddressList(snapshot.data);
-            } else if (snapshot.hasError) {
-              return ErrorPage(onClickAction: (){ userDataBloc.fetchMyAddresses(UserTokenModel.fake());});
-            }
-            return Center(child: CircularProgressIndicator());
-          }
+      body: Stack(
+        children: <Widget>[
+          StreamBuilder<List<DeliveryAddressModel>>(
+              stream: userDataBloc.deliveryAddress,
+              builder:(context, AsyncSnapshot<List<DeliveryAddressModel>> snapshot) {
+                if (snapshot.hasData) {
+                  return _buildAddressList(snapshot.data);
+                } else if (snapshot.hasError) {
+                  return ErrorPage(onClickAction: (){ userDataBloc.fetchMyAddresses(widget.userTokenModel);});
+                }
+                return Center(child: CircularProgressIndicator());
+              }
+          ),
+          Positioned(
+            bottom: 20,
+            right: 0,
+            left: 0,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                RaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.add, color: KColors.primaryColor),
+                      SizedBox(width: 10),
+                      Text("CREER NOUVELLE ADRESSE", style: TextStyle(color: KColors.primaryColor))
+                    ],
+                  ),
+                ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

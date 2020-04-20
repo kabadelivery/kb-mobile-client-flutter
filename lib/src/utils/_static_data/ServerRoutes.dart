@@ -13,7 +13,7 @@ class ServerRoutes {
 
   /* get current command db */
   static const String LINK_MY_COMMANDS_GET_CURRENT = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/get";
+      "/mobile/api/command/v2/get";
 
   /* get all commands list */
   static const String LINK_GET_ALL_COMMAND_LIST = ServerConfig.SERVER_ADDRESS+
@@ -25,7 +25,7 @@ class ServerRoutes {
 
   /* get command details */
   static const String LINK_GET_COMMAND_DETAILS =  ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/details/get";
+      "/mobile/api/command/details/v2/get";
 
   /* get current basket content */
   static const String LINK_MY_BASKET_GET = ServerConfig.SERVER_ADDRESS+

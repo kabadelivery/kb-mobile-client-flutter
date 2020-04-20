@@ -269,7 +269,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderConfirmationPage2(presenter: OrderConfirmationPresenter(), totalPrice: totalPrice,foods: food_selected, addons: adds_on_selected),
+        builder: (context) => OrderConfirmationPage2(presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
       ),
     );
   }

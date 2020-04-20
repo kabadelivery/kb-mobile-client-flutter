@@ -29,12 +29,11 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body:  Column(
           children: <Widget>[
             Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("Version: ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black))]), flex: 1, ),
-            Expanded(child: Image(image: AssetImage(ImageAssets.kaba_copyright_presentation)), flex: 5),
+            Expanded(child: Image(image: AssetImage(ImageAssets.kaba_copyright_presentation), width: MediaQuery.of(context).size.width), flex: 5),
           ],
         )
     );

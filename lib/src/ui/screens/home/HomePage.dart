@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('Account'),
           ),
         ],
-        currentIndex:   StateContainer.of(context).tabPosition,
+        currentIndex: StateContainer.of(context).tabPosition,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -126,16 +126,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void menuChoiceAction(String value) {
-    /* jump to the other activity */
-  }
 
+  /* keep gps location inside STATE CONTAINER and use it even for the map. */
   void _onItemTapped(int value) {
     /* zwitch */
     setState(() {
-//      HomePage._selectedIndex = value;
     StateContainer.of(context).updateTabPosition(tabPosition: value);
     });
+    if (value == 1){
+      // ask for permission gps
+//     restaurantListPage. _getLastKnowLocation();
+    }
   }
 }
 

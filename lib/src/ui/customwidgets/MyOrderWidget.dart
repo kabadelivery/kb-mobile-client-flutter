@@ -80,7 +80,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                           children: <Widget>[
                             IconButton(icon: Icon(Icons.local_shipping, size: 40,)),
                             Text("SHIPPING PRICE", style: TextStyle(fontSize: 18, color: Colors.grey),),
-                            Container(color: Colors.grey,padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_pricing} F", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))
+                            Container(color: Colors.grey,padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.is_preorder == 1 ? command.preorder_shipping_pricing :(command.is_promotion == 1 ? command.promotion_shipping_pricing : command.shipping_pricing)} F", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))
                           ],
                         ),
                         /* quartier */
@@ -93,7 +93,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                             Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
                             Row(children: <Widget>[
                               Text('TOTAL: ',style: new TextStyle(color: Colors.black, fontSize: 18)),
-                              Container(child: Text("${command.total_pricing} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
+                              Container(child: Text("${command.is_preorder == 1 ? command.preorder_total_pricing :(command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
                             ])
                           ]),
                         ),

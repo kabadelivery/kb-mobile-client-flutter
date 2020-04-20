@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';

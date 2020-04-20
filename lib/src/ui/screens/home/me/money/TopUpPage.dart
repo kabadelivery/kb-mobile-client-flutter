@@ -14,6 +14,12 @@ class TopUpPage extends StatefulWidget {
 
   TopUpPresenter presenter;
 
+  var feesPercentage = 10;
+
+  var total = 0;
+
+  var fees = 0;
+
   TopUpPage({Key key, this.title, this.presenter}) : super(key: key);
 
   final String title;
@@ -44,7 +50,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     _phoneNumberFieldController = new TextEditingController();
     _phoneNumberFieldController.addListener(_checkOperator);
     _amountFieldController = new TextEditingController();
-
+    _amountFieldController.addListener(_updateFees);
     CustomerUtils.getCustomer().then((customer) {
       this.customer = customer;
     });
@@ -69,16 +75,15 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 color: Colors.white,
                 padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                 child: Center(
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-                    Expanded(flex: 7, child: Center(child: Text("Phone Number", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),))),
-                    Expanded(flex: 3, child: Center(
-                      child: TextField(controller: _phoneNumberFieldController,maxLength: 8,style: TextStyle(color: KColors.primaryColor),
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                    Expanded(flex: 4, child: Center(child: Text("Phone Number", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                    Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 28,color: KColors.primaryColor),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "90XXXX90"
-                          )),
-                    ))
+                        )),
+                    )
                   ]),
                 ),
               ),
@@ -97,27 +102,51 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
               SizedBox(height: 10),
 
               Container(
+                padding: EdgeInsets.only(top:10,bottom:10, left:5, right: 5),
+                color: Colors.white,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+                  Expanded(flex: 4, child: Center(child: Text("Fees (${widget.feesPercentage}%)"))),
+                  Expanded(flex: 6, child: Center(child: Text("${widget.fees}F")))
+                ]),
+              ),
+
+              SizedBox(height: 10),
+
+              Container(
                   padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                   color: Colors.white,
                   child: Center(
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: <Widget>[
-                      Expanded(flex: 7, child: Center(child: Text("Amount"))),
-                      Expanded(flex: 3, child: Center(child: TextField(controller: _amountFieldController, maxLength: 6, style: TextStyle(color: KColors.primaryColor),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                      Expanded(flex: 4, child: Container(child: Center(child: Text("Amount", style: TextStyle(fontSize: 18),)), color: Colors.yellow,)),
+                      Expanded(flex: 6, child: Container(color: Colors.green,
+                        child: TextField(controller: _amountFieldController, textAlign: TextAlign.center, maxLength: 6, style: TextStyle(color: KColors.primaryColor, fontSize: 30),
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: "2000",
+                              hintText: "3000",
                               border: InputBorder.none,
                             )),
-                      ))
+                      ),
+                      )
                     ]),
                   )),
+              SizedBox(height: 10),
+
+              Container(
+                padding: EdgeInsets.only(top:10,bottom:10, left:5, right: 5),
+                color: Colors.white,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+                  Expanded(flex: 4, child: Center(child: Text("Total"))),
+                  Expanded(flex: 6, child: Center(child: Text("${widget.total}F")))
+                ]),
+              ),
+
               SizedBox(height: 50),
 
               Row(mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                     children: <Widget>[
-                      Text("LAUNCH", style: TextStyle(fontSize: 14, color: Colors.white)),
+                      Text("TOP UP ${_getTotal()}", style: TextStyle(fontSize: 14, color: Colors.white)),
                       isLaunching ?  Row(
                         children: <Widget>[
                           SizedBox(width: 10),
@@ -170,7 +199,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
     String number = "${_phoneNumberFieldController.text}";
 
-   String mOperator = "---";
+    String mOperator = "---";
     isOperatorOk = true;
 
     if (Utils.isPhoneNumber_TGO(number)) {
@@ -210,5 +239,33 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   void mToast(String message) {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  _getFees() {
+    String amount = _amountFieldController.text;
+    int amount_;
+    if(amount == null || "" == amount.trim())
+      amount_ = 0;
+    else
+    amount_ = int.parse(amount);
+
+   return (widget.feesPercentage.toDouble()*amount_.toDouble()/100).toInt();
+  }
+
+  _getTotal() {
+    String amount = _amountFieldController.text;
+    int amount_;
+    if(amount == null || "" == amount.trim())
+      amount_ = 0;
+    else
+      amount_ = int.parse(amount);
+  return amount_+_getFees();
+  }
+
+  void _updateFees() {
+    setState(() {
+      widget.fees = _getFees();
+     widget.total = _getTotal();
+    });
   }
 }

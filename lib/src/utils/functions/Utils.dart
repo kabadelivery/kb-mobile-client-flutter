@@ -210,6 +210,43 @@ class Utils {
     return phone_number.substring(0,2)+"****"+phone_number.substring(6,8);
   }
 
+  static String timeStampToDayDate (String timeStamp) {
+
+    try {
+      int unixSeconds = int.parse(timeStamp);
+      DateTime date = new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
+
+      int day_of_week = date.weekday;
+
+      List<String> dayz = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+
+      int day = date.day;
+      int month = date.month;
+
+      String daY = dayz[day_of_week+1];
+      daY += ("("+(day>0 && day <=9 ? "0":"")+"${day}/"+(month>0 && month<=9? "0":"")+"${month})");
+      return daY;
+
+    } catch (e){
+      e.printStackTrace();
+    }
+    return "-- --";
+  }
+
+
+  static String timeStampToHourMinute (String timeStamp) {
+
+    try {
+      int unixSeconds = int.parse(timeStamp);
+      DateTime date = new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
+      return new DateFormat("Hm").format(date);
+    } catch (e){
+      e.printStackTrace();
+    }
+    return "-- --";
+  }
+
+//  _orderBillConfiguration.deliveryFrames[index].start
 
 }
 

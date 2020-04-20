@@ -21,7 +21,7 @@ class OrderApiProvider {
   Client client = Client();
 
 
-  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer,Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address) async {
+  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address) async {
 
     DebugTools.iPrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -31,7 +31,7 @@ class OrderApiProvider {
         food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
       });
 
-      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': foods.keys.elementAt(0).restaurant_entity.id, 'shipping_address': address.id});
+      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': restaurant.id, 'shipping_address': address.id});
 
       print(_data.toString());
 
@@ -144,6 +144,25 @@ class OrderApiProvider {
       print(response.body.toString());
       if (response.statusCode == 200) {
         return CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // there is an error in your request
+    }
+  }
+
+  Future<String> checkOpeningStateOfRestaurant(CustomerModel customer, RestaurantModel restaurant) async {
+
+    DebugTools.iPrint("entered checkOpeningStateOfRestaurant");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN,
+          body:  json.encode({"restaurant_id": restaurant.id}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      ).timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
       } else
         throw Exception(-1); // there is an error in your request
     } else {

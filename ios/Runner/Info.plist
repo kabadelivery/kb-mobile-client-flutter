@@ -30,6 +30,8 @@
 	<string>Camera permission is needed for the user to shoot his profile picture if needed.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Need Current Location Access</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Need Current Location Access in Usage</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Get current location for delivery</string>
 	<key>NSMicrophoneUsageDescription</key>

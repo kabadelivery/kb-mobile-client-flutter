@@ -66,6 +66,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //      homeScreenBloc.fetchHomeScreenModel();
     super.initState();
     this.widget.presenter.homeWelcomeView = this;
+    showLoading(true);
     this.widget.presenter.fetchHomePage();
   }
 

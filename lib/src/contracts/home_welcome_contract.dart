@@ -8,6 +8,7 @@ import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
 import 'package:kaba_flutter/src/resources/app_api_provider.dart';
 import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWelcomeContract {
@@ -43,21 +44,34 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       return;
 
     isWorking = true;
-    try {
-      _homeWelcomeView.showLoading(true);
-      // retrieve from the sharedPreferences, and keep the version code.
-      String _dataResponse = await provider.fetchHomeScreenModel();
-      // save it to the shared preferences
-       HomeScreenModel _model = HomeScreenModel.fromJson(json.decode(_dataResponse)["data"]);
+
+    CustomerUtils.getOldWelcomePage().then((pageJson) async {
+
+      try {
+        _homeWelcomeView.showLoading(true);
+        HomeScreenModel _model;
+        // load previous page
+        try {
+          HomeScreenModel _model = HomeScreenModel.fromJson(json.decode(pageJson)["data"]);
+          _homeWelcomeView.updateHomeWelcomePage(_model);
+        } catch(e){
+          print(e);
+          _homeWelcomeView.showLoading(true);
+        }
+        // save it to the shared preferences
+        String _dataResponse = await provider.fetchHomeScreenModel();
+        _model = HomeScreenModel.fromJson(json.decode(_dataResponse)["data"]);
         _homeWelcomeView.updateHomeWelcomePage(_model);
-    } catch(_) {
-      if (_ == -2) {
-        _homeWelcomeView.networkError();
-      } else {
-        _homeWelcomeView.showErrorMessage("");
+        CustomerUtils.saveWelcomePage(_dataResponse);
+      } catch(_) {
+        if (_ == -2) {
+          _homeWelcomeView.networkError();
+        } else {
+          _homeWelcomeView.showErrorMessage("");
+        }
       }
-    }
-    isWorking = false;
+      isWorking = false;
+    });
   }
 
 

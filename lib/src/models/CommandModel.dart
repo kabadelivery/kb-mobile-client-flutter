@@ -27,19 +27,19 @@ class CommandModel {
   String remise;
 
   // normal one
-  String total_pricing;
-  String shipping_pricing;
-  String food_pricing;
+  int total_pricing;
+  int shipping_pricing;
+  int food_pricing;
 
   // preorder case
-  String preorder_total_pricing;
-  String preorder_shipping_pricing;
-  String preorder_food_pricing;
+  int preorder_total_pricing;
+  int preorder_shipping_pricing;
+  int preorder_food_pricing;
 
   // promotion case
-  String promotion_total_pricing;
-  String promotion_shipping_pricing;
-  String promotion_food_pricing;
+  int promotion_total_pricing;
+  int promotion_shipping_pricing;
+  int promotion_food_pricing;
 
   // differents cases
   int is_preorder = 0;
@@ -69,7 +69,7 @@ class CommandModel {
     id = json['id'];
     restaurant_id = json['restaurant_id'];
     state = json['state'];
-    total_pricing = "${json['total_pricing']}";
+    total_pricing = json['total_pricing'];
     remise = "${json['remise']}";
     last_update = "${json['last_update']}";
     is_payed_at_arrival = json['is_payed_at_arrival'];
@@ -96,18 +96,18 @@ class CommandModel {
 
     // normal one
     total_pricing = json["total_pricing"];
-    shipping_pricing = json["total_pricing"];
-    food_pricing = json["total_pricing"];
+    shipping_pricing = json["shipping_pricing"];
+    food_pricing = json["food_pricing"];
 
     // preorder case
-    preorder_total_pricing = json["total_pricing"];
-    preorder_shipping_pricing = json["total_pricing"];
-    preorder_food_pricing = json["total_pricing"];
+    preorder_total_pricing = json["preorder_total_pricing"];
+    preorder_shipping_pricing = json["preorder_shipping_pricing"];
+    preorder_food_pricing = json["preorder_food_pricing"];
 
     // promotion case
-    promotion_total_pricing = json["total_pricing"];
-    promotion_shipping_pricing = json["total_pricing"];
-    promotion_food_pricing = json["total_pricing"];
+    promotion_total_pricing = json["promotion_total_pricing"];
+    promotion_shipping_pricing = json["promotion_shipping_pricing"];
+    promotion_food_pricing = json["promotion_food_pricing"];
 
     // differents cases
     is_preorder = json["is_preorder"];

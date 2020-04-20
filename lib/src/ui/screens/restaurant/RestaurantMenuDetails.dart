@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
@@ -17,7 +18,9 @@ class RestaurantMenuDetails extends StatefulWidget {
  /* 1 - food, 2- addons, 3 - all */
   int type;
 
-  RestaurantMenuDetails({Key key, this.type, this.food_selected, this.adds_on_selected}) : super(key: key);
+  RestaurantModel restaurant;
+
+  RestaurantMenuDetails({Key key, this.type, this.food_selected, this.adds_on_selected, this.restaurant}) : super(key: key);
 
   @override
   _RestaurantMenuDetailsState createState() => _RestaurantMenuDetailsState(type, food_selected, adds_on_selected);
@@ -232,7 +235,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderConfirmationPage2(presenter: OrderConfirmationPresenter(),totalPrice: totalPrice,foods: food_selected, addons: adds_on_selected),
+        builder: (context) => OrderConfirmationPage2(restaurant: widget.restaurant,presenter: OrderConfirmationPresenter(), foods: food_selected, addons: adds_on_selected),
       ),
     );
   }

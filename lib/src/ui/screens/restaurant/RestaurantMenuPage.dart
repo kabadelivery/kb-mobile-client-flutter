@@ -661,7 +661,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuDetails(type: type,
+        builder: (context) => RestaurantMenuDetails(
+            restaurant: widget.restaurant,
+            type: type,
             food_selected: food_selected,
             adds_on_selected: adds_on_selected),
       ),

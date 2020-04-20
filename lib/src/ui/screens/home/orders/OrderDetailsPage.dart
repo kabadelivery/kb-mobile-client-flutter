@@ -391,7 +391,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
   _buildBill() {
 
-    String priceNormalCommand = "", priceActualCommand = "", priceTotalToPay = "", priceNormalDelivery ="", priceActualDelivery = "";
+    int priceNormalCommand, priceActualCommand, priceTotalToPay, priceNormalDelivery, priceActualDelivery;
 
     priceNormalCommand = widget.command.food_pricing;
 
@@ -466,7 +466,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                       SizedBox(width: 5),
                     ],
                   ) : Container(),
-                  Text(priceActualDelivery, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text("${priceActualDelivery}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
               )
             ]),
@@ -483,7 +483,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
               Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              Text(priceTotalToPay, style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+              Text("${priceTotalToPay}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
             ]),
             SizedBox(height: 10),
             (int.parse(widget.command?.remise) > 0 ? Container (

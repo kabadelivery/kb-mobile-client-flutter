@@ -186,14 +186,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     /* get last know position */
     GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
 
-    if(geolocationStatus != GeolocationStatus.granted) {
+    if(geolocationStatus == GeolocationStatus.granted) {
+      _jumpToPickAddressPage();
+    } else {
       Map<PermissionGroup, prefix0.PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
       geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
       if(geolocationStatus != GeolocationStatus.granted) {
         _jumpToPickAddressPage();
       }
-    } else {
-      _jumpToPickAddressPage();
     }
   }
 

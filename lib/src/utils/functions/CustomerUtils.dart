@@ -95,6 +95,18 @@ class CustomerUtils {
     return token;
   }
 
+  static getOldWelcomePage() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonHomePage = prefs.getString("_homepage");
+    return jsonHomePage;
+  }
+
+  static saveWelcomePage(String wp) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_homepage", wp);
+  }
 
 
 
