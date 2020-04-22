@@ -31,9 +31,9 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Need Current Location Access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Need Current Location Access in Usage</string>
+	<string>Need Current Location Access in Usage</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Get current location for delivery</string>
+	<string>Get current location for more accurate delivery</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone permission is need so that the user could shoot a video right in case.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -45,7 +45,7 @@
 	<key>UIStatusBarHidden</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
+	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
