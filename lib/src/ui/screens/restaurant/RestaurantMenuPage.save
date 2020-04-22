@@ -48,8 +48,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
 //  final _controllers = <AnimationController>[];
 
-//  final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<
-//      InnerDrawerState>();
+  final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<
+      InnerDrawerState>();
 
   var _firstTime = true;
 
@@ -88,8 +88,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   Map<String, GlobalKey> _keyBox = Map();
 
   Animation foodAddAnimation;
-
-  int totalCount = 10;
 
   @override
   void initState() {
@@ -134,102 +132,231 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
               child: Text(widget.restaurant == null ? "" : widget.restaurant.name, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 12, color: Colors.white))),
         )
-      ])),
+      ]), onTap: _openDrawer),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
         Navigator.pop(context);
       }),
       actions: <Widget>[
-        Row(
-          children: <Widget>[
-            RotatedBox(
-                child:
-                AnimatedBuilder(
-                  animation: foodAddAnimation,
-                  child: Text("${_foodCount}/${totalCount}",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18)),
-                  builder: (BuildContext context, Widget child) {
-                    return Transform.rotate(angle: foodAddAnimation.value, child: child);
-                  },
-                ),
-                quarterTurns: 0),
-            IconButton(key: _menuBasketKey,
-                icon: Icon(Icons.shopping_cart, color: Colors.white),
-                onPressed: () => _showMenuBottomSheet(ALL)),
-          ],
-        )
+        IconButton(key: _menuBasketKey,
+            icon: Icon(Icons.shopping_cart, color: Colors.white),
+            onPressed: () => _showMenuBottomSheet(ALL))
       ],
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: isLoading ? Center(child: CircularProgressIndicator()) : Row(children: <Widget>[
-      Expanded(flex:4,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 5),
-                ]..addAll(
-                    List.generate(data?.length, (index){
-                      return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+    return InnerDrawer(
+        key: _innerDrawerKey,
+
+//        position: InnerDrawerPosition.start, // required
+//        onTapClose: true, // default false
+//        offset: 0.1, // default 0.4
+//        animationType: InnerDrawerAnimation.quadratic, // default static
+//        innerDrawerCallback: (a) => print(a), // return bool
+        leftChild: data?.length == null ? Container() : Material(
+            child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Row(mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      this.currentIndex = index;
-                                    });
-                                  },
-                                  child: index == this.currentIndex ?
-                                  Container(
-                                      color: KColors.primaryColor,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                          textAlign: TextAlign.center)) :
-                                  Container(
-                                      color: data[index].promotion != 0 ? KColors
-                                          .primaryYellowColor : Colors.transparent,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: data[index].promotion == 0 ? Colors
-                                                  .black : KColors.primaryColor),
-                                          textAlign: TextAlign.center))),
-                            ),
-                          ),
+                          Expanded(child: Padding(padding: EdgeInsets.all(10),child: Text("Veuillez selectionner le menu de votre choix", style: TextStyle(color: Colors.grey, fontSize: 14),textAlign: TextAlign.center,))),
                         ],
-                      );
-                    })
-                ),
-              ),
-            ),
-          ),
+                      ),
+                      SizedBox(height: 5),
+                      /*  ListView.separated(
+                          separatorBuilder: (context, index) =>
+                              Divider(color: Colors.grey.withAlpha(150), height: 1),
+                          itemCount: data?.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _innerDrawerKey.currentState.toggle();
+                                    this.currentIndex = index;
+                                  });
+                                },
+                                child: index == this.currentIndex ?
+                                Container(
+                                    color: KColors.primaryColor,
+                                    padding: EdgeInsets.only(
+                                        top: 10, bottom: 10, left: 8, right: 8),
+                                    child: Text(data[index].name?.toUpperCase(),
+                                        style: TextStyle(fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: Colors.white),
+                                        textAlign: TextAlign.center)) :
+                                Container(
+                                    color: data[index].promotion != 0 ? KColors
+                                        .primaryYellowColor : Colors.transparent,
+                                    padding: EdgeInsets.only(
+                                        top: 10, bottom: 10, left: 8, right: 8),
+                                    child: Text(data[index].name?.toUpperCase(),
+                                        style: TextStyle(fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: data[index].promotion == 0 ? Colors
+                                                .black : KColors.primaryColor),
+                                        textAlign: TextAlign.center)));
+                          }),*/
+                    ]..addAll(
+                        List.generate(data?.length, (index){
+                          return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _innerDrawerKey.currentState.toggle();
+                                        this.currentIndex = index;
+                                      });
+                                    },
+                                    child: index == this.currentIndex ?
+                                    Container(
+                                        color: KColors.primaryColor,
+                                        padding: EdgeInsets.only(
+                                            top: 10, bottom: 10, left: 8, right: 8),
+                                        child: Text(data[index].name?.toUpperCase(),
+                                            style: TextStyle(fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                            textAlign: TextAlign.center)) :
+                                    Container(
+                                        color: data[index].promotion != 0 ? KColors
+                                            .primaryYellowColor : Colors.transparent,
+                                        padding: EdgeInsets.only(
+                                            top: 10, bottom: 10, left: 8, right: 8),
+                                        child: Text(data[index].name?.toUpperCase(),
+                                            style: TextStyle(fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: data[index].promotion == 0 ? Colors
+                                                    .black : KColors.primaryColor),
+                                            textAlign: TextAlign.center))),
+                              ),
+                            ],
+                          );
+                        })
+                    ),
+                  ),
+                )
+            )
         ),
-        Expanded(flex: 8, child:
-        isLoading
-            ? Center(child: CircularProgressIndicator())
-            : (hasNetworkError ? ErrorPage(
-            message: "hasNetworkError", onClickAction: () {
-          restaurantBloc.fetchRestaurantMenuList(
-              widget.restaurant);
-        })
-            : hasSystemError ? ErrorPage(
-            message: "hasSystemError", onClickAction: () {
-          restaurantBloc.fetchRestaurantMenuList(
-              widget.restaurant);
-        }) : _buildRestaurantMenu())),
-      ]),
+        swipe: false, // default true
+        //  A Scaffold is generally used but you are free to use other widgets
+        // Note: use "automaticallyImplyLeading: false" if you do not personalize "leading" of Bar
+        scaffold: Scaffold(
+            backgroundColor: Colors.white,
+            body: Stack(
+              overflow: Overflow.visible,
+              children: <Widget>[
+                Scaffold(
+                  appBar: appBar,
+                  body: Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : (hasNetworkError ? ErrorPage(
+                            message: "hasNetworkError", onClickAction: () {
+                          restaurantBloc.fetchRestaurantMenuList(
+                              widget.restaurant);
+                        })
+                            : hasSystemError ? ErrorPage(
+                            message: "hasSystemError", onClickAction: () {
+                          restaurantBloc.fetchRestaurantMenuList(
+                              widget.restaurant);
+                        }) : _buildRestaurantMenu()),
+                        Positioned(
+                          right: 15,
+                          top: 10,
+                          child: Column(children: <Widget>[
+                            SizedBox(height: 10),
+                            RotatedBox(child: FlatButton.icon(onPressed: () {
+                              _showMenuBottomSheet(1);
+                            },
+                                icon: Icon(Icons.fastfood, color: Colors.white),
+                                label: Row(
+                                  children: <Widget>[
+                                    Text("REPAS",
+                                        style: TextStyle(color: Colors.white)),
+                                    SizedBox(width: 5),
+                                    RotatedBox(
+                                        child:
+                                        AnimatedBuilder(
+                                          animation: foodAddAnimation,
+                                          child: Text("${_foodCount}",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18)),
+                                          builder: (BuildContext context, Widget child) {
+                                            return Transform.rotate(angle: foodAddAnimation.value, child: child);
+                                          },
+                                        ),
+                                        quarterTurns: 1)
+                                  ],
+                                ),
+                                color: KColors.primaryYellowColor,
+                                splashColor: KColors.primaryYellowColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                              quarterTurns: -1,
+                            ),
+                            /*SizedBox(height: 10),
+                            RotatedBox(child: FlatButton.icon(onPressed: () {
+                              _showMenuBottomSheet(2);
+                            },
+                                icon: Icon(Icons.fastfood, color: Colors.white),
+                                label: Row(
+                                  children: <Widget>[
+                                    Text("SUPP.",
+                                        style: TextStyle(color: Colors.white)),
+                                    SizedBox(width: 5),
+                                    RotatedBox(
+                                      child: Text("${_addOnCount}",
+                                          style: TextStyle(color: Colors.white,
+                                              fontSize: 18)),
+                                      quarterTurns: 1,
+                                    )
+                                  ],
+                                ),
+                                color: Colors.blue,
+                                splashColor: KColors.primaryYellowColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                              quarterTurns: -1,
+                            ),*/
+                          ]),
+                        ),
+                        /* list of views that i create and remove programmatically. */
+                      ]
+                  ),
+                ),
+                /* ajouter dynamiquemnt des vues qui s'animeront uniquement sur la duree de leur vie. */
+//                _dynamicAnimatedFood == null || _dynamicAnimatedFood?.length == 0 ? Container() : Stack(children: _dynamicAnimatedFood)
+              ],
+            ),
+            floatingActionButton: this.data != null ? RotatedBox(
+              child: FlatButton.icon(onPressed: () {
+                _openDrawer();
+              },
+                  icon: Icon(Icons.fastfood, color: Colors.white),
+                  label: Text("MENU", style: TextStyle(color: Colors.white)),
+                  color: KColors.primaryColor,
+                  splashColor: KColors.primaryYellowColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius
+                      .circular(20))),
+              quarterTurns: -1,
+            ) : Container()
+        )
     );
+  }
+
+  void _openDrawer() {
+    if (_innerDrawerKey.currentState != null)
+      _innerDrawerKey.currentState.open();
+  }
+
+  void _closeDrawer() {
+    if (_innerDrawerKey.currentState != null)
+      _innerDrawerKey.currentState.close();
   }
 
   Widget getRow(int i) {
@@ -267,7 +394,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       return Center(child:Text("No data"));
 
     if (_firstTime) {
-//      _openDrawer();
+      _openDrawer();
       _firstTime = false;
     }
     SchedulerBinding.instance.addPostFrameCallback((_) =>
@@ -275,16 +402,24 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           this.data = data;
         }));
 
-    return SingleChildScrollView(
-      child: Column(children: <Widget>[SizedBox(height: 5)]..addAll(
-          List.generate(data[currentIndex].foods?.length, (index){
-            return Row(mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                _buildFoodListWidget2(food: data[currentIndex].foods[index], foodIndex: index, menuIndex: currentIndex),
-              ],
-            );
-          })
-      )),
+    return Container(
+      height: MediaQuery
+          .of(context)
+          .size
+          .height,
+      child: SingleChildScrollView(
+        child:
+        ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemCount: data[currentIndex].foods.length,
+          itemBuilder: (BuildContext context, int index) {
+            _keyBox.putIfAbsent("${currentIndex}-${index}", () => GlobalKey());
+            return _buildFoodListWidget2(food: data[currentIndex].foods[index], foodIndex: index, menuIndex: currentIndex);
+          },
+          key: new Key(new DateTime.now().toIso8601String()),
+        ),
+      ),
     );
   }
 
@@ -381,7 +516,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
                 // add-up the buttons at the right side of it
                 InkWell(onTap: () {Toast.show("add to chart", context);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
                   child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
@@ -413,115 +547,117 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
 
   Widget _buildFoodListWidget2({RestaurantFoodModel food, int foodIndex, int menuIndex}) {
+    
+    return InkWell(
+        onTap: ()=> _jumpToFoodDetails(context, food),
+        child: Container(height: 100, margin: EdgeInsets.all(10), color: Colors.yellow, padding: EdgeInsets.all(10),child: Text("You will go ${foodIndex} - $menuIndex", style: TextStyle(color: Colors.red, fontSize: 20),)));
 
-  /*return Expanded(
-    child: InkWell(
-          onTap: ()=> _jumpToFoodDetails(context, food),
-          child: Container(height: 100, color: Colors.yellow, padding: EdgeInsets.all(10),child: Text("You will go ${foodIndex} - $menuIndex", style: TextStyle(color: Colors.red, fontSize: 20),))),
-  ); */
-
-    return InkWell(  onTap: ()=> _jumpToFoodDetails(context, food),
+    return GestureDetector(onTap: ()=> _jumpToFoodDetails(context, food),
       child: Card(
-//          margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
-          child: Container(width: 7*MediaQuery.of(context).size.width/11,
-            child: Row(mainAxisSize: MainAxisSize.max,
+          margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
+          child: Container(
+            padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+            child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        // picture first
-                        Stack(
-//                        overflow: Overflow.visible,
+                Row(children: <Widget>[
+                  // picture first
+                  Stack(
+                    overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
 //                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
-                          key: _keyBox["${menuIndex}-${foodIndex}"],
-                          /* according to the position of the view, menu - food, we have a key that we store. */
-                          children: <Widget>[
-                            Container(
-                              height: 50, width: 50,
-                              decoration: BoxDecoration(
-                                  border: new Border.all(
-                                      color: KColors.primaryYellowColor,
-                                      width: 2),
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: CachedNetworkImageProvider(Utils
-                                          .inflateLink(food.pic))
-                                  )
-                              ),
-                            ),
-                          ],
+                    key: _keyBox["${menuIndex}-${foodIndex}"],
+                    /* according to the position of the view, menu - food, we have a key that we store. */
+                    children: <Widget>[
+                      Container(
+                        height: 50, width: 50,
+                        decoration: BoxDecoration(
+                            border: new Border.all(
+                                color: KColors.primaryYellowColor,
+                                width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(Utils
+                                    .inflateLink(food.pic))
+                            )
                         ),
-                        SizedBox(width: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(height: 30,
-//                            color: Colors.blue,
-                              child: Row(
-                                children: <Widget>[
-                                  Text("${food?.name?.toUpperCase()}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 3,
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Row(
-                              children: <Widget>[
-                                Row(children: <Widget>[
-                                  Text("${food?.price}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          decoration: food.promotion != 0
-                                              ? TextDecoration.lineThrough
-                                              : TextDecoration.none,
-                                          color: KColors.primaryYellowColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.normal)),
-                                  SizedBox(width: 5),
-                                  (food.promotion != 0 ? Text(
-                                      "${food?.promotion_price}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.normal))
-                                      : Container()),
-                                  SizedBox(width: 5),
-                                  Text("FCFA", overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: KColors.primaryYellowColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.normal)),
-                                ]),
-                              ],
-                            ),
-                            RaisedButton(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
-                                child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                              Text("ADD TO BASKET", style: TextStyle(fontSize: 12, color: KColors.primaryColor))]),
-                              onPressed:  () => _addFoodToChart(food, foodIndex, menuIndex),
-                              color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
-                            ),
-                          ],
-                        ),
-                      ]),
-                      // add-up the buttons at the right side of it
+                      ),
                     ],
                   ),
-                ),
+                  SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text("${food?.name?.toUpperCase()}",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500)),
+                      SizedBox(height: 5),
+                      Row(
+                        children: <Widget>[
+                          Row(children: <Widget>[
+                            /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                      (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                          : Container()),
+                                      */
+
+                            Text("${food?.price}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    decoration: food.promotion != 0
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                    color: KColors.primaryYellowColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.normal)),
+                            SizedBox(width: 5),
+                            (food.promotion != 0 ? Text(
+                                "${food?.promotion_price}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.normal))
+                                : Container()),
+                            SizedBox(width: 5),
+
+                            Text("FCFA", overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryYellowColor,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal)),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ]),
+                // add-up the buttons at the right side of it
+             /*   InkWell(onTap: () {Toast.show("add to chart", context, duration: Toast.LENGTH_SHORT);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
+                  child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(right:8, top:8),
+                        child: RaisedButton(onPressed: () => _addFoodToChart(food, foodIndex, menuIndex),
+                          color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
+                          child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
+                              child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
+                            Text("ADD TO BASKET", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
+                        ),
+                      ),
+                    ],
+                  ),
+                )*/
               ],
             ),
           )
@@ -543,17 +679,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   /* add food to chart */
   _addFoodToChart(RestaurantFoodModel food, int foodIndex, int menuIndex) {
 
-//    Toast.show("ok ${food.toString()}", context);
-
-//    GlobalKey gk = _keyBox["${menuIndex}-${foodIndex}"];
-//    RenderBox renderBoxRed = gk.currentContext.findRenderObject();
-//    final position = renderBoxRed.localToGlobal(Offset.zero);
-//    print("POSITION of Red: $position ");
+    GlobalKey gk = _keyBox["${menuIndex}-${foodIndex}"];
+    RenderBox renderBoxRed = gk.currentContext.findRenderObject();
+    final position = renderBoxRed.localToGlobal(Offset.zero);
+    print("POSITION of Red: $position ");
 
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
         if (_foodCount < FOOD_MAX) {
-//          _launchAddToBasketAnimation(position, food);
+          _launchAddToBasketAnimation(position, food);
           setState(() {
             food_selected.update(
                 food, (int val) => 1 + food_selected[food].toInt());
@@ -563,7 +697,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           showToast("MAX REACHEAD");
         }
       } else {
-//        _launchAddToBasketAnimation(position, food);
+        _launchAddToBasketAnimation(position, food);
         setState(() {
           food_selected.putIfAbsent(food, () => 1);
         });
@@ -572,7 +706,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       if (!food.is_addon) {
         if (adds_on_selected.containsKey(food)) {
           if (_addOnCount < ADD_ON_COUNT) {
-//            _launchAddToBasketAnimation(position, food);
+            _launchAddToBasketAnimation(position, food);
             setState(() {
               adds_on_selected.update(
                   food, (int val) => 1 + adds_on_selected[food].toInt());
@@ -582,7 +716,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             showToast("MAX REACHEAD");
           }
         } else {
-//          _launchAddToBasketAnimation(position, food);
+          _launchAddToBasketAnimation(position, food);
           setState(() {
             adds_on_selected.putIfAbsent(food, () => 1);
           });

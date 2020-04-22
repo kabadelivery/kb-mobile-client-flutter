@@ -19,6 +19,7 @@ class KColors {
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");
 
   static MaterialColor colorCustom = MaterialColor(hexToInt("#cc1641"), color);
+  static MaterialColor white = MaterialColor(hexToInt("#ffffff"), color);
 
   static Map<int, Color> color = {
     50: Color.fromRGBO(204, 22, 65, 1),

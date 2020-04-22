@@ -52,7 +52,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<bool> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
+  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -113,14 +113,10 @@ class OrderApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 60));
-
       print("001 _ "+response.body.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false
-//        return OrderBillConfiguration.fromJson(json.decode(response.body)["data"]);
-        if (json.decode(response.body)["error"] == 0)
-          return true;
-        return false;
+        return json.decode(response.body)["error"];
       } else
         throw Exception(-1); // there is an error in your request
     } else {

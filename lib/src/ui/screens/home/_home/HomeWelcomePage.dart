@@ -20,11 +20,13 @@ import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
+import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
@@ -591,8 +593,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     return  (240 - 2*ssize)/13;
   }
 
-  void _callCustomerCare() {
-    Toast.show("call customer care", context);
+  Future<void> _callCustomerCare() async {
+//    Toast.show("call customer care", context);
+    const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      // ask launch.
+      Toast.show("Call error", context);
+    }
   }
 }
 

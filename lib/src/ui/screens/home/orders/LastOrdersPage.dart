@@ -75,7 +75,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("You have made no order yet today!", style: TextStyle(color: Colors.grey)),
+              Text("You have NO previous orders!", style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

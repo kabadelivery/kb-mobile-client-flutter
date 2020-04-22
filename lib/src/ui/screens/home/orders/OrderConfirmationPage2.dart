@@ -900,17 +900,63 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   @override
-  void launchOrderSuccess(bool isSuccessful) {
+  void launchOrderResponse(int errorCode) {
     showLoadingPayAtDelivery(false);
-    mToast("launcOrderSuccessfull ${isSuccessful}");
-    setState(() {
-      isPayNowLoading = false;
-      isPayAtDeliveryLoading = false;
-    });
-    if (isSuccessful) { // dismiss all dialogs
+    mToast("launchOrderResponse ${errorCode}");
+//    setState(() {
+//      isPayNowLoading = false;
+//      isPayAtDeliveryLoading = false;
+//    });
+    showLoadingPayAtDelivery(false);
+    showLoadingPreorder(false);
+    showPayNowLoading(false);
+
+    if (errorCode == 0) {
       _showOrderSuccessDialog();
-    } else { // show an error or a success
-      _showOrderFailureDialog();
+    } else {
+
+      String message = "";
+      switch (errorCode) {
+        case 300:
+          message =
+          "Password confirmation wrong. Please confirm with the right password.";
+          break;
+        case 301: // restaurant doesnt exist
+          message =
+          "Sorry for the disconvenience, our server is having issues. Please try again later";
+          break;
+        case 302:
+          message =
+          "Sorry, this restaurant doesn't allow \"Paying at Arrival\"";
+          break;
+        case 303:
+          message = "Sorry, this restaurant doesn't accept \"Online Payment\"";
+          break;
+        case 304:
+          message = "Sorry, delivery address error.";
+          break;
+        case 305:
+          message = "Sorry, insufficient balance";
+          break;
+        case 306:
+          message =
+          "User account error. Please contact our customer care service.";
+          break;
+        case 307:
+          message = "Sorry, preorder is not allowed for now";
+          break;
+        case 308:
+          message = "Sorry, insufficient balance";
+          break;
+        default:
+          message =
+          "Sorry for the disconvenience, our server is having issues. Please try again later";
+      }
+      _showDialog(
+        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
+        message: message,
+        isYesOrNo: false,
+      );
     }
   }
 

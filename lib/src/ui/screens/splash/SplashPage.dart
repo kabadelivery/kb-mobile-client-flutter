@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+//import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
@@ -28,6 +30,9 @@ class _SplashPageState extends State<SplashPage> {
     // TODO: implement initState
     super.initState();
     startTimeout();
+//    if (Platform.isIOS) {
+//      FlutterStatusbarManager.setStyle(StatusBarStyle.LIGHT_CONTENT).then((onValue)=>{});
+//    }
   }
 
   Future handleTimeout() async {
@@ -55,25 +60,27 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    // for ios only.
+
     return Scaffold(
       body:  Center(
-            child: Column(
+          child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  /* image */
-                  SizedBox(
+              children: <Widget>[
+                /* image */
+                SizedBox(
                     height: 50,
-                   width: 50,
-                   child:SvgPicture.asset(
+                    width: 50,
+                    child:SvgPicture.asset(
                       VectorsData.kaba_icon_svg,
                       color: KColors.primaryColor,
                       semanticsLabel: 'LOGO',
-                  )),
-                  /* text */
-                  SizedBox(height: 10),
-                  Text("KABA",
-                   style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-                ]
+                    )),
+                /* text */
+                SizedBox(height: 10),
+                Text("KABA",
+                    style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+              ]
           )),
     );
   }

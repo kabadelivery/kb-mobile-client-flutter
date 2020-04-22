@@ -45,7 +45,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_RESTO_LIST_V2,
-          body: position == null ? "" : json.encode({"location" : "${position.latitude}:${position.longitude}"}),
+          body: position == null ? "" : json.encode({"location" : "${position?.latitude}:${position?.longitude}"}),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 10));
       print(response.body.toString());
       if (response.statusCode == 200) {

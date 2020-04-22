@@ -11,7 +11,6 @@ import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
 import 'package:kaba_flutter/src/models/NotificationItem.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -22,9 +21,8 @@ import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
 
-import 'StateContainer.dart';
-import 'contracts/order_contract.dart';
-import 'locale/locale.dart';
+import 'src/StateContainer.dart';
+import 'src/locale/locale.dart';
 
 
 void main() => runApp(StateContainer(child: MyApp()));
@@ -95,6 +93,7 @@ class _MyAppState extends State<MyApp> {
     Image(image: AssetImage(ImageAssets.kaba_main));
 
     return MaterialApp(
+//            theme: theme,
       navigatorKey: navigatorKey,
       localizationsDelegates: [
         // ... app-specific localization delegate[s] here
@@ -111,7 +110,7 @@ class _MyAppState extends State<MyApp> {
       ],
       onGenerateTitle: (BuildContext context) =>
       "KABA",
-      theme: ThemeData(primarySwatch: KColors.colorCustom),
+            theme: ThemeData(primarySwatch: KColors.colorCustom),
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),

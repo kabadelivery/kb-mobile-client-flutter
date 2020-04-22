@@ -13,8 +13,8 @@ class HomeScreenBloc {
 
   fetchHomeScreenModel() async {
     try {
-      HomeScreenModel homeScreenModel = await _repository.fetchHomeScreenModel();
-      _homeScreenFetcher.sink.add(homeScreenModel);
+//      HomeScreenModel homeScreenModel = await _repository.fetchHomeScreenModel();
+//      _homeScreenFetcher.sink.add(homeScreenModel);
     } catch (_) {
       _homeScreenFetcher.sink.addError(_.message);
     }

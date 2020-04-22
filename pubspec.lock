@@ -187,7 +187,7 @@ packages:
       name: flutter_inner_drawer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4"
+    version: "0.5.5"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -272,7 +272,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   glob:
     dependency: transitive
     description:
@@ -286,7 +286,7 @@ packages:
       name: google_api_availability
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.4"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -635,6 +635,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
+  url_launcher:
+    dependency: "direct main"
+    description:
+      name: url_launcher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.4.5"
+  url_launcher_macos:
+    dependency: transitive
+    description:
+      name: url_launcher_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+5"
+  url_launcher_platform_interface:
+    dependency: transitive
+    description:
+      name: url_launcher_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
+  url_launcher_web:
+    dependency: transitive
+    description:
+      name: url_launcher_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+1"
   uuid:
     dependency: transitive
     description:
@@ -686,4 +714,4 @@ packages:
     version: "2.2.0"
 sdks:
   dart: ">=2.7.0-dev <3.0.0"
-  flutter: ">=1.12.13+hotfix.5 <2.0.0"
+  flutter: ">=1.12.13+hotfix.6 <2.0.0"

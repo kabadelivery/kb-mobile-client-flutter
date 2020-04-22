@@ -2,40 +2,18 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/*class KabaAppInheritedWidget extends InheritedWidget {
-
-  ValueHolder valueHolder = ValueHolder();
-
-  KabaAppInheritedWidget ({this.valueHolder, child}) : super(child :child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return oldWidget.toString() != valueHolder.toString();
-  }
-}
-
-
-class ValueHolder {
-
-  String title;
-  int balance;
-
-  ValueHolder ({this.title="", this.balance}): super();
-
-  @override
-  String toString() {
-    return json.encode({"title":title, "balance":balance}).toString();
-  }
-}*/
 
 class StateContainer extends StatefulWidget {
+
   final Widget child;
   int tabPosition;
   int balance;
+  Position position;
 
-  StateContainer({@required this.child, this.balance, this.tabPosition});
+  StateContainer({@required this.child, this.balance, this.tabPosition, this.position});
 
   static StateContainerState of(BuildContext context) {
 //    return (context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>()).data;
@@ -52,6 +30,7 @@ class StateContainerState extends State<StateContainer> {
 
   int tabPosition;
   int balance;
+  Position position;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
@@ -61,6 +40,17 @@ class StateContainerState extends State<StateContainer> {
       /* save it to shared preferences */
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setInt('balance', balance);
+    }
+  }
+
+  Future<void> updateLocation({position}) async {
+    if (position != null) {
+      setState(() {
+        this.position = position;
+      });
+      /* save it to shared preferences */
+//      SharedPreferences prefs = await SharedPreferences.getInstance();
+//      prefs.setInt('position', position);
     }
   }
 
@@ -81,6 +71,7 @@ class StateContainerState extends State<StateContainer> {
     this.balance = prefs.getInt('balance');
     this.tabPosition = 0;
   }
+
 
   @override
   Widget build(BuildContext context) {

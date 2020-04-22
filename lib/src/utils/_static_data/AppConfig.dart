@@ -7,5 +7,7 @@ class AppConfig {
   static final String CHANNEL_ID = "kaba-notification-channel-id";
   static final String CHANNEL_NAME = "Kaba channel.";
   static final String CHANNEL_DESCRIPTION = "Kaba client Application notification channel.";
+
+  static const String CUSTOMER_CARE_PHONE_NUMBER = "92109474";
 }
 

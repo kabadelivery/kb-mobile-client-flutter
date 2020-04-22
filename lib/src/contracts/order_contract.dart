@@ -24,7 +24,7 @@ class OrderConfirmationView {
   void systemError () {}
   void networkError () {}
   void logoutTimeOutSuccess() {}
-  void launchOrderSuccess(bool isSuccessful) {}
+  void launchOrderResponse(int errorCode) {}
   void systemOpeningStateError() {}
   void networkOpeningStateError() {}
   void isRestaurantOpenConfigLoading(bool isLoading) {}
@@ -82,8 +82,8 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       return;
     isWorking = true;
     try {
-      bool res = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos);
-      _orderConfirmationView.launchOrderSuccess(res);
+      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos);
+      _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
       print("error ${_}");
@@ -92,7 +92,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       } else {
         _orderConfirmationView.networkError();
       }
-      _orderConfirmationView.launchOrderSuccess(false);
+      _orderConfirmationView.launchOrderResponse(-1);
     }
     isWorking = false;
   }
@@ -104,8 +104,8 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = true;
     try {
       _orderConfirmationView.isPurchasing(true);
-      bool res = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos);
-      _orderConfirmationView.launchOrderSuccess(res);
+      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos);
+      _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
       print("error ${_}");
@@ -114,7 +114,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       } else {
         _orderConfirmationView.networkError();
       }
-      _orderConfirmationView.launchOrderSuccess(false);
+      _orderConfirmationView.launchOrderResponse(-1);
     }
     isWorking = false;
   }

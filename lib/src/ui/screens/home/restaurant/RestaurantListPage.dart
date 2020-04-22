@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
@@ -25,10 +26,21 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   @override
   void initState() {
     // TODO: implement initState
+/*
+//    DynamicTheme.of(context).setBrightness(Brightness.light);
+    if (StateContainer.of(context).position != null) {
+      restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).position);
+      super.initState();
+    } else {
+      restaurantBloc.fetchRestaurantList();
+      super.initState();
+      _getLastKnowLocation();
+    }
+    _filterEditController.addListener(_filterEditContent);
+*/
     restaurantBloc.fetchRestaurantList();
     super.initState();
     _getLastKnowLocation();
-
     _filterEditController.addListener(_filterEditContent);
   }
 
@@ -66,25 +78,25 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         leading: null,
         backgroundColor: Colors.grey.shade100,
         title: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
 //            border: new Border.all(color: Colors.white),
-            color: Colors.white
-        ),
-        padding: EdgeInsets.only(left:8, right: 8),
-        margin: EdgeInsets.only(top:8, bottom:8),
-        child:Row(
-          children: <Widget>[
-            Expanded(
-              child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
-                  decoration: InputDecoration.collapsed(hintText: "Which restaurant? Menu?", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
-            ),
-            IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
-              _filterEditController.clear();
+              color: Colors.white
+          ),
+          padding: EdgeInsets.only(left:8, right: 8),
+          margin: EdgeInsets.only(top:8, bottom:8),
+          child:Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
+                    decoration: InputDecoration.collapsed(hintText: "Which restaurant? Menu?", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
+              ),
+              IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
+                _filterEditController.clear();
 //            _filterEditController.
-            })
-          ],
+              })
+            ],
+          ),
         ),
-      ),
       ),
       body: Column(
         children: <Widget>[
@@ -108,11 +120,16 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   }
 
   Future _getLastKnowLocation() async {
+
+    // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
     /* now that we are good, we must launch again */
-    if (position != null) {
+//    if (position != null) {
+//      setState(() {
+//        StateContainer.of(context).updateLocation(position: position);
+//      });
       restaurantBloc.fetchRestaurantList(position: position);
-    }
+//    }
   }
 
   List<RestaurantModel> _filterEditContent() {
