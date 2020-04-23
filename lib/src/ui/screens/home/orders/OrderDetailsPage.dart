@@ -18,6 +18,7 @@ class OrderDetailsPage extends StatefulWidget {
 
   OrderDetailsPresenter presenter;
 
+
   OrderDetailsPage ({Key key, this.orderId, this.presenter}) : super(key: key);
 
   int orderId;
@@ -44,7 +45,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
-      if (widget.orderId != null && widget.orderId != 0) {
+      if (widget.orderId != null && widget.orderId != 0 && widget.command == null && widget.customer != null) {
         widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId);
       }
     });
@@ -54,18 +55,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   Widget build(BuildContext context) {
 
     final int args = ModalRoute.of(context).settings.arguments;
-    if (args != null && args != 0)
+    if (args != null && args != 0) {
       widget.orderId = args;
-
-    if (widget.customer != null) {
-      // there must be a food id.
-      widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId);
-    } else {
-      // postpone it to the next second by adding showing the loading button.
-      showLoading(true);
-      Future.delayed(Duration(seconds: 1)).then((onValue){
-        widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId);
-      });
+      if (widget.customer != null && widget.command == null) {
+        // there must be a food id.
+        widget.presenter.fetchOrderDetailsWithId(
+            widget.customer, widget.orderId);
+      } else {
+        // postpone it to the next second by adding showing the loading button.
+        showLoading(true);
+        Future.delayed(Duration(seconds: 1)).then((onValue) {
+          if (widget.customer != null && widget.command == null) {
+            widget.presenter.fetchOrderDetailsWithId(
+                widget.customer, widget.orderId);
+          }
+        });
+      }
     }
 
     return Scaffold(
@@ -459,7 +464,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               /* check if there is promotion on Livraison */
               Row(
                 children: <Widget>[
-                 widget.command.is_preorder == 1 || widget.command.is_promotion==1 ?
+                  widget.command.is_preorder == 1 || widget.command.is_promotion==1 ?
                   Row( // only show if there is pre-order or promotion on the fees of delivery
                     children: <Widget>[
                       Text("($priceNormalDelivery)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),

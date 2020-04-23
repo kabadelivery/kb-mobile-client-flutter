@@ -64,7 +64,7 @@ class RestaurantListWidget extends StatelessWidget {
                     )
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 15, right:15),
+                    margin: EdgeInsets.only(left: 15, right:15),
                     color: Colors.grey.withAlpha(120),
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width,
@@ -78,7 +78,7 @@ class RestaurantListWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(children:[
-                        _getRestaurantStateTag(restaurantModel),
+                          _getRestaurantStateTag(restaurantModel),
                           SizedBox(width: 5),
                           restaurantModel.coming_soon == 1 ?
                           Container(
@@ -87,9 +87,20 @@ class RestaurantListWidget extends StatelessWidget {
                               child:Text(
                                   "Coming Soon",
                                   style: TextStyle(color: Colors.white, fontSize: 12)
-                              )) : SizedBox(width: 0),
+                              )) : Container(),
                         ]),
-                        restaurantModel?.distance == null ? Container() : Text("${restaurantModel?.distance}km", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
+
+                        Row(children: <Widget>[
+                          restaurantModel?.distance == null ? Container() : Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryYellowColor),
+                              child:Text(
+                                  "${restaurantModel?.delivery_pricing=="0" ? "Out of range" : restaurantModel?.delivery_pricing+" F"}",
+                                  style: TextStyle(color: Colors.black, fontSize: 12)
+                              )),
+                          SizedBox(width: 10),
+                          restaurantModel?.distance == null ? Container() : Text("${restaurantModel?.distance}km", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
+                        ])
                       ],
                     ))
               ])

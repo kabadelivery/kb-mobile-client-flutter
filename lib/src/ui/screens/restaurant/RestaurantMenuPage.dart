@@ -166,7 +166,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     return Scaffold(
       appBar: appBar,
       body: isLoading ? Center(child: CircularProgressIndicator()) : Row(children: <Widget>[
-      Expanded(flex:4,
+        Expanded(flex:4,
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -395,7 +395,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           child: InkWell(onTap: () => _addFoodToChart(food, foodIndex, menuIndex),
                             child: Container(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
                                 child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                              Text("ADD TO BASKET", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
+                              Text("AJOUTER AU PANIER", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
                               color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
                             ),
                           ),
@@ -414,7 +414,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   Widget _buildFoodListWidget2({RestaurantFoodModel food, int foodIndex, int menuIndex}) {
 
-  /*return Expanded(
+    /*return Expanded(
     child: InkWell(
           onTap: ()=> _jumpToFoodDetails(context, food),
           child: Container(height: 100, color: Colors.yellow, padding: EdgeInsets.all(10),child: Text("You will go ${foodIndex} - $menuIndex", style: TextStyle(color: Colors.red, fontSize: 20),))),
@@ -424,104 +424,116 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       child: Card(
 //          margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
           child: Container(width: 7*MediaQuery.of(context).size.width/11,
-            child: Row(mainAxisSize: MainAxisSize.max,
+            padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+            child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        // picture first
-                        Stack(
+                Row(children: <Widget>[
+                  // picture first
+                  Stack(
 //                        overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
 //                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
-                          key: _keyBox["${menuIndex}-${foodIndex}"],
-                          /* according to the position of the view, menu - food, we have a key that we store. */
-                          children: <Widget>[
-                            Container(
-                              height: 50, width: 50,
-                              decoration: BoxDecoration(
-                                  border: new Border.all(
-                                      color: KColors.primaryYellowColor,
-                                      width: 2),
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: CachedNetworkImageProvider(Utils
-                                          .inflateLink(food.pic))
-                                  )
-                              ),
-                            ),
-                          ],
+                    key: _keyBox["${menuIndex}-${foodIndex}"],
+                    /* according to the position of the view, menu - food, we have a key that we store. */
+                    children: <Widget>[
+                      Container(
+                        height: 50, width: 50,
+                        decoration: BoxDecoration(
+                            border: new Border.all(
+                                color: KColors.primaryYellowColor,
+                                width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(Utils
+                                    .inflateLink(food.pic))
+                            )
                         ),
-                        SizedBox(width: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(height: 30,
-//                            color: Colors.blue,
-                              child: Row(
-                                children: <Widget>[
-                                  Text("${food?.name?.toUpperCase()}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 3,
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Row(
-                              children: <Widget>[
-                                Row(children: <Widget>[
-                                  Text("${food?.price}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          decoration: food.promotion != 0
-                                              ? TextDecoration.lineThrough
-                                              : TextDecoration.none,
-                                          color: KColors.primaryYellowColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.normal)),
-                                  SizedBox(width: 5),
-                                  (food.promotion != 0 ? Text(
-                                      "${food?.promotion_price}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.normal))
-                                      : Container()),
-                                  SizedBox(width: 5),
-                                  Text("FCFA", overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: KColors.primaryYellowColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.normal)),
-                                ]),
-                              ],
-                            ),
-                            RaisedButton(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
-                                child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                              Text("ADD TO BASKET", style: TextStyle(fontSize: 12, color: KColors.primaryColor))]),
-                              onPressed:  () => _addFoodToChart(food, foodIndex, menuIndex),
-                              color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
-                            ),
-                          ],
-                        ),
-                      ]),
-                      // add-up the buttons at the right side of it
+                      ),
                     ],
                   ),
-                ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(padding: EdgeInsets.all(5),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Text("${food?.name?.toUpperCase()}",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w500)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              Text("${food?.price}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      decoration: food.promotion != 0
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal)),
+                              SizedBox(width: 5),
+                              (food.promotion != 0 ? Text(
+                                  "${food?.promotion_price}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: KColors.primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal))
+                                  : Container()),
+                              SizedBox(width: 5),
+                              Text("FCFA", overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.normal)),
+                            ]),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Row(mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                InkWell(onTap:  () => _addFoodToChart(food, foodIndex, menuIndex),
+                                  child: Card(color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
+                                      child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.only(left: 10, right: 10),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Icon(Icons.add_shopping_cart, color: KColors.primaryColor),
+                                              Text("PANIER", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
+                                            ],
+                                          )),
+                                      ])
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+                // add-up the buttons at the right side of it
               ],
             ),
           )

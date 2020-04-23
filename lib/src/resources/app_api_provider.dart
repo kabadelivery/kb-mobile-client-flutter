@@ -46,7 +46,7 @@ class AppApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_RESTO_LIST_V2,
           body: position == null ? "" : json.encode({"location" : "${position?.latitude}:${position?.longitude}"}),
-          headers: Utils.getHeaders()).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

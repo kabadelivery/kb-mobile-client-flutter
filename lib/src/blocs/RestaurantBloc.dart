@@ -38,8 +38,7 @@ class RestaurantBloc {
       List<RestaurantModel> restaurantList = await _repository.fetchRestaurantList(position);
       _restaurantListFetcher.sink.add(restaurantList);
 //      _isDisposedForRestaurantList = true;
-    } catch (_) {
-      _restaurantListFetcher.sink.addError(_.message);
+    } catch (_) {_restaurantListFetcher.sink.addError(_.message);
     }
   }
 

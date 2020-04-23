@@ -131,11 +131,11 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int value) {
     /* zwitch */
     setState(() {
-    StateContainer.of(context).updateTabPosition(tabPosition: value);
+      StateContainer.of(context).updateTabPosition(tabPosition: value);
     });
     if (value == 1){
       // ask for permission gps
-//     restaurantListPage. _getLastKnowLocation();
+//     restaurantListPage._getLastKnowLocation();
     }
   }
 }

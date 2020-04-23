@@ -38,10 +38,18 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     }
     _filterEditController.addListener(_filterEditContent);
 */
-    restaurantBloc.fetchRestaurantList();
     super.initState();
-    _getLastKnowLocation();
+
+    restaurantBloc.fetchRestaurantList();
     _filterEditController.addListener(_filterEditContent);
+
+    Future.delayed(Duration(seconds: 1),(){
+
+//      Position loc = StateContainer.of(context).location;
+//      if (loc == null) {
+      _getLastKnowLocation();
+//      }
+    } );
   }
 
   @override
@@ -62,7 +70,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
               if (snapshot.hasData) {
                 return _buildRestaurantList(snapshot.data);
               } else if (snapshot.hasError) {
-                return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList();});
+                return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
               }
               return Center(child: CircularProgressIndicator());
             }));
@@ -123,13 +131,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
-    /* now that we are good, we must launch again */
-//    if (position != null) {
-//      setState(() {
-//        StateContainer.of(context).updateLocation(position: position);
-//      });
-      restaurantBloc.fetchRestaurantList(position: position);
-//    }
+
+    if (position != null)
+      StateContainer.of(context).updateLocation(location: position);
+    if (StateContainer.of(context).location != null) {
+      restaurantBloc.fetchRestaurantList(position: StateContainer
+          .of(context)
+          .location);
+    }
   }
 
   List<RestaurantModel> _filterEditContent() {

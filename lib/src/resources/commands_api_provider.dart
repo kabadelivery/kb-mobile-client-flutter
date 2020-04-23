@@ -79,7 +79,7 @@ class CommandsApiProvider {
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

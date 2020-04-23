@@ -30,7 +30,7 @@ class StateContainerState extends State<StateContainer> {
 
   int tabPosition;
   int balance;
-  Position position;
+  Position location;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
@@ -43,10 +43,10 @@ class StateContainerState extends State<StateContainer> {
     }
   }
 
-  Future<void> updateLocation({position}) async {
-    if (position != null) {
+  Future<void> updateLocation({location}) async {
+    if (location != null) {
       setState(() {
-        this.position = position;
+        this.location = location;
       });
       /* save it to shared preferences */
 //      SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -69,7 +69,8 @@ class StateContainerState extends State<StateContainer> {
   Future<void> retrieveBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     this.balance = prefs.getInt('balance');
-    this.tabPosition = 0;
+    if (this.tabPosition == null)
+      this.tabPosition = 0;
   }
 
 

@@ -56,7 +56,7 @@ class RestaurantModel {
     is_new = json['is_new'];
     discount = json['discount'];
     open_type = json['open_type'];
-    delivery_pricing = json['delivery_pricing'];
+    delivery_pricing = "${json['delivery_pricing']}";
     max_food = json['max_food'];
   }
 

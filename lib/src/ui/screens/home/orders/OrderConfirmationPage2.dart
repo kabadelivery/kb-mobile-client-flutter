@@ -1290,6 +1290,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                         color: KColors.primaryYellowColor,
                                         fontSize: 10,
                                         fontWeight: FontWeight.normal)),
+                                SizedBox(width: 10,),
+                                Text(" X ${quantity}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))
                               ]),
                             ],
                           ),
