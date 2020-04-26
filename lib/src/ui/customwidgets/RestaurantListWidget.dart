@@ -151,7 +151,7 @@ class RestaurantListWidget extends StatelessWidget {
 
     switch(restaurantModel.open_type){
       case 0: // closed
-        tagText = "Closed";
+        tagText = "Closed => Preorder";
         tagColor = KColors.mBlue;
         break;
       case 1: // open
@@ -159,11 +159,11 @@ class RestaurantListWidget extends StatelessWidget {
         tagColor = KColors.mGreen;
         break;
       case 2: // paused
-        tagText = "Breaktime";
+        tagText = "Breaktime => Preorder";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "Shortly blocked";
+        tagText = "Preorder only";
         tagColor = KColors.primaryColor;
         break;
     }

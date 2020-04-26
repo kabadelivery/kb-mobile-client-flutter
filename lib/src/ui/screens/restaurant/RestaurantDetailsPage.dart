@@ -72,7 +72,6 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         // fetch comments
         widget.presenter.fetchCommentList(widget.customer, widget.restaurantId);
         // fetch if the restaurant is open
-
       }
     });
   }
@@ -339,9 +338,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 
   @override
   void inflateComments(List<CommentModel> comments) {
-  setState(() {
-    widget.commentList = comments;
-  });
+    setState(() {
+      widget.commentList = comments;
+    });
   }
 
   @override
@@ -391,19 +390,18 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 
     switch(restaurantModel.open_type){
       case 0: // closed
-        tagText = "Closed";
-        tagColor = KColors.mBlue;
+        tagText = "Closed => Preorder";
         break;
       case 1: // open
         tagText = "Opened";
         tagColor = KColors.mGreen;
         break;
       case 2: // paused
-        tagText = "Breaktime";
+        tagText = "Breaktime => Preorder";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "Shortly blocked";
+        tagText = "Preorder only";
         tagColor = KColors.primaryColor;
         break;
     }

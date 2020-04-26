@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kaba_flutter/src/contracts/order_feedback_contract.dart';
 import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
 import 'package:kaba_flutter/src/models/NotificationItem.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -119,7 +121,8 @@ class _MyAppState extends State<MyApp> {
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-      home: SplashPage(),
+//      home: SplashPage(),
+    home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //      home: TransactionHistoryPage(presenter: TransactionPresenter()),
 //      home: TopUpPage(presenter: TopUpPresenter()),

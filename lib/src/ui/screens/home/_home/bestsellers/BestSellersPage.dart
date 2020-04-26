@@ -205,7 +205,6 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                             ],
                           ),
                         ])),
-
                     Row(
                         mainAxisAlignment: MainAxisAlignment
                             .center,

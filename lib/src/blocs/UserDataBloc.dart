@@ -13,23 +13,23 @@ class UserDataBloc {
 
   /* register - send code */
   final _sendRegisterCodeAction = PublishSubject<int>();
-  Observable<int> get sendRegisterCodeGetter => _sendRegisterCodeAction.stream;
+  Stream<int> get sendRegisterCodeGetter => _sendRegisterCodeAction.stream;
 
   /* dailyOrder */
   final _myDailyOrderFetcher = PublishSubject<List<CommandModel>>();
-  Observable<List<CommandModel>> get mDailyOrders => _myDailyOrderFetcher.stream;
+  Stream<List<CommandModel>> get mDailyOrders => _myDailyOrderFetcher.stream;
 
   /* last all Order */
   final _myLastOrderFetcher = PublishSubject<List<CommandModel>>();
-  Observable<List<CommandModel>> get mLastOrders => _myLastOrderFetcher.stream;
+  Stream<List<CommandModel>> get mLastOrders => _myLastOrderFetcher.stream;
 
 /* order details */
   final _orderDetailsFetcher = PublishSubject<CommandModel>();
-  Observable<CommandModel> get orderDetails => _orderDetailsFetcher.stream;
+  Stream<CommandModel> get orderDetails => _orderDetailsFetcher.stream;
 
   /* my addresses */
   final _deliveryAddressFetcher = PublishSubject<List<DeliveryAddressModel>>();
-  Observable<List<DeliveryAddressModel>> get deliveryAddress => _deliveryAddressFetcher.stream;
+  Stream<List<DeliveryAddressModel>> get deliveryAddress => _deliveryAddressFetcher.stream;
 
   /* vouchers subscriptions */
   final _subcribedVouchersFetcher = PublishSubject<List<MyVoucherListWidget>>();
@@ -37,7 +37,7 @@ class UserDataBloc {
 
   /* check location details */
   final _locationDetailsChecker = PublishSubject<DeliveryAddressModel>();
-  Observable<DeliveryAddressModel> get locationDetails => _locationDetailsChecker.stream;
+  Stream<DeliveryAddressModel> get locationDetails => _locationDetailsChecker.stream;
 
   fetchDailyOrders(CustomerModel customer) async {
     try {

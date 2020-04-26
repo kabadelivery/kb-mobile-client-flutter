@@ -144,12 +144,16 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       can_preorder = json.decode(response)["data"]["preorder"]["can_preorder"];
       discount = json.decode(response)["data"]["preorder"]["discount"];
 
+open_type = 0;
+can_preorder = 0;
 
       Iterable lo = json.decode(response)["data"]["preorder"]["hours"];
       List<DeliveryTimeFrameModel> deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
 
-      configuration = OrderBillConfiguration(open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames, isBillBuilt: false);
+      open_type = 0;
+      can_preorder = 0;
 
+      configuration = OrderBillConfiguration(open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames, isBillBuilt: false);
       _orderConfirmationView.isRestaurantOpenConfigLoading(false);
       _orderConfirmationView.inflateBillingConfiguration1(configuration);
     } catch (_) {

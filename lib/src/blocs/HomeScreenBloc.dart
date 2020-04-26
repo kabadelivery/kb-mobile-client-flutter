@@ -8,7 +8,7 @@ class HomeScreenBloc {
   final _homeScreenFetcher = PublishSubject<HomeScreenModel>();
 
 
-  Observable<HomeScreenModel> get homeScreenModel => _homeScreenFetcher.stream;
+  Stream<HomeScreenModel> get homeScreenModel => _homeScreenFetcher.stream;
 
 
   fetchHomeScreenModel() async {

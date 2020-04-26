@@ -19,15 +19,15 @@ class RestaurantBloc {
   bool _isDisposedForComments = false;
 
 
-  Observable<List<RestaurantModel>> get restaurantList => _restaurantListFetcher.stream;
+  Stream<List<RestaurantModel>> get restaurantList => _restaurantListFetcher.stream;
 
   /* restaurant menu fetcher */
   final _restaurantMenuFetcher = PublishSubject<List<RestaurantSubMenuModel>>();
-  Observable<List<RestaurantSubMenuModel>> get restaurantMenu => _restaurantMenuFetcher.stream;
+  Stream<List<RestaurantSubMenuModel>> get restaurantMenu => _restaurantMenuFetcher.stream;
 
   /* comment list fetcher */
   final _commentListFetcher = PublishSubject<List<CommentModel>>();
-  Observable<List<CommentModel>> get commentList => _commentListFetcher.stream;
+  Stream<List<CommentModel>> get commentList => _commentListFetcher.stream;
 
 
 

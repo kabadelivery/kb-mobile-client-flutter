@@ -46,6 +46,7 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
   int orderTimeRangeSelected = 0;
 
+
   OrderConfirmationPage2({Key key, this.presenter, this.foods, this.addons, this.restaurant}) : super(key: key);
 
   @override
@@ -57,7 +58,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   DeliveryAddressModel _selectedAddress;
 
   /* pricing configuration */
-  OrderBillConfiguration _orderBillConfiguration;
+  OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration();
 
   bool isConnecting = false;
   bool isPayAtDeliveryLoading = false;
@@ -103,14 +104,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         // check if the restaurant is open before showing anything.
         body:
         (isPayAtDeliveryLoading == true || isPayNowLoading == true || isPreorderLoading == true) ?
-        Center(child:Column(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+        Container(height: MediaQuery.of(context).size.height,
+          child: Center(child:Container(padding: EdgeInsets.all(20),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: <Widget>[
+              // loading page.
+              SizedBox(child: CircularProgressIndicator(), height: 80, width: 80),
+              SizedBox(height: 30),
+              Text("Hello, we are processing your payment. Please wait V(^_^)V", textAlign: TextAlign.center,)
 
-          // loading page.
-          SizedBox(child: CircularProgressIndicator(), height: 100, width: 100),
-          Container(height:10),
-          Text("Hello, we are processing your payment. Please wait V(^_^)V")
-
-        ])):
+            ]),
+          )),
+        ):
         (checkIsRestaurantOpenConfigIsLoading ? Center(child: CircularProgressIndicator())
             :  (_checkOpenStateError || (_orderBillConfiguration!= null && _orderBillConfiguration.open_type>= 0 && _orderBillConfiguration.open_type <=3)  ? _buildOrderConfirmationPage2()
             : ErrorPage(onClickAction: ()=>  widget.presenter.checkOpeningStateOf(widget.customer, widget.restaurant))))
@@ -139,6 +143,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       // launch request for retrieving the delivery prices and so on.
       widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
       showLoading(true);
+      Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     }
   }
 
@@ -351,7 +356,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             )
           // restaurant is closed and we can't do nothing
             ..addAll( (_orderBillConfiguration.hasCheckedOpen == true && _orderBillConfiguration.can_preorder == 0 && _orderBillConfiguration.open_type != 1) ? <Widget>[
-              Container(decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)))
+              Column(mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(margin: EdgeInsets.only(top:40, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+                  SizedBox(height:10),
+                  SizedBox(
+                      height: 120,
+                      child:SvgPicture.asset(
+                        VectorsData.closed_shop_svg,
+                      ))
+                ],
+              )
             ] :
             <Widget>[
               SizedBox(height: 10),
@@ -394,11 +409,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               ),
               SizedBox(height: 10),
               _buildAddress(_selectedAddress),
-              SizedBox(height: 15),
+              SizedBox(height: 25),
               isConnecting
                   ? Center(child: CircularProgressIndicator())
                   : Container(),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               _orderBillConfiguration != null && _orderBillConfiguration.isBillBuilt ?
               Column(children: <Widget>[
                 _buildBill(),
@@ -999,10 +1014,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       color: Colors.white,
       child: Column(
         children: <Widget>[
-
           _orderBillConfiguration.open_type == 0 ? Container(decoration: BoxDecoration(color: KColors.mBlue, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now.\nPlease try Pre-Ordering.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))) : Container(),
-
-
           _orderBillConfiguration.open_type == 1 ?  Row(children: <Widget>[
             Radio(value: 0,
                 groupValue: widget.orderOrPreorderChoice,
@@ -1394,7 +1406,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   _isPreorderSelected() {
     if ((_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type == 1) && widget.orderOrPreorderChoice == 1)
       return true;
-    if ((_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type == 0) && widget.orderOrPreorderChoice == 0)
+    if ((_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1) && widget.orderOrPreorderChoice == 0)
       return true;
     return false;
   }
