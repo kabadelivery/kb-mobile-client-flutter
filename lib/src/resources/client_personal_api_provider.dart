@@ -29,7 +29,7 @@ class ClientPersonalApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS,
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
-          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -55,7 +55,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_ADRESSES,
-          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -84,7 +84,7 @@ class ClientPersonalApiProvider {
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
@@ -126,7 +126,7 @@ class ClientPersonalApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_USER_REGISTER,
           body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
@@ -175,7 +175,7 @@ class ClientPersonalApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS,
           body: _data,
-          headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -207,7 +207,7 @@ class ClientPersonalApiProvider {
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -236,7 +236,7 @@ class ClientPersonalApiProvider {
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -262,7 +262,7 @@ class ClientPersonalApiProvider {
           body: json.encode({"phone_number": phoneNumber, "amount": balance}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -288,7 +288,7 @@ class ClientPersonalApiProvider {
           body: json.encode({"phone_number": phoneNumber}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -320,7 +320,7 @@ class ClientPersonalApiProvider {
           body: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         Map res = Map();

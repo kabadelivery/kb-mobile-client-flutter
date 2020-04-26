@@ -64,9 +64,9 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       /* login failure */
       print("error ${_}");
       if (_ == -2) {
-        _orderConfirmationView.systemError();
+        _orderConfirmationView.systemOpeningStateError();
       } else {
-        _orderConfirmationView.networkError();
+        _orderConfirmationView.networkOpeningStateError();
       }
       isWorking = false;
     }

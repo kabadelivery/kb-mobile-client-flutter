@@ -112,10 +112,11 @@ class CommandModel {
     // differents cases
     is_preorder = json["is_preorder"];
     is_promotion = json["is_promotion"];
-    preorder_discount = json["preorder_discount"];
+    preorder_discount = "${json["preorder_discount"]}";;
     preorder = json["preorder"];
 
-    preorder_hour = DeliveryTimeFrameModel.fromJson(json['shipping_address']);
+    if (json["preorder_hour"] != null )
+      preorder_hour = DeliveryTimeFrameModel.fromJson(json['preorder_hour']);
 
   }
 

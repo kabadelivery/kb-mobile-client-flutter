@@ -18,7 +18,6 @@ class MyOrderWidget extends StatefulWidget {
 
   @override
   _MyOrderWidgetState createState() {
-    // TODO: implement createState
     return _MyOrderWidgetState(command);
   }
 }
@@ -31,77 +30,83 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return
       InkWell(
         onTap: ()=> _jumpToCommandDetails(command),
         child: Container(
           padding: EdgeInsets.only(bottom:10),
           child: Center(
-            child: (Card(
-                elevation: 8.0,
-                margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                child: Container(
-                    child:
-                    Column(children: <Widget>[
-                      Container(padding: EdgeInsets.all(5), color: _getStateColor(command.state), child:
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                        Row(children: <Widget>[
-                          Container(
-                              height: 45, width: 45,
-                              decoration: BoxDecoration(
-                                  border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: CachedNetworkImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
-                                  )
-                              )
-                          ),
-                          SizedBox(width: 10),
-                          Text("${command.restaurant_entity.name}", style: TextStyle(color: Colors.white, fontSize: 14))
-                        ]),
-                        Container(padding: EdgeInsets.all(7), decoration: BoxDecoration(color: Colors.white.withAlpha(100),
-//                            border: new Border.all(color: Colors.white.withAlpha(100)),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                        ),
-                            child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)))
-                      ]))
-                    ]..addAll(_orderFoodList(command?.food_list))
-                      ..addAll(<Widget>[
-                        /* shipping part */
-                        Row(   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            IconButton(icon: Icon(Icons.local_shipping, size: 40,)),
-                            Text("SHIPPING PRICE", style: TextStyle(fontSize: 18, color: Colors.grey),),
-                            Container(color: Colors.grey,padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.is_preorder == 1 ? command.preorder_shipping_pricing :(command.is_promotion == 1 ? command.promotion_shipping_pricing : command.shipping_pricing)} F", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))
-                          ],
-                        ),
-                        /* quartier */
-                        Center(child: Container(decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            color: Colors.grey
-                        ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.quartier}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
-                        Container(padding: EdgeInsets.only(top:10),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                            Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
+            child: Column(
+              children: <Widget>[
+                // just in case this is a preorder
+                SizedBox(height: 10),
+                widget.command.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("Jour de livraison", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                widget.command.is_preorder == 1 ? Container(color: Colors.black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("Période de livraison", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                (Card(
+                    elevation: 8.0,
+                    margin: new EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Container(
+                        child:
+                        Column(children: <Widget>[
+                          Container(padding: EdgeInsets.all(5), color: _getStateColor(command.state), child:
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                             Row(children: <Widget>[
-                              Text('TOTAL: ',style: new TextStyle(color: Colors.black, fontSize: 18)),
-                              Container(child: Text("${command.is_preorder == 1 ? command.preorder_total_pricing :(command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
-                            ])
-                          ]),
-                        ),
-                        /* pay at arrival condition? */
-                        command.is_payed_at_arrival ? Container(padding: EdgeInsets.only(top:8, bottom:8), color: KColors.mBlue,child: Center(child: Text("PAY AT ARRIVAL", style: TextStyle(color: Colors.white,fontSize: 20),))) : Container(),
-                      ])
-                    )
-                ))
+                              Container(
+                                  height: 45, width: 45,
+                                  decoration: BoxDecoration(
+                                      border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                                      shape: BoxShape.circle,
+                                      image: new DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
+                                      )
+                                  )
+                              ),
+                              SizedBox(width: 10),
+                              Text("${command.restaurant_entity.name}", style: TextStyle(color: Colors.white, fontSize: 14))
+                            ]),
+                            Container(padding: EdgeInsets.all(7), decoration: BoxDecoration(color: Colors.white.withAlpha(100),
+//                            border: new Border.all(color: Colors.white.withAlpha(100)),
+                                borderRadius: BorderRadius.all(Radius.circular(5))
+                            ),
+                                child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)))
+                          ]))
+                        ]..addAll(_orderFoodList(command?.food_list))
+                          ..addAll(<Widget>[
+                            /* shipping part */
+                            Row(   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                IconButton(icon: Icon(Icons.local_shipping, size: 40,)),
+                                Text("SHIPPING PRICE", style: TextStyle(fontSize: 18, color: Colors.grey),),
+                                Container(color: Colors.grey,padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.is_preorder == 1 ? command.preorder_shipping_pricing :(command.is_promotion == 1 ? command.promotion_shipping_pricing : command.shipping_pricing)} F", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))
+                              ],
+                            ),
+                            /* quartier */
+                            Center(child: Container(decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey
+                            ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.quartier}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
+                            Container(padding: EdgeInsets.only(top:10),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
+                                Row(children: <Widget>[
+                                  Text('TOTAL: ',style: new TextStyle(color: Colors.black, fontSize: 18)),
+                                  Container(child: Text("${command.is_preorder == 1 ? command.preorder_total_pricing :(command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
+                                ])
+                              ]),
+                            ),
+                            /* pay at arrival condition? */
+                            command.is_payed_at_arrival ? Container(padding: EdgeInsets.only(top:8, bottom:8), color: KColors.mBlue,child: Center(child: Text("PAY AT ARRIVAL", style: TextStyle(color: Colors.white,fontSize: 20),))) : Container(),
+                          ])
+                        )
+                    ))
+                ),
+              ],
             ),
           ),
         ),
@@ -172,14 +177,12 @@ class SingleOrderFoodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(padding: EdgeInsets.only(top:10,bottom:10,left:5, right:5), width: MediaQuery.of(context).size.width,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             /* name and picture */
             Flexible(flex: 7,
               child: Row(children: <Widget>[
-
                 /* PICTURE */
                Container(
                       height: 65, width: 65,

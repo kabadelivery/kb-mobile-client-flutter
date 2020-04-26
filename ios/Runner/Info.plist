@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIUserInterfaceStyle</key>
-	<string>Dark</string>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -28,16 +24,21 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is needed for the user to shoot his profile picture if needed.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need Current Location Access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Need Current Location Access in Usage</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Need Current Location Access</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Get current location for more accurate delivery</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone permission is need so that the user could shoot a video right in case.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo library permission is need so that the user could pick his profile picture from the gallery.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -57,6 +58,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
 </dict>

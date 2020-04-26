@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
@@ -40,11 +42,11 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 */
     super.initState();
 
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     restaurantBloc.fetchRestaurantList();
     _filterEditController.addListener(_filterEditContent);
 
     Future.delayed(Duration(seconds: 1),(){
-
 //      Position loc = StateContainer.of(context).location;
 //      if (loc == null) {
       _getLastKnowLocation();
@@ -62,18 +64,25 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+//    final page = ModalRoute.of(context);
+//    page.didPush().then((x) {
+//      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+//    });
+
+    return CupertinoPageScaffold(
         backgroundColor: Colors.white,
-        body:  StreamBuilder(
-            stream: restaurantBloc.restaurantList,
-            builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
-              if (snapshot.hasData) {
-                return _buildRestaurantList(snapshot.data);
-              } else if (snapshot.hasError) {
-                return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
-              }
-              return Center(child: CircularProgressIndicator());
-            }));
+        child:  AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child:  StreamBuilder(
+              stream: restaurantBloc.restaurantList,
+              builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
+                if (snapshot.hasData) {
+                  return _buildRestaurantList(snapshot.data);
+                } else if (snapshot.hasError) {
+                  return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
+                }
+                return Center(child: CircularProgressIndicator());
+              })));
     /*  */
   }
 
@@ -99,8 +108,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                     decoration: InputDecoration.collapsed(hintText: "Which restaurant? Menu?", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
               ),
               IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
-                _filterEditController.clear();
-//            _filterEditController.
+                _clearFocus();
               })
             ],
           ),
@@ -149,11 +157,15 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     String content = _filterEditController.text;
     List<RestaurantModel> d = List();
     for (var restaurant in data) {
-      if (restaurant.menu_foods.contains(content.trim())) {
+      if ("${restaurant.menu_foods}${restaurant.name}".toLowerCase().contains(content.trim().toLowerCase())) {
         d.add(restaurant);
       }
     }
     return d;
+  }
+
+  void _clearFocus() {
+    _filterEditController.clear();
   }
 }
 

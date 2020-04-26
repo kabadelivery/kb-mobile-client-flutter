@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
@@ -46,6 +47,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
 
+
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     _firebaseMessaging = FirebaseMessaging();
 
@@ -53,6 +55,9 @@ class _MyAppState extends State<MyApp> {
     var initializationSettingsAndroid = new AndroidInitializationSettings('kaba_icon');
 
     var initializationSettingsIOS = IOSInitializationSettings(
+      requestBadgePermission: true,
+        requestAlertPermission: true,
+        requestSoundPermission: true,
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
     var initializationSettings = InitializationSettings(

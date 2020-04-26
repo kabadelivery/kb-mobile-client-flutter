@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 
 
 class RecoverPasswordPage extends StatefulWidget {
 
   static var routeName = "/RecoverPasswordPage";
+
+  CustomerModel customer;
 
   RecoverPasswordPage({Key key, this.title}) : super(key: key);
 
@@ -17,6 +21,14 @@ class RecoverPasswordPage extends StatefulWidget {
 
 class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CustomerUtils.getCustomer().then((customer){
+      widget.customer = customer;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

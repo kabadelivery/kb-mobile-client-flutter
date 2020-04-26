@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/contracts/transfer_money_amount_confirmation_contract.dart';
 import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -231,17 +232,11 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   }
 
   @override
-  void transactionSuccessful(CustomerModel moneyReceiver, String amount) {
+  void transactionSuccessful(CustomerModel moneyReceiver, String amount, String balance) {
 
     // jump to success page
-
-/*    _showDialog(
-        message:"TRANSACTION SUCCESS",
-        icon: Icon(FontAwesomeIcons.subscript, color: Colors.green),
-        isSuccess : true
-    );*/
-
-// give money
+    StateContainer.of(context).updateBalance(balance: int.parse(balance));
+    // give money
     Navigator.pop(context);
     Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {

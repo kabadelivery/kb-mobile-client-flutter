@@ -42,6 +42,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     // TODO: implement initState
     super.initState();
     widget.presenter.orderDetailsView = this;
+    showLoading(true);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
@@ -104,7 +105,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(top:15, bottom:15, right:10, left:10),
-                  color: Utils.getStateColor(widget.command.state),child: Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white))),
+                  color: Utils.getStateColor(widget.command.state),child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                   widget.command.is_preorder == 0 ? Container() :  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: Colors.white.withAlpha(100)),child: Text("Pre", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(8)),
+                      SizedBox(width: 5),
+                      Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white)),
+                    ],
+                  )),
               /* Progress line */
               Container(child: _getProgressTimeLine(widget.command), margin: EdgeInsets.only(top:10, bottom:10),),
               Align(
@@ -206,7 +213,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 ),
               ),
               SizedBox(height: 10),
-              widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Center(child: Text("Infos: ${widget.command.infos}", style: TextStyle(fontWeight: FontWeight.bold,color: CommandStateColor.delivered))),
+              widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Container(margin: EdgeInsets.only(top:10, bottom:10),color: CommandStateColor.delivered, padding: EdgeInsets.all(10), child: Row(
+               mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text("Infos:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
+                  SizedBox(width: 10),
+                  Text("${widget.command.infos}", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white)),
+                ],
+              )),
               SizedBox(height: 10),
               /* food list*/
               Card(
@@ -488,7 +502,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
               Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              Text("${priceTotalToPay}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+              Text("${widget.command.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
             ]),
             SizedBox(height: 10),
             (int.parse(widget.command?.remise) > 0 ? Container (

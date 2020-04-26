@@ -22,7 +22,7 @@ class RestaurantApiProvider {
         body: json.encode({'id': restaurantModel.id.toString()}),
 //          headers: Utils.getHeadersWithToken()
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -52,7 +52,7 @@ class RestaurantApiProvider {
           ServerRoutes.LINK_GET_RESTAURANT_DETAILS/* : ServerRoutes.LINK_MENU_BY_ID*/,
           body: /*DESTINATION == 1 ? */json.encode({'id': restaurantIdOrMenuId}) /*: json.encode({'menu_id': restaurantIdOrMenuId}),*/
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print("001_ "+response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -82,7 +82,7 @@ class RestaurantApiProvider {
         body: json.encode({'food_id': foodId}),
 //          headers: Utils.getHeadersWithToken()
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

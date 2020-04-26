@@ -24,7 +24,7 @@ class MenuApiProvider {
         body: json.encode({'id': restaurantId}),
 //          headers: Utils.getHeadersWithToken()
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -57,7 +57,7 @@ class MenuApiProvider {
         body: json.encode({'menu_id': menuId}),
 //          headers: Utils.getHeadersWithToken()
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -91,7 +91,7 @@ class MenuApiProvider {
           .post(ServerRoutes.LINK_GET_BESTSELLERS_LIST,
         body: json.encode([]),
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -117,7 +117,7 @@ class MenuApiProvider {
           .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
         body: json.encode({"food_id": foodId}),
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print("fetchFoodDetailsWithId ${foodId}");
       print(response.body.toString());
       if (response.statusCode == 200) {
@@ -144,7 +144,7 @@ class MenuApiProvider {
         body: json.encode({"id": restaurantDetailsId}),
         headers: Utils.getHeadersWithToken(customer.token),
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

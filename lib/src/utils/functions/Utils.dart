@@ -223,7 +223,7 @@ class Utils {
       int day = date.day;
       int month = date.month;
 
-      String daY = dayz[day_of_week+1];
+      String daY = dayz[day_of_week-1];
       daY += ("("+(day>0 && day <=9 ? "0":"")+"${day}/"+(month>0 && month<=9? "0":"")+"${month})");
       return daY;
 

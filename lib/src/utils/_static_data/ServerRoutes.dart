@@ -17,7 +17,7 @@ class ServerRoutes {
 
   /* get all commands list */
   static const String LINK_GET_ALL_COMMAND_LIST = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/all/get";
+      "/mobile/api/command/all/v2/get";
 
   /* create command db */
   static const String LINK_CREATE_COMMAND = ServerConfig.SERVER_ADDRESS_SECURE +
@@ -146,6 +146,9 @@ class ServerRoutes {
   static const String LINK_GET_LASTEST_FEEDS = ServerConfig.SERVER_ADDRESS+
       "/mobile/api/feeds/get";
 
+    static String LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES = ServerConfig.SERVER_ADDRESS+
+        "/mobile/api/user/get/discussion";
+
   static const String LINK_SEND_VERIFCATION_SMS = ServerConfig.SERVER_ADDRESS+
       "/api/code/request";
 
@@ -235,8 +238,6 @@ class ServerRoutes {
   static const  String LINK_GET_LAST_SPONSORSHIP_FEEDS = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/last/sponsorship/get";
 
   static const  String LINK_GET_ALL_SPONSORSHIP_HISTORY = ServerConfig.SERVER_ADDRESS +"/mobile/api/user/all/sponsorship/get" ;
-
-  static const  String LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/get/discussion";
 
   static const  String LINK_CHECK_SPONSORSHIP_ENABLED = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/sponsoring/enabled/check";
 

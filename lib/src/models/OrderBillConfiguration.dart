@@ -81,6 +81,7 @@ class OrderBillConfiguration {
 List<DeliveryTimeFrameModel> deliveryFrames;
 
   bool isBillBuilt = false;
+  bool hasCheckedOpen = false;
 
   int total_preorder_pricing;
   // get delivery frames

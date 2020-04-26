@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
@@ -9,6 +10,8 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 
 
   class LastOrdersPage extends StatefulWidget {
+  CustomerModel customer;
+
 
   LastOrdersPage({Key key}) : super(key: key);
 
@@ -22,7 +25,8 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
   void initState() {
     // TODO: implement initState
     CustomerUtils.getCustomer().then((customer) {
-      userDataBloc.fetchLastOrders(customer);
+      widget.customer = customer;
+      userDataBloc.fetchLastOrders(widget.customer);
     });
     super.initState();
   }
@@ -41,18 +45,19 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             stream: userDataBloc.mLastOrders,
             builder: (context, AsyncSnapshot<List<CommandModel>> snapshot) {
               if (snapshot.hasData) {
-                userDataBloc.dispose();
                 return _buildOrderList(snapshot.data);
               } else if (snapshot.hasError) {
-                return ErrorPage(onClickAction: (){
-                  CustomerUtils.getCustomer().then((customer) {
-                    userDataBloc.fetchLastOrders(customer);
+                if (snapshot.connectionState == ConnectionState.none)
+                  return ErrorPage(message: "Network Issue",onClickAction: (){
+                    userDataBloc.fetchLastOrders(widget.customer);
                   });
-                });
+                else
+                  return ErrorPage(message: "System error Issue",onClickAction: (){
+                    userDataBloc.fetchLastOrders(widget.customer);
+                  });
               }
               return Center(child: CircularProgressIndicator());
             }));
-    /* instead of streams, wanna use mvp */
   }
 
   _buildOrderList(List<CommandModel> data) {
@@ -60,7 +65,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
       return SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 40)
+            SizedBox(height: 10)
           ]
             ..addAll(
                 List<Widget>.generate(data.length, (int index) {
@@ -75,7 +80,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("You have NO previous orders!", style: TextStyle(color: Colors.grey)),
+              Text("You have made no order yet today!", style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

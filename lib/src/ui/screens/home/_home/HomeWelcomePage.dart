@@ -4,9 +4,12 @@ import 'dart:ffi';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
+import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
 import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
@@ -18,6 +21,8 @@ import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
@@ -56,24 +61,30 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
-
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
+
+
   @override
   void initState() {
-    // TODO: implement initState
 //    if (widget.data == null)
 //      homeScreenBloc.fetchHomeScreenModel();
     super.initState();
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
     this.widget.presenter.fetchHomePage();
+//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   }
 
   @override
   Widget build(BuildContext context) {
+
+//    final page = ModalRoute.of(context);
+//    page.didPush().then((x) {
+//      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+//    });
 
     /* init fetch data bloc */
     return Scaffold(
@@ -91,7 +102,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
                 ),
-                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
               )),
           leading: IconButton(icon: SizedBox(
@@ -105,6 +116,16 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           actions: <Widget>[
 //            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToInfoPage();}),
 //            IconButton(icon: Icon(Icons.search, color: Colors.white), tooltip: "Search", onPressed: () {}),
+//            IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
+
+           InkWell(child:  Container(height: 30, width: 30,
+             decoration: BoxDecoration(
+                 image: new DecorationImage(
+                     fit: BoxFit.cover,
+                     image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
+                 )
+             ),
+           ), onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()))),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
@@ -115,23 +136,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             )
           ],
         ),
-        body: _buildHomeScreen(widget.data)
-      /* stream builder no interesting, too much data going up and down.
-            *
-            * use MVP instead.
-            *
-            * */
-//        StreamBuilder(
-//            stream: homeScreenBloc.homeScreenModel,
-//            builder: (context, AsyncSnapshot<HomeScreenModel> snapshot) {
-//              if (snapshot.hasData) {
-//                return _buildHomeScreen(snapshot.data);
-//              } else if (snapshot.hasError) {
-//                return ErrorPage(onClickAction: (){homeScreenBloc.fetchHomeScreenModel();});
-//              }
-//              return Center(child: CircularProgressIndicator());
-//            }
-//        )
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child:  _buildHomeScreen(widget.data),
+        )
     );
   }
 
@@ -147,6 +155,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         });
         break;
       case 1:
+        _jumpToPage(context, SettingsPage());
         break;
     }
   }
@@ -590,7 +599,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // from 8 to 16 according to the size.
     // 8 for more than ...
     // to 16 as maximum.
-    return  (240 - 2*ssize)/13;
+    return  (230 - 2*ssize)/13;
   }
 
   Future<void> _callCustomerCare() async {
@@ -621,6 +630,14 @@ class KabaRoundTopClipper extends CustomClipper<Path> {
   bool shouldReclip(KabaRoundTopClipper oldClipper) => true;
 }
 
+void _jumpToPage (BuildContext context, page) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => page,
+    ),
+  );
+}
 
 void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
 

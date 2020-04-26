@@ -29,7 +29,6 @@ class GroupAdsWidget extends StatefulWidget {
 class _GroupAdsWidgetState extends State<GroupAdsWidget> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return
       (
           Stack(

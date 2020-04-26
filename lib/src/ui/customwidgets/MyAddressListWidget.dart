@@ -19,7 +19,6 @@ class MyAddressListWidget extends StatefulWidget {
 
   @override
   _MyAddressListWidgetState createState() {
-    // TODO: implement createState
     return _MyAddressListWidgetState();
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
@@ -8,6 +9,9 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 
 
 class DailyOrdersPage extends StatefulWidget {
+
+  CustomerModel customer;
+
 
   DailyOrdersPage({Key key}) : super(key: key);
 
@@ -22,7 +26,8 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
   void initState() {
     // TODO: implement initState
     CustomerUtils.getCustomer().then((customer) {
-      userDataBloc.fetchDailyOrders(customer);
+      widget.customer = customer;
+      userDataBloc.fetchDailyOrders(widget.customer);
     });
     super.initState();
   }
@@ -40,15 +45,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
               } else if (snapshot.hasError) {
                 if (snapshot.connectionState == ConnectionState.none)
                   return ErrorPage(message: "Network Issue",onClickAction: (){
-                    CustomerUtils.getCustomer().then((customer) {
-                      userDataBloc.fetchDailyOrders(customer);
-                    });
+                      userDataBloc.fetchDailyOrders(widget.customer);
                   });
                 else
                   return ErrorPage(message: "System error Issue",onClickAction: (){
-                    CustomerUtils.getCustomer().then((customer) {
-                      userDataBloc.fetchDailyOrders(customer);
-                    });
+                      userDataBloc.fetchDailyOrders(widget.customer);
                   });
               }
               return Center(child: CircularProgressIndicator());

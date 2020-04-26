@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/address_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -198,6 +199,9 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
   }
 
   void _jumpToPickAddressPage() async {
+
+    if (StateContainer.of(context).location != null)
+      Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
 
     /* get my position */
     //    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);

@@ -14,7 +14,7 @@ class TransferMoneyAmountConfirmationView {
   void showLoading(bool isLoading) {}
   void networkError () {}
   void transactionError(CustomerModel customer){}
-  void transactionSuccessful(CustomerModel moneyReceiver, String amount){}
+  void transactionSuccessful(CustomerModel moneyReceiver, String amount, String balance){}
   void balanceInsufficient() {}
   void passwordWrong() {}
 }
@@ -51,6 +51,7 @@ class TransferMoneyAmountConfirmationPresenter implements TransferMoneyAmountCon
       int errorCode = res["errorCode"];
       int statut = res["statut"];
       String _amount = "${res["amount"]}";
+      String balance = "${res["balance"]}";
 
       // get new solde and update it.
 
@@ -60,7 +61,7 @@ class TransferMoneyAmountConfirmationPresenter implements TransferMoneyAmountCon
         case 0:
           if (statut == 1) {
             // success
-            _transferMoneyAmountConfirmationView.transactionSuccessful(customer, _amount);
+            _transferMoneyAmountConfirmationView.transactionSuccessful(customer, _amount, balance);
           } else if (statut == -100) {
             // password wrong
           } else {

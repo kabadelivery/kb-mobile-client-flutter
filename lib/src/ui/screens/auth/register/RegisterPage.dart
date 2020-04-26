@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/register_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
@@ -140,11 +141,16 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 style: BorderStyle.solid, //Style of the border
                                 width: 0.8, //width of the border
                               ),
-                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Column(
+                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Row(
                             children: <Widget>[
                               Text(isCodeSent && timeDiff != 0 ? "${timeDiff} s" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
-                              isCodeSent == false &&  isCodeSending ? CircularProgressIndicator() : Container(),
+                              isCodeSent == false &&  isCodeSending ? Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                ],
+                              ) : Container(),
                             ],
                           ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
                         ]),
@@ -280,7 +286,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       _loginFieldController.text = prefs.getString("login");
       _nicknameFieldController.text = prefs.getString("nickname");
 
-      Timer.periodic(Duration(seconds: 1), (timer) {
+      mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
           setState(() {
             isCodeSent = false;
@@ -296,6 +302,19 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         }
       });
     }
+  }
+
+  Timer mainTimer;
+
+  @override
+  void dispose() {
+    try {
+      mainTimer.cancel();
+    } catch(_) {
+      mToast("Time cancel error");
+      print(_);
+    }
+    super.dispose();
   }
 
 
@@ -414,13 +433,13 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   _checkCodeAndCreateAccount() {
 
-    setState(() {
-      isCodeSending = true;
-    });
 
     /* check request id and the code */
     String _code = _codeFieldController.text;
     if (Utils.isCode(_code)) {
+      setState(() {
+        isCodeSending = false;
+      });
       this.widget.presenter.checkVerificationCode(
           _codeFieldController.text, this._requestId);
     } else {

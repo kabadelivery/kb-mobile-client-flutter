@@ -22,7 +22,7 @@ class CommandsApiProvider {
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -51,7 +51,7 @@ class CommandsApiProvider {
           body: json.encode({"command_id": orderId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -81,22 +81,25 @@ class CommandsApiProvider {
       )
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
-      if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
-        if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"]["commands"];
-          if (lo == null || lo.isEmpty || lo.length == 0)
-            return List<CommandModel>();
-          /// else
-          List<CommandModel> commandModel = lo?.map((command) => CommandModel.fromJson(command))?.toList();
-          return commandModel;
-        } else
-          throw Exception(-1); // there is an error in your request
-      } else {
-        throw Exception(response.statusCode); // you have no right to do this
+      try {
+        if (response.statusCode == 200) {
+          int errorCode = json.decode(response.body)["error"];
+          if (errorCode == 0) {
+            Iterable lo = json.decode(response.body)["data"]["commands"];
+            if (lo == null || lo.isEmpty || lo.length == 0)
+              return List<CommandModel>();
+            /// else
+            List<CommandModel> commandModel = lo?.map((command) => CommandModel.fromJson(command))?.toList();
+            return commandModel;
+          } else
+            throw Exception(-1); // there is an error in your request
+        } }
+      catch(_) {
+        print(_);
+        return List<CommandModel>();
       }
     } else {
-      throw Exception(-2); // you have no network
+      throw Exception(-2);
     }
   }
 }

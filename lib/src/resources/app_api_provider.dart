@@ -24,7 +24,7 @@ class AppApiProvider {
       final response = await client
           .get(ServerRoutes.LINK_HOME_PAGE,
 //        .post(ServerRoutes.LINK_HOME_PAGE,
-          headers: Utils.getHeaders()).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -73,7 +73,7 @@ class AppApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
           body: position == null ? "" : json.encode({"coordinates" : "${position.latitude}:${position.longitude}"}),
-          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 10));
+          headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -101,7 +101,7 @@ class AppApiProvider {
     DebugTools.iPrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_EVENEMENTS_LIST).timeout(const Duration(seconds: 10));
+          .post(ServerRoutes.LINK_GET_EVENEMENTS_LIST).timeout(const Duration(seconds: 30));
 
       print(response.body.toString());
 

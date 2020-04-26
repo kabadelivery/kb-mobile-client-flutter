@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
 import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
 import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
 import 'package:kaba_flutter/src/contracts/topup_contract.dart';
@@ -10,6 +12,7 @@ import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
 import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/personnal/Personal2Page.dart';
@@ -17,6 +20,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart'
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/LastOrdersPage.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
@@ -46,6 +50,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
   StateContainerState container;
 
+  static final List<String> popupMenus = ["Logout","Settings"];
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +64,25 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     CustomerModel cm = CustomerModel.fromJson(json.decode(jsonCustomer));
     cm.token = token;
     return cm;
+  }
+
+
+
+  void menuChoiceAction(String value) {
+    /* jump to the other activity */
+    switch(popupMenus.indexOf(value)) {
+      case 0:
+      /* logout */
+        CustomerUtils.clearCustomerInformations().whenComplete((){
+          //       get back to the splash page.
+//          Navigator.popUntil(context, ModalRoute.withName(SplashPage.routeName));
+          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+        });
+        break;
+      case 1:
+         _jumpToPage(context, SettingsPage());
+        break;
+    }
   }
 
   @override
@@ -94,6 +119,17 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     var flexibleSpaceWidget = new SliverAppBar(
+      actions: <Widget>[
+        IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
+        PopupMenuButton<String>(
+          onSelected: menuChoiceAction,
+          itemBuilder: (BuildContext context) {
+            return popupMenus.map((String menuName){
+              return PopupMenuItem<String>(value: menuName, child: Text(menuName));
+            }).toList();
+          },
+        )
+      ],
 //      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
     leading: null,
       expandedHeight: expandedHeight,
@@ -320,7 +356,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
                                               SizedBox(height:10),
-                                              Text("ABOUT", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("SETTINGS", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),

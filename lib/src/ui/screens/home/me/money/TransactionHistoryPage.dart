@@ -64,14 +64,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
               }),
           backgroundColor: Colors.white,
           title: Text("MY TRANSACTIONS", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
-//          actions: isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) : <Widget>[Text(balance, style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryYellowColor))]
           actions: <Widget>[
 
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: /*isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) :*/ GestureDetector(
                     onTap: () {},
-                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} XOF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: KColors.primaryYellowColor)))
+                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} XOF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: KColors.primaryYellowColor)))
                 )
             ),
           ],

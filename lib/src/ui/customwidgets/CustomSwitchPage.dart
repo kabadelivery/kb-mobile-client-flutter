@@ -27,7 +27,6 @@ class CustomSwitchPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _CustomSwitchPageState(this.button_1_name,
         this.button_2_name,
         this.active_text_color,

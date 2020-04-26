@@ -63,7 +63,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   int _foodCount = 0,
       _addOnCount = 0;
-  int FOOD_MAX = 30,
+  int FOOD_MAX = 5,
       ADD_ON_COUNT = 10;
 
   int ALL = 3,
@@ -89,7 +89,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   Animation foodAddAnimation;
 
-  int totalCount = 10;
 
   @override
   void initState() {
@@ -146,7 +145,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                 child:
                 AnimatedBuilder(
                   animation: foodAddAnimation,
-                  child: Text("${_foodCount}/${totalCount}",
+                  child: Text("${_foodCount}/${FOOD_MAX}",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18)),
@@ -752,6 +751,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   @override
   void inflateMenu(RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
+      if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
+        FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
       this.data = data;
     });

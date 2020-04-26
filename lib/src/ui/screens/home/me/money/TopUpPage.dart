@@ -15,9 +15,7 @@ class TopUpPage extends StatefulWidget {
   TopUpPresenter presenter;
 
   var feesPercentage = 10;
-
   var total = 0;
-
   var fees = 0;
 
   TopUpPage({Key key, this.title, this.presenter}) : super(key: key);
@@ -41,6 +39,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   var isLaunching = false;
 
   var customer;
+
+  String feesDescription = "Fees allow us to support the transactions cost with T-money and Flooz";
 
   @override
   void initState() {
@@ -75,9 +75,9 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 color: Colors.white,
                 padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                 child: Center(
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                    Expanded(flex: 4, child: Center(child: Text("Phone Number", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
-                    Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 28,color: KColors.primaryColor),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                    Expanded(flex: 4, child: Center(child: Text("Phone Number", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
+                    Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: KColors.primaryColor),
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
@@ -90,35 +90,25 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 10),
 
-              Container(
-                padding: EdgeInsets.only(top:10,bottom:10, left:5, right: 5),
-                color: Colors.white,
+              Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryColor),
+                margin: EdgeInsets.only(left:15, right: 15),
+                padding: EdgeInsets.only(top:20,bottom:20, left:15, right: 15),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 7, child: Center(child: Text("Operator"))),
-                  Expanded(flex: 3, child: Center(child: Text("${operator}")))
+                  Expanded(flex: 7, child: Text("Operator", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
+                  Expanded(flex: 3, child: Text("${operator}", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)))
                 ]),
               ),
 
-              SizedBox(height: 10),
+              SizedBox(height: 20),
 
               Container(
-                padding: EdgeInsets.only(top:10,bottom:10, left:5, right: 5),
-                color: Colors.white,
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-                  Expanded(flex: 4, child: Center(child: Text("Fees (${widget.feesPercentage}%)"))),
-                  Expanded(flex: 6, child: Center(child: Text("${widget.fees}F")))
-                ]),
-              ),
-
-              SizedBox(height: 10),
-
-              Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.white),
+                  margin: EdgeInsets.only(left:15, right: 15),
                   padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
-                  color: Colors.white,
                   child: Center(
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                      Expanded(flex: 4, child: Container(child: Center(child: Text("Amount", style: TextStyle(fontSize: 18),)), color: Colors.yellow,)),
-                      Expanded(flex: 6, child: Container(color: Colors.green,
+                      Expanded(flex: 4, child: Container(child: Center(child: Text("AMOUNT", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),)))),
+                      Expanded(flex: 6, child: Container(
                         child: TextField(controller: _amountFieldController, textAlign: TextAlign.center, maxLength: 6, style: TextStyle(color: KColors.primaryColor, fontSize: 30),
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
@@ -129,14 +119,34 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                       )
                     ]),
                   )),
+
+
+              SizedBox(height: 10),
+
+              Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(feesDescription, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+
               SizedBox(height: 10),
 
               Container(
-                padding: EdgeInsets.only(top:10,bottom:10, left:5, right: 5),
+                margin: EdgeInsets.only(top:10),
+                padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-                  Expanded(flex: 4, child: Center(child: Text("Total"))),
-                  Expanded(flex: 6, child: Center(child: Text("${widget.total}F")))
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
+                  Expanded(flex: 4, child: Text("Fees (${widget.feesPercentage}%)", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
+                  Expanded(flex: 6, child: Text("${widget.fees} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 15,color: Colors.green, fontWeight: FontWeight.bold
+                  )))
+                ]),
+              ),
+
+              SizedBox(height: 10),
+
+              Container(
+                margin: EdgeInsets.only(top:10),
+                padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
+                color: Colors.white,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
+                  Expanded(flex: 4, child: Text("Total", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
+                  Expanded(flex: 6, child: Text("${widget.total} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: KColors.primaryColor))),
                 ]),
               ),
 
@@ -144,19 +154,23 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               Row(mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
-                    children: <Widget>[
-                      Text("TOP UP ${_getTotal()}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                      isLaunching ?  Row(
-                        children: <Widget>[
-                          SizedBox(width: 10),
-                          SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
-                        ],
-                      )  : Container(),
-                    ],
-                  ), onPressed: () {
-                    iLaunchTransaction();
-                  }),
+                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
+                      children: <Widget>[
+                        Text("TOP UP", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width: 8),
+                        Text("${_getTotal()}F", style: TextStyle(fontSize: 24, color: Colors.yellow)),
+                        isLaunching ?  Row(
+                          children: <Widget>[
+                            SizedBox(width: 10),
+                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                          ],
+                        )  : Container(),
+                      ],
+                    ), onPressed: () {
+                      iLaunchTransaction();
+                    }),
+                  ),
                 ],
               ),
             ]
@@ -195,7 +209,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     );
   }
 
-  void _checkOperator() {
+  bool _checkOperator() {
 
     String number = "${_phoneNumberFieldController.text}";
 
@@ -210,24 +224,26 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       } else {
         mOperator = "---";
       }
+        setState(() {
+          this.operator = mOperator;
+          isOperatorOk = true;
+        });
     } else {
       setState(() {
+        this.operator = mOperator;
         isOperatorOk = false;
       });
     }
 
-    setState(() {
-      this.operator = mOperator;
-      isOperatorOk = true;
-    });
 
+    return isOperatorOk;
   }
 
   void iLaunchTransaction() {
 
-    if (!isOperatorOk)
+    if (!_checkOperator()) {
       mToast("Phone number is wrong");
-    else {
+    } else {
       if (customer != null)
         widget.presenter.launchTopUp(
             customer, "${_phoneNumberFieldController.text}",
@@ -247,9 +263,9 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     if(amount == null || "" == amount.trim())
       amount_ = 0;
     else
-    amount_ = int.parse(amount);
+      amount_ = int.parse(amount);
 
-   return (widget.feesPercentage.toDouble()*amount_.toDouble()/100).toInt();
+    return (widget.feesPercentage.toDouble()*amount_.toDouble()/100).toInt();
   }
 
   _getTotal() {
@@ -259,13 +275,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       amount_ = 0;
     else
       amount_ = int.parse(amount);
-  return amount_+_getFees();
+    return amount_+_getFees();
   }
 
   void _updateFees() {
     setState(() {
       widget.fees = _getFees();
-     widget.total = _getTotal();
+      widget.total = _getTotal();
     });
   }
 }

@@ -179,7 +179,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-            (_orderBillConfiguration?.remise > 0 ? Container(
+            (_orderBillConfiguration?.remise > 0 &&
+                !_isPreorder()
+                ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
@@ -281,17 +283,20 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                           fontSize: 18)),
                 ]),
             SizedBox(height: 10),
-            (_orderBillConfiguration?.remise > 0 ? Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
-                            "/web/assets/app_icons/promo_large.gif"))
+            (
+                (_orderBillConfiguration?.remise > 0 &&
+                    !_isPreorder())
+                    ? Container(
+                    height: 40.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: CachedNetworkImageProvider(Utils.inflateLink(
+                                "/web/assets/app_icons/promo_large.gif"))
+                        )
                     )
-                )
-            ) : Container()),
+                ) : Container()),
           ]),
         ));
   }
@@ -344,13 +349,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ..addAll(
                 _buildFoodList()
             )
-            ..addAll(<Widget>[
+          // restaurant is closed and we can't do nothing
+            ..addAll( (_orderBillConfiguration.hasCheckedOpen == true && _orderBillConfiguration.can_preorder == 0 && _orderBillConfiguration.open_type != 1) ? <Widget>[
+              Container(decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)))
+            ] :
+            <Widget>[
               SizedBox(height: 10),
               _buildRadioPreorderChoice(),
               SizedBox(height: 10),
               Container(
-                  child: widget.orderOrPreorderChoice == 1 && _orderBillConfiguration.open_type == 1 && widget.orderOrPreorderChoice == 0 || _orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1 && widget.orderOrPreorderChoice == 0 ?
-                  _buildDeliveryTimeFrameList() : Container(), color: Colors.white),
+                  child: (widget.orderOrPreorderChoice == 1 && _orderBillConfiguration.open_type == 1 && _orderBillConfiguration.can_preorder == 1 ) || (_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1 && widget.orderOrPreorderChoice == 0) ?
+                  _buildDeliveryTimeFrameList() : Container(child:Text("Build no frame")), color: Colors.white),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(
@@ -435,12 +444,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   @override
   void networkError() {
     showLoading(false);
+    setState(() {
+      checkIsRestaurantOpenConfigIsLoading = false;
+    });
     mToast("networkError");
   }
 
   @override
   void systemError() {
     showLoading(false);
+    setState(() {
+      checkIsRestaurantOpenConfigIsLoading = false;
+    });
     mToast("systemError");
   }
 
@@ -806,22 +821,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   void _showDialog(
       {String iccon, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
-    // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
-//          title: new Text("Alert Dialog title"),
             content: Column(mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  /* icon */
                   SizedBox(
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
                         iccon,
-//                      color: Colors.green,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -830,7 +840,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ),
             actions:
             isYesOrNo ? <Widget>[
-              // usually buttons at the bottom of the dialog
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
                 child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
@@ -990,6 +999,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       color: Colors.white,
       child: Column(
         children: <Widget>[
+
+          _orderBillConfiguration.open_type == 0 ? Container(decoration: BoxDecoration(color: KColors.mBlue, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now.\nPlease try Pre-Ordering.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))) : Container(),
+
+
           _orderBillConfiguration.open_type == 1 ?  Row(children: <Widget>[
             Radio(value: 0,
                 groupValue: widget.orderOrPreorderChoice,
@@ -1321,6 +1334,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void networkOpeningStateError() {
     // opening state error
     setState(() {
+      checkIsRestaurantOpenConfigIsLoading = false;
       _checkOpenStateError = true;
     });
   }
@@ -1329,6 +1343,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void systemOpeningStateError() {
     // opening state error.
     setState(() {
+      checkIsRestaurantOpenConfigIsLoading = false;
       _checkOpenStateError = true;
     });
   }
@@ -1337,6 +1352,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void inflateBillingConfiguration1(OrderBillConfiguration configuration) {
     setState(() {
       _orderBillConfiguration = configuration;
+      _orderBillConfiguration.hasCheckedOpen = true;
     });
   }
 
@@ -1390,6 +1406,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       isPayAtDeliveryLoading = true;
       isPreorderLoading = true;
     });
+  }
+
+  _isPreorder() {
+    return  ((widget.orderOrPreorderChoice == 1 && _orderBillConfiguration.open_type == 1 && _orderBillConfiguration.can_preorder == 1 ) || (_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1 && widget.orderOrPreorderChoice == 0));
   }
 
 

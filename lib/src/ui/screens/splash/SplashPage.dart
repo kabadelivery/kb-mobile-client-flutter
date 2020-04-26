@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
@@ -61,7 +62,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     // for ios only.
-
     return Scaffold(
       body:  Center(
           child: Column(
