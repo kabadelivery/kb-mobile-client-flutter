@@ -246,7 +246,10 @@ class Utils {
     return "-- --";
   }
 
-//  _orderBillConfiguration.deliveryFrames[index].start
+  static bool within3days(String last_update) {
+    int orderLastUpdate = int.parse(last_update);
+    return orderLastUpdate > (DateTime.now().millisecondsSinceEpoch/1000 - 3*3600*24);
+  }
 
 }
 

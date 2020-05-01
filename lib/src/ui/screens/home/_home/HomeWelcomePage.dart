@@ -69,13 +69,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void initState() {
-//    if (widget.data == null)
-//      homeScreenBloc.fetchHomeScreenModel();
     super.initState();
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
     this.widget.presenter.fetchHomePage();
-//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   }
 
   @override
@@ -88,7 +86,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     /* init fetch data bloc */
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(brightness: Brightness.dark,
           title: SizedBox(height: 70,
 //            margin: EdgeInsets.only(bottom: 30, top: 30),
 //            decoration: BoxDecoration(

@@ -5,14 +5,17 @@ import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
 
 class TopUpContract {
 
-  void launchTopUp(CustomerModel customer, String phoneNumber, String balance) {}
+  void launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) {}
+  void fetchFees(CustomerModel customer) {}
 }
 
 class TopUpView {
   void showLoading(bool isLoading) {}
+  void showGetFeesLoading(bool isLoading) {}
   void topUpToWeb(String link) {}
   void systemError () {}
   void networkError () {}
+  void updateFees(int fees) {}
 }
 
 
@@ -34,14 +37,14 @@ class TopUpPresenter implements TopUpContract {
   }
 
   @override
-  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance) async {
+  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) async {
 
     if (isWorking)
       return;
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      String link = await provider.launchTopUp(customer, phoneNumber, balance);
+      String link = await provider.launchTopUp(customer, phoneNumber, balance, fees);
       _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
@@ -54,5 +57,29 @@ class TopUpPresenter implements TopUpContract {
       isWorking = false;
     }
   }
+
+  @override
+  Future<void> fetchFees(CustomerModel customer) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _topUpView.showGetFeesLoading(true);
+    try {
+      int fees = await provider.fetchFees(customer);
+      _topUpView.updateFees(fees);
+      isWorking = false;
+    } catch (_) {
+      print("error ${_}");
+      if (_ == -2) {
+        _topUpView.systemError();
+      } else {
+        _topUpView.networkError();
+      }
+      isWorking = false;
+    }
+    _topUpView.showGetFeesLoading(false);
+  }
+
+
 }
 

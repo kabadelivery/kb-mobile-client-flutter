@@ -142,7 +142,7 @@ class ClientPersonalApiProvider {
 
     DebugTools.iPrint("entered loginAction");
     if (await Utils.hasNetwork()) {
-      await Future.delayed(const Duration(seconds: 1));
+//      await Future.delayed(const Duration(seconds: 1));
       var request =   MultipartRequest("POST", Uri.parse(ServerRoutes.LINK_USER_LOGIN));
       request.fields['_username'] = "${login}";
       request.fields['_password'] = "${password}";
@@ -253,13 +253,13 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchTopUp(CustomerModel customer, String phoneNumber, String balance) async {
+  launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) async {
 
     DebugTools.iPrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ,
-          body: json.encode({"phone_number": phoneNumber, "amount": balance}),
+          body: json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
@@ -335,6 +335,94 @@ class ClientPersonalApiProvider {
         return res;
       }
       else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<int> fetchFees(CustomerModel customer) async {
+
+    DebugTools.iPrint("entered fetchFees");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_TOPUP_FEES_RATE,
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        // check the fees, if an error during this process, throw error no pb
+        int fees = json.decode(response.body)["data"]["fees"];
+        if (fees > 0)
+          return fees;
+        return 10;
+      }
+      else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<String> recoverPasswordSendingCodeAction (String login) async {
+    DebugTools.iPrint("entered recoverPasswordSendingCodeAction");
+    if (await Utils.hasNetwork()) {
+      await Future.delayed(const Duration(seconds: 1));
+      final response = await client
+          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+          body:
+          Utils.isEmailValid(login) ?
+          json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<String> checkRecoverPasswordRequestCodeAction(String code, String requestId) async {
+
+    /*  */
+    DebugTools.iPrint("entered checkRecoverPasswordRequestCodeAction");
+    if (await Utils.hasNetwork()) {
+//      await Future.delayed(const Duration(seconds: 1));
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE,
+          body: json.encode({"code": code, "request_id": requestId}))
+          .timeout(const Duration(seconds: 60));
+      print(json.encode({"code": code, "request_id": requestId}));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<String>  passwordResetAction(String phoneNumber, String newCode, String requestId) async {
+
+    DebugTools.iPrint("entered passwordResetAction");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_PASSWORD_RESET,
+          body: json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${phoneNumber}"}))
+          .timeout(const Duration(seconds: 60));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
     } else {

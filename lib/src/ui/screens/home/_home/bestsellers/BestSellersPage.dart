@@ -48,6 +48,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: Colors.white,
         title: Text("BEST SELLERS", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),

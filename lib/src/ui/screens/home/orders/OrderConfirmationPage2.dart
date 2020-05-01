@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
@@ -454,6 +455,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   @override
   void logoutTimeOutSuccess() {
     /*logout is something else*/
+
   }
 
   @override
@@ -713,8 +715,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   _payNow() async {
-//    _playMusicForSuccess();return;
-
     // 1. get password
     var results = await Navigator.of(context).push(
         new MaterialPageRoute<dynamic>(
@@ -730,7 +730,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         mToast("my code is not ok");
       } else {
         String _mCode = results['code'];
-        showLoadingPayAtDelivery(true);
+        showLoadingPreorder(true);
         if (Utils.isCode(_mCode)) {
           widget.presenter.payNow(
               widget.customer, widget.foods, _selectedAddress, _mCode,
@@ -744,7 +744,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   _payAtDelivery(bool isDialogShown) async {
-//    _playMusicForSuccess();return;
 
     if (!isDialogShown) {
       _showDialog(
@@ -823,9 +822,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         String _mCode = results['code'];
         showLoadingPayAtDelivery(true);
         if (Utils.isCode(_mCode)) {
-          widget.presenter.payAtDelivery(
+          widget.presenter.payPreorder(
               widget.customer, widget.foods, _selectedAddress, _mCode,
-              _addInfoController.text);
+              _addInfoController.text, selectedFrame.start, selectedFrame.end);
         } else {
           mToast("my code is not ok");
         }
@@ -877,12 +876,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 child: new Text(
                     "OK", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
-                  if (!okBackToHome)
+                  if (!okBackToHome) {
                     Navigator.of(context).pop();
-                  else
+                  }
+                  else {
+                    StateContainer.of(context).updateTabPosition(tabPosition: 2);
                     Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
                         builder: (BuildContext context) => HomePage()), (
                         r) => false);
+                  }
                 },
               ),
             ]
@@ -927,10 +929,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void launchOrderResponse(int errorCode) {
     showLoadingPayAtDelivery(false);
     mToast("launchOrderResponse ${errorCode}");
-//    setState(() {
-//      isPayNowLoading = false;
-//      isPayAtDeliveryLoading = false;
-//    });
+
     showLoadingPayAtDelivery(false);
     showLoadingPreorder(false);
     showPayNowLoading(false);
@@ -993,6 +992,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
   void _showOrderSuccessDialog() {
+
+    /* save the order, in spending ... */
     _playMusicForSuccess();
     _showDialog(
       okBackToHome: true,

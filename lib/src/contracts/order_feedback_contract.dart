@@ -11,7 +11,7 @@ class OrderFeedbackContract {
 
 class OrderFeedbackView {
 
-  void sendFeedbackError () {}
+  void sendFeedbackError (int errorCode) {}
   void sendFeedbackSuccess() {}
 
   void systemError () {}
@@ -20,6 +20,8 @@ class OrderFeedbackView {
   void showLoading(bool isLoading) {}
 
   void inflateOrderDetails(CommandModel commandModel) {}
+
+  void sendFeedBackLoading(bool isSendingFeedback) {}
 }
 
 
@@ -37,8 +39,33 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
   }
 
   @override
-  void sendFeedback(CustomerModel customer, int orderId, int rating, String message) {
+  Future<void> sendFeedback(CustomerModel customer, int orderId, int rating, String message) async {
 
+    //
+    _orderFeedbackView.sendFeedBackLoading(true);
+    if (isWorking)
+      return;
+    isWorking = true;
+    try {
+      int errorCode = await provider.sendFeedback(customer, orderId, rating, message);
+      _orderFeedbackView.sendFeedBackLoading(false);
+      if (errorCode == 0) {
+        _orderFeedbackView.sendFeedbackSuccess();
+      } else {
+        _orderFeedbackView.sendFeedbackError(errorCode);
+      }
+    } catch(_) {
+      /* Food failure */
+      _orderFeedbackView.sendFeedBackLoading(false);
+      print("error ${_}");
+      if (_ == -2) {
+        _orderFeedbackView.sendFeedbackError(-1);
+      } else {
+        _orderFeedbackView.sendFeedbackError(-1);
+      }
+      isWorking = false;
+    }
+    isWorking = false;
   }
 
   @override
@@ -51,6 +78,7 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
     isWorking = true;
     try {
       CommandModel commandModel = await provider.loadOrderFromId(customer, orderId);
+      _orderFeedbackView.showLoading(false);
       if (commandModel != null) {
         _orderFeedbackView.inflateOrderDetails(commandModel);
       } else {
@@ -67,6 +95,10 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
       isWorking = false;
     }
     isWorking = false;
+  }
+
+  set orderFeedbackView(OrderFeedbackView value) {
+    _orderFeedbackView = value;
   }
 
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
@@ -89,16 +90,19 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      body: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
-          future: CustomerUtils.getCustomer(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              return _buildMyPage(snapshot.data);
-            } else if (snapshot.hasError) {
-              /* go back to login page because of error in login or so. */
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+        child: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
+            future: CustomerUtils.getCustomer(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return _buildMyPage(snapshot.data);
+              } else if (snapshot.hasError) {
+                /* go back to login page because of error in login or so. */
+              }
+              return Center(child: CircularProgressIndicator());
             }
-            return Center(child: CircularProgressIndicator());
-          }
+        )
       )
     );
   }

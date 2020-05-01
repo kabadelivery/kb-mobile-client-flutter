@@ -3,9 +3,11 @@ import 'dart:collection';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:kaba_flutter/src/contracts/food_contract.dart';
 import 'package:kaba_flutter/src/contracts/order_contract.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
@@ -25,7 +27,11 @@ class RestaurantFoodDetailsPage extends StatefulWidget {
 
   int foodId;
 
-  RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key);
+  RestaurantModel restaurant;
+
+  RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key) {
+    this.restaurant = food.restaurant_entity;
+  }
 
   @override
   _RestaurantFoodDetailsPageState createState() => _RestaurantFoodDetailsPageState();
@@ -79,9 +85,12 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
     /* use silver-app-bar first */
     return  Scaffold(
-      body: Container(
-          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-          _buildRestaurantFoodPage())
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Container(
+            child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+            _buildRestaurantFoodPage())
+        ),
       ),
     );
   }
@@ -269,7 +278,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderConfirmationPage2(presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
+        builder: (context) => OrderConfirmationPage2(restaurant: widget.restaurant, presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
       ),
     );
   }

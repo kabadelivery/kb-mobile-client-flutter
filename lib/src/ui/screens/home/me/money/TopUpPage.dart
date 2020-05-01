@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/contracts/topup_contract.dart';
+import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
@@ -18,9 +19,10 @@ class TopUpPage extends StatefulWidget {
   var total = 0;
   var fees = 0;
 
-  TopUpPage({Key key, this.title, this.presenter}) : super(key: key);
+  TopUpPage({Key key, this.presenter}) : super(key: key);
 
-  final String title;
+
+  CustomerModel customer;
 
   @override
   _TopUpPageState createState() => _TopUpPageState();
@@ -38,9 +40,9 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   var isLaunching = false;
 
-  var customer;
-
   String feesDescription = "Fees allow us to support the transactions cost with T-money and Flooz";
+
+  bool isGetFeesLoading = false;
 
   @override
   void initState() {
@@ -52,7 +54,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     _amountFieldController = new TextEditingController();
     _amountFieldController.addListener(_updateFees);
     CustomerUtils.getCustomer().then((customer) {
-      this.customer = customer;
+      widget.customer = customer;
+      widget.presenter.fetchFees(widget.customer);
     });
   }
 
@@ -60,6 +63,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {
@@ -94,8 +98,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 margin: EdgeInsets.only(left:15, right: 15),
                 padding: EdgeInsets.only(top:20,bottom:20, left:15, right: 15),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 7, child: Text("Operator", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
-                  Expanded(flex: 3, child: Text("${operator}", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)))
+                  Expanded(flex: 5, child: Text("Operator", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
+                  Expanded(flex: 5, child: Text("${operator}", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)))
                 ]),
               ),
 
@@ -127,7 +131,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 10),
 
-              Container(
+              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: CircularProgressIndicator())) : Container(
                 margin: EdgeInsets.only(top:10),
                 padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,
@@ -224,10 +228,10 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       } else {
         mOperator = "---";
       }
-        setState(() {
-          this.operator = mOperator;
-          isOperatorOk = true;
-        });
+      setState(() {
+        this.operator = mOperator;
+        isOperatorOk = true;
+      });
     } else {
       setState(() {
         this.operator = mOperator;
@@ -235,19 +239,23 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       });
     }
 
-
     return isOperatorOk;
   }
 
   void iLaunchTransaction() {
 
+    if (isGetFeesLoading){
+      mToast("Please wait until we update fees percentage.");
+      return;
+    }
+
     if (!_checkOperator()) {
       mToast("Phone number is wrong");
     } else {
-      if (customer != null)
+      if (widget.customer != null)
         widget.presenter.launchTopUp(
-            customer, "${_phoneNumberFieldController.text}",
-            "${_amountFieldController.text}");
+            widget.customer, "${_phoneNumberFieldController.text}",
+            "${_amountFieldController.text}", widget.feesPercentage);
       else
         mToast("System error. Please wait a bit and start again.");
     }
@@ -264,7 +272,6 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       amount_ = 0;
     else
       amount_ = int.parse(amount);
-
     return (widget.feesPercentage.toDouble()*amount_.toDouble()/100).toInt();
   }
 
@@ -283,5 +290,19 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       widget.fees = _getFees();
       widget.total = _getTotal();
     });
+  }
+
+  @override
+  void updateFees(int feesPercentage) {
+    setState(() {
+      widget.feesPercentage = feesPercentage;
+    });
+  }
+
+  @override
+  void showGetFeesLoading(bool isGetFeesLoading) {
+     setState(() {
+       this.isGetFeesLoading = isGetFeesLoading;
+     });
   }
 }

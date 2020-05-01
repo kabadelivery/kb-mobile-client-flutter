@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -17,21 +19,21 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
 
-  var progress;
-  
-  WebViewController _webViewController;
-  
+  final Completer<WebViewController> _controller =
+  Completer<WebViewController>();
+
+  bool _pageLoading = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-//    _webViewController = new WebViewPlatformController(handler)
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(leading: IconButton(
+        appBar: AppBar(brightness: Brightness.light, leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {
               Navigator.pop(context);
@@ -39,64 +41,47 @@ class _WebViewPageState extends State<WebViewPage> {
             backgroundColor: Colors.white,
             title: Text(
                 widget.title, style: TextStyle(color: KColors.primaryColor))),
-        body: Container(
-            child: Column(
-                children: <Widget>[
-                  (progress != 1.0)
-                      ? LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryYellowColor))
-                      : null, // Should be removed while showing
-                  Expanded(
-                    child: Container(
-                      /*   child: InAppWebView(
-                          initialUrl: widget.link,
-                          initialHeaders: {},
-//                        initialOptions: {},
-                          onWebViewCreated: (
-                              InAppWebViewController controller) {},
-                          onLoadStart: (InAppWebViewController controller,
-                              String url) {},
-                          onProgressChanged:
-                              (InAppWebViewController controller, int progress) {
-                            setState(() {
-                              this.progress = progress / 100;
-                            });
-                          },
-                          initialOptions: InAppWebViewWidgetOptions(
-                              inAppWebViewOptions: InAppWebViewOptions(
-                                debuggingEnabled: true,
-                              )
-                          )
-                      ),*/
-                        child: WebView (
-                          onWebViewCreated: (WebViewController webViewController) {
-                            _webViewController = webViewController;
-
-                          },
-                            onPageStarted:(page){showLoading(true);},
-                            onPageFinished:(page){showLoading(false);},
-                            initialUrl: widget.link,
-                            javascriptMode: JavascriptMode.unrestricted
-                        )
-                    ),
-                  )
-                ].where((Object o) => o != null).toList()))
-      /*  WebView (
-          initialUrl: widget.link,
-        javascriptMode: JavascriptMode.unrestricted
-      )*/
+        body: Stack(
+          children: <Widget>[
+           _pageLoading ? Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)))) : Container(),
+            Builder(builder: (BuildContext context) {
+              return WebView(
+                initialUrl: '${widget.link}',
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
+                javascriptChannels: <JavascriptChannel>[
+//              _toasterJavascriptChannel(context),
+                ].toSet(),
+                navigationDelegate: (NavigationRequest request) {
+                  if (!request.url.contains("kaba") && !request.url.contains("pay")) {
+                    print('blocking navigation to $request}');
+                    return NavigationDecision.prevent;
+                  }
+                  print('allowing navigation to $request');
+                  return NavigationDecision.navigate;
+                },
+                onPageStarted: (String url) {
+                  print('Page started loading: $url');
+                setState(() {
+                  _pageLoading = true;
+                });
+                },
+                onPageFinished: (String url) {
+                  setState(() {
+                    _pageLoading = false;
+                  });
+                  print('Page finished loading: $url');
+                },
+                gestureNavigationEnabled: true,
+              );
+            }),
+          ],
+        )
     );
   }
 
-  void showLoading(bool isLoading) {
-    setState(() {
-      if (isLoading)
-        progress = 0.5;
-      else
-        progress = 1.0;
-    });
-  }
+
 
 }

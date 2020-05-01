@@ -62,6 +62,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {

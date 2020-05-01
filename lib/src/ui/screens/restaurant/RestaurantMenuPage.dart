@@ -122,6 +122,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     }
 
     var appBar = AppBar(
+      brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(child: Row(children: <Widget>[
         Text("MENU", style: TextStyle(fontSize: 14, color: Colors.white)),

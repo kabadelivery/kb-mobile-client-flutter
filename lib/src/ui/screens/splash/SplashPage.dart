@@ -63,25 +63,28 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     // for ios only.
     return Scaffold(
-      body:  Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                /* image */
-                SizedBox(
-                    height: 50,
-                    width: 50,
-                    child:SvgPicture.asset(
-                      VectorsData.kaba_icon_svg,
-                      color: KColors.primaryColor,
-                      semanticsLabel: 'LOGO',
-                    )),
-                /* text */
-                SizedBox(height: 10),
-                Text("KABA",
-                    style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-              ]
-          )),
+      body:  AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  /* image */
+                  SizedBox(
+                      height: 50,
+                      width: 50,
+                      child:SvgPicture.asset(
+                        VectorsData.kaba_icon_svg,
+                        color: KColors.primaryColor,
+                        semanticsLabel: 'LOGO',
+                      )),
+                  /* text */
+                  SizedBox(height: 10),
+                  Text("KABA",
+                      style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                ]
+            )),
+      ),
     );
   }
 }

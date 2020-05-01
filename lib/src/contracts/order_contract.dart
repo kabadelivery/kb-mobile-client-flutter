@@ -119,6 +119,29 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
+  Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+    try {
+//      _orderConfirmationView.isPurchasing(true);
+      int error = await provider.launchPreorderOrder(customer, foods, selectedAddress, mCode, infos, start, end);
+      _orderConfirmationView.launchOrderResponse(error);
+    } catch (_) {
+      /* login failure */
+      print("error ${_}");
+      if (_ == -2) {
+        _orderConfirmationView.systemError();
+      } else {
+        _orderConfirmationView.networkError();
+      }
+      _orderConfirmationView.launchOrderResponse(-1);
+    }
+    isWorking = false;
+  }
+
+
   Future<void> checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) async {
 
     if (isWorking)
@@ -144,14 +167,14 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       can_preorder = json.decode(response)["data"]["preorder"]["can_preorder"];
       discount = json.decode(response)["data"]["preorder"]["discount"];
 
-open_type = 0;
-can_preorder = 0;
+//open_type = 0;
+//can_preorder = 0;
 
       Iterable lo = json.decode(response)["data"]["preorder"]["hours"];
       List<DeliveryTimeFrameModel> deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
 
-      open_type = 0;
-      can_preorder = 0;
+  //    open_type = 0;
+  //    can_preorder = 0;
 
       configuration = OrderBillConfiguration(open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames, isBillBuilt: false);
       _orderConfirmationView.isRestaurantOpenConfigLoading(false);

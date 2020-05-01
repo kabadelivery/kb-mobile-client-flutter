@@ -57,13 +57,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
 
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
               onPressed: () {
                 Navigator.pop(context);
               }),
           backgroundColor: Colors.white,
-          title: Text("MY TRANSACTIONS", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
+          title: Text("MY BALANCE", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
           actions: <Widget>[
 
             Padding(

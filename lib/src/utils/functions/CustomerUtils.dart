@@ -39,7 +39,7 @@ class CustomerUtils {
     try {
       String jsonCustomer = prefs.getString("_loginResponse");
       var obj = json.decode(jsonCustomer);
-        customer = CustomerModel.fromJson(obj["data"]["customer"]);
+      customer = CustomerModel.fromJson(obj["data"]["customer"]);
       String token = obj["data"]["payload"]["token"];
       customer.token = token;
     } catch (_) {
@@ -60,7 +60,7 @@ class CustomerUtils {
       String _sd = json.encode(obj);
       prefs.setString("_loginResponse", _sd);
     } catch (_) {
- print ("error updateCustomerPersist");
+      print ("error updateCustomerPersist");
     }
     return customer;
   }
@@ -102,12 +102,11 @@ class CustomerUtils {
     return jsonHomePage;
   }
 
+
   static saveWelcomePage(String wp) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_homepage", wp);
   }
-
-
 
 }

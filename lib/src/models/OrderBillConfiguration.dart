@@ -51,9 +51,9 @@ class OrderBillConfiguration {
 
 
   int account_balance;
-  bool out_of_range;
-  bool pay_at_delivery;
-  bool prepayed;
+  bool out_of_range = true;
+  bool pay_at_delivery = false;
+  bool prepayed = false;
   int trustful;
   int max_pay;
   int cooking_time;

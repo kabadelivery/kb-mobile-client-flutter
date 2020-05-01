@@ -42,7 +42,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 */
     super.initState();
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     restaurantBloc.fetchRestaurantList();
     _filterEditController.addListener(_filterEditContent);
 
@@ -69,9 +69,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 //      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 //    });
 
-    return CupertinoPageScaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
-        child:  AnnotatedRegion<SystemUiOverlayStyle>(
+        body:  AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child:  StreamBuilder(
               stream: restaurantBloc.restaurantList,
@@ -92,6 +92,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         leading: null,
         backgroundColor: Colors.grey.shade100,
         title: Container(

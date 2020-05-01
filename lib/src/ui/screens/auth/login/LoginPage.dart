@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
+import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
 import 'package:kaba_flutter/src/contracts/register_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
@@ -16,7 +17,11 @@ class LoginPage extends StatefulWidget {
 
   LoginPresenter presenter;
 
-  LoginPage({Key key, this.title, this.presenter}) : super(key: key);
+  bool autoLogin = false;
+
+  String phone_number, password;
+
+  LoginPage({Key key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false}) : super(key: key);
 
   final String title;
 
@@ -36,6 +41,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void initState() {
     super.initState();
     this.widget.presenter.loginView = this;
+
+    if (widget?.autoLogin == true) {
+      _loginFieldController.text = widget.phone_number;
+      if (Utils.isPhoneNumber_TGO(widget.phone_number) && widget?.password?.length == 4)
+        widget.presenter.login(widget.phone_number, widget.password);
+    }
   }
 
   @override
@@ -43,7 +54,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     return Scaffold(
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+        value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
             child:Center(
               child: Column(
@@ -70,7 +81,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                               isConnecting ?  Row(
                                 children: <Widget>[
                                   SizedBox(width: 10),
-                                  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                                  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15),
                                 ],
                               )  : Container(),
                             ],
@@ -110,12 +121,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void _moveToRecoverPasswordPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage (),
-      ),
-    );
+    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (BuildContext context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())), (
+        r) => false);
   }
 
   Future _launchConnexion() async {

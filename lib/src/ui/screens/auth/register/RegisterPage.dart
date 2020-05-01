@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/register_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
@@ -71,6 +69,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: Colors.white,
           title: Text("REGISTER", style:TextStyle(color:KColors.primaryColor)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
@@ -241,10 +240,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     /* save start-time */
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('register_type', _registerModeRadioValue);
-    await prefs.setString('last_code_sent_time', DateTime.now().toString()); /*DateTime.now().*/
+    await prefs.setString('last_code_sent_time', "${DateTime.now().millisecondsSinceEpoch~/1000}"); /*DateTime.now().*/
     await prefs.setString('login', login);
     await prefs.setString('nickname', _nicknameFieldController.text);
     await prefs.setString('request_id', requestId);
+
+    this._requestId = requestId;
   }
 
   _retrieveRequestParams () async {
@@ -253,44 +254,40 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     /* get login */
     /* get start-time */
 
-    String login;
-    int registerType;
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    registerType = prefs.getInt("register_type");
     String tmp = prefs.getString("last_code_sent_time");
-    login = prefs.getString("login");
 
+//    if (!(registerType != null && registerType >= 0 && registerType < recoverModeHints.length))
+//      return;
 
-    if (!(registerType != null && registerType >= 0 && registerType < recoverModeHints.length))
-      return;
-
-    DateTime lastCodeSentDatetime = DateTime.now();
+    DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
 
     try {
-      if(tmp != null)
-        lastCodeSentDatetime = DateTime.parse(tmp);
+      lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
     } catch (_) {
       print("ERROR");
       return;
     }
 
-    _registerModeRadioValue = registerType;
-    _loginFieldController.text = login;
+//    _registerModeRadioValue = registerType;
 
     if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
 
       /* if code sent, do something else,  */
       isCodeSent = true;
       this._requestId = prefs.getString("request_id");
-      _loginFieldController.text = prefs.getString("login");
-      _nicknameFieldController.text = prefs.getString("nickname");
+
+      setState(() {
+        _loginFieldController.text = prefs.getString("login");
+        _nicknameFieldController.text = prefs.getString("nickname");
+      });
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
           setState(() {
             isCodeSent = false;
           });
+          _clearSharedPreferences();
           timer.cancel();
         } else {
           /* update text;;; if codeIsSent */
@@ -311,7 +308,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     try {
       mainTimer.cancel();
     } catch(_) {
-      mToast("Time cancel error");
       print(_);
     }
     super.dispose();
@@ -411,7 +407,9 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   @override
   void showLoading(bool isLoading) {
-
+    setState(() {
+      isCodeSending = isLoading;
+    });
   }
 
   @override

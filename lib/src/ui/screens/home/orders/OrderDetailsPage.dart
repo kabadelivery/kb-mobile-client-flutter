@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/order_details_contract.dart';
+import 'package:kaba_flutter/src/contracts/order_feedback_contract.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
 import 'package:kaba_flutter/src/models/UserTokenModel.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
+import 'package:kaba_flutter/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toast/toast.dart';
 
 class OrderDetailsPage extends StatefulWidget {
 
@@ -105,15 +108,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(top:15, bottom:15, right:10, left:10),
-                  color: Utils.getStateColor(widget.command.state),child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                  color: Utils.getStateColor(widget?.command?.state),child: Row(mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                   widget.command.is_preorder == 0 ? Container() :  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: Colors.white.withAlpha(100)),child: Text("Pre", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(8)),
+                      widget?.command?.is_preorder == 0 ? Container() :  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: Colors.white.withAlpha(100)),child: Text("Pre", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(8)),
                       SizedBox(width: 5),
                       Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white)),
                     ],
                   )),
               /* Progress line */
-              Container(child: _getProgressTimeLine(widget.command), margin: EdgeInsets.only(top:10, bottom:10),),
+              Container(child: _getProgressTimeLine(widget?.command), margin: EdgeInsets.only(top:10, bottom:10),),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
@@ -129,6 +132,32 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   ),
                 ),
               ),
+              (widget.command.state == 3 && widget.command.rating < 1 ? SizedBox(height: 10) : Container()),
+              (widget.command.state == 3 && widget.command.rating < 1 ?
+              Container(padding: EdgeInsets.all(10), margin: EdgeInsets.only(left:10, right:10, top:20, bottom:10),decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: Container(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Center(child: Text("RATING", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
+                        SizedBox(height: 5),
+                        Row(children: <Widget>[]
+                          ..addAll(
+                              List<Widget>.generate(widget?.command?.rating, (int index) {
+                                return Icon(Icons.star, color: KColors.primaryYellowColor, size: 20);
+                              })
+                          )),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Flexible(child: Text(widget?.command?.comment, textAlign: TextAlign.left, style: TextStyle(color:Colors.white, fontSize: 17))),
+                          ],
+                        )
+                      ]
+                  ),
+                )) :  Container()
+              ),
+              (widget.command.rating < 1 && Utils.within3days(widget.command?.last_update) ? SizedBox(height: 10) : Container()),
               /* your contact */
               Container(
                 color: Colors.white,
@@ -145,10 +174,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Command key", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${widget.command.state != COMMAND_STATE.WAITING && widget.command.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
+                  Flexible (child: Text("${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
                 ]),
               ),
-            ]..addAll(widget.command.state > COMMAND_STATE.COOKING && widget.command.state < COMMAND_STATE.REJECTED ?
+            ]..addAll(widget?.command?.state > COMMAND_STATE.COOKING && widget?.command?.state < COMMAND_STATE.REJECTED ?
             <Widget>[
               SizedBox(height: 10),
               /* KABA man name */
@@ -214,7 +243,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               ),
               SizedBox(height: 10),
               widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Container(margin: EdgeInsets.only(top:10, bottom:10),color: CommandStateColor.delivered, padding: EdgeInsets.all(10), child: Row(
-               mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text("Infos:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
                   SizedBox(width: 10),
@@ -229,14 +258,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   }))),
               SizedBox(height: 10),
               /* bill */
-              _buildBill()
+              _buildBill(),
             ]
             ))
     );
   }
 
   String _orderTopLabel(CommandModel command) {
-    switch(widget.command.state) {
+    switch(widget?.command?.state) {
       case 0:
         return "ORDER IS WAITING";
       case 1:
@@ -269,15 +298,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
 
-              widget.command.state == COMMAND_STATE.WAITING ?
+              widget?.command?.state == COMMAND_STATE.WAITING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.waiting, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("En attente", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
           )),
           Expanded(flex:0,
-            child: Container(child: Icon(Icons.watch_later, size: widget.command.state == COMMAND_STATE.WAITING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: widget.command.state != COMMAND_STATE.WAITING ? PASSIVE_COLOR : Colors.grey)),
+            child: Container(child: Icon(Icons.watch_later, size: widget?.command?.state == COMMAND_STATE.WAITING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget?.command?.state != COMMAND_STATE.WAITING ? PASSIVE_COLOR : Colors.grey)),
           ),
           Expanded(flex: 2,child: Container()),
         ],
@@ -296,13 +325,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
         children: <Widget>[
           Expanded(flex: 2,child: Container()),
           Expanded(flex: 0,
-            child: Container(child: Icon(FontAwesomeIcons.utensils, size: widget.command.state == COMMAND_STATE.COOKING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: widget.command.state != COMMAND_STATE.COOKING ? PASSIVE_COLOR : CommandStateColor.cooking)),
+            child: Container(child: Icon(FontAwesomeIcons.utensils, size: widget?.command?.state == COMMAND_STATE.COOKING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget?.command?.state != COMMAND_STATE.COOKING ? PASSIVE_COLOR : CommandStateColor.cooking)),
           ),
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: 10),
-              widget.command.state == COMMAND_STATE.COOKING ?
+              widget?.command?.state == COMMAND_STATE.COOKING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.cooking, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("COOKING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
@@ -319,15 +348,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
 
-              widget.command.state == COMMAND_STATE.SHIPPING ?
+              widget?.command?.state == COMMAND_STATE.SHIPPING ?
               Container(decoration: BoxDecoration(color: CommandStateColor.shipping, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("SHIPPING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
           )),
           Expanded(flex:0,
-            child: Container(child: Icon(FontAwesomeIcons.biking, size: widget.command.state == COMMAND_STATE.SHIPPING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-                color: widget.command.state != COMMAND_STATE.SHIPPING ? PASSIVE_COLOR : CommandStateColor.shipping)),
+            child: Container(child: Icon(FontAwesomeIcons.biking, size: widget?.command?.state == COMMAND_STATE.SHIPPING ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+                color: widget?.command?.state != COMMAND_STATE.SHIPPING ? PASSIVE_COLOR : CommandStateColor.shipping)),
           ),
           Expanded(flex: 2,child: Container()),
         ],
@@ -340,13 +369,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
       Row(
         children: <Widget>[
           Expanded(flex: 2,child: Container()),
-          Container(child: Icon(Icons.check_circle, size: widget.command.state == COMMAND_STATE.DELIVERED ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
-              color: widget.command.state != COMMAND_STATE.DELIVERED ? PASSIVE_COLOR : CommandStateColor.delivered)
+          Container(child: Icon(Icons.check_circle, size: widget?.command?.state == COMMAND_STATE.DELIVERED ? PROGRESS_ICON_SIZE_ACTIVE : PROGRESS_ICON_SIZE_PASSIVE,
+              color: widget?.command?.state != COMMAND_STATE.DELIVERED ? PASSIVE_COLOR : CommandStateColor.delivered)
           ),
           Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: 10),
-              widget.command.state == COMMAND_STATE.DELIVERED ?
+              widget?.command?.state == COMMAND_STATE.DELIVERED ?
               Container(decoration: BoxDecoration(color: CommandStateColor.delivered, borderRadius: BorderRadius.all(Radius.circular(5))),   child: Text("DELIVERED", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
@@ -357,12 +386,36 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   }
 
   @override
-  void inflateOrderDetails(CommandModel command) {
+  Future<void> inflateOrderDetails(CommandModel command) async {
     showLoading(false);
     setState(() {
       widget.command = command;
     });
+
+    // this will happen 2 seconds after
+    Future.delayed(Duration(seconds: 2), () async {
+      if (command.rating < 1 && Utils.within3days(command?.last_update) && command.state == 3 /*within 3 days, you can still do it.*/) {
+        // must review.
+        /* jump to review pager. */
+        Map results = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderFeedbackPage(orderId: widget?.command?.id, presenter: OrderFeedbackPresenter()),
+          ),
+        );
+        if (results != null && results.containsKey('ok')) {
+          bool feedBackOk = results['ok'];
+          if (feedBackOk) {
+            widget.presenter.fetchOrderDetailsWithId(widget.customer, widget?.command?.id);
+          }
+        }
+      } else {
+        // can't review or we don't have to review.
+//        Toast.show("cant post review", context);
+      }
+    });
   }
+
 
   @override
   void logoutTimeOutSuccess() {
@@ -417,7 +470,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     bool showRemise = true, showDeliveryNormal=true, showFoodNormal= true;
 
     // depends
-    if (widget.command.is_preorder == 1) {
+    if (widget?.command?.is_preorder == 1) {
       priceTotalToPay = widget.command.preorder_food_pricing;
       priceActualCommand = widget.command.preorder_food_pricing;
       priceActualDelivery = widget.command.preorder_shipping_pricing;
@@ -429,7 +482,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
       priceActualDelivery = widget.command.promotion_shipping_pricing;
       priceNormalCommand = widget.command.food_pricing;
       priceNormalDelivery = widget.command.shipping_pricing;
-    } else if (widget.command.is_promotion == 0 && widget.command.is_preorder == 0) {
+    } else if (widget.command.is_promotion == 0 && widget?.command?.is_preorder == 0) {
       priceTotalToPay = widget.command.total_pricing;
       priceActualCommand = widget.command.food_pricing;
       priceActualDelivery = widget.command.shipping_pricing;
@@ -478,7 +531,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               /* check if there is promotion on Livraison */
               Row(
                 children: <Widget>[
-                  widget.command.is_preorder == 1 || widget.command.is_promotion==1 ?
+                  widget?.command?.is_preorder == 1 || widget?.command?.is_promotion==1 ?
                   Row( // only show if there is pre-order or promotion on the fees of delivery
                     children: <Widget>[
                       Text("($priceNormalDelivery)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 15)),
@@ -502,7 +555,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
               Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              Text("${widget.command.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
+              Text("${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
             ]),
             SizedBox(height: 10),
             (int.parse(widget.command?.remise) > 0 ? Container (

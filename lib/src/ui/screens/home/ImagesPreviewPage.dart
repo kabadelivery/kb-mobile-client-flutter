@@ -48,6 +48,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           leading: IconButton(icon: SizedBox(
               height: 25,

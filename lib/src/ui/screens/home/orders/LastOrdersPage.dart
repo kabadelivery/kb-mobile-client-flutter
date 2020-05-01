@@ -36,6 +36,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
 
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
           backgroundColor: Colors.white,
           title: Text("LAST ODERS", style:TextStyle(color:KColors.primaryColor)),

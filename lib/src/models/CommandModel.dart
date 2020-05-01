@@ -50,6 +50,9 @@ class CommandModel {
   int preorder = 0;///////
   DeliveryTimeFrameModel preorder_hour;
 
+  int rating;
+  String comment;
+
 
   CommandModel({this.id, this.restaurant_id, this.state,
     this.shipping_address, this.restaurant_entity, this.food_list,
@@ -60,8 +63,6 @@ class CommandModel {
     this.promotion_total_pricing, this.promotion_shipping_pricing,
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
     this.preorder_discount, this.preorder, this.preorder_hour});
-
-
 
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -76,6 +77,8 @@ class CommandModel {
     passphrase = json['passphrase'];
     reason = json['reason'];
     infos = json['infos'];
+    rating = json["rating"];
+    comment = json["comment"];
 
     passphrase = json['passphrase'];
     reason = json['reason'];
@@ -136,8 +139,25 @@ class CommandModel {
     "is_payed_at_arrival" : is_payed_at_arrival,
     "passphrase" : passphrase,
     "reason" : reason,
-    "infos" : infos
+    "infos" : infos,
+    "rating" : rating,
+    "comment" : comment
   };
+
+
+
+  CommandModel.LitefromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    state = json['state'];
+    last_update = "${json['last_update']}";
+  }
+
+  Map LitetoJson() => {
+    "id" : id,
+    "state" : state,
+    "last_update" : last_update,
+  };
+
 
   @override
   String toString() {

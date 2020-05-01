@@ -66,6 +66,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     widget.presenter.editAddressView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
+      _getLastKnowLocation();
     });
   }
 
@@ -73,6 +74,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
         title: Text("EDIT ADDRESS", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
@@ -131,7 +133,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
                                         return _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,))) : Container();
                                       }
                                   ),
-                                  _checkLocationLoading && address?.location != null ? Container() :   Icon(Icons.check_circle, color: KColors.primaryColor),
+                                  !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
                                   Icon(Icons.chevron_right, color: KColors.primaryColor)
                                 ]),
@@ -347,6 +349,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
   @override
   void inflateDetails(String addressDetails) {
 
+  }
+
+  Future _getLastKnowLocation() async {
+
+    // save in to state container.
+    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    if (position != null)
+      StateContainer.of(context).updateLocation(location: position);
   }
 
   @override

@@ -39,6 +39,7 @@ class LoginPresenter implements LoginContract {
       return;
     isWorking = true;
     try {
+      _loginView.showLoading(true);
     String jsonContent = await provider.loginAction(
         login: login, password: password);
       print(jsonContent);
@@ -63,6 +64,7 @@ class LoginPresenter implements LoginContract {
         _loginView.loginFailure("System error");
     }
     isWorking = false;
+    _loginView.showLoading(false);
   }
 
   set loginView(LoginView value) {

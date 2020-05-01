@@ -63,6 +63,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {

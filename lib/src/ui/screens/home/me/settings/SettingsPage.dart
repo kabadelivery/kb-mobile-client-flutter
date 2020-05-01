@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
@@ -30,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child:Container(
             child: Column(
                 children: <Widget>[
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.security, color: KColors.primaryColor), onPressed: null),title: Text("Change Account Password", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.security, color: KColors.primaryColor), onPressed: ()=>_jumpToRecoverPage()),  onTap: ()=>_jumpToRecoverPage(),title: Text("Change Account Password", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
                   Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE),), onTap: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE), title: Text("Terms and Conditions", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
@@ -59,4 +61,14 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+  _jumpToRecoverPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+      ),
+    );
+  }
+
 }

@@ -50,6 +50,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar (
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
         title: Container(decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),

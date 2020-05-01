@@ -56,6 +56,7 @@ class RegisterPresenter implements RegisterContract {
       return;
     isWorking = true;
 
+    _registerView.showLoading(true);
     String jsonContent = await provider.checkRequestCodeAction(code, requestId);
     int error = json.decode(jsonContent)["error"];
 
@@ -70,6 +71,7 @@ class RegisterPresenter implements RegisterContract {
     }
 
     isWorking = false;
+    _registerView.showLoading(false);
     _registerView.codeRequestSentOk(); /*  */
   }
 

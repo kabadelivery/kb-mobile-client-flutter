@@ -165,4 +165,103 @@ class OrderApiProvider {
       throw Exception(-2); // there is an error in your request
     }
   }
+
+  Future<int> sendFeedback(CustomerModel customer, int orderId, int rating, String message) async {
+
+//    *rate : “4”
+//    *command_id : “8834”,
+//    comment: “The delivery man was very rude”,
+
+    DebugTools.iPrint("entered sendFeedback");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_SEND_ORDER_FEEDBACK,
+          body:  json.encode({"command_id": orderId, "rate": rating, "comment" : message}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      ).timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        return json.decode(response.body)["error"];
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // there is an error in your request
+    }
+
+  }
+
+  launchPreorderOrder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    var device;
+
+    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+    String token = await firebaseMessaging.getToken();
+
+    if (Platform.isAndroid) {
+      // Android-specific code
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+      device = json.encode({
+        'os_version':'${androidInfo.version.baseOS}',
+        'build_device':'${androidInfo.device}',
+        'version_sdk':'${androidInfo.version.sdkInt}',
+        'build_model':'${androidInfo.model}',
+        'build_product':'${androidInfo.product}',
+        'push_token':'$token'
+      });
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+      device = json.encode({
+        'os_version':'${iosInfo.systemVersion}',
+        'build_device':'${iosInfo.utsname.sysname}',
+        'version_sdk':'${iosInfo.utsname.version}',
+        'build_model':'${iosInfo.model}',
+        'build_product':'${iosInfo.model}',
+        'push_token':'$token'
+      });
+    }
+
+    DebugTools.iPrint("entered payAtDelivery");
+    if (await Utils.hasNetwork()) {
+
+      List<Object> food_quantity = List();
+
+      foods.forEach((food_item, quantity) => {
+        food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
+      });
+
+
+      var _data = json.encode({
+        'food_command': food_quantity,
+        'pay_at_delivery': false,
+        'pre_order' : 1,
+        'pre_order_hour' : json.encode({"start": start, "end":end}),
+        'shipping_address': selectedAddress.id,
+        'transaction_password' : '$mCode',
+        'infos' : '$infos',
+        'device': device, // device informations
+        'push_token':'$token', // push token
+      });
+
+
+      print("000 _ "+_data.toString());
+
+      final response = await client
+          .post(ServerRoutes.LINK_CREATE_COMMAND,
+          body:  _data,
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 60));
+      print("001 _ "+response.body.toString());
+      if (response.statusCode == 200) {
+        // if ok, send true or false
+        return json.decode(response.body)["error"];
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // you have no right to do this
+    }
+  }
 }

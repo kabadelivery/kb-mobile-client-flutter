@@ -241,5 +241,8 @@ class ServerRoutes {
 
   static const  String LINK_CHECK_SPONSORSHIP_ENABLED = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/sponsoring/enabled/check";
 
+  static const String LINK_SEND_ORDER_FEEDBACK = ServerConfig.SERVER_ADDRESS +"/mobile/api/command/delivery/rate";
+
+  static const String  LINK_TOPUP_FEES_RATE = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get";
 
 }

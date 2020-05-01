@@ -35,6 +35,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: Colors.white,
         title: Text("INPUT PASSWORD", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.close, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),

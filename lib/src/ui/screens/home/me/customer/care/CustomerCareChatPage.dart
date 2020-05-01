@@ -57,7 +57,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.yellow,
-      appBar: AppBar(leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+      appBar: AppBar(brightness: Brightness.light,leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
           backgroundColor: Colors.white, title: Text("Customer Care", style:TextStyle(color:KColors.primaryColor))),
       body: Container(
           child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():

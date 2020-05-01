@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/models/CommandModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -12,7 +13,6 @@ class DailyOrdersPage extends StatefulWidget {
 
   CustomerModel customer;
 
-
   DailyOrdersPage({Key key}) : super(key: key);
 
   @override
@@ -20,7 +20,6 @@ class DailyOrdersPage extends StatefulWidget {
 }
 
 class _DailyOrdersPageState extends State<DailyOrdersPage> {
-
 
   @override
   void initState() {
@@ -37,23 +36,26 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
 
     return Scaffold(
         backgroundColor: Colors.white,
-        body:  StreamBuilder(
-            stream: userDataBloc.mDailyOrders,
-            builder: (context, AsyncSnapshot<List<CommandModel>> snapshot) {
-              if (snapshot.hasData) {
-                return _buildOrderList(snapshot.data);
-              } else if (snapshot.hasError) {
-                if (snapshot.connectionState == ConnectionState.none)
-                  return ErrorPage(message: "Network Issue",onClickAction: (){
-                      userDataBloc.fetchDailyOrders(widget.customer);
-                  });
-                else
-                  return ErrorPage(message: "System error Issue",onClickAction: (){
-                      userDataBloc.fetchDailyOrders(widget.customer);
-                  });
-              }
-              return Center(child: CircularProgressIndicator());
-            }));
+        body:  AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: StreamBuilder(
+              stream: userDataBloc.mDailyOrders,
+              builder: (context, AsyncSnapshot<List<CommandModel>> snapshot) {
+                if (snapshot.hasData) {
+                  return _buildOrderList(snapshot.data);
+                } else if (snapshot.hasError) {
+                  if (snapshot.connectionState == ConnectionState.none)
+                    return ErrorPage(message: "Network Issue",onClickAction: (){
+                        userDataBloc.fetchDailyOrders(widget.customer);
+                    });
+                  else
+                    return ErrorPage(message: "System error Issue",onClickAction: (){
+                        userDataBloc.fetchDailyOrders(widget.customer);
+                    });
+                }
+                return Center(child: CircularProgressIndicator());
+              }),
+        ));
   }
 
   _buildOrderList(List<CommandModel> data) {

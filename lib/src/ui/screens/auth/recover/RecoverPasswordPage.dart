@@ -1,8 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/contracts/login_contract.dart';
+import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 
 class RecoverPasswordPage extends StatefulWidget {
@@ -11,60 +19,380 @@ class RecoverPasswordPage extends StatefulWidget {
 
   CustomerModel customer;
 
-  RecoverPasswordPage({Key key, this.title}) : super(key: key);
+  RecoverPasswordPresenter presenter;
 
-  final String title;
+  RecoverPasswordPage({Key key, this.presenter}) : super(key: key);
 
   @override
   _RecoverPasswordPageState createState() => _RecoverPasswordPageState();
 }
 
-class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
+class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements RecoverPasswordView {
 
-@override
+
+  List<String> recoverModeHints = ["Insert the Phone number you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
+    /*"Insert your E-mail address"*/];
+
+  String _loginFieldHint = "90 XX XX XX";
+
+  TextEditingController _loginFieldController = new TextEditingController();
+  TextEditingController _codeFieldController = new TextEditingController();
+
+  bool isCodeSent = false;
+  bool isLoginError = false;
+  bool isCodeError = false;
+
+  /* circle loading progressing */
+  bool isCodeSending = false;
+
+  int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
+
+  int timeDiff = 0;
+
+  String _requestId;
+
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    CustomerUtils.getCustomer().then((customer){
-      widget.customer = customer;
+    this.widget.presenter.recoverPasswordView = this;
+    CustomerUtils.getCustomer().then((customer) {
+      if (customer != null && customer.phone_number != null) {
+        setState(() {
+          _loginFieldController.text = customer.phone_number;
+        });
+      }
     });
+    /* retrieve state of the app */
+    _retrieveRequestParams();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: Colors.white,
           title: Text("RECOVER PASSWORD", style:TextStyle(color:KColors.primaryColor)),
-          leading: IconButton(icon: Icon(Icons.close, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
         ),
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child:Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 100),
-                  Text('RECOVER PASSWORD', style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 100),
-                  SizedBox(width: 250,
-                      child: Container(
-                          padding: EdgeInsets.all(14),
-                          child: TextField(decoration: InputDecoration.collapsed(hintText: "Identifier"), maxLength: 8, keyboardType: TextInputType.number, style: TextStyle(color:KColors.primaryColor)),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
-                  SizedBox(height: 30),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:<Widget>[
-                        MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Text("RECOVER", style: TextStyle(fontSize: 14, color: Colors.white), ), onPressed: () {}),
-                      ]),
-                ]
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            child:Center(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 30),
+                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
+                    SizedBox(height: 10),
+                    SizedBox(width: 250,
+                        child: Container(
+                            padding: EdgeInsets.all(14),
+                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.primaryColor)),
+                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                        )),
+
+                    SizedBox(height: 30),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:<Widget>[
+                          isCodeSent ?
+                          SizedBox(width: 80,
+                              child: Container(
+                                  padding: EdgeInsets.all(14),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
+//                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
+                          ) : Container(),
+                          isCodeSent ? SizedBox(width:20) : Container(),
+                          OutlineButton(
+                              borderSide: BorderSide(
+                                color: KColors.primaryColor, //Color of the border
+                                style: BorderStyle.solid, //Style of the border
+                                width: 0.8, //width of the border
+                              ),
+                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Row(
+                            children: <Widget>[
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} s" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              /* stream builder, that shows that the code is been sent */
+                              isCodeSent == false &&  isCodeSending ? Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                ],
+                              ) : Container(),
+                            ],
+                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
+                        ]),
+                    SizedBox(height: 30),
+                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text("RECOVER PASSWORD", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width: 10),
+                        isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
+                      ],
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
+                  ]
+              ),
             ),
           ),
         ));
   }
 
-  void _moveToRegisterPage() {
-    Navigator.of(context).pushNamed(RegisterPage.routeName);
+  void _handleRadioValueChange (int value) {
+    setState(() {
+      /* clean the content */
+      if (isCodeSent)
+        return;
+      this._loginFieldController.text = "";
+      this._codeFieldController.text = "";
+    });
   }
+
+  void _sendCodeAction() {
+
+    /* logins */
+    String login = _loginFieldController.text;
+    /* check the fields */
+
+    /* phone number */
+    String phoneNumber = login;
+    if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
+      setState(() {
+        isLoginError = true;
+      });
+      return;
+    }
+
+    /* setState(() {
+      isCodeSending = true;
+    });*/
+    /* send request, to the server, and if ok, save request params and update fields. */
+    ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
+    this.widget.presenter.sendVerificationCode(login);
+    /* _save request params */
+  }
+
+  _clearSharedPreferences () async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("vlcst");
+    prefs.remove("vl");
+    prefs.remove("vri");
+    prefs.clear();
+  }
+
+  _saveRequestParams (String login, String requestId) async {
+    /* check the content */
+    /* save type of request */
+    /* save login */
+    /* save start-time */
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('vlcst', "${DateTime.now().millisecondsSinceEpoch~/1000}"); /*DateTime.now().*/
+    await prefs.setString('vl', login);
+    await prefs.setString('vri', requestId);
+
+    this._requestId = requestId;
+    _loginFieldController.text = login;
+  }
+
+  _retrieveRequestParams () async {
+
+    /* get type of request saved */
+    /* get login */
+    /* get start-time */
+
+    String login;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String tmp = prefs.getString("vlcst");
+    login = prefs.getString("vl");
+
+    DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
+
+    try {
+      lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
+    } catch (_) {
+      print("ERROR");
+      return;
+    }
+
+    _loginFieldController.text = login;
+
+    if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+
+      /* if code sent, do something else,  */
+      isCodeSent = true;
+      this._requestId = prefs.getString("vri");
+      _loginFieldController.text = prefs.getString("vl");
+
+      mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+          setState(() {
+            isCodeSent = false;
+          });
+          _clearSharedPreferences();
+          timer.cancel();
+        } else {
+          /* update text;;; if codeIsSent */
+          setState(() {
+            /* convert into minutes, and show it */
+            Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
+            timeDiff = duration.inSeconds;
+          });
+        }
+      });
+    }
+  }
+
+  Timer mainTimer;
+
+  @override
+  void dispose() {
+    try {
+      mainTimer.cancel();
+    } catch(_) {
+//      mToast("Time cancel error");
+      print(_);
+    }
+    super.dispose();
+  }
+
+
+  void _onLoginFieldTextChanged(String value) {
+    setState(() {
+      isLoginError = false;
+    });
+  }
+
+
+
+  void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
+
+  @override
+  Future codeIsOk(bool isOk) async {
+
+    /* jump to setup code activity */
+    setState(() {
+      isCodeSending = false;
+    });
+    String _mCode1, _mCode2;
+    if (isOk) {
+      /* clear shared preferences */
+      _clearSharedPreferences();
+      var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return new RetrievePasswordPage(type: 1);
+        },
+      ));
+      if (results != null && results.containsKey('code') && results.containsKey('type')) {
+        _mCode1 = results['code'];
+        int type = results['type'];
+        /* launch confirmation */
+        _mCode2 = "";
+        do {
+          var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) {
+              return new RetrievePasswordPage(type: 2);
+            },
+          ));
+          if (results != null && results.containsKey('code') && results.containsKey('type')) {
+            _mCode2 = results['code'];
+          }
+        } while (_mCode1 != _mCode2);
+      }
+
+      /* launch create account request, and if success*/
+      widget.presenter.updatePassword(_loginFieldController.text, _mCode1, _requestId);
+      /*this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
+          phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
+          email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
+          request_id: this._requestId
+      );*/
+    }
+  }
+
+  @override
+  void disableCodeButton(bool isDisabled) {
+  }
+
+  @override
+  void keepRequestId(String login, String requestId) {
+    /* save the id somewhere in my .... */
+    print("request Id ${requestId}");
+
+    this._requestId = requestId;
+    /* start minute-count of the seconds into the message thing */
+    _saveRequestParams(login, requestId);
+    _retrieveRequestParams();
+    setState(() {
+      isCodeSent = true;
+    });
+  }
+
+  @override
+  void onNetworkError() {
+    mToast("onNetworkError");
+  }
+
+  @override
+  void onSysError({String message = ""}) {
+    mToast(message);
+  }
+
+
+
+
+  @override
+  void showLoading(bool isLoading) {
+
+  }
+
+  @override
+  void toast(String message) {
+    mToast(message);
+  }
+
+  @override
+  void userExistsAlready() {
+    mToast("user Exists Already");
+  }
+
+
+  _checkCodeAndCreateAccount() {
+
+    /* check request id and the code */
+    String _code = _codeFieldController.text;
+    if (Utils.isCode(_code)) {
+      setState(() {
+        isCodeSending = false;
+      });
+      this.widget.presenter.checkVerificationCode(
+          _codeFieldController.text, this._requestId);
+    } else {
+      mToast("CODE IS WRONG");
+    }
+  }
+
+  @override
+  void sendVerificationCodeLoading(bool isLoading) {
+    setState(() {
+      isCodeSending = isLoading;
+    });
+  }
+
+  @override
+  void recoverFails() {
+    mToast("Sorry password recovery can't happen now. Please try again.");
+  }
+
+  @override
+  void recoverSuccess(String phoneNumber, String newCode) {
+    /* send to login page and */
+    mToast("Password updated successfully");
+    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (BuildContext context) => LoginPage(presenter: LoginPresenter(), phone_number: phoneNumber, password: newCode, autoLogin: true)), (
+        r) => false);
+  }
+
 }
