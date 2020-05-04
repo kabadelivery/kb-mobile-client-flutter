@@ -120,7 +120,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
              decoration: BoxDecoration(
                  image: new DecorationImage(
                      fit: BoxFit.cover,
-                     image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
+                     image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/newmessage.gif"))
                  )
              ),
            ), onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()))),

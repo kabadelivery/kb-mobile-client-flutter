@@ -8,7 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/PresentationPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,31 +34,48 @@ class _SplashPageState extends State<SplashPage> {
     // TODO: implement initState
     super.initState();
     startTimeout();
-//    if (Platform.isIOS) {
-//      FlutterStatusbarManager.setStyle(StatusBarStyle.LIGHT_CONTENT).then((onValue)=>{});
-//    }
   }
 
   Future handleTimeout() async {
-    StatefulWidget launchPage =  LoginPage(presenter: LoginPresenter());
+
+    /* check if first opening the app */
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String expDate = prefs.getString("_login_expiration_date");
-    if (expDate != null) {
-      if (DateTime.now().isAfter(DateTime.parse(expDate))) {
-        /* session expired : clean params */
-        prefs.remove("_customer");
-        prefs.remove("_token");
-        prefs.remove("_login_expiration_date");
+
+    bool isFirstTime = await _getIsFirstTime();
+
+    if (isFirstTime) {
+      // jump to presentation screens
+      _jumpToFirstTimeScreen();
+    } else {
+
+      // am i ok with the terms and conditions?
+      bool isOkWithTerms = await _getIsOkWithTerms();
+
+      if (!isOkWithTerms) {
+        // jump to terms page.
+        _jumpToTermsPage();
       } else {
-        launchPage = HomePage();
+        StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
+        prefs = await SharedPreferences.getInstance();
+        String expDate = prefs.getString("_login_expiration_date");
+        if (expDate != null) {
+          if (DateTime.now().isAfter(DateTime.parse(expDate))) {
+            /* session expired : clean params */
+            prefs.remove("_customer");
+            prefs.remove("_token");
+            prefs.remove("_login_expiration_date");
+          } else {
+            launchPage = HomePage();
+          }
+        }
+        Navigator.of(context).pushReplacement(new MaterialPageRoute(
+            builder: (BuildContext context) => launchPage));
       }
     }
-    Navigator.of(context).pushReplacement(new MaterialPageRoute(
-        builder: (BuildContext context) => launchPage));
   }
 
   startTimeout() async {
-    var duration = const Duration(seconds: 0);
+    var duration = const Duration(milliseconds: 1500);
     return new Timer(duration, handleTimeout);
   }
 
@@ -84,6 +104,56 @@ class _SplashPageState extends State<SplashPage> {
                       style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
                 ]
             )),
+      ),
+    );
+  }
+
+  Future<bool> _getIsFirstTime() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = true;
+    try {
+      // prove me it's not first time
+      isFirstTime = prefs.getBool("_first_time");
+    } catch(_){
+      // is first time
+      isFirstTime = true;
+    }
+    if (isFirstTime == null)
+      isFirstTime = true;
+    return isFirstTime;
+  }
+
+  Future<bool> _getIsOkWithTerms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isOkWithTerms = false;
+    try {
+      // prove me it's not first time
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
+    } catch(_){
+      // is first time
+      isOkWithTerms = false;
+    }
+    if (isOkWithTerms == null)
+      isOkWithTerms = false;
+    return isOkWithTerms;
+  }
+
+  void _jumpToFirstTimeScreen() {
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PresentationPage(),
+      ),
+    );
+  }
+
+  void _jumpToTermsPage() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WebViewPage(title: "CGU",link: ServerRoutes.CGU_PAGE, agreement: true),
       ),
     );
   }

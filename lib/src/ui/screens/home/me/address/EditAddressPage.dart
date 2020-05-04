@@ -15,7 +15,6 @@ import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart' as Pp;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:permission_handler/permission_handler.dart' as prefix0;
 
 
 class EditAddressPage extends StatefulWidget {
@@ -192,7 +191,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     if(geolocationStatus == GeolocationStatus.granted) {
       _jumpToPickAddressPage();
     } else {
-      Map<PermissionGroup, prefix0.PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
+      Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
       geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
       if(geolocationStatus != GeolocationStatus.granted) {
         _jumpToPickAddressPage();

@@ -49,9 +49,13 @@ dependencies:
   flutter_local_notifications: ^1.1.6
   url_launcher: ^5.4.5
   flare_flutter: ^2.0.3
+  tinycolor: ^1.0.2
+  nice_intro:
+    git:
+      url: https://github.com/blackgerman/nice_intro.git
 
-#  flutter_statusbar_manager: ^1.0.2
-#  flutter_inappwebview: ^2.1.0+1
+  #  flutter_statusbar_manager: ^1.0.2
+  #  flutter_inappwebview: ^2.1.0+1
   package_info: ^0.4.0+3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -93,7 +97,7 @@ flutter:
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_copyright_presentation.png
     - assets/images/png/ic_transaction_success.png
-#    - assets/sound/command_success_hold_on.mp3
+  #    - assets/sound/command_success_hold_on.mp3
 
   #  - images/a_dot_ham.jpeg
 

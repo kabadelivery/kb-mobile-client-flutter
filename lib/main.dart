@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     var initializationSettingsAndroid = new AndroidInitializationSettings('kaba_icon');
 
     var initializationSettingsIOS = IOSInitializationSettings(
-      requestBadgePermission: true,
+        requestBadgePermission: true,
         requestAlertPermission: true,
         requestSoundPermission: true,
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
@@ -123,21 +123,22 @@ class _MyAppState extends State<MyApp> {
       ],
       onGenerateTitle: (BuildContext context) =>
       "KABA",
-            theme: ThemeData(primarySwatch: KColors.colorCustom),
+      theme: ThemeData(primarySwatch: KColors.colorCustom),
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
       home: SplashPage(),
 //    home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
-//home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
-//      home: TransactionHistoryPage(presenter: TransactionPresenter()),
-//      home: TopUpPage(presenter: TopUpPresenter()),
-//      home: FeedsPage(presenter: FeedPresenter(),),
-//         home: EvenementPage(presenter: EvenementPresenter(),),
-//      home: TestPage(),
-   //   home: TopUpPage(presenter: TopUpPresenter()),
-//      home: WebViewPage(),
-//      home: TransferMoneySuccessPage(),
+//    home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
+//    home: TransactionHistoryPage(presenter: TransactionPresenter()),
+//    home: TopUpPage(presenter: TopUpPresenter()),
+//    home: FeedsPage(presenter: FeedPresenter(),),
+//    home: EvenementPage(presenter: EvenementPresenter(),),
+//    home: TestPage(),
+//    home: TopUpPage(presenter: TopUpPresenter()),
+//    home: WebViewPage(agreement: true),
+//    home: WebTestPage(),
+//    home: TransferMoneySuccessPage(),
       routes: generalRoutes,
     );
   }

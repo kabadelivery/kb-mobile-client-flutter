@@ -1,7 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:kaba_flutter/src/contracts/login_contract.dart';
+import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 
@@ -9,7 +15,9 @@ class WebViewPage extends StatefulWidget {
 
   static var routeName = "/WebViewPage";
 
-  WebViewPage({Key key, this.title="CGU", this.link="http://app1.kaba-delivery.com/page/cgu"}) : super(key: key);
+  bool agreement;
+
+  WebViewPage({Key key, this.title="CGU", this.link="http://app1.kaba-delivery.com/page/cgu", this.agreement = false}) : super(key: key);
 
   final String title, link;
 
@@ -19,10 +27,10 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
 
-  final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
 
-  bool _pageLoading = false;
+  bool _pageLoading = true;
+  bool _pageError = false;
 
   @override
   void initState() {
@@ -43,7 +51,6 @@ class _WebViewPageState extends State<WebViewPage> {
                 widget.title, style: TextStyle(color: KColors.primaryColor))),
         body: Stack(
           children: <Widget>[
-           _pageLoading ? Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)))) : Container(),
             Builder(builder: (BuildContext context) {
               return WebView(
                 initialUrl: '${widget.link}',
@@ -51,9 +58,7 @@ class _WebViewPageState extends State<WebViewPage> {
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
                 },
-                javascriptChannels: <JavascriptChannel>[
-//              _toasterJavascriptChannel(context),
-                ].toSet(),
+                javascriptChannels: <JavascriptChannel>[].toSet(),
                 navigationDelegate: (NavigationRequest request) {
                   if (!request.url.contains("kaba") && !request.url.contains("pay")) {
                     print('blocking navigation to $request}');
@@ -64,9 +69,9 @@ class _WebViewPageState extends State<WebViewPage> {
                 },
                 onPageStarted: (String url) {
                   print('Page started loading: $url');
-                setState(() {
-                  _pageLoading = true;
-                });
+                  setState(() {
+                    _pageLoading = true;
+                  });
                 },
                 onPageFinished: (String url) {
                   setState(() {
@@ -77,11 +82,39 @@ class _WebViewPageState extends State<WebViewPage> {
                 gestureNavigationEnabled: true,
               );
             }),
+            _pageLoading ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor))) : Container(),
+            _pageError ? Center(child: ErrorPage(onClickAction: ()=> {})) : Container(),
+            !_pageError && !_pageLoading && widget.agreement ? Positioned(bottom:0,child:
+            Container(padding: EdgeInsets.only(top:10, bottom:30),color: Colors.white.withAlpha(250), width: MediaQuery.of(context).size.width, child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: <Widget>[
+              /* accept or say no */
+              RaisedButton(child:Text("Accept", style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: () => _acceptTerms(true)),
+              RaisedButton(child:Text("Refuse", style: TextStyle(color: Colors.black)), color: KColors.white,  onPressed: () => _acceptTerms(false)),
+            ])
+            )) : Container()
           ],
         )
     );
   }
 
+  _acceptTerms(bool accept) async {
 
+    if (accept) {
+      //
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool("_is_ok_with_terms", true);
 
+      // jump to login page.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(presenter: LoginPresenter()),
+        ),
+      );
+
+    } else {
+      // close app.
+      Navigator.pop(context);
+    }
+  }
 }

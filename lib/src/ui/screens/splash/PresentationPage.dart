@@ -1,0 +1,131 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
+import 'package:nice_intro/nice_intro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tinycolor/tinycolor.dart';
+
+class PresentationPage extends StatefulWidget {
+
+  static var routeName = "/SplashPage";
+
+  PresentationPage({Key key}) : super(key: key);
+
+
+  @override
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<PresentationPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var screens = IntroScreens(
+      onDone: () => _endOfTheSlides(),
+      onSkip: () => _skipPresentation(),
+      footerBgColor: TinyColor.fromString("#cc1641").lighten().color,
+      activeDotColor: Colors.white,
+      footerRadius: 18.0,
+//      indicatorType: IndicatorType.CIRCLE,
+      slides: [
+        IntroScreen(
+          title: 'Choice',
+          mChild: CachedNetworkImage(
+              imageUrl: "https://www._moodynfoody.com/wp-content/uploads/2019/08/food-3.jpg",
+              fit: BoxFit.contain
+          ),
+          description: 'Choose your menu',
+          headerBgColor: Colors.white,
+        ),
+        IntroScreen(
+          title: 'Payment',
+          headerBgColor: Colors.white,
+          mChild: CachedNetworkImage(
+              imageUrl: "https://www._thenpclinic.com/wp-content/uploads/2019/10/food-addiction-2.jpg",
+              fit: BoxFit.contain
+          ),
+          description: "Pay with cash or Online as you wish",
+        ),
+        IntroScreen(
+          title: 'Address',
+          headerBgColor: Colors.white,
+          mChild: CachedNetworkImage(
+              imageUrl: "https://_foodofcultures.nl/wp-content/uploads/2019/10/whatsapp-image-2019-10-03-at-19.42.44-1-e1571178781491.jpeg",
+              fit: BoxFit.contain
+          ),
+          description: "Choose a delivery address",
+        ),
+        IntroScreen(
+          title: 'Enjoy',
+          headerBgColor: Colors.white,
+          mChild: CachedNetworkImage(
+              imageUrl: "https://_foodofcultures.nl/wp-content/uploads/2019/10/whatsapp-image-2019-10-03-at-19.42.44-1-e1571178781491.jpeg",
+              fit: BoxFit.contain
+          ),
+          description: "Enjoy your food!",
+        ),
+      ],
+    );
+
+    return Scaffold(
+      body: screens,
+    );
+  }
+
+  _skipPresentation() {
+    _endOfTheSlides();
+  }
+
+  _endOfTheSlides() async {
+    // set seen at true, and move to whatever page the other page which is terms and conditions
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("_first_time", false);
+
+    bool isOkWithTerms = await _getIsOkWithTerms();
+    // jump to terms and conditions if it is also not yet
+    if (!isOkWithTerms) {
+      // jump to terms and conditions
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WebViewPage(title: "CGU",link: ServerRoutes.CGU_PAGE, agreement: true),
+        ),
+      );
+    } else {
+      // jump to splashscreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SplashPage(),
+        ),
+      );
+    }
+  }
+
+
+  Future<bool> _getIsOkWithTerms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isOkWithTerms = false;
+    try {
+      // prove me it's not first time
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
+    } catch(_){
+      // is first time
+      isOkWithTerms = false;
+    }
+    if (isOkWithTerms == null)
+      isOkWithTerms = false;
+
+    return isOkWithTerms;
+  }
+
+}
