@@ -35,7 +35,7 @@ import 'money/TransferMoneyRequestPage.dart';
 
 class MeAccountPage extends StatefulWidget {
 
-    CustomerModel customerData;
+  CustomerModel customerData;
 
   MeAccountPage({Key key, this.title}) : super(key: key);
 
@@ -81,7 +81,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         });
         break;
       case 1:
-         _jumpToPage(context, SettingsPage());
+        _jumpToPage(context, SettingsPage());
         break;
     }
   }
@@ -89,21 +89,21 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-        child: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
-            future: CustomerUtils.getCustomer(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return _buildMyPage(snapshot.data);
-              } else if (snapshot.hasError) {
-                /* go back to login page because of error in login or so. */
-              }
-              return Center(child: CircularProgressIndicator());
-            }
+        backgroundColor: Colors.grey.shade100,
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
+                future: CustomerUtils.getCustomer(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return _buildMyPage(snapshot.data);
+                  } else if (snapshot.hasError) {
+                    /* go back to login page because of error in login or so. */
+                  }
+                  return Center(child: CircularProgressIndicator());
+                }
+            )
         )
-      )
     );
   }
 
@@ -135,7 +135,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         )
       ],
 //      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
-    leading: null,
+      leading: null,
       expandedHeight: expandedHeight,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -214,7 +214,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                           ),
                           Expanded(flex:1,
                             child: InkWell(
-                              onTap: () => _jumpToPage(context, TopUpPage(presenter: TopUpPresenter())),
+                              onTap: () => _jumpToTopUpPage(),
                               child: Container(
                                 child: Column(
                                   children: <Widget>[
@@ -290,7 +290,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),
-                                  /*    TableCell(
+                                      /*    TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
                                           child: Column(
@@ -380,5 +380,63 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
   }
 
+  _jumpToTopUpPage() async {
+
+//     Page(context, TopUpPage(presenter: TopUpPresenter()))
+
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TopUpPage(presenter: TopUpPresenter()),
+      ),
+    );
+
+    if (results != null && results.containsKey('check_balance')) {
+
+      bool check_balance =  results['check_balance'];
+      if (check_balance == true) {
+        // show a dialog that tells the user to check his balance after he has topup up.
+        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+      }
+    }
+  }
+
+
+
+
+
+  void _showDialog(
+      {String svgIcon, var message,}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                          svgIcon
+                      )),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions: <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
 
 }

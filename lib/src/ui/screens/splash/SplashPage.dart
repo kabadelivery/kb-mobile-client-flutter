@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 //import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
 import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
@@ -13,7 +15,10 @@ import 'package:kaba_flutter/src/ui/screens/splash/PresentationPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../StateContainer.dart';
 
 class SplashPage extends StatefulWidget {
 
@@ -36,7 +41,19 @@ class _SplashPageState extends State<SplashPage> {
     startTimeout();
   }
 
+  Future _getLastKnowLocation() async {
+    // save in to state container.
+    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+
+    if (position != null)
+      StateContainer.of(context).updateLocation(location: position);
+  }
+
   Future handleTimeout() async {
+
+ //   _checkLocationActivated();
+
+   // _getLastKnowLocation();
 
     /* check if first opening the app */
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -68,6 +85,9 @@ class _SplashPageState extends State<SplashPage> {
             launchPage = HomePage();
           }
         }
+
+        // before we launch to home page , we launch here.
+
         Navigator.of(context).pushReplacement(new MaterialPageRoute(
             builder: (BuildContext context) => launchPage));
       }
@@ -75,8 +95,39 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   startTimeout() async {
+
+
     var duration = const Duration(milliseconds: 1500);
     return new Timer(duration, handleTimeout);
+  }
+
+  _checkLocationActivated () async {
+      if (!(await Geolocator().isLocationServiceEnabled())) {
+        if (Theme.of(context).platform == TargetPlatform.android) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Can't get gurrent location"),
+                content:
+                const Text('Please make sure you enable GPS and try again'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      final AndroidIntent intent = AndroidIntent(
+                          action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+
+                      intent.launch();
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+    }
   }
 
   @override

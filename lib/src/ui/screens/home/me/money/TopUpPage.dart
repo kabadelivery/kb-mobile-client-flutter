@@ -7,6 +7,7 @@ import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class TopUpPage extends StatefulWidget {
@@ -203,14 +204,22 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   @override
   void topUpToWeb(String link) {
 
-    Navigator.pop(context);
-
-    Navigator.push(
+    _launchURL(link);
+    Navigator.of(context).pop({'check_balance': true});
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WebViewPage(title: "PAYGATE - ${operator}",link: link),
       ),
-    );
+    );*/
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   bool _checkOperator() {

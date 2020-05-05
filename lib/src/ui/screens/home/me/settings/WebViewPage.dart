@@ -62,6 +62,8 @@ class _WebViewPageState extends State<WebViewPage> {
                 navigationDelegate: (NavigationRequest request) {
                   if (!request.url.contains("kaba") && !request.url.contains("pay")) {
                     print('blocking navigation to $request}');
+                    _pageLoading = false;
+                    _pageError = true;
                     return NavigationDecision.prevent;
                   }
                   print('allowing navigation to $request');
@@ -85,7 +87,7 @@ class _WebViewPageState extends State<WebViewPage> {
             _pageLoading ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor))) : Container(),
             _pageError ? Center(child: ErrorPage(onClickAction: ()=> {})) : Container(),
             !_pageError && !_pageLoading && widget.agreement ? Positioned(bottom:0,child:
-            Container(padding: EdgeInsets.only(top:10, bottom:30),color: Colors.white.withAlpha(250), width: MediaQuery.of(context).size.width, child:
+            Container(padding: EdgeInsets.only(top:10, bottom:30),color: Colors.white.withAlpha(180), width: MediaQuery.of(context).size.width, child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: <Widget>[
               /* accept or say no */
               RaisedButton(child:Text("Accept", style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: () => _acceptTerms(true)),

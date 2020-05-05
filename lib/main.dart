@@ -26,13 +26,16 @@ import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/StateContainer.dart';
 import 'src/locale/locale.dart';
 
 
 void main() {
+
   runApp(StateContainer(child: MyApp()));
 }
 
@@ -55,12 +58,11 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
 
-
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     _firebaseMessaging = FirebaseMessaging();
 
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid = new AndroidInitializationSettings('kaba_icon');
+    var initializationSettingsAndroid = new AndroidInitializationSettings('mipmap/ic_launcher');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         requestBadgePermission: true,
@@ -79,10 +81,7 @@ class _MyAppState extends State<MyApp> {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         /* send json version of notification object. */
-
-
         NotificationItem notificationItem = _notificationFromMessage(message);
-
         iLaunchNotifications(notificationItem);
       },
       onLaunch: (Map<String, dynamic> message) async {
@@ -97,7 +96,13 @@ class _MyAppState extends State<MyApp> {
         NotificationItem notificationItem = _notificationFromMessage(message);
         iLaunchNotifications(notificationItem);
       },
+      onBackgroundMessage: _backgroundMessageHandling,
     );
+
+    _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() async {
+      SharedPreferences prefs_ = await SharedPreferences.getInstance();
+      prefs_.setBool('has_subscribed', true);
+    });
   }
 
   @override
@@ -153,7 +158,7 @@ class _MyAppState extends State<MyApp> {
     _handlePayLoad(payload);
   }
 
-  NotificationItem _notificationFromMessage(message_entry) {
+static  NotificationItem _notificationFromMessage(message_entry) {
 
     if (Platform.isIOS) {
       // Android-specific code
@@ -247,8 +252,16 @@ class _MyAppState extends State<MyApp> {
     navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
-}
 
+  static Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) {
+    print("onBackgroundMessage: $message");
+    /* send json version of notification object. */
+    if (Platform.isAndroid) {
+      NotificationItem notificationItem = _notificationFromMessage(message);
+      iLaunchNotifications(notificationItem);
+    }
+  }
+}
 
 void iLaunchNotifications (NotificationItem notificationItem) async {
 
@@ -267,17 +280,3 @@ void iLaunchNotifications (NotificationItem notificationItem) async {
   );
 }
 
-
-
-/*iLaunchNotifications (NotificationItem i) async {
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id', 'your channel name', 'your channel description',
-      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-//  flutterLocalNotificationsPlugin.show(id, title, body, notificationDetails)
-  await flutterLocalNotificationsPlugin.show(
-      0, 'plain title', 'plain body', platformChannelSpecifics,
-      payload: 'item x');
-}*/

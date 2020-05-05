@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
+import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:nice_intro/nice_intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinycolor/tinycolor.dart';
@@ -39,44 +41,53 @@ class _SplashPageState extends State<PresentationPage> {
       slides: [
         IntroScreen(
           title: 'Choice',
-          mChild: CachedNetworkImage(
-              imageUrl: "https://www._moodynfoody.com/wp-content/uploads/2019/08/food-3.jpg",
-              fit: BoxFit.contain
-          ),
+          mChild: SizedBox(
+              height: MediaQuery.of(context).size.width*0.8,
+              width: MediaQuery.of(context).size.width*0.8,
+              child:SvgPicture.asset(
+                VectorsData.p_f_1,
+              )),
           description: 'Choose your menu',
           headerBgColor: Colors.white,
         ),
         IntroScreen(
           title: 'Payment',
           headerBgColor: Colors.white,
-          mChild: CachedNetworkImage(
-              imageUrl: "https://www._thenpclinic.com/wp-content/uploads/2019/10/food-addiction-2.jpg",
-              fit: BoxFit.contain
-          ),
+          mChild: SizedBox(
+              height: MediaQuery.of(context).size.width*0.8,
+              width: MediaQuery.of(context).size.width*0.8,
+              child:SvgPicture.asset(
+                VectorsData.p_f_2,
+              )),
           description: "Pay with cash or Online as you wish",
         ),
         IntroScreen(
           title: 'Address',
           headerBgColor: Colors.white,
-          mChild: CachedNetworkImage(
-              imageUrl: "https://_foodofcultures.nl/wp-content/uploads/2019/10/whatsapp-image-2019-10-03-at-19.42.44-1-e1571178781491.jpeg",
-              fit: BoxFit.contain
-          ),
+          mChild: SizedBox(
+              height: MediaQuery.of(context).size.width*0.8,
+              width: MediaQuery.of(context).size.width*0.8,
+              child:SvgPicture.asset(
+                VectorsData.p_f_3,
+              )),
           description: "Choose a delivery address",
         ),
         IntroScreen(
           title: 'Enjoy',
           headerBgColor: Colors.white,
-          mChild: CachedNetworkImage(
-              imageUrl: "https://_foodofcultures.nl/wp-content/uploads/2019/10/whatsapp-image-2019-10-03-at-19.42.44-1-e1571178781491.jpeg",
-              fit: BoxFit.contain
-          ),
+          mChild:  SizedBox(
+              height: MediaQuery.of(context).size.width*0.8,
+              width: MediaQuery.of(context).size.width*0.8,
+              child:SvgPicture.asset(
+                VectorsData.p_f_4,
+              )),
           description: "Enjoy your food!",
         ),
       ],
     );
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: screens,
     );
   }

@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,9 +28,11 @@ import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dar
 import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -72,17 +75,35 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     super.initState();
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
+
+    CustomerUtils.getCustomer().then((customer) {
+      this.widget.presenter.updateToken(customer);
+    });
+
     this.widget.presenter.fetchHomePage();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) async {
+
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool has_subscribed = false;
+      try {
+        prefs.getBool('has_subscribed');
+      } catch(_) {
+        has_subscribed = false;
+      }
+      if (has_subscribed == false) {
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+        _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
+        prefs.setBool('has_subscribed', true)
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-//    final page = ModalRoute.of(context);
-//    page.didPush().then((x) {
-//      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-//    });
 
     /* init fetch data bloc */
     return Scaffold(
@@ -116,14 +137,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //            IconButton(icon: Icon(Icons.search, color: Colors.white), tooltip: "Search", onPressed: () {}),
 //            IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
 
-           InkWell(child:  Container(height: 30, width: 30,
-             decoration: BoxDecoration(
-                 image: new DecorationImage(
-                     fit: BoxFit.cover,
-                     image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/newmessage.gif"))
-                 )
-             ),
-           ), onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()))),
+            IconButton(onPressed: () => _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+                icon: SvgPicture.asset(
+                  VectorsData.notification_new_message,
+                  color: Colors.white,
+                )
+            ),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
@@ -591,7 +610,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   _textSizeWithText(String feed) {
 
     double ssize = 0;
-
     if (feed != null)
       ssize = 1.0 * feed?.length;
     // from 8 to 16 according to the size.

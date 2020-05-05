@@ -14,6 +14,7 @@ import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailsPage extends StatefulWidget {
 
@@ -132,30 +133,30 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   ),
                 ),
               ),
-              (widget.command.state == 3 && widget.command.rating < 1 ? SizedBox(height: 10) : Container()),
-              (widget.command.state == 3 && widget.command.rating < 1 ?
+              (widget.command.state == 3 && widget.command.rating > 1 ? SizedBox(height: 10) : Container()),
+              (widget.command.state == 3 && widget.command.rating > 1 ?
               Container(padding: EdgeInsets.all(10), margin: EdgeInsets.only(left:10, right:10, top:20, bottom:10),decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: Container(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Center(child: Text("RATING", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
-                        SizedBox(height: 5),
-                        Row(children: <Widget>[]
-                          ..addAll(
-                              List<Widget>.generate(widget?.command?.rating, (int index) {
-                                return Icon(Icons.star, color: KColors.primaryYellowColor, size: 20);
-                              })
-                          )),
-                        SizedBox(height: 5),
-                        Row(
-                          children: <Widget>[
-                            Flexible(child: Text(widget?.command?.comment, textAlign: TextAlign.left, style: TextStyle(color:Colors.white, fontSize: 17))),
-                          ],
-                        )
-                      ]
-                  ),
-                )) :  Container()
+                  child: Container(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Center(child: Text("RATING", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
+                          SizedBox(height: 5),
+                          Row(children: <Widget>[]
+                            ..addAll(
+                                List<Widget>.generate(widget?.command?.rating, (int index) {
+                                  return Icon(Icons.star, color: KColors.primaryYellowColor, size: 20);
+                                })
+                            )),
+                          SizedBox(height: 5),
+                          Row(
+                            children: <Widget>[
+                              Flexible(child: Text(widget?.command?.comment, textAlign: TextAlign.left, style: TextStyle(color:Colors.white, fontSize: 17))),
+                            ],
+                          )
+                        ]
+                    ),
+                  )) :  Container()
               ),
               (widget.command.rating < 1 && Utils.within3days(widget.command?.last_update) ? SizedBox(height: 10) : Container()),
               /* your contact */
@@ -186,7 +187,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
                   Flexible (child: Text("Kaba-man Name", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${widget.command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
+                  Flexible (child: Text("${widget?.command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
                 ]),
               ),
               SizedBox(height: 10),
@@ -202,7 +203,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                       SizedBox(width: 5),
                       Text("${widget.command?.livreur?.workcontact}", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ],
-                  ), onPressed: () {}),
+                  ), onPressed: () {_callNumber(widget?.command?.livreur?.workcontact);}),
                 ]),
               ),
             ]
@@ -245,9 +246,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Container(margin: EdgeInsets.only(top:10, bottom:10),color: CommandStateColor.delivered, padding: EdgeInsets.all(10), child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text("Infos:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
-                  SizedBox(width: 10),
-                  Text("${widget.command.infos}", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white)),
+                  Expanded(child: Text("Informations: ${widget.command.infos}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white))),
                 ],
               )),
               SizedBox(height: 10),
@@ -570,6 +569,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             ): Container ()),
           ]),
         ));
+  }
+
+  Future<void> _callNumber(String workcontact) async {
+
+    var url = "tel:+228${workcontact}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      // ask launch.
+      Toast.show("Call error", context);
+    }
   }
 
 }

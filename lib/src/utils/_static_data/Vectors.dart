@@ -7,5 +7,17 @@
   static final String delivery_nam = "assets/images/vectors/fl_deliveryman.svg";
   static final String questions = "assets/images/vectors/fl_question.svg";
 
+  static final String notification_new_message = "assets/images/vectors/notification_message_new.svg";
+  static final String notification_message_normal = "assets/images/vectors/notificiation_message_normal.svg";
+
   static final String customer_care = "assets/images/vectors/fl_deliveryman.svg";
+  static final String out_of_range = "assets/images/vectors/out_of_range.svg";
+  static final String account_balance = "assets/images/vectors/account_balance.svg";
+
+  // presentation screens
+  static final String p_f_1 = "assets/images/vectors/app_presentation/sl_enjoy.svg";
+  static final String p_f_2 = "assets/images/vectors/app_presentation/sl_choice.svg";
+  static final String p_f_3 = "assets/images/vectors/app_presentation/sl_geolocalisation.svg";
+  static final String p_f_4 = "assets/images/vectors/app_presentation/sl_payment.svg";
+
  }

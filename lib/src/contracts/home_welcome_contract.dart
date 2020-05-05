@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HomeWelcomeContract {
 
   Future fetchHomePage (){}
+  Future updateToken (CustomerModel customer) {}
 }
 
 class HomeWelcomeView {
@@ -107,5 +108,25 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
   set homeWelcomeView(HomeWelcomeView value) {
     _homeWelcomeView = value;
   }
+
+  @override
+  Future updateToken(CustomerModel customer) async {
+
+    try {
+     int error = await provider.updateToken(customer);
+     if (error == 0) {
+       // we have successfully did it.
+
+     }
+    } catch (_) {
+      print(_);
+    }
+    return null;
+  }
+
+
+//    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+//    String token = await firebaseMessaging.getToken();
+
 
 }

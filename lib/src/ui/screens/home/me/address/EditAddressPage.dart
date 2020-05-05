@@ -1,3 +1,4 @@
+import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,6 +15,7 @@ import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/recustomlib/place_picker.dart' as Pp;
+import 'package:location/location.dart' as lo;
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -352,10 +354,40 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
 
   Future _getLastKnowLocation() async {
 
+    _checkLocationActivated();
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
     if (position != null)
       StateContainer.of(context).updateLocation(location: position);
+  }
+
+  _checkLocationActivated () async {
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Can't get gurrent location"),
+              content:
+              const Text('Please make sure you enable GPS and try again'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    final AndroidIntent intent = AndroidIntent(
+                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+
+                    intent.launch();
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   @override

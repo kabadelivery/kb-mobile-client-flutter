@@ -29,6 +29,8 @@
     <application
         android:name=".Application"
         android:label="kaba_flutter"
+        android:roundIcon="@mipmap/launcher_icon"
+        android:networkSecurityConfig="@xml/network_security"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
@@ -68,9 +70,9 @@
         <!-- barcode scanner  -->
         <!--        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>-->
 
-        <meta-data
+       <!-- <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/launcher_icon" />
+            android:resource="@mipmap/launcher_icon" />-->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />

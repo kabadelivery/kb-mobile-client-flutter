@@ -20,6 +20,7 @@ import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/MusicData.dart';
+import 'package:kaba_flutter/src/utils/_static_data/NetworkImages.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
 import 'package:kaba_flutter/src/utils/functions/Utils.dart';
@@ -144,7 +145,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       // launch request for retrieving the delivery prices and so on.
       widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
       showLoading(true);
-      Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+      Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     }
   }
 
@@ -180,11 +181,91 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   _buildBill() {
     if (_orderBillConfiguration == null)
       return Container();
+
+    if (_isPreorderSelected()) {
+      return Card(margin: EdgeInsets.only(left: 10, right: 10),
+          child: Container(padding: EdgeInsets.all(10),
+            child: Column(children: <Widget>[
+              Container(
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
+                              NetworkImages.kaba_promotion_gif))
+                      )
+                  )
+              ),
+              Container(),
+              /* content */
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Montant Commande:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* check if there is promotion on Commande */
+                    Row(
+                      children: <Widget>[
+                        /* montant commande normal */
+                       Text("${_orderBillConfiguration?.command_pricing} FCFA",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15)),
+                      ],
+                    )
+                  ]),
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Montant Livraison:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* check if there is promotion on Livraison */
+                    Row(
+                      children: <Widget>[
+                        /* montant livraison normal */
+                        Text("${_orderBillConfiguration?.shipping_pricing} FCFA", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 15)),
+                      ],
+                    )
+                  ]),
+              SizedBox(height: 10),
+              Center(child: Container(width: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 10, color: Colors.black, height: 1)),
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Net à Payer:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* montant total a payer */
+                    Text("${_orderBillConfiguration?.total_normal_pricing} F",
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            color: KColors.primaryColor,
+                            fontSize: 18)),
+                  ]),
+              SizedBox(height: 10),
+              (Container(
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
+                              NetworkImages.kaba_promotion_gif))
+                      )
+                  )
+              )),
+            ]),
+          ));
+    } else
     return Card(margin: EdgeInsets.only(left: 10, right: 10),
         child: Container(padding: EdgeInsets.all(10),
           child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
-//                      "/web/assets/app_icons/promo_large.gif"
+//                      NetworkImages.kaba_promotion_gif
             (_orderBillConfiguration?.remise > 0 &&
                 !_isPreorder()
                 ? Container(
@@ -194,7 +275,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                     image: new DecorationImage(
                         fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(Utils.inflateLink(
-                            "/web/assets/app_icons/promo_large.gif"))
+                            NetworkImages.kaba_promotion_gif))
                     )
                 )
             ) : Container()),
@@ -299,7 +380,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(Utils.inflateLink(
-                                "/web/assets/app_icons/promo_large.gif"))
+                                NetworkImages.kaba_promotion_gif))
                         )
                     )
                 ) : Container()),
@@ -375,7 +456,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Container(
                   child: (widget.orderOrPreorderChoice == 1 && _orderBillConfiguration.open_type == 1 && _orderBillConfiguration.can_preorder == 1 ) || (_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1 && widget.orderOrPreorderChoice == 0) ?
-                  _buildDeliveryTimeFrameList() : Container(child:Text("Build no frame")), color: Colors.white),
+                  _buildDeliveryTimeFrameList() : Container(), color: Colors.white),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.only(
@@ -416,7 +497,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   : Container(),
               SizedBox(height: 20),
               _orderBillConfiguration != null && _orderBillConfiguration.isBillBuilt ?
-              Column(children: <Widget>[
+              // check if out of range before doing anything.
+              _orderBillConfiguration?.out_of_range == true ? _buildOutOfRangePage() :
+              (Column(children: <Widget>[
                 _buildBill(),
                 SizedBox(height: 10),
                 Container(width: MediaQuery
@@ -446,7 +529,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 !_isPreorderSelected() ? SizedBox(height: 10) : Container(),
                 !_isPreorderSelected() ? _buildOrderPayAtArrivalButton() : Container(),
                 SizedBox(height: 30),
-              ]) : Container(),
+              ])) : Container(),
             ])
       ),
     );
@@ -1097,7 +1180,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 margin: EdgeInsets.only(left: 10, right: 10),),
               SizedBox(height: 10),
               Text("${_orderBillConfiguration.total_preorder_pricing} F", style: TextStyle(
-                  fontSize: 18, color: KColors.primaryYellowColor)),
+                  fontSize: 22, fontWeight: FontWeight.bold, color: KColors.primaryYellowColor)),
             ]),
           ),
         ),
@@ -1425,5 +1508,19 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     return  ((widget.orderOrPreorderChoice == 1 && _orderBillConfiguration.open_type == 1 && _orderBillConfiguration.can_preorder == 1 ) || (_orderBillConfiguration.can_preorder == 1 && _orderBillConfiguration.open_type != 1 && widget.orderOrPreorderChoice == 0));
   }
 
+  _buildOutOfRangePage() {
+    return Column(mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(margin: EdgeInsets.only(top:20, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,The delivery address is out of range of delivery. Please a restaurant that is closer to you and try again.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+        SizedBox(height:10),
+        SizedBox(
+            height: 120,
+            child:SvgPicture.asset(
+              VectorsData.out_of_range,
+            )),
+        SizedBox(height:30),
+      ],
+    );
+  }
 
 }

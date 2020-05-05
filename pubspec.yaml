@@ -22,6 +22,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_redux: ^0.5.3
+  location: ^2.3.5
   flutter_redux_dev_tools: ^0.3.0
   shared_preferences: ^0.5.6+2
   cached_network_image: ^2.0.0
@@ -34,7 +35,7 @@ dependencies:
   google_maps_flutter: ^0.5.20+6
   geolocator: ^5.3.1
   permission_handler: ^3.2.2
-  place_picker: ^0.9.9
+  place_picker: ^0.9.14
   font_awesome_flutter: ^8.5.0
   flutter_qr_reader: ^1.0.2
   qr_flutter: ^3.0.1
@@ -46,10 +47,11 @@ dependencies:
   device_info: ^0.4.1+4
   firebase_messaging: ^6.0.9
   firebase_core: ^0.4.0
-  flutter_local_notifications: ^1.1.6
+  flutter_local_notifications: ^1.4.3
   url_launcher: ^5.4.5
   flare_flutter: ^2.0.3
   tinycolor: ^1.0.2
+  android_intent: ^0.3.7+1
   nice_intro:
     git:
       url: https://github.com/blackgerman/nice_intro.git
@@ -97,6 +99,16 @@ flutter:
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_copyright_presentation.png
     - assets/images/png/ic_transaction_success.png
+    # presentation
+    - assets/images/vectors/app_presentation/sl_enjoy.svg
+    - assets/images/vectors/app_presentation/sl_choice.svg
+    - assets/images/vectors/app_presentation/sl_geolocalisation.svg
+    - assets/images/vectors/app_presentation/sl_payment.svg
+    - assets/images/vectors/out_of_range.svg
+    - assets/images/vectors/notificiation_message_normal.svg
+    - assets/images/vectors/notification_message_new.svg
+    - assets/images/vectors/account_balance.svg
+
   #    - assets/sound/command_success_hold_on.mp3
 
   #  - images/a_dot_ham.jpeg

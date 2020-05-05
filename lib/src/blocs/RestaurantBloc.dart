@@ -32,6 +32,7 @@ class RestaurantBloc {
 
 
   fetchRestaurantList({Position position}) async {
+
     try {
 //      if (_isDisposedForRestaurantList)
 //        return;

@@ -134,6 +134,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     account_balance = json['account_balance'];
     shipping_pricing = json['shipping_pricing'];
     total_pricing = json['total_pricing'];
+    total_normal_pricing = json['total_normal_pricing'];
     promotion_shipping_pricing = json['promotion_shipping_pricing'];
     remise = int.parse(json['remise']);
     out_of_range = json['out_of_range'];
@@ -149,6 +150,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     "command_pricing" : command_pricing,
     "account_balance" : account_balance,
     "shipping_pricing" : shipping_pricing,
+    "total_normal_pricing" : total_normal_pricing,
     "total_pricing" : total_pricing,
     "promotion_shipping_pricing" : promotion_shipping_pricing,
     "remise" : remise,

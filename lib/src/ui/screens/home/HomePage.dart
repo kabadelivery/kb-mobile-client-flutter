@@ -1,4 +1,6 @@
+import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:kaba_flutter/src/StateContainer.dart';
 import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
 import 'package:kaba_flutter/src/contracts/login_contract.dart';
@@ -17,10 +19,7 @@ class HomePage extends StatefulWidget {
 
   static var routeName = "/HomePage";
 
-  HomePage({Key key, this.title}) : super(key: key) ;
-
-  final String title;
-
+  HomePage({Key key}) : super(key: key) ;
 
 /*  static set setSelectedIndex(int index) {
     _selectedIndex = index;
@@ -71,19 +70,13 @@ class _HomePageState extends State<HomePage> {
         launchPage = HomePage();
       }
     }
-    /* Navigator.of(context).pushReplacement(new MaterialPageRoute(
-          builder: (BuildContext context) => launchPagePath));*/
-//    Navigator.pushNamedAndRemoveUntil(context, launchPagePath , (r) => false);
-
-
-//    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (BuildContext context) => launchPage), (r) => false);
-  }
+   }
 
   @override
   void initState() {
     /* check the login status */
     checkLogin();
-    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter(),);
+    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter());
     restaurantListPage = RestaurantListPage(key: restaurantKey);
     dailyOrdersPage = DailyOrdersPage(key: orderKey);
     meAccountPage = MeAccountPage(key: meKey);
@@ -138,6 +131,7 @@ class _HomePageState extends State<HomePage> {
 //     restaurantListPage._getLastKnowLocation();
     }
   }
+
 }
 
 class AppbarhintFieldWidget extends StatelessWidget {
@@ -150,4 +144,5 @@ class AppbarhintFieldWidget extends StatelessWidget {
       color: Colors.transparent,
     );
   }
+
 }

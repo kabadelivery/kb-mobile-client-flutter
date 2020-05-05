@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
+import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
 import 'package:kaba_flutter/src/models/AdModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
 import 'package:kaba_flutter/src/models/RestaurantModel.dart';
@@ -234,7 +235,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel),
+        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
       ),
     );
   }

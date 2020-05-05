@@ -1,4 +1,6 @@
 PODS:
+  - android_intent (0.0.1):
+    - Flutter
   - audioplayers (0.0.1):
     - Flutter
   - device_info (0.0.1):
@@ -152,6 +154,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - android_intent (from `.symlinks/plugins/android_intent/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Firebase/Analytics
@@ -203,6 +206,8 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  android_intent:
+    :path: ".symlinks/plugins/android_intent/ios"
   audioplayers:
     :path: ".symlinks/plugins/audioplayers/ios"
   device_info:
@@ -259,6 +264,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  android_intent: 367df2f1277a74e4a90e14a8ab3df3112d087052
   audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   Firebase: 2672e5636b42f977177716317e68346ae5e9de25

@@ -68,8 +68,11 @@ class CustomerUtils {
 
   static Future<void> clearCustomerInformations () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     prefs.remove("_loginResponse");
-    prefs.clear();
+    prefs.remove("_login_expiration_date");
+    prefs.remove("_homepage");
+
     /*String jsonCustomer = prefs.getString("_loginResponse");
     var obj = json.decode(jsonCustomer);
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);

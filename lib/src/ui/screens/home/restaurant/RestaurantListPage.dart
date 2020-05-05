@@ -1,3 +1,5 @@
+import 'package:android_intent/android_intent.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,12 +10,18 @@ import 'package:kaba_flutter/src/models/RestaurantModel.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
+import 'package:location/location.dart' as lo;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class RestaurantListPage extends StatefulWidget {
-  RestaurantListPage({Key key, this.title}) : super(key: key);
 
-  final String title;
+
+  Position location;
+
+  RestaurantListPage({Key key, this.location}) : super(key: key);
+
 
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
@@ -28,30 +36,33 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   @override
   void initState() {
     // TODO: implement initState
-/*
-//    DynamicTheme.of(context).setBrightness(Brightness.light);
-    if (StateContainer.of(context).position != null) {
-      restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).position);
-      super.initState();
-    } else {
-      restaurantBloc.fetchRestaurantList();
-      super.initState();
-      _getLastKnowLocation();
-    }
-    _filterEditController.addListener(_filterEditContent);
-*/
     super.initState();
 
-//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    restaurantBloc.fetchRestaurantList();
     _filterEditController.addListener(_filterEditContent);
 
-    Future.delayed(Duration(seconds: 1),(){
-//      Position loc = StateContainer.of(context).location;
-//      if (loc == null) {
-      _getLastKnowLocation();
-//      }
-    } );
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) async {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool has_subscribed = false;
+      try {
+        prefs.getBool('has_subscribed');
+      } catch(_) {
+        has_subscribed = false;
+      }
+      if (has_subscribed == false) {
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+        _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
+          prefs.setBool('has_subscribed', true)
+        });
+      }
+
+      if (StateContainer?.of(context)?.location == null) {
+        restaurantBloc.fetchRestaurantList();
+        _getLastKnowLocation();
+      } else
+        restaurantBloc.fetchRestaurantList(position: StateContainer?.of(context)?.location);
+    });
   }
 
   @override
@@ -64,25 +75,20 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   @override
   Widget build(BuildContext context) {
 
-//    final page = ModalRoute.of(context);
-//    page.didPush().then((x) {
-//      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-//    });
-
     return Scaffold(
         backgroundColor: Colors.white,
         body:  AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child:  StreamBuilder(
-              stream: restaurantBloc.restaurantList,
-              builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
-                if (snapshot.hasData) {
-                  return _buildRestaurantList(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
-                }
-                return Center(child: CircularProgressIndicator());
-              })));
+            value: SystemUiOverlayStyle.light,
+            child:  StreamBuilder(
+                stream: restaurantBloc.restaurantList,
+                builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
+                  if (snapshot.hasData) {
+                    return _buildRestaurantList(snapshot.data);
+                  } else if (snapshot.hasError) {
+                    return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
+                  }
+                  return Center(child: CircularProgressIndicator());
+                })));
     /*  */
   }
 
@@ -136,10 +142,43 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     );
   }
 
+  _checkLocationActivated () async {
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Can't get gurrent location"),
+              content:
+              const Text('Please make sure you enable GPS and try again'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    final AndroidIntent intent = AndroidIntent(
+                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+
+                    intent.launch();
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
   Future _getLastKnowLocation() async {
+
+    _checkLocationActivated();
 
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+
+    print("location :: ${position?.toJson()?.toString()}");
 
     if (position != null)
       StateContainer.of(context).updateLocation(location: position);
@@ -149,6 +188,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           .location);
     }
   }
+
 
   List<RestaurantModel> _filterEditContent() {
     setState(() {});

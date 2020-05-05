@@ -187,7 +187,6 @@ class OrderApiProvider {
     } else {
       throw Exception(-2); // there is an error in your request
     }
-
   }
 
   launchPreorderOrder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
@@ -232,12 +231,11 @@ class OrderApiProvider {
         food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
       });
 
-
       var _data = json.encode({
         'food_command': food_quantity,
         'pay_at_delivery': false,
         'pre_order' : 1,
-        'pre_order_hour' : json.encode({"start": start, "end":end}),
+        'pre_order_hour' : {"start": start, "end":end},
         'shipping_address': selectedAddress.id,
         'transaction_password' : '$mCode',
         'infos' : '$infos',
@@ -251,8 +249,7 @@ class OrderApiProvider {
       final response = await client
           .post(ServerRoutes.LINK_CREATE_COMMAND,
           body:  _data,
-          headers: Utils.getHeadersWithToken(customer.token)
-      )
+          headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 60));
       print("001 _ "+response.body.toString());
       if (response.statusCode == 200) {

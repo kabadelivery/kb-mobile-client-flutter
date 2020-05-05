@@ -57,7 +57,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
-      if (widget.orderId != null && widget.orderId != 0 && widget.command == null && widget.customer != null) {
+      if (widget.orderId != null && widget.orderId != 0 && widget.customer != null) {
         widget.presenter.loadOrderDetailsForFeedback(customer, widget.orderId);
       }
     });
@@ -100,7 +100,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(Utils.inflateLink("/employee_picture/5c101acec8057058989430.jpg"))
+                                          image: CachedNetworkImageProvider(Utils.inflateLink("${widget?.command?.livreur?.pic}"))
                                       )
                                   )
                               ),
@@ -120,7 +120,6 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                               ),
                             ],
                           ),
-//                      SizedBox(height:50)
                         ],
                       ),
                     ]),
@@ -140,11 +139,9 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                                         fontWeight: FontWeight
                                             .bold))),
 
-
-
                             Container(width: MediaQuery.of(context).size.width/2,
                                 padding: EdgeInsets.all(10),
-                                child: Text("ESKAPADE DU CHEF",
+                                child: Text("${widget?.command?.restaurant_entity?.name}",
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 18,
@@ -244,9 +241,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   @override
   void sendFeedbackSuccess() {
 
-
     _showDialog(
-      okBackToHome: true,
+      okBackToHome: false,
       icon: Icon(Icons.check, color: Colors.blue,),
       message: "Thank you for submitting your review.",
     );
@@ -287,9 +283,10 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                 child: new Text(
                     "OK", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
-                  if (!okBackToHome)
-                    Navigator.of(context).pop();
-                  else
+                  if (!okBackToHome) {
+                    Navigator.of(context).pop({'ok': true});
+                    Navigator.of(context).pop({'ok': true});
+                  } else
                     Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
                         builder: (BuildContext context) => HomePage()), (
                         r) => false);

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -168,7 +169,11 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
       widget.messages = customerCareChats;
     });
 
-    Timer(Duration(milliseconds: 100), () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent));
+    Timer(Duration(milliseconds: 500), () {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
+//    _scrollController.animateTo(40000, duration: Duration(milliseconds: 500), curve: null);
+    });
+
   }
 
 

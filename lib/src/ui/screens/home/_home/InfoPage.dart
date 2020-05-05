@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
 import 'package:package_info/package_info.dart';
 
@@ -35,7 +36,7 @@ class _InfoPageState extends State<InfoPage> {
           value: SystemUiOverlayStyle.dark,
           child: Stack(
             children: <Widget>[
-              Positioned(left: 10, top:10, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(Icons.close, color: Colors.black))),
+              Positioned(left: 10, top:35, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(FontAwesomeIcons.timesCircle, size: 40, color: Colors.black))),
               Column(
                 children: <Widget>[
                   Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("Version: ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black))]), flex: 1, ),
