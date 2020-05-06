@@ -43,6 +43,12 @@ class RestaurantCommentWidget extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 5),
+                Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text("${Utils.readTimestamp(comment?.created_at)}", textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 12)),
+                  ],
+                ),
+                SizedBox(height: 5),
                 Row(children: <Widget>[]
                   ..addAll(
                       List<Widget>.generate(comment.stars.toInt(), (int index) {

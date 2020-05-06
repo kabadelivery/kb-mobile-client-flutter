@@ -108,8 +108,8 @@ flutter:
     - assets/images/vectors/notificiation_message_normal.svg
     - assets/images/vectors/notification_message_new.svg
     - assets/images/vectors/account_balance.svg
-
-  #    - assets/sound/command_success_hold_on.mp3
+    - assets/command_success_hold_on.mp3
+    - assets/money_transfer_successfull.mp3
 
   #  - images/a_dot_ham.jpeg
 

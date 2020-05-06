@@ -176,8 +176,13 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
     if (isLaunching)
       return;
 
-    if (!_isAmountOk)
+    if (!_isAmountOk) {
+      _showDialog(
+          message:"Sorry, balance must be > 0 and valuable",
+          icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black)
+      );
       return;
+    }
 
     // pick password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
@@ -301,7 +306,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
     // only ints
     String amount = _amountFieldController.text;
     final regex = RegExp(r'^[0-9]{2,5}$');
-    bool res = regex.hasMatch(amount);
+    bool res = regex.hasMatch(amount) && int.parse(amount) > 0;
     setState(() {
       _isAmountOk = res;
     });

@@ -161,5 +161,52 @@ class MenuApiProvider {
     }
   }
 
+  reviewRestaurant(CustomerModel customer, RestaurantModel restaurant, int stars, String message) async {
+
+    DebugTools.iPrint("entered reviewRestaurant");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_POST_COMMENT,
+        body: json.encode({"restaurant_id": restaurant?.id, "stars": stars, "comment": message}),
+        headers: Utils.getHeadersWithToken(customer.token),
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode != -1) {
+          return 0;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  checkCanComment(CustomerModel customer, RestaurantModel restaurant) async {
+
+    DebugTools.iPrint("entered checkCanComment");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_CAN_COMMENT,
+        body: json.encode({"restaurant_id": restaurant?.id}),
+        headers: Utils.getHeadersWithToken(customer.token),
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int can_comment = json.decode(response.body)["data"]["can_comment"];
+        return can_comment;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
 
 }

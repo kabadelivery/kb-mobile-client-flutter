@@ -8,7 +8,8 @@ import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
 
 class RestaurantDetailsContract {
 
-  void fetchRestaurantDetailsById(CustomerModel customer, int RestaurantDetailsId) {}
+  void fetchRestaurantDetailsById(CustomerModel customer, int restaurantId) {}
+  void checkCanComment(CustomerModel customer, RestaurantModel restaurant) {}
 }
 
 class RestaurantDetailsView {
@@ -17,9 +18,12 @@ class RestaurantDetailsView {
   void systemError () {}
   void networkError () {}
   void inflateRestaurantDetails(RestaurantModel restaurant) {}
-  void inflateComments (List<CommentModel> comments){}
+  void inflateComments (List<CommentModel> comments, String stars, String votes){}
   void commentSystemErrorComment() {}
   void commentNetworkError() {}
+
+  void showCanCommentLoading(bool isLoading) {}
+  void canComment(int canComment) {}
 }
 
 
@@ -67,16 +71,19 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     }
   }
 
-  Future<void> fetchCommentList(CustomerModel customer, int restaurantId) async {
+  Future<void> fetchCommentList(CustomerModel customer, RestaurantModel restaurant) async {
 
     if (isCommentWorking)
       return;
     isCommentWorking = true;
     _restaurantDetailsView.showCommentLoading(true);
     try {
-      List<CommentModel> comments = await clientProvider.fetchRestaurantComment(RestaurantModel(id: restaurantId), UserTokenModel(token: customer.token));
+     Map res = await clientProvider.fetchRestaurantComment(restaurant, UserTokenModel(token: customer.token));
       // also get the restaurant entity here.
-      _restaurantDetailsView.inflateComments(comments);
+      List<CommentModel> comments = res["comments"];
+      String stars = res["stars"];
+     String votes = res["votes"];
+      _restaurantDetailsView.inflateComments(comments, stars, votes);
     } catch (_) {
       /* Feed failure */
       print("error ${_}");
@@ -86,6 +93,33 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
         _restaurantDetailsView.commentNetworkError();
       }
       isCommentWorking = false;
+    }
+  }
+
+  @override
+  Future<void> checkCanComment(CustomerModel customer, RestaurantModel restaurant) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _restaurantDetailsView.showCanCommentLoading(true);
+    try {
+      int can_comment = await provider.checkCanComment(customer, restaurant);
+      if (can_comment == 1){
+        _restaurantDetailsView.canComment(1);
+      } else {
+        _restaurantDetailsView.canComment(0);
+      }
+      _restaurantDetailsView.showCanCommentLoading(true);
+    } catch (_) {
+      /* RestaurantReview failure */
+      print("error ${_}");
+      _restaurantDetailsView.showCanCommentLoading(false);
+      if (_ == -2) {
+        _restaurantDetailsView.canComment(0);
+      } else {
+        _restaurantDetailsView.canComment(0);
+      }
+      isWorking = false;
     }
   }
 

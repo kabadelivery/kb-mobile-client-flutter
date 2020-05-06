@@ -8,6 +8,7 @@ import 'package:kaba_flutter/src/blocs/RestaurantBloc.dart';
 import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
 import 'package:kaba_flutter/src/contracts/menu_contract.dart';
 import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
+import 'package:kaba_flutter/src/contracts/restaurant_review_contract.dart';
 import 'package:kaba_flutter/src/locale/locale.dart';
 import 'package:kaba_flutter/src/models/CommentModel.dart';
 import 'package:kaba_flutter/src/models/CustomerModel.dart';
@@ -18,6 +19,7 @@ import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
 import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
 import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:kaba_flutter/src/ui/screens/restaurant/ReviewRestaurantPage.dart';
 import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
 import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
 import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
@@ -29,7 +31,6 @@ class RestaurantDetailsPage extends StatefulWidget {
 
   RestaurantModel restaurant;
 
-  ScrollController _scrollController;
 
   CustomerModel customer;
 
@@ -40,7 +41,7 @@ class RestaurantDetailsPage extends StatefulWidget {
   List<CommentModel> commentList;
 
   RestaurantDetailsPage({this.restaurant, this.presenter}) {
-    _scrollController = ScrollController();
+    restaurantId = restaurant.id;
   }
 
   @override
@@ -56,8 +57,13 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   bool commentIsLoading = false;
   bool commentHasNetworkError = false;
   bool commentHasSystemError = false;
-
   bool isUpdatingRestaurantOpenType = false;
+  bool _canCommentLoading = false;
+
+  int _canComment = 0;
+  int _latentRate = 1;
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -71,7 +77,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       widget.customer = customer;
       if (widget.restaurant != null) {
         // fetch comments
-        widget.presenter.fetchCommentList(widget.customer, widget.restaurantId);
+        widget.presenter.checkCanComment(customer, widget?.restaurant);
+        widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
         // fetch if the restaurant is open
       }
     });
@@ -88,11 +95,13 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       showLoading(true);
       // there must be a food id.
       if (widget.customer != null) {
+        widget.restaurant = RestaurantModel(id: widget.restaurantId);
         widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
       }
       else {
         showLoading(true);
         Future.delayed(Duration(seconds: 1)).then((onValue) {
+          widget.restaurant = RestaurantModel(id: widget.restaurantId);
           widget.presenter.fetchRestaurantDetailsById(
               widget.customer, widget.restaurantId);
         });
@@ -138,7 +147,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     return DefaultTabController(
         length: 1,
         child: NestedScrollView(
-            controller: widget._scrollController,
+            controller: _scrollController,
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 flexibleSpaceWidget,
@@ -225,7 +234,18 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                                   Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                                 ],
                               ),
-                              SizedBox(height:20),
+                              _canComment == 1 ? Container(
+                                // add a button to review the restaurant.
+                                  child:Center(
+                                    child:   Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                      IconButton(icon: Icon(_latentRate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
+                                      IconButton(icon: Icon(_latentRate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
+                                      IconButton(icon: Icon(_latentRate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
+                                      IconButton(icon: Icon(_latentRate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
+                                      IconButton(icon: Icon(_latentRate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
+                                    ]),
+                                  )
+                              ) : SizedBox(height:20),
                               /* 4.0 - stars */
                               isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
                               _buildCommentList()) ,
@@ -287,7 +307,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     setState(() {
       widget.restaurant = restaurant;
     });
-    widget.presenter.fetchCommentList(widget.customer, widget.restaurantId);
+    widget.presenter.fetchCommentList(widget.customer, widget?.restaurant);
   }
 
   @override
@@ -338,10 +358,20 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   }
 
   @override
-  void inflateComments(List<CommentModel> comments) {
+  void inflateComments(List<CommentModel> comments, String stars, String votes) {
     setState(() {
+      if (widget?.restaurant != null) {
+        widget.restaurant.stars = double.parse(stars);
+        widget.restaurant.votes = int.parse(votes);
+      }
       widget.commentList = comments;
     });
+    if (widget.commentList?.length > 0) {
+      // scroll to bottom
+      Timer(Duration(milliseconds: 500), () {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
+      });
+    }
   }
 
   @override
@@ -415,7 +445,48 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
             tagText,
             style: TextStyle(color: tagTextColor, fontSize: 12)
         )) : Container();
+  }
 
+  _reviewRestaurant () async {
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReviewRestaurantPage(restaurant: widget?.restaurant, rate: _latentRate, presenter: RestaurantReviewPresenter()),
+      ),
+    );
+    if (results != null && results.containsKey('ok')) {
+      bool feedBackOk = results['ok'];
+      if (feedBackOk) {
+        setState(() {
+          _canComment = 0;
+        });
+        widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
+      }
+    }
+  }
+
+  @override
+  void canComment(int canComment) {
+    setState(() {
+      this._canComment = canComment;
+    });
+  }
+
+  @override
+  void showCanCommentLoading(bool isLoading) {
+    setState(() {
+      this._canCommentLoading = isLoading;
+    });
+  }
+
+  _starPressed(int rate) {
+    setState(() {
+      _latentRate = rate;
+    });
+    // after two seconds, i jump to the review activity.
+    Future.delayed(Duration(seconds: 1), () {
+      _reviewRestaurant();
+    });
   }
 
 }

@@ -828,6 +828,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   _payAtDelivery(bool isDialogShown) async {
 
+    // if untrustful, you can't go further.
+    if (_orderBillConfiguration?.trustful == 0) {
+      _showDialog(
+          iccon: VectorsData.questions, // untrustful
+          message: "Sorry, you already have an ongoing order. Please contact customer care for more informations.",
+          isYesOrNo: false,
+      );
+      return;
+    }
+
     if (!isDialogShown) {
       _showDialog(
           iccon: VectorsData.questions,

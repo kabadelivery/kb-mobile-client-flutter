@@ -64,6 +64,7 @@ class TransferMoneyAmountConfirmationPresenter implements TransferMoneyAmountCon
             _transferMoneyAmountConfirmationView.transactionSuccessful(customer, _amount, balance);
           } else if (statut == -100) {
             // password wrong
+            _transferMoneyAmountConfirmationView.passwordWrong();
           } else {
             _transferMoneyAmountConfirmationView.systemError();
           }
@@ -91,6 +92,7 @@ class TransferMoneyAmountConfirmationPresenter implements TransferMoneyAmountCon
       }
       isWorking = false;
     }
+    isWorking = false;
   }
 
 }

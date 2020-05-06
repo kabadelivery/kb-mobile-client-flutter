@@ -12,10 +12,9 @@ import 'package:tinycolor/tinycolor.dart';
 
 class PresentationPage extends StatefulWidget {
 
-  static var routeName = "/SplashPage";
+  static var routeName = "/PresentationPage";
 
   PresentationPage({Key key}) : super(key: key);
-
 
   @override
   _SplashPageState createState() => _SplashPageState();

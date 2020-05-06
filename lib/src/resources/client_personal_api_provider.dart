@@ -23,7 +23,7 @@ class ClientPersonalApiProvider {
   /// COMMENTS
   ///
   /// Get restaurants comments list
-  Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
+    fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     DebugTools.iPrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
       final response = await client
@@ -34,9 +34,17 @@ class ClientPersonalApiProvider {
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
+          String stars = json.decode(response.body)["data"]["stars"];
+          String votes = json.decode(response.body)["data"]["votes"];
           Iterable lo = json.decode(response.body)["data"]["comments"];
           List<CommentModel> comments = lo?.map((comment) => CommentModel.fromJson(comment))?.toList();
-          return comments;
+
+          Map<String, dynamic> res = Map();
+          res.putIfAbsent("stars",()=> stars);
+          res.putIfAbsent("votes",() => votes);
+          res.putIfAbsent("comments",() => comments);
+
+          return res;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -331,6 +339,7 @@ class ClientPersonalApiProvider {
           res.putIfAbsent("customer", ()=>customer);
           res.putIfAbsent("statut", ()=>json.decode(response.body)["data"]["statut"]);
           res.putIfAbsent("amount", ()=>json.decode(response.body)["data"]["amount"]);
+          res.putIfAbsent("balance", ()=>json.decode(response.body)["data"]["balance"]);
         }
         return res;
       }
