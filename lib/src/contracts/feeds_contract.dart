@@ -1,8 +1,8 @@
 
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/FeedModel.dart';
-import 'package:kaba_flutter/src/resources/feed_provider.dart';
-import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/FeedModel.dart';
+import 'package:KABA/src/resources/feed_provider.dart';
+import 'package:KABA/src/resources/menu_api_provider.dart';
 
 class FeedContract {
 

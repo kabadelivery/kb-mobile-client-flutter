@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
-import 'package:kaba_flutter/src/models/CommandModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/MyOrderWidget.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/blocs/UserDataBloc.dart';
+import 'package:KABA/src/models/CommandModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 
 
 class DailyOrdersPage extends StatefulWidget {

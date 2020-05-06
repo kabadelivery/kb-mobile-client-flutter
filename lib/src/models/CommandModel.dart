@@ -1,8 +1,8 @@
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/KabaShippingMan.dart';
-import 'package:kaba_flutter/src/models/OrderItemModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/KabaShippingMan.dart';
+import 'package:KABA/src/models/OrderItemModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
 
 import 'DeliveryTimeFrameModel.dart';
 

@@ -1,4 +1,4 @@
-import 'package:kaba_flutter/src/models/WebArticleModel.dart';
+import 'package:KABA/src/models/WebArticleModel.dart';
 
 
 

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tg.tmye.kaba.kaba_flutter">
+    package="tg.tmye.kaba.brave.one">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -28,7 +28,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name=".Application"
-        android:label="kaba_flutter"
+        android:label="KABA"
         android:roundIcon="@mipmap/launcher_icon"
         android:networkSecurityConfig="@xml/network_security"
         android:icon="@mipmap/launcher_icon">

@@ -1,6 +1,6 @@
 
 
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
 
 class OrderItemModel {
 

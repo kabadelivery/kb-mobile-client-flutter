@@ -1,7 +1,7 @@
 
-import 'package:kaba_flutter/src/models/CustomerCareChatMessageModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/resources/customerchat_provider.dart';
+import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/resources/customerchat_provider.dart';
 
 class CustomerCareChatContract {
 

@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/menu_contract.dart';
-import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
-import 'package:kaba_flutter/src/models/AdModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 //import 'package:photo_view/photo_view.dart';
 

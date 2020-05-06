@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:nice_intro/nice_intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinycolor/tinycolor.dart';
@@ -100,25 +100,13 @@ class _SplashPageState extends State<PresentationPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("_first_time", false);
 
-    bool isOkWithTerms = await _getIsOkWithTerms();
-    // jump to terms and conditions if it is also not yet
-    if (!isOkWithTerms) {
-      // jump to terms and conditions
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => WebViewPage(title: "CGU",link: ServerRoutes.CGU_PAGE, agreement: true),
-        ),
-      );
-    } else {
-      // jump to splashscreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SplashPage(),
-        ),
-      );
-    }
+    // jump to splashscreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SplashPage(),
+      ),
+    );
   }
 
 

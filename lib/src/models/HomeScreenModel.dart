@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'dart:core';
-import 'package:kaba_flutter/src/models/AdModel.dart';
-import 'package:kaba_flutter/src/models/EvenementModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/EvenementModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
 
 
 Iterable l;

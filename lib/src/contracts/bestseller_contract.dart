@@ -1,6 +1,6 @@
 
-import 'package:kaba_flutter/src/models/BestSellerModel.dart';
-import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/models/BestSellerModel.dart';
+import 'package:KABA/src/resources/menu_api_provider.dart';
 
 class BestSellerContract {
 

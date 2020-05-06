@@ -1,37 +1,39 @@
 {
   "project_info": {
-    "project_number": "1077931552915",
-    "firebase_url": "https://kaba-delivery-flutter.firebaseio.com",
-    "project_id": "kaba-delivery-flutter",
-    "storage_bucket": "kaba-delivery-flutter.appspot.com"
+    "project_number": "7649846363",
+    "firebase_url": "https://kaba-tmye-2018.firebaseio.com",
+    "project_id": "kaba-tmye-2018",
+    "storage_bucket": "kaba-tmye-2018.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1077931552915:android:072281a2e2f9c28c4a5d66",
+        "mobilesdk_app_id": "1:7649846363:android:102dc75b46bb9974",
         "android_client_info": {
-          "package_name": "tg.tmye.kaba.kaba_flutter"
+          "package_name": "tg.tmye.kaba.brave.one"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1077931552915-cuui1lepabm1r1vh6qlp3fcc73okusft.apps.googleusercontent.com",
+          "client_id": "7649846363-un45k0p103o4i5rkrpoh063uqnhv2qb6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA7NZ3xwLmzVlfyBcRVAmEl-JPospiQlYg"
+          "current_key": "AIzaSyCQP7mkpTjBTQEU5rflQrDESuOnKyIwVUY"
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 1
+        },
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1077931552915-cuui1lepabm1r1vh6qlp3fcc73okusft.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }

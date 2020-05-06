@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/contracts/recover_password_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 

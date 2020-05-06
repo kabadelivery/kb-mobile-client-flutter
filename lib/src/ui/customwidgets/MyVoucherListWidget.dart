@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 
 class MyVoucherListWidget extends StatefulWidget {

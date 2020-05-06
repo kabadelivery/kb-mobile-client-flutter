@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:kaba_flutter/src/contracts/topup_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -204,22 +204,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   @override
   void topUpToWeb(String link) {
 
-    _launchURL(link);
-    Navigator.of(context).pop({'check_balance': true});
+    Navigator.of(context).pop({'check_balance': true, 'link': link});
     /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WebViewPage(title: "PAYGATE - ${operator}",link: link),
       ),
     );*/
-  }
-
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   bool _checkOperator() {

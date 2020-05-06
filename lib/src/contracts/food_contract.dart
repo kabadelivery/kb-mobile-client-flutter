@@ -1,6 +1,6 @@
 
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/resources/menu_api_provider.dart';
 
 class FoodContract {
 

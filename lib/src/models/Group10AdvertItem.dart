@@ -1,4 +1,4 @@
-import 'package:kaba_flutter/src/models/AdModel.dart';
+import 'package:KABA/src/models/AdModel.dart';
 
 
 

@@ -1,5 +1,5 @@
-import 'package:kaba_flutter/src/models/EvenementModel.dart';
-import 'package:kaba_flutter/src/resources/app_api_provider.dart';
+import 'package:KABA/src/models/EvenementModel.dart';
+import 'package:KABA/src/resources/app_api_provider.dart';
 
 class EvenementContract {
 

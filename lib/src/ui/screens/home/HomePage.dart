@@ -1,14 +1,14 @@
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/StateContainer.dart';
-import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/restaurant/RestaurantListPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '_home/HomeWelcomePage.dart';

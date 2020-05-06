@@ -1,17 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
-import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
-import 'package:kaba_flutter/src/models/AdModel.dart';
-import 'package:kaba_flutter/src/models/BestSellerModel.dart';
-import 'package:kaba_flutter/src/models/EvenementModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
+import 'package:KABA/src/contracts/bestseller_contract.dart';
+import 'package:KABA/src/contracts/evenement_contract.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/BestSellerModel.dart';
+import 'package:KABA/src/models/EvenementModel.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 class EvenementPage extends StatefulWidget {

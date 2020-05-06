@@ -1,15 +1,21 @@
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
-import 'package:kaba_flutter/src/contracts/register_contract.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/register/RegisterPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/contracts/recover_password_contract.dart';
+import 'package:KABA/src/contracts/register_contract.dart';
+import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
+import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
+import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -38,9 +44,17 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   TextEditingController _loginFieldController = new TextEditingController();
 
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
     this.widget.presenter.loginView = this;
+
+    _getIsOkWithTerms().then((isOkWithTerms){
+      if (!isOkWithTerms) {
+        // jump to terms page.
+         _askTerms();
+      }
+    });
+
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number;
@@ -54,7 +68,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     return Scaffold(
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
+          value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
             child:Center(
               child: Column(
@@ -128,20 +142,20 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   Future _launchConnexion() async {
 
-   String login = _loginFieldController.text;
+    String login = _loginFieldController.text;
 
-   // control login stuff
-  if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
-    /* login error */
-    mToast("Sorry, Login error");
-    return;
-  }
+    // control login stuff
+    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+      /* login error */
+      mToast("Sorry, Login error");
+      return;
+    }
 
-   // 1. get password
+    // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-      builder: (BuildContext context) {
-        return RetrievePasswordPage(type: 0);
-      }
+        builder: (BuildContext context) {
+          return RetrievePasswordPage(type: 0);
+        }
     ));
     if (results != null && results.containsKey('code') && results.containsKey('type')) {
       String _mCode = results['code'];
@@ -181,5 +195,88 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
+
+
+  Future<bool> _getIsOkWithTerms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isOkWithTerms = false;
+    try {
+      // prove me it's not first time
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
+    } catch(_){
+      // is first time
+      isOkWithTerms = false;
+    }
+    if (isOkWithTerms == null)
+      isOkWithTerms = false;
+    return isOkWithTerms;
+  }
+
+
+  void _askTerms() {
+
+    showDialog(barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                          VectorsData.terms_and_conditions
+                      )),
+                  SizedBox(height: 10),
+                  Text("Do you accept our terms and conditions?", textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions: <Widget>[
+              /*OutlineButton(
+                child: new Text(
+                    "NO", style: TextStyle(color: Colors.black)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();// double pop and end the page.
+                },
+              ),*/
+              OutlineButton(
+                child: new Text(
+                    "YES", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () async {
+                  //
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setBool("_is_ok_with_terms", true);
+                  // dismiss
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                child: new Text(
+                    "SEE", style: TextStyle(color: KColors.mBlue)),
+                onPressed: () {
+                  _seeTermsAndConditions();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  void _seeTermsAndConditions() {
+    _launchURL(ServerRoutes.CGU_PAGE);
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 
 }

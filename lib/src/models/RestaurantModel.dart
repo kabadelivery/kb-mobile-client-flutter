@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 
 
 class RestaurantModel {

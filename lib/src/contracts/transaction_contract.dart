@@ -1,8 +1,8 @@
 
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/TransactionModel.dart';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
-import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/TransactionModel.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/resources/menu_api_provider.dart';
 
 class TransactionContract {
 

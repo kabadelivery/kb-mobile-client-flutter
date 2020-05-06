@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:package_info/package_info.dart';
 
 

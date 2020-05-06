@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:kaba_flutter/src/contracts/order_details_contract.dart';
-import 'package:kaba_flutter/src/models/CommandModel.dart';
-import 'package:kaba_flutter/src/models/OrderItemModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/models/CommandModel.dart';
+import 'package:KABA/src/models/OrderItemModel.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class MyOrderWidget extends StatefulWidget {
 

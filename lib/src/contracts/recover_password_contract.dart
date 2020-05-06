@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
 
 
 /* Register contract */

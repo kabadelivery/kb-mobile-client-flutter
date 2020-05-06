@@ -6,11 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/personal_page_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 
 

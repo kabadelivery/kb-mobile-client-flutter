@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
-import 'package:kaba_flutter/src/models/CommentModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/models/TransactionModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
-import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/models/CommentModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/TransactionModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/DebugTools.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 class ClientPersonalApiProvider {

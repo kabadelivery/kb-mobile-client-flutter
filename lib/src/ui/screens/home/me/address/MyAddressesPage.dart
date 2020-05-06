@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/blocs/UserDataBloc.dart';
-import 'package:kaba_flutter/src/contracts/address_contract.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/address/EditAddressPage.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/MyAddressListWidget.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/blocs/UserDataBloc.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/ui/customwidgets/MyAddressListWidget.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 class MyAddressesPage extends StatefulWidget {

@@ -5,12 +5,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' show Client;
-import 'package:kaba_flutter/src/models/CustomerCareChatMessageModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/FeedModel.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
-import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/FeedModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/DebugTools.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class CustomerCareChatApiProvider {
 

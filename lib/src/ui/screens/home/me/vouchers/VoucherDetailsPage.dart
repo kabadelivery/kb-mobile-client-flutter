@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/MyVoucherListWidget.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:toast/toast.dart';
 

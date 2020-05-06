@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/models/CommandModel.dart';
-import 'package:kaba_flutter/src/models/CommentModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/resources/app_api_provider.dart';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
-import 'package:kaba_flutter/src/resources/commands_api_provider.dart';
-import 'package:kaba_flutter/src/resources/restaurant_api_provider.dart';
+import 'package:KABA/src/models/CommandModel.dart';
+import 'package:KABA/src/models/CommentModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/resources/app_api_provider.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/resources/commands_api_provider.dart';
+import 'package:KABA/src/resources/restaurant_api_provider.dart';
 
 import 'models/CustomerModel.dart';
 

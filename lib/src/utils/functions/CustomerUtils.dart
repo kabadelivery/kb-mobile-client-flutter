@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -110,6 +110,16 @@ class CustomerUtils {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_homepage", wp);
+  }
+
+ static Future<bool> isPusTokenUploaded() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("is_push_token_uploaed");
+  }
+
+  static Future<void> setPushTokenUploadedSuccessfully() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("is_push_token_uploaed", true);
   }
 
 }

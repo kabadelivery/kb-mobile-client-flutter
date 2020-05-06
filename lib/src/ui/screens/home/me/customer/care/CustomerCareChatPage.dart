@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerCareChatMessageModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/contracts/restaurant_review_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ImageAssets.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/contracts/restaurant_review_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:package_info/package_info.dart';
 import 'package:toast/toast.dart';
 

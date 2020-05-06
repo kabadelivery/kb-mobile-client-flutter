@@ -1,4 +1,4 @@
-import 'package:kaba_flutter/src/models/ArticleContentModel.dart';
+import 'package:KABA/src/models/ArticleContentModel.dart';
 
 class WebArticle {
 

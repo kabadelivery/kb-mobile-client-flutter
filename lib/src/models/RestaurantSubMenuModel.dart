@@ -1,5 +1,5 @@
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
 
 
 class RestaurantSubMenuModel {

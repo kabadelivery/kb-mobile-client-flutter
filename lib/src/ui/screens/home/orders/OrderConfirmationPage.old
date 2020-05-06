@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/models/MyAddressModel.old';
-import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
-import 'package:kaba_flutter/src/models/PreOrderConfiguration.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/CustomSwitchPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/models/MyAddressModel.old';
+import 'package:KABA/src/models/OrderBillConfiguration.dart';
+import 'package:KABA/src/models/PreOrderConfiguration.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 
 class OrderConfirmationPage extends StatefulWidget {

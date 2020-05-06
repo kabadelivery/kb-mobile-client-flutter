@@ -2,11 +2,11 @@
 import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/resources/address_api_provider.dart';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/resources/address_api_provider.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressContract {

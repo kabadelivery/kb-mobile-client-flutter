@@ -2,14 +2,14 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/FeedModel.dart';
-import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/feeds_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/FeedModel.dart';
+import 'package:KABA/src/models/NotificationFDestination.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class FeedsPage extends StatefulWidget {
 

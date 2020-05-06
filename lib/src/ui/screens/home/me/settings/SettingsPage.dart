@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:kaba_flutter/src/contracts/recover_password_contract.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/contracts/recover_password_contract.dart';
+import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -44,13 +45,24 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void  _jumpWebPage(String title, String link) {
-    Navigator.push(
+
+    _launchURL(link);
+
+   /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WebViewPage(title: title,link: link),
       ),
-    );
+    );*/
   }
 
   void _jumpToInfoPage() {

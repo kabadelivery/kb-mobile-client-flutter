@@ -13,6 +13,8 @@
   static final String customer_care = "assets/images/vectors/fl_deliveryman.svg";
   static final String out_of_range = "assets/images/vectors/out_of_range.svg";
   static final String account_balance = "assets/images/vectors/account_balance.svg";
+  static final String terms_and_conditions = "assets/images/vectors/agreement.svg";
+
 
   // presentation screens
   static final String p_f_1 = "assets/images/vectors/app_presentation/sl_enjoy.svg";

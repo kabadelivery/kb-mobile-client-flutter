@@ -1,11 +1,11 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/models/CommentModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/repository.dart';
+import 'package:KABA/src/models/CommentModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RestaurantBloc {

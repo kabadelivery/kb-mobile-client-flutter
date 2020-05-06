@@ -1,6 +1,6 @@
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/repository.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeScreenBloc {

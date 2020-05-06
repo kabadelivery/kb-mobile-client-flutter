@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantSubMenuModel.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class RestaurantFoodListWidget extends StatefulWidget {
 

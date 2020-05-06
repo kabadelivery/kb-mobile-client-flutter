@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/contracts/transfer_money_amount_confirmation_contract.dart';
-import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/money/TransferMoneyAmountConfirmationPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/transfer_money_amount_confirmation_contract.dart';
+import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransferMoneyAmountConfirmationPage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
 
 

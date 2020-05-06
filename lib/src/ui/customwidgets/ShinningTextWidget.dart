@@ -24,7 +24,7 @@ void handleTimeout() {  // callback function
 }*/
 
 import 'package:flutter/cupertino.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 class ShinningTextWidget extends StatefulWidget {
 

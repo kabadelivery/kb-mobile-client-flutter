@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
-import 'package:kaba_flutter/src/models/CommandModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
-import 'package:kaba_flutter/src/utils/functions/DebugTools.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/models/CommandModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/DebugTools.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class CommandsApiProvider {
 

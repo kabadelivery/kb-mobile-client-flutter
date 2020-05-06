@@ -8,30 +8,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/contracts/bestseller_contract.dart';
-import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
-import 'package:kaba_flutter/src/contracts/evenement_contract.dart';
-import 'package:kaba_flutter/src/contracts/home_welcome_contract.dart';
-import 'package:kaba_flutter/src/contracts/restaurant_details_contract.dart';
-import 'package:kaba_flutter/src/models/AdModel.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/GroupAdsWidget.dart';
-import 'package:kaba_flutter/src/ui/customwidgets/ShinningTextWidget.dart';
-import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/_home/InfoPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/AppConfig.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
+import 'package:KABA/src/contracts/bestseller_contract.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/evenement_contract.dart';
+import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
+import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
+import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -69,7 +69,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   bool hasSystemError = false;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -77,14 +76,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     showLoading(true);
 
     CustomerUtils.getCustomer().then((customer) {
-      this.widget.presenter.updateToken(customer);
+      // check if i token updates successfully
+      // ignore: unrelated_type_equality_checks
+      if (CustomerUtils.isPusTokenUploaded() != true) {
+        this.widget.presenter.updateToken(customer);
+      }
     });
 
     this.widget.presenter.fetchHomePage();
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
-
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool has_subscribed = false;
@@ -96,7 +98,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       if (has_subscribed == false) {
         FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
         _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
-        prefs.setBool('has_subscribed', true)
+          prefs.setBool('has_subscribed', true)
         });
       }
     });
@@ -627,6 +629,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       // ask launch.
       Toast.show("Call error", context);
     }
+  }
+
+  @override
+  void tokenUpdateSuccessfully() {
+//    tokenUpdateSuccessfully
+    CustomerUtils.setPushTokenUploadedSuccessfully();
   }
 }
 

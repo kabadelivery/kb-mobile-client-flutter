@@ -4,10 +4,10 @@
 /* login contract */
 import 'dart:convert';
 
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/resources/app_api_provider.dart';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/resources/app_api_provider.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PersonnalPageContract {

@@ -1,10 +1,10 @@
 
-import 'package:kaba_flutter/src/models/CommentModel.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/models/UserTokenModel.dart';
-import 'package:kaba_flutter/src/resources/client_personal_api_provider.dart';
-import 'package:kaba_flutter/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/models/CommentModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/resources/menu_api_provider.dart';
 
 class RestaurantDetailsContract {
 

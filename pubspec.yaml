@@ -1,4 +1,4 @@
-name: kaba_flutter
+name: KABA
 description: Kaba under Flutter framework
 
 # The following defines the version and build number for your application.
@@ -11,7 +11,7 @@ description: Kaba under Flutter framework
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.0
+version: 1.0.0
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -104,6 +104,8 @@ flutter:
     - assets/images/vectors/app_presentation/sl_choice.svg
     - assets/images/vectors/app_presentation/sl_geolocalisation.svg
     - assets/images/vectors/app_presentation/sl_payment.svg
+    # icons
+    - assets/images/vectors/agreement.svg
     - assets/images/vectors/out_of_range.svg
     - assets/images/vectors/notificiation_message_normal.svg
     - assets/images/vectors/notification_message_new.svg

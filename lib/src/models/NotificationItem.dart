@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:kaba_flutter/src/models/NotificationFDestination.dart';
+import 'package:KABA/src/models/NotificationFDestination.dart';
 
 
 

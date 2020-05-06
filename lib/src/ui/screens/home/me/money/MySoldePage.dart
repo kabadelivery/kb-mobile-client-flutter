@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 
 class MySoldePage extends StatefulWidget {

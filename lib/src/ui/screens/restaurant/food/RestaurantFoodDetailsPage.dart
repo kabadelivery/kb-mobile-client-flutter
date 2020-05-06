@@ -4,17 +4,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:kaba_flutter/src/contracts/food_contract.dart';
-import 'package:kaba_flutter/src/contracts/order_contract.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage.old';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/food_contract.dart';
+import 'package:KABA/src/contracts/order_contract.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
+import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {

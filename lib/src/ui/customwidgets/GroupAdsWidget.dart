@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
-import 'package:kaba_flutter/src/contracts/ads_viewer_contract.dart';
-import 'package:kaba_flutter/src/models/HomeScreenModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/ImagesPreviewPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/models/AdModel.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 class GroupAdsWidget extends StatefulWidget {

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:kaba_flutter/src/ui/screens/message/ErrorPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

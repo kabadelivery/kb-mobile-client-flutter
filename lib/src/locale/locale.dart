@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:async/async.dart';
-import 'package:kaba_flutter/src/l10n/messages_all.dart';
+import 'package:KABA/src/l10n/messages_all.dart';
 
 class KabaLocalizations {
   static Future<KabaLocalizations> load(Locale locale) {

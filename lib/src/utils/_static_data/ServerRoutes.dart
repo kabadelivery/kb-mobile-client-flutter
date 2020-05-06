@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 
 class ServerRoutes {
 

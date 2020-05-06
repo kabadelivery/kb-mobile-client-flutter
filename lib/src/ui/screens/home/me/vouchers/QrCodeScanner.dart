@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/utils/recustomlib/my_qrcode_reader_view.dart';
+import 'package:KABA/src/utils/recustomlib/my_qrcode_reader_view.dart';
 
 class QrCodeScannerPage extends StatefulWidget {
 

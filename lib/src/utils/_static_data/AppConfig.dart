@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 class AppConfig {
 

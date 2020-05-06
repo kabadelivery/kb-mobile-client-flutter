@@ -1,4 +1,4 @@
-package tg.tmye.kaba.kaba_flutter;
+package tg.tmye.kaba.brave.one;
 
 /**
  * By abiguime on 2020-02-20.

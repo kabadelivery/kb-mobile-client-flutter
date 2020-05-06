@@ -1,14 +1,14 @@
 
 import 'dart:convert';
 
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryAddressModel.dart';
-import 'package:kaba_flutter/src/models/DeliveryTimeFrameModel.dart';
-import 'package:kaba_flutter/src/models/OrderBillConfiguration.dart';
-import 'package:kaba_flutter/src/models/RestaurantFoodModel.dart';
-import 'package:kaba_flutter/src/models/RestaurantModel.dart';
-import 'package:kaba_flutter/src/resources/order_api_provider.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
+import 'package:KABA/src/models/OrderBillConfiguration.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 
 class OrderConfirmationContract {
 

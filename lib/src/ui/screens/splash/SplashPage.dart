@@ -7,14 +7,14 @@ import 'package:flutter/services.dart';
 //import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:kaba_flutter/src/contracts/login_contract.dart';
-import 'package:kaba_flutter/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/HomePage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/PresentationPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/ServerRoutes.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,10 +51,6 @@ class _SplashPageState extends State<SplashPage> {
 
   Future handleTimeout() async {
 
- //   _checkLocationActivated();
-
-   // _getLastKnowLocation();
-
     /* check if first opening the app */
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -64,69 +60,56 @@ class _SplashPageState extends State<SplashPage> {
       // jump to presentation screens
       _jumpToFirstTimeScreen();
     } else {
-
-      // am i ok with the terms and conditions?
-      bool isOkWithTerms = await _getIsOkWithTerms();
-
-      if (!isOkWithTerms) {
-        // jump to terms page.
-        _jumpToTermsPage();
-      } else {
-        StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
-        prefs = await SharedPreferences.getInstance();
-        String expDate = prefs.getString("_login_expiration_date");
-        if (expDate != null) {
-          if (DateTime.now().isAfter(DateTime.parse(expDate))) {
-            /* session expired : clean params */
-            prefs.remove("_customer");
-            prefs.remove("_token");
-            prefs.remove("_login_expiration_date");
-          } else {
-            launchPage = HomePage();
-          }
+      StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
+      prefs = await SharedPreferences.getInstance();
+      String expDate = prefs.getString("_login_expiration_date");
+      if (expDate != null) {
+        if (DateTime.now().isAfter(DateTime.parse(expDate))) {
+          /* session expired : clean params */
+          prefs.remove("_customer");
+          prefs.remove("_token");
+          prefs.remove("_login_expiration_date");
+        } else {
+          launchPage = HomePage();
         }
-
-        // before we launch to home page , we launch here.
-
-        Navigator.of(context).pushReplacement(new MaterialPageRoute(
-            builder: (BuildContext context) => launchPage));
       }
+      Navigator.of(context).pushReplacement(new MaterialPageRoute(
+          builder: (BuildContext context) => launchPage));
     }
   }
 
   startTimeout() async {
-
 
     var duration = const Duration(milliseconds: 1500);
     return new Timer(duration, handleTimeout);
   }
 
   _checkLocationActivated () async {
-      if (!(await Geolocator().isLocationServiceEnabled())) {
-        if (Theme.of(context).platform == TargetPlatform.android) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Can't get gurrent location"),
-                content:
-                const Text('Please make sure you enable GPS and try again'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Ok'),
-                    onPressed: () {
-                      final AndroidIntent intent = AndroidIntent(
-                          action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Can't get gurrent location"),
+              content:
+              const Text('Please make sure you enable GPS and try again'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    final AndroidIntent intent = AndroidIntent(
+                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
 
-                      intent.launch();
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        }
+                    intent.launch();
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 

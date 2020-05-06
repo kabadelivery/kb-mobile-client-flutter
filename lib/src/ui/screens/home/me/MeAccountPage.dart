@@ -5,28 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kaba_flutter/src/contracts/customercare_contract.dart';
-import 'package:kaba_flutter/src/contracts/feeds_contract.dart';
-import 'package:kaba_flutter/src/contracts/personal_page_contract.dart';
-import 'package:kaba_flutter/src/contracts/topup_contract.dart';
-import 'package:kaba_flutter/src/contracts/transaction_contract.dart';
-import 'package:kaba_flutter/src/contracts/transfer_money_request_contract.dart';
-import 'package:kaba_flutter/src/models/CustomerModel.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/address/MyAddressesPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/money/TopUpPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/personnal/Personal2Page.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/personnal/PersonalPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/settings/SettingsPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/home/orders/LastOrdersPage.dart';
-import 'package:kaba_flutter/src/ui/screens/splash/SplashPage.dart';
-import 'package:kaba_flutter/src/utils/_static_data/KTheme.dart';
-import 'package:kaba_flutter/src/utils/_static_data/Vectors.dart';
-import 'package:kaba_flutter/src/utils/functions/CustomerUtils.dart';
-import 'package:kaba_flutter/src/utils/functions/Utils.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/feeds_contract.dart';
+import 'package:KABA/src/contracts/personal_page_contract.dart';
+import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
+import 'package:KABA/src/ui/screens/home/me/personnal/PersonalPage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
@@ -394,16 +395,22 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     if (results != null && results.containsKey('check_balance')) {
 
       bool check_balance =  results['check_balance'];
+      String link = results['link'];
       if (check_balance == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
         _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+        _launchURL(link);
       }
     }
   }
 
-
-
-
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   void _showDialog(
       {String svgIcon, var message,}) {

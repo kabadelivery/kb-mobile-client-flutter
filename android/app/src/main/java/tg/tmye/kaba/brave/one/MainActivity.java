@@ -1,4 +1,4 @@
-package tg.tmye.kaba.kaba_flutter;
+package tg.tmye.kaba.brave.one;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
