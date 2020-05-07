@@ -251,7 +251,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
-                            InkWell(onTap: (){},
+                            InkWell(onTap: () =>   _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
                                 child:Container(
                                     decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
                                     padding: EdgeInsets.only(left:10),
@@ -445,5 +445,6 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       },
     );
   }
+
 
 }
