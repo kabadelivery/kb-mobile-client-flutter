@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,7 +126,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     var flexibleSpaceWidget = new SliverAppBar(
       actions: <Widget>[
-        IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
+        IconButton(icon: Icon(FontAwesomeIcons.comments,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
         PopupMenuButton<String>(
           onSelected: menuChoiceAction,
           itemBuilder: (BuildContext context) {
@@ -316,7 +317,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage())),
+                                              IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()))),
                                               SizedBox(height:10),
                                               Text("ADRESSES", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
@@ -398,8 +399,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       String link = results['link'];
       if (check_balance == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
         _launchURL(link);
+        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
       }
     }
   }

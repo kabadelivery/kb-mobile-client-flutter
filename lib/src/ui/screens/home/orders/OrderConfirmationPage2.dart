@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -134,7 +135,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyAddressesPage(pick: true),
+        builder: (context) => MyAddressesPage(pick: true, presenter: AddressPresenter()),
       ),
     );
 
@@ -509,15 +510,20 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   color: Colors.white,
                   padding: EdgeInsets.only(
                       left: 10, right: 10, top: 20, bottom: 20),
-                  child: Row(mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Your balance:", style: TextStyle(fontSize: 17),),
-                      SizedBox(width: 10),
-                      Text("${_orderBillConfiguration.account_balance} XOF",
-                        style: TextStyle(color: KColors.primaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal),),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Your balance:", style: TextStyle(fontSize: 17),),
+                          SizedBox(width: 10),
+                          Text("${_orderBillConfiguration.account_balance} XOF",
+                            style: TextStyle(color: KColors.primaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal),),
+                        ],
+                      ),
+                      RaisedButton(child: Text("TOPUP",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>{}),
                     ],
                   ),
                 ),
@@ -810,7 +816,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("my code is not ok");
+        mToast("Code error");
       } else {
         String _mCode = results['code'];
         showLoadingPreorder(true);
@@ -819,7 +825,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text);
         } else {
-          mToast("my code is not ok");
+          mToast("Code error");
         }
       }
     }
@@ -860,7 +866,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("my code is not ok");
+        mToast("Code error");
       } else {
         String _mCode = results['code'];
         showLoadingPayAtDelivery(true);
@@ -869,7 +875,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text);
         } else {
-          mToast("my code is not ok");
+          mToast("Code error");
         }
       }
     }
@@ -910,7 +916,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("my code is not ok");
+        mToast("Code error");
       } else {
         String _mCode = results['code'];
         showLoadingPayAtDelivery(true);
@@ -919,7 +925,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text, selectedFrame.start, selectedFrame.end);
         } else {
-          mToast("my code is not ok");
+          mToast("Code error");
         }
       }
     }
@@ -1021,7 +1027,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   @override
   void launchOrderResponse(int errorCode) {
     showLoadingPayAtDelivery(false);
-    mToast("launchOrderResponse ${errorCode}");
+//    mToast("launchOrderResponse ${errorCode}");
 
     showLoadingPayAtDelivery(false);
     showLoadingPreorder(false);
@@ -1211,8 +1217,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(Icons.restaurant),
-                  SizedBox(width: 5),
+                  Icon(FontAwesomeIcons.moneyBill, color: hexToColor("#85bb65")),
+                  SizedBox(width: 10),
                   Text("PAY NOW", style: TextStyle(fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold)),

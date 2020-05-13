@@ -12,6 +12,8 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
+import '../../../../StateContainer.dart';
+
 
 class RecoverPasswordPage extends StatefulWidget {
 
@@ -70,7 +72,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           backgroundColor: Colors.white,
           title: Text("RECOVER PASSWORD", style:TextStyle(color:KColors.primaryColor)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
@@ -390,9 +392,13 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   void recoverSuccess(String phoneNumber, String newCode) {
     /* send to login page and */
     mToast("Password updated successfully");
-    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-        builder: (BuildContext context) => LoginPage(presenter: LoginPresenter(), phone_number: phoneNumber, password: newCode, autoLogin: true)), (
-        r) => false);
+    // logout.
+    StateContainer.of(context).balance = 0;
+    CustomerUtils.clearCustomerInformations().whenComplete((){
+      Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+          builder: (BuildContext context) => LoginPage(presenter: LoginPresenter(), phone_number: phoneNumber, password: newCode, autoLogin: true)), (
+          r) => false);
+    });
   }
 
 }

@@ -56,7 +56,11 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
                               style: TextStyle(fontSize: 14, color: Colors.grey)),
                         ),
                       ),
-                      IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(widget.address)),
+                      Column(
+                        children: <Widget>[
+                          IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(widget.address)),
+                        ],
+                      ),
                     ],
                   ),
                   Row(children: <Widget>[Text("Contact", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
@@ -64,7 +68,6 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
                 ],
               ),
             ),
-            onTap: _pickedAddress(widget.address),
           )
           )
       );
@@ -79,7 +82,5 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
     );
   }
 
-  _pickedAddress(DeliveryAddressModel address) {
-//    Navigator.of(widget.parentContext).pop({'selection':address});
-  }
+
 }

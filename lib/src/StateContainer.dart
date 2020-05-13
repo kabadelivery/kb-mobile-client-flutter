@@ -11,9 +11,11 @@ class StateContainer extends StatefulWidget {
   final Widget child;
   int tabPosition;
   int balance;
+  bool hasUnreadMessage;
+  bool hasGotNewMessageOnce;
   Position position;
 
-  StateContainer({@required this.child, this.balance, this.tabPosition, this.position});
+  StateContainer({@required this.child, this.balance, this.hasGotNewMessageOnce, this.hasUnreadMessage, this.tabPosition, this.position});
 
   static StateContainerState of(BuildContext context) {
 //    return (context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>()).data;
@@ -31,6 +33,8 @@ class StateContainerState extends State<StateContainer> {
   int tabPosition;
   int balance;
   Position location;
+  bool hasUnreadMessage;
+  bool hasGotNewMessageOnce;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
@@ -40,6 +44,37 @@ class StateContainerState extends State<StateContainer> {
       /* save it to shared preferences */
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setInt('balance', balance);
+    }
+  }
+
+  Future<void> updateUnreadMessage({hasUnreadMessage}) async {
+    if (hasUnreadMessage != null) {
+      setState(() {
+        this.hasUnreadMessage = hasUnreadMessage;
+      });
+      /* save it to shared preferences */
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('hasUnreadMessage', hasUnreadMessage);
+    } else {
+      setState(() {
+        this.hasUnreadMessage = false;
+      });
+      /* save it to shared preferences */
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('hasUnreadMessage', hasUnreadMessage);
+    }
+  }
+
+  Future<void> updateHasGotNewMessage({hasGotNewMessage}) async {
+    if (hasGotNewMessage != null) {
+//      setState(() {
+        this.hasGotNewMessageOnce = hasGotNewMessage;
+//      });
+      /* save it to shared preferences */
+    } else {
+//      setState(() {
+        this.hasGotNewMessageOnce = false;
+//      });
     }
   }
 
@@ -73,6 +108,11 @@ class StateContainerState extends State<StateContainer> {
       this.tabPosition = 0;
   }
 
+  Future<void> retrieveUnreadMessage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    this.hasUnreadMessage = true && prefs.getBool('hasUnreadMessage');
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +131,8 @@ class InheritedStateContainer extends InheritedWidget {
     @required Widget child,
   }) : super(key: key, child: child) {
     data.retrieveBalance();
+    data.retrieveUnreadMessage();
+    data.hasGotNewMessageOnce = false;
   }
 
   @override

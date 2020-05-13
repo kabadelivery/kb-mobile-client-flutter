@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/NotificationTestPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,7 +98,7 @@ class _MyAppState extends State<MyApp> {
         NotificationItem notificationItem = _notificationFromMessage(message);
         iLaunchNotifications(notificationItem);
       },
-      onBackgroundMessage: _backgroundMessageHandling,
+      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandling,
     );
 
     _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() async {
@@ -112,6 +114,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
 //            theme: theme,
+      debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       localizationsDelegates: [
         // ... app-specific localization delegate[s] here
@@ -139,7 +142,7 @@ class _MyAppState extends State<MyApp> {
 //    home: TopUpPage(presenter: TopUpPresenter()),
 //    home: FeedsPage(presenter: FeedPresenter(),),
 //    home: EvenementPage(presenter: EvenementPresenter(),),
-//    home: TestPage(),
+//    home: NotificationTestPage(),
 //    home: TopUpPage(presenter: TopUpPresenter()),
 //    home: WebViewPage(agreement: true),
 //    home: WebTestPage(),
@@ -158,30 +161,42 @@ class _MyAppState extends State<MyApp> {
     _handlePayLoad(payload);
   }
 
-static  NotificationItem _notificationFromMessage(message_entry) {
+  static  NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 
     if (Platform.isIOS) {
       // Android-specific code
-      var destination = json.decode(message_entry["destination"].toString());
-      NotificationItem notificationItem = new NotificationItem(
-          title: message_entry["title"],
-          body: message_entry["body"],
-          image_link: message_entry["image_link"],
-          priority: message_entry["priority"],
-          destination: NotificationFDestination(type: destination["type"] as int, product_id: destination["product_id"] as int)
-      );
-      return notificationItem;
+      try {
+        var _data = json.decode(message_entry["data"])["data"];
+        NotificationItem notificationItem = new NotificationItem(
+            title: _data["notification"]["title"],
+            body: _data["notification"]["body"],
+            image_link: _data["notification"]["image_link"],
+            priority: "${_data["notification"]["destination"]["priority"]}",
+            destination: NotificationFDestination(
+                type: _data["notification"]["destination"]["type"],
+                product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
+        );
+        return notificationItem;
+      } catch (_) {
+        print(_);
+      }
     } else if (Platform.isAndroid) {
       // IOS-specific code
-      var destination = json.decode(message_entry["data"]["destination"].toString());
-      NotificationItem notificationItem = new NotificationItem(
-          title: message_entry["data"]["title"],
-          body: message_entry["data"]["body"],
-          image_link: message_entry["data"]["image_link"],
-          priority: message_entry["data"]["priority"],
-          destination: NotificationFDestination(type: destination["type"] as int, product_id: destination["product_id"] as int)
-      );
-      return notificationItem;
+      try {
+        var _data = json.decode(message_entry["data"]["data"])["data"];
+        NotificationItem notificationItem = new NotificationItem(
+            title: _data["notification"]["title"],
+            body: _data["notification"]["body"],
+            image_link: _data["notification"]["image_link"],
+            priority: "${_data["notification"]["destination"]["priority"]}",
+            destination: NotificationFDestination(
+                type: _data["notification"]["destination"]["type"],
+                product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
+        );
+        return notificationItem;
+      } catch (_) {
+        print(_);
+      }
     }
   }
 
@@ -229,6 +244,10 @@ static  NotificationItem _notificationFromMessage(message_entry) {
       case NotificationFDestination.RESTAURANT_MENU:
         _jumpToRestaurantMenuPage(notificationFDestination.product_id);
         break;
+      case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
+        _jumpToServiceClient();
+        break;
+
     }
   }
 
@@ -252,31 +271,38 @@ static  NotificationItem _notificationFromMessage(message_entry) {
     navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
+  void _jumpToServiceClient() {
+    navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
+  }
 
   static Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) {
     print("onBackgroundMessage: $message");
     /* send json version of notification object. */
     if (Platform.isAndroid) {
       NotificationItem notificationItem = _notificationFromMessage(message);
-      iLaunchNotifications(notificationItem);
+      return iLaunchNotifications(notificationItem);
     }
+    return Future.value(0);
   }
+
+
 }
 
-void iLaunchNotifications (NotificationItem notificationItem) async {
+Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.Max, priority: Priority.High, ticker: notificationItem.title);
+      importance: Importance.Max, priority: Priority.High, ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-  await flutterLocalNotificationsPlugin.show(
+  return flutterLocalNotificationsPlugin.show(
       0, notificationItem.title, notificationItem.body, platformChannelSpecifics,
       payload: notificationItem.destination.toSpecialString()
   );
+
 }
 

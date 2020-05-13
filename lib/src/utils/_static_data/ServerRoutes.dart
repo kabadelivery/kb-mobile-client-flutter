@@ -52,7 +52,7 @@ class ServerRoutes {
 
   /* create new adresses content */
   static const String LINK_CREATE_NEW_ADRESS = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/createAdresses";
+      "/mobile/api/createV2Adresses";
 
   /* search customer with no */
   static const String LINK_SEARCH_CUSTOMER = ServerConfig.SERVER_ADDRESS+
@@ -63,7 +63,7 @@ class ServerRoutes {
 
   /* delete address */
   static const String LINK_DELETE_ADRESS = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/deleteAdresses";
+      "/mobile/api/deleteV2Adresses";
 
   /* accept incoming address */
   static const String LINK_ACCEPT_INCOMING_ADDRESS = ServerConfig.SERVER_ADDRESS+
@@ -97,6 +97,9 @@ class ServerRoutes {
   /* user login */
   static const String LINK_USER_LOGIN =  ServerConfig.SERVER_ADDRESS_SECURE+
       "/mobile/api/login_check";
+
+  static const String LINK_USER_LOGIN_V2 =  ServerConfig.SERVER_ADDRESS_SECURE+
+      "/api/user/login";
 
   /* user register */
   static const String LINK_USER_REGISTER =  ServerConfig.SERVER_ADDRESS_SECURE+
@@ -244,5 +247,7 @@ class ServerRoutes {
   static const String LINK_SEND_ORDER_FEEDBACK = ServerConfig.SERVER_ADDRESS +"/mobile/api/command/delivery/rate";
 
   static const String  LINK_TOPUP_FEES_RATE = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get";
+
+  static const String  LINK_CHECK_UNREAD_MESSAGES = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/new/message/check";
 
 }

@@ -1,9 +1,13 @@
+import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
-import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
@@ -12,6 +16,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/ui/customwidgets/MyAddressListWidget.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:toast/toast.dart';
 
 
 class MyAddressesPage extends StatefulWidget {
@@ -20,26 +25,34 @@ class MyAddressesPage extends StatefulWidget {
 
   bool pick;
 
-  UserTokenModel userTokenModel;
+  CustomerModel customer;
 
-  MyAddressesPage({Key key, this.title, this.pick = false}) : super(key: key);
+  AddressPresenter presenter;
 
-  final String title;
+  List<DeliveryAddressModel> data;
+
+  MyAddressesPage({Key key, this.presenter, this.pick = false}) : super(key: key);
+
 
   @override
   _MyAddressesPageState createState() => _MyAddressesPageState();
 }
 
-class _MyAddressesPageState extends State<MyAddressesPage> {
+class _MyAddressesPageState extends State<MyAddressesPage> implements AddressView {
 
   bool _canReceiveSharedAddress = false;
+  bool isLoading = false;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
+
 
   @override
   void initState() {
-    // TODO: implement initState
-    CustomerUtils.getUserToken().then((userTokenModel) {
-      widget.userTokenModel = userTokenModel;
-      userDataBloc.fetchMyAddresses(userTokenModel);
+
+    widget.presenter.addressView = this;
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+      widget.presenter.loadAddressList(customer);
     });
     super.initState();
   }
@@ -55,16 +68,9 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
       ),
       body: Stack(
         children: <Widget>[
-          StreamBuilder<List<DeliveryAddressModel>>(
-              stream: userDataBloc.deliveryAddress,
-              builder:(context, AsyncSnapshot<List<DeliveryAddressModel>> snapshot) {
-                if (snapshot.hasData) {
-                  return _buildAddressList(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return ErrorPage(onClickAction: (){ userDataBloc.fetchMyAddresses(widget.userTokenModel);});
-                }
-                return Center(child: CircularProgressIndicator());
-              }
+          Container(
+              child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+              _buildDeliveryAddressesList())
           ),
           Positioned(
             bottom: 20,
@@ -89,7 +95,20 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
     );
   }
 
-  Widget _buildAddressList(List<DeliveryAddressModel> data) {
+  _buildDeliveryAddressesList () {
+
+    if (widget.data?.length == null || widget.data?.length == 0){
+      // no size
+      return Center(
+          child:Column(mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.location_on, color: Colors.grey)),
+              SizedBox(height: 10),
+              Text("Sorry, there is no Pre-registred location. \nCreate a delivery address now !", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            ],
+          ));
+    }
+
     return SingleChildScrollView(
       child: Column(
           children: <Widget>[
@@ -97,8 +116,11 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
             SwitchListTile(title: const Text("Bunch of interesting test that im not going to talk too much about.", style: TextStyle(fontSize: 14,color: Colors.grey), textAlign: TextAlign.center), onChanged: (bool value) {setState(() {_canReceiveSharedAddress=(!_canReceiveSharedAddress);});}, value: _canReceiveSharedAddress)
             */
           ]..addAll(
-              List<Widget>.generate(data?.length, (int index) {
-                return  buildAddressListWidget(address: data[index]);
+              List<Widget>.generate(widget.data?.length+1, (int index) {
+                if (index < widget.data?.length)
+                  return buildAddressListWidget(address: widget.data[index]);
+                else
+                  return Container(height: 100);
               })
           )
       ),
@@ -135,18 +157,23 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
           ),
         ),
         onTap: () => _pickedAddress(address),
+        onLongPress: () => _startDeleteAddress(address),
       )
       );
   }
 
+  _editAddress(DeliveryAddressModel address) async {
 
-  _editAddress(DeliveryAddressModel address) {
-    Navigator.push(
+    Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAddressPage(address: address, presenter: AddressPresenter()),
+        builder: (context) => EditAddressPage(address: address, presenter: EditAddressPresenter()),
       ),
     );
+    if (results != null && results.containsKey('ok') && results['ok'] == true) {
+      // update
+      widget.presenter.loadAddressList(widget.customer);
+    }
   }
 
   _pickedAddress(DeliveryAddressModel address) {
@@ -154,14 +181,170 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
       Navigator.of(context).pop({'selection':address});
   }
 
-  _createAddress() {
-    Navigator.push(
+  _createAddress() async {
+
+    // when come back update the thing.
+    Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAddressPage(presenter: AddressPresenter()),
+        builder: (context) => EditAddressPage(presenter: EditAddressPresenter()),
       ),
     );
+
+    if (results != null && results.containsKey('ok') && results['ok'] == true) {
+      // update
+      if (widget.customer != null)
+        widget.presenter.loadAddressList(widget.customer);
+    }
   }
+
+
+  _deleteAddress(DeliveryAddressModel address) {
+
+    if (widget.customer != null) {
+      widget.presenter.deleteAddress(widget.customer, address);
+    }
+    }
+
+
+  @override
+  void inflateDeliveryAddress(List<DeliveryAddressModel> deliveryAddresses) {
+    //
+    setState(() {
+      widget.data = deliveryAddresses;
+    });
+  }
+
+  _startDeleteAddress(DeliveryAddressModel address) {
+
+    _showDialog(
+        icon: VectorsData.questions,
+        message: "Are you sure to delete this address? (${address?.name})",
+        isYesOrNo: true,
+        actionIfYes: () => _deleteAddress(address)
+    );
+  }
+
+  @override
+  void networkError() {
+    setState(() {
+      hasNetworkError = true;
+    });
+  }
+
+
+  @override
+  void systemError() {
+    setState(() {
+      hasSystemError = true;
+    });
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+      if (isLoading == true) {
+        this.hasNetworkError = false;
+        this.hasSystemError = false;
+      }
+    });
+  }
+
+  _buildSysErrorPage() {
+    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
+  }
+
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
+  }
+
+  void _showDialog({var icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+//          title: new Text("Alert Dialog title"),
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  /* icon */
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                        icon,
+                      )),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              // usually buttons at the bottom of the dialog
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("REFUSE", style: TextStyle(color:Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text("ACCEPT", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              //
+              OutlineButton(
+                child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+                onPressed: () {
+                  if (okBackToHome){
+                    Navigator.of(context).pop({'ok':true});
+                    Navigator.of(context).pop({'ok':true});
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  @override
+  void deleteError() {
+    mToast("Delete error");
+  }
+
+  @override
+  void deleteNetworkError() {
+    mToast("Delete network error");
+  }
+
+  @override
+  void deleteSuccess(DeliveryAddressModel address) {
+    if (widget.data != null && widget.data?.length > 0)
+      for(int i = 0; i < widget.data?.length; i++) {
+        if (widget.data[i].id == address.id){
+          widget.data.removeAt(i);
+        }
+      }
+    setState(() {
+      widget.data = widget.data;
+    });
+  }
+
+  void mToast(String message) {
+
+    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
 
 }
 

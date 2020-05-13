@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -23,7 +25,7 @@ class ClientPersonalApiProvider {
   /// COMMENTS
   ///
   /// Get restaurants comments list
-    fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
+  fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     DebugTools.iPrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
       final response = await client
@@ -146,6 +148,7 @@ class ClientPersonalApiProvider {
     }
   }
 
+  /*
   Future<String> loginAction({String login, String password}) async {
 
     DebugTools.iPrint("entered loginAction");
@@ -168,6 +171,54 @@ class ClientPersonalApiProvider {
       }
     } else {
       throw Exception(-2); // you have no network
+    }
+  }*/
+
+  Future<String> loginAction({String login, String password}) async {
+
+    DebugTools.iPrint("entered loginAction");
+    if (await Utils.hasNetwork()) {
+
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+      var device;
+
+      final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      String token = await firebaseMessaging.getToken();
+
+      if (Platform.isAndroid) {
+        // Android-specific code
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+        device = {
+          'os_version':'${androidInfo.version.baseOS}',
+          'build_device':'${androidInfo.device}',
+          'version_sdk':'${androidInfo.version.sdkInt}',
+          'build_model':'${androidInfo.model}',
+          'build_product':'${androidInfo.product}',
+          'push_token':'$token'
+        };
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+        device = {
+          'os_version':'${iosInfo.systemVersion}',
+          'build_device':'${iosInfo.utsname.sysname}',
+          'version_sdk':'${iosInfo.utsname.version}',
+          'build_model':'${iosInfo.model}',
+          'build_product':'${iosInfo.model}',
+          'push_token':'$token'
+        };
+      }
+
+      final response = await client
+          .post(ServerRoutes.LINK_USER_LOGIN_V2,
+        body:  json.encode({"username": login, "password":password, 'device':device }),
+      ).timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+        return response.body.toString();
+    } else {
+      throw Exception(-2); // there is an error in your request
     }
   }
 

@@ -272,7 +272,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       amount_ = 0;
     else
       amount_ = int.parse(amount);
-    return (widget.feesPercentage.toDouble()*amount_.toDouble()/100).toInt();
+    return ((widget.feesPercentage.toDouble()*amount_.toDouble())~/100).toInt();
   }
 
   _getTotal() {

@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
-import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -17,6 +17,7 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
 import 'package:location/location.dart' as lo;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 
 
 class EditAddressPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class EditAddressPage extends StatefulWidget {
 
   DeliveryAddressModel address;
 
-  AddressPresenter presenter;
+  EditAddressPresenter presenter;
 
   CustomerModel customer;
 
@@ -35,7 +36,7 @@ class EditAddressPage extends StatefulWidget {
   _EditAddressPageState createState() => _EditAddressPageState(address);
 }
 
-class _EditAddressPageState extends State<EditAddressPage> implements AddressView {
+class _EditAddressPageState extends State<EditAddressPage> implements EditAddressView {
 
   String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
 
@@ -63,8 +64,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.address = new DeliveryAddressModel();
     widget.presenter.editAddressView = this;
+    widget.address = address;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       _getLastKnowLocation();
@@ -96,7 +97,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _phoneNumberController,
+                child:TextField(controller: _phoneNumberController, maxLength: 8, keyboardType: TextInputType.phone,
                     decoration: InputDecoration(labelText: "Phone number",
                       border: InputBorder.none,
                     ))..controller.text=address?.phone_number,
@@ -110,14 +111,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text("Select Position", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                          Text("Choose location", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                           Padding(
                             padding: EdgeInsets.only(top:10, bottom:10),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   /* check or loading round */
-                                  StreamBuilder<DeliveryAddressModel>(
+                                  /*  StreamBuilder<DeliveryAddressModel>(
                                       stream: userDataBloc.locationDetails,
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
@@ -131,9 +132,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
                                         } else if (snapshot.hasError) {
                                           return Container();
                                         }
-                                        return _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,))) : Container();
+                                        return _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container();
                                       }
-                                  ),
+                                  ),*/
+                                  _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
                                   Icon(Icons.chevron_right, color: KColors.primaryColor)
@@ -163,7 +165,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
               SizedBox(height: 20),
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Row(
+                  RaisedButton(padding: EdgeInsets.only(top:10, bottom: 10, left:5, right:5), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Row(
                     children: <Widget>[
                       Text("CONFIRM", style: TextStyle(fontSize: 16, color: Colors.white)),
                       _isUpdateOrCreateAddressLoading ?  Row(
@@ -216,9 +218,9 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
       /*  */
       setState(() {
         _checkLocationLoading = true;
-        address.location = "${result.longitude}:${result.latitude}";
+        address.location = "${result.latitude}:${result.longitude}";
       });
-
+      print(address.location);
       // use mvp to launch a request and place the result here.
 //      userDataBloc.checkLocationDetails(userToken: UserTokenModel.fake(), position: Position(longitude: result.longitude, latitude: result.latitude));
       widget.presenter.checkLocationDetails(widget.customer, position:  Position(longitude: result.longitude, latitude: result.latitude));
@@ -244,7 +246,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     /* error. */
     _showDialog(
 //      okBackToHome: true,
-      icon: VectorsData.questions,
+      icon: VectorsData.address_creation_error,
       message: "Address modification failure",
       isYesOrNo: false,
     );
@@ -255,8 +257,18 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     /* created successful */
     _showDialog(
       okBackToHome: true,
-      icon: VectorsData.questions,
+      icon: VectorsData.address_creation_success,
       message: "Address creation success",
+      isYesOrNo: false,
+    );
+  }
+
+  @override
+  void createFailure() {
+    /* created failure */
+    _showDialog(
+      icon: VectorsData.address_creation_error,
+      message: "Address creation failure",
       isYesOrNo: false,
     );
   }
@@ -266,7 +278,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     /* modified successful */
     _showDialog(
       okBackToHome: true,
-      icon: VectorsData.questions,
+      icon: VectorsData.address_creation_success,
       message: "Address modification success",
       isYesOrNo: false,
     );
@@ -319,8 +331,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
                 child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
                   if (okBackToHome){
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop({'ok':true});
+                    Navigator.of(context).pop({'ok':true});
                   } else {
                     Navigator.of(context).pop();
                   }
@@ -343,7 +355,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
     setState(() {
       address.description = description_details;
       _descriptionController.text = description_details;
-      address.suburb = suburb;
+      address.quartier = suburb;
     });
   }
 
@@ -403,4 +415,24 @@ class _EditAddressPageState extends State<EditAddressPage> implements AddressVie
       _isUpdateOrCreateAddressLoading = isLoading;
     });
   }
+
+  @override
+  void checkLocationDetailsError() {
+
+    setState(() {
+      address.location = null;
+    });
+    mToast("Please, pick gps location again.");
+  }
+
+  void mToast(String message) {
+Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  @override
+  void networkError() {
+    mToast("Network error, please try again.");
+  }
+
+
 }

@@ -14,7 +14,6 @@ class KColors {
   static final Color mGreen = hexToColor("#26A69A");
   static final Color mBlue = hexToColor("#1976D2");
 
-
 //  00695c
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");
 

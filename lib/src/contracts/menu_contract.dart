@@ -76,9 +76,11 @@ class MenuPresenter implements MenuContract {
     try {
       Map<String, dynamic> res = await provider.fetchRestaurantMenuListWithMenuId(menuId);
       // also get the restaurant entity here.
+      _menuView.showLoading(false);
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */
+      _menuView.showLoading(false);
       print("error ${_}");
       if (_ == -2) {
         _menuView.systemError();

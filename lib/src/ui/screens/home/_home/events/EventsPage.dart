@@ -49,7 +49,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
         title: Text("EVENTS", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
@@ -177,8 +177,8 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
         child:Column(mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             IconButton(icon: Icon(Icons.event, color: Colors.grey)),
-            SizedBox(height: 5),
-            Text("Sorry, there is no upcoming event for now!", style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 10),
+            Text("Sorry, there is no upcoming event for now!", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
           ],
         ));
   }

@@ -50,7 +50,7 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
 
     _recoverPasswordView.sendVerificationCodeLoading(true); /*  */
 
-    String jsonContent = await provider.checkRequestCodeAction(code, requestId);
+    String jsonContent = await provider.checkRecoverPasswordRequestCodeAction(code, requestId);
     int error = json.decode(jsonContent)["error"];
     try {
       if (error == 0) {

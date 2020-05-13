@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>tg.tmye.kaba.brave.one</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -11,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>kaba_flutter</string>
+	<string>KABA</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -19,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -27,8 +31,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>AppleMusic permission is needed to play a sound for several actions in the app.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendars permission is needed for the user to schedule eating time notifications if needed.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is needed for the user to shoot his profile picture if needed.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Contact permission is needed for the user to contact the customer care if needed.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Need Current Location Access in Usage</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -37,11 +47,16 @@
 	<string>Get current location for more accurate delivery</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone permission is need so that the user could shoot a video right in case.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app needs your Phones motion manager to update when the phone is titled. Please allow this App to use your phones tilt devices</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo library permission is need so that the user could pick his profile picture from the gallery.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech data from this app will be sent to Apple to process your requests.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

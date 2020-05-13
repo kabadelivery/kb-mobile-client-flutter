@@ -24,6 +24,7 @@ class HomeWelcomeView {
   void sysError(){}
   void networkError(){}
   void tokenUpdateSuccessfully() {}
+  void hasUnreadMessages(bool hasNewMessage) {}
 }
 
 /* login presenter */
@@ -123,6 +124,17 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       print(_);
     }
     return null;
+  }
+
+  checkUnreadMessages(CustomerModel customer) async {
+
+    try {
+      bool hasNewMessage = await provider.checkUnreadMessages(customer);
+     _homeWelcomeView.hasUnreadMessages(hasNewMessage);
+    } catch (_) {
+      print(_);
+      _homeWelcomeView.hasUnreadMessages(false);
+    }
   }
 
 

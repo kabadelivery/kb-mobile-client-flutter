@@ -131,7 +131,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           child: Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
               borderRadius: BorderRadius.all(Radius.circular(10))),
               padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-              child: Text(widget.restaurant == null ? "" : widget.restaurant.name, overflow: TextOverflow.ellipsis,
+              child: Text(widget?.restaurant == null ? "" : widget?.restaurant?.name, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 12, color: Colors.white))),
         )
       ])),
@@ -189,20 +189,20 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                       color: KColors.primaryColor,
                                       padding: EdgeInsets.only(
                                           top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
+                                      child: Text(data[index]?.name?.toUpperCase(),
                                           style: TextStyle(fontWeight: FontWeight.bold,
                                               fontSize: 14,
                                               color: Colors.white),
                                           textAlign: TextAlign.center)) :
                                   Container(
-                                      color: data[index].promotion != 0 ? KColors
+                                      color: data[index]?.promotion != 0 ? KColors
                                           .primaryYellowColor : Colors.transparent,
                                       padding: EdgeInsets.only(
                                           top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index].name?.toUpperCase(),
+                                      child: Text(data[index]?.name?.toUpperCase(),
                                           style: TextStyle(fontWeight: FontWeight.bold,
                                               fontSize: 14,
-                                              color: data[index].promotion == 0 ? Colors
+                                              color: data[index]?.promotion == 0 ? Colors
                                                   .black : KColors.primaryColor),
                                           textAlign: TextAlign.center))),
                             ),
@@ -220,13 +220,25 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             ? Center(child: CircularProgressIndicator())
             : (hasNetworkError ? ErrorPage(
             message: "hasNetworkError", onClickAction: () {
-          restaurantBloc.fetchRestaurantMenuList(
-              widget.restaurant);
+          if (!widget.fromNotification) {
+            if (widget.menuId == -1)
+              widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+            else
+              widget.presenter.fetchMenuWithMenuId(widget.menuId);
+          } else
+            restaurantBloc.fetchRestaurantMenuList(
+                widget?.restaurant);
         })
             : hasSystemError ? ErrorPage(
             message: "hasSystemError", onClickAction: () {
-          restaurantBloc.fetchRestaurantMenuList(
-              widget.restaurant);
+          if (!widget.fromNotification) {
+            if (widget.menuId == -1)
+              widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+            else
+              widget.presenter.fetchMenuWithMenuId(widget.menuId);
+          } else
+            restaurantBloc.fetchRestaurantMenuList(
+                widget?.restaurant);
         }) : _buildRestaurantMenu())),
       ]),
     );
@@ -263,7 +275,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   _buildRestaurantMenu() {
 
-    if (data == null || data.length == 0)
+    if (hasSystemError || hasNetworkError){
+      return Container();
+    }
+
+    if (data == null || data?.length == 0)
       return Center(child:Text("No data"));
 
     if (_firstTime) {
@@ -272,15 +288,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     }
     SchedulerBinding.instance.addPostFrameCallback((_) =>
         setState(() {
-          this.data = data;
+          this?.data = data;
         }));
 
     return SingleChildScrollView(
       child: Column(children: <Widget>[SizedBox(height: 5)]..addAll(
-          List.generate(data[currentIndex].foods?.length, (index){
+          List.generate(data[currentIndex]?.foods?.length, (index){
             return Row(mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                _buildFoodListWidget2(food: data[currentIndex].foods[index], foodIndex: index, menuIndex: currentIndex),
+                _buildFoodListWidget2(food: data[currentIndex]?.foods[index], foodIndex: index, menuIndex: currentIndex),
               ],
             );
           })
@@ -446,7 +462,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(Utils
-                                    .inflateLink(food.pic))
+                                    .inflateLink(food?.pic))
                             )
                         ),
                       ),
@@ -763,11 +779,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   @override
   void networkError() {
     showLoading(false);
+    setState(() {
+      hasNetworkError = true;
+    });
   }
 
   @override
   void systemError() {
     showLoading(false);
+    setState(() {
+      hasSystemError = true;
+    });
   }
 }
 

@@ -58,7 +58,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   bool commentHasNetworkError = false;
   bool commentHasSystemError = false;
   bool isUpdatingRestaurantOpenType = false;
-  bool _canCommentLoading = false;
+  bool _canCommentLoading = true;
 
   int _canComment = 0;
   int _latentRate = 1;
@@ -234,21 +234,28 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                                   Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                                 ],
                               ),
-                              _canComment == 1 ? Container(
-                                // add a button to review the restaurant.
-                                  child:Center(
-                                    child:   Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                      IconButton(icon: Icon(_latentRate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
-                                      IconButton(icon: Icon(_latentRate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
-                                      IconButton(icon: Icon(_latentRate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
-                                      IconButton(icon: Icon(_latentRate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
-                                      IconButton(icon: Icon(_latentRate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
-                                    ]),
-                                  )
-                              ) : SizedBox(height:20),
                               /* 4.0 - stars */
-                              isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-                              _buildCommentList()) ,
+                              SizedBox(height:20),
+                              isLoading || commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildNetworkErrorPage() : commentHasNetworkError ? _buildSysErrorPage():
+                              Column(children: <Widget>[
+                                _canComment == 1 ? Container(margin: EdgeInsets.only(left:20, right: 20),
+                                    child: Text("Please review us", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)): Container(),
+                                SizedBox(height:10),
+                                _canComment == 1 ? Container(
+                                  // add a button to review the restaurant.
+                                    child:Center(
+                                      child:   Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                        IconButton(icon: Icon(_latentRate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
+                                        IconButton(icon: Icon(_latentRate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
+                                        IconButton(icon: Icon(_latentRate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
+                                        IconButton(icon: Icon(_latentRate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
+                                        IconButton(icon: Icon(_latentRate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
+                                      ]),
+                                    )
+                                ) : SizedBox(height:20),
+                                _buildCommentList(),
+                              ])
+                              ) ,
                               SizedBox(height:20),
                             ],
                           )
@@ -368,7 +375,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     });
     if (widget.commentList?.length > 0) {
       // scroll to bottom
-      Timer(Duration(milliseconds: 500), () {
+      Timer(Duration(milliseconds: 800), () {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
       });
     }
@@ -460,6 +467,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         setState(() {
           _canComment = 0;
         });
+        if (widget?.restaurant?.id != null)
+          widget.restaurantId = widget?.restaurant?.id;
         widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
       }
     }

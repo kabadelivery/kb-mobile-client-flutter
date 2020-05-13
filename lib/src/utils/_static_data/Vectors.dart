@@ -22,4 +22,8 @@
   static final String p_f_3 = "assets/images/vectors/app_presentation/sl_geolocalisation.svg";
   static final String p_f_4 = "assets/images/vectors/app_presentation/sl_payment.svg";
 
+
+  // address creation
+  static final String address_creation_success = "assets/images/vectors/address_creation_ok.svg";
+  static final String address_creation_error = "assets/images/vectors/address_creation_error.svg";
  }

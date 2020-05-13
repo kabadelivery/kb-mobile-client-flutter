@@ -56,7 +56,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
       RestaurantModel restaurantModel = await provider.fetchRestaurantWithId(customer, restaurantDetailsId);
       // also get the restaurant entity here.
       if (restaurantModel != null)
-      _restaurantDetailsView.inflateRestaurantDetails(restaurantModel);
+        _restaurantDetailsView.inflateRestaurantDetails(restaurantModel);
       else
         _restaurantDetailsView.systemError();
     } catch (_) {
@@ -78,22 +78,24 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     isCommentWorking = true;
     _restaurantDetailsView.showCommentLoading(true);
     try {
-     Map res = await clientProvider.fetchRestaurantComment(restaurant, UserTokenModel(token: customer.token));
+      Map res = await clientProvider.fetchRestaurantComment(restaurant, UserTokenModel(token: customer.token));
       // also get the restaurant entity here.
       List<CommentModel> comments = res["comments"];
       String stars = res["stars"];
-     String votes = res["votes"];
+      String votes = res["votes"];
+      _restaurantDetailsView.showCommentLoading(false);
       _restaurantDetailsView.inflateComments(comments, stars, votes);
     } catch (_) {
       /* Feed failure */
+      _restaurantDetailsView.showCommentLoading(false);
       print("error ${_}");
       if (_ == -2) {
         _restaurantDetailsView.commentSystemErrorComment();
       } else {
         _restaurantDetailsView.commentNetworkError();
       }
-      isCommentWorking = false;
     }
+    isCommentWorking = false;
   }
 
   @override

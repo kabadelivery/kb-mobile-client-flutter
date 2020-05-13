@@ -99,7 +99,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,
-        leading: null,
+    //    leading: null,
         backgroundColor: Colors.grey.shade100,
         title: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:async';
 
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,6 +18,8 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+
+import '../../../../../../StateContainer.dart';
 
 
 class CustomerCareChatPage extends StatefulWidget {
@@ -55,17 +58,26 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     CustomerUtils.getCustomer().then((customer){
       widget.customer = customer;
       widget.presenter.fetchCustomerCareChat(widget.customer);
+      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.yellow,
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(brightness: Brightness.light,leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
           backgroundColor: Colors.white, title: Text("Customer Care", style:TextStyle(color:KColors.primaryColor))),
-      body: Container(
-          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-          _buildChatList())
+      body: Stack(
+        children: <Widget>[
+          Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
+              fit: BoxFit.cover,
+              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
+          ))),
+          Container(
+              child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+              _buildChatList())
+          ),
+        ],
       ),
     );
   }
@@ -87,52 +99,46 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _buildChatList() {
-    if (widget.messages == null || widget.messages?.length == 0) {
-      /* just show empty page. */
-      return _buildEmptyPage();
-    }
+
     return Container(
       child: Stack(
         children: <Widget>[
-          Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
-          ))),
-          Container(
-              margin: EdgeInsets.only(bottom:63, right:10, left:10),
-              child: ListView.builder(itemCount: widget.messages?.length,  controller: _scrollController,
-                  itemBuilder: (BuildContext context, int position) {
-                    return Column(
-                      children: <Widget>[
-                        SizedBox(height: 15),
-                        Row(mainAxisAlignment: widget.messages[position]?.user_id == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
-                          children: <Widget>[
-                            widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
-                            Expanded(flex:8,  
-                              child: Container(decoration: BoxDecoration(color: widget.messages[position]?.user_id == 0 ?  Colors.white : KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(child: Text("${widget.messages[position]?.message}", textAlign: TextAlign.left,style: TextStyle(fontSize: 14, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                                      Expanded(child: Text("${Utils.readTimestamp(widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
-                                    ])
-                                  ],
+          Container(margin: EdgeInsets.only(bottom:63, right:10, left:10),
+           child: (widget.messages == null || widget.messages?.length == 0) ? _buildEmptyPage() : ListView(children: <Widget>[]..addAll(
+                List.generate(widget.messages?.length,
+                        (int position) {
+                      return Column(
+                        children: <Widget>[
+                          SizedBox(height: 15),
+                          Row(mainAxisAlignment: widget.messages[position]?.user_id == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
+                            children: <Widget>[
+                              widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
+                              Expanded(flex:8,
+                                child: Container(decoration: BoxDecoration(color: widget.messages[position]?.user_id == 0 ?  Colors.white : KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Expanded(child: Text("${widget.messages[position]?.message}", textAlign: TextAlign.left,style: TextStyle(fontSize: 14, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+                                        Expanded(child: Text("${Utils.readTimestamp(widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
+                                      ])
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ), 
-                            widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
-                          ],
-                        ),
-                      ],
-                    );
-                  })),
-
+                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
+                            ],
+                          ),
+                        ],
+                      );
+                    })
+            ), controller: _scrollController, reverse: true),
+          ),
           Positioned(
             bottom: 0,
             child: Padding(
@@ -142,8 +148,8 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                   SizedBox(width: 5),
                   Stack(
                     children: <Widget>[
-                      SizedBox(height: 50, width: MediaQuery.of(context).size.width-80,
-                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble()),child: TextField(controller: _messageController, maxLines: 5, minLines: 1, decoration: InputDecoration.collapsed(hintText: "Insert your message")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
+                      SizedBox(/*height: 50+50*(_messageController.text.length~/30)*1.5, */ width: MediaQuery.of(context).size.width-80,
+                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble()),child: TextField(controller: _messageController, maxLines: 6, minLines: 1, decoration: InputDecoration.collapsed(hintText: "Insert your message")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
                       ),
                       Positioned(right:10,child: IconButton(icon: Icon(Icons.my_location, color: Colors.green), onPressed: ()=>_pickAddress()))
                     ],
@@ -166,14 +172,13 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   void inflateCustomerCareChat(List<CustomerCareChatMessageModel> customerCareChats) {
 
     setState(() {
-      widget.messages = customerCareChats;
+      widget.messages = customerCareChats.reversed.toList();
     });
 
-    Timer(Duration(milliseconds: 500), () {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
+   /* Timer(Duration(milliseconds: 500), () {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
 //    _scrollController.animateTo(40000, duration: Duration(milliseconds: 500), curve: null);
-    });
-
+    });*/
   }
 
 
@@ -260,10 +265,12 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     careChatMessageModel.created_at = (DateTime.now().millisecondsSinceEpoch.toInt()/1000).toInt();
 
     setState(() {
-      widget.messages.add(careChatMessageModel);
+     var tmp = widget.messages.reversed.toList();
+      tmp.add(careChatMessageModel);
+      widget.messages = tmp.reversed.toList();
     });
 
-    Timer(Duration(milliseconds: 100), () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent));
+//    Timer(Duration(milliseconds: 100), () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent));
   }
 
   void mToast(String message) {
@@ -276,25 +283,24 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyAddressesPage(pick: true),
+        builder: (context) => MyAddressesPage(pick: true, presenter: AddressPresenter()),
       ),
     );
 
     if (results != null && results.containsKey('selection')) {
-     DeliveryAddressModel _selectedAddress = results['selection'];
+      DeliveryAddressModel _selectedAddress = results['selection'];
 
-     String message = "DELIVERY ADDRESS - ${_selectedAddress.name}\n\n";
+      String message = "DELIVERY ADDRESS - ${_selectedAddress.name}\n\n";
 
 
-     message+="Phone number: ${_selectedAddress.phone_number}\n";
-     message+="District: ${_selectedAddress.district}\n";
-     message+="Near by: ${_selectedAddress.near}\n";
-     message+="Description: ${_selectedAddress.description}\n";
+      message+="Phone number: ${_selectedAddress.phone_number}\n";
+      message+="District: ${_selectedAddress.district}\n";
+      message+="Near by: ${_selectedAddress.near}\n";
+      message+="Description: ${_selectedAddress.description}\n";
 //     message+="Suburb: ${_selectedAddress.suburb}\n";
-     message+="Gps location: ${_selectedAddress.location}\n";
+      message+="Gps location: https://www.google.com/maps/search/?api=1&query=${_selectedAddress.location.replaceAll(":", ",")}\n";
 
-
-     _messageController.text = message;
+      _messageController.text = message;
     }
   }
 

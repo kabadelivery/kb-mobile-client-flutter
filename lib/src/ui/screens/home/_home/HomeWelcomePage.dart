@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:KABA/src/NotificationTestPage.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/utils/_static_data/MusicData.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,6 +40,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
@@ -46,6 +52,8 @@ class HomeWelcomePage extends StatefulWidget {
   static HomeScreenModel standardData;
 
   HomeWelcomePresenter presenter;
+
+  CustomerModel customer;
 
   HomeWelcomePage({Key key, this.title, this.presenter}) : super(key: key);
 
@@ -84,6 +92,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     });
 
     this.widget.presenter.fetchHomePage();
+
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+      this.widget.presenter.checkUnreadMessages(customer);
+    });
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
@@ -140,11 +153,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //            IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
 
             IconButton(onPressed: () => _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-                icon: SvgPicture.asset(
+                icon: StateContainer.of(context).hasUnreadMessage != true ?  Icon(FontAwesomeIcons.comments) : SvgPicture.asset(
                   VectorsData.notification_new_message,
                   color: Colors.white,
-                )
-            ),
+                ), color: Colors.white),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
@@ -251,7 +263,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => InfoPage(),
+        builder: (context) => InfoPage(), // ramener infos
       ),
     );
   }
@@ -633,8 +645,24 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void tokenUpdateSuccessfully() {
-//    tokenUpdateSuccessfully
     CustomerUtils.setPushTokenUploadedSuccessfully();
+  }
+
+  @override
+  void hasUnreadMessages(bool hasNewMessage) {
+    if (hasNewMessage){
+
+      // check inside the sharedprefs
+      if (!StateContainer.of(context).hasGotNewMessageOnce) {
+        StateContainer.of(context).updateHasGotNewMessage(hasGotNewMessage: true);
+        _playMusicForNewMessage();
+      }
+
+      if (!StateContainer.of(context).hasUnreadMessage)
+        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: hasNewMessage);
+    } else {
+      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+    }
   }
 }
 
@@ -661,6 +689,19 @@ void _jumpToPage (BuildContext context, page) {
       builder: (context) => page,
     ),
   );
+}
+
+Future<void> _playMusicForNewMessage() async {
+  // play music
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  audioPlayer.setVolume(1.0);
+  AudioPlayer.logEnabled = true;
+  var audioCache = new AudioCache(fixedPlayer: audioPlayer);
+  audioCache.play(MusicData.new_message);
+  if (await Vibration.hasVibrator()
+  ) {
+    Vibration.vibrate(duration: 500);
+  }
 }
 
 void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {

@@ -75,14 +75,14 @@ class UserDataBloc {
     }
   }
 
-  checkLocationDetails({UserTokenModel userToken, Position position}) async {
+  /*checkLocationDetails({UserTokenModel userToken, Position position}) async {
     try {
       DeliveryAddressModel deliveryAddressModel = await _repository.checkLocationDetails(userToken, position);
       _locationDetailsChecker.sink.add(deliveryAddressModel);
     } catch (_) {
       _locationDetailsChecker.sink.addError(_.message);
     }
-  }
+  }*/
 
  /* sendRegisterCode({String login}) async {
     try {

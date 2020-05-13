@@ -135,12 +135,11 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
 
     DateTime date = new DateTime.now();
     int day_of_week = date?.weekday;
-    String daY = dayz[day_of_week-1];
-
-    String today = dayz[day_of_week-1];
-    String day_m_1 = dayz[day_of_week-1 -1];
-    String day_m_2 = dayz[day_of_week-1 -2];
-
+    
+//    String daY = dayz[day_of_week-1];
+//    String today = dayz[day_of_week-1 < 0 ? 0:(day_of_week-1)];
+//    String day_m_1 = dayz[day_of_week-2 < 0 ? 0:(day_of_week-2)];
+//    String day_m_2 = dayz[day_of_week-3 < 0 ? 0:(day_of_week-3)];
 
     return Card(child: InkWell(
         onTap: ()=>_jumpToFoodDetails(data?.food_entity),

@@ -5,4 +5,6 @@ class MusicData {
 
  static final String money_transfer_successfull = "money_transfer_successfull.mp3";
 
+ static final String new_message = "new_message.mp3";
+
 }

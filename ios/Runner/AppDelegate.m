@@ -14,8 +14,8 @@
      }
 
     [FIRApp configure];
-     [GMSServices provideAPIKey:@"AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs"];
-  [GeneratedPluginRegistrant registerWithRegistry:self];
+    [GMSServices provideAPIKey:@"AIzaSyBhDXLF0zLWJcjE4_9z_WkPQvq_drSUXyc"];
+    [GeneratedPluginRegistrant registerWithRegistry:self];
 
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];

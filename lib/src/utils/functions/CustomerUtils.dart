@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class CustomerUtils {
-
+/*
   static popBack(BuildContext context) {
     if (!Navigator.pop(context)) {
       Navigator.push(
@@ -19,7 +19,7 @@ class CustomerUtils {
         ),
       );
     }
-  }
+  }*/
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,6 +72,7 @@ class CustomerUtils {
     prefs.remove("_loginResponse");
     prefs.remove("_login_expiration_date");
     prefs.remove("_homepage");
+    prefs.remove("is_push_token_uploaed");
 
     /*String jsonCustomer = prefs.getString("_loginResponse");
     var obj = json.decode(jsonCustomer);

@@ -130,15 +130,35 @@ class RestaurantListWidget extends StatelessWidget {
 
   void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
     /* show the coming soon dialog */
-    showDialog(context: context, builder: (BuildContext context)=>DialogPage(
-        message:"Hello, This restaurant will be soon available on the platform.\n Please remain patient.",
-        pic: Utils.inflateLink(restaurantModel.pic),
-        nbAction: 1,
-        button1Name: "OK",
-        onClickAction1: (){
-          print(restaurantModel.name);
-          Navigator.pop(context);
-        }
+    showDialog(context: context, builder: (BuildContext context)=>AlertDialog(
+        content: Column(mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                  height:80, width: 80,
+                  decoration: BoxDecoration(
+                      border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel.pic))
+                      )
+                  )
+              ),
+              SizedBox(height: 10),
+              Text("Hello, This restaurant will be soon available on the platform.\n Please remain patient.", textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 13))
+            ]
+        ),
+        actions: <Widget>[
+          //
+          OutlineButton(
+            child: new Text(
+                "OK", style: TextStyle(color: KColors.primaryColor)),
+            onPressed: () {
+                Navigator.of(context).pop();
+            },
+          ),
+        ]
     ));
   }
 
@@ -156,7 +176,7 @@ class RestaurantListWidget extends StatelessWidget {
         break;
       case 1: // open
         tagText = "Opened";
-        tagColor = KColors.mGreen;
+        tagColor = CommandStateColor.delivered;
         break;
       case 2: // paused
         tagText = "Breaktime => Preorder";

@@ -22,8 +22,15 @@ class AddressApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CREATE_NEW_ADRESS,
-          body: json.encode({"id": address.id, "name":address.name, "location":address.location, "phone_number":address.phone_number,
-          "description":address.description, "description_details": address.description, "near":address.near, "quartier":address.quartier
+          body: json.encode({
+            "id": address?.id,
+            "name":address?.name,
+            "location":address?.location,
+            "phone_number":address?.phone_number,
+            "description":address?.description,
+            "description_details": address?.description,
+            "near":address?.near,
+            "quartier":address?.quartier
           }),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -32,7 +39,7 @@ class AddressApiProvider {
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-      return 0;
+          return 0;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -44,11 +51,6 @@ class AddressApiProvider {
   }
 
   checkLocationDetails(CustomerModel customer, Position position) async {
-
-
-//    String position = lat+":"+lon;
-//    Map<String, Object> data = new HashMap<>();
-//    data.put("coordinates", position);
 
     DebugTools.iPrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
@@ -62,12 +64,8 @@ class AddressApiProvider {
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-//    String balance = json.decode(response.body)["data"]["balance"];
-//    return balance;
-
           String description_details = json.decode(response.body)["data"]["display_name"];
           String suburb = json.decode(response.body)["data"]["address"]["suburb"];
-
           var m = Map();
           m.putIfAbsent("suburb", ()=>suburb);
           m.putIfAbsent("description_details", ()=>description_details);
@@ -83,4 +81,56 @@ class AddressApiProvider {
     }
   }
 
+  Future<List<DeliveryAddressModel>> fetchAddressList(CustomerModel customer) async {
+
+    DebugTools.iPrint("entered fetchAddressList");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_ADRESSES,
+          headers: Utils.getHeadersWithToken(customer.token)).timeout(
+          const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          Iterable lo = json.decode(response.body)["data"]["adresses"];
+          List<DeliveryAddressModel> addresses = lo?.map((address) =>
+              DeliveryAddressModel.fromJson(address))?.toList();
+          return addresses;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  deleteAddress(CustomerModel customer, DeliveryAddressModel address) async {
+
+    DebugTools.iPrint("entered deleteAddress");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_DELETE_ADRESS,
+          body: json.encode({
+            "id": address?.id
+          }),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          return 0;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 }

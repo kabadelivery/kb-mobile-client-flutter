@@ -1,3 +1,10 @@
+import 'package:KABA/src/NotificationTestPage.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/edit_address_contract.dart';
+import 'package:KABA/src/contracts/bestseller_contract.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
@@ -39,11 +46,10 @@ var generalRoutes = {
   RecoverPasswordPage.routeName : (BuildContext context) => RecoverPasswordPage(),
   RetrievePasswordPage.routeName : (BuildContext context) => RetrievePasswordPage(),
   RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(presenter: RestaurantDetailsPresenter()),
-  BestSellersPage.routeName : (BuildContext context) => BestSellersPage(),
+  BestSellersPage.routeName : (BuildContext context) => BestSellersPage(presenter: BestSellerPresenter()),
   RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(fromNotification: true, presenter: MenuPresenter()),
-  RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(),
-  MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(),
-  EditAddressPage.routeName : (BuildContext context) => EditAddressPage(),
+  MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(presenter: AddressPresenter()),
+  EditAddressPage.routeName : (BuildContext context) => EditAddressPage(presenter: EditAddressPresenter()),
   MyVouchersPage.routeName : (BuildContext context) => MyVouchersPage(),
   AddVouchersPage.routeName : (BuildContext context) => AddVouchersPage(),
   Personal2Page.routeName : (BuildContext context) => Personal2Page(presenter: PersonnalPagePresenter()),
@@ -56,9 +62,11 @@ var generalRoutes = {
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
-  TopUpPage.routeName : (BuildContext context) => TopUpPage(),
+  TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   InfoPage.routeName : (BuildContext context) => InfoPage(),
+  CustomerCareChatPage.routeName : (BuildContext context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
 
+//  NotificationTestPage.routeName : (BuildContext context) => NotificationTestPage(),
 
 };

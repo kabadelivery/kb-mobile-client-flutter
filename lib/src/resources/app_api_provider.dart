@@ -72,15 +72,14 @@ class AppApiProvider {
 
 
   /* send the location and get back the not far from */
-  Future<DeliveryAddressModel> checkLocationDetails(UserTokenModel userToken,
-      Position position) async {
+  Future<DeliveryAddressModel> checkLocationDetails(CustomerModel customer, Position position) async {
     DebugTools.iPrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
           body: position == null ? "" : json.encode(
               {"coordinates": "${position.latitude}:${position.longitude}"}),
-          headers: Utils.getHeadersWithToken(userToken.token)).timeout(
+          headers: Utils.getHeadersWithToken(customer.token)).timeout(
           const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
@@ -186,5 +185,24 @@ class AppApiProvider {
       else
         throw Exception(-1); // there is an error in your request
     } else {}
+  }
+
+  checkUnreadMessages(customer) async {
+//
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES,
+          headers: Utils.getHeadersWithToken(customer.token))
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        bool data = json.decode(response.body)["data"];
+        return data;
+      }
+      else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2);
+    }
   }
 }

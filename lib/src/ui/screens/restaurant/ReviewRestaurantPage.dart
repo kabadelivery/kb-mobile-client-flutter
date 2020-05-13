@@ -61,49 +61,51 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage> implements 
           backgroundColor: KColors.primaryYellowColor,
           title: Text("REVIEW")
       ),
-        body: Column(
-          children: (<Widget>[
+        body: SingleChildScrollView(
+          child: Column(
+            children: (<Widget>[
+              // tell us what to do
+              SizedBox(height:10),
+              Container(margin: EdgeInsets.only(top:40, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+              SizedBox(height:10),
 
-            // tell us what to do
-            SizedBox(height:10),
-            Container(margin: EdgeInsets.only(top:40, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
-            SizedBox(height:10),
-
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              IconButton(icon: Icon(widget.rate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
-              IconButton(icon: Icon(widget.rate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
-              IconButton(icon: Icon(widget.rate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
-              IconButton(icon: Icon(widget.rate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
-              IconButton(icon: Icon(widget.rate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
-            ]),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                IconButton(icon: Icon(widget.rate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
+                IconButton(icon: Icon(widget.rate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
+                IconButton(icon: Icon(widget.rate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
+                IconButton(icon: Icon(widget.rate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
+                IconButton(icon: Icon(widget.rate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
+              ]),
 
 // message field
-            SizedBox(height:10),
+              SizedBox(height:10),
 
-            Container (margin: EdgeInsets.only(left:20, right:20, top:20),decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200), padding: EdgeInsets.all(10),
-                child: TextField(controller: _reviewTextController, style: TextStyle(color: Colors.black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
-                  decoration: InputDecoration.collapsed(hintText: "Please give ${widget?.restaurant?.name?.toUpperCase()} a review..."),
-                )),
-            SizedBox(height:10),
+              Container (margin: EdgeInsets.only(left:20, right:20, top:20),decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200), padding: EdgeInsets.all(10),
+                  child: TextField(controller: _reviewTextController, style: TextStyle(color: Colors.black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
+                    decoration: InputDecoration.collapsed(hintText: "Please give ${widget?.restaurant?.name?.toUpperCase()} a review..."),
+                  )),
+              SizedBox(height:10),
 
-            Row(mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: Colors.white,
-                    child: Row(mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text("SEND THE REVIEW ${widget.rate}/${widget.max_rate}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                        _isReviewSendingLoading ?  Row(
-                          children: <Widget>[
-                            SizedBox(width: 10),
-                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)), height: 15, width: 15) ,
-                          ],
-                        )  : Container(),
-                      ],
-                    ), onPressed: () => _sendReview()),
-              ],
-            ),
+              Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: Colors.white,
+                      child: Row(mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text("SEND THE REVIEW ${widget.rate}/${widget.max_rate}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                          _isReviewSendingLoading ?  Row(
+                            children: <Widget>[
+                              SizedBox(width: 10),
+                              SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)), height: 15, width: 15) ,
+                            ],
+                          )  : Container(),
+                        ],
+                      ), onPressed: () => _sendReview()),
+                ],
+              ),
 
-          ])
+              SizedBox(height:50),
+            ])
+          ),
         )
     );
   }

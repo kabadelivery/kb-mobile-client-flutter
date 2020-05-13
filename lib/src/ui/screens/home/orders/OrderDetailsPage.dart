@@ -41,6 +41,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
+  bool waitedForCustomerOnce = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -68,13 +70,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             widget.customer, widget.orderId);
       } else {
         // postpone it to the next second by adding showing the loading button.
-        showLoading(true);
-        Future.delayed(Duration(seconds: 1)).then((onValue) {
-          if (widget.customer != null && widget.command == null) {
-            widget.presenter.fetchOrderDetailsWithId(
-                widget.customer, widget.orderId);
-          }
-        });
+        if (!waitedForCustomerOnce) {
+          waitedForCustomerOnce = true;
+          showLoading(true);
+          Future.delayed(Duration(seconds: 1)).then((onValue) {
+            if (widget.customer != null && widget.command == null) {
+              widget.presenter.fetchOrderDetailsWithId(
+                  widget.customer, widget.orderId);
+            }
+          });
+        }
       }
     }
 
@@ -386,7 +391,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
   @override
   Future<void> inflateOrderDetails(CommandModel command) async {
-    showLoading(false);
+    // showLoading(false);
+
     setState(() {
       widget.command = command;
     });

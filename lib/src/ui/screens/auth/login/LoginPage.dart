@@ -13,6 +13,7 @@ import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     _getIsOkWithTerms().then((isOkWithTerms){
       if (!isOkWithTerms) {
         // jump to terms page.
-         _askTerms();
+        _askTerms();
       }
     });
 
@@ -278,5 +279,81 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     }
   }
 
+  @override
+  void accountNoExist() {
+    _showDialog(
+      icon: Icon(Icons.pan_tool, color: Colors.red),
+      message: "Sorry, ${_loginFieldController.text} Account no exist. Do you want to create a new account ?",
+      isYesOrNo: true,
+      actionIfYes: () => _moveToRegisterPage()
+    );
+  }
+
+  @override
+  void loginPasswordError() {
+    _showDialog(
+      icon: Icon(Icons.error, color: Colors.red),
+      message: "Sorry, Password wrong.",
+      isYesOrNo: false,
+    );
+  }
+
+  @override
+  void networkError() {
+    mToast("Sorry, Network error. Please check network and try again.");
+  }
+
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "ACCEPT", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              //
+              OutlineButton(
+                child: new Text(
+                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
 
 }

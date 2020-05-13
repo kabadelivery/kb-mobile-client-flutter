@@ -54,6 +54,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
     isWorking = true;
     try {
       CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId);
+      _orderDetailsView.showLoading(false);
       if (commandModel != null) {
         _orderDetailsView.inflateOrderDetails(commandModel);
       } else {
@@ -61,6 +62,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       }
     } catch(_) {
       /* Food failure */
+      _orderDetailsView.showLoading(false);
       print("error ${_}");
       if (_ == -2) {
         _orderDetailsView.systemError();
@@ -70,7 +72,6 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       isWorking = false;
     }
     isWorking = false;
-
   }
 
 

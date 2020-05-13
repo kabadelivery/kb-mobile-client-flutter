@@ -64,28 +64,29 @@ class OrderApiProvider {
     if (Platform.isAndroid) {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
-      device = json.encode({
-        'os_version':'${androidInfo.version.baseOS}',
-        'build_device':'${androidInfo.device}',
-        'version_sdk':'${androidInfo.version.sdkInt}',
-        'build_model':'${androidInfo.model}',
-        'build_product':'${androidInfo.product}',
-        'push_token':'$token'
-      });
+      print("Running on ${androidInfo.model}");  // e.g. "Moto G (4)"
+      device = {
+        "os_version":"${androidInfo.version.baseOS}",
+        "build_device":"${androidInfo.device}",
+        "version_sdk":"${androidInfo.version.sdkInt}",
+        "build_model":"${androidInfo.model}",
+        "build_product":"${androidInfo.product}",
+        "push_token":"$token"
+      };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
-      device = json.encode({
-        'os_version':'${iosInfo.systemVersion}',
-        'build_device':'${iosInfo.utsname.sysname}',
-        'version_sdk':'${iosInfo.utsname.version}',
-        'build_model':'${iosInfo.model}',
-        'build_product':'${iosInfo.model}',
-        'push_token':'$token'
-      });
+      print("Running on ${iosInfo.utsname.machine}");  // e.g. "iPod7,1"
+      device = {
+        "os_version":"${iosInfo.systemVersion}",
+        "build_device":"${iosInfo.utsname.sysname}",
+        "version_sdk":"${iosInfo.utsname.version}",
+        "build_model":"${iosInfo.model}",
+        "build_product":"${iosInfo.model}",
+        "push_token":"$token"
+      };
     }
 
+    DebugTools.iPrint("entered payAtDelivery");
     DebugTools.iPrint("entered payAtDelivery");
     if (await Utils.hasNetwork()) {
 
@@ -113,7 +114,9 @@ class OrderApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 60));
+
       print("001 _ "+response.body.toString());
+
       if (response.statusCode == 200) {
         // if ok, send true or false
         return json.decode(response.body)["error"];
@@ -201,25 +204,25 @@ class OrderApiProvider {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
-      device = json.encode({
+      device = {
         'os_version':'${androidInfo.version.baseOS}',
         'build_device':'${androidInfo.device}',
         'version_sdk':'${androidInfo.version.sdkInt}',
         'build_model':'${androidInfo.model}',
         'build_product':'${androidInfo.product}',
         'push_token':'$token'
-      });
+      };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
-      device = json.encode({
+      device = {
         'os_version':'${iosInfo.systemVersion}',
         'build_device':'${iosInfo.utsname.sysname}',
         'version_sdk':'${iosInfo.utsname.version}',
         'build_model':'${iosInfo.model}',
         'build_product':'${iosInfo.model}',
         'push_token':'$token'
-      });
+      };
     }
 
     DebugTools.iPrint("entered payAtDelivery");
@@ -242,7 +245,6 @@ class OrderApiProvider {
         'device': device, // device informations
         'push_token':'$token', // push token
       });
-
 
       print("000 _ "+_data.toString());
 

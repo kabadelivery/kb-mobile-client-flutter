@@ -30,7 +30,7 @@ class RestaurantFoodDetailsPage extends StatefulWidget {
   RestaurantModel restaurant;
 
   RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key) {
-    this.restaurant = food.restaurant_entity;
+    this.restaurant = food?.restaurant_entity;
   }
 
   @override
@@ -180,7 +180,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                                     Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
                                                     SizedBox(height: 5),
                                                     SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
-                                                    Text("${widget.food?.restaurant_entity.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
+                                                    Text("${widget?.food?.restaurant_entity?.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
                                                     )
                                                   ],
                                                 ))
@@ -324,7 +324,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   _buildFlexibleWidget() {
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     return  new SliverAppBar(
-      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: ()=> CustomerUtils.popBack(context)),
+      leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: ()=> Navigator.pop(context)),
       actions: <Widget>[
         PopupMenuButton<String>(
           onSelected: menuChoiceAction,

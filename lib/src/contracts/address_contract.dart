@@ -11,86 +11,89 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressContract {
 
-  void updateOrCreateAddress (DeliveryAddressModel address, CustomerModel customer){}
+  void loadAddressList (CustomerModel customer){}
 }
 
 class AddressView {
   void showLoading(bool isLoading) {}
-  void modifiedSuccess () {}
-  void createdSuccess () {}
-  void addressModificationFailure (String message) {}
-  void inflateDetails(String addressDetails) {}
-  void inflateDescription(String description_details, String suburb) {}
-  void showAddressDetailsLoading(bool isLoading) {}
-  void showUpdateOrCreatedAddressLoading(bool isLoading) {}
+  void systemError () {}
+  void networkError () {}
+  void inflateDeliveryAddress(List<DeliveryAddressModel> deliveryAddresses) {}
+  void deleteError() {}
+  void deleteNetworkError() {}
+  void deleteSuccess(DeliveryAddressModel address) {}
 }
 
 /* login presenter */
 class AddressPresenter implements AddressContract {
 
   bool isWorking = false;
-  bool isAddressDetailsFetching = false;
 
   AddressApiProvider provider;
 
-  AddressView _editAddressView;
+  AddressView _addressView;
 
   AddressPresenter () {
     provider = new AddressApiProvider();
   }
 
+
+  set addressView(AddressView value) {
+    _addressView = value;
+  }
+
   @override
-  Future updateOrCreateAddress(DeliveryAddressModel address, CustomerModel customer) async {
+  Future<void> loadAddressList(CustomerModel customer) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _addressView.showLoading(true);
+    try {
+      List<DeliveryAddressModel> deliverAddresses = await provider.fetchAddressList(customer);
+      // also get the restaurant entity here.
+      _addressView.showLoading(false);
+      _addressView.inflateDeliveryAddress(deliverAddresses);
+    } catch (_) {
+      /* BestSeller failure */
+      _addressView.showLoading(false);
+      print("error ${_}");
+      if (_ == -2) {
+        _addressView.systemError();
+      } else {
+        _addressView.networkError();
+      }
+    }
+    isWorking = false;
+  }
+
+  Future<void> deleteAddress(CustomerModel customer, DeliveryAddressModel address) async {
 
     if (isWorking)
       return;
     isWorking = true;
-    _editAddressView.showUpdateOrCreatedAddressLoading(true);
+    _addressView.showLoading(true);
     try {
-      int error = await provider.updateOrCreateAddress(address, customer);
-      if (error == 0)
-        _editAddressView.createdSuccess();
-      else
-        _editAddressView.addressModificationFailure("");
-      isWorking = false;
+      int response = await provider.deleteAddress(customer, address);
+      // also get the restaurant entity here.
+      _addressView.showLoading(false);
+      // if success, remove that one from the list.
+      if (response == 0) {
+        _addressView.deleteSuccess(address);
+      } else {
+        _addressView.deleteError();
+      }
     } catch (_) {
-      /* Transaction failure */
+      /* BestSeller failure */
+      _addressView.showLoading(false);
       print("error ${_}");
       if (_ == -2) {
+        _addressView.deleteNetworkError();
       } else {
+        _addressView.deleteError();
       }
-      _editAddressView.createdSuccess();
-      isWorking = false;
     }
+    isWorking = false;
   }
 
-
-  set editAddressView(AddressView value) {
-    _editAddressView = value;
-  }
-
-  Future<void> checkLocationDetails(CustomerModel customer, {Position position}) async {
-
-    if (isAddressDetailsFetching)
-      return;
-    isAddressDetailsFetching = true;
-    _editAddressView.showAddressDetailsLoading(true);
-    try {
-      Map m = await provider.checkLocationDetails(customer, position);
-      String suburb = m["suburb"];
-      String description_details = m["description_details"];
-      _editAddressView.inflateDescription(description_details, suburb);
-      isAddressDetailsFetching = false;
-    } catch (_) {
-      /* Transaction failure */
-      print("error ${_}");
-      if (_ == -2) {
-//        _editAddressView.();
-      } else {
-//        _editAddressView.balanceSystemError();
-      }
-      isAddressDetailsFetching = false;
-    }
-  }
 
 }

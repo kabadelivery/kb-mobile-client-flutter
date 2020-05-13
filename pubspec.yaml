@@ -24,9 +24,9 @@ dependencies:
   flutter_redux: ^0.5.3
   location: ^2.3.5
   flutter_redux_dev_tools: ^0.3.0
-  shared_preferences: ^0.5.6+2
+  shared_preferences: ^0.5.7+1
   cached_network_image: ^2.0.0
-  flutter_svg: ^0.13.0+2
+  flutter_svg: ^0.17.4
   carousel_slider: ^1.3.0
   webview_flutter: ^0.3.21
   flutter_inner_drawer: ^0.5.5
@@ -43,15 +43,16 @@ dependencies:
   flutter_datetime_picker: ^1.2.6
   photo_view: ^0.9.1
   vibration: ^1.2.4
-  audioplayers: ^0.14.0
+  audioplayers: ^0.15.1
   device_info: ^0.4.1+4
-  firebase_messaging: ^6.0.9
-  firebase_core: ^0.4.0
+  firebase_messaging: ^6.0.13
+  firebase_core: ^0.4.0+9
   flutter_local_notifications: ^1.4.3
   url_launcher: ^5.4.5
   flare_flutter: ^2.0.3
   tinycolor: ^1.0.2
-  android_intent: ^0.3.7+1
+#  pub_semver: ^1.4.4
+  android_intent: any
   nice_intro:
     git:
       url: https://github.com/blackgerman/nice_intro.git
@@ -93,6 +94,8 @@ flutter:
     - assets/images/vectors/ic_voucher.svg
     - assets/images/vectors/fl_deliveryman.svg
     - assets/images/vectors/fl_question.svg
+    - assets/images/vectors/address_creation_ok.svg
+    - assets/images/vectors/address_creation_error.svg
     - assets/fonts/MyFlutterApp.ttf
     - assets/images/png/kaba_ico.png
     - assets/images/png/kaba_logo_red_man.png
@@ -112,6 +115,7 @@ flutter:
     - assets/images/vectors/account_balance.svg
     - assets/command_success_hold_on.mp3
     - assets/money_transfer_successfull.mp3
+    - assets/new_message.mp3
 
   #  - images/a_dot_ham.jpeg
 

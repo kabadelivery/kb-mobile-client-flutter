@@ -14,7 +14,9 @@ class LoginContract {
 class LoginView {
   void showLoading(bool isLoading) {}
   void loginSuccess () {}
-  void loginFailure (String message) {}
+  void loginPasswordError () {}
+  void networkError () {}
+  void accountNoExist() {}
 }
 
 
@@ -40,28 +42,35 @@ class LoginPresenter implements LoginContract {
     isWorking = true;
     try {
       _loginView.showLoading(true);
-    String jsonContent = await provider.loginAction(
-        login: login, password: password);
-      print(jsonContent);
-      var obj = json.decode(jsonContent);
-      int error = obj["error"];
-      String token = obj["data"]["payload"]["token"];
-      String message = obj["message"];
-      if (error == 0  && token.length > 0) {
-        /* login successful */
-        CustomerUtils.persistTokenAndUserdata(token, jsonContent);
-        _loginView.loginSuccess();
-      } else {
-        /* login failure */
-        _loginView.loginFailure(message);
+
+    String jsonContent;
+
+      try {
+        jsonContent = await provider.loginAction(
+            login: login, password: password);
+        print(jsonContent);
+        var obj = json.decode(jsonContent);
+        int error = obj["error"];
+        if (error == 0/* && token != null && token.length > 0*/) {
+          /* login successful */
+          String token = obj["data"]["payload"]["token"];
+          CustomerUtils.persistTokenAndUserdata(token, jsonContent);
+          _loginView.loginSuccess();
+        } else {
+          /* login failure */
+          _loginView.accountNoExist();
+        }
+      } catch(_) {
+        print(_);
+        _loginView.loginPasswordError();
       }
     } catch(_) {
       /* login failure */
       print("error ${_}");
       if (_ == -2)
-      _loginView.loginFailure("Identifiants incorrects");
+        _loginView.networkError();
      else
-        _loginView.loginFailure("System error");
+        _loginView.networkError();
     }
     isWorking = false;
     _loginView.showLoading(false);
