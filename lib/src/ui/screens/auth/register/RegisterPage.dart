@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           backgroundColor: Colors.white,
           title: Text("REGISTER", style:TextStyle(color:KColors.primaryColor)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
@@ -122,6 +122,9 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 30),
+                    SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("Press on code the code button. \n\nPlease insert the code you will receive", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:<Widget>[

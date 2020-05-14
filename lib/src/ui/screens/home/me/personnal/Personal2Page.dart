@@ -40,7 +40,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
 
   String localPicture;
 
-  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(), _emailFieldController = TextEditingController(), _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
+  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(),/* _emailFieldController = TextEditingController(),*/ _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
 
   bool isUpdating = false;
 
@@ -53,11 +53,11 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
     super.initState();
     this.widget.presenter.personnalPageView = this;
     _phoneNumberFieldController.text = widget.customer?.phone_number;
-    _emailFieldController.text = widget.customer?.email;
+//    _emailFieldController.text = widget.customer?.email;
     _nickNameFieldController.text = widget.customer?.nickname;
     _jobTitleFieldController.text = widget.customer?.job_title;
     _districtFieldController.text = widget.customer?.district;
-    _emailFieldController.text = widget.customer?.email;
+//    _emailFieldController.text = widget.customer?.email;
   }
 
   File _image;
@@ -92,7 +92,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
         backgroundColor: Colors.white,
-        title: Text("ME", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("MY PROFILE", style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
           child: Column(
@@ -132,19 +132,19 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                                   )),
                             ),
                           ),
-                          SizedBox(height: 20),
+                     /*     SizedBox(height: 20),
                           InkWell(
                             onTap: ()=> setUpLogin(2),
                             child: Container(
                               padding: EdgeInsets.all(10),
                               color: Colors.white,
-                              /* phone number must be confirmed by another interface before setting it up. */
+                              *//* phone number must be confirmed by another interface before setting it up. *//*
                               child:TextField(controller: _emailFieldController, enabled: false,
-                                  decoration: InputDecoration(labelText: "Email", /* if  already sat, we cant put nothing else */
+                                  decoration: InputDecoration(labelText: "Email", *//* if  already sat, we cant put nothing else *//*
                                     border: InputBorder.none,
                                   )),
                             ),
-                          ),
+                          ),*/
                           SizedBox(height: 20),
                           Container(
                             padding: EdgeInsets.all(10),
@@ -280,7 +280,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       showLoading(true);
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
-      mToast("error somewhere");
+      mToast("Please fill all the form");
     }
   }
 

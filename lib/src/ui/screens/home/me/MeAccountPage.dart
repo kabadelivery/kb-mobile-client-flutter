@@ -250,18 +250,21 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       color: Colors.grey.shade100,
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
+                          mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            InkWell(onTap: () =>   _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-                                child:Container(
-                                    decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
-                                    padding: EdgeInsets.only(left:10),
-                                    child:
-                                    Row(children:<Widget>[
-                                      Text("Do you have any suggestion from us ?", style: TextStyle(color: KColors.primaryYellowColor)),
-                                      IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
-                                    ]
-                                    )))
+                            Expanded(
+                              child: InkWell(onTap: () =>   _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+                                  child:Expanded(
+                                    child: Container(
+                                        decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
+                                        padding: EdgeInsets.only(left:10),
+                                          child: Row(mainAxisSize: MainAxisSize.min,children:<Widget>[
+                                            Text("Do you have any suggestion from us ?", style: TextStyle(color: KColors.primaryYellowColor)),
+                                            IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
+                                          ]
+                                        )),
+                                  )),
+                            )
                           ])),
                   /* menu box */
                   Card(
@@ -287,7 +290,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter(),))),
                                               SizedBox(height:10),
-                                              Text("PERSONNAL", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("PROFILE", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -319,7 +322,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()))),
                                               SizedBox(height:10),
-                                              Text("ADRESSES", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("ADRESSES", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -332,7 +335,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, LastOrdersPage())),
                                               SizedBox(height:10),
-                                              Text("COMMAND", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("COMMAND", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -349,7 +352,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, FeedsPage(presenter: FeedPresenter()))),
                                               SizedBox(height:10),
-                                              Text("FEEDS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
+                                              Text("FEEDS", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -362,7 +365,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
                                               SizedBox(height:10),
-                                              Text("SETTINGS", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("SETTINGS", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -399,18 +402,26 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       String link = results['link'];
       if (check_balance == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-        _launchURL(link);
-        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+        _launchURL(link).then((value) {
+          if (value != -1){
+            _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+          }
+        });
       }
     }
   }
 
-  _launchURL(String url) async {
+  Future<dynamic> _launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url);
+     return await launch(url);
     } else {
-      throw 'Could not launch $url';
+      try {
+        throw 'Could not launch $url';
+      } catch (_) {
+        print(_);
+      }
     }
+    return -1;
   }
 
   void _showDialog(

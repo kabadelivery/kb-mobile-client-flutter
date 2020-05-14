@@ -43,9 +43,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-
             Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(retrievePasswordTitle[this.widget.type], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-
             /* password fields */
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,

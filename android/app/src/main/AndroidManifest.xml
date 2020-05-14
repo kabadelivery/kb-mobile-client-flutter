@@ -58,7 +58,7 @@
         </activity>
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBhDXLF0zLWJcjE4_9z_WkPQvq_drSUXyc"/>
+            android:value="AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0"/>
 
         <!--        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs"/>-->
 
@@ -67,7 +67,7 @@
             android:value="@integer/google_play_services_version" />
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/launcher_icon" />
+            android:resource="@drawable/ic_notification" />
         <!-- barcode scanner  -->
         <!--        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>-->
 
@@ -76,7 +76,7 @@
             android:resource="@mipmap/launcher_icon" />-->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/white" />
+            android:resource="@color/colorPrimary" />
 
     </application>
 

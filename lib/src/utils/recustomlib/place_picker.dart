@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -137,12 +138,15 @@ class PlacePickerState extends State<PlacePicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
+          Navigator.pop(context);
+        }),
         key: this.appBarKey,
         title: SearchInput((it) {
           searchPlace(it);
         }),
         centerTitle: true,
-        leading: null,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
@@ -550,7 +554,7 @@ class SearchInputState extends State<SearchInput> {
   @override
   void initState() {
     super.initState();
-    this.editController.addListener(this.onSearchInputChange);
+//    this.editController.addListener(this.onSearchInputChange);
   }
 
   @override
@@ -585,13 +589,6 @@ class SearchInputState extends State<SearchInput> {
       ),
       child: Row(
         children: <Widget>[
-          Icon(
-            Icons.search,
-            color: Colors.black,
-          ),
-          SizedBox(
-            width: 8,
-          ),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -613,6 +610,7 @@ class SearchInputState extends State<SearchInput> {
               ? GestureDetector(
             child: Icon(
               Icons.clear,
+              color: KColors.primaryColor,
             ),
             onTap: () {
               this.editController.clear();
@@ -622,6 +620,14 @@ class SearchInputState extends State<SearchInput> {
             },
           )
               : SizedBox(),
+          SizedBox(
+            width: 8,
+          ),
+          Icon(
+            Icons.search,
+            color: Colors.black,
+          ),
+
         ],
       ),
       decoration: BoxDecoration(

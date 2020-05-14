@@ -223,7 +223,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               SizedBox(height: 10),
               Text(restaurant.name, style:TextStyle(color: Colors.grey, fontSize: 12), textAlign: TextAlign.center),
               SizedBox(height: 10),
-              ShinningTextWidget(text: "NEW")
+              _getShinningImage(restaurant)
             ]
         ),
       ),
@@ -657,11 +657,26 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         StateContainer.of(context).updateHasGotNewMessage(hasGotNewMessage: true);
         _playMusicForNewMessage();
       }
-
       if (!StateContainer.of(context).hasUnreadMessage)
         StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: hasNewMessage);
     } else {
       StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+    }
+  }
+
+  _getShinningImage(RestaurantModel restaurant) {
+
+    //
+    if (restaurant.is_new == 1){
+      // new logo
+      return ShinningTextWidget(text:"NEW", backgroundColor: KColors.mGreen, textColor: Colors.white);
+    } else {
+      if (restaurant.is_promotion == 1) {
+        // promotion
+        return ShinningTextWidget(text:"PROMO", backgroundColor: KColors.primaryColor, textColor: Colors.white);
+      } else {
+        return Container();
+      }
     }
   }
 }

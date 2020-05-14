@@ -14,6 +14,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,6 +28,8 @@ class LoginPage extends StatefulWidget {
   bool autoLogin = false;
 
   String phone_number, password;
+
+  String version;
 
   LoginPage({Key key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false}) : super(key: key);
 
@@ -49,6 +52,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     super.initState();
     this.widget.presenter.loginView = this;
 
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      setState(() {
+        widget.version = packageInfo.version;
+      });
+    });
+
     _getIsOkWithTerms().then((isOkWithTerms){
       if (!isOkWithTerms) {
         // jump to terms page.
@@ -60,7 +69,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number;
       if (Utils.isPhoneNumber_TGO(widget.phone_number) && widget?.password?.length == 4)
-        widget.presenter.login(widget.phone_number, widget.password);
+        widget.presenter.login(widget.phone_number, widget.password, widget.version);
     }
   }
 
@@ -131,7 +140,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       });
       showLoading(true);
       // launch request for retrieving the delivery prices and so on.
-      widget.presenter.login(results['phone_number'], results['password']);
+      widget.presenter.login(results['phone_number'], results['password'], widget.version);
     }
   }
 
@@ -163,7 +172,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 //      int type = results['type'];
       showLoading(true);
       if (Utils.isCode(_mCode)) {
-        this.widget.presenter.login(login, _mCode);
+        this.widget.presenter.login(login, _mCode, widget.version);
       }
     }
   }
@@ -282,10 +291,10 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void accountNoExist() {
     _showDialog(
-      icon: Icon(Icons.pan_tool, color: Colors.red),
-      message: "Sorry, ${_loginFieldController.text} Account no exist. Do you want to create a new account ?",
-      isYesOrNo: true,
-      actionIfYes: () => _moveToRegisterPage()
+        icon: Icon(Icons.pan_tool, color: Colors.red),
+        message: "Sorry, ${_loginFieldController.text} Account no exist. Do you want to create a new account ?",
+        isYesOrNo: true,
+        actionIfYes: () => _moveToRegisterPage()
     );
   }
 

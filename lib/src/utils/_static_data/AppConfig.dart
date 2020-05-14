@@ -3,7 +3,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class AppConfig {
 
-  static final String GOOGLE_MAP_API_KEY = "AIzaSyBhDXLF0zLWJcjE4_9z_WkPQvq_drSUXyc";
+  static final String GOOGLE_MAP_API_KEY = "AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0";
 
   static final String CHANNEL_ID = "kaba-notification-channel-id";
   static final String CHANNEL_NAME = "Kaba channel.";

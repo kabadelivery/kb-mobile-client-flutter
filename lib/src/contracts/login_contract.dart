@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginContract {
 
-  void login (String password, String phoneCode){}
+  void login (String password, String phoneCode, String app_version){}
 }
 
 class LoginView {
@@ -34,7 +34,7 @@ class LoginPresenter implements LoginContract {
   }
 
   @override
-  Future login(String login, String password) async {
+  Future login(String login, String password, String app_version) async {
 
     /* make network request, create a lib that makes network request. */
     if (isWorking)
@@ -46,7 +46,7 @@ class LoginPresenter implements LoginContract {
     String jsonContent;
 
       try {
-        jsonContent = await provider.loginAction(
+        jsonContent = await provider.loginAction(app_version: app_version,
             login: login, password: password);
         print(jsonContent);
         var obj = json.decode(jsonContent);

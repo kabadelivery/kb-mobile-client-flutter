@@ -174,7 +174,7 @@ class ClientPersonalApiProvider {
     }
   }*/
 
-  Future<String> loginAction({String login, String password}) async {
+  Future<String> loginAction({String login, String password, String app_version}) async {
 
     DebugTools.iPrint("entered loginAction");
     if (await Utils.hasNetwork()) {
@@ -191,6 +191,7 @@ class ClientPersonalApiProvider {
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
         print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
         device = {
+          'app_version' : 'Flutter $app_version',
           'os_version':'${androidInfo.version.baseOS}',
           'build_device':'${androidInfo.device}',
           'version_sdk':'${androidInfo.version.sdkInt}',
@@ -202,10 +203,11 @@ class ClientPersonalApiProvider {
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
         print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
         device = {
+          'app_version' : 'Flutter $app_version',
           'os_version':'${iosInfo.systemVersion}',
           'build_device':'${iosInfo.utsname.sysname}',
           'version_sdk':'${iosInfo.utsname.version}',
-          'build_model':'${iosInfo.model}',
+          'build_model':'${iosInfo.utsname.machine}',
           'build_product':'${iosInfo.model}',
           'push_token':'$token'
         };

@@ -31,11 +31,13 @@ class ShinningTextWidget extends StatefulWidget {
   String text;
   int timeOut;
 
-  ShinningTextWidget({this.text, this.timeOut=1000});
+  var backgroundColor;
+  var textColor;
+
+  ShinningTextWidget({this.text, this.textColor = Colors.white, this.backgroundColor = KColors.primaryColor, this.timeOut=1000});
 
   @override
   _ShinningTextWidgetState createState() {
-    // TODO: implement createState
     return _ShinningTextWidgetState();
   }
 
@@ -59,15 +61,15 @@ class _ShinningTextWidgetState extends State<ShinningTextWidget> {
       (
           AnimatedContainer(
               padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: bgColorsMap[step]),
+              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: widget.backgroundColor),
               child:Text(
                   widget.text,
-                  style: TextStyle(color: textColorsMap[step], fontSize: 10)
+                  style: TextStyle(color: widget.textColor, fontSize: 10)
               ), duration: Duration(milliseconds: (widget.timeOut/3).round())));
   }
 
-  final List<Color> textColorsMap = const [Colors.white, KColors.primaryColor];
-  final List<Color> bgColorsMap = const [KColors.primaryColor, Colors.black12];
+//  final List<Color> textColorsMap = const [Colors.white, KColors.primaryColor];
+//  final List<Color> bgColorsMap = const [KColors.primaryColor, Colors.black12];
 
   startTimeout([int milliseconds]) {
     return new Timer(Duration(milliseconds: milliseconds), handleTimeout);

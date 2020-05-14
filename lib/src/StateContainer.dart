@@ -66,15 +66,11 @@ class StateContainerState extends State<StateContainer> {
   }
 
   Future<void> updateHasGotNewMessage({hasGotNewMessage}) async {
-    if (hasGotNewMessage != null) {
-//      setState(() {
-        this.hasGotNewMessageOnce = hasGotNewMessage;
-//      });
+    if (hasGotNewMessage == true) {
+        this.hasGotNewMessageOnce = true;
       /* save it to shared preferences */
     } else {
-//      setState(() {
         this.hasGotNewMessageOnce = false;
-//      });
     }
   }
 
@@ -110,7 +106,7 @@ class StateContainerState extends State<StateContainer> {
 
   Future<void> retrieveUnreadMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    this.hasUnreadMessage = true && prefs.getBool('hasUnreadMessage');
+    this.hasUnreadMessage == true && prefs.getBool('hasUnreadMessage');
   }
 
 

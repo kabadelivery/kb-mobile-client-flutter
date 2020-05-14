@@ -523,7 +523,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                 fontWeight: FontWeight.normal),),
                         ],
                       ),
-                      RaisedButton(child: Text("TOPUP",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>{}),
+                      RaisedButton(child: Text("TOP UP",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
                     ],
                   ),
                 ),
@@ -1537,6 +1537,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         SizedBox(height:30),
       ],
     );
+  }
+
+  _topUpAccount() {
+    // jump to topup page.
+
   }
 
 }

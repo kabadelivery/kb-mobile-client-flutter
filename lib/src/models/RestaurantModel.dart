@@ -21,7 +21,7 @@ class RestaurantModel {
   int coming_soon;
   double stars;
   int votes;
-  int is_promo;
+  int is_promotion;
   int is_new;
   String max_food;
   String delivery_pricing = "";
@@ -32,7 +32,9 @@ class RestaurantModel {
   RestaurantModel({this.id, this.name, this.pic, this.contactId, this.email,
     this.distance, this.is_open, this.stars, this.votes, this.theme_pic,
     this.description, this.address, this.main_contact,
-    this.working_hour, this.coming_soon, this.is_promo, this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food});
+    this.working_hour, this.coming_soon,
+    this.is_promotion,
+    this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food});
 
   RestaurantModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -52,7 +54,7 @@ class RestaurantModel {
     main_contact = json['main_contact'];
     working_hour = json['working_hour'];
     coming_soon = json['coming_soon'];
-    is_promo = json['is_promo'];
+    is_promotion = json['is_promotion'];
     is_new = json['is_new'];
     discount = json['discount'];
     open_type = json['open_type'];
@@ -76,7 +78,7 @@ class RestaurantModel {
     "main_contact" : main_contact,
     "working_hour" : working_hour,
     "coming_soon" : coming_soon,
-    "is_promo" : is_promo,
+    "is_promotion" : is_promotion,
     "is_new" : is_new,
   };
 

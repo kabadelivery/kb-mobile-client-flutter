@@ -89,7 +89,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(controller: _locationNameController,
-                    decoration: InputDecoration(labelText: "Name of Location",
+                    decoration: InputDecoration(labelText: "Name of Location (For you)",
                       border: InputBorder.none,
                     ))..controller.text=address?.name,
               ),

@@ -88,6 +88,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(height: 30),
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     SizedBox(height: 10),
+                    SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("Please insert your account Phone number", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
@@ -96,6 +99,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                         )),
 
                     SizedBox(height: 30),
+                    SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("Press on code the code button. \n\nPlease insert the code you will receive", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:<Widget>[

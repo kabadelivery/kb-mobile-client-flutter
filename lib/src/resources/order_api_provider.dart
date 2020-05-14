@@ -80,7 +80,7 @@ class OrderApiProvider {
         "os_version":"${iosInfo.systemVersion}",
         "build_device":"${iosInfo.utsname.sysname}",
         "version_sdk":"${iosInfo.utsname.version}",
-        "build_model":"${iosInfo.model}",
+        'build_model':'${iosInfo.utsname.machine}',
         "build_product":"${iosInfo.model}",
         "push_token":"$token"
       };
@@ -219,7 +219,7 @@ class OrderApiProvider {
         'os_version':'${iosInfo.systemVersion}',
         'build_device':'${iosInfo.utsname.sysname}',
         'version_sdk':'${iosInfo.utsname.version}',
-        'build_model':'${iosInfo.model}',
+        'build_model':'${iosInfo.utsname.machine}',
         'build_product':'${iosInfo.model}',
         'push_token':'$token'
       };
