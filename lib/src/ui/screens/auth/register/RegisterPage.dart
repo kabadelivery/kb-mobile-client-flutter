@@ -380,7 +380,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void keepRequestId(String login, String requestId) {
     /* save the id somewhere in my .... */
-    mToast("request Id ${requestId}");
+//    mToast("request Id ${requestId}");
 
     this._requestId = requestId;
     /* start minute-count of the seconds into the message thing */

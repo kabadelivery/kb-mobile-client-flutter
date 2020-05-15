@@ -125,14 +125,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                     ]),
                   )),
 
-
               SizedBox(height: 10),
 
               Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(feesDescription, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
 
               SizedBox(height: 10),
 
-              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: CircularProgressIndicator())) : Container(
+              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: SizedBox(height:40, width:40,child: CircularProgressIndicator()))) : Container(
                 margin: EdgeInsets.only(top:10),
                 padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,
@@ -205,12 +204,6 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void topUpToWeb(String link) {
 
     Navigator.of(context).pop({'check_balance': true, 'link': link});
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WebViewPage(title: "PAYGATE - ${operator}",link: link),
-      ),
-    );*/
   }
 
   bool _checkOperator() {

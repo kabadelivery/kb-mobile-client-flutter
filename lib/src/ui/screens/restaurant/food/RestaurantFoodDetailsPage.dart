@@ -344,6 +344,9 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
               padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
               child: Stack(
                 children: <Widget>[
+                  widget.food?.food_details_pictures?.length == null ||  widget.food?.food_details_pictures?.length == 0 ?
+                  Container(height: 9*MediaQuery.of(context).size.width/16,
+                      width: 9*MediaQuery.of(context).size.width, color: Colors.white) :
                   CarouselSlider(
                     onPageChanged: _carousselPageChanged,
                     viewportFraction: 1.0,
@@ -377,7 +380,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                         child: Row(
                           children: <Widget>[]
                             ..addAll(
-                                List<Widget>.generate(widget.food.food_details_pictures.length, (int index) {
+                                List<Widget>.generate(widget.food?.food_details_pictures?.length == null ? 0 : widget.food?.food_details_pictures?.length, (int index) {
                                   return Container(
                                       margin: EdgeInsets.only(right:2.5, top: 2.5),
                                       height: 9,width:9,

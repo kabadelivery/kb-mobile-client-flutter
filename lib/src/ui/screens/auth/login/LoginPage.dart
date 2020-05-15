@@ -191,7 +191,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     showLoading(false);
     /* jump to home page. */
-    mToast("Login Successfull");
+
+//    mToast("Login Successfull");
 
     Navigator.of(context).pushReplacement(new MaterialPageRoute(
         builder: (BuildContext context) => HomePage()));

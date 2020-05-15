@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,7 +20,6 @@ import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.d
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
-import 'package:KABA/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
@@ -126,7 +127,17 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     var flexibleSpaceWidget = new SliverAppBar(
       actions: <Widget>[
-        IconButton(icon: Icon(FontAwesomeIcons.comments,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
+        InkWell(onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+          child: Container(width: 60,height:60,
+            child: FlareActor(
+                FlareData.new_message,
+                alignment: Alignment.center,
+                animation: "normal",
+                fit: BoxFit.contain,
+                isPaused : StateContainer.of(context).hasUnreadMessage != true
+            ),
+          ),
+        ),
         PopupMenuButton<String>(
           onSelected: menuChoiceAction,
           itemBuilder: (BuildContext context) {
@@ -153,16 +164,18 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                    height:100, width: 100,
-                    decoration: BoxDecoration(
-                        border: new Border.all(color: Colors.white, width: 2),
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
-                        )
-                    )
+                GestureDetector(
+                  child: Container(
+                      height:100, width: 100,
+                      decoration: BoxDecoration(
+                          border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+                          )
+                      )
+                  ), onTap: ()=> _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
                 ),
                 Container(
                     padding: EdgeInsets.only(right:20),
@@ -206,7 +219,13 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                 padding: EdgeInsets.all(10),
                                 child: Column(
                                   children: <Widget>[
-                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: SvgPicture.asset(
+                                          VectorsData.balance,
+                                        )),
                                     SizedBox(height:10),
                                     Text("XOF ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
@@ -220,7 +239,13 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                               child: Container(
                                 child: Column(
                                   children: <Widget>[
-                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
+//                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: SvgPicture.asset(
+                                          VectorsData.topup,
+                                        )),
                                     SizedBox(height:5),
                                     Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
@@ -234,7 +259,13 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                               child: Container(
                                 child: Column(
                                   children: <Widget>[
-                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
+//                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
+                                    SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: SvgPicture.asset(
+                                          VectorsData.transfer_money,
+                                        )),
                                     SizedBox(height:5),
                                     Text("Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
@@ -250,21 +281,16 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       color: Colors.grey.shade100,
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
-                            Expanded(
-                              child: InkWell(onTap: () =>   _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-                                  child:Expanded(
-                                    child: Container(
-                                        decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
-                                        padding: EdgeInsets.only(left:10),
-                                          child: Row(mainAxisSize: MainAxisSize.min,children:<Widget>[
-                                            Text("Do you have any suggestion from us ?", style: TextStyle(color: KColors.primaryYellowColor)),
-                                            IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
-                                          ]
-                                        )),
-                                  )),
-                            )
+                            InkWell(onTap: () => _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+                                child:Container(
+                                    decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
+                                    padding: EdgeInsets.only(left:10),
+                                    child: Row(mainAxisSize: MainAxisSize.min,  mainAxisAlignment: MainAxisAlignment.start,children:<Widget>[
+                                      Text("Suggestions ?", style: TextStyle(color: KColors.primaryYellowColor)),
+                                      IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
+                                    ])))
                           ])),
                   /* menu box */
                   Card(
@@ -288,7 +314,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter(),))),
+                                              IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter()))),
                                               SizedBox(height:10),
                                               Text("PROFILE", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
@@ -398,22 +424,20 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
     if (results != null && results.containsKey('check_balance')) {
 
-      bool check_balance =  results['check_balance'];
+//      bool check_balance =  results['check_balance'];
       String link = results['link'];
-      if (check_balance == true) {
+      if (results['check_balance'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-        _launchURL(link).then((value) {
-          if (value != -1){
-            _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
-          }
-        });
+        link = Uri.encodeFull(link);
+        _launchURL(link);
+        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
       }
     }
   }
 
   Future<dynamic> _launchURL(String url) async {
     if (await canLaunch(url)) {
-     return await launch(url);
+      return await launch(url);
     } else {
       try {
         throw 'Could not launch $url';
@@ -424,9 +448,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     return -1;
   }
 
-  void _showDialog(
+  Future<dynamic> _showDialog(
       {String svgIcon, var message,}) {
-    showDialog(
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

@@ -14,7 +14,9 @@
   static final String out_of_range = "assets/images/vectors/out_of_range.svg";
   static final String account_balance = "assets/images/vectors/account_balance.svg";
   static final String terms_and_conditions = "assets/images/vectors/agreement.svg";
-
+  static final String topup = "assets/images/vectors/prepaid.svg";
+  static final String transfer_money = "assets/images/vectors/transfer_money.svg";
+  static final String balance = "assets/images/vectors/balance.svg";
 
   // presentation screens
   static final String p_f_1 = "assets/images/vectors/app_presentation/sl_enjoy.svg";

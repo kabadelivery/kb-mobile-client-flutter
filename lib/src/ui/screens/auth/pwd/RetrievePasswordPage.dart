@@ -55,7 +55,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                             decoration: new BoxDecoration(
                                 border: new Border.all(color: Colors.grey.shade300)
                             ),
-                            child: SizedBox(width: 65, height:65,child:Center(child:Text(pwd.trim().length > index ? pwd[index] : "", style: TextStyle(fontSize: 30,color: Colors.black)))));
+                            child: SizedBox(width: 65, height:65,child:Center(child:Text(pwd.trim().length > index ? /*pwd[index]*/"*" : "", style: TextStyle(fontSize: 30,color: Colors.black)))));
                       })
                   )
             ),
@@ -110,28 +110,6 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     if (pwd.length != 4)
     return;
     Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-    //      switch (this.widget.type) {
-//        case 0:
-//        /* enter password.
-//        * send back the password to the popper
-//        *  */
-//        Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-//          break;
-//        case 1:
-//        /* setup password
-//        *
-//        * send back the password to the popper ; and launch confirmation
-//        *  */
-//          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-//          break;
-//        case 2:
-//        /* confirm password creation
-//        *
-//        *  send back the password to the popper; and check if ok, go, or re-do the confirmation
-//        * */
-//          Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
-//          break;
-//      }
   }
 
   void _removeChar() {

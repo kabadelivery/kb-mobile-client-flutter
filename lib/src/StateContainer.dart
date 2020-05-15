@@ -61,7 +61,7 @@ class StateContainerState extends State<StateContainer> {
       });
       /* save it to shared preferences */
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('hasUnreadMessage', hasUnreadMessage);
+      prefs.setBool('hasUnreadMessage', false);
     }
   }
 

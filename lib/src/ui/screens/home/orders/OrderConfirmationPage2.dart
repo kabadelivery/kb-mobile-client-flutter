@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,6 +30,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 //import 'package:vibration/vibration.dart';
 //import 'package:audioplayers/audioplayers.dart';
@@ -209,7 +214,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                     Row(
                       children: <Widget>[
                         /* montant commande normal */
-                       Text("${_orderBillConfiguration?.command_pricing} FCFA",
+                        Text("${_orderBillConfiguration?.command_pricing} FCFA",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                       ],
@@ -262,131 +267,131 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ]),
           ));
     } else
-    return Card(margin: EdgeInsets.only(left: 10, right: 10),
-        child: Container(padding: EdgeInsets.all(10),
-          child: Column(children: <Widget>[
+      return Card(margin: EdgeInsets.only(left: 10, right: 10),
+          child: Container(padding: EdgeInsets.all(10),
+            child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      NetworkImages.kaba_promotion_gif
-            (_orderBillConfiguration?.remise > 0 &&
-                !_isPreorder()
-                ? Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
-                            NetworkImages.kaba_promotion_gif))
+              (_orderBillConfiguration?.remise > 0 &&
+                  !_isPreorder()
+                  ? Container(
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
+                              NetworkImages.kaba_promotion_gif))
+                      )
+                  )
+              ) : Container()),
+              Container(),
+              /* content */
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Montant Commande:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* check if there is promotion on Commande */
+                    Row(
+                      children: <Widget>[
+                        /* montant commande normal */
+                        Text(_orderBillConfiguration?.command_pricing >
+                            _orderBillConfiguration?.promotion_pricing
+                            ? "(${_orderBillConfiguration?.command_pricing})"
+                            : "", style: TextStyle(fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            fontSize: 15)),
+                        SizedBox(width: 5),
+                        /* montant commande promotion */
+                        Text(_orderBillConfiguration?.command_pricing >
+                            _orderBillConfiguration?.promotion_pricing
+                            ? "${_orderBillConfiguration?.promotion_pricing} FCFA"
+                            : "${_orderBillConfiguration?.command_pricing} FCFA",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15)),
+                      ],
                     )
-                )
-            ) : Container()),
-            Container(),
-            /* content */
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Montant Commande:", style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
-                  /* check if there is promotion on Commande */
-                  Row(
-                    children: <Widget>[
-                      /* montant commande normal */
-                      Text(_orderBillConfiguration?.command_pricing >
-                          _orderBillConfiguration?.promotion_pricing
-                          ? "(${_orderBillConfiguration?.command_pricing})"
-                          : "", style: TextStyle(fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                          fontSize: 15)),
-                      SizedBox(width: 5),
-                      /* montant commande promotion */
-                      Text(_orderBillConfiguration?.command_pricing >
-                          _orderBillConfiguration?.promotion_pricing
-                          ? "${_orderBillConfiguration?.promotion_pricing} FCFA"
-                          : "${_orderBillConfiguration?.command_pricing} FCFA",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15)),
-                    ],
-                  )
-                ]),
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Montant Livraison:", style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
-                  /* check if there is promotion on Livraison */
-                  Row(
-                    children: <Widget>[
-                      /* montant livraison normal */
-                      Text(
-                          _orderBillConfiguration?.shipping_pricing >
-                              _orderBillConfiguration
-                                  ?.promotion_shipping_pricing
-                              ? "(${_orderBillConfiguration?.shipping_pricing})"
-                              : "", style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                          fontSize: 15)),
-                      SizedBox(width: 5),
-                      /* montant livraison promotion */
-                      Text(
-                          _orderBillConfiguration?.shipping_pricing >
-                              _orderBillConfiguration
-                                  ?.promotion_shipping_pricing
-                              ? "${_orderBillConfiguration
-                              ?.promotion_shipping_pricing} FCFA"
-                              : "${_orderBillConfiguration
-                              ?.shipping_pricing} FCFA", style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15)),
-                    ],
-                  )
-                ]),
-            SizedBox(height: 10),
-            _orderBillConfiguration?.remise > 0 ?
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
+                  ]),
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Montant Livraison:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* check if there is promotion on Livraison */
+                    Row(
+                      children: <Widget>[
+                        /* montant livraison normal */
+                        Text(
+                            _orderBillConfiguration?.shipping_pricing >
+                                _orderBillConfiguration
+                                    ?.promotion_shipping_pricing
+                                ? "(${_orderBillConfiguration?.shipping_pricing})"
+                                : "", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            fontSize: 15)),
+                        SizedBox(width: 5),
+                        /* montant livraison promotion */
+                        Text(
+                            _orderBillConfiguration?.shipping_pricing >
+                                _orderBillConfiguration
+                                    ?.promotion_shipping_pricing
+                                ? "${_orderBillConfiguration
+                                ?.promotion_shipping_pricing} FCFA"
+                                : "${_orderBillConfiguration
+                                ?.shipping_pricing} FCFA", style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15)),
+                      ],
+                    )
+                  ]),
+              SizedBox(height: 10),
+              _orderBillConfiguration?.remise > 0 ?
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
 
-                  Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.grey)),
-                  /* montrer le discount s'il y'a lieu */
-                  Text("-${_orderBillConfiguration?.remise}%", style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: CommandStateColor.delivered)),
-                ]) : Container(),
-            SizedBox(height: 10),
-            Center(child: Container(width: MediaQuery
-                .of(context)
-                .size
-                .width - 10, color: Colors.black, height: 1)),
-            SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Net à Payer:", style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
-                  /* montant total a payer */
-                  Text("${_orderBillConfiguration?.total_pricing} F",
-                      style: TextStyle(fontWeight: FontWeight.bold,
-                          color: KColors.primaryColor,
-                          fontSize: 18)),
-                ]),
-            SizedBox(height: 10),
-            (
-                (_orderBillConfiguration?.remise > 0 &&
-                    !_isPreorder())
-                    ? Container(
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(Utils.inflateLink(
-                                NetworkImages.kaba_promotion_gif))
-                        )
-                    )
-                ) : Container()),
-          ]),
-        ));
+                    Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.grey)),
+                    /* montrer le discount s'il y'a lieu */
+                    Text("-${_orderBillConfiguration?.remise}%", style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: CommandStateColor.delivered)),
+                  ]) : Container(),
+              SizedBox(height: 10),
+              Center(child: Container(width: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 10, color: Colors.black, height: 1)),
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Net à Payer:", style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
+                    /* montant total a payer */
+                    Text("${_orderBillConfiguration?.total_pricing} F",
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            color: KColors.primaryColor,
+                            fontSize: 18)),
+                  ]),
+              SizedBox(height: 10),
+              (
+                  (_orderBillConfiguration?.remise > 0 &&
+                      !_isPreorder())
+                      ? Container(
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(Utils.inflateLink(
+                                  NetworkImages.kaba_promotion_gif))
+                          )
+                      )
+                  ) : Container()),
+            ]),
+          ));
   }
 
   _cookingTimeEstimation() {
@@ -515,12 +520,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text("Your balance:", style: TextStyle(fontSize: 17),),
+                          Text("Your balance:", style: TextStyle(fontSize: 14)),
                           SizedBox(width: 10),
-                          Text("${_orderBillConfiguration.account_balance} XOF",
+                          Text("XOF ${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance}",
                             style: TextStyle(color: KColors.primaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.normal),),
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal)),
                         ],
                       ),
                       RaisedButton(child: Text("TOP UP",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
@@ -837,9 +842,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     // if untrustful, you can't go further.
     if (_orderBillConfiguration?.trustful == 0) {
       _showDialog(
-          iccon: VectorsData.questions, // untrustful
-          message: "Sorry, you already have an ongoing order. Please contact customer care for more informations.",
-          isYesOrNo: false,
+        iccon: VectorsData.questions, // untrustful
+        message: "Sorry, you already have an ongoing order. Please contact customer care for more informations.",
+        isYesOrNo: false,
       );
       return;
     }
@@ -1539,9 +1544,92 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     );
   }
 
-  _topUpAccount() {
-    // jump to topup page.
+  _topUpAccount() async {
 
+    // jump to topup page.
+    var results = await Navigator.of(context).push(
+        new MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) {
+              return TopUpPage(presenter: TopUpPresenter());
+            }
+        ));
+
+    if (results != null && results.containsKey('check_balance')) {
+
+//      bool check_balance =  results['check_balance'];
+      String link = results['link'];
+      if (results['check_balance'] == true) {
+        // show a dialog that tells the user to check his balance after he has topup up.
+        link = Uri.encodeFull(link);
+        _launchURL(link);
+        _showDialog_(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+      }
+    }
+  }
+
+
+  Future<dynamic> _showDialog_(
+      {String svgIcon, var message,}) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: SvgPicture.asset(
+                          svgIcon
+                      )),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions: <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "ACCEPT", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  Future<dynamic> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      return await launch(url);
+    } else {
+      try {
+        throw 'Could not launch $url';
+      } catch (_) {
+        print(_);
+      }
+    }
+    return -1;
+  }
+
+  void _jumpToPage (BuildContext context, page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
   }
 
 }

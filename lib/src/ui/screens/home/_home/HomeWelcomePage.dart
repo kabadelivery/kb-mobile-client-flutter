@@ -1,18 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
 
-import 'package:KABA/src/NotificationTestPage.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/utils/_static_data/MusicData.dart';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
@@ -20,6 +7,7 @@ import 'package:KABA/src/contracts/evenement_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
@@ -32,11 +20,22 @@ import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
+import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -148,15 +147,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               )), onPressed: (){_jumpToInfoPage();}),
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
-//            IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToInfoPage();}),
-//            IconButton(icon: Icon(Icons.search, color: Colors.white), tooltip: "Search", onPressed: () {}),
-//            IconButton(icon: Icon(FontAwesomeIcons.sms,color: Colors.white), onPressed: (){_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));}),
-
-            IconButton(onPressed: () => _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-                icon: StateContainer.of(context).hasUnreadMessage != true ?  Icon(FontAwesomeIcons.comments) : SvgPicture.asset(
-                  VectorsData.notification_new_message,
-                  color: Colors.white,
-                ), color: Colors.white),
+            InkWell(onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+              child: Container(width: 60,height:60,
+                child: FlareActor(
+                    FlareData.new_message,
+                    alignment: Alignment.center,
+                    animation: "normal",
+                    fit: BoxFit.contain,
+                    isPaused : StateContainer.of(context).hasUnreadMessage != true
+                ),
+              ),
+            ),
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
@@ -657,10 +658,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         StateContainer.of(context).updateHasGotNewMessage(hasGotNewMessage: true);
         _playMusicForNewMessage();
       }
-      if (!StateContainer.of(context).hasUnreadMessage)
-        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: hasNewMessage);
+        setState(() {
+          StateContainer.of(context).updateUnreadMessage(
+              hasUnreadMessage: hasNewMessage);
+        });
     } else {
-      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      setState(() {
+        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      });
     }
   }
 
@@ -669,7 +674,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     //
     if (restaurant.is_new == 1){
       // new logo
-      return ShinningTextWidget(text:"NEW", backgroundColor: KColors.mGreen, textColor: Colors.white);
+      return ShinningTextWidget(text:"NEW", backgroundColor: KColors.primaryYellowColor, textColor: Colors.white);
     } else {
       if (restaurant.is_promotion == 1) {
         // promotion

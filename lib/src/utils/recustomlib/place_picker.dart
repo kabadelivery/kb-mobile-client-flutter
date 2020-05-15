@@ -405,7 +405,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// then the road name returned is used instead.
   String getLocationName() {
     if (this.locationResult == null) {
-      return "Unnamed location";
+      return "This location";
     }
 
     for (NearbyPlace np in this.nearbyPlaces) {
@@ -559,7 +559,7 @@ class SearchInputState extends State<SearchInput> {
 
   @override
   void dispose() {
-    this.editController.removeListener(this.onSearchInputChange);
+//    this.editController.removeListener(this.onSearchInputChange);
     this.editController.dispose();
 
     super.dispose();
@@ -584,6 +584,7 @@ class SearchInputState extends State<SearchInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.symmetric(
         horizontal: 8,
       ),
@@ -623,9 +624,10 @@ class SearchInputState extends State<SearchInput> {
           SizedBox(
             width: 8,
           ),
-          Icon(
-            Icons.search,
-            color: Colors.black,
+          IconButton(icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ), onPressed: (){onSearchInputChange();},
           ),
 
         ],

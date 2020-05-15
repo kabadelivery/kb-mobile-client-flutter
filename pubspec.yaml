@@ -88,7 +88,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/flare/WaterArtboards.flr
+    - assets/flare/newmessage.flr
     - assets/images/vectors/closedshop.svg
     - assets/images/vectors/ic_kaba_main_logo.svg
     - assets/images/vectors/ic_voucher.svg
@@ -107,7 +107,10 @@ flutter:
     - assets/images/vectors/app_presentation/sl_choice.svg
     - assets/images/vectors/app_presentation/sl_geolocalisation.svg
     - assets/images/vectors/app_presentation/sl_payment.svg
+    - assets/images/vectors/transfer_money.svg
+    - assets/images/vectors/balance.svg
     # icons
+    - assets/images/vectors/prepaid.svg
     - assets/images/vectors/agreement.svg
     - assets/images/vectors/out_of_range.svg
     - assets/images/vectors/notificiation_message_normal.svg

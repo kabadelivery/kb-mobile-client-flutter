@@ -25,7 +25,6 @@ import 'package:KABA/src/ui/screens/home/me/money/MySoldePage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
-import 'package:KABA/src/ui/screens/home/me/personnal/PersonalPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';

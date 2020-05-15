@@ -87,10 +87,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageStorage(
-        child:   pages[  StateContainer.of(context).tabPosition],
-        bucket: bucket,
-      ),
+      body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

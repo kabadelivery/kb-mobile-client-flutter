@@ -397,6 +397,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       return Container();
     return Column(
       children: <Widget>[
+        SizedBox(height:30),
+        Text("- ${widget.restaurant?.name} Review -", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray),
+        SizedBox(height:10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[

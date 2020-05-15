@@ -23,13 +23,13 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       userDataBloc.fetchDailyOrders(widget.customer);
     });
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
                 } else if (snapshot.hasError) {
                   if (snapshot.connectionState == ConnectionState.none)
                     return ErrorPage(message: "Network Issue",onClickAction: (){
-                        userDataBloc.fetchDailyOrders(widget.customer);
+                      userDataBloc.fetchDailyOrders(widget.customer);
                     });
                   else
                     return ErrorPage(message: "System error Issue",onClickAction: (){
-                        userDataBloc.fetchDailyOrders(widget.customer);
+                      userDataBloc.fetchDailyOrders(widget.customer);
                     });
                 }
                 return Center(child: CircularProgressIndicator());

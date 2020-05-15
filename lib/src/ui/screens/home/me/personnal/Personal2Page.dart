@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:KABA/src/contracts/personal_page_contract.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
 
@@ -280,7 +280,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       showLoading(true);
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
-      mToast("Please fill all the form");
+      mToast("Please fill all the fields");
     }
   }
 

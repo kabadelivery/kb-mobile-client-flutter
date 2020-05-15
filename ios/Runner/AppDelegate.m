@@ -13,6 +13,7 @@
            (id<UNUserNotificationCenterDelegate>)self;
      }
 
+
     [FIRApp configure];
     [GMSServices provideAPIKey:@"AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0"];
     [GeneratedPluginRegistrant registerWithRegistry:self];
