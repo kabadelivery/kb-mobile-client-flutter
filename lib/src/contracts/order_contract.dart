@@ -181,7 +181,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       _orderConfirmationView.inflateBillingConfiguration1(configuration);
     } catch (_) {
       /* login failure */
-      _orderConfirmationView.isRestaurantOpenConfigLoading(true);
+      _orderConfirmationView.isRestaurantOpenConfigLoading(false);
       print("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemOpeningStateError();

@@ -502,7 +502,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   ? Center(child: CircularProgressIndicator())
                   : Container(),
               SizedBox(height: 20),
-              _orderBillConfiguration != null && _orderBillConfiguration.isBillBuilt ?
+              _orderBillConfiguration != null && _orderBillConfiguration?.isBillBuilt == true ?
               // check if out of range before doing anything.
               _orderBillConfiguration?.out_of_range == true ? _buildOutOfRangePage() :
               (Column(children: <Widget>[

@@ -165,82 +165,86 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
     return Scaffold(
       appBar: appBar,
-      body: isLoading ? Center(child: CircularProgressIndicator()) : Row(children: <Widget>[
-        Expanded(flex:4,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 5),
-                ]..addAll(
-                    List.generate(data?.length, (index){
-                      return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      this.currentIndex = index;
-                                    });
-                                  },
-                                  child: index == this.currentIndex ?
-                                  Container(
-                                      color: KColors.primaryColor,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index]?.name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                          textAlign: TextAlign.center)) :
-                                  Container(
-                                      color: data[index]?.promotion != 0 ? KColors
-                                          .primaryYellowColor : Colors.transparent,
-                                      padding: EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 8, right: 8),
-                                      child: Text(data[index]?.name?.toUpperCase(),
-                                          style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: data[index]?.promotion == 0 ? Colors
-                                                  .black : KColors.primaryColor),
-                                          textAlign: TextAlign.center))),
-                            ),
-                          ),
-                        ],
-                      );
-                    })
+      body: Container(
+          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+          Row(children: <Widget>[
+            Expanded(flex:4,
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 5),
+                    ]..addAll(
+                        List.generate(data?.length, (index){
+                          return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          this.currentIndex = index;
+                                        });
+                                      },
+                                      child: index == this.currentIndex ?
+                                      Container(
+                                          color: KColors.primaryColor,
+                                          padding: EdgeInsets.only(
+                                              top: 10, bottom: 10, left: 8, right: 8),
+                                          child: Text(data[index]?.name?.toUpperCase(),
+                                              style: TextStyle(fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  color: Colors.white),
+                                              textAlign: TextAlign.center)) :
+                                      Container(
+                                          color: data[index]?.promotion != 0 ? KColors
+                                              .primaryYellowColor : Colors.transparent,
+                                          padding: EdgeInsets.only(
+                                              top: 10, bottom: 10, left: 8, right: 8),
+                                          child: Text(data[index]?.name?.toUpperCase(),
+                                              style: TextStyle(fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  color: data[index]?.promotion == 0 ? Colors
+                                                      .black : KColors.primaryColor),
+                                              textAlign: TextAlign.center))),
+                                ),
+                              ),
+                            ],
+                          );
+                        })
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        Expanded(flex: 8, child:
-        isLoading
-            ? Center(child: CircularProgressIndicator())
-            : (hasNetworkError ? ErrorPage(
-            message: "hasNetworkError", onClickAction: () {
-          if (!widget.fromNotification) {
-            if (widget.menuId == -1)
-              widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
-            else
-              widget.presenter.fetchMenuWithMenuId(widget.menuId);
-          } else
-            restaurantBloc.fetchRestaurantMenuList(
-                widget?.restaurant);
-        })
-            : hasSystemError ? ErrorPage(
-            message: "hasSystemError", onClickAction: () {
-          if (!widget.fromNotification) {
-            if (widget.menuId == -1)
-              widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
-            else
-              widget.presenter.fetchMenuWithMenuId(widget.menuId);
-          } else
-            restaurantBloc.fetchRestaurantMenuList(
-                widget?.restaurant);
-        }) : _buildRestaurantMenu())),
-      ]),
+            Expanded(flex: 8, child:
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : (hasNetworkError ? ErrorPage(
+                message: "hasNetworkError", onClickAction: () {
+              if (!widget.fromNotification) {
+                if (widget.menuId == -1)
+                  widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+                else
+                  widget.presenter.fetchMenuWithMenuId(widget.menuId);
+              } else
+                restaurantBloc.fetchRestaurantMenuList(
+                    widget?.restaurant);
+            })
+                : hasSystemError ? ErrorPage(
+                message: "hasSystemError", onClickAction: () {
+              if (!widget.fromNotification) {
+                if (widget.menuId == -1)
+                  widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+                else
+                  widget.presenter.fetchMenuWithMenuId(widget.menuId);
+              } else
+                restaurantBloc.fetchRestaurantMenuList(
+                    widget?.restaurant);
+            }) : _buildRestaurantMenu())),
+          ])
+          )
+      ),
     );
   }
 
@@ -762,6 +766,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   void showLoading(bool isLoading) {
     setState(() {
       this.isLoading = isLoading;
+      hasNetworkError = false;
+      hasSystemError = false;
     });
   }
 
@@ -789,6 +795,24 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     showLoading(false);
     setState(() {
       hasSystemError = true;
+    });
+  }
+
+  _buildSysErrorPage() {
+    return ErrorPage(message: "System error.",onClickAction: (){
+      if (widget.menuId == -1)
+        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+      else
+        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+    });
+  }
+
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "Network error.",onClickAction: (){
+      if (widget.menuId == -1)
+        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+      else
+        widget.presenter.fetchMenuWithMenuId(widget.menuId);
     });
   }
 }

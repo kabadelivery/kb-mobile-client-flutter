@@ -131,7 +131,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 10),
 
-              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: SizedBox(height:40, width:40,child: CircularProgressIndicator()))) : Container(
+              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: SizedBox(height:30, width:30,child: CircularProgressIndicator()))) : Container(
                 margin: EdgeInsets.only(top:10),
                 padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,

@@ -41,7 +41,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> implements LoginView {
 
-  String hint = "Insert the Phone number or E-mail you used to create your KABA account";
+  String hint = "Insert the Phone number you used to create your KABA account";
 
   bool isConnecting = false;
 
