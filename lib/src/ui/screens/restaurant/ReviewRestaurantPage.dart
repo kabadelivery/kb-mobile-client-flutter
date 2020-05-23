@@ -66,7 +66,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage> implements 
             children: (<Widget>[
               // tell us what to do
               SizedBox(height:10),
-              Container(margin: EdgeInsets.only(top:40, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+              Container(margin: EdgeInsets.only(top:40, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Please give the restaurant a review about. We really appreciate it. \nThank you", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
               SizedBox(height:10),
 
               Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[

@@ -19,10 +19,10 @@
   static final String balance = "assets/images/vectors/balance.svg";
 
   // presentation screens
-  static final String p_f_1 = "assets/images/vectors/app_presentation/sl_enjoy.svg";
-  static final String p_f_2 = "assets/images/vectors/app_presentation/sl_choice.svg";
+  static final String p_f_1 = "assets/images/vectors/app_presentation/sl_choice.svg";
+  static final String p_f_2 = "assets/images/vectors/app_presentation/sl_payment.svg";
   static final String p_f_3 = "assets/images/vectors/app_presentation/sl_geolocalisation.svg";
-  static final String p_f_4 = "assets/images/vectors/app_presentation/sl_payment.svg";
+  static final String p_f_4 = "assets/images/vectors/app_presentation/sl_enjoy.svg";
 
 
   // address creation
