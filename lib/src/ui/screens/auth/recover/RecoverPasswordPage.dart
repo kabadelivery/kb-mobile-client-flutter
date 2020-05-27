@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
@@ -32,10 +33,9 @@ class RecoverPasswordPage extends StatefulWidget {
 class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements RecoverPasswordView {
 
 
-  List<String> recoverModeHints = ["Insert the Phone number you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
-    /*"Insert your E-mail address"*/];
+  List<String> recoverModeHints;
 
-  String _loginFieldHint = "90 XX XX XX";
+  String _loginFieldHint;
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
@@ -56,6 +56,11 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   @override
   void initState() {
     super.initState();
+
+    _loginFieldHint = "${AppLocalizations.of(context).translate('phone_number_hint')}";
+    recoverModeHints = ["${AppLocalizations.of(context).translate('recover_password_hint')}",
+      /*"Insert your E-mail address"*/];
+
     this.widget.presenter.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null && customer.phone_number != null) {
@@ -74,7 +79,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
         appBar: AppBar(
           brightness: Brightness.light,
           backgroundColor: Colors.white,
-          title: Text("RECOVER PASSWORD", style:TextStyle(color:KColors.primaryColor)),
+          title: Text("${AppLocalizations.of(context).translate('recover_password')}", style:TextStyle(color:KColors.primaryColor)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
         ),
         backgroundColor: Colors.white,
@@ -89,7 +94,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     SizedBox(height: 10),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("Please insert your account Phone number", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context).translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
@@ -100,7 +105,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
                     SizedBox(height: 30),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("Press on code the code button. \n\nPlease insert the code you will receive", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context).translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +114,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
@@ -122,7 +127,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                               ),
                               padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Row(
                             children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} s" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context).translate('seconds')}" : "${AppLocalizations.of(context).translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
                               isCodeSent == false &&  isCodeSending ? Row(
                                 children: <Widget>[
@@ -136,7 +141,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text("RECOVER PASSWORD", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        Text("${AppLocalizations.of(context).translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
@@ -340,7 +345,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   @override
   void onNetworkError() {
-    mToast("onNetworkError");
+    mToast("${AppLocalizations.of(context).translate('network_error')}");
   }
 
   @override
@@ -363,7 +368,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   @override
   void userExistsAlready() {
-    mToast("user Exists Already");
+//    mToast("user Exists Already");
   }
 
 
@@ -378,7 +383,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       this.widget.presenter.checkVerificationCode(
           _codeFieldController.text, this._requestId);
     } else {
-      mToast("CODE IS WRONG");
+      mToast("${AppLocalizations.of(context).translate('wrong_code')}");
     }
   }
 
@@ -391,13 +396,13 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   @override
   void recoverFails() {
-    mToast("Sorry password recovery can't happen now. Please try again.");
+    mToast("${AppLocalizations.of(context).translate('password_recover_fails')}");
   }
 
   @override
   void recoverSuccess(String phoneNumber, String newCode) {
     /* send to login page and */
-    mToast("Password updated successfully");
+    mToast("${AppLocalizations.of(context).translate('password_updated_success')}");
     // logout.
     StateContainer.of(context).balance = 0;
     CustomerUtils.clearCustomerInformations().whenComplete((){

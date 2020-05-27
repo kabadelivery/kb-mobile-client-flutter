@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../StateContainer.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends StatefulWidget { // translated
 
   static var routeName = "/SplashPage";
 
@@ -91,12 +92,11 @@ class _SplashPageState extends State<SplashPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Can't get gurrent location"),
-              content:
-              const Text('Please make sure you enable GPS and try again'),
+              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Ok'),
+                  child: Text("${AppLocalizations.of(context).translate('ok')}"),
                   onPressed: () {
                     final AndroidIntent intent = AndroidIntent(
                         action: 'android.settings.LOCATION_SOURCE_SETTINGS');
@@ -134,7 +134,7 @@ class _SplashPageState extends State<SplashPage> {
                       )),
                   /* text */
                   SizedBox(height: 10),
-                  Text("KABA",
+                  Text("${AppLocalizations.of(context).translate('app_title')}",
                       style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
                 ]
             )),
@@ -187,7 +187,7 @@ class _SplashPageState extends State<SplashPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => WebViewPage(title: "CGU",link: ServerRoutes.CGU_PAGE, agreement: true),
+        builder: (context) => WebViewPage(title: "${AppLocalizations.of(context).translate('cgu')}",link: ServerRoutes.CGU_PAGE, agreement: true),
       ),
     );
   }

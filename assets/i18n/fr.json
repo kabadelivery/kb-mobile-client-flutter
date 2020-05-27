@@ -1,0 +1,88 @@
+{
+  "app_title": "KABA FR",
+  "cgu": "GCU FR",
+  "cant_get_location": "Can't get current location FR",
+  "please_enable_gps": "Please make sure you enable GPS and try again FR",
+  "ok": "Ok FR",
+
+  "choice": "Choice FR",
+  "choice_desc": "Choose menu FR",
+  "payment": "Payment FR",
+  "payment_desc": "Pay with cash or online as you wish FR",
+  "address": "Address FR",
+  "address_desc": "Choose a delivery address FR",
+  "enjoy": "Enjoy FR",
+  "enjoy_desc": "Enjoy your food ! FR",
+
+  "login_phonenumber_hint": "Insert the Phone number you used to create your KABA account FR",
+  "connexion": "CONNEXION FR",
+  "recover_password": "Recover Password FR",
+  "login_error": "Sorry, Login error FR",
+  "accept_terms_and_conditions": "Do you accept our terms and conditions FR",
+  "yes": "YES FR",
+  "no": "NO FR",
+  "see": "SEE FR",
+  "sorry": "Sorry FR",
+  "account_no_exists": "Account no exist. Do you want to create a new account  FR",
+  "password_wrong": "Sorry, Password wrong. FR",
+  "network_error": "Sorry, Network error. Please check network and try again. FR",
+  "refuse": "REFUSE FR",
+  "accept": "ACCEPT FR",
+
+  "new_account_phonenumber_hint": "Insert the Phone number you are most likely to make T-MONEY or FLOOZ transactions with.\\n\\nOnly TOGOLESE phone numbers are allowed. FR",
+  "phone_number_hint": "90 XX XX XX FR",
+  "nickname": "Nickname FR",
+  "register": "REGISTER FR",
+  "seconds": "s FR",
+  "code": "CODE FR",
+  "account_created_successfully": "Account created successfully FR",
+  "user_exists": "User Exists Already FR",
+  "wrong_code": "Code is WRONG FR",
+  "press_code_hint": "Press on code the code button. \\n\\nPlease insert the code you will receive FR",
+
+
+
+  "recover_password_hint": "Insert the Phone number you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed. FR",
+  "recover_password": "RECOVER PASSWORD FR",
+  "insert_phone_number": "Please insert your account Phone number FR",
+  "password_updated_success": "Password updated successfully FR",
+  "password_recover_fails": "Sorry password recovery can't happen now. Please try again. FR",
+
+  "home": "Home FR",
+  "restaurant": "Restaurant FR",
+  "orders": "Orders FR",
+  "account": "Account FR",
+  "settings": "Settings FR",
+
+  "logout": "Logout FR",
+  "all_restaurant": "ALL RESTAURANTS FR",
+  "call_us": "CALL US FR",
+  "best_seller": "BEST SELLER FR",
+  "events": "EVENEMENTS FR",
+  "try_again": "TRY AGAIN FR",
+  "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again. FR",
+  "error_message": "Error message FR",
+  "new": "NEW FR",
+  "promo": "PROMO FR",
+
+
+  "find_menu_or_restaurant": "Any restaurant? Menu ? FR",
+
+
+  "no_order_today": "You have made no order yet today ! FR",
+  "system_error": "Sorry, system error. Wait a moment and try again FR",
+
+  "top_up": "Top up FR",
+  "transfer": "Transfer FR",
+  "suggestions": "Suggestions ? FR",
+  "profile": "PROFILE FR",
+  "addresses": "ADDRESSES FR",
+  "orders": "Orders FR",
+  "feeds": "FEEDS FR",
+  "please_check_balance": "Please check your balance if you have successfully achieved topup FR",
+  "currency": "XOF"
+
+
+
+
+}

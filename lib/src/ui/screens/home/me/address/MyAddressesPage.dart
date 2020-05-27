@@ -1,4 +1,5 @@
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("MY ADDRESSES", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('my_addresses')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Stack(
@@ -83,7 +84,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
                     children: <Widget>[
                       Icon(Icons.add, color: KColors.primaryColor),
                       SizedBox(width: 10),
-                      Text("CREER NOUVELLE ADRESSE", style: TextStyle(color: KColors.primaryColor))
+                      Text("${AppLocalizations.of(context).translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
                     ],
                   ),
                 ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),
@@ -104,7 +105,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
             children: <Widget>[
               IconButton(icon: Icon(Icons.location_on, color: Colors.grey)),
               SizedBox(height: 10),
-              Text("Sorry, there is no Pre-registred location. \nCreate a delivery address now !", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('sorry_no_location_yet')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
             ],
           ));
     }
@@ -151,7 +152,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
                   IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
                 ],
               ),
-              Row(children: <Widget>[Text("Contact", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
+              Row(children: <Widget>[Text("${AppLocalizations.of(context).translate('contact')}", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
                 Text("${address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
             ],
           ),
@@ -219,7 +220,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
     _showDialog(
         icon: VectorsData.questions,
-        message: "Are you sure to delete this address? (${address?.name})",
+        message: "${AppLocalizations.of(context).translate('are_you_sure_to_delete_address')} (${address?.name})",
         isYesOrNo: true,
         actionIfYes: () => _deleteAddress(address)
     );
@@ -252,11 +253,11 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.loadAddressList(widget.customer); });
   }
 
   void _showDialog({var icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
@@ -285,14 +286,14 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
               // usually buttons at the bottom of the dialog
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("REFUSE", style: TextStyle(color:Colors.grey)),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color:Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
-                child: new Text("ACCEPT", style: TextStyle(color:KColors.primaryColor)),
+                child: new Text("accept", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: (){
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -301,7 +302,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
             ] : <Widget>[
               //
               OutlineButton(
-                child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+                child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
                   if (okBackToHome){
                     Navigator.of(context).pop({'ok':true});
@@ -319,12 +320,12 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
   @override
   void deleteError() {
-    mToast("Delete error");
+    mToast("${AppLocalizations.of(context).translate('delete_error')}");
   }
 
   @override
   void deleteNetworkError() {
-    mToast("Delete network error");
+    mToast("${AppLocalizations.of(context).translate('delete_network_error')}");
   }
 
   @override
@@ -341,10 +342,8 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
   }
 
   void mToast(String message) {
-
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
-
 
 }
 

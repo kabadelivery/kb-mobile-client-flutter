@@ -1,5 +1,6 @@
 
 
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
@@ -54,7 +55,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("FEEDS", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('feeds')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Container(
@@ -103,11 +104,11 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchFeed(customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchFeed(customer); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchFeed(customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchFeed(customer); });
   }
 
   _buildFeedsList() {

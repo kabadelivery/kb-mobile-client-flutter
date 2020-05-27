@@ -3,23 +3,12 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
-import 'package:KABA/src/NotificationTestPage.dart';
-import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:KABA/src/TestPage.dart';
-import 'package:KABA/src/WebTestPage.dart';
-import 'package:KABA/src/contracts/order_feedback_contract.dart';
-import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -30,21 +19,31 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'src/StateContainer.dart';
-import 'src/locale/locale.dart';
 
 
-void main() {
+Future<void> main() async {
 
-  runApp(StateContainer(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  AppLanguage appLanguage = AppLanguage();
+  await appLanguage.fetchLocale();
+  runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
 }
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class MyApp extends StatefulWidget {
+
+  var appLanguage;
+
+  MyApp({this.appLanguage});
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -112,11 +111,22 @@ class _MyAppState extends State<MyApp> {
 
     Image(image: AssetImage(ImageAssets.kaba_main));
 
-    return MaterialApp(
-//            theme: theme,
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
-      localizationsDelegates: [
+    return ChangeNotifierProvider<AppLanguage>(
+        create: (_) => widget.appLanguage,
+        child: Consumer<AppLanguage>(builder: (context, model, child) {
+          return MaterialApp(
+            supportedLocales: [
+              Locale('en', 'US'),
+              Locale('fr', 'FR'),
+            ],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            /* localizationsDelegates: [
         // ... app-specific localization delegate[s] here
         KabaLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
@@ -128,14 +138,14 @@ class _MyAppState extends State<MyApp> {
         const Locale('zh'), // Chinese
 //        const Locale.fromSubtags(languageCode: 'zh'), // Chinese *See Advanced Locales below*
         // ... other locales the app supports
-      ],
-      onGenerateTitle: (BuildContext context) =>
-      "KABA",
-      theme: ThemeData(primarySwatch: KColors.colorCustom),
+      ],*/
+            onGenerateTitle: (BuildContext context) =>
+            "KABA",
+            theme: ThemeData(primarySwatch: KColors.colorCustom),
 
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-      home: SplashPage(),
+            home: SplashPage(),
 //    home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //    home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //    home: TransactionHistoryPage(presenter: TransactionPresenter()),
@@ -147,8 +157,9 @@ class _MyAppState extends State<MyApp> {
 //    home: WebViewPage(agreement: true),
 //    home: WebTestPage(),
 //    home: TransferMoneySuccessPage(),
-      routes: generalRoutes,
-    );
+            routes: generalRoutes,
+          );
+        }));
   }
 
   Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {

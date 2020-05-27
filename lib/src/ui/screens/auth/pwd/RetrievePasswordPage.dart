@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
@@ -22,13 +23,24 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
 
 
   /* create - confirm - insert */
-  List<String> retrievePasswordTitle = ["Please enter your personnal Password", "Please setup a personnal Password", "Please confirm your personnal Password",
-  "Please confirm you personnal Password to launch the Order"];
+  List<String> retrievePasswordTitle;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    retrievePasswordTitle = ["", "","", ""];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    retrievePasswordTitle = [
+      "${AppLocalizations.of(context).translate('enter_password')}",
+      "${AppLocalizations.of(context).translate('setup_password')}",
+      "${AppLocalizations.of(context).translate('confirm_password')}",
+      "${AppLocalizations.of(context).translate('confirm_password_launch_order')}"
+    ];
   }
 
   @override
@@ -37,7 +49,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("INPUT PASSWORD", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('input_password')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.close, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Column(
@@ -91,7 +103,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     children: <TableCell>[
                       TableCell(child:Text("")),
                       TableCell(child:MaterialButton(child:Text("0"),color:Colors.grey.shade50, onPressed: () {_passwordAppendChar("0");})),
-                      TableCell(child:MaterialButton(child:Text("DELETE"),color:Colors.grey.shade50, onPressed: () {_removeChar();}))
+                      TableCell(child:MaterialButton(child:Text("${AppLocalizations.of(context).translate('delete')}"),color:Colors.grey.shade50, onPressed: () {_removeChar();}))
                     ]
                 ),
               ],
@@ -108,7 +120,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       });
     }
     if (pwd.length != 4)
-    return;
+      return;
     Navigator.of(context).pop({'code':pwd, 'type': this.widget.type});
   }
 

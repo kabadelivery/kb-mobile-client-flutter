@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,7 +86,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                   if (snapshot.hasData) {
                     return _buildRestaurantList(snapshot.data);
                   } else if (snapshot.hasError) {
-                    return ErrorPage(message:"Sorry, network error! Please check your connection and try again.", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
+                    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
                   }
                   return Center(child: CircularProgressIndicator());
                 })));
@@ -112,7 +113,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
             children: <Widget>[
               Expanded(
                 child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
-                    decoration: InputDecoration.collapsed(hintText: "Which restaurant? Menu?", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
+                    decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_or_menu_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
               ),
               IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
                 _clearFocus();
@@ -149,16 +150,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Can't get gurrent location"),
-              content:
-              const Text('Please make sure you enable GPS and try again'),
+              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Ok'),
+                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
                   onPressed: () {
                     final AndroidIntent intent = AndroidIntent(
                         action: 'android.settings.LOCATION_SOURCE_SETTINGS');
-
                     intent.launch();
                     Navigator.of(context, rootNavigator: true).pop();
                   },

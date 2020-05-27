@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 50),
-                    Text("CONNEXION", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text("${AppLocalizations.of(context).translate('connexion')}", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 100),
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         children:<Widget>[
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                             children: <Widget>[
-                              Text("CONNEXION", style: TextStyle(fontSize: 14, color: Colors.white)),
+                              Text("${AppLocalizations.of(context).translate('connexion')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                               isConnecting ?  Row(
                                 children: <Widget>[
                                   SizedBox(width: 10),
@@ -115,7 +116,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         ]),
                     SizedBox(height: 30),
                     GestureDetector(
-                      child:Text("Recover Password?", style: KStyles.hintTextStyle_gray),
+                      child:Text("${AppLocalizations.of(context).translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
                       onTap: (){_moveToRecoverPasswordPage();},
                     )
                   ]
@@ -157,7 +158,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     // control login stuff
     if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
-      mToast("Sorry, Login error");
+      mToast("${AppLocalizations.of(context).translate('login_error')}");
       return;
     }
 
@@ -239,23 +240,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           VectorsData.terms_and_conditions
                       )),
                   SizedBox(height: 10),
-                  Text("Do you accept our terms and conditions?", textAlign: TextAlign.center,
+                  Text("${AppLocalizations.of(context).translate('accept_terms_and_conditions')} ?", textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[
-              /*OutlineButton(
-                child: new Text(
-                    "NO", style: TextStyle(color: Colors.black)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();// double pop and end the page.
-                },
-              ),*/
               OutlineButton(
                 child: new Text(
-                    "YES", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('yes')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () async {
                   //
                   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -266,7 +258,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               ),
               OutlineButton(
                 child: new Text(
-                    "SEE", style: TextStyle(color: KColors.mBlue)),
+                    "${AppLocalizations.of(context).translate('see')}", style: TextStyle(color: KColors.mBlue)),
                 onPressed: () {
                   _seeTermsAndConditions();
                 },
@@ -293,7 +285,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void accountNoExist() {
     _showDialog(
         icon: Icon(Icons.pan_tool, color: Colors.red),
-        message: "Sorry, ${_loginFieldController.text} Account no exist. Do you want to create a new account ?",
+        message: "${AppLocalizations.of(context).translate('sorry')}, ${_loginFieldController.text} ${AppLocalizations.of(context).translate('account_no_exists')} ?",
         isYesOrNo: true,
         actionIfYes: () => _moveToRegisterPage()
     );
@@ -303,14 +295,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void loginPasswordError() {
     _showDialog(
       icon: Icon(Icons.error, color: Colors.red),
-      message: "Sorry, Password wrong.",
+      message: "${AppLocalizations.of(context).translate('password_wrong')}",
       isYesOrNo: false,
     );
   }
 
   @override
   void networkError() {
-    mToast("Sorry, Network error. Please check network and try again.");
+    mToast("${AppLocalizations.of(context).translate('network_error')}");
   }
 
 
@@ -337,7 +329,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             isYesOrNo ? <Widget>[
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -345,7 +337,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
                 child: new Text(
-                    "ACCEPT", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -355,7 +347,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               //
               OutlineButton(
                 child: new Text(
-                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

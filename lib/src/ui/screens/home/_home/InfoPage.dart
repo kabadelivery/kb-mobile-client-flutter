@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,11 +49,11 @@ class _InfoPageState extends State<InfoPage> {
              Positioned(left: 10, top:35, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(FontAwesomeIcons.timesCircle, size: 40, color: Colors.black))),
               Column(
                 children: <Widget>[
-                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("Version: ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black))]), flex: 1, ),
+                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${AppLocalizations.of(context).translate('version')} ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black))]), flex: 1, ),
                   Expanded(child: Image(image: AssetImage(ImageAssets.kaba_copyright_presentation), width: MediaQuery.of(context).size.width), flex: 5),
                 ],
               ),
-              Positioned(bottom: 20, right:0, left:0,child: Text("#TOGO\n\n© Tous droits réservés\nKABA DELIVERY SARL\n2018 - ${widget.year}", style: TextStyle(fontSize: 15, color: KColors.primaryColor), textAlign: TextAlign.center)),
+              Positioned(bottom: 20, right:0, left:0,child: Text("${AppLocalizations.of(context).translate('info_page_informations')} ${widget.year}", style: TextStyle(fontSize: 15, color: KColors.primaryColor), textAlign: TextAlign.center)),
             ],
           ),
         )

@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -39,7 +40,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  static final List<String> popupMenus = ["Settings"];
+//  static  List<String> popupMenus;
+
 
   HomeWelcomePage homeWelcomePage;
   RestaurantListPage restaurantListPage;
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         launchPage = HomePage();
       }
     }
-   }
+  }
 
   @override
   void initState() {
@@ -82,6 +84,8 @@ class _HomePageState extends State<HomePage> {
     meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();
+
+//    popupMenus = ["${AppLocalizations.of(context).translate('settings')}"];
   }
 
   @override
@@ -89,22 +93,22 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            title: Text("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
-            title: Text('Restaurant'),
+            title: Text('${AppLocalizations.of(context).translate('restaurant')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
-            title: Text('Orders'),
+            title: Text('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            title: Text('Account'),
+            title: Text('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
         currentIndex: StateContainer.of(context).tabPosition,

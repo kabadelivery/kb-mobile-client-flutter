@@ -1,22 +1,17 @@
-import 'dart:async';
-import 'dart:async';
-
 import 'package:KABA/src/contracts/address_contract.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
-import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:toast/toast.dart';
 
 import '../../../../../../StateContainer.dart';
@@ -66,7 +61,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(brightness: Brightness.light,leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-          backgroundColor: Colors.white, title: Text("Customer Care", style:TextStyle(color:KColors.primaryColor))),
+          backgroundColor: Colors.white, title: Text("${AppLocalizations.of(context).translate('customer_care')}", style:TextStyle(color:KColors.primaryColor))),
       body: Stack(
         children: <Widget>[
           Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
@@ -85,7 +80,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   _buildSysErrorPage() {
     return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
       child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text("System error. Try again", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
+        Text("${AppLocalizations.of(context).translate('system_error')}", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
       ]),
     ));
   }
@@ -93,7 +88,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   _buildNetworkErrorPage() {
     return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
       child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text("Network error. Try again", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
+        Text("${AppLocalizations.of(context).translate('network_error')}", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
       ]),
     ));
   }
@@ -191,7 +186,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
               width: 80,
               child: SvgPicture.asset(VectorsData.customer_care)),
           SizedBox(height: 10),
-          Text("If you have any feedback for us, you are at the right place!", textAlign: TextAlign.center,
+          Text("${AppLocalizations.of(context).translate('any_feedback_right_here')}", textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 13))
         ]
     ),);
@@ -228,12 +223,12 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
   @override
   void sendMessagenetworkError() {
-    mToast("Send message network error");
+    mToast("${AppLocalizations.of(context).translate('send_message_network_error')}");
   }
 
   @override
   void sendMessagesystemError() {
-    mToast("Send message system error");
+    mToast("${AppLocalizations.of(context).translate('send_message_system_error')}");
   }
 
   _sendMessage() {
@@ -241,7 +236,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     String message = _messageController.text;
     if (message.trim()?.length <= 5) {
       // show a dialog telling the guy that message is to short.
-      mToast("Sorry, message to short. Can't send.");
+      mToast("${AppLocalizations.of(context).translate('message_too_short')}");
     } else
       widget.presenter.sendMessageToCustomerCareChat(widget.customer, message);
   }

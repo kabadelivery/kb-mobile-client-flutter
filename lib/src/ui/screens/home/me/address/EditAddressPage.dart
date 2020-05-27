@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -78,7 +79,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("EDIT ADDRESS", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('edit_address')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: SingleChildScrollView(
@@ -89,7 +90,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(controller: _locationNameController,
-                    decoration: InputDecoration(labelText: "Name of Location (For you)",
+                    decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('location_name')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.name,
               ),
@@ -98,7 +99,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(controller: _phoneNumberController, maxLength: 8, keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(labelText: "Phone number",
+                    decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('phone_number')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.phone_number,
               ),
@@ -111,30 +112,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text("Choose location", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                          Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                           Padding(
                             padding: EdgeInsets.only(top:10, bottom:10),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  /* check or loading round */
-                                  /*  StreamBuilder<DeliveryAddressModel>(
-                                      stream: userDataBloc.locationDetails,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          DeliveryAddressModel tmp = snapshot.data;
-                                          if (tmp != null) {
-                                            address.quartier = tmp.quartier;
-                                            address.description = tmp.description;
-                                            _checkLocationLoading = false;
-                                          }
-                                          return Container();
-                                        } else if (snapshot.hasError) {
-                                          return Container();
-                                        }
-                                        return _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container();
-                                      }
-                                  ),*/
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
@@ -149,7 +132,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(controller: _nearController,
-                    decoration: InputDecoration(labelText: "Not so far from",
+                    decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('not_far_from')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.near,
               ),
@@ -158,7 +141,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child:TextField(controller: _descriptionController, maxLines: 4,
-                    decoration: InputDecoration(labelText: "Address Details",
+                    decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('address_details')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.description,
               ),
@@ -167,7 +150,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 children: <Widget>[
                   RaisedButton(padding: EdgeInsets.only(top:10, bottom: 10, left:5, right:5), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Row(
                     children: <Widget>[
-                      Text("CONFIRM", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      Text("${AppLocalizations.of(context).translate('confirm')}", style: TextStyle(fontSize: 16, color: Colors.white)),
                       _isUpdateOrCreateAddressLoading ?  Row(
                         children: <Widget>[
                           SizedBox(width: 10),
@@ -247,7 +230,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     _showDialog(
 //      okBackToHome: true,
       icon: VectorsData.address_creation_error,
-      message: "Address modification failure",
+      message: "${AppLocalizations.of(context).translate('address_modification_failure')}",
       isYesOrNo: false,
     );
   }
@@ -258,7 +241,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     _showDialog(
       okBackToHome: true,
       icon: VectorsData.address_creation_success,
-      message: "Address creation success",
+      message: "${AppLocalizations.of(context).translate('address_creation_success')}",
       isYesOrNo: false,
     );
   }
@@ -268,7 +251,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     /* created failure */
     _showDialog(
       icon: VectorsData.address_creation_error,
-      message: "Address creation failure",
+      message: "${AppLocalizations.of(context).translate('address_modification_failure')}",
       isYesOrNo: false,
     );
   }
@@ -279,7 +262,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     _showDialog(
       okBackToHome: true,
       icon: VectorsData.address_creation_success,
-      message: "Address modification success",
+      message: "${AppLocalizations.of(context).translate('address_modification_success')}",
       isYesOrNo: false,
     );
   }
@@ -312,14 +295,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
               // usually buttons at the bottom of the dialog
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("REFUSE", style: TextStyle(color:Colors.grey)),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color:Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
-                child: new Text("ACCEPT", style: TextStyle(color:KColors.primaryColor)),
+                child: new Text("${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: (){
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -328,7 +311,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
             ] : <Widget>[
               //
               OutlineButton(
-                child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+                child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
                   if (okBackToHome){
                     Navigator.of(context).pop({'ok':true});
@@ -380,16 +363,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Can't get gurrent location"),
-              content:
-              const Text('Please make sure you enable GPS and try again'),
+              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Ok'),
+                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
                   onPressed: () {
                     final AndroidIntent intent = AndroidIntent(
                         action: 'android.settings.LOCATION_SOURCE_SETTINGS');
-
                     intent.launch();
                     Navigator.of(context, rootNavigator: true).pop();
                   },
@@ -401,6 +382,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       }
     }
   }
+
 
   @override
   void showAddressDetailsLoading(bool isLoading) {
@@ -422,7 +404,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     setState(() {
       address.location = null;
     });
-    mToast("Please, pick gps location again.");
+    mToast("${AppLocalizations.of(context).translate('gps_pick_again')}");
   }
 
   void mToast(String message) {
@@ -431,7 +413,7 @@ Toast.show(message, context, duration: Toast.LENGTH_LONG);
 
   @override
   void networkError() {
-    mToast("Network error, please try again.");
+    mToast("${AppLocalizations.of(context).translate('network_error')}");
   }
 
 

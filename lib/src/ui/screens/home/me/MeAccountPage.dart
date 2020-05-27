@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -54,23 +55,28 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
   StateContainerState container;
 
-  static final List<String> popupMenus = ["Logout","Settings"];
+  static List<String> popupMenus;
 
   @override
   void initState() {
     super.initState();
+    popupMenus = ["Logout", "Settings"];
   }
 
-  static getCustomer () async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    popupMenus = ["${AppLocalizations.of(context).translate('logout')}","${AppLocalizations.of(context).translate('settings')}"];
+  }
+
+  /*static getCustomer () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonCustomer = prefs.getString("_customer");
     String token = prefs.getString("_token");
     CustomerModel cm = CustomerModel.fromJson(json.decode(jsonCustomer));
     cm.token = token;
     return cm;
-  }
-
-
+  }*/
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
@@ -227,7 +233,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.balance,
                                         )),
                                     SizedBox(height:10),
-                                    Text("XOF ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Text("${AppLocalizations.of(context).translate('currency')} ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
                                 ),
                               ),
@@ -247,7 +253,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.topup,
                                         )),
                                     SizedBox(height:5),
-                                    Text("Top Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
                                 ),
                               ),
@@ -267,7 +273,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.transfer_money,
                                         )),
                                     SizedBox(height:5),
-                                    Text("Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Text("${AppLocalizations.of(context).translate('transfer')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
                                   ],
                                 ),
                               ),
@@ -288,7 +294,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                     decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
                                     padding: EdgeInsets.only(left:10),
                                     child: Row(mainAxisSize: MainAxisSize.min,  mainAxisAlignment: MainAxisAlignment.start,children:<Widget>[
-                                      Text("Suggestions ?", style: TextStyle(color: KColors.primaryYellowColor)),
+                                      Text("${AppLocalizations.of(context).translate('suggestions')}", style: TextStyle(color: KColors.primaryYellowColor)),
                                       IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
                                     ])))
                           ])),
@@ -316,7 +322,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter()))),
                                               SizedBox(height:10),
-                                              Text("PROFILE", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("${AppLocalizations.of(context).translate('profile')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -348,7 +354,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()))),
                                               SizedBox(height:10),
-                                              Text("ADRESSES", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("${AppLocalizations.of(context).translate('addresses')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -361,7 +367,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, LastOrdersPage())),
                                               SizedBox(height:10),
-                                              Text("COMMAND", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("${AppLocalizations.of(context).translate('orders')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -378,7 +384,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, FeedsPage(presenter: FeedPresenter()))),
                                               SizedBox(height:10),
-                                              Text("FEEDS", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
+                                              Text("${AppLocalizations.of(context).translate('feeds')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -391,7 +397,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
                                               SizedBox(height:10),
-                                              Text("SETTINGS", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                              Text("${AppLocalizations.of(context).translate('settings')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                             ],
                                           ),
                                         ),
@@ -413,8 +419,6 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
   _jumpToTopUpPage() async {
 
-//     Page(context, TopUpPage(presenter: TopUpPresenter()))
-
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -430,7 +434,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         // show a dialog that tells the user to check his balance after he has topup up.
         link = Uri.encodeFull(link);
         _launchURL(link);
-        _showDialog(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+        _showDialog(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
       }
     }
   }
@@ -470,7 +474,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             actions: <Widget>[
               OutlineButton(
                 child: new Text(
-                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));

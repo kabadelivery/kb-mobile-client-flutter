@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,18 +39,18 @@ class _SplashPageState extends State<PresentationPage> {
 //      indicatorType: IndicatorType.CIRCLE,
       slides: [
         IntroScreen(
-          title: 'Choice',
+          title: '${AppLocalizations.of(context).translate('choice')}',
           mChild: SizedBox(
               height: MediaQuery.of(context).size.width*0.8,
               width: MediaQuery.of(context).size.width*0.8,
               child:SvgPicture.asset(
                 VectorsData.p_f_1,
               )),
-          description: 'Choose your menu',
+          description: '${AppLocalizations.of(context).translate('choice_desc')}',
           headerBgColor: Colors.white,
         ),
         IntroScreen(
-          title: 'Payment',
+          title: '${AppLocalizations.of(context).translate('payment')}',
           headerBgColor: Colors.white,
           mChild: SizedBox(
               height: MediaQuery.of(context).size.width*0.8,
@@ -57,10 +58,10 @@ class _SplashPageState extends State<PresentationPage> {
               child:SvgPicture.asset(
                 VectorsData.p_f_2,
               )),
-          description: "Pay with cash or Online as you wish",
+          description: "${AppLocalizations.of(context).translate('payment_desc')}",
         ),
         IntroScreen(
-          title: 'Address',
+          title: '${AppLocalizations.of(context).translate('address')}',
           headerBgColor: Colors.white,
           mChild: SizedBox(
               height: MediaQuery.of(context).size.width*0.8,
@@ -68,10 +69,10 @@ class _SplashPageState extends State<PresentationPage> {
               child:SvgPicture.asset(
                 VectorsData.p_f_3,
               )),
-          description: "Choose a delivery address",
+          description: "${AppLocalizations.of(context).translate('address_desc')}",
         ),
         IntroScreen(
-          title: 'Enjoy',
+          title: '${AppLocalizations.of(context).translate('enjoy')}',
           headerBgColor: Colors.white,
           mChild:  SizedBox(
               height: MediaQuery.of(context).size.width*0.8,
@@ -79,7 +80,7 @@ class _SplashPageState extends State<PresentationPage> {
               child:SvgPicture.asset(
                 VectorsData.p_f_4,
               )),
-          description: "Enjoy your food!",
+          description: "${AppLocalizations.of(context).translate('enjoy_desc')}",
         ),
       ],
     );

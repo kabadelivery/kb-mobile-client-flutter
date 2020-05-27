@@ -6,6 +6,7 @@ import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
@@ -40,9 +41,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
-
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
+
+
 
 class HomeWelcomePage extends StatefulWidget {
 
@@ -65,7 +67,7 @@ class HomeWelcomePage extends StatefulWidget {
 
 class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelcomeView {
 
-  static final List<String> popupMenus = ["Logout","Settings"];
+  static List<String> popupMenus;
 
   int _carousselPageIndex = 0;
 
@@ -79,6 +81,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   @override
   void initState() {
     super.initState();
+
+    popupMenus = ["Logout", "Settings"];
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
@@ -88,6 +92,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       if (CustomerUtils.isPusTokenUploaded() != true) {
         this.widget.presenter.updateToken(customer);
       }
+      popupMenus = ["${AppLocalizations.of(context).translate('logout')}","${AppLocalizations.of(context).translate('settings')}"];
     });
 
     this.widget.presenter.fetchHomePage();
@@ -382,7 +387,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                   padding: EdgeInsets.only(left:10),
                                   child:
                                   Row(children:<Widget>[
-                                    Text("ALL RESTAURANTS", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+                                    Text("${AppLocalizations.of(context).translate('all_restaurants')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
                                     IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor,))
                                   ]))
                           )
@@ -411,7 +416,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                       ),
                                     ),
                                     SizedBox(width: 5),
-                                    Text("CALL US", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
+                                    Text("${AppLocalizations.of(context).translate('call_us')}", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
                                   ]))
                           )
                         ],
@@ -437,7 +442,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                               child:Container(
                                                   child: Column(
                                                     children: <Widget>[
-                                                      Text("BEST SELLERS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryColor)),
+                                                      Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryColor)),
                                                       Container(
                                                         padding: EdgeInsets.all(5),
                                                         height:90, width: 120,
@@ -449,7 +454,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             child: Container(
                                               child: Column(
                                                 children: <Widget>[
-                                                  Text("EVENEMENTS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
+                                                  Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
                                                   Container(
                                                     padding: EdgeInsets.all(5),
                                                     height:90, width: 120,
@@ -527,7 +532,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               children: <Widget>[
                 IconButton(icon: Icon(Icons.flight_takeoff, color: Colors.grey)),
                 SizedBox(height: 5),
-                Container(margin: EdgeInsets.only(left:20,right:20),child: Text("Sorry, there was a mistake loading landing page. Please check your network and try again.", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
+                Container(margin: EdgeInsets.only(left:20,right:20),child: Text("${AppLocalizations.of(context).translate('home_page_loading_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
                 SizedBox(height: 5),
 
                 RaisedButton(
@@ -535,7 +540,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       borderRadius: new BorderRadius.circular(18.0),
 //                    side: BorderSide(color: Colors.red)
                     ),
-                    color: Colors.yellow,child: Text("TRY AGAIN"), onPressed: () {widget.presenter.fetchHomePage();})
+                    color: Colors.yellow,child: Text("${AppLocalizations.of(context).translate('try_again')}"), onPressed: () {widget.presenter.fetchHomePage();})
               ],
             ),
           )
@@ -569,7 +574,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void networkError() {
     // TODO: implement networkError
     showLoading(false);
-    mToast("please connect network");
+    mToast("${AppLocalizations.of(context).translate('network_error')}");
     /* setState(() {
       hasNetworkError = true;
     });*/
@@ -580,7 +585,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // TODO: implement showErrorMessage
     //  hasSystemError = true;
     showLoading(false);
-    mToast("Error message");
+    mToast("${AppLocalizations.of(context).translate('error_message')}");
   }
 
   @override
@@ -674,11 +679,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     //
     if (restaurant.is_new == 1){
       // new logo
-      return ShinningTextWidget(text:"NEW", backgroundColor: KColors.primaryYellowColor, textColor: Colors.white);
+      return ShinningTextWidget(text:"${AppLocalizations.of(context).translate('new')}", backgroundColor: KColors.primaryYellowColor, textColor: Colors.white);
     } else {
       if (restaurant.is_promotion == 1) {
         // promotion
-        return ShinningTextWidget(text:"PROMO", backgroundColor: KColors.primaryColor, textColor: Colors.white);
+        return ShinningTextWidget(text:"${AppLocalizations.of(context).translate('promo')}", backgroundColor: KColors.primaryColor, textColor: Colors.white);
       } else {
         return Container();
       }

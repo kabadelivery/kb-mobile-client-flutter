@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
@@ -45,11 +46,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
                   return _buildOrderList(snapshot.data);
                 } else if (snapshot.hasError) {
                   if (snapshot.connectionState == ConnectionState.none)
-                    return ErrorPage(message: "Network Issue",onClickAction: (){
+                    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
                       userDataBloc.fetchDailyOrders(widget.customer);
                     });
                   else
-                    return ErrorPage(message: "System error Issue",onClickAction: (){
+                    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){
                       userDataBloc.fetchDailyOrders(widget.customer);
                     });
                 }
@@ -78,7 +79,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("You have made no order yet today!", style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('no_order_today')}", style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

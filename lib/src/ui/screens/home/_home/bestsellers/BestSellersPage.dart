@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
@@ -27,8 +28,6 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
 
 
   /* week days names */
-  List<String> weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
 
   List<BestSellerModel> data;
 
@@ -50,7 +49,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("BEST SELLERS", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('best_seller')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Container(
@@ -99,11 +98,11 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
   }
 
   _buildBSellerList() {
@@ -131,7 +130,15 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
   _buildBestSellerListItem(int position, BestSellerModel data) {
 
    //history is yesterday, y-1, y-2
-    var dayz = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    var dayz = [
+      "${AppLocalizations.of(context).translate('monday_short')}",
+      "${AppLocalizations.of(context).translate('tuesday_short')}",
+      "${AppLocalizations.of(context).translate('wednesday_short')}",
+      "${AppLocalizations.of(context).translate('thursday_short')}",
+      "${AppLocalizations.of(context).translate('friday_short')}",
+      "${AppLocalizations.of(context).translate('saturday_short')}",
+      "${AppLocalizations.of(context).translate('sunday_short')}",
+    ];
 
     DateTime date = new DateTime.now();
     int day_of_week = date?.weekday;
@@ -237,7 +244,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                               ]) : Container(),
 
                           SizedBox(width: 10),
-                          Text("FCFA",
+                          Text("${AppLocalizations.of(context).translate('currency')}",
                               style: TextStyle(
                                   color: KColors
                                       .primaryYellowColor,
