@@ -1,29 +1,20 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
-import 'package:KABA/src/locale/locale.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
-import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/home/HomePage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/message/MessagePage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantFoodListWidget.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:toast/toast.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
@@ -125,7 +116,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(child: Row(children: <Widget>[
-        Text("MENU", style: TextStyle(fontSize: 14, color: Colors.white)),
+        Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
         SizedBox(width: 10),
         Expanded(
           child: Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
@@ -221,7 +212,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             isLoading
                 ? Center(child: CircularProgressIndicator())
                 : (hasNetworkError ? ErrorPage(
-                message: "hasNetworkError", onClickAction: () {
+                message: "${AppLocalizations.of(context).translate('network_error')}", onClickAction: () {
               if (!widget.fromNotification) {
                 if (widget.menuId == -1)
                   widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
@@ -232,7 +223,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                     widget?.restaurant);
             })
                 : hasSystemError ? ErrorPage(
-                message: "hasSystemError", onClickAction: () {
+                message: "${AppLocalizations.of(context).translate('system_error')}", onClickAction: () {
               if (!widget.fromNotification) {
                 if (widget.menuId == -1)
                   widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
@@ -248,28 +239,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     );
   }
 
-  Widget getRow(int i) {
-    return new GestureDetector(
-      child: new Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-//        color: index == i ? YColors.color_F9F9F9 : Colors.white,
-        color: Colors.white,
-        child: new Text("text $i",
-            style: TextStyle(
-                color: Colors.black,
-//                color: index == i ? textColor : YColors.color_666,
-//                fontWeight: index == i ? FontWeight.w600 : FontWeight.w400,
-                fontSize: 16)),
-      ),
-      onTap: () {
-        setState(() {
-//          index = i; //记录选中的下标
-//          textColor = YColors.colorPrimary;
-        });
-      },
-    );
-  }
+
 
   _computeBasketOffset() {
     final RenderBox renderBox = _menuBasketKey.currentContext
@@ -284,7 +254,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     }
 
     if (data == null || data?.length == 0)
-      return Center(child:Text("No data"));
+      return Center(child:Text("${AppLocalizations.of(context).translate('no_data')}"));
 
     if (_firstTime) {
 //      _openDrawer();
@@ -388,7 +358,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                 : Container()),
                             SizedBox(width: 5),
 
-                            Text("FCFA", overflow: TextOverflow.ellipsis,
+                            Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -403,7 +373,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                 ),
                 SizedBox(height: 20),
                 // add-up the buttons at the right side of it
-                InkWell(onTap: () {Toast.show("add to chart", context);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
+                InkWell(onTap: () {Toast.show("${AppLocalizations.of(context).translate('add_to_chart')}", context);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
                   child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Container(
@@ -415,7 +385,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           child: InkWell(onTap: () => _addFoodToChart(food, foodIndex, menuIndex),
                             child: Container(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
                                 child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                              Text("AJOUTER AU PANIER", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
+                              Text("${AppLocalizations.of(context).translate('add_to_basket')}", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
                               color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
                             ),
                           ),
@@ -518,7 +488,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                       fontWeight: FontWeight.normal))
                                   : Container()),
                               SizedBox(width: 5),
-                              Text("FCFA", overflow: TextOverflow.ellipsis,
+                              Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -539,7 +509,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                           child: Row(
                                             children: <Widget>[
                                               Icon(Icons.add_shopping_cart, color: KColors.primaryColor),
-                                              Text("PANIER", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
+                                              Text("${AppLocalizations.of(context).translate('basket')}", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
                                             ],
                                           )),
                                       ])
@@ -592,7 +562,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           });
         }
         else {
-          showToast("MAX REACHEAD");
+          showToast("${AppLocalizations.of(context).translate('max_reached')}");
         }
       } else {
 //        _launchAddToBasketAnimation(position, food);
@@ -611,7 +581,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             });
           }
           else {
-            showToast("MAX REACHEAD");
+            showToast("${AppLocalizations.of(context).translate('max_reached')}");
           }
         } else {
 //          _launchAddToBasketAnimation(position, food);
@@ -637,7 +607,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       _foodCount = fc;
       _addOnCount = adc;
     });
-
     _playAnimation();
   }
 
@@ -799,7 +768,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){
       if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
@@ -808,7 +777,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
       if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else

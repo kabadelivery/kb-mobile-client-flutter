@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
@@ -31,10 +32,7 @@ class TransferMoneyRequestPage extends StatefulWidget {
 
 class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> implements TransferMoneyRequestView {
 
-
   TextEditingController _phoneNumberFieldController;
-
-//  String operator = "---";
 
   bool isOperatorOk = false;
 
@@ -69,7 +67,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
               Navigator.pop(context);
             }),
         backgroundColor: Colors.white,
-        title: Text("TRANSFER", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('transfer')}", style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -79,7 +77,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
                 color: Colors.white,
                 padding: EdgeInsets.only(top:10,bottom:10, left:20, right: 20),
                 child: Row(children: <Widget>[
-                  Text("Account"),
+                  Text("${AppLocalizations.of(context).translate('account')}"),
                   SizedBox(width:20),
                   Expanded(flex: 7, child:
                   TextField(controller: _phoneNumberFieldController, maxLength: 8, style: TextStyle(fontSize: 20), keyboardType: TextInputType.number, enabled: !isLaunching,
@@ -92,7 +90,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
 //              "Phone Number",
               SizedBox(height: 10),
 
-              Container(child:Text("Real time transfer can't be refunded.", textAlign: TextAlign.left, style: TextStyle(fontSize: 12, color: Colors.grey))),
+              Container(child:Text("${AppLocalizations.of(context).translate('real_time_transfer_no_refunded')}", textAlign: TextAlign.left, style: TextStyle(fontSize: 12, color: Colors.grey))),
 
               SizedBox(height: 10),
 
@@ -103,7 +101,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
                   child: MaterialButton(color: isTgoNumber ? KColors.primaryColor : KColors.primaryColor.withAlpha(150),  padding: EdgeInsets.only(top:5, bottom:5),
                       child: Row(mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("NEXT", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
+                          Text("${AppLocalizations.of(context).translate('next')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
                           isLaunching ?  Row(
                             children: <Widget>[
                               SizedBox(width: 10),
@@ -152,14 +150,14 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
             widget.customer, phoneNumber);
        else
          _showDialog(
-             message:"Sorry, can't transfer money to your own account",
+             message:"${AppLocalizations.of(context).translate('cant_transfer_own_account')}",
              icon: Icon(FontAwesomeIcons.user, color: KColors.primaryColor)
          );
       }else
-        mToast("System error. Please wait a bit and start again.");
+        mToast("${AppLocalizations.of(context).translate('system_error')}");
     } else {
       // can't launch
-      mToast("Phone number is wrong");
+      mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
     }
   }
 
@@ -172,7 +170,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
     showLoading(false);
     if (customer == null) {
       _showDialog(
-          message:"Sorry, user does'nt exist in our database.",
+          message:"${AppLocalizations.of(context).translate('user_no_exists_in_db')}",
           icon: Icon(FontAwesomeIcons.user, color: Colors.grey)
       );
     } else {
@@ -209,7 +207,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
             ),actions: <Widget>[
           //
           OutlineButton(
-            child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+            child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
             onPressed: () {
               Navigator.of(context).pop();
             },

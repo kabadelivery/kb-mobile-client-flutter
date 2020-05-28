@@ -1,29 +1,22 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:KABA/src/blocs/RestaurantBloc.dart';
-import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_review_contract.dart';
-import 'package:KABA/src/locale/locale.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
-import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/ReviewRestaurantPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RestaurantDetailsPage extends StatefulWidget {
 
@@ -167,7 +160,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text("Opening Time", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
+                                Text("${AppLocalizations.of(context).translate('opening_time')}", style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 16)),
                                 isUpdatingRestaurantOpenType ? Container() :
                                 Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                                   Icon(Icons.access_time),
@@ -200,7 +193,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                         child: InkWell( onTap: (){_jumpToRestaurantMenu(context, widget?.restaurant);},
                             child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("See the Menu", style: TextStyle(color:KColors.primaryColor))]),
+                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("${AppLocalizations.of(context).translate('see_menu')}", style: TextStyle(color:KColors.primaryColor))]),
                                 Icon(Icons.chevron_right, color: KColors.primaryColor),
                               ]),
                             )
@@ -231,7 +224,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               SizedBox(height: 20),
                               Row(mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Notes and Reviews", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+                                  Text("${AppLocalizations.of(context).translate('note_reviews')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                                 ],
                               ),
                               /* 4.0 - stars */
@@ -239,7 +232,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               isLoading || commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildNetworkErrorPage() : commentHasNetworkError ? _buildSysErrorPage():
                               Column(children: <Widget>[
                                 _canComment == 1 ? Container(margin: EdgeInsets.only(left:20, right: 20),
-                                    child: Text("Please review us", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)): Container(),
+                                    child: Text("${AppLocalizations.of(context).translate('review_us')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)): Container(),
                                 SizedBox(height:10),
                                 _canComment == 1 ? Container(
                                   // add a button to review the restaurant.
@@ -268,7 +261,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Icon(Icons.star, size: 20, color: Colors.grey),
-                                Text("Powered by >> Kaba Technlogies")
+                                Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}")
                               ],
                             ),
                           )
@@ -301,11 +294,11 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
   }
 
   @override
@@ -398,7 +391,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     return Column(
       children: <Widget>[
         SizedBox(height:30),
-        Text("- ${widget.restaurant?.name} Review -", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray),
+        Text("- ${widget.restaurant?.name} ${AppLocalizations.of(context).translate('review')} -", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray),
         SizedBox(height:10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -412,7 +405,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                     return Icon(Icons.star, color: KColors.primaryYellowColor);
                   })
                   ),
-                  Text("${widget.restaurant.votes} Votes", style: TextStyle(color:Colors.grey))
+                  Text("${widget.restaurant.votes} ${AppLocalizations.of(context).translate('votes')}", style: TextStyle(color:Colors.grey))
                 ])
           ],
         ),
@@ -431,18 +424,18 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 
     switch(restaurantModel.open_type){
       case 0: // closed
-        tagText = "Closed => Preorder";
+        tagText = "${AppLocalizations.of(context).translate('r_closed_preorder')}";
         break;
       case 1: // open
-        tagText = "Opened";
+        tagText = "${AppLocalizations.of(context).translate('r_opened')}";
         tagColor = KColors.mGreen;
         break;
       case 2: // paused
-        tagText = "Breaktime => Preorder";
+        tagText = "${AppLocalizations.of(context).translate('r_pause_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "Preorder only";
+        tagText = "${AppLocalizations.of(context).translate('r_blocked_preorder')}";
         tagColor = KColors.primaryColor;
         break;
     }

@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -34,17 +35,21 @@ class _ConfirmLoginPageState extends State<ConfirmLoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    hint = "Confirm ${widget.type == 1 ? "Phone Number" : "E-mail" }";
     super.initState();
     _loginFieldController = TextEditingController();
     _codeFieldController = TextEditingController();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    hint = "${AppLocalizations.of(context).translate('_confirm')} ${widget.type == 1 ? "${AppLocalizations.of(context).translate('phone_number')}" : "${AppLocalizations.of(context).translate('email')}" }";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, title: Text("Confirm", style:TextStyle(color:KColors.primaryColor))),
+      appBar: AppBar(backgroundColor: Colors.white, title: Text("${AppLocalizations.of(context).translate('_confirm')}", style:TextStyle(color:KColors.primaryColor))),
       body: Container(
         child: SingleChildScrollView(
             child:Column(

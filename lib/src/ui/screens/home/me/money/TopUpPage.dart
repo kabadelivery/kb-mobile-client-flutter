@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 
 class TopUpPage extends StatefulWidget {
@@ -41,7 +39,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   var isLaunching = false;
 
-  String feesDescription = "Fees allow us to support the transactions cost with T-money and Flooz";
+  String feesDescription = "";
 
   bool isGetFeesLoading = false;
 
@@ -61,6 +59,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    feesDescription = "${AppLocalizations.of(context).translate('why_top_up_fees')}";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +75,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
               Navigator.pop(context);
             }),
         backgroundColor: Colors.white,
-        title: Text("TOP UP", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -81,7 +85,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                 child: Center(
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                    Expanded(flex: 4, child: Center(child: Text("Phone Number", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
+                    Expanded(flex: 4, child: Center(child: Text("${AppLocalizations.of(context).translate('phone_number')}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
                     Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: KColors.primaryColor),
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -99,7 +103,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 margin: EdgeInsets.only(left:15, right: 15),
                 padding: EdgeInsets.only(top:20,bottom:20, left:15, right: 15),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 5, child: Text("Operator", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
+                  Expanded(flex: 5, child: Text("${AppLocalizations.of(context).translate('operator')}", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
                   Expanded(flex: 5, child: Text("${operator}", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)))
                 ]),
               ),
@@ -112,7 +116,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                   child: Center(
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                      Expanded(flex: 4, child: Container(child: Center(child: Text("AMOUNT", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),)))),
+                      Expanded(flex: 4, child: Container(child: Center(child: Text("${AppLocalizations.of(context).translate('amount')}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),)))),
                       Expanded(flex: 6, child: Container(
                         child: TextField(controller: _amountFieldController, textAlign: TextAlign.center, maxLength: 6, style: TextStyle(color: KColors.primaryColor, fontSize: 30),
                             keyboardType: TextInputType.number,
@@ -136,7 +140,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 4, child: Text("Fees (${widget.feesPercentage}%)", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
+                  Expanded(flex: 4, child: Text("${AppLocalizations.of(context).translate('fees')} (${widget.feesPercentage}%)", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
                   Expanded(flex: 6, child: Text("${widget.fees} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 15,color: Colors.green, fontWeight: FontWeight.bold
                   )))
                 ]),
@@ -149,7 +153,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
                 color: Colors.white,
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 4, child: Text("Total", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
+                  Expanded(flex: 4, child: Text("${AppLocalizations.of(context).translate('total')}", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
                   Expanded(flex: 6, child: Text("${widget.total} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: KColors.primaryColor))),
                 ]),
               ),
@@ -161,9 +165,9 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                       children: <Widget>[
-                        Text("TOP UP", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 8),
-                        Text("${_getTotal()}F", style: TextStyle(fontSize: 24, color: Colors.yellow)),
+                        Text("${_getTotal()} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 24, color: Colors.yellow)),
                         isLaunching ?  Row(
                           children: <Widget>[
                             SizedBox(width: 10),
@@ -238,19 +242,19 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void iLaunchTransaction() {
 
     if (isGetFeesLoading){
-      mToast("Please wait until we update fees percentage.");
+      mToast("${AppLocalizations.of(context).translate('please_wait_fees_percentage')}");
       return;
     }
 
     if (!_checkOperator()) {
-      mToast("Phone number is wrong");
+      mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
     } else {
       if (widget.customer != null)
         widget.presenter.launchTopUp(
             widget.customer, "${_phoneNumberFieldController.text}",
             "${_amountFieldController.text}", widget.feesPercentage);
       else
-        mToast("System error. Please wait a bit and start again.");
+        mToast("${AppLocalizations.of(context).translate('system_error')}");
     }
   }
 

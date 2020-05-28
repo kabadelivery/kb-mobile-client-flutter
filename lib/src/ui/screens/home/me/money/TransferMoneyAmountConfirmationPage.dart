@@ -1,19 +1,17 @@
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/transfer_money_amount_confirmation_contract.dart';
-import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
@@ -70,7 +68,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
               Navigator.pop(context);
             }),
         backgroundColor: Colors.white,
-        title: Text("TO KABA ACCOUNT", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('top_kaba_account')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -98,7 +96,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
 
               SizedBox(height: 30),
 
-              Container(child:Text("Please enter the amount you want to transfer", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
+              Container(child:Text("${AppLocalizations.of(context).translate('insert_transfer_amount')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
 
               SizedBox(height: 30),
 
@@ -107,10 +105,10 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
                 padding: EdgeInsets.only(top:10,bottom:10, left:20, right: 20),
                 child: Column(
                   children: <Widget>[
-                    Text("Amount", textAlign: TextAlign.left, style: TextStyle(color: Colors.black)),
+                    Text("${AppLocalizations.of(context).translate('amount')}", textAlign: TextAlign.left, style: TextStyle(color: Colors.black)),
                     SizedBox(height:10),
                     Row(children: <Widget>[
-                      Text("XOF", style: TextStyle(fontSize: 20, color: Colors.black)),
+                      Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 20, color: Colors.black)),
                       SizedBox(width:20),
                       Expanded(flex: 7, child:
                       TextField(controller: _amountFieldController, keyboardType: TextInputType.number, enabled: !isLaunching, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -134,7 +132,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
                   child: MaterialButton(color: _isAmountOk ? KColors.primaryColor : KColors.primaryColor.withAlpha(150),  padding: EdgeInsets.only(top:5, bottom:5),
                       child: Row(mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("PAY", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
+                          Text("${AppLocalizations.of(context).translate('pay')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
                           isLaunching ?  Row(
                             children: <Widget>[
                               SizedBox(width: 10),
@@ -178,7 +176,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
 
     if (!_isAmountOk) {
       _showDialog(
-          message:"Sorry, balance must be > 0 and valuable",
+          message:"${AppLocalizations.of(context).translate('amount_greater_than_0')}",
           icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black)
       );
       return;
@@ -194,7 +192,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
     if (results != null && results.containsKey('code') && results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("my code is not ok");
+        mToast("${AppLocalizations.of(context).translate('code_wrong')}");
       } else {
         String _mCode = results['code'];
         if (Utils.isCode(_mCode)) {
@@ -202,7 +200,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
           if (widget.moneyReceiver != null && widget.mySelf != null)
             widget.presenter.launchTransferMoneyAction(widget.mySelf, widget.moneyReceiver.id, _mCode, amount);
         } else {
-          mToast("my code is not ok");
+          mToast("${AppLocalizations.of(context).translate('code_wrong')}");
         }
       }
     }
@@ -216,7 +214,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   @override
   void balanceInsufficient() {
     _showDialog(
-        message:"Sorry, Balance not enough. Please top up your account by T-money and Flooz and try again.",
+        message:"${AppLocalizations.of(context).translate('balance_not_sufficient')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black)
     );
   }
@@ -224,7 +222,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   @override
   void passwordWrong() {
     _showDialog(
-        message:"Sorry, Password wrong. Check your password and try again",
+        message:"${AppLocalizations.of(context).translate('password_wrong_')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black)
     );
   }
@@ -232,7 +230,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   @override
   void transactionError(CustomerModel customer) {
     _showDialog(
-        message:"Sorry, Transaction error.\nPlease contact system administrator.",
+        message:"${AppLocalizations.of(context).translate('transaction_error')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black)
     );
   }
@@ -275,7 +273,7 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
             ),actions: <Widget>[
           //
           OutlineButton(
-            child: new Text("OK", style: TextStyle(color:KColors.primaryColor)),
+            child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
             onPressed: () {
               if (isSuccess)
                 Navigator.of(context).pop();

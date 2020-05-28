@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
@@ -58,7 +59,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               children: <Widget>[
                 Text("${totalPrice}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20,color: Colors.white)),
                 SizedBox(width: 5),
-                Text("FCFA", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)),
+                Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)),
               ],
             )),
         leading: IconButton(icon: Icon(Icons.close, color: Colors.black), onPressed: (){Navigator.pop(context);}),
@@ -86,7 +87,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                     Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
                     (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
                         : Container()),
-                    Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                   ]),
                   /* add buttons */
                   Row(
@@ -159,7 +160,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         if (food_selected[food].toInt() > 1)
           food_selected.update(food, (int val) => food_selected[food].toInt()-1);
         else {
-          showToast("MIN REACHED");
+          showToast("${AppLocalizations.of(context).translate('min_reached')}");
         }
       } else {
         food_selected.putIfAbsent(food, ()=>1);
@@ -170,7 +171,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           if (adds_on_selected[food].toInt() > 1)
             adds_on_selected.update(food, (int val) => adds_on_selected[food].toInt()-1);
           else{
-            showToast("MIN REACHED");
+            showToast("${AppLocalizations.of(context).translate('min_reached')}");
           }
         } else {
           adds_on_selected.putIfAbsent(food, ()=>1);

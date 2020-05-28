@@ -130,11 +130,102 @@
   "message_too_short": "Sorry, message to short. Can't send",
 
 
-  "feeds": "FEEDS",
-  "delete": "DELETE",
-  "delete": "DELETE",
-  "delete": "DELETE",
-  "delete": "DELETE",
-  "delete": "DELETE",
-  "delete": "DELETE"
+  "balance": "Solde",
+  "top_up": "Recharger",
+  "kaba_points": "DELETE",
+
+
+  "why_top_up_fees": "Fees allow us to support the transactions cost with T-money and Flooz",
+  "top_up": "TOP UP",
+  "operator": "OPERATEUR",
+  "amount": "AMOUNT",
+  "fees": "Fees",
+  "total": "Total",
+  "please_wait_fees_percentage": "Please wait until we update fees percentage.",
+  "phone_number_wrong": "Phone number is wrong",
+
+
+  "my_balance": "MY BALANCE",
+  "sorry_empty_transactions": "Sorry, you have made no transaction yet !",
+
+
+  "top_kaba_account": "TO KABA ACCOUNT",
+  "insert_transfer_amount": "Please enter the amount you want to transfer",
+  "pay": "PAY",
+  "amount_greater_than_0": "Sorry, balance must be > 0 and valuable",
+  "balance_not_sufficient": "Sorry, Balance not enough. Please top up your account by T-money and Flooz and try again.",
+  "password_wrong_": "Sorry, Password wrong. Check your password and try again",
+  "transaction_error": "Sorry, Transaction error.\\nPlease contact system administrator.",
+
+
+  "real_time_transfer_no_refunded": "Real time transfer can't be refunded.",
+  "next": "NEXT",
+  "cant_transfer_own_account": "Sorry, can't transfer money to your own account",
+  "user_no_exists_in_db": "Sorry, user doesn't exist in our database.",
+
+
+  "success": "Success",
+  "payee": "Payee",
+
+
+  "_confirm": "Confirm",
+  "email": "E-mail",
+
+  "my_profile": "MY PROFILE",
+  "job_title": "Job title",
+  "your_district": "DELETE",
+  "gender": "Gender",
+  "woman_gender": "Woman",
+  "man_gender": "Man",
+  "birthday": "Birthday",
+  "save": "SAVE",
+  "cancel": "CANCEL",
+  "please_fill_all_fields": "Please fill all the fields",
+  "field_more_6_chars": "This field must have more than 6 characters.",
+
+
+  "preferences": "Preferences",
+  "change_password": "Change Account Password",
+  "terms_and_conditions": "Terms and Conditions",
+  "app_info": "App Info",
+  "faq": "FAQ",
+
+  "ad_check_food": "BUY FOOD",
+  "ad_ad_check_article": "CHECK ARTICLE",
+  "ad_check_website": "CHECK WEBSITE",
+  "ad_check_menu": "CHECK MENU",
+  "ad_check_restaurant": "CHECK RESTAURANT",
+
+
+  "try_again": "TRY AGAIN",
+  "buy": "BUY",
+
+
+  "note_reviews": "Notes and Reviews",
+  "review_us": "Please review us",
+  "votes": "Votes",
+  "r_closed_preorder": "Closed => Preorder",
+  "r_opened": "DELETE",
+  "r_pause_preorder": "Breaktime => Preorder",
+  "r_blocked_preorder": "Preorder only",
+  "review": "Review",
+  "see_menu": "See the Menu",
+
+
+  "opening_time": "Opening Time",
+  "powered_by_kaba_tech": "Powered by >> Kaba Technlogies",
+  "min_reached": "MIN REACHED",
+  "max_reached": "MAX REACHED",
+  "menu": "MENU",
+  "no_data": "No content",
+  "add_to_chart": "Add to Chart",
+  "add_to_basket": "Add to Basket",
+  "basket": "BASKET",
+  "reviewing_success": "Thank you for submitting your review.",
+
+  "send_review": "REVIEW",
+  "please_give": "Please give",
+  "a_review": "a review...",
+  "please_review_restaurant": "Please give the restaurant a review about. We really appreciate it. \\nThank you"
+
 }

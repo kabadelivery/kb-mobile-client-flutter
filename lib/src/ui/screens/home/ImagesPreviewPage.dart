@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:toast/toast.dart';
-//import 'package:photo_view/photo_view.dart';
 
 
 class AdsPreviewPage extends StatefulWidget {
@@ -159,19 +159,19 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
   String _getVoirMenuTextFromAd(AdModel data) {
     switch(data.type){
       case AdModel.TYPE_REPAS:
-        return "VOIR REPAS";
+        return "${AppLocalizations.of(context).translate('ad_check_food')}";
         break;
       case AdModel.TYPE_ARTICLE:
-        return "VOIR ARTICLE";
+        return "${AppLocalizations.of(context).translate('ad_check_article')}";
         break;
       case AdModel.TYPE_ARTICLE_WEB:
-        return "VOIR SITE WEB";
+        return "${AppLocalizations.of(context).translate('ad_check_website')}";
         break;
       case AdModel.TYPE_MENU:
-        return "VOIR MENU";
+        return "${AppLocalizations.of(context).translate('ad_check_menu')}";
         break;
       case AdModel.TYPE_RESTAURANT:
-        return "VOIR RESTAURANT";
+        return "${AppLocalizations.of(context).translate('ad_check_restaurant')}";
         break;
       default:
         return "";

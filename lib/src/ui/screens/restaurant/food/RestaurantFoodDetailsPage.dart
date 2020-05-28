@@ -1,20 +1,18 @@
 import 'dart:collection';
 
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {
@@ -44,7 +42,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
   int _carousselPageIndex = 0;
 
-  static final List<String> popupMenus = ["Share"];
+  static List<String> popupMenus = ["Share"];
 
 
   int quantity = 1;
@@ -52,6 +50,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
+  }
 
   @override
   void initState() {
@@ -96,11 +101,11 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
   }
 
 
@@ -144,7 +149,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                             ]) : Container(),
 
                                             SizedBox(width: 10),
-                                            Text("FCFA", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
+                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
 
                                           ]),
                                       SizedBox(height: 10),
@@ -177,7 +182,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 //                                                    padding: EdgeInsets.all(10),
                                                 child:Column(
                                                   children: <Widget>[
-                                                    Text("RESTAURANT", style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
+                                                    Text("${AppLocalizations.of(context).translate('restaurant')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
                                                     SizedBox(height: 5),
                                                     SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
                                                     Text("${widget?.food?.restaurant_entity?.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
@@ -197,7 +202,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                           child: Row(children: <Widget>[
                                             Text("${widget.food.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
                                             Container(width: 5),
-                                            Text("FCFA", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor))
+                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor))
                                           ]),
                                         )
                                       ]
@@ -230,7 +235,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                   )),
                   RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
                     children: <Widget>[
-                      Text("ACHETER", style: TextStyle(color: KColors.primaryColor)),
+                      Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color: KColors.primaryColor)),
                       IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),
                     ],
                   ))

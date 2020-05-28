@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:KABA/src/contracts/personal_page_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -70,16 +71,10 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
     });
   }
 
-  String _validatePassword(String value) {
-    if (value.length < 8) {
-      return 'The Password must be at least 8 characters.';
-    }
-    return null;
-  }
-
   String _validateName(String value) {
     if (value.length < 6) {
-      return 'This field must have more than 6 characters.';
+      return "${AppLocalizations.of(context).translate('field_more_6_chars')}";
+//      return 'This field must have more than 6 characters.';
     }
     return null;
   }
@@ -92,7 +87,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
         backgroundColor: Colors.white,
-        title: Text("MY PROFILE", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('my_profile')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
           child: Column(
@@ -127,7 +122,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               color: Colors.white,
                               /* phone number must be confirmed by another interface before setting it up. */
                               child:TextField(controller: _phoneNumberFieldController, enabled: false,
-                                  decoration: InputDecoration(labelText: "Phone Number", /* if  already sat, we cant put nothing else */
+                                  decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('phone_number')}", /* if  already sat, we cant put nothing else */
                                     border: InputBorder.none,
                                   )),
                             ),
@@ -150,7 +145,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                             padding: EdgeInsets.all(10),
                             color: Colors.white,
                             child:TextFormField(controller: _nickNameFieldController,
-                                decoration: InputDecoration(labelText: "Nickname", border: InputBorder.none),
+                                decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('nickname')}", border: InputBorder.none),
                                 validator: this._validateName,
                                 onSaved: (String value) {
                                   widget.customer.nickname = value;
@@ -162,7 +157,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                             padding: EdgeInsets.all(10),
                             color: Colors.white,
                             child:TextFormField(controller: _jobTitleFieldController,
-                                decoration: InputDecoration(labelText: "Job Title", border: InputBorder.none, ),
+                                decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('job_title')}", border: InputBorder.none),
                                 validator: _validateName,
                                 onSaved: (String value) {
                                   widget.customer.job_title = value;
@@ -175,7 +170,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                             color: Colors.white,
                             child:TextFormField(
                                 controller: _districtFieldController,
-                                decoration: InputDecoration(labelText: "Your district", border: InputBorder.none),
+                                decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('your_district')}", border: InputBorder.none),
                                 validator: _validateName,
                                 onSaved: (String value) {
                                   widget.customer.district = value;
@@ -187,11 +182,11 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               padding: EdgeInsets.all(10),
                               color: Colors.white,
                               child:Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-                                Container(width: MediaQuery.of(context).size.width, child: Text("Gender", textAlign: TextAlign.left, style: TextStyle(color: KColors.primaryColor, fontSize: 12))),
+                                Container(width: MediaQuery.of(context).size.width, child: Text("${AppLocalizations.of(context).translate('gender')}", textAlign: TextAlign.left, style: TextStyle(color: KColors.primaryColor, fontSize: 12))),
                                 /*  */
                                 Row(children: <Widget>[
-                                  Text("Woman", style: TextStyle(color: Colors.black, fontSize: 16)), Radio(value: 1, groupValue: widget.customer.gender, onChanged: _handleGenderRadioValueChange),
-                                  Text("Man"), Radio(value: 2, groupValue: widget.customer.gender, onChanged: _handleGenderRadioValueChange)
+                                  Text("${AppLocalizations.of(context).translate('woman_gender')}", style: TextStyle(color: Colors.black, fontSize: 16)), Radio(value: 1, groupValue: widget.customer.gender, onChanged: _handleGenderRadioValueChange),
+                                  Text("${AppLocalizations.of(context).translate('man_gender')}"), Radio(value: 2, groupValue: widget.customer.gender, onChanged: _handleGenderRadioValueChange)
                                 ]),
                               ])
                           ),
@@ -215,7 +210,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               color: Colors.white,
                               child: Row(
                                 children: <Widget>[
-                                  Text("Birthday", style: TextStyle(color: Colors.black, fontSize: 16)),
+                                  Text("${AppLocalizations.of(context).translate('birthday')}", style: TextStyle(color: Colors.black, fontSize: 16)),
                                   Container(width: 20),
                                   Text("${widget.customer.birthday}", style: TextStyle(color: KColors.primaryColor)),
                                 ],
@@ -229,7 +224,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               children:<Widget>[
                                 MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                                   children: <Widget>[
-                                    Text("SAUVEGARDER", style: TextStyle(fontSize: 14, color: Colors.white)),
+                                    Text("${AppLocalizations.of(context).translate('save')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                                     isUpdating ?  Row(
                                       children: <Widget>[
                                         SizedBox(width: 10),
@@ -239,7 +234,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                                   ],
                                 ), onPressed: () {_saveCustomerData();}),
                                 SizedBox(width:20),
-                                MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Text("ANNULER", style: TextStyle(fontSize: 14, color: Colors.black)), onPressed: () {_cancelAll();}),
+                                MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Text("${AppLocalizations.of(context).translate('cancel')}", style: TextStyle(fontSize: 14, color: Colors.black)), onPressed: () {_cancelAll();}),
                               ]),
                           SizedBox(height:50),
                         ]
@@ -280,7 +275,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       showLoading(true);
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
-      mToast("Please fill all the fields");
+      mToast("${AppLocalizations.of(context).translate('please_fill_all_fields')}");
     }
   }
 
@@ -333,25 +328,3 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
   void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
 
 }
-
-
-class BasicTimeField extends StatelessWidget {
-  final format = DateFormat("HH:mm");
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Text('Basic time field (${format.pattern})'),
-      /*     DateTimeField(
-        format: format,
-        onShowPicker: (context, currentValue) async {
-          final time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-          );
-          return DateTimeField.convert(time);
-        },
-      ),*/
-    ]);
-  }
-}
-

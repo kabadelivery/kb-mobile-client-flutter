@@ -1,14 +1,14 @@
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:toast/toast.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:vibration/vibration.dart';
 
 
@@ -61,15 +61,15 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                 )
                             )
                         ),
-                        Container(child:Text("Success", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey))),
+                        Container(child:Text("${AppLocalizations.of(context).translate('success')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey))),
                         SizedBox(height: 30),
                         Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                           Text("${widget.amount}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
                           SizedBox(width: 5),
-                          Text("XOF", style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+                          Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
                         ]),
                         SizedBox(height: 30),
-                        Container(child:Text("Payee", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
+                        Container(child:Text("${AppLocalizations.of(context).translate('payee')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
                         SizedBox(height: 30),
                         Center(
                           child: Column(children: <Widget>[
@@ -105,7 +105,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                           children: <Widget>[
                             SizedBox(
                               child: OutlineButton(borderSide: BorderSide(color: KColors.primaryYellowColor),
-                                child: new Text("OK", style: TextStyle(color: KColors.primaryYellowColor)),
+                                child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryYellowColor)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },

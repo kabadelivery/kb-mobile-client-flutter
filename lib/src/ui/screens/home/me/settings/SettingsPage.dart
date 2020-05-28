@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
@@ -33,13 +34,13 @@ class _SettingsPageState extends State<SettingsPage> {
           child:Container(
             child: Column(
                 children: <Widget>[
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.security, color: KColors.primaryColor), onPressed: ()=>_jumpToRecoverPage()),  onTap: ()=>_jumpToRecoverPage(),title: Text("Change Account Password", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.security, color: KColors.primaryColor), onPressed: ()=>_jumpToRecoverPage()),  onTap: ()=>_jumpToRecoverPage(),title: Text("${AppLocalizations.of(context).translate('change_password')}", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE),), onTap: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE), title: Text("Terms and Conditions", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.assignment, color: KColors.primaryColor), onPressed: ()=>_jumpWebPage("CGU", ServerRoutes.CGU_PAGE),), onTap: ()=>_jumpWebPage("${AppLocalizations.of(context).translate('cgu')}", ServerRoutes.CGU_PAGE), title: Text("${AppLocalizations.of(context).translate('terms_and_conditions')}", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: ()=> _jumpToInfoPage()), onTap: ()=> _jumpToInfoPage(), title: Text("App Info", style: TextStyle(color: Colors.black,fontSize: 16)))),
+                  Container(color: Colors.white,child: ListTile(leading: IconButton(icon: Icon(Icons.apps, color: KColors.primaryColor), onPressed: ()=> _jumpToInfoPage()), onTap: ()=> _jumpToInfoPage(), title: Text("${AppLocalizations.of(context).translate('app_info')}", style: TextStyle(color: Colors.black,fontSize: 16)))),
                   SizedBox(height: 2),
-                  Container(color: Colors.white,child:ListTile(leading: IconButton(icon: Icon(Icons.question_answer, color: KColors.primaryColor), onPressed:  ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ), onTap: ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ,title: Text("FAQ", style: TextStyle(color: Colors.black,fontSize: 16))))
+                  Container(color: Colors.white,child:ListTile(leading: IconButton(icon: Icon(Icons.question_answer, color: KColors.primaryColor), onPressed:  ()=> _jumpWebPage("FAQ", ServerRoutes.FAQ_PAGE) ), onTap: ()=> _jumpWebPage("${AppLocalizations.of(context).translate('faq')}", ServerRoutes.FAQ_PAGE) ,title: Text("${AppLocalizations.of(context).translate('faq')}", style: TextStyle(color: Colors.black,fontSize: 16))))
                 ]),
           )),
     );

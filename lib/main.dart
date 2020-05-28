@@ -117,7 +117,7 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             supportedLocales: [
               Locale('en', 'US'),
-              Locale('fr', 'FR'),
+//              Locale('fr', 'FR'),
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,
@@ -126,23 +126,9 @@ class _MyAppState extends State<MyApp> {
             ],
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
-            /* localizationsDelegates: [
-        // ... app-specific localization delegate[s] here
-        KabaLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('fr'), // French
-        const Locale('en'), // English
-        const Locale('zh'), // Chinese
-//        const Locale.fromSubtags(languageCode: 'zh'), // Chinese *See Advanced Locales below*
-        // ... other locales the app supports
-      ],*/
             onGenerateTitle: (BuildContext context) =>
-            "KABA",
+            "${AppLocalizations.of(context).translate('app_title')}",
             theme: ThemeData(primarySwatch: KColors.colorCustom),
-
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             home: SplashPage(),

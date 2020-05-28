@@ -1,14 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/models/AdModel.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
-// ignore: must_be_immutable
 class ErrorPage extends StatelessWidget {
 
   static const TYPE_NO_NETWORK = -20;
@@ -47,7 +42,7 @@ class ErrorPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(18.0),
                     ),
-                    padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("TRY AGAIN",
+                    padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("${AppLocalizations.of(context).translate('try_again')}",
                     style: TextStyle(color: Colors.white)),
                     onPressed: onClickAction, color: KColors.primaryColor)
               ])

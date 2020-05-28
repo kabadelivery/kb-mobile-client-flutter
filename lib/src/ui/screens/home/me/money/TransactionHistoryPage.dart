@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/TransactionModel.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../../StateContainer.dart';
 
@@ -64,14 +64,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                 Navigator.pop(context);
               }),
           backgroundColor: Colors.white,
-          title: Text("MY BALANCE", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
+          title: Text("${AppLocalizations.of(context).translate('my_balance')}", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
           actions: <Widget>[
 
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: /*isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) :*/ GestureDetector(
                     onTap: () {},
-                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} XOF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: KColors.primaryYellowColor)))
+                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: KColors.primaryYellowColor)))
                 )
             ),
           ],
@@ -131,7 +131,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
             children: <Widget>[
               IconButton(icon: Icon(Icons.monetization_on, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("Sorry, you have made no transaction yet !", style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('sorry_empty_transactions')}", style: TextStyle(color: Colors.grey)),
             ],
           ));
 
@@ -174,11 +174,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
   }
 
   @override
