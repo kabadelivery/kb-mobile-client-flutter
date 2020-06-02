@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> {
             supportedLocales: [
               Locale('en', 'US'),
               Locale('fr', 'FR'),
-              Locale('zh', 'CN')
+              Locale.fromSubtags(languageCode: 'zh')
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,

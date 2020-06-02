@@ -37,11 +37,6 @@ class RestaurantMenuPage extends StatefulWidget {
 
 class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerProviderStateMixin implements MenuView {
 
-//  final _controllers = <AnimationController>[];
-
-//  final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<
-//      InnerDrawerState>();
-
   var _firstTime = true;
 
   /* app config */
@@ -658,6 +653,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       MaterialPageRoute(
         builder: (context) => RestaurantMenuDetails(
             restaurant: widget.restaurant,
+            FOOD_MAX: FOOD_MAX,
             type: type,
             food_selected: food_selected,
             adds_on_selected: adds_on_selected),

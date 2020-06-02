@@ -12,16 +12,18 @@ import 'package:toast/toast.dart';
 
 class RestaurantMenuDetails extends StatefulWidget {
 
- static var routeName = "/RestaurantMenuDetails";
+  static var routeName = "/RestaurantMenuDetails";
 
   Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
 
- /* 1 - food, 2- addons, 3 - all */
+  /* 1 - food, 2- addons, 3 - all */
   int type;
+
+  int FOOD_MAX;
 
   RestaurantModel restaurant;
 
-  RestaurantMenuDetails({Key key, this.type, this.food_selected, this.adds_on_selected, this.restaurant}) : super(key: key);
+  RestaurantMenuDetails({Key key, this.FOOD_MAX = 5, this.type, this.food_selected, this.adds_on_selected, this.restaurant}) : super(key: key);
 
   @override
   _RestaurantMenuDetailsState createState() => _RestaurantMenuDetailsState(type, food_selected, adds_on_selected);
@@ -34,8 +36,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   /* 1 - food, 2- addons, 3 - all */
   int type;
 
-  int _foodCount = 0, _addOnCount = 0;
-  int FOOD_MAX = 30, ADD_ON_COUNT = 10;
+  int _foodCount = 0;
+
+//  , ADD_ON_COUNT = 10;
   int totalPrice = 0;
 
   _RestaurantMenuDetailsState(this.type, this.food_selected, this.adds_on_selected);
@@ -44,7 +47,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-  _updateCounts();
+    _updateCounts();
   }
 
   @override
@@ -65,7 +68,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         leading: IconButton(icon: Icon(Icons.close, color: Colors.black), onPressed: (){Navigator.pop(context);}),
       ),
       body: Container(color: Colors.white, child: _showMenuBottomSheet(context, type), height: MediaQuery.of(context).size.height),
-      );
+    );
   }
 
 /* build bottom_sheet_items_widget */
@@ -139,22 +142,22 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
 
     bottomSheetView.add(SizedBox(height:140));
 
-      return Stack(
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-            child: SingleChildScrollView(
+    return Stack(
+      children: <Widget>[
+        Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 0),
               child: Wrap(children: bottomSheetView)
-            ),
           ),
-         totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child: RaisedButton(child: Text("ACHETER", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
-        ],
-      );
+        ),
+        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child: RaisedButton(child: Text("ACHETER", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
+      ],
+    );
   }
 
-
   _decreaseQuantity(RestaurantFoodModel food) {
+
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
         if (food_selected[food].toInt() > 1)
@@ -182,22 +185,30 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   _increaseQuantity(RestaurantFoodModel food) {
-    if (!food.is_addon) {
-      if (food_selected.containsKey(food)) {
-        food_selected.update(food, (int val) => 1+food_selected[food].toInt());
-      } else {
-        food_selected.putIfAbsent(food, ()=>1);
-      }
+    if (_foodCount >= widget.FOOD_MAX) {
+      showToast("${AppLocalizations.of(context).translate('max_reached')}");
+      return;
     } else {
+      /* if max is reached, we dont increase */
       if (!food.is_addon) {
-        if (adds_on_selected.containsKey(food)) {
-          adds_on_selected.update(food, (int val) => 1+adds_on_selected[food].toInt());
+        if (food_selected.containsKey(food)) {
+          food_selected.update(
+              food, (int val) => 1 + food_selected[food].toInt());
         } else {
-          adds_on_selected.putIfAbsent(food, ()=>1);
+          food_selected.putIfAbsent(food, () => 1);
+        }
+      } else {
+        if (!food.is_addon) {
+          if (adds_on_selected.containsKey(food)) {
+            adds_on_selected.update(
+                food, (int val) => 1 + adds_on_selected[food].toInt());
+          } else {
+            adds_on_selected.putIfAbsent(food, () => 1);
+          }
         }
       }
+      _updateCounts();
     }
-    _updateCounts();
   }
 
   void _updateCounts() {
@@ -207,7 +218,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     int adc = 0; adds_on_selected.forEach((RestaurantFoodModel food, int quantity) {adc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
     setState(() {
       _foodCount = fc;
-      _addOnCount = adc;
+//      _addOnCount = adc;
       totalPrice = tp;
     });
   }

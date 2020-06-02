@@ -51,7 +51,7 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) {
     // Include all of your supported language codes here
-    return ['en', 'fr'].contains(locale.languageCode);
+    return ['en', 'fr', 'zh'].contains(locale.languageCode);
   }
 
   @override
@@ -86,11 +86,18 @@ class AppLanguage extends ChangeNotifier {
     if (_appLocale == type) {
       return;
     }
-    if (type == Locale("ar")) {
-      _appLocale = Locale("ar");
-      await prefs.setString('language_code', 'ar');
+    if (type == Locale("fr")) {
+
+      _appLocale = Locale("fr");
+      await prefs.setString('language_code', 'fr');
+      await prefs.setString('countryCode', '');
+    } else if (type == Locale("zh")) {
+
+      _appLocale = Locale("zh");
+      await prefs.setString('language_code', 'zh');
       await prefs.setString('countryCode', '');
     } else {
+
       _appLocale = Locale("en");
       await prefs.setString('language_code', 'en');
       await prefs.setString('countryCode', 'US');

@@ -92,6 +92,7 @@ flutter:
     # localization
     - assets/i18n/fr.json
     - assets/i18n/en.json
+    - assets/i18n/zh.json
     # images
     - assets/flare/newmessage.flr
     - assets/images/vectors/closedshop.svg
