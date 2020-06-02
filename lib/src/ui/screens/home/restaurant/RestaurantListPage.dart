@@ -113,7 +113,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
             children: <Widget>[
               Expanded(
                 child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
-                    decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_or_menu_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
+                    decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
               ),
               IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
                 _clearFocus();

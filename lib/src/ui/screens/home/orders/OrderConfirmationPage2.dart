@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:audioplayers/audio_cache.dart';
@@ -107,7 +108,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   Navigator.pop(context);
                 }),
             backgroundColor: KColors.primaryYellowColor,
-            title: Text("Confirm Order")
+            title: Text("${AppLocalizations.of(context).translate('confirm_order')}")
         ),
         // check if the restaurant is open before showing anything.
         body:
@@ -118,8 +119,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               // loading page.
               SizedBox(child: CircularProgressIndicator(), height: 80, width: 80),
               SizedBox(height: 30),
-              Text("Hello, we are processing your payment. Please wait V(^_^)V", textAlign: TextAlign.center,)
-
+              Text("${AppLocalizations.of(context).translate('processing_payment')}", textAlign: TextAlign.center,)
             ]),
           )),
         ):
@@ -208,13 +208,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Montant Commande:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('order_amount')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* check if there is promotion on Commande */
                     Row(
                       children: <Widget>[
                         /* montant commande normal */
-                        Text("${_orderBillConfiguration?.command_pricing} FCFA",
+                        Text("${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context).translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                       ],
@@ -223,13 +223,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Montant Livraison:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('delivery_amount')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* check if there is promotion on Livraison */
                     Row(
                       children: <Widget>[
                         /* montant livraison normal */
-                        Text("${_orderBillConfiguration?.shipping_pricing} FCFA", style: TextStyle(
+                        Text("${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                             fontSize: 15)),
@@ -244,7 +244,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Net à Payer:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('net_price')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* montant total a payer */
                     Text("${_orderBillConfiguration?.total_normal_pricing} F",
@@ -290,7 +290,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Montant Commande:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('order_amount')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* check if there is promotion on Commande */
                     Row(
@@ -306,8 +306,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                         /* montant commande promotion */
                         Text(_orderBillConfiguration?.command_pricing >
                             _orderBillConfiguration?.promotion_pricing
-                            ? "${_orderBillConfiguration?.promotion_pricing} FCFA"
-                            : "${_orderBillConfiguration?.command_pricing} FCFA",
+                            ? "${_orderBillConfiguration?.promotion_pricing} ${AppLocalizations.of(context).translate('currency')}"
+                            : "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context).translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                       ],
@@ -316,7 +316,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Montant Livraison:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('delivery_amount')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* check if there is promotion on Livraison */
                     Row(
@@ -338,9 +338,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                 _orderBillConfiguration
                                     ?.promotion_shipping_pricing
                                 ? "${_orderBillConfiguration
-                                ?.promotion_shipping_pricing} FCFA"
+                                ?.promotion_shipping_pricing} ${AppLocalizations.of(context).translate('currency')}"
                                 : "${_orderBillConfiguration
-                                ?.shipping_pricing} FCFA", style: TextStyle(
+                                ?.shipping_pricing} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15)),
                       ],
                     )
@@ -350,7 +350,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
 
-                    Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold,
+                    Text("${AppLocalizations.of(context).translate('discount')}", style: TextStyle(fontWeight: FontWeight.bold,
                         fontSize: 15,
                         color: Colors.grey)),
                     /* montrer le discount s'il y'a lieu */
@@ -367,7 +367,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 10),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Net à Payer:", style: TextStyle(
+                    Text("${AppLocalizations.of(context).translate('net_price')}", style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
                     /* montant total a payer */
                     Text("${_orderBillConfiguration?.total_pricing} F",
@@ -400,7 +400,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text("Cooking Time estimation: ", style: TextStyle(fontSize: 16)),
+              Text("${AppLocalizations.of(context).translate('cooking_time_estimation')}", style: TextStyle(fontSize: 16)),
               Text("30 min",
                   style: TextStyle(color: KColors.primaryColor, fontSize: 18))
             ]));
@@ -470,7 +470,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 color: Colors.white,
                 child: TextField(controller: _addInfoController, maxLines: 3,
                     decoration: InputDecoration(
-                      labelText: "Any special request about the order ?",
+                      labelText: "${AppLocalizations.of(context).translate('additional_info')}",
                       border: InputBorder.none,
                     )),
               ),
@@ -484,7 +484,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            Text("Choisir l'adresse de Livraison",
+                            Text("${AppLocalizations.of(context).translate('choose_delivery_address')}",
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white)),
                             Row(children: <Widget>[
@@ -520,15 +520,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text("Your balance:", style: TextStyle(fontSize: 14)),
+                          Text("${AppLocalizations.of(context).translate('your_balance')}", style: TextStyle(fontSize: 14)),
                           SizedBox(width: 10),
-                          Text("XOF ${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance}",
+                          Text("${AppLocalizations.of(context).translate('currency')} ${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance}",
                             style: TextStyle(color: KColors.primaryColor,
                                 fontSize: 15,
                                 fontWeight: FontWeight.normal)),
                         ],
                       ),
-                      RaisedButton(child: Text("TOP UP",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
+                      RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
                     ],
                   ),
                 ),
@@ -558,7 +558,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     setState(() {
       checkIsRestaurantOpenConfigIsLoading = false;
     });
-    mToast("networkError");
+    mToast("${AppLocalizations.of(context).translate('network_error')}");
   }
 
   @override
@@ -567,7 +567,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     setState(() {
       checkIsRestaurantOpenConfigIsLoading = false;
     });
-    mToast("systemError");
+    mToast("${AppLocalizations.of(context).translate('system_error')}");
   }
 
   @override
@@ -617,7 +617,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(Icons.directions_bike, color: Colors.white),
                   SizedBox(width: 5),
-                  Text("PAY AT DELIVERY", style: TextStyle(color: Colors.white,
+                  Text("${AppLocalizations.of(context).translate('pay_at_delivery')}", style: TextStyle(color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
                 ],
@@ -625,7 +625,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               onPressed: () {}),
         ],
       )
-          : Container(child: Text("you can't pay at delivery.")),
+          : Container(child: Text("${AppLocalizations.of(context).translate('cant_pay_at_delivery')}")),
       SizedBox(height: 20),
       // pay immediately button
       _orderBillConfiguration?.account_balance != null &&
@@ -648,7 +648,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
                   SizedBox(width: 10),
-                  Text("PAY NOW", style: TextStyle(color: Colors.white,
+                  Text("${AppLocalizations.of(context).translate('pay_now')}", style: TextStyle(color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
                 ],
@@ -656,7 +656,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               onPressed: _payNow()),
         ],
       ) : Container(child: Text(
-        "You can't prepay because your balance is insufficient ",
+        "${AppLocalizations.of(context).translate('cant_prepay_balance_insufficient')}",
         style: TextStyle(fontSize: 16,
             color: KColors.primaryColor,
             fontWeight: FontWeight.bold),)),
@@ -674,12 +674,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           child: Center(
             child: RichText(
               text: TextSpan(
-                  text: 'Your balance is : ',
+                  text: '${AppLocalizations.of(context).translate('your_balance_is')} ',
                   style: TextStyle(
                       color: Colors.grey, fontSize: 16),
                   children: <TextSpan>[
                     TextSpan(text: "${Utils.inflatePrice(
-                        "${_orderBillConfiguration?.account_balance}")} XOF",
+                        "${_orderBillConfiguration?.account_balance}")} ${AppLocalizations.of(context).translate('currency')}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: KColors.primaryColor, fontSize: 16),
@@ -711,7 +711,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
                   SizedBox(width: 10),
-                  Text("PAY NOW", style: TextStyle(color: Colors.white,
+                  Text("${AppLocalizations.of(context).translate('pay_now')}", style: TextStyle(color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
                   isPayNowLoading ? Row(
@@ -729,13 +729,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       ) : (!_orderBillConfiguration.prepayed ?
       Container(margin: EdgeInsets.only(left: 20, right: 20),
           child: Text(
-              "You can't prepay because this restaurant doesn't allow prepay.",
+              "${AppLocalizations.of(context).translate('restaurant_no_allow_prepay')}",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14,
                   color: KColors.primaryColor,
                   fontWeight: FontWeight.bold)))
           : Container(child: Text(
-          "You can't prepay because your balance is insufficient ",
+          "${AppLocalizations.of(context).translate('balance_insufficient')}",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 14,
               color: KColors.primaryColor,
@@ -761,7 +761,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                     children: <Widget>[
                       Icon(Icons.directions_bike, color: Colors.white),
                       SizedBox(width: 5),
-                      Text("PAY AT DELIVERY", style: TextStyle(
+                      Text("${AppLocalizations.of(context).translate('pay_at_delivery')}", style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold)),
@@ -780,7 +780,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           ) :
           Container(margin: EdgeInsets.only(left: 20, right: 20),
               child: Text(
-                  "You can't pay at delivery because your order is more than the maximum pay at delivery amount (${_orderBillConfiguration
+                  "${AppLocalizations.of(context).translate('cant_pay_at_delivery_max_pay_reached')} (${_orderBillConfiguration
                       .max_pay})",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14,
@@ -791,14 +791,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       (_orderBillConfiguration.trustful == 0 ?
       Container(margin: EdgeInsets.only(left: 20, right: 20),
           child: Text(
-              "You can't pay because you already have an ungoing order. Please contact the administrator to solve this issue. \nThank you.",
+              "${AppLocalizations.of(context).translate('cant_pay_because_ongoing_order')}",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14,
                   color: KColors.mBlue,
                   fontWeight: FontWeight.normal))) :
       (!_orderBillConfiguration.pay_at_delivery ?
       Container(margin: EdgeInsets.only(left: 20, right: 20),
-          child: Text("Sorry this restaurant doesn't allow pay at delivery.",
+          child: Text("${AppLocalizations.of(context).translate('restaurant_no_allow_pay_at_delivery')}",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14,
                   color: KColors.mBlue,
@@ -821,7 +821,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("Code error");
+        mToast("${AppLocalizations.of(context).translate('wrong_code')}");
       } else {
         String _mCode = results['code'];
         showLoadingPreorder(true);
@@ -830,7 +830,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text);
         } else {
-          mToast("Code error");
+          mToast("${AppLocalizations.of(context).translate('wrong_code')}");
         }
       }
     }
@@ -843,7 +843,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (_orderBillConfiguration?.trustful == 0) {
       _showDialog(
         iccon: VectorsData.questions, // untrustful
-        message: "Sorry, you already have an ongoing order. Please contact customer care for more informations.",
+        message: "${AppLocalizations.of(context).translate('sorry_ongoing_order')}",
         isYesOrNo: false,
       );
       return;
@@ -852,7 +852,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (!isDialogShown) {
       _showDialog(
           iccon: VectorsData.questions,
-          message: "By choosing this mode, you are accepting to give the right amount of money to the delivery man.",
+          message: "${AppLocalizations.of(context).translate('prevent_pay_at_delivery')}",
           isYesOrNo: true,
           actionIfYes: () => _payAtDelivery(true)
       );
@@ -871,7 +871,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("Code error");
+        mToast("${AppLocalizations.of(context).translate('wrong_code')}");
       } else {
         String _mCode = results['code'];
         showLoadingPayAtDelivery(true);
@@ -880,7 +880,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text);
         } else {
-          mToast("Code error");
+          mToast("${AppLocalizations.of(context).translate('wrong_code')}");
         }
       }
     }
@@ -895,14 +895,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (widget.orderTimeRangeSelected >= 0 && widget.orderTimeRangeSelected < _orderBillConfiguration.deliveryFrames?.length)
       selectedFrame = _orderBillConfiguration.deliveryFrames[widget.orderTimeRangeSelected];
     else {
-      _showDialog(icon: Icon(Icons.error), message: "Please choose a delivery frame");
+      _showDialog(icon: Icon(Icons.error), message: "${AppLocalizations.of(context).translate('choose_delivery_frame')}");
       return;
     }
 
     if (!isDialogShown) {
       _showDialog(
           iccon: VectorsData.questions,
-          message: "Your food will be delivered on ${Utils.timeStampToDayDate(selectedFrame.start)} between ${Utils.timeStampToHourMinute(selectedFrame.start)} and ${Utils.timeStampToHourMinute(selectedFrame.end)}",
+          message: "${AppLocalizations.of(context).translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start)} between ${Utils.timeStampToHourMinute(selectedFrame.start)} and ${Utils.timeStampToHourMinute(selectedFrame.end)}",
           isYesOrNo: true,
           actionIfYes: () => _payPreorder(true)
       );
@@ -921,7 +921,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         results.containsKey('type')) {
       if (results == null || results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("Code error");
+        mToast("${AppLocalizations.of(context).translate('wrong_code')}");
       } else {
         String _mCode = results['code'];
         showLoadingPayAtDelivery(true);
@@ -930,7 +930,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               widget.customer, widget.foods, _selectedAddress, _mCode,
               _addInfoController.text, selectedFrame.start, selectedFrame.end);
         } else {
-          mToast("Code error");
+          mToast("${AppLocalizations.of(context).translate('wrong_code')}");
         }
       }
     }
@@ -960,7 +960,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             isYesOrNo ? <Widget>[
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -968,7 +968,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
                 child: new Text(
-                    "ACCEPT", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -1045,39 +1045,35 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       String message = "";
       switch (errorCode) {
         case 300:
-          message =
-          "Password confirmation wrong. Please confirm with the right password.";
+          message = "${AppLocalizations.of(context).translate('300_wrong_password')}";
           break;
         case 301: // restaurant doesnt exist
-          message =
-          "Sorry for the disconvenience, our server is having issues. Please try again later";
+          message = "${AppLocalizations.of(context).translate('301_server_issue')}";
           break;
         case 302:
-          message =
-          "Sorry, this restaurant doesn't allow \"Paying at Arrival\"";
+          message = "${AppLocalizations.of(context).translate('302_unable_pay_at_arrival')}";
           break;
         case 303:
-          message = "Sorry, this restaurant doesn't accept \"Online Payment\"";
+          message = "${AppLocalizations.of(context).translate('303_unable_online_payment')}";
           break;
         case 304:
-          message = "Sorry, delivery address error.";
+          message = "${AppLocalizations.of(context).translate('304_address_error')}";
           break;
         case 305:
-          message = "Sorry, insufficient balance";
+          message = "${AppLocalizations.of(context).translate('305_308_balance_insufficient')}";
           break;
         case 306:
-          message =
-          "User account error. Please contact our customer care service.";
+          message = "${AppLocalizations.of(context).translate('306_account_error')}";
           break;
         case 307:
-          message = "Sorry, preorder is not allowed for now";
+          message = "${AppLocalizations.of(context).translate('307_unable_preorder')}";
           break;
         case 308:
-          message = "Sorry, insufficient balance";
+          message = "${AppLocalizations.of(context).translate('305_308_balance_insufficient')}";
           break;
         default:
           message =
-          "Sorry for the disconvenience, our server is having issues. Please try again later";
+          "${AppLocalizations.of(context).translate('309_system_error')}";
       }
       _showDialog(
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
@@ -1087,13 +1083,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     }
   }
 
-  void _showOrderFailureDialog() {
+ /* void _showOrderFailureDialog() {
     _showDialog(
       icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black),
       message: "Sorry, there is a problem with your order. Please try again.",
       isYesOrNo: false,
     );
-  }
+  }*/
 
   void _showOrderSuccessDialog() {
 
@@ -1102,7 +1098,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     _showDialog(
       okBackToHome: true,
       iccon: VectorsData.delivery_nam,
-      message: "Congratulations for passing your order. Please keep your phone close to be able to check the command process.",
+      message: "${AppLocalizations.of(context).translate('order_congratz_praise')}",
       isYesOrNo: false,
     );
   }
@@ -1126,7 +1122,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 onChanged: _handleOrderTypeRadioValueChange),
             Expanded(child: Container(
                 margin: EdgeInsets.only(left: 10, right: 10),
-                child: Text("Order and get delivered now", style: TextStyle(
+                child: Text("${AppLocalizations.of(context).translate('order_get_delivered_now_hint')}", style: TextStyle(
                     color: widget.orderOrPreorderChoice == 0 ? KColors
                         .primaryColor : Colors.black,
                     fontSize: widget.orderOrPreorderChoice == 0 ? 16 : 14)))),
@@ -1141,7 +1137,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             Expanded(child: Container(
                 margin: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                    "Pre-order and get delivered in a future time frame",
+                    "${AppLocalizations.of(context).translate('preorder_now_hint')}",
                     style: TextStyle(
                         color: widget.orderOrPreorderChoice == 1 ? KColors
                             .primaryColor : Colors.black,
@@ -1156,7 +1152,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             Expanded(child: Container(
                 margin: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                    "Pre-order and get delivered in a future time frame",
+                    "${AppLocalizations.of(context).translate('preorder_now_hint')}",
                     style: TextStyle(
                         color: widget.orderOrPreorderChoice == 1 ? KColors
                             .primaryColor : Colors.black,
@@ -1185,17 +1181,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(Icons.access_time),
                   SizedBox(width: 5),
-                  Text("Confirm Pre - Order", style: TextStyle(fontSize: 18,
+                  Text("${AppLocalizations.of(context).translate('confirm_preorder')}", style: TextStyle(fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold)),
                 ],
               ),
               SizedBox(height: 8),
-              Text("Delivery discount (-${_orderBillConfiguration.discount}%)",
+              Text("${AppLocalizations.of(context).translate('delivery_discount')} (-${_orderBillConfiguration.discount}%)",
                   style: TextStyle(fontSize: 16, color: KColors.primaryColor)),
               SizedBox(height: 10),
               Container(child: Text(
-                  "Preorder now and get delivered at a specific time in the future",
+                  "${AppLocalizations.of(context).translate('preorder_desc')}",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
                 margin: EdgeInsets.only(left: 10, right: 10),),
@@ -1224,14 +1220,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(FontAwesomeIcons.moneyBill, color: hexToColor("#85bb65")),
                   SizedBox(width: 10),
-                  Text("PAY NOW", style: TextStyle(fontSize: 18,
+                  Text("${AppLocalizations.of(context).translate('pay_now')}", style: TextStyle(fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold)),
                 ],
               ),
               SizedBox(height: 10),
               Container(child: Text(
-                  "Pay now with your Kaba balance", textAlign: TextAlign.center,
+                  "${AppLocalizations.of(context).translate('pay_with_kaba_balance')}", textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
                 margin: EdgeInsets.only(left: 10, right: 10),),
               SizedBox(height: 10),
@@ -1259,14 +1255,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 children: <Widget>[
                   Icon(Icons.directions_bike),
                   SizedBox(width: 5),
-                  Text("PAY AT ARRIVAL", style: TextStyle(fontSize: 18,
+                  Text("${AppLocalizations.of(context).translate('pay_at_arrival')}", style: TextStyle(fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold)),
                 ],
               ),
               SizedBox(height: 10),
               Container(child: Text(
-                  "Pay at delivery with ca\$h to the delivery man directly",
+                  "${AppLocalizations.of(context).translate('pay_with_cash_at_delivery')}",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
                 margin: EdgeInsets.only(left: 10, right: 10),),
@@ -1384,11 +1380,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                           Row(
                             children: <Widget>[
                               Row(children: <Widget>[
-                                /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                            (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
-                                                : Container()),
-                                            */
-
                                 Text("${food?.price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
@@ -1413,7 +1404,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                     : Container()),
                                 SizedBox(width: 5),
 
-                                Text("FCFA", overflow: TextOverflow.ellipsis,
+                                Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -1532,7 +1523,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   _buildOutOfRangePage() {
     return Column(mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(margin: EdgeInsets.only(top:20, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,The delivery address is out of range of delivery. Please a restaurant that is closer to you and try again.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+        Container(margin: EdgeInsets.only(top:20, right: 20, left:20), decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('out_of_delivery_range')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
         SizedBox(height:10),
         SizedBox(
             height: 120,
@@ -1562,7 +1553,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         // show a dialog that tells the user to check his balance after he has topup up.
         link = Uri.encodeFull(link);
         _launchURL(link);
-        _showDialog_(message: "Please check your balance if you have successfully achieved topup", svgIcon: VectorsData.account_balance);
+        _showDialog_(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
       }
     }
   }
@@ -1590,7 +1581,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             actions: <Widget>[
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("REFUSE", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -1598,7 +1589,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
                 child: new Text(
-                    "ACCEPT", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));

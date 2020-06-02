@@ -1,0 +1,281 @@
+{
+  "app_title": "快跋",
+  "cgu": "条款和条件",
+  "cant_get_location": "无法获取当前位置",
+  "please_enable_gps": "请确保启用定位，然后重试",
+  "ok": "好",
+
+  "choice": "选择",
+  "choice_desc": "选择菜单",
+  "payment": "付款",
+  "payment_desc": "可以用现金或在线支付",
+  "address": "地址",
+  "address_desc": "选择送货地址",
+  "enjoy": "享受",
+  "enjoy_desc": "享受你的食物!",
+
+  "login_phonenumber_hint": "输入您用来创建快跋帐户的电话号码",
+  "connexion": "登录",
+  "recover_password": "找回密码",
+  "login_error": "对不起，登录错误",
+  "accept_terms_and_conditions": "亲、您接受我们的条款和条件吗？",
+  "yes": "是",
+  "no": "不",
+  "see": "查看",
+  "sorry": "对不起",
+  "account_no_exists": "帐户不存在。您要创建一个新帐户",
+  "password_wrong": "对不起，密码错误。",
+  "network_error": "对不起，网络错误。请检查网络，然后重试。",
+  "refuse": "拒绝",
+  "accept": "接受",
+
+  "new_account_phonenumber_hint": "输入您最有可能通过T-MONEY或FLOOZ进行交易的电话号码。\\n \\n仅允许使用多哥国家电话号码。",
+  "phone_number_hint": "90 XX XX XX",
+  "nickname": "昵称",
+  "register": "创建账户",
+  "seconds": "秒钟",
+  "code": "代码",
+  "account_created_successfully": "帐户创建成功",
+  "user_exists": "用户已经存在",
+  "wrong_code": "代码不正确",
+  "press_code_hint": "按下代码按钮。\\n\\n请输入您将收到的代码",
+
+
+
+  "recover_password_hint": "输入您最有可能通过T-MONEY或FLOOZ进行交易的电话号码。\\n \\n仅允许使用多哥国家电话号码。",
+  "insert_phone_number": "请输入您的帐户电话号码",
+  "password_updated_success": "密码更新成功",
+  "password_recover_fails": "抱歉，现在无法进行密码恢复。请重试。",
+
+  "home": "首页",
+  "restaurant": "饭店",
+  "orders": "订单",
+  "account": "账户",
+  "settings": "设定",
+
+  "logout": "登出",
+  "all_restaurants": "所有餐厅",
+  "call_us": "联系我们",
+  "best_seller": "最畅销",
+  "events": "活动",
+  "try_again": "重试",
+  "home_page_loading_error": "对不起，加载登录页面时出错。请检查您的网络，然后重试。",
+  "error_message": "系统错误",
+  "new": "新开",
+  "promo": "活动中",
+
+
+  "find_menu_or_restaurant": "找饭店吗？菜单吗？",
+
+
+  "no_order_today": "您今天尚未下订单！",
+  "system_error": "对不起，系统错误。请稍后再试",
+
+  "top_up": "充值",
+  "transfer": "转账",
+  "suggestions": "你对我们有什么建议吗 ?",
+  "profile": "简介",
+  "addresses": "地址",
+  "feeds": "通知",
+  "please_check_balance": "请检查您的余额确认充值成功",
+  "currency": "郎",
+
+  "input_password": "输入密码",
+  "delete": "删除",
+  "enter_password": "请输入您的个人密码",
+  "setup_password": "请设置个人账户密码",
+  "confirm_password": "请确认您的个人账户密码",
+  "confirm_password_launch_order": "请确认您的个人密码以启动订单",
+
+  "info_page_informations": "#TOGO\\n\\n© 保留所有权利\\nKABA DELIVERY SARL\\n2018 - ",
+  "version": "版本:",
+  "edit_address": "编辑地址",
+  "location_name": "地址昵称 (供个人使用)",
+  "phone_number": "电话号码",
+  "choose_location": "选择位置",
+  "not_far_from": "地点不远处。。。",
+  "address_details": "地址详细信息",
+  "confirm": "确认",
+  "address_modification_failure": "地址修改失败",
+  "address_modification_success": "地址修改成功",
+  "address_creation_success": "地址创建成功",
+  "address_creation_failure": "地址创建失败",
+  "gps_pick_again": "请再次选择gps位置。",
+
+
+  "monday_short": "周一",
+  "tuesday_short": "周二",
+  "wednesday_short": "周三",
+  "thursday_short": "周四",
+  "friday_short": "周五",
+  "saturday_short": "周六",
+  "sunday_short": "周日",
+
+
+  "delete_error": "删除错误",
+  "delete_network_error": "删除网络错误",
+  "are_you_sure_to_delete_address": "您确定删除此地址吗？",
+  "contact": "联系人",
+  "sorry_no_location_yet": "对不起，没有预先注册的位置。\\n立即创建送货地址！",
+  "create_new_address": "创建新地址",
+  "my_addresses": "我的地址",
+
+
+  "customer_care": "客服",
+  "any_feedback_right_here": "如果您对我们有任何反馈，那么您来对地方了！",
+  "send_message_network_error": "发送消息网络错误",
+  "send_message_system_error": "发送消息系统错误",
+  "message_too_short": "对不起，此消息太短。无法发送",
+
+
+  "balance": "余额",
+  "kaba_points": "删除",
+
+
+  "why_top_up_fees": "费用使我们能够支持T-money和Flooz的交易费用",
+  "operator": "网络提供商",
+  "amount": "余额",
+  "fees": "费用",
+  "total": "总额",
+  "please_wait_fees_percentage": "请等待更新费用比例结束",
+  "phone_number_wrong": "电话号码有误",
+
+
+  "my_balance": "余额",
+  "sorry_empty_transactions": "对不起，您还没有进行交易！",
+
+
+  "top_kaba_account": "往快跋账户转账",
+  "insert_transfer_amount": "请输入金额",
+  "pay": "支付",
+  "amount_greater_than_0": "对不起，余额不能等于小于 0”",
+  "balance_not_sufficient": "对不起，余额不足。请用T-money和Flooz充值您的帐户，然后重试。",
+  "password_wrong_": "对不起，密码错误。请检查您的密码，然后重试",
+  "transaction_error": "对不起，交易错误。\\n请与系统管理员联系。",
+
+
+  "real_time_transfer_no_refunded": "无法实时退款",
+  "next": "继续",
+  "cant_transfer_own_account": "很抱歉，无法将资金转入您自己的帐户",
+  "user_no_exists_in_db": "对不起，用户在我们的数据库中不存在。",
+
+
+  "success": "成功",
+  "payee": "收款人",
+
+
+  "_confirm": "确认",
+  "email": "电子邮件",
+
+  "my_profile": "个人资料",
+  "job_title": "职位",
+  "your_district": "地区",
+  "gender": "性别",
+  "woman_gender": "女",
+  "man_gender": "男",
+  "birthday": "生日",
+  "save": "保存",
+  "cancel": "取消",
+  "please_fill_all_fields": "请填写所有字段",
+  "field_more_6_chars": "该字段必须超过6个字符。",
+
+
+  "preferences": "设置",
+  "change_password": "更改帐户密码",
+  "terms_and_conditions": "条款和条件",
+  "app_info": "App 信息",
+  "faq": "常见问题",
+
+  "ad_check_food": "下单购买",
+  "ad_ad_check_article": "查看新闻",
+  "ad_check_website": "查看网站",
+  "ad_check_menu": "查看菜单",
+  "ad_check_restaurant": "查看饭店",
+
+
+  "buy": "购买",
+
+
+  "note_reviews": "注释和评价",
+  "review_us": "给我们评价",
+  "votes": "投票",
+  "r_closed_preorder": "已关闭 => 推荐预购",
+  "r_opened": "开业",
+  "r_pause_preorder": "休息时间中 => 推荐预购",
+  "r_blocked_preorder": "仅限预购",
+  "review": "评论",
+  "see_menu": "查看菜单",
+
+
+  "opening_time": "开放时间",
+  "powered_by_kaba_tech": "由 >> Kaba 技术提供支持",
+  "min_reached": "达到最低",
+  "max_reached": "达到最高",
+  "menu": "菜单",
+  "no_data": "无内容",
+  "add_to_chart": "加入购物车",
+  "add_to_basket": "加入购物车",
+  "basket": "购物车",
+  "reviewing_success": "谢谢您提交评论。",
+
+  "send_review": "评价",
+  "please_give": "请",
+  "a_review": "评论...",
+  "please_review_restaurant": "感谢您对此饭店的评价",
+
+
+
+  "coming_soon_dialog": "你好！这家饭店即将就会商平台了。请保持耐心",
+  "coming_soon": "即将推出",
+  "out_of_range": "超出范围",
+  "km":"公里",
+
+
+  "confirm_order": "确认订单",
+  "processing_payment": "您好，我们正在处理您的付款。请耐心等待V (^_^) V",
+
+  "order_amount": "饭菜价:",
+  "delivery_amount": "运费:",
+  "net_price": "总价:",
+  "discount": "优惠",
+  "cooking_time_estimation": "烹饪时间估算: ",
+  "additional_info": "关于订单的任何特殊要求吗？",
+  "choose_delivery_address": "选择送货地址",
+  "your_balance": "您的余额：",
+  "pay_at_delivery": "上门付款",
+  "cant_pay_at_delivery": "无法上门付款",
+  "pay_now": "立即付款",
+  "cant_prepay_balance_insufficient": "无法在线支付、余额不足",
+  "your_balance_is": "余额 : ",
+  "restaurant_no_allow_prepay": "这家餐厅不允许预付款、无法在线支付",
+  "balance_insufficient": "无法在线支付、余额不足",
+  "cant_pay_at_delivery_max_pay_reached": "无法上门支付、上门支付限额已超过了",
+  "cant_pay_because_ongoing_order": "无法付款，因为您已经有正在进行的订单。请与管理员联系以解决此问题。\\n谢谢。",
+  "restaurant_no_allow_pay_at_delivery": "很抱歉，这家餐厅不允许上门付款。",
+  "sorry_ongoing_order": "无法付款，因为您已经有正在进行的订单。请与管理员联系以解决此问题。\\n谢谢。",
+  "prevent_pay_at_delivery": "通过选择此模式，您表示您同意向送货员提供正确的金额。",
+  "choose_delivery_frame": "请选择送货时间范围",
+  "food_will_be_delivered_on": "您的订单交送将于",
+  "between": "",
+  "and": "和",
+  "300_wrong_password": "密码确认错误。请使用正确的密码进行确认。",
+  "301_server_issue": "很抱歉给您带来的不便，我们的服务器出现问题。请稍后重试",
+  "302_unable_pay_at_arrival": "很抱歉，这家餐厅不允许送货上门付款",
+  "303_unable_online_payment": "很抱歉，这家餐厅不允许在线付款",
+  "304_address_error": "抱歉, 送货地址有误.",
+  "305_308_balance_insufficient": "抱歉、余额不足",
+  "306_account_error": "用户账户错误。请联系客服",
+  "307_unable_preorder": "抱歉、暂时不允许预购",
+  "309_system_error": "抱歉、服务出问题了。请稍等再试试。谢谢",
+  "order_congratz_praise": "恭喜您成功实现这个订单。请保持手机靠近以方便检查订单处理过程",
+  "order_get_delivered_now_hint": "购买并立即交货",
+  "preorder_now_hint": "购买并选择将来送货时间范围",
+  "confirm_preorder": "确认预购",
+  "delivery_discount": "运费优惠",
+  "preorder_desc": "购买并选择将来送货时间范围",
+  "pay_with_kaba_balance":"用快跋在线支付",
+  "pay_with_cash_at_delivery": "上门用现金支付",
+  "out_of_delivery_range": "抱歉、此送货地址已超出了此饭店的送货范围。请换地址或换店吧",
+  "pay_at_arrival": "上门付款"
+
+}

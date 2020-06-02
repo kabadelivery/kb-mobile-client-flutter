@@ -33,9 +33,9 @@ class RecoverPasswordPage extends StatefulWidget {
 class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements RecoverPasswordView {
 
 
-  List<String> recoverModeHints;
+  List<String> recoverModeHints = [""];
 
-  String _loginFieldHint;
+  String _loginFieldHint = "";
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
@@ -57,10 +57,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   void initState() {
     super.initState();
 
-    _loginFieldHint = "${AppLocalizations.of(context).translate('phone_number_hint')}";
-    recoverModeHints = ["${AppLocalizations.of(context).translate('recover_password_hint')}",
-      /*"Insert your E-mail address"*/];
-
     this.widget.presenter.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null && customer.phone_number != null) {
@@ -71,6 +67,13 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     });
     /* retrieve state of the app */
     _retrieveRequestParams();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loginFieldHint = "${AppLocalizations.of(context).translate('phone_number_hint')}";
+    recoverModeHints = ["${AppLocalizations.of(context).translate('recover_password_hint')}",/*"Insert your E-mail address"*/];
   }
 
   @override

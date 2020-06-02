@@ -117,7 +117,8 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             supportedLocales: [
               Locale('en', 'US'),
-//              Locale('fr', 'FR'),
+              Locale('fr', 'FR'),
+              Locale('zh', 'CN')
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,

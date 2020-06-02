@@ -43,7 +43,6 @@
 
 
   "recover_password_hint": "Insert the Phone number you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
-  "recover_password": "RECOVER PASSWORD",
   "insert_phone_number": "Please insert your account Phone number",
   "password_updated_success": "Password updated successfully",
   "password_recover_fails": "Sorry password recovery can't happen now. Please try again.",
@@ -55,7 +54,7 @@
   "settings": "Settings",
 
   "logout": "Logout",
-  "all_restaurant": "ALL RESTAURANTS",
+  "all_restaurants": "ALL RESTAURANTS",
   "call_us": "CALL US",
   "best_seller": "BEST SELLER",
   "events": "EVENEMENTS",
@@ -77,7 +76,6 @@
   "suggestions": "Suggestions ?",
   "profile": "PROFILE",
   "addresses": "ADDRESSES",
-  "orders": "Orders",
   "feeds": "FEEDS",
   "please_check_balance": "Please check your balance if you have successfully achieved topup",
   "currency": "XOF",
@@ -89,7 +87,7 @@
   "confirm_password": "Please confirm your personal Password",
   "confirm_password_launch_order": "Please confirm you personal Password to launch the Order",
 
-  "info_page_informations": "#TOGO\\n\\n© Tous droits réservés\\nKABA DELIVERY SARL\\n2018 - ",
+  "info_page_informations": "#TOGO\\n\\n© All rights reserved\\nKABA DELIVERY SARL\\n2018 - ",
   "version": "Version:",
   "edit_address": "EDIT ADDRESS",
   "location_name": "Name of Location (For you)",
@@ -131,12 +129,10 @@
 
 
   "balance": "Solde",
-  "top_up": "Recharger",
   "kaba_points": "DELETE",
 
 
   "why_top_up_fees": "Fees allow us to support the transactions cost with T-money and Flooz",
-  "top_up": "TOP UP",
   "operator": "OPERATEUR",
   "amount": "AMOUNT",
   "fees": "Fees",
@@ -173,7 +169,7 @@
 
   "my_profile": "MY PROFILE",
   "job_title": "Job title",
-  "your_district": "DELETE",
+  "your_district": "District",
   "gender": "Gender",
   "woman_gender": "Woman",
   "man_gender": "Man",
@@ -197,7 +193,6 @@
   "ad_check_restaurant": "CHECK RESTAURANT",
 
 
-  "try_again": "TRY AGAIN",
   "buy": "BUY",
 
 
@@ -205,7 +200,7 @@
   "review_us": "Please review us",
   "votes": "Votes",
   "r_closed_preorder": "Closed => Preorder",
-  "r_opened": "DELETE",
+  "r_opened": "Opened",
   "r_pause_preorder": "Breaktime => Preorder",
   "r_blocked_preorder": "Preorder only",
   "review": "Review",
@@ -226,6 +221,60 @@
   "send_review": "REVIEW",
   "please_give": "Please give",
   "a_review": "a review...",
-  "please_review_restaurant": "Please give the restaurant a review about. We really appreciate it. \\nThank you"
+  "please_review_restaurant": "Please give the restaurant a review about. We really appreciate it. \\nThank you",
+
+
+  "coming_soon_dialog": "Hello, This restaurant will be soon available on the platform.\\n Please remain patient."
+  "coming_soon": "Coming soon",
+  "out_of_range": "Out of Range",
+  "km":"Km",
+
+
+  "confirm_order": "Confirm Order",
+  "processing_payment": "Hello, we are processing your payment. Please wait V(^_^)V",
+
+  "order_amount": "Order Price:",
+  "delivery_amount": "Delivery price:",
+  "net_price": "Net to Pay:",
+  "discount": "Discount",
+  "cooking_time_estimation": "Cooking Time estimation: ",
+  "additional_info": "Any special request about the order ?",
+  "choose_delivery_address": "Choose delivery Address",
+  "your_balance": "Your balance:",
+  "pay_at_delivery": "PAY AT DELIVERY",
+  "cant_pay_at_delivery": "you can't pay at delivery.",
+  "pay_now": "PAY NOW",
+  "cant_prepay_balance_insufficient": "You can't prepay because your balance is insufficient ",
+  "your_balance_is": "Your balance is : ",
+  "restaurant_no_allow_prepay": "You can't prepay because this restaurant doesn't allow prepay.",
+  "balance_insufficient": "You can't prepay because your balance is insufficient",
+  "cant_pay_at_delivery_max_pay_reached": "You can't pay at delivery because your order is more than the maximum pay at delivery amount",
+  "cant_pay_because_ongoing_order": "You can't pay because you already have an ongoing order. Please contact the administrator to solve this issue. \\nThank you.",
+  "restaurant_no_allow_pay_at_delivery": "Sorry this restaurant doesn't allow pay at delivery.",
+  "sorry_ongoing_order": "Sorry, you already have an ongoing order. Please contact customer care for more informations.",
+  "prevent_pay_at_delivery": "By choosing this mode, you are accepting to give the right amount of money to the delivery man.",
+  "choose_delivery_frame": "Please choose a delivery frame",
+  "food_will_be_delivered_on": "Your food will be delivered on",
+  "between": "between",
+  "and": "and",
+  "300_wrong_password": "Password confirmation wrong. Please confirm with the right password.",
+  "301_server_issue": "Sorry for the disconvenience, our server is having issues. Please try again later",
+  "302_unable_pay_at_arrival": "Sorry, this restaurant doesn't allow \\\"Paying at Arrival\\\"",
+  "303_unable_online_payment": "Sorry, this restaurant doesn't accept \\\"Online Payment\\",
+  "304_address_error": "Sorry, delivery address error.",
+  "305_308_balance_insufficient": "Sorry, insufficient balance",
+  "306_account_error": "User account error. Please contact our customer care service.",
+  "307_unable_preorder": "Sorry, preorder is not allowed for now",
+  "309_system_error": "Sorry for the disconvenience, our server is having issues. Please try again later",
+  "order_congratz_praise": "Congratulations for passing your order. Please keep your phone close to be able to check the command process.",
+  "order_get_delivered_now_hint": "Order and get delivered now",
+  "preorder_now_hint": "Pre-order and get delivered in a future time frame",
+  "confirm_preorder": "Confirm Pre - Order",
+  "delivery_discount": "Delivery discount",
+  "preorder_desc": "Preorder now and get delivered at a specific time in the future",
+  "pay_with_kaba_balance": "Pay now with your Kaba balance",
+  "pay_with_cash_at_delivery": "Pay at delivery with ca\\$h to the delivery man directly",
+  "out_of_delivery_range": "Sorry,The delivery address is out of range of delivery. Please a restaurant that is closer to you and try again.",
+  "pay_at_arrival": "PAY AT ARRIVAL"
 
 }
