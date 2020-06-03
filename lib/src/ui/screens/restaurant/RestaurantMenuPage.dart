@@ -662,70 +662,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     _updateCounts();
   }
 
-  /*void _launchAddToBasketAnimation(RestaurantFoodModel food) {
-    var animationController = _createAnimationController();
-    _animationController.add(animationController);
-    _dynamicAnimatedFood.add(_createAnimatedFoodWidgetToDrop(food, animationController));
-  }*/
-
   void _launchAddToBasketAnimation(Offset position, RestaurantFoodModel food) {
 
     return;
-    /* var vView = CustomAnimatedPosition(
-      context: context,
-      left: position.dx,
-      top: position.dy,
-      duration: Duration(seconds: 10),
-      child: Container(
-          height: 50, width: 50,
-          decoration: BoxDecoration(
-              border: new Border.all(
-                  color: KColors.primaryYellowColor, width: 2),
-              shape: BoxShape.circle,
-              image: new DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-              )
-          )),
-    );*/
-
-
-    /*Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        vView.addToBasket();
-
-      });
-    });*/
-
-    var _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-    var _offsetAnimation = Tween<Offset>(
-      begin: position,
-//      end: Offset(MediaQuery.of(context).size.width-100, 40),
-      end: Offset(0, 0),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticIn,
-    ));
-
-    var vView = SlideTransition(
-      position: _offsetAnimation,
-      child: Container(
-          height: 50, width: 50,
-          decoration: BoxDecoration(
-              border: new Border.all(
-                  color: KColors.primaryYellowColor, width: 2),
-              shape: BoxShape.circle,
-              image: new DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-              )
-          )),
-    );
-
-//    _dynamicAnimatedFood.add(vView);
   }
 
   void showLoading(bool isLoading) {
@@ -793,13 +732,6 @@ class CustomAnimatedPosition extends AnimatedPositioned {
   Duration duration;
   int serial;
   var context;
-
-
-//  static CustomAnimatedPosition of(BuildContext context, AnimatedPositioned aspect) {
-//    return InheritedModel.inheritFrom<CustomAnimatedPosition>(context, aspect: aspect);
-//  }
-
-//  ABModel({ this.a, this.b, Widget child }) : super(child: child);
 
   CustomAnimatedPosition({this.context, this.right, this.bottom, this.left, this.top, this.duration, this.child}) : super(
       child: child, right:right, bottom:bottom, left:left, top:top, duration:duration);

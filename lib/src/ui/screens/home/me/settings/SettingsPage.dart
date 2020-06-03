@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-          backgroundColor: Colors.white, brightness: Brightness.light, title: Text("Preferences", style:TextStyle(color:KColors.primaryColor))),
+          backgroundColor: Colors.white, brightness: Brightness.light, title: Text("${AppLocalizations.of(context).translate('settings')}", style:TextStyle(color:KColors.primaryColor))),
       body: Container(
           child:Container(
             child: Column(

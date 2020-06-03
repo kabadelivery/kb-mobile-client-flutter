@@ -154,7 +154,7 @@
   "ad_check_restaurant": "VOIR RESTAURANT",
   "buy": "ACHETER",
   "note_reviews": "Notes and Commentaires",
-  "review_us": "Donnez nous votre avis",
+  "review_us": "Donnez nous votre avis SVP",
   "votes": "Votes",
   "r_closed_preorder": "Fermé => Précommandez",
   "r_opened": "Ouvert",
@@ -224,6 +224,33 @@
   "pay_with_kaba_balance": "Payer maintenant avec votre Solde KABA",
   "pay_with_cash_at_delivery": "Pay at delivery with ca\\$h to the delivery man directly",
   "out_of_delivery_range": "Désolé, l'adresse de livraison est hors zone. Veuillez sélectionner un restaurant plus proche de vous et réessayez. Merci",
-  "pay_at_arrival": "PAYER À L'ARRIVÉE"
+  "pay_at_arrival": "PAYER À L'ARRIVÉE",
+
+  "coupon": "BONS",
+  "last_orders": "COMMANDES RECENTES",
+  "waiting": "en attente",
+  "cooking": "préparation",
+  "shipping": "livraison",
+  "delivered": "livrée",
+  "rejected": "rejetée",
+  "shipping_price": "FRAIS DE LIVRAISON",
+  "delivery_day": "Jour de Livraison:",
+  "delivery_time_frame": "Heure de Livraison:",
+  "transactions_history": "Historique de Transactions",
+
+
+  "foods": "Repas",
+  "addons": "Suppléments",
+  "all": "Tous",
+  "search_place": "Rechercher Place",
+  "tap_location": "Sélectionnez cet endroit",
+  "this_location": "Cet endroit",
+  "nearby_places": "Nearby Places",
+
+
+  "identifier": "Identifiant",
+  "login_top_hint": "Insert the Phone number you used to create your KABA account"
+
+
 
 }

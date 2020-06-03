@@ -118,7 +118,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
 
     List<Widget> bottomSheetView = <Widget>[
       SizedBox(height: 10),
-      Center(child: Container(decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))), margin: EdgeInsets.only(top:10), padding: EdgeInsets.only(left:10, right: 10, top:5, bottom: 5), child: Text("${type == 1 ? "Foods" : (type==2 ? "Adds-on" : "ALL")}", style: TextStyle(color:Colors.white),textAlign: TextAlign.center))),
+      Center(child: Container(decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))), margin: EdgeInsets.only(top:10), padding: EdgeInsets.only(left:10, right: 10, top:5, bottom: 5),
+          child: Text("${type == 1 ? "${AppLocalizations.of(context).translate('foods')}".toUpperCase() : (type==2 ? "${AppLocalizations.of(context).translate('addons')}" : "${AppLocalizations.of(context).translate('all')}")}".toUpperCase(), style: TextStyle(color:Colors.white),textAlign: TextAlign.center))),
       SizedBox(height: 10),
     ];
 
@@ -151,7 +152,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Wrap(children: bottomSheetView)
           ),
         ),
-        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child: RaisedButton(child: Text("ACHETER", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
+        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child:
+        RaisedButton(child: Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
       ],
     );
   }

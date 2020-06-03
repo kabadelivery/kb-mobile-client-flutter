@@ -259,8 +259,8 @@
   "and": "and",
   "300_wrong_password": "Password confirmation wrong. Please confirm with the right password.",
   "301_server_issue": "Sorry for the disconvenience, our server is having issues. Please try again later",
-  "302_unable_pay_at_arrival": "Sorry, this restaurant doesn't allow \\\"Paying at Arrival\\\"",
-  "303_unable_online_payment": "Sorry, this restaurant doesn't accept \\\"Online Payment\\",
+  "302_unable_pay_at_arrival": "Sorry, this restaurant doesn't allow \"Paying at Arrival\"",
+  "303_unable_online_payment": "Sorry, this restaurant doesn't accept \"Online Payment\"",
   "304_address_error": "Sorry, delivery address error.",
   "305_308_balance_insufficient": "Sorry, insufficient balance",
   "306_account_error": "User account error. Please contact our customer care service.",
@@ -275,6 +275,29 @@
   "pay_with_kaba_balance": "Pay now with your Kaba balance",
   "pay_with_cash_at_delivery": "Pay at delivery with ca\\$h to the delivery man directly",
   "out_of_delivery_range": "Sorry,The delivery address is out of range of delivery. Please a restaurant that is closer to you and try again.",
-  "pay_at_arrival": "PAY AT ARRIVAL"
+  "pay_at_arrival": "PAY AT ARRIVAL",
+
+  "coupon": "COUPON",
+  "last_orders": "LAST ORDERS",
+  "waiting": "waiting",
+  "cooking": "cooking",
+  "shipping": "shipping",
+  "delivered": "delivered",
+  "rejected": "rejected",
+  "shipping_price": "SHIPPING PRICE",
+  "delivery_day": "Day of delivery:",
+  "delivery_time_frame": "Time Frame:",
+  "transactions_history": "Transactions History",
+  "foods": "Foods",
+  "addons": "Add-Ons",
+  "all": "All",
+  "search_place": "Search Place",
+  "tap_location": "Tap to select this location",
+  "this_location": "This location",
+  "nearby_places": "Nearby Places",
+
+  "identifier": "Identifier",
+  "login_top_hint": "Insert the Phone number you used to create your KABA account"
+
 
 }

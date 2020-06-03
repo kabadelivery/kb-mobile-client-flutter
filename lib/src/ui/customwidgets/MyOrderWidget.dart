@@ -1,14 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class MyOrderWidget extends StatefulWidget {
 
@@ -45,8 +44,8 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
               children: <Widget>[
                 // just in case this is a preorder
                 SizedBox(height: 10),
-                widget?.command?.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("Jour de livraison", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
-                widget?.command?.is_preorder == 1 ? Container(color: Colors.black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("Période de livraison", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                widget?.command?.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_day')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                widget?.command?.is_preorder == 1 ? Container(color: Colors.black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_time_frame')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
                 (Card(
                     elevation: 8.0,
                     margin: new EdgeInsets.symmetric(horizontal: 10.0),
@@ -82,7 +81,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                             Row(   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 IconButton(icon: Icon(Icons.local_shipping, size: 40,)),
-                                Text("SHIPPING PRICE", style: TextStyle(fontSize: 18, color: Colors.grey),),
+                                Text("${AppLocalizations.of(context).translate('shipping_price')}".toUpperCase(), style: TextStyle(fontSize: 17, color: Colors.grey),),
                                 Container(color: Colors.grey,padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command?.is_preorder == 1 ? command.preorder_shipping_pricing :(command.is_promotion == 1 ? command.promotion_shipping_pricing : command.shipping_pricing)} F", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))
                               ],
                             ),
@@ -95,13 +94,13 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                                 Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
                                 Row(children: <Widget>[
-                                  Text('TOTAL: ',style: new TextStyle(color: Colors.black, fontSize: 18)),
+                                  Text('${AppLocalizations.of(context).translate('total')}: '.toUpperCase(),style: new TextStyle(color: Colors.black, fontSize: 18)),
                                   Container(child: Text("${command?.is_preorder == 1 ? command.preorder_total_pricing :(command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
                                 ])
                               ]),
                             ),
                             /* pay at arrival condition? */
-                            command.is_payed_at_arrival ? Container(padding: EdgeInsets.only(top:8, bottom:8), color: KColors.mBlue,child: Center(child: Text("PAY AT ARRIVAL", style: TextStyle(color: Colors.white,fontSize: 20),))) : Container(),
+                            command.is_payed_at_arrival ? Container(padding: EdgeInsets.only(top:8, bottom:8), color: KColors.mBlue,child: Center(child: Text("${AppLocalizations.of(context).translate('pay_at_arrival')}", style: TextStyle(color: Colors.white,fontSize: 20),))) : Container(),
                           ])
                         )
                     ))
@@ -140,16 +139,16 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
     // delivered ?
     switch(command.state) {
       case 0:
-        return "WAITING";
+        return "${AppLocalizations.of(context).translate('waiting')}".toUpperCase();
       case 1:
-        return "COOKING";
+        return "${AppLocalizations.of(context).translate('cooking')}".toUpperCase();
       case 2:
-        return "SHIPPING";
+        return "${AppLocalizations.of(context).translate('shipping')}".toUpperCase();
       case 3:
-        return "DELIVERED";
+        return "${AppLocalizations.of(context).translate('delivered')}".toUpperCase();
         break;
       default:
-        return "REJECTED";
+        return "${AppLocalizations.of(context).translate('rejected')}".toUpperCase();
     }
   }
 
@@ -212,7 +211,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                           SizedBox(width: 5),
                           (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
                               : Container()),
-                          Text("FCFA", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                          Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                         ]),
                       ]),
                     ),

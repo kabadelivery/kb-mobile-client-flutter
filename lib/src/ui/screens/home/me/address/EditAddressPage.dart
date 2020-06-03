@@ -161,7 +161,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                     ],
                   ),color: KColors.primaryColor, onPressed: () => _saveAddress()),
                   SizedBox(width: 10),
-                  MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Text("CANCEL", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),color: Colors.white, onPressed: () => _exit())
+                  MaterialButton(padding: EdgeInsets.only(top:10, bottom: 10), shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(5.0)), child: Text("${AppLocalizations.of(context).translate('cancel')}", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),color: Colors.white, onPressed: () => _exit())
                 ],
               )
             ]
@@ -192,7 +192,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
 
     /* get my position */
-    //    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
@@ -205,7 +204,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       });
       print(address.location);
       // use mvp to launch a request and place the result here.
-//      userDataBloc.checkLocationDetails(userToken: UserTokenModel.fake(), position: Position(longitude: result.longitude, latitude: result.latitude));
       widget.presenter.checkLocationDetails(widget.customer, position:  Position(longitude: result.longitude, latitude: result.latitude));
     } else {}
   }

@@ -1467,6 +1467,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   @override
   void inflateBillingConfiguration2(OrderBillConfiguration configuration) {
 
+    StateContainer.of(context).balance = configuration.account_balance;
     _orderBillConfiguration.account_balance = configuration.account_balance;
     _orderBillConfiguration.max_pay = configuration.max_pay;
     _orderBillConfiguration.out_of_range = configuration.out_of_range;

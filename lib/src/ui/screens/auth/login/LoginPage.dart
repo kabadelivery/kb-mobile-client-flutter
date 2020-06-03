@@ -42,11 +42,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> implements LoginView {
 
-  String hint = "Insert the Phone number you used to create your KABA account";
+  String hint = "";
 
   bool isConnecting = false;
 
   TextEditingController _loginFieldController = new TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    hint = "${AppLocalizations.of(context).translate('login_phonenumber_hint')}";
+  }
 
   @override
   Future<void> initState() {
@@ -94,7 +100,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: "Identifier"), style: TextStyle(color:KColors.primaryColor)),
+                            child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: 8, keyboardType: TextInputType.number, decoration:
+                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:KColors.primaryColor)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                     SizedBox(height: 30),
                     Row(
@@ -112,7 +119,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                             ],
                           ), onPressed: () {_launchConnexion();}),
                           SizedBox(width:20),
-                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("REGISTER", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
+                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
                         ]),
                     SizedBox(height: 30),
                     GestureDetector(
@@ -146,9 +153,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void _moveToRecoverPasswordPage() {
-    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+    /*Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
         builder: (BuildContext context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())), (
-        r) => false);
+        r) => false);*/
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())),
+    );
   }
 
   Future _launchConnexion() async {
@@ -206,7 +219,70 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     });
   }
 
-  void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
+  void mToast(String message) {
+//    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    mDialog(message);
+  }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
 
 
   Future<bool> _getIsOkWithTerms() async {
@@ -303,59 +379,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void networkError() {
     mToast("${AppLocalizations.of(context).translate('network_error')}");
-  }
-
-
-  void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              //
-              OutlineButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]
-        );
-      },
-    );
   }
 
 }

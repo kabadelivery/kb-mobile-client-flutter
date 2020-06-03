@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -185,7 +186,7 @@ class PlacePickerState extends State<PlacePicker> {
                 ),
                 Padding(
                   child: Text(
-                    "Nearby Places",
+                    "${AppLocalizations.of(context).translate('nearby_places')}",
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -405,7 +406,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// then the road name returned is used instead.
   String getLocationName() {
     if (this.locationResult == null) {
-      return "This location";
+      return "${AppLocalizations.of(context).translate('this_location')}";
     }
 
     for (NearbyPlace np in this.nearbyPlaces) {
@@ -593,7 +594,7 @@ class SearchInputState extends State<SearchInput> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                hintText: "Search place",
+                hintText: "${AppLocalizations.of(context).translate('search_place')}",
                 border: InputBorder.none,
               ),
               controller: this.editController,
@@ -672,7 +673,7 @@ class SelectPlaceAction extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Tap to select this location",
+                      "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 15,

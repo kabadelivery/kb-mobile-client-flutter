@@ -17,6 +17,7 @@
   static final String topup = "assets/images/vectors/prepaid.svg";
   static final String transfer_money = "assets/images/vectors/transfer_money.svg";
   static final String balance = "assets/images/vectors/balance.svg";
+  static final String coupon = "assets/images/vectors/coupon.svg";
 
   // presentation screens
   static final String p_f_1 = "assets/images/vectors/app_presentation/sl_choice.svg";
