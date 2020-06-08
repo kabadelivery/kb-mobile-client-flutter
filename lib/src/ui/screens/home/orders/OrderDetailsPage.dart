@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/order_feedback_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,13 +21,11 @@ class OrderDetailsPage extends StatefulWidget {
 
   OrderDetailsPresenter presenter;
 
-
   OrderDetailsPage ({Key key, this.orderId, this.presenter}) : super(key: key);
 
   int orderId;
   CustomerModel customer;
   CommandModel command;
-
 
   @override
   _OrderDetailsPageState createState() => _OrderDetailsPageState();
@@ -86,22 +83,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     return Scaffold(
         appBar: AppBar(
             backgroundColor: KColors.primaryColor,
-            title: Text("Command Details",
+            title: Text("${AppLocalizations.of(context).translate('order_details')}",
                 style: TextStyle(fontSize: 20, color: Colors.white))),
-        body: /*StreamBuilder<Object>(
-            stream: userDataBloc.orderDetails,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return _inflateDetails(snapshot.data);
-              } else if (snapshot.hasError) {
-                return ErrorPage(onClickAction: () {
-                  CustomerUtils.getCustomer().then((customer) {
-                    userDataBloc.fetchOrderDetails(customer, orderId);
-                  });
-                });
-              }
-              return Center(child: CircularProgressIndicator());
-            })*/
+        body:
         isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
         _inflateDetails())
     );
@@ -129,7 +113,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   padding: EdgeInsets.all(10),
                   child: RichText(
                     text: new TextSpan(
-                      text: 'Latest Update: ',
+                      text: '${AppLocalizations.of(context).translate('latest_update')}: ',
                       style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(text: " ${_orderLastUpdate(widget.command)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black.withAlpha(200))),
@@ -145,7 +129,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Center(child: Text("RATING", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
+                          Center(child: Text("${AppLocalizations.of(context).translate('rating')}".toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
                           SizedBox(height: 5),
                           Row(children: <Widget>[]
                             ..addAll(
@@ -169,7 +153,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("Your contact", style: TextStyle(color: Colors.black, fontSize: 16))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('your_contact')}:", style: TextStyle(color: Colors.black, fontSize: 16))),
                   Flexible (child: Text("${widget.command?.shipping_address?.phone_number}", style: TextStyle(color: Colors.black, fontSize: 14))),
                 ]),
               ),
@@ -179,7 +163,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("Command key", style: TextStyle(color: Colors.black, fontSize: 16))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('command_key')}", style: TextStyle(color: Colors.black, fontSize: 16))),
                   Flexible (child: Text("${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
                 ]),
               ),
@@ -191,7 +175,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("Kaba-man Name", style: TextStyle(color: Colors.black, fontSize: 16))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_name')}", style: TextStyle(color: Colors.black, fontSize: 16))),
                   Flexible (child: Text("${widget?.command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
                 ]),
               ),
@@ -201,7 +185,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("Kaba-man Phone", style: TextStyle(color: Colors.black, fontSize: 16))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_phone')}", style: TextStyle(color: Colors.black, fontSize: 16))),
                   MaterialButton(padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: KColors.primaryColor, splashColor: Colors.white, child: Row(
                     children: <Widget>[
                       Icon(Icons.phone, color: Colors.white),
@@ -225,7 +209,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("Not so far from", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700)),
+                        Text("${AppLocalizations.of(context).translate('not_far_from')}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700)),
                         SizedBox(height: 10),
                         Text("${widget.command?.shipping_address?.near}", style: TextStyle(color: Colors.black, fontSize: 14)),
                       ]),
@@ -241,7 +225,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("Description", style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black, fontSize: 16)),
+                        Text("${AppLocalizations.of(context).translate('description')}", style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black, fontSize: 16)),
                         SizedBox(height: 10),
                         Text("${widget.command?.shipping_address?.description}", style: TextStyle(color: Colors.black, fontSize: 14)),
                       ]),
@@ -251,7 +235,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               widget.command?.infos == null || widget.command?.infos?.trim()?.length == 0 ? Container() : Container(margin: EdgeInsets.only(top:10, bottom:10),color: CommandStateColor.delivered, padding: EdgeInsets.all(10), child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: Text("Informations: ${widget.command.infos}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white))),
+                  Expanded(child: Text("${AppLocalizations.of(context).translate('informations')}: ${widget.command.infos}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white))),
                 ],
               )),
               SizedBox(height: 10),
@@ -271,16 +255,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   String _orderTopLabel(CommandModel command) {
     switch(widget?.command?.state) {
       case 0:
-        return "ORDER IS WAITING";
+        return "${AppLocalizations.of(context).translate('order_waiting')}".toUpperCase();
       case 1:
-        return "ORDER IS COOKING";
+        return "${AppLocalizations.of(context).translate('order_cooking')}".toUpperCase();
       case 2:
-        return "ORDER'S HITTING THE ROAD";
+        return "${AppLocalizations.of(context).translate('order_deliverying')}".toUpperCase();
       case 3:
-        return "ORDER HAS BEEN DELIVERED";
+        return "${AppLocalizations.of(context).translate('order_delivered')}".toUpperCase();
         break;
       default:
-        return "ORDER REJECTED";
+        return "${AppLocalizations.of(context).translate('order_rejected')}".toUpperCase();
     }
   }
 
@@ -303,7 +287,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
 
               widget?.command?.state == COMMAND_STATE.WAITING ?
-              Container(decoration: BoxDecoration(color: CommandStateColor.waiting, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("En attente", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
+              Container(decoration: BoxDecoration(color: CommandStateColor.waiting, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("${AppLocalizations.of(context).translate('waiting')}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
@@ -336,7 +320,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
               SizedBox(width: 10),
               widget?.command?.state == COMMAND_STATE.COOKING ?
-              Container(decoration: BoxDecoration(color: CommandStateColor.cooking, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("COOKING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
+              Container(decoration: BoxDecoration(color: CommandStateColor.cooking, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("${AppLocalizations.of(context).translate('cooking')}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
         ],
@@ -353,7 +337,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
 
               widget?.command?.state == COMMAND_STATE.SHIPPING ?
-              Container(decoration: BoxDecoration(color: CommandStateColor.shipping, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("SHIPPING", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
+              Container(decoration: BoxDecoration(color: CommandStateColor.shipping, borderRadius: BorderRadius.all(Radius.circular(5))), child: Text("${AppLocalizations.of(context).translate('shipping')}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
 
               SizedBox(width: 10),
             ],
@@ -380,7 +364,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
               SizedBox(width: 10),
               widget?.command?.state == COMMAND_STATE.DELIVERED ?
-              Container(decoration: BoxDecoration(color: CommandStateColor.delivered, borderRadius: BorderRadius.all(Radius.circular(5))),   child: Text("DELIVERED", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
+              Container(decoration: BoxDecoration(color: CommandStateColor.delivered, borderRadius: BorderRadius.all(Radius.circular(5))),   child: Text("${AppLocalizations.of(context).translate('delivered')}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), padding: EdgeInsets.only(top:5, bottom:5, right: 10, left: 10)) : Container(),
             ],
           ))
         ],
@@ -459,11 +443,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchOrderDetailsWithId(widget.customer, widget.orderId); });
   }
 
   _buildBill() {
@@ -516,7 +500,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             /* content */
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-              Text("Montant Commande:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text("${AppLocalizations.of(context).translate('order_amount')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               /* check if there is promotion on Commande */
               Row(
                 children: <Widget>[
@@ -532,7 +516,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             ]),
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-              Text("Montant Livraison:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text("${AppLocalizations.of(context).translate('delivery_amount')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               /* check if there is promotion on Livraison */
               Row(
                 children: <Widget>[
@@ -550,7 +534,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             SizedBox(height: 10),
             int.parse(widget.command?.remise) > 0 ?
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-              Text("Remise:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('discount')}:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey)),
               /* check if there is remise */
               Text("-${widget.command?.remise}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CommandStateColor.delivered)),
             ]) : Container(),
@@ -559,7 +543,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-              Text("Net à Payer:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text("${AppLocalizations.of(context).translate('net_price')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               Text("${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 18)),
             ]),
             SizedBox(height: 10),

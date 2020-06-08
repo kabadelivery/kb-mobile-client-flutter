@@ -32,6 +32,23 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
     super.initState();
   }
 
+  List<String> dayz = [];
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    dayz = [
+      "${AppLocalizations.of(context).translate('monday_long')}",
+      "${AppLocalizations.of(context).translate('tuesday_long')}",
+      "${AppLocalizations.of(context).translate('wednesday_long')}",
+      "${AppLocalizations.of(context).translate('thursday_long')}",
+      "${AppLocalizations.of(context).translate('friday_long')}",
+      "${AppLocalizations.of(context).translate('saturday_long')}",
+      "${AppLocalizations.of(context).translate('sunday_long')}",
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -44,7 +61,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
               children: <Widget>[
                 // just in case this is a preorder
                 SizedBox(height: 10),
-                widget?.command?.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_day')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                widget?.command?.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_day')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start, dayz: dayz)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
                 widget?.command?.is_preorder == 1 ? Container(color: Colors.black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_time_frame')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
                 (Card(
                     elevation: 8.0,
@@ -73,7 +90,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 //                            border: new Border.all(color: Colors.white.withAlpha(100)),
                                 borderRadius: BorderRadius.all(Radius.circular(5))
                             ),
-                                child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)))
+                                child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)))
                           ]))
                         ]..addAll(_orderFoodList(command?.food_list))
                           ..addAll(<Widget>[

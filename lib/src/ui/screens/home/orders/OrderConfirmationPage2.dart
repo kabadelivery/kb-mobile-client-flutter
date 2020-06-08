@@ -84,6 +84,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   _OrderConfirmationPage2State();
 
+  List<String> dayz = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -96,6 +98,21 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       // check opening state of the restaurant
       widget.presenter.checkOpeningStateOf(customer, widget.restaurant);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    dayz = [
+      "${AppLocalizations.of(context).translate('monday_long')}",
+      "${AppLocalizations.of(context).translate('tuesday_long')}",
+      "${AppLocalizations.of(context).translate('wednesday_long')}",
+      "${AppLocalizations.of(context).translate('thursday_long')}",
+      "${AppLocalizations.of(context).translate('friday_long')}",
+      "${AppLocalizations.of(context).translate('saturday_long')}",
+      "${AppLocalizations.of(context).translate('sunday_long')}",
+    ];
   }
 
   @override
@@ -523,9 +540,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                           Text("${AppLocalizations.of(context).translate('your_balance')}", style: TextStyle(fontSize: 14)),
                           SizedBox(width: 10),
                           Text("${AppLocalizations.of(context).translate('currency')} ${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance}",
-                            style: TextStyle(color: KColors.primaryColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.normal)),
+                              style: TextStyle(color: KColors.primaryColor,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal)),
                         ],
                       ),
                       RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
@@ -902,7 +919,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (!isDialogShown) {
       _showDialog(
           iccon: VectorsData.questions,
-          message: "${AppLocalizations.of(context).translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start)} between ${Utils.timeStampToHourMinute(selectedFrame.start)} and ${Utils.timeStampToHourMinute(selectedFrame.end)}",
+          message: "${AppLocalizations.of(context).translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start, dayz:dayz)} between ${Utils.timeStampToHourMinute(selectedFrame.start)} and ${Utils.timeStampToHourMinute(selectedFrame.end)}",
           isYesOrNo: true,
           actionIfYes: () => _payPreorder(true)
       );
@@ -1083,7 +1100,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     }
   }
 
- /* void _showOrderFailureDialog() {
+  /* void _showOrderFailureDialog() {
     _showDialog(
       icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black),
       message: "Sorry, there is a problem with your order. Please try again.",

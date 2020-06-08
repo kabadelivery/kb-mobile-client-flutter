@@ -310,9 +310,29 @@
 
 
   "identifier": "手机号码",
-  "login_top_hint": "Insert the Phone number you used to create your KABA account"
+  "no_upcoming_events": "抱歉，暂时没有即将举行的活动！",
+  "monday_long": "周一",
+  "tuesday_long": "周二",
+  "wednesday_long": "周三",
+  "thursday_long": "周四",
+  "friday_long": "周五",
+  "saturday_long": "周六",
+  "sunday_long": "周日",
 
-
+  "order_details": "订单详细",
+  "latest_update": "最后更新",
+  "rating": "评价",
+  "your_contact": "您的电话",
+  "command_key": "订单密码",
+  "kaba_man_name": "配送人昵称",
+  "kaba_man_phone": "配送人电话",
+  "description": "描述",
+  "informations": "备注",
+  "order_waiting": "订单正在等待",
+  "order_cooking": "订单正在煮熟",
+  "order_deliverying": "订单正在配送",
+  "order_delivered": "已配送成功",
+  "order_rejected": "订单被拒绝"
 
 
 }

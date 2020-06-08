@@ -88,8 +88,7 @@ class AppApiProvider {
           String description_details = json.decode(
               response.body)["data"]["display_name"];
           String quartier = DeliveryAddressModel
-              .fromJson(json.decode(response.body)["data"]["address"])
-              .suburb;
+              .fromJson(json.decode(response.body)["data"]["address"]).suburb;
           /* return only the content we need */
           DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(
               description: description_details, quartier: quartier);

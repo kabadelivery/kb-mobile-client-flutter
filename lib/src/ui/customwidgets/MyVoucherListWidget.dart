@@ -23,13 +23,11 @@ class _MyVoucherListWidgetState extends State<MyVoucherListWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return
       ClipPath(
         clipper: VoucherListItemClipper(),

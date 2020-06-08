@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
+import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
@@ -128,7 +131,8 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             onGenerateTitle: (BuildContext context) =>
-            "${AppLocalizations.of(context).translate('app_title')}",
+//            "${AppLocalizations.of(context).translate('app_title')}",
+            "KABA",
             theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
@@ -144,6 +148,7 @@ class _MyAppState extends State<MyApp> {
 //    home: WebViewPage(agreement: true),
 //    home: WebTestPage(),
 //    home: TransferMoneySuccessPage(),
+//            home: MyVoucherListWidget(),
             routes: generalRoutes,
           );
         }));

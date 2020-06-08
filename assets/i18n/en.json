@@ -58,6 +58,7 @@
   "call_us": "CALL US",
   "best_seller": "BEST SELLER",
   "events": "EVENEMENTS",
+
   "try_again": "TRY AGAIN",
   "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again.",
   "error_message": "Error message",
@@ -297,7 +298,31 @@
   "nearby_places": "Nearby Places",
 
   "identifier": "Identifier",
-  "login_top_hint": "Insert the Phone number you used to create your KABA account"
+
+  "no_upcoming_events": "Sorry, there is no upcoming event for now!",
+  "monday_long": "Monday",
+  "tuesday_long": "Tuesday",
+  "wednesday_long": "Wednesday",
+  "thursday_long": "Thursday",
+  "friday_long": "Friday",
+  "saturday_long": "Saturday",
+  "sunday_long": "Sunday",
+
+  "order_details": "Order Details",
+  "latest_update": "Latest Update: ",
+  "rating": "RATING",
+  "your_contact": "Your contact",
+  "command_key": "Command key",
+  "kaba_man_name": "Kaba-Man Name",
+  "kaba_man_phone": "Kaba man Phone",
+  "description": "Description",
+  "informations": "Informations:",
+  "order_waiting": "Order is WAITING",
+  "order_cooking": "Order is COOKING",
+  "order_deliverying": "Order's Hitting the Road",
+  "order_delivered": "Order has been delivered",
+  "order_rejected": "Order Rejected"
+
 
 
 }

@@ -1,17 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:KABA/src/contracts/ads_viewer_contract.dart';
-import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
-import 'package:KABA/src/models/AdModel.dart';
-import 'package:KABA/src/models/BestSellerModel.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/EvenementModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 
 class EvenementPage extends StatefulWidget {
@@ -51,7 +45,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("EVENTS", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('events')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Container(
@@ -100,11 +94,11 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "System error.",onClickAction: (){ widget.presenter.fetchEvenements(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchEvenements(); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "Network error.",onClickAction: (){ widget.presenter.fetchEvenements(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchEvenements(); });
   }
 
   _buildEvenementsList() {
@@ -178,7 +172,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
           children: <Widget>[
             IconButton(icon: Icon(Icons.event, color: Colors.grey)),
             SizedBox(height: 10),
-            Text("Sorry, there is no upcoming event for now!", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            Text("${AppLocalizations.of(context).translate('no_upcoming_events')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
           ],
         ));
   }

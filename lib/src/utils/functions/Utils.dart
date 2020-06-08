@@ -210,7 +210,7 @@ class Utils {
     return phone_number.substring(0,2)+"****"+phone_number.substring(6,8);
   }
 
-  static String timeStampToDayDate (String timeStamp) {
+  static String timeStampToDayDate (String timeStamp, {List<String> dayz}) {
 
     try {
       int unixSeconds = int.parse(timeStamp);
@@ -218,7 +218,8 @@ class Utils {
 
       int day_of_week = date.weekday;
 
-      List<String> dayz = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+      if (dayz == null || dayz.length != 7)
+        dayz = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
       int day = date.day;
       int month = date.month;

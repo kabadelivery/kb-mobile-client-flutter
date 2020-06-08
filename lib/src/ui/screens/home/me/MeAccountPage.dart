@@ -389,7 +389,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),
-                                      TableCell(child: Container(
+                                    /*  TableCell(child: Container(
                                         padding: EdgeInsets.all(10),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -404,7 +404,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             Text("${AppLocalizations.of(context).translate('coupon')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                           ],
                                         ),
-                                      )),
+                                      )),*/
                                       TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
