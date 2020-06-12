@@ -140,7 +140,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
                 ),
-                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
               )),
           leading: IconButton(icon: SizedBox(

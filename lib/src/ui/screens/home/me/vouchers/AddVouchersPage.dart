@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/ui/customwidgets/MyAddressListWidget.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 
 
 class AddVouchersPage extends StatefulWidget {

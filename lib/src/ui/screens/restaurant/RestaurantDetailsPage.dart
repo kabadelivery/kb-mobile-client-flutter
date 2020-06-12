@@ -260,8 +260,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Icon(Icons.star, size: 20, color: Colors.grey),
-                                Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}")
+                                Icon(Icons.star, size: 20, color: KColors.primaryColor),
+                                Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(color: KColors.primaryColor),)
                               ],
                             ),
                           )

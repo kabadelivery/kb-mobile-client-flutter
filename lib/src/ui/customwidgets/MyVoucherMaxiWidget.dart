@@ -6,20 +6,18 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 
-class MyVoucherListWidget extends StatefulWidget {
+class MyVoucherMaxiWidget extends StatefulWidget {
 
-  MyVoucherListWidget();
+  MyVoucherMaxiWidget();
 
   @override
-  _MyVoucherListWidgetState createState() {
-    // TODO: implement createState
-    return _MyVoucherListWidgetState();
+  _MyVoucherMaxiWidgetState createState() {
+    return _MyVoucherMaxiWidgetState();
   }
 
 }
 
-class _MyVoucherListWidgetState extends State<MyVoucherListWidget> {
-
+class _MyVoucherMaxiWidgetState extends State<MyVoucherMaxiWidget> {
 
   @override
   void initState() {
@@ -29,47 +27,42 @@ class _MyVoucherListWidgetState extends State<MyVoucherListWidget> {
   @override
   Widget build(BuildContext context) {
     return
-      ClipPath(
-        clipper: VoucherListItemClipper(),
+      Container(
         child: (
-            Card(margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                child: SizedBox(
-                  height: 120,
-                  child:  InkWell(onTap: () => _jumpToVoucherDetails(),
-                    child: Container(
-                      child: Row(children: <Widget>[
-                        Expanded(child: Container(constraints: BoxConstraints.expand(),child: Center(child:
-                        Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                          Text('2000',  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 22)),
-                          Text(" FCFA", style: TextStyle(fontSize: 8, color: Colors.white)),
-                        ])), color: KColors.primaryColor), flex: 3),
-                        Expanded(child: Container(padding: EdgeInsets.all(10), child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                          Text("WINGS'N SHAKE TOTSI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
-                          Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,  children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                /* if not yet, */
-                                Container(padding: EdgeInsets.only(left:2, right: 2), decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    border: new Border.all(color: Colors.transparent),
-                                    color: Colors.green.withAlpha(100)
-                                ), child: Row(children: <Widget>[Icon(Icons.blur_on, color: Colors.black, size: 20),
-                                  Text("2019/04/05", style: TextStyle(color: Colors.black,fontSize: 10))])),
-                                SizedBox(height: 5),
-                                /* if already, expiry date */
-                                Container(padding: EdgeInsets.only(left:2, right: 2), decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
-                                    border: new Border.all(color: Colors.transparent),
-                                    color: Colors.red.withAlpha(100)
-                                ), child: Row(children: <Widget>[Icon(Icons.blur_off, color: Colors.black, size: 20),
-                                  Text("2019/04/05", style: TextStyle(color: Colors.black,fontSize: 10))])),
-                              ],
-                            ),
-                            Icon(FontAwesomeIcons.qrcode, color: Colors.black, size: 20)
-                          ]),
-                        ])),flex: 5)
-                      ]),
-                    ),
+            Column(
+              children: <Widget>[
+                Column(children: <Widget>[
+                  SizedBox(height: 10),
+                  Text("Wings'n Shake TOTSI", textAlign: TextAlign.left, style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 10),
+                  Text("-1000 de réduction sur toutes vos commandes au Wing's shake Totsi.", textAlign: TextAlign.left),
+                  SizedBox(height: 10),
+                  Text("(Promotion Valable uniquement dans ce restaurant)", textAlign: TextAlign.left),
+                  SizedBox(height: 10),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("TOTSIPOULET2007"),
+                        Text("5000")
+                      ]
                   ),
-                ))
+                  SizedBox(height: 10),
+                  Text("Expire le 20/07", textAlign: TextAlign.center),
+                  SizedBox(height: 10),
+                ]),
+                /* space for the code promo it's self */
+                ClipPath(
+                  clipper: VoucherMaxMiddleClipper(),
+                  child: Container(width: MediaQuery.of(context).size.width, height:60,
+                    child: Text("WNSTOTSI0720"),
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsets.only(top:50, bottom: 10),
+                    child: Text("Expires on 20/07"
+                    )
+                )
+              ],
+            )
         ),
       );
   }
@@ -117,6 +110,24 @@ class _MyVoucherListWidgetState extends State<MyVoucherListWidget> {
  */
 
 }
+
+class VoucherMaxMiddleClipper extends CustomClipper<Path> {
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.arcToPoint(Offset(0,60));
+    path.lineTo(size.width, size.height);
+    path.arcToPoint(Offset(size.width,0));
+    path.lineTo(0,0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip (VoucherMaxMiddleClipper oldClipper) => true;
+}
+
 
 class VoucherListItemClipper extends CustomClipper<Path> {
 

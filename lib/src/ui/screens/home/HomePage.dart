@@ -1,3 +1,4 @@
+import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     checkLogin();
     homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter());
     restaurantListPage = RestaurantListPage(key: restaurantKey);
-    dailyOrdersPage = DailyOrdersPage(key: orderKey);
+    dailyOrdersPage = DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();

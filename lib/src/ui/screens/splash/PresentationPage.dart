@@ -31,6 +31,7 @@ class _SplashPageState extends State<PresentationPage> {
   @override
   Widget build(BuildContext context) {
     var screens = IntroScreens(
+      skipText: "${AppLocalizations.of(context).translate('skip_text')}",
       onDone: () => _endOfTheSlides(),
       onSkip: () => _skipPresentation(),
       footerBgColor: TinyColor.fromString("#cc1641").lighten().color,

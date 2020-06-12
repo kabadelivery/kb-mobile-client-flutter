@@ -51,6 +51,8 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
+  int MAX_FOOD_COUNT = 5;
+
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -257,7 +259,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   _increaseQuantity() {
-    if (quantity< 9)
+    if (quantity < MAX_FOOD_COUNT)
       setState(() {
         quantity++;
       });

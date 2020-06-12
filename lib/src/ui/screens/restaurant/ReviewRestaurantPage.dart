@@ -75,7 +75,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage> implements 
                 SizedBox(height:10),
 
                 Container (margin: EdgeInsets.only(left:20, right:20, top:20),decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200), padding: EdgeInsets.all(10),
-                    child: TextField(controller: _reviewTextController, style: TextStyle(color: Colors.black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
+                    child: TextField(controller: _reviewTextController, style: TextStyle(color: Colors.black, fontSize: 16), minLines: 3, maxLength: 500, textAlign: TextAlign.left,
                       decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('please_give')} ${widget?.restaurant?.name?.toUpperCase()} ${AppLocalizations.of(context).translate('a_review')}"),
                     )),
                 SizedBox(height:10),

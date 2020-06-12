@@ -18,6 +18,7 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 import '../../../StateContainer.dart';
 
@@ -40,6 +41,8 @@ class _SplashPageState extends State<SplashPage> {
     // TODO: implement initState
     super.initState();
     startTimeout();
+
+    _listenToUniLinks();
   }
 
   Future _getLastKnowLocation() async {
@@ -191,4 +194,65 @@ class _SplashPageState extends State<SplashPage> {
       ),
     );
   }
+
+  void _listenToUniLinks() {
+    initUniLinks();
+    initUniLinksStream();
+  }
+
+// uni-links
+  Future<Null> initUniLinks() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      String initialLink = await getInitialLink();
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+      print("initialLink ${initialLink}");
+      _handleLinks(initialLink);
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+      print("initialLink PlatformException");
+    }
+  }
+
+  StreamSubscription _sub;
+
+  Future<Null> initUniLinksStream() async {
+
+    // Attach a listener to the stream
+    _sub = getLinksStream().listen((String link) {
+      // Parse the link and warn the user, if it is not correct
+      print("initialLinkStream ${link}");
+      _handleLinks(link);
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+      print("initialLinkStreamError");
+    });
+
+    // NOTE: Don't forget to call _sub.cancel() in dispose()
+  }
+
+  void _handleLinks(String link) {
+
+    // if you are logged in, we can just move to the activity.
+    Uri mUri = Uri.parse(link);
+//    mUri.scheme == "https";
+    print("host -> ${mUri.host}");
+    print("path -> ${mUri.path}");
+    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+/*
+* /food/345
+* /menu/890
+* /orders
+* /order/000
+* /transactions
+* /restaurant/900
+*
+* */
+
+// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+
+  }
+
 }

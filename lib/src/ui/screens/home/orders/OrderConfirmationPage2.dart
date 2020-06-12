@@ -418,7 +418,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text("${AppLocalizations.of(context).translate('cooking_time_estimation')}", style: TextStyle(fontSize: 16)),
-              Text("30 min",
+              Text("30 ${AppLocalizations.of(context).translate('min_short')}",
                   style: TextStyle(color: KColors.primaryColor, fontSize: 18))
             ]));
   }
@@ -919,7 +919,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     if (!isDialogShown) {
       _showDialog(
           iccon: VectorsData.questions,
-          message: "${AppLocalizations.of(context).translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start, dayz:dayz)} between ${Utils.timeStampToHourMinute(selectedFrame.start)} and ${Utils.timeStampToHourMinute(selectedFrame.end)}",
+          message: "${AppLocalizations.of(context).translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start, dayz:dayz)} ${AppLocalizations.of(context).translate('between')} ${Utils.timeStampToHourMinute(selectedFrame.start)} ${AppLocalizations.of(context).translate('and')} ${Utils.timeStampToHourMinute(selectedFrame.end)}",
           isYesOrNo: true,
           actionIfYes: () => _payPreorder(true)
       );
@@ -995,7 +995,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               //
               OutlineButton(
                 child: new Text(
-                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   if (!okBackToHome) {
                     Navigator.of(context).pop();
@@ -1315,7 +1315,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   // left date, time,
                   // right checkbox
                   Row(children: <Widget>[
-                    Container(child: Text("${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames[index].start)}", style: TextStyle(color: Colors.white)),
+                    Container(child: Text("${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames[index].start, dayz: dayz)}", style: TextStyle(color: Colors.white)),
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(5)),

@@ -3,12 +3,9 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
-import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
-import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
@@ -24,11 +21,16 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
+
 import 'src/StateContainer.dart';
+
 
 
 Future<void> main() async {
@@ -38,6 +40,8 @@ Future<void> main() async {
   await appLanguage.fetchLocale();
   runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
 }
+
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -148,7 +152,8 @@ class _MyAppState extends State<MyApp> {
 //    home: WebViewPage(agreement: true),
 //    home: WebTestPage(),
 //    home: TransferMoneySuccessPage(),
-//            home: MyVoucherListWidget(),
+//            home: TestPage2(),
+//            home: VoucherDetailsPage(),
             routes: generalRoutes,
           );
         }));
@@ -306,6 +311,5 @@ Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
       0, notificationItem.title, notificationItem.body, platformChannelSpecifics,
       payload: notificationItem.destination.toSpecialString()
   );
-
 }
 

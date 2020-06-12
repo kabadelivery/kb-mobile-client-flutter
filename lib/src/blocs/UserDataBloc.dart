@@ -4,7 +4,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/repository.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserDataBloc {
@@ -32,7 +32,7 @@ class UserDataBloc {
   Stream<List<DeliveryAddressModel>> get deliveryAddress => _deliveryAddressFetcher.stream;
 
   /* vouchers subscriptions */
-  final _subcribedVouchersFetcher = PublishSubject<List<MyVoucherListWidget>>();
+//  final _subcribedVouchersFetcher = PublishSubject<List<MyVoucherListWidget>>();
 //  Observable<List<DeliveryAddressModel>> get subscribedVouchers => _subcribedVouchersFetcher.stream;
 
   /* check location details */

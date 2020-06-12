@@ -4,7 +4,6 @@
   "cant_get_location": "Can't get current location",
   "please_enable_gps": "Please make sure you enable GPS and try again",
   "ok": "Ok",
-
   "choice": "Choice",
   "choice_desc": "Choose menu",
   "payment": "Payment",
@@ -13,7 +12,6 @@
   "address_desc": "Choose a delivery address",
   "enjoy": "Enjoy",
   "enjoy_desc": "Enjoy your food !",
-
   "login_phonenumber_hint": "Insert the Phone number you used to create your KABA account",
   "connexion": "CONNEXION",
   "recover_password": "Recover Password",
@@ -28,7 +26,6 @@
   "network_error": "Sorry, Network error. Please check network and try again.",
   "refuse": "REFUSE",
   "accept": "ACCEPT",
-
   "new_account_phonenumber_hint": "Insert the Phone number you are most likely to make T-MONEY or FLOOZ transactions with.\\n\\nOnly TOGOLESE phone numbers are allowed.",
   "phone_number_hint": "90 XX XX XX",
   "nickname": "Nickname",
@@ -39,39 +36,28 @@
   "user_exists": "User Exists Already",
   "wrong_code": "Code is WRONG",
   "press_code_hint": "Press on code the code button. \\n\\nPlease insert the code you will receive",
-
-
-
   "recover_password_hint": "Insert the Phone number you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
   "insert_phone_number": "Please insert your account Phone number",
   "password_updated_success": "Password updated successfully",
   "password_recover_fails": "Sorry password recovery can't happen now. Please try again.",
-
   "home": "Home",
   "restaurant": "Restaurant",
   "orders": "Orders",
   "account": "Account",
   "settings": "Settings",
-
   "logout": "Logout",
   "all_restaurants": "ALL RESTAURANTS",
   "call_us": "CALL US",
   "best_seller": "BEST SELLER",
   "events": "EVENEMENTS",
-
   "try_again": "TRY AGAIN",
   "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again.",
   "error_message": "Error message",
   "new": "NEW",
   "promo": "PROMO",
-
-
   "find_menu_or_restaurant": "Any restaurant? Menu ?",
-
-
   "no_order_today": "You have made no order yet today !",
   "system_error": "Sorry, system error. Wait a moment and try again",
-
   "top_up": "Top up",
   "transfer": "Transfer",
   "suggestions": "Suggestions ?",
@@ -80,15 +66,13 @@
   "feeds": "FEEDS",
   "please_check_balance": "Please check your balance if you have successfully achieved topup",
   "currency": "XOF",
-
   "input_password": "INPUT PASSWORD",
   "delete": "DELETE",
   "enter_password": "Please enter your personal Password",
   "setup_password": "Please setup a personal Password",
   "confirm_password": "Please confirm your personal Password",
   "confirm_password_launch_order": "Please confirm you personal Password to launch the Order",
-
-  "info_page_informations": "#TOGO\\n\\n© All rights reserved\\nKABA DELIVERY SARL\\n2018 - ",
+  "info_page_informations": "#TOGO\n\n© All rights reserved\nKABA DELIVERY SARL\n2018 - ",
   "version": "Version:",
   "edit_address": "EDIT ADDRESS",
   "location_name": "Name of Location (For you)",
@@ -102,8 +86,6 @@
   "address_creation_success": "Address creation success",
   "address_creation_failure": "Address creation failure",
   "gps_pick_again": "Please, pick gps location again.",
-
-
   "monday_short": "Mon",
   "tuesday_short": "Tue",
   "wednesday_short": "Wed",
@@ -111,8 +93,6 @@
   "friday_short": "Fri",
   "saturday_short": "Sat",
   "sunday_short": "Sun",
-
-
   "delete_error": "Delete error",
   "delete_network_error": "Delete network error",
   "are_you_sure_to_delete_address": "Are you sure to delete this address ?",
@@ -120,19 +100,13 @@
   "sorry_no_location_yet": "Sorry, there is no Pre-registred location. \\nCreate a delivery address now !",
   "create_new_address": "CREER NOUVELLE ADRESSE",
   "my_addresses": "MY ADDRESSES",
-
-
   "customer_care": "Customer Care",
   "any_feedback_right_here": "If you have any feedback for us, you are at the right place!",
   "send_message_network_error": "Send message network error",
   "send_message_system_error": "Send message system error",
   "message_too_short": "Sorry, message to short. Can't send",
-
-
   "balance": "Solde",
   "kaba_points": "DELETE",
-
-
   "why_top_up_fees": "Fees allow us to support the transactions cost with T-money and Flooz",
   "operator": "OPERATEUR",
   "amount": "AMOUNT",
@@ -140,12 +114,8 @@
   "total": "Total",
   "please_wait_fees_percentage": "Please wait until we update fees percentage.",
   "phone_number_wrong": "Phone number is wrong",
-
-
   "my_balance": "MY BALANCE",
   "sorry_empty_transactions": "Sorry, you have made no transaction yet !",
-
-
   "top_kaba_account": "TO KABA ACCOUNT",
   "insert_transfer_amount": "Please enter the amount you want to transfer",
   "pay": "PAY",
@@ -153,21 +123,14 @@
   "balance_not_sufficient": "Sorry, Balance not enough. Please top up your account by T-money and Flooz and try again.",
   "password_wrong_": "Sorry, Password wrong. Check your password and try again",
   "transaction_error": "Sorry, Transaction error.\\nPlease contact system administrator.",
-
-
   "real_time_transfer_no_refunded": "Real time transfer can't be refunded.",
   "next": "NEXT",
   "cant_transfer_own_account": "Sorry, can't transfer money to your own account",
   "user_no_exists_in_db": "Sorry, user doesn't exist in our database.",
-
-
   "success": "Success",
   "payee": "Payee",
-
-
   "_confirm": "Confirm",
   "email": "E-mail",
-
   "my_profile": "MY PROFILE",
   "job_title": "Job title",
   "your_district": "District",
@@ -179,35 +142,27 @@
   "cancel": "CANCEL",
   "please_fill_all_fields": "Please fill all the fields",
   "field_more_6_chars": "This field must have more than 6 characters.",
-
-
+  "field_more_2_chars": "This field must have more than 2 characters.",
   "preferences": "Preferences",
   "change_password": "Change Account Password",
   "terms_and_conditions": "Terms and Conditions",
   "app_info": "App Info",
   "faq": "FAQ",
-
   "ad_check_food": "BUY FOOD",
   "ad_ad_check_article": "CHECK ARTICLE",
   "ad_check_website": "CHECK WEBSITE",
   "ad_check_menu": "CHECK MENU",
   "ad_check_restaurant": "CHECK RESTAURANT",
-
-
   "buy": "BUY",
-
-
   "note_reviews": "Notes and Reviews",
   "review_us": "Please review us",
-  "votes": "Votes",
+  "votes": "Reviews",
   "r_closed_preorder": "Closed => Preorder",
   "r_opened": "Opened",
   "r_pause_preorder": "Breaktime => Preorder",
   "r_blocked_preorder": "Preorder only",
   "review": "Review",
-  "see_menu": "See the Menu",
-
-
+  "see_menu": "Check the Menu",
   "opening_time": "Opening Time",
   "powered_by_kaba_tech": "Powered by >> Kaba Technlogies",
   "min_reached": "MIN REACHED",
@@ -218,22 +173,16 @@
   "add_to_basket": "Add to Basket",
   "basket": "BASKET",
   "reviewing_success": "Thank you for submitting your review.",
-
   "send_review": "REVIEW",
   "please_give": "Please give",
   "a_review": "a review...",
   "please_review_restaurant": "Please give the restaurant a review about. We really appreciate it. \\nThank you",
-
-
   "coming_soon_dialog": "Hello, This restaurant will be soon available on the platform.\\n Please remain patient.",
   "coming_soon": "Coming soon",
   "out_of_range": "Out of Range",
   "km":"Km",
-
-
   "confirm_order": "Confirm Order",
   "processing_payment": "Hello, we are processing your payment. Please wait V(^_^)V",
-
   "order_amount": "Order Price:",
   "delivery_amount": "Delivery price:",
   "net_price": "Net to Pay:",
@@ -277,7 +226,6 @@
   "pay_with_cash_at_delivery": "Pay at delivery with ca\\$h to the delivery man directly",
   "out_of_delivery_range": "Sorry,The delivery address is out of range of delivery. Please a restaurant that is closer to you and try again.",
   "pay_at_arrival": "PAY AT ARRIVAL",
-
   "coupon": "COUPON",
   "last_orders": "LAST ORDERS",
   "waiting": "waiting",
@@ -296,9 +244,7 @@
   "tap_location": "Tap to select this location",
   "this_location": "This location",
   "nearby_places": "Nearby Places",
-
   "identifier": "Identifier",
-
   "no_upcoming_events": "Sorry, there is no upcoming event for now!",
   "monday_long": "Monday",
   "tuesday_long": "Tuesday",
@@ -307,7 +253,6 @@
   "friday_long": "Friday",
   "saturday_long": "Saturday",
   "sunday_long": "Sunday",
-
   "order_details": "Order Details",
   "latest_update": "Latest Update: ",
   "rating": "RATING",
@@ -321,8 +266,10 @@
   "order_cooking": "Order is COOKING",
   "order_deliverying": "Order's Hitting the Road",
   "order_delivered": "Order has been delivered",
-  "order_rejected": "Order Rejected"
-
-
-
+  "order_rejected": "Order Rejected",
+  "min_short": "min",
+  "skip_text": "SKIP",
+  "refresh": "refresh",
+  "insert_message": "Insert your message",
+  "reload": "Reload"
 }

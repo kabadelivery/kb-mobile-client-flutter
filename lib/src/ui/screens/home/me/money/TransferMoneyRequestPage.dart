@@ -90,7 +90,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
 //              "Phone Number",
               SizedBox(height: 10),
 
-              Container(child:Text("${AppLocalizations.of(context).translate('real_time_transfer_no_refunded')}", textAlign: TextAlign.left, style: TextStyle(fontSize: 12, color: Colors.grey))),
+              Container(child:Text("${AppLocalizations.of(context).translate('real_time_transfer_no_refunded')}", textAlign: TextAlign.left, style: TextStyle(fontSize: 12, color: Colors.grey)), margin: EdgeInsets.only(left:10,right:10,top:10),),
 
               SizedBox(height: 10),
 

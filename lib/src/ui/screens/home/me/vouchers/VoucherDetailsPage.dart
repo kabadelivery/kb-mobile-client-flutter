@@ -1,4 +1,5 @@
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -46,9 +47,12 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
           margin: EdgeInsets.only(left:40, right: 40, top: 30),
           color: Colors.white,
           child: Container(
-            padding: EdgeInsets.only(top: 20, right: 10, left: 10, bottom: 10),
+            padding: EdgeInsets.only(top: 30, right: 10, left: 10, bottom: 10),
             child: Column(
                 children: <Widget>[
+                  SizedBox(height:10),
+                  Text("Bon de Reduction", style: KStyles.hintTextStyle_gray),
+                  SizedBox(height:10),
                   /* code qr; s'il est possible de partager cela */
                   Container(height: 160, width: 160,
                       child: QrImage(
@@ -67,12 +71,12 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   SizedBox(height: 10),
 
                   /* price */
-                  Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+             /*     Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('2000',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
                     Text(" FCFA", style: TextStyle(fontSize: 10, color: KColors.primaryColor)),
-                  ]),
+                  ]),*/
                   Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                    Text('50',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
+                    Text('-10',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
                     Text(" %", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),
                   ]),
 
@@ -80,11 +84,20 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   SizedBox(height: 20),
                   Text("WINGS'N SHAKE TOTSI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
                   SizedBox(height: 20),
+                  Column(
+                    children: <Widget>[
+                      Text("CODE PROMO", style: KStyles.hintTextStyle_gray),
+                    ],
+                  ),
+                  SizedBox(height:10),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* repas concernes */
-                  SizedBox(height: 20),
-                  Text('WINGS 5P / SALADE VERTE / WINGS 10PIECES',textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
-                  SizedBox(height: 20),
+                  Container(
+//                    color: Colors.yellow,
+                    padding: EdgeInsets.only(top:20, bottom:20),
+                    child:
+                    Text('WINGS10PIECES20',textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* debut d'utilisation */
                   SizedBox(height: 20),
@@ -92,14 +105,14 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       children: <Widget>[
                         Column(
                             children: <Widget>[
-                              Text("Available Since", style: TextStyle(color: Colors.green)),
-                              Text("2019-02-20")
+                              Text("Available Since", style: TextStyle(color: Colors.green, fontSize: 13)),
+                              Text("2019-02-20",style: TextStyle(fontSize: 13))
                             ]
                         ),
                         Column(
                             children: <Widget>[
-                              Text("Expiry date",  style: TextStyle(color: KColors.primaryColor)),
-                              Text("2019-02-20")
+                              Text("Expiry date",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
+                              Text("2019-02-20",style: TextStyle(fontSize: 13))
                             ]
                         )
                       ]),
@@ -112,6 +125,19 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
         ),
       ),
     );
+  }
+
+  void _copyIntoClipboard(String codePromo) {
+    ClipboardManager.copyToClipBoard(codePromo).then((result) {
+      final snackBar = SnackBar(
+        content: Text('${codePromo} Copied to Clipboard'),
+      /*  action: SnackBarAction(
+//          label: 'Undo',
+          onPressed: () {},
+        ),*/
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
   }
 
 }

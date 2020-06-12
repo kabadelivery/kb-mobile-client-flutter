@@ -197,7 +197,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     String content = _filterEditController.text;
     List<RestaurantModel> d = List();
     for (var restaurant in data) {
-      if ("${restaurant.menu_foods}${restaurant.name}".toLowerCase().contains(content.trim().toLowerCase())) {
+      if ("${restaurant.name}".toLowerCase().contains(content.trim().toLowerCase())) {
         d.add(restaurant);
       }
     }
@@ -208,4 +208,3 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     _filterEditController.clear();
   }
 }
-

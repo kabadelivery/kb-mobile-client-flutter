@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 50),
+                    SizedBox(height: 80),
                     Text("${AppLocalizations.of(context).translate('connexion')}", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 100),
                     SizedBox(height: 10),
@@ -125,7 +125,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     GestureDetector(
                       child:Text("${AppLocalizations.of(context).translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
                       onTap: (){_moveToRecoverPasswordPage();},
-                    )
+                    ),
+                    SizedBox(height: 50),
                   ]
               ),
             ),
@@ -316,7 +317,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           VectorsData.terms_and_conditions
                       )),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate('accept_terms_and_conditions')} ?", textAlign: TextAlign.center,
+                  Text("${AppLocalizations.of(context).translate('accept_terms_and_conditions')}", textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 13))
                 ]
             ),

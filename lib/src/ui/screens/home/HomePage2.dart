@@ -1,3 +1,4 @@
+import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
@@ -65,7 +66,7 @@ class _Home2PageState extends State<Home2Page> {
     checkLogin();
 //    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter());
     restaurantListPage = RestaurantListPage(key: restaurantKey);
-    dailyOrdersPage = DailyOrdersPage(key: orderKey);
+    dailyOrdersPage = DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter(),);
     meAccountPage = MeAccountPage(key: meKey);
     pages = [/*homeWelcomePage,*/ restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();

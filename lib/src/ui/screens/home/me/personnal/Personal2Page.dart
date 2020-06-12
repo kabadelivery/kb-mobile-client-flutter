@@ -10,6 +10,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
@@ -72,8 +73,8 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
   }
 
   String _validateName(String value) {
-    if (value.length < 6) {
-      return "${AppLocalizations.of(context).translate('field_more_6_chars')}";
+    if (value.length < 2) {
+      return "${AppLocalizations.of(context).translate('field_more_2_chars')}";
 //      return 'This field must have more than 6 characters.';
     }
     return null;
@@ -275,9 +276,71 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       showLoading(true);
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
-      mToast("${AppLocalizations.of(context).translate('please_fill_all_fields')}");
+      mDialog("${AppLocalizations.of(context).translate('please_fill_all_fields')}");
     }
   }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              //
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
 
   void _cancelAll() {
     // pop and go back to the previous page. 
@@ -318,13 +381,16 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
   @override
   void updatePersonnalPage(CustomerModel data) {
     /* quit */
-    mToast(data.toJson().toString());
+//    mToast(data.toJson().toString());
     /* persist it into the sys */
     CustomerUtils.updateCustomerPersist(data);
     // quit the page after three seconds
     Future.delayed(Duration(seconds: 3)).whenComplete((){Navigator.pop(context);});
   }
 
-  void mToast(String message) { Toast.show(message, context, duration: Toast.LENGTH_LONG);}
+  void mToast(String message) {
+//    mDialog(message);
+    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
 
 }

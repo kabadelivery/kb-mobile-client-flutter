@@ -183,6 +183,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                         isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
+                    SizedBox(height: 50),
                   ]
               ),
             ),

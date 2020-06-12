@@ -79,17 +79,35 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
   _buildSysErrorPage() {
     return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
-      child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text("${AppLocalizations.of(context).translate('system_error')}", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
-      ]),
+      child: Column(mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+        SizedBox(height: 10),
+          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Expanded(child: Text("${AppLocalizations.of(context).translate('system_error')}",textAlign: TextAlign.center, style: TextStyle(color: Colors.white))), SizedBox(width: 10)
+          ]),
+          SizedBox(height: 10),
+          RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
+              child: Text("Reload",style: TextStyle(color: Colors.black))),
+          SizedBox(height: 10),
+        ],
+      ),
     ));
   }
 
   _buildNetworkErrorPage() {
     return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
-      child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Text("${AppLocalizations.of(context).translate('network_error')}", style: TextStyle(color: Colors.white)), SizedBox(width: 10), RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white, child: Text("Reload",style: TextStyle(color: Colors.black)))
-      ]),
+      child: Column(mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+        SizedBox(height: 10),
+          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Expanded(child: Text("${AppLocalizations.of(context).translate('network_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))), SizedBox(width: 10)
+          ]),
+          SizedBox(height: 10),
+          RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
+              child: Text("Reload",style: TextStyle(color: Colors.black))),
+          SizedBox(height: 10),
+        ],
+      ),
     ));
   }
 
@@ -99,7 +117,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
       child: Stack(
         children: <Widget>[
           Container(margin: EdgeInsets.only(bottom:63, right:10, left:10),
-           child: (widget.messages == null || widget.messages?.length == 0) ? _buildEmptyPage() : ListView(children: <Widget>[]..addAll(
+            child: (widget.messages == null || widget.messages?.length == 0) ? _buildEmptyPage() : ListView(children: <Widget>[]..addAll(
                 List.generate(widget.messages?.length,
                         (int position) {
                       return Column(
@@ -144,7 +162,8 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                   Stack(
                     children: <Widget>[
                       SizedBox(/*height: 50+50*(_messageController.text.length~/30)*1.5, */ width: MediaQuery.of(context).size.width-80,
-                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble()),child: TextField(controller: _messageController, maxLines: 6, minLines: 1, decoration: InputDecoration.collapsed(hintText: "Insert your message")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
+                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble()),child: TextField(controller: _messageController, maxLines: 6, minLines: 1,
+                            decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('insert_message')}")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
                       ),
                       Positioned(right:10,child: IconButton(icon: Icon(Icons.my_location, color: Colors.green), onPressed: ()=>_pickAddress()))
                     ],
@@ -170,7 +189,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
       widget.messages = customerCareChats.reversed.toList();
     });
 
-   /* Timer(Duration(milliseconds: 500), () {
+    /* Timer(Duration(milliseconds: 500), () {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
 //    _scrollController.animateTo(40000, duration: Duration(milliseconds: 500), curve: null);
     });*/
@@ -260,7 +279,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     careChatMessageModel.created_at = (DateTime.now().millisecondsSinceEpoch.toInt()/1000).toInt();
 
     setState(() {
-     var tmp = widget.messages.reversed.toList();
+      var tmp = widget.messages.reversed.toList();
       tmp.add(careChatMessageModel);
       widget.messages = tmp.reversed.toList();
     });

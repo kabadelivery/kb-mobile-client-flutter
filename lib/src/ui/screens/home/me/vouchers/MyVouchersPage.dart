@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherListWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:toast/toast.dart';
@@ -41,7 +41,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> {
                   children: <Widget>[
                   ]..addAll(
                       List<Widget>.generate(12, (int index) {
-                        return MyVoucherListWidget();
+                        return MyVoucherMiniWidget();
                       })
                   )..add(
                       SizedBox(height: 100)
