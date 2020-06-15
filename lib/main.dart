@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/TestPage2.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -152,7 +154,7 @@ class _MyAppState extends State<MyApp> {
 //    home: WebViewPage(agreement: true),
 //    home: WebTestPage(),
 //    home: TransferMoneySuccessPage(),
-//            home: TestPage2(),
+//            home: MyVouchersPage(),
 //            home: VoucherDetailsPage(),
             routes: generalRoutes,
           );

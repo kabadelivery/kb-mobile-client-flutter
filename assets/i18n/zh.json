@@ -177,7 +177,7 @@
   "please_give": "请",
   "a_review": "评论...",
   "please_review_restaurant": "感谢您对其饭店的评价",
-  "coming_soon_dialog": "你好！这家饭店即将商平台了。请保持耐心",
+  "coming_soon_dialog": "你好！这家饭店即将商平台了。请关注",
   "coming_soon": "即将登场",
   "out_of_range": "超出范围",
   "km":"公里",
@@ -271,5 +271,7 @@
   "skip_text": "跳过",
   "refresh": "更新",
   "insert_message": "请输入信息。。。",
-  "reload": "重试"
+  "reload": "重试",
+  "my_vouchers": "我的票圈",
+  "sorry_no_coupon": "您暂时没有票圈。"
 }

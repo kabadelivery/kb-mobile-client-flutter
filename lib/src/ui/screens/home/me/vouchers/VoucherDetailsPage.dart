@@ -96,11 +96,16 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                    color: Colors.yellow,
                     padding: EdgeInsets.only(top:20, bottom:20),
                     child:
-                    Text('WINGS10PIECES20',textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold)),
+                    InkWell(
+                      onTap: ()=>_copyIntoClipboard("WINGS10PIECES20"),
+                        child: Text('WINGS10PIECES20',textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
                   ),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* debut d'utilisation */
                   SizedBox(height: 20),
+
+                  /* use counts for me \ category of voucher \ type of voucher \ */
+
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Column(

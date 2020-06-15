@@ -271,5 +271,7 @@
   "skip_text": "SKIP",
   "refresh": "refresh",
   "insert_message": "Insert your message",
-  "reload": "Reload"
+  "reload": "Reload",
+  "my_vouchers": "My Vouchers",
+  "sorry_no_coupon": "Sorry, you have no vouchers available to use."
 }

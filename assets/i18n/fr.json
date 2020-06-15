@@ -271,5 +271,7 @@
   "skip_text": "PASSER",
   "refresh": "Actualiser",
   "insert_message": "Veuillez insérer votre message",
-  "reload": "Recharger"
+  "reload": "Recharger",
+  "my_vouchers": "Mes Bons",
+  "sorry_no_coupon": "Désolé, vous ne possédez pas de bons actuellement."
 }

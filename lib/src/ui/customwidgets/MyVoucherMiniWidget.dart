@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,68 +9,103 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 class MyVoucherMiniWidget extends StatefulWidget {
 
-  MyVoucherMiniWidget();
+  VoucherModel voucher;
+
+  MyVoucherMiniWidget({this.voucher});
 
   @override
   _MyVoucherMiniWidgetState createState() {
     return _MyVoucherMiniWidgetState();
   }
-
 }
 
+
 class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
+
+  /* restaurant voucher gradient */
+  var restaurantVoucherBg = [Color(0xFFEAEB12), Color(0xFFF1AA00)];
+  /* delivery voucher gradient */
+  var deliveryVoucherBg = [Color(0xFFCC1641), Color(0xFFFF7E9C)];
+  /* all voucher gradient */
+  var bothVoucherBg = [Color(0xFFFFFFFF), Color(0xFFFFFFF0)];
+
+  var textColorWhite = Color(0xFFFFFFFF);
+  var textColorBlack = Color(0xFF000000);
+  var textColorYellow = KColors.colorMainYellow;
+  var textColorRed = KColors.colorCustom;
 
 
   @override
   void initState() {
     super.initState();
+
+    // according to the type, we set a dark and clear equivalent. --> yellow and red text
+
+    // delivery -> money_price:white, restaurant_name:dark, code:yellow(food)
+
+    // restaurant ->  money_price:red, restaurant_name:dark, code:white
+
+    // both ->  money_price:yellow, restaurant_name:black, code:red
+
   }
 
   @override
   Widget build(BuildContext context) {
     return
-          Card(
+      Card(margin: EdgeInsets.only(left:10,right:10,top:10),
 //              margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
-                    colors: [const Color(0xFFEAEB12), const Color(0xFFF1AA00)], // whitish to gray
-                    tileMode: TileMode.repeated, // repeats the gradient over the canvas
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () => _jumpToVoucherDetails(),
-                  child: SizedBox(
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(bottom:10,right:10,child: Icon(Icons.directions_bike)),
-                        Container(
-                            margin: EdgeInsets.only(left:20, right:20),
-                            child: Column(children: <Widget>[
-                              SizedBox(height: 10),
-                              Row(mainAxisAlignment: MainAxisAlignment.start,
+          child: Container(
+
+            /* ACCORDING TO THE MODEL THE GRADIENT IS ALSO DIFFERENT */
+           decoration: BoxDecoration(
+             gradient: LinearGradient(
+               begin: Alignment.topLeft,
+               end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
+               colors: widget.voucher.category == 1 ? restaurantVoucherBg : (widget.voucher.category == 2 ? deliveryVoucherBg : bothVoucherBg),
+               tileMode: TileMode.repeated, // repeats the gradient over the canvas
+             ),
+           )
+            ,
+            child: InkWell(
+                onTap: () => _jumpToVoucherDetails(),
+                child: SizedBox(
+                  child: Stack(
+                    children: <Widget>[
+
+                      /* ACCORDING TO THE MODEL THE ICON (FOOD, DELIVERY, ALL) IS ALSO DIFFERENT */
+                      Positioned(bottom:10,right:10,child: Icon(Icons.directions_bike)),
+
+                      Container(
+                          margin: EdgeInsets.only(left:20, right:20),
+                          child: Column(children: <Widget>[
+                            SizedBox(height: 10),
+                            Row(mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+
+                                /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
+                                Text("${widget.voucher.getRestaurantsName() == null ? "ALL" : widget.voucher.getRestaurantsName()}".toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text("Wings'n Shake TOTSI".toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text("TOTSIPOULET2007", style: TextStyle(fontSize: 18)),
-                                    Text("-10%", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: KColors.primaryColor))
-                                  ]
-                              ),
-                              SizedBox(height: 10),
-                              Text("Expire le 20/07", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
-                              SizedBox(height: 10),
-                            ])
-                        ),
-                      ],
-                    ),
-                  )),
-              ));
+
+                                  /* JUST SHOW IT */
+                                  Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(fontSize: 18)),
+                                  Text("-${widget.voucher.value}${widget.voucher.type == 1 ? "FCFA" : "%"}", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: KColors.primaryColor))
+                                ]
+                            ),
+                            SizedBox(height: 10),
+
+                            /* SHOW EXPIRY DATE */
+                            Text("Expire le 20/07", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                            SizedBox(height: 10),
+                          ])
+                      ),
+                    ],
+                  ),
+                )),
+          ));
 
   }
 
@@ -81,39 +117,6 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       ),
     );
   }
-
-
-/*  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return
-      (
-          Card(margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            color: Colors.orange.withAlpha(120),
-              child:Container(
-                padding: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
-              child:Column(
-            children: <Widget>[
-              /* top level */
-              Row(mainAxisAlignment:MainAxisAlignment.spaceBetween, children: <Widget>[
-                Text("WINGS'S SHAKE BAGUIDA"),
-                Row(children: <Widget>[/* icon */IconButton(icon: Icon(Icons.person, color: Colors.white), onPressed: () {},), /*text */Text("2/4")])
-              ]),
-              /* middle level*/
-              Row(mainAxisAlignment:MainAxisAlignment.spaceBetween, children: <Widget>[
-                Text("PAQUES2019", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("-55%",style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.black.withAlpha(150))),
-              ]),
-              /* bottom level */
-              Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,  children: <Widget>[
-              Row(children: <Widget>[/* icon */IconButton(icon: Icon(Icons.watch_later, color: Colors.black), onPressed: () {},), /*text */Text("2019/04/05")]),
-                IconButton(icon: Icon(Icons.share, color: Colors.white), onPressed: () {},)
-              ]),
-            ]
-          )))
-      );
-  }
- */
 
 }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -389,22 +390,22 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),
-                                    /*  TableCell(child: Container(
+                                    TableCell(child: Container(
                                         padding: EdgeInsets.all(10),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
 //                                            IconButton (icon:Icon(, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
-                                           SizedBox(height:65,
+                                           SizedBox(
                                              child: IconButton(icon:  SvgPicture.asset(
                                                  VectorsData.coupon
-                                             ), onPressed: () =>_jumpToPage(context, SettingsPage())),
+                                             ), iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()))),
                                            ),
                                             SizedBox(height:10),
                                             Text("${AppLocalizations.of(context).translate('coupon')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
                                           ],
                                         ),
-                                      )),*/
+                                      )),
                                       TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
@@ -418,7 +419,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),
-                                      TableCell(child:Container())
+//                                      TableCell(child:Container())
                                     ]
                                 )
                               ]

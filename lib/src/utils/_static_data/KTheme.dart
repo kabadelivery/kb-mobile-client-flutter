@@ -18,6 +18,7 @@ class KColors {
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");
 
   static MaterialColor colorCustom = MaterialColor(hexToInt("#cc1641"), color);
+  static MaterialColor colorMainYellow = MaterialColor(hexToInt("#FFC102"), color);
   static MaterialColor white = MaterialColor(hexToInt("#ffffff"), color);
 
   static Map<int, Color> color = {

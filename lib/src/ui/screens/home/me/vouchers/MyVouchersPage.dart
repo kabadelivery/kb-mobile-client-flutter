@@ -1,3 +1,9 @@
+import 'package:KABA/src/contracts/vouchers_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
@@ -9,7 +15,13 @@ class MyVouchersPage extends StatefulWidget {
 
   static var routeName = "/MyVouchersPage";
 
-  MyVouchersPage({Key key, this.title}) : super(key: key);
+  VoucherPresenter presenter;
+
+  CustomerModel customer;
+
+  List<VoucherModel> data;
+
+  MyVouchersPage({Key key, this.title, this.presenter}) : super(key: key);
 
   final String title;
 
@@ -17,40 +29,70 @@ class MyVouchersPage extends StatefulWidget {
   _MyVouchersPageState createState() => _MyVouchersPageState();
 }
 
-class _MyVouchersPageState extends State<MyVouchersPage> {
+class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView {
 
   String barcode = "";
+
+  bool isLoading = false;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
+
+  @override
+  void initState() {
+    widget.presenter.voucherView = this;
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+      widget.presenter.loadVoucherList(customer);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () {_jumpToAddNewVoucher();},
-          child: Icon(Icons.add, color: KColors.primaryColor)),
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("MY VOUCHERS", style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context).translate('my_vouchers')}", style:TextStyle(color:KColors.primaryColor)),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
-      body: StreamBuilder<List<MyVouchersPage>>(
-          stream: null,
-          builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: Column(
-                  children: <Widget>[
-                  ]..addAll(
-                      List<Widget>.generate(12, (int index) {
-                        return MyVoucherMiniWidget();
-                      })
-                  )..add(
-                      SizedBox(height: 100)
-                  )
-              ),
-            );
-          }
+      body: Stack(
+        children: <Widget>[
+          Container(
+              child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+              _buildVouchersList())
+          ),
+          Positioned(
+            bottom: 20,
+            right: 0,
+            left: 0,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                /*     RaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.add, color: KColors.primaryColor),
+                      SizedBox(width: 10),
+                      Text("${AppLocalizations.of(context).translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
+                    ],
+                  ),
+                ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),*/
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  _buildSysErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadVoucherList(widget.customer); });
+  }
+
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
+      widget.presenter.loadVoucherList(widget.customer);
+    });
   }
 
   Future _jumpToAddNewVoucher() async {
@@ -70,6 +112,72 @@ class _MyVouchersPageState extends State<MyVouchersPage> {
   ///  - if already subscribe, just show the details of the voucher to the client
   kk(Map results) {
     Toast.show(results['data'], context, duration: Toast.LENGTH_LONG);
+  }
+
+  @override
+  void inflateVouchers(List<VoucherModel> vouchers) {
+
+    setState(() {
+      widget.data = vouchers;
+    });
+  }
+
+  @override
+  void networkError() {
+    setState(() {
+      hasNetworkError = true;
+    });
+  }
+
+
+  @override
+  void systemError() {
+    setState(() {
+      hasSystemError = true;
+    });
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+      if (isLoading == true) {
+        this.hasNetworkError = false;
+        this.hasSystemError = false;
+      }
+    });
+  }
+
+  _buildVouchersList() {
+
+    if (widget.data?.length == null || widget.data?.length == 0){
+      // no size
+      return Center(
+          child:Column(mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
+              SizedBox(height: 10),
+              Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            ],
+          ));
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+          children: <Widget>[
+          ]..addAll(
+              List<Widget>.generate(widget.data?.length+1, (int index) {
+                if (index < widget.data?.length)
+                  return MyVoucherMiniWidget(voucher: widget.data[index]);
+                else
+                  return Container(height: 100);
+              })
+          )
+      ),
+    );
+
+
+
   }
 
 }
