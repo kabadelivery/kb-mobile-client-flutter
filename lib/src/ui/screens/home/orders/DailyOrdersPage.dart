@@ -37,9 +37,10 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
     super.initState();
   }
 
-  bool isLoading = false;
+  bool isLoading = true;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+
 
   @override
   Widget build(BuildContext context) {

@@ -90,7 +90,7 @@ class VoucherModel {
     category = 1; // RESTAURANT
     restaurant_id = [17];
     use_count = 10;
-    subscription_code = "";
+    subscription_code = "LOCODEC20";
     qr_code = "";
     ts_start = 123454321;
     ts_end = 123454321;
@@ -100,7 +100,7 @@ class VoucherModel {
   VoucherModel.randomDelivery() : super() {
 
     id = 100;
-    restaurant_name = "ALL RESTAURANT";
+    restaurant_name = "DELIVERY";
     details = "this voucher works for everyrestaurant"; // DEPENDS IF IT WORKS ONLY ON A RESTAURANT
     value = "10";
     state = 1; // no deleted
@@ -108,7 +108,7 @@ class VoucherModel {
     category = 2; // DELIVERY
     restaurant_id = [17]; // if specific || if -1, all restaurant, if array plenty restaurant, or single one restaurant, otherwise all restaurant
     use_count = 10; // how many times did i use them myself
-    subscription_code = ""; // i want to subscribe, how do i do it
+    subscription_code = "FFURIOUS029"; // i want to subscribe, how do i do it
     qr_code = ""; // code qr
     ts_start = 123454321;
     ts_end = 123454321;
@@ -121,7 +121,7 @@ class VoucherModel {
       discount on both, delivery fees and food fees
       */
     id = 100;
-    restaurant_name = "CHILLILOCO";
+    restaurant_name = "CHILLILOCO&KABA";
     details = "";
     value = "1000";
     state = 1; // no deleted
@@ -130,7 +130,7 @@ class VoucherModel {
     // add specificity for foods...
     restaurant_id = []; // all -1, specific [17,89]
     use_count = 10;
-    subscription_code = "";
+    subscription_code = "KABA0029";
     qr_code = "";
     ts_start = 123454321;
     ts_end = 123454321;

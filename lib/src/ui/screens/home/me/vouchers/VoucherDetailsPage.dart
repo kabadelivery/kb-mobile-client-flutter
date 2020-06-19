@@ -44,34 +44,43 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       child:   ClipPath(
         clipper: VoucherClipper(),
         child: Card(
-          margin: EdgeInsets.only(left:40, right: 40, top: 30),
+          margin: EdgeInsets.only(left:40, right: 40, top: 30, bottom:30),
           color: Colors.white,
           child: Container(
-            padding: EdgeInsets.only(top: 30, right: 10, left: 10, bottom: 10),
+            padding: EdgeInsets.only(top: 20, right: 10, left: 10, bottom: 10),
             child: Column(
                 children: <Widget>[
                   SizedBox(height:10),
                   Text("Bon de Reduction", style: KStyles.hintTextStyle_gray),
                   SizedBox(height:10),
                   /* code qr; s'il est possible de partager cela */
-                  Container(height: 160, width: 160,
-                      child: QrImage(
-                        data: 'This is a simple QR code',
-                        version: QrVersions.auto,
-                        size: 160,
-                        gapless: false,
-                        foregroundColor: Colors.black,
-                        embeddedImage: AssetImage('assets/images/png/kaba_log_red_man_square.png'),
-                        embeddedImageStyle: QrEmbeddedImageStyle(
-                          size: Size(35, 35),
-                        ),
-                      )
+                  Stack(
+                    children: <Widget>[
+                      Container(height: 160, width: 160,
+                          child: QrImage(
+                            data: 'This is a simple QR code',
+                            version: QrVersions.auto,
+                            size: 160,
+                            gapless: false,
+                            foregroundColor: Colors.black,
+                            embeddedImage: AssetImage('assets/images/png/kaba_log_red_man_square.png'),
+                            embeddedImageStyle: QrEmbeddedImageStyle(
+                              size: Size(35, 35),
+                            ),
+                          )
+                      ),
+                      Positioned(left: 63, top:63,child:
+                      Container(decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(
+                        width: 2,color: KColors.primaryColor
+                      ), color: Colors.white), padding: EdgeInsets.all(8),
+                          child: Icon(Icons.directions_bike, color: Colors.yellow, size: 18))),
+                    ],
                   ),
 
                   SizedBox(height: 10),
 
                   /* price */
-             /*     Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                  /*     Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('2000',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
                     Text(" FCFA", style: TextStyle(fontSize: 10, color: KColors.primaryColor)),
                   ]),*/
@@ -83,6 +92,13 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   /* details du restaurant */
                   SizedBox(height: 20),
                   Text("WINGS'N SHAKE TOTSI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  SizedBox(height: 10),
+                  Column(
+                    children: <Widget>[
+                      Text("This voucher can only be used if your order includes these meals", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
+                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
+                    ],
+                  ),
                   SizedBox(height: 20),
                   Column(
                     children: <Widget>[
@@ -97,7 +113,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                     padding: EdgeInsets.only(top:20, bottom:20),
                     child:
                     InkWell(
-                      onTap: ()=>_copyIntoClipboard("WINGS10PIECES20"),
+                        onTap: ()=>_copyIntoClipboard("WINGS10PIECES20"),
                         child: Text('WINGS10PIECES20',textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
                   ),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
@@ -136,7 +152,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     ClipboardManager.copyToClipBoard(codePromo).then((result) {
       final snackBar = SnackBar(
         content: Text('${codePromo} Copied to Clipboard'),
-      /*  action: SnackBarAction(
+        /*  action: SnackBarAction(
 //          label: 'Undo',
           onPressed: () {},
         ),*/
