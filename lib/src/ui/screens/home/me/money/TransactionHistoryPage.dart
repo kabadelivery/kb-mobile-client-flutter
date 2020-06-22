@@ -46,7 +46,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   }
 
   bool hasSystemError = false;
-  bool isLoading = false;
+  bool isLoading = true;
   bool isBalanceLoading = false;
   bool hasNetworkError = false;
 

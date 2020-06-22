@@ -4,8 +4,12 @@ import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
+import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -17,8 +21,12 @@ import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
@@ -50,13 +58,18 @@ class HomeWelcomePage extends StatefulWidget {
 
   HomeScreenModel data;
 
+
+  var argument;
+
+  var destination;
+
   static HomeScreenModel standardData;
 
   HomeWelcomePresenter presenter;
 
   CustomerModel customer;
 
-  HomeWelcomePage({Key key, this.title, this.presenter}) : super(key: key);
+  HomeWelcomePage({Key key, this.title, this.presenter, this.destination, this.argument}) : super(key: key);
 
 
   final String title;
@@ -92,6 +105,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       if (CustomerUtils.isPusTokenUploaded() != true) {
         this.widget.presenter.updateToken(customer);
       }
+      widget.customer = customer;
       popupMenus = ["${AppLocalizations.of(context).translate('logout')}","${AppLocalizations.of(context).translate('settings')}"];
     });
 
@@ -119,6 +133,52 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         });
       }
     });
+
+    if (widget?.destination != null) {
+      switch(widget.destination) {
+        case SplashPage.TRANSACTIONS:
+//          navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+//          _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
+              builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+            ),
+          );
+          break;
+        case SplashPage.RESTAURANT_LIST:
+          StateContainer.of(context).tabPosition = 1;
+          break;
+        case SplashPage.RESTAURANT:
+//          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: widget.argument);
+          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+          break;
+        case SplashPage.ORDER:
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
+          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          break;
+        case SplashPage.FOOD:
+//          navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: widget.argument);
+          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+          break;
+        case SplashPage.MENU:
+//          navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: widget.argument);
+          _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+          break;
+        case SplashPage.REVIEW_ORDER:
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
+          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          break;
+      }
+    }
+  }
+
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
+  @override
+  void didChangeDependencies() {
+    print("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
+    super.didChangeDependencies();
   }
 
   @override
@@ -663,10 +723,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         StateContainer.of(context).updateHasGotNewMessage(hasGotNewMessage: true);
         _playMusicForNewMessage();
       }
-        setState(() {
-          StateContainer.of(context).updateUnreadMessage(
-              hasUnreadMessage: hasNewMessage);
-        });
+      setState(() {
+        StateContainer.of(context).updateUnreadMessage(
+            hasUnreadMessage: hasNewMessage);
+      });
     } else {
       setState(() {
         StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
@@ -723,10 +783,10 @@ Future<void> _playMusicForNewMessage() async {
   AudioPlayer.logEnabled = true;
   var audioCache = new AudioCache(fixedPlayer: audioPlayer);
   audioCache.play(MusicData.new_message);
-  if (await Vibration.hasVibrator()
+  /*if (await Vibration.hasVibrator()
   ) {
     Vibration.vibrate(duration: 500);
-  }
+  }*/
 }
 
 void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {

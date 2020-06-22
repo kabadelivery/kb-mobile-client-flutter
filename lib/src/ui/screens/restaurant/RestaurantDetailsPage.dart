@@ -51,7 +51,6 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   bool commentHasNetworkError = false;
   bool commentHasSystemError = false;
   bool isUpdatingRestaurantOpenType = false;
-  bool _canCommentLoading = true;
 
   int _canComment = 0;
   int _latentRate = 1;
@@ -70,6 +69,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       widget.customer = customer;
       if (widget.restaurant != null) {
         // fetch comments
+        // we can accept to load the restaurant here if needed
         widget.presenter.checkCanComment(customer, widget?.restaurant);
         widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
         // fetch if the restaurant is open
@@ -164,7 +164,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                                 isUpdatingRestaurantOpenType ? Container() :
                                 Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                                   Icon(Icons.access_time),
-                                  Text(widget?.restaurant?.working_hour, style: TextStyle(color: Colors.black, fontSize: 16)),
+                                  Text("${widget?.restaurant?.working_hour}", style: TextStyle(color: Colors.black, fontSize: 16)),
                                 ])
                               ],
                             ),
@@ -206,14 +206,14 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                           child:Column(
                             children: <Widget>[
                               /* description of restaurant */
-                              Text(widget?.restaurant?.description,
+                              Text("${widget?.restaurant?.description}",
                                 style: TextStyle(color: Colors.black, fontSize: 16),
                               ),
                               SizedBox(height: 10),
                               Container(
                                 child: Row(children: <Widget>[
                                   Icon(Icons.location_on, color: Colors.blue),
-                                  Flexible (child: Text(widget?.restaurant?.address, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
+                                  Flexible (child: Text("${widget?.restaurant?.address}", maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 16))),
                                 ]),
                               ),
 
@@ -368,9 +368,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     });
     if (widget.commentList?.length > 0) {
       // scroll to bottom
-      Timer(Duration(milliseconds: 800), () {
+   /*   Timer(Duration(milliseconds: 800), () {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
-      });
+      });*/
     }
   }
 
@@ -445,7 +445,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
             color: tagColor),
         child:Text(
-            tagText,
+            "${tagText}",
             style: TextStyle(color: tagTextColor, fontSize: 12)
         )) : Container();
   }
@@ -480,7 +480,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   @override
   void showCanCommentLoading(bool isLoading) {
     setState(() {
-      this._canCommentLoading = isLoading;
+      this.commentIsLoading = isLoading;
     });
   }
 

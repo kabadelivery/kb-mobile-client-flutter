@@ -273,5 +273,9 @@
   "insert_message": "Insert your message",
   "reload": "Reload",
   "my_vouchers": "My Vouchers",
-  "sorry_no_coupon": "Sorry, you have no vouchers available to use."
+  "sorry_no_coupon": "Sorry, you have no vouchers available to use.",
+
+
+  "choose_coupon": "Choose a coupon",
+  "add_coupon": "Add a Voucher"
 }

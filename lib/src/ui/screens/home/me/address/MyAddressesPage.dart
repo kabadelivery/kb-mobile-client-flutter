@@ -205,7 +205,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
     if (widget.customer != null) {
       widget.presenter.deleteAddress(widget.customer, address);
     }
-    }
+  }
 
 
   @override

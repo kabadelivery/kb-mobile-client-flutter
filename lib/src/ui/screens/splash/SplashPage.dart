@@ -1,7 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:KABA/src/contracts/food_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,11 +35,21 @@ import '../../../StateContainer.dart';
 
 class SplashPage extends StatefulWidget { // translated
 
+  static const String TRANSACTIONS = "TRANSACTIONS",
+      RESTAURANT = "RESTAURANT",
+      ORDER = "ORDER",
+      FOOD = "FOOD",
+      MENU = "MENU",
+      REVIEW_ORDER = "REVIEW-ORDER",
+      RESTAURANT_LIST = "RESTAURANT-LIST";
+
   static var routeName = "/SplashPage";
 
-  SplashPage({Key key, this.title}) : super(key: key);
+  var destination;
 
-  final String title;
+  var argument;
+
+  SplashPage({Key key, this.destination = 0, this.argument = 0}) : super(key: key);
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -74,7 +95,8 @@ class _SplashPageState extends State<SplashPage> {
           prefs.remove("_token");
           prefs.remove("_login_expiration_date");
         } else {
-          launchPage = HomePage();
+          // check if there is a destination out of deep-linking before doing this.
+          launchPage = HomePage(destination: widget.destination, argument: widget.argument);
         }
       }
       Navigator.of(context).pushReplacement(new MaterialPageRoute(
@@ -224,13 +246,75 @@ class _SplashPageState extends State<SplashPage> {
     _sub = getLinksStream().listen((String link) {
       // Parse the link and warn the user, if it is not correct
       print("initialLinkStream ${link}");
-      _handleLinks(link);
+      _handleLinksImmediately(link);
     }, onError: (err) {
       // Handle exception by warning the user their action did not succeed
       print("initialLinkStreamError");
     });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
+  }
+
+  void _handleLinksImmediately(String link) {
+
+    // if you are logged in, we can just move to the activity.
+    Uri mUri = Uri.parse(link);
+//    mUri.scheme == "https";
+    print("host -> ${mUri.host}");
+    print("path -> ${mUri.path}");
+    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+
+// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+
+    List<String> pathSegments = mUri.pathSegments.toList();
+    switch(pathSegments[0]) {
+      case "transactions":
+        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        break;
+      case "restaurants":
+        widget.destination = SplashPage.RESTAURANT_LIST;
+        break;
+      case "restaurant":
+        if (pathSegments.length > 1) {
+          print("restaurant id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.RESTAURANT;
+          widget.argument = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+        }
+        break;
+      case "order":
+        if (pathSegments.length > 1) {
+          print("order id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.ORDER;
+          widget.argument = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+        }
+        break;
+      case "food":
+        if (pathSegments.length > 1) {
+          print("food id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.FOOD;
+          widget.argument = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+        }
+        break;
+      case "menu":
+        if (pathSegments.length > 1) {
+          print("menu id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.MENU;
+          widget.argument = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+        }
+        break;
+      case "review-order":
+        if (pathSegments.length > 1) {
+          print("review-order id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.REVIEW_ORDER;
+          widget.argument = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+        }
+        break;
+    }
   }
 
   void _handleLinks(String link) {
@@ -253,6 +337,60 @@ class _SplashPageState extends State<SplashPage> {
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
+    List<String> pathSegments = mUri.pathSegments.toList();
+//    if (pathSegments[0])
+    switch(pathSegments[0]) {
+      case "transactions":
+        widget.destination = SplashPage.TRANSACTIONS;
+        break;
+      case "restaurants":
+        widget.destination = SplashPage.RESTAURANT_LIST;
+        break;
+      case "restaurant":
+        if (pathSegments.length > 1) {
+          print("restaurant id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.RESTAURANT;
+          widget.argument = int.parse("${pathSegments[1]}");
+        }
+        break;
+      case "order":
+        if (pathSegments.length > 1) {
+          print("order id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.ORDER;
+          widget.argument = int.parse("${pathSegments[1]}");
+        }
+        break;
+      case "food":
+        if (pathSegments.length > 1) {
+          print("food id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.FOOD;
+          widget.argument = int.parse("${pathSegments[1]}");
+        }
+        break;
+      case "menu":
+        if (pathSegments.length > 1) {
+          print("menu id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.MENU;
+          widget.argument = int.parse("${pathSegments[1]}");
+        }
+        break;
+      case "review-order":
+        if (pathSegments.length > 1) {
+          print("review-order id -> ${pathSegments[1]}");
+          widget.destination = SplashPage.REVIEW_ORDER;
+          widget.argument = int.parse("${pathSegments[1]}");
+        }
+        break;
+    }
+  }
+
+  void _jumpToPage (BuildContext context, page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
   }
 
 }

@@ -1,3 +1,5 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +98,9 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   Column(
                     children: <Widget>[
                       Text("This voucher can only be used if your order includes these meals", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
-                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
+                   /* start a mini food list .. */
+//                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
+                    _miniFoodWidget(RestaurantFoodModel.randomFood())
                     ],
                   ),
                   SizedBox(height: 20),
@@ -159,6 +163,34 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       );
       Scaffold.of(context).showSnackBar(snackBar);
     });
+  }
+
+  _miniFoodWidget(RestaurantFoodModel food) {
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  /*prix*/
+                  Row(children: <Widget>[
+                    Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 14, fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                  ]),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Container(height:1, margin: EdgeInsets.only(top:5, bottom:5), color: Colors.green),
+      ],
+    );
   }
 
 }

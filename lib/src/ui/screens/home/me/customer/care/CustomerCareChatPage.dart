@@ -306,7 +306,6 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
       String message = "DELIVERY ADDRESS - ${_selectedAddress.name}\n\n";
 
-
       message+="Phone number: ${_selectedAddress.phone_number}\n";
       message+="District: ${_selectedAddress.district}\n";
       message+="Near by: ${_selectedAddress.near}\n";

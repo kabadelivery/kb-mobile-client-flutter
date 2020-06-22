@@ -1,35 +1,33 @@
-import 'package:KABA/src/contracts/daily_order_contract.dart';
-import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:android_intent/android_intent.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '_home/HomeWelcomePage.dart';
 import 'me/MeAccountPage.dart';
+import 'me/money/TransactionHistoryPage.dart';
 import 'orders/DailyOrdersPage.dart';
 
 class HomePage extends StatefulWidget {
 
   static var routeName = "/HomePage";
 
-  HomePage({Key key}) : super(key: key) ;
+  var argument;
 
-/*  static set setSelectedIndex(int index) {
-    _selectedIndex = index;
-  }
+  var destination;
 
-  static int get getSelectedIndex {
-    return _selectedIndex;
-  }*/
+  HomePage({Key key, this.destination, this.argument}) : super(key: key) ;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -40,9 +38,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-//  static  List<String> popupMenus;
-
 
   HomeWelcomePage homeWelcomePage;
   RestaurantListPage restaurantListPage;
@@ -79,14 +74,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     /* check the login status */
     checkLogin();
-    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter());
+    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter(), destination: widget.destination, argument: widget.argument);
     restaurantListPage = RestaurantListPage(key: restaurantKey);
     dailyOrdersPage = DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();
 
-//    popupMenus = ["${AppLocalizations.of(context).translate('settings')}"];
+    //    popupMenus = ["${AppLocalizations.of(context).translate('settings')}"];
+    //    jump to what i need to.
   }
 
   @override

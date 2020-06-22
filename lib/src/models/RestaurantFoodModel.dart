@@ -90,4 +90,19 @@ class RestaurantFoodModel {
         return toJson().toString();
     }
 
+    static RestaurantFoodModel randomFood() {
+
+        RestaurantFoodModel food = RestaurantFoodModel();
+
+        food.id = 999;
+        food.name = "ATTIEKE + POULET + ALLOCO";
+        food.price = "1500";
+        food.menu_id = "89";
+        food.restaurant_id = 17;
+        food.description = "Something worth it";
+        food.is_favorite = 0;
+
+        return food;
+    }
+
 }

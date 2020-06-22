@@ -3,9 +3,13 @@ import 'dart:async';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -65,6 +69,7 @@ class OrderConfirmationPage2 extends StatefulWidget {
 class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> implements OrderConfirmationView {
 
   DeliveryAddressModel _selectedAddress;
+  VoucherModel _selectedVoucher;
 
   /* pricing configuration */
   OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration();
@@ -494,6 +499,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               SizedBox(height: 5),
               _cookingTimeEstimation(),
               SizedBox(height: 10),
+              /* choose a delivery address */
               InkWell(
                   splashColor: Colors.white,
                   child: Container(padding: EdgeInsets.only(top: 5, bottom: 5),
@@ -514,6 +520,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               ),
               SizedBox(height: 10),
               _buildAddress(_selectedAddress),
+              _buildCouponSpace(),
               SizedBox(height: 25),
               isConnecting
                   ? Center(child: CircularProgressIndicator())
@@ -545,7 +552,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                   fontWeight: FontWeight.normal)),
                         ],
                       ),
-                      RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}",style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount()),
+                      Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}",
+                              style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount())),
                     ],
                   ),
                 ),
@@ -1640,5 +1649,96 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       ),
     );
   }
+
+  _selectVoucher() async {
+    /* just like we pick and address, we pick a voucher. */
+
+    /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
+    * selected and the current restaurant.
+    *
+    * RESULT MAY BE:
+    *
+    * - result may be only vouchers,
+    *
+    * */
+
+    setState(() {
+      _selectedVoucher = null;
+    });
+
+    /* jump and get it */
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyVouchersPage(pick: true,
+            presenter: VoucherPresenter(),
+            restaurantId: 17,
+            foods: [9949, 8833, 3772]
+        ),
+      ),
+    );
+
+    if (results != null && results.containsKey('voucher')) {
+      setState(() {
+        _selectedVoucher = results['voucher'];
+      });
+      // launch request for retrieving the delivery prices and so on.
+//      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
+//      showLoading(true);
+//      Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+
+
+    }
+
+  }
+
+  _buildCouponSpace() {
+
+    // if there is not address, we can say we are not building anything.
+    if (_isPreorderSelected()) {
+      return Container();
+    }
+
+    if (_selectedVoucher == null) {
+      return Column(children: <Widget>[
+        SizedBox(height: 20),
+        /* do you have a voucher you want to use ? */
+        InkWell(onTap: () => _selectVoucher(),
+          child: Container(width: MediaQuery
+              .of(context)
+              .size
+              .width,
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: KColors.primaryYellowColor,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              /* please choose a voucher. */
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(icon: Icon(Icons.add, color: KColors.white),
+                            onPressed: () => _selectVoucher()),
+                        IconButton(icon: Icon(
+                            FontAwesomeIcons.ticketAlt, color: Colors.white),
+                            onPressed: () => _selectVoucher())
+                      ],
+                    ),
+                    Text("${AppLocalizations.of(context).translate('add_coupon')}",
+                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                  ])
+          ),
+        ),
+      ]);
+    } else {
+//      _selectedVoucher
+    return MyVoucherMiniWidget(voucher: _selectedVoucher);
+    }
+  }
+
 
 }

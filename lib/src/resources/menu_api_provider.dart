@@ -198,6 +198,9 @@ class MenuApiProvider {
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
+
+        // get restaurant entity here
+
         int can_comment = json.decode(response.body)["data"]["can_comment"];
         return can_comment;
       } else {

@@ -1,6 +1,7 @@
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -21,7 +22,13 @@ class MyVouchersPage extends StatefulWidget {
 
   List<VoucherModel> data;
 
-  MyVouchersPage({Key key, this.title, this.presenter}) : super(key: key);
+  bool pick;
+
+  List<int> foods;
+
+  int restaurantId;
+
+  MyVouchersPage({Key key, this.presenter, this.pick = false, this.restaurantId, this.foods, this.title}) : super(key: key);
 
   final String title;
 
@@ -42,6 +49,8 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     widget.presenter.voucherView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
+
+      // according to if we are picking something, we can just request stuffs differently
       widget.presenter.loadVoucherList(customer);
     });
     super.initState();
@@ -175,9 +184,6 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
           )
       ),
     );
-
-
-
   }
 
 }

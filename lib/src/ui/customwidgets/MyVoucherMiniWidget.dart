@@ -11,7 +11,9 @@ class MyVoucherMiniWidget extends StatefulWidget {
 
   VoucherModel voucher;
 
-  MyVoucherMiniWidget({this.voucher});
+  bool pick;
+
+  MyVoucherMiniWidget({this.voucher, this.pick = false});
 
   @override
   _MyVoucherMiniWidgetState createState() {
@@ -48,7 +50,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
     // restaurant ->  money_price:red, restaurant_name:dark, code:white
     // both ->  money_price:yellow, restaurant_name:black, code:red
 
-    switch(widget.voucher.category){
+    switch(widget.voucher.type){
       case 1: // restaurant (yellow background)
         restaurantNameColor = textColorWhite;
         priceColor = textColorRed;
@@ -93,13 +95,14 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
-                  colors: widget.voucher.category == 1 ? restaurantVoucherBg : (widget.voucher.category == 2 ? deliveryVoucherBg : bothVoucherBg),
+                  colors: widget.voucher.type == 1 ? restaurantVoucherBg : (widget.voucher.type == 2 ? deliveryVoucherBg : bothVoucherBg),
                   tileMode: TileMode.repeated, // repeats the gradient over the canvas
                 ),
               )
               ,
               child: InkWell(
-                  onTap: () => _jumpToVoucherDetails(),
+                  onLongPress: () => _onLongPressVoucher(),
+                  onTap: () => _tapVoucher(),
                   child: SizedBox(
                     child: Stack(
                       children: <Widget>[
@@ -134,7 +137,6 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                   ]
                               ),
                               SizedBox(height: 10),
-
                               /* SHOW EXPIRY DATE */
                               Text("Expire le 20/07", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
                               SizedBox(height: 10),
@@ -156,6 +158,24 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       ),
     );
   }
+
+  _onLongPressVoucher() {
+    if (widget.pick) {
+      _jumpToVoucherDetails();
+    }
+  }
+
+  _tapVoucher() {
+
+    if (widget.pick) {
+      // go back
+      Navigator.of(context).pop({'voucher': widget.voucher});
+    } else {
+      _jumpToVoucherDetails();
+    }
+
+  }
+
 
 }
 
