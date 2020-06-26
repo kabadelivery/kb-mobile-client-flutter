@@ -13,19 +13,19 @@ class ServerRoutes {
 
   /* get current command db */
   static const String LINK_MY_COMMANDS_GET_CURRENT = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/v2/get";
+      "/mobile/api/command/v3/get";
 
   /* get all commands list */
   static const String LINK_GET_ALL_COMMAND_LIST = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/all/v2/get";
+      "/mobile/api/command/all/v3/get";
 
   /* create command db */
   static const String LINK_CREATE_COMMAND = ServerConfig.SERVER_ADDRESS_SECURE +
-      "/mobile/api/command/create";
+      "/mobile/api/command/v3/create";
 
   /* get command details */
   static const String LINK_GET_COMMAND_DETAILS =  ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/command/details/v2/get";
+      "/mobile/api/command/details/v3/get";
 
   /* get current basket content */
   static const String LINK_MY_BASKET_GET = ServerConfig.SERVER_ADDRESS+
