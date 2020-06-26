@@ -36,7 +36,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    switch(widget.voucher.category){
+    switch(widget.voucher.type){
       case 1: // restaurant (yellow background)
         voucherIcon = FontAwesomeIcons.hamburger;
         scaffoldColor = KColors.primaryYellowColor;
@@ -108,7 +108,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('-${widget.voucher.value}',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 24)),
-                    Text(" ${widget.voucher.type == 1 ? "${AppLocalizations.of(context).translate('currency')}" : "%"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                    Text(" ${widget.voucher.category == 1 ?  "%" : "${AppLocalizations.of(context).translate('currency')}"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   ]),
 
                   /* details du restaurant */

@@ -6,15 +6,15 @@ import 'package:flutter/foundation.dart';
 
 class VoucherModel {
 
-  var VOUCHER_type_FOOD = 1999, VOUCHER_type_DELIVERYFEES = 1998, VOUCHER_type_ALL = 1997;
+  var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
 
   int id;
   String restaurant_name;
   String details;
   int value;
   int state; //
-  int category; // category,
-  int type; // type, food, delivery, type
+  int type; // type,
+  int category; // category, food, delivery, category
   List<RestaurantFoodModel> products;
 //  List<int> restaurant_id;
   RestaurantModel restaurant_entity;
@@ -24,18 +24,18 @@ class VoucherModel {
   String start_date, end_date; // timestamp
   String tag;
 
-//  int reward_category;
+//  int reward_type;
 //  int reward_cash_value;
 //  int reward_percentage_value;
 
 
-  // category -> LIVRAISON, REPAS, ALL
-  // type -> POURCENTAGE OU VALEURE
+  // type -> LIVRAISON, REPAS, ALL
+  // category -> POURCENTAGE OU VALEURE
 
 //  private $id; , id of the voucher
 //  private $name; , name of the voucher (for the admin)
-//  private $category; category of the voucher, (ajouter les bons de consommation ou tu consommes et que ca reste a chaque fois)
-//  private $type; ?
+//  private $type; type of the voucher, (ajouter les bons de consommation ou tu consommes et que ca reste a chaque fois)
+//  private $category; ?
 //  private $value; , value -1000F or -10%
 //  private $maxPersons; , max personn that can subscribe to this voucher
 //  private $restaurantId; , restaurant where this voucher can eventually used
@@ -43,7 +43,7 @@ class VoucherModel {
 //  private $canSelfSubscribe=0; , can i share the voucher with somebody to share it
 //  private $isRewarded=0; , is anybody getting money behind this voucher
 //  private $rewardOnFood=0;
-//  private $rewardcategory; , is the reward giving on the food or a fixed amount
+//  private $rewardtype; , is the reward giving on the food or a fixed amount
 //  private $rewardCashValue;
 //  private $rewardPercentageValue;
 //  private $enabled; , enabled or disabled
@@ -57,13 +57,13 @@ class VoucherModel {
 //  private $updatedAt;
 
 
-  VoucherModel({this.id, this.details, this.value, this.state, this.category,
+  VoucherModel({this.id, this.details, this.value, this.state, this.type,
   }); // timestamp
 
   /*"id":8,
   "name":"First Voucher for Ulrich",
-  "type":1,
   "category":1,
+  "type":1,
   "max_persons":3690,
   "value":20,
   "use_count":2,
@@ -79,7 +79,7 @@ class VoucherModel {
   "enabled":1,
   "is_rewarded":0,
   "reward_on_food":0,
-  "reward_type":null,
+  "reward_category":null,
   "reward_cash_value":null,
   "reward_percentage_value":null,
   "subscription_code":"UL-01",
@@ -94,8 +94,8 @@ class VoucherModel {
   String details;
   String value;
   int state; //
-  int category; // category,
-  int type; // type, food, delivery, type
+  int type; // type,
+  int category; // category, food, delivery, category
   List<int> restaurant_id;
   int use_count; // who's use count , total or mine
   String subscription_code;
@@ -107,12 +107,12 @@ class VoucherModel {
 
     id = json['id'];
     restaurant_name = json['restaurant_name'];
-    category = json['category'];
+    type = json['type'];
 //    details = json['details'];
     value = json['value'];
     state = json['state'];
-    category = json['category'];
     type = json['type'];
+    category = json['category'];
     if (json['restaurant_id'] != null && json['restaurant_entity'] != null && json['restaurant_entity'] != [])
       restaurant_entity = RestaurantModel(id:json['restaurant_entity']['id'], name: json['restaurant_entity']['name']);
     use_count = json['use_count'];
@@ -131,11 +131,11 @@ class VoucherModel {
 
 
   Map toJson () => {
-    "category" : (category as int),
+    "type" : (type as int),
     "details" : details,
     "value" : value,
     "state" : state,
-    "category" : category,
+    "type" : type,
   };
 
   @override
@@ -155,8 +155,8 @@ class VoucherModel {
     details = "";
     value = 1000;
     state = 1; // no deleted
-    category = 1; // percentage or value
-    type = 1; // RESTAURANT
+    type = 1; // percentage or value
+    category = 1; // RESTAURANT
 //    restaurant_id = [17];
     use_count = 10;
     subscription_code = "LOCODEC20";
@@ -173,8 +173,8 @@ class VoucherModel {
     details = "this voucher works for everyrestaurant"; // DEPENDS IF IT WORKS ONLY ON A RESTAURANT
     value = 10;
     state = 1; // no deleted
-    category = 1; // percentage or value
-    type = 2; // DELIVERY
+    type = 1; // percentage or value
+    category = 2; // DELIVERY
 //    restaurant_id = [17]; // if specific || if -1, all restaurant, if array plenty restaurant, or single one restaurant, otherwise all restaurant
     use_count = 10; // how many times did i use them myself
     subscription_code = "FFURIOUS029"; // i want to subscribe, how do i do it
@@ -194,8 +194,8 @@ class VoucherModel {
     details = "";
     value = 1000;
     state = 1; // no deleted
-    category = 1; // percentage or value
-    type = 3; // BOTH
+    type = 1; // percentage or value
+    category = 3; // BOTH
     // add specificity for foods...
 //    restaurant_id = []; // all -1, specific [17,89]
     use_count = 10;

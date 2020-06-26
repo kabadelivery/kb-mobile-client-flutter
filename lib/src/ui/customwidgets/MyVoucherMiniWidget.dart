@@ -138,7 +138,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                         Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
-                                    Text("-${widget.voucher.value}${widget.voucher.type == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+                                    Text("-${widget.voucher.value}${widget.voucher.category == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
                                   ]
                               ),
                               SizedBox(height: 10),

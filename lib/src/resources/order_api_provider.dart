@@ -32,7 +32,7 @@ class OrderApiProvider {
         food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
       });
 
-      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': restaurant.id, 'shipping_address': address.id});
+      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': restaurant.id, 'shipping_address': address.id, "voucher_id": voucher?.id});
 
       print(_data.toString());
 

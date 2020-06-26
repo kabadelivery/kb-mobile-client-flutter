@@ -1683,11 +1683,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         _selectedVoucher = results['voucher'];
       });
 
-      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
-      // launch request for retrieving the delivery prices and so on.
-//      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
-//      showLoading(true);
-//      Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+      if (_selectedAddress != null) {
+        widget.presenter.computeBilling(
+            widget.restaurant, widget.customer, widget.foods, _selectedAddress,
+            _selectedVoucher);
+        showLoading(true);
+        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+      }
     }
 
   }
@@ -1738,12 +1740,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 //      _selectedVoucher
       return Stack(
         children: <Widget>[
-          Positioned(left:10,bottom:10,child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.black, size: 30), onPressed: (){
+          MyVoucherMiniWidget(voucher: _selectedVoucher, isForOrderConfirmation: true),
+          Positioned(right:10,top:10,child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.black, size: 30), onPressed: (){
             setState(() {
               _selectedVoucher = null;
             });
+            // launch request for retrieving the delivery prices and so on.
+            if (_selectedAddress != null) {
+              widget.presenter.computeBilling(
+                  widget.restaurant, widget.customer, widget.foods,
+                  _selectedAddress, _selectedVoucher);
+              showLoading(true);
+              Timer(Duration(milliseconds: 100), () =>
+                  _listController.jumpTo(
+                      _listController.position.maxScrollExtent));
+            }
           })),
-          MyVoucherMiniWidget(voucher: _selectedVoucher, isForOrderConfirmation: true),
+
         ],
       );
     }
