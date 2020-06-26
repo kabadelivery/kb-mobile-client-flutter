@@ -1,4 +1,5 @@
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,11 @@ class MyVoucherMiniWidget extends StatefulWidget {
 
   bool pick;
 
-  MyVoucherMiniWidget({this.voucher, this.pick = false});
+  bool subscribeSuccess;
+
+  bool isForOrderConfirmation;
+
+  MyVoucherMiniWidget({this.voucher, this.pick = false, this.subscribeSuccess = false, isForOrderConfirmation = false});
 
   @override
   _MyVoucherMiniWidgetState createState() {
@@ -133,12 +138,12 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                         Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
-                                    Text("-${widget.voucher.value}${widget.voucher.type == 1 ? "F" : "%"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+                                    Text("-${widget.voucher.value}${widget.voucher.type == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
                                   ]
                               ),
                               SizedBox(height: 10),
                               /* SHOW EXPIRY DATE */
-                              Text("Expire le 20/07", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
+                              Text("Utiliser avant le ${Utils.timeStampToDate(widget.voucher.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
                               SizedBox(height: 10),
                             ])
                         ),
@@ -154,26 +159,33 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => VoucherDetailsPage(),
+        builder: (context) => VoucherDetailsPage(voucher: widget.voucher),
       ),
     );
   }
 
   _onLongPressVoucher() {
-    if (widget.pick) {
+    if (widget.pick || widget.isForOrderConfirmation) {
       _jumpToVoucherDetails();
     }
   }
 
   _tapVoucher() {
 
+    if (widget?.isForOrderConfirmation == true) {
+
+      return;
+    }
+
     if (widget.pick) {
       // go back
       Navigator.of(context).pop({'voucher': widget.voucher});
     } else {
+      if (widget.subscribeSuccess) {
+        Navigator.of(context).pop();
+      }
       _jumpToVoucherDetails();
     }
-
   }
 
 

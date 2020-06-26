@@ -100,6 +100,20 @@ class Utils {
   }
 */
 
+
+
+  static String timeStampToDate (String timestamp) {
+
+    DateTime commandTime = new DateTime
+        .fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);;
+    String pattern_not_today = "yyyy-MM-dd";
+    DateFormat sdf = DateFormat();
+    String formattedDate = "";
+    sdf = DateFormat(pattern_not_today);
+    formattedDate = sdf.format(commandTime);
+    return formattedDate;
+  }
+
   static String readTimestamp (int timestamp) {
 
 //      long unixSeconds = Long.parseLong(timeStamp);

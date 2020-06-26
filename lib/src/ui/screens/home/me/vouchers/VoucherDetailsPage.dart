@@ -1,16 +1,22 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:toast/toast.dart';
 
 
 class VoucherDetailsPage extends StatefulWidget {
 
   static var routeName = "/VoucherDetailsPage";
 
-  VoucherDetailsPage({Key key, this.title}) : super(key: key);
+  VoucherModel voucher;
+
+  VoucherDetailsPage({Key key, this.title, this.voucher}) : super(key: key);
 
   final String title;
 
@@ -20,24 +26,40 @@ class VoucherDetailsPage extends StatefulWidget {
 
 class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
+  var voucherIcon = Icons.not_interested;
+
+  var scaffoldColor = KColors.primaryColor;
+
+  var _scaffoldGlobalKey = GlobalKey();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    switch(widget.voucher.category){
+      case 1: // restaurant (yellow background)
+        voucherIcon = FontAwesomeIcons.hamburger;
+        scaffoldColor = KColors.primaryYellowColor;
+        break;
+      case 2: // delivery (red background)
+        voucherIcon = FontAwesomeIcons.biking;
+        scaffoldColor = KColors.primaryColor;
+        break;
+      case 3: // both (white bg)
+        voucherIcon = FontAwesomeIcons.bullseye;
+        scaffoldColor = KColors.darkish.withAlpha(100);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: KColors.primaryColor,
+    return Scaffold(backgroundColor: scaffoldColor, key: _scaffoldGlobalKey,
         appBar: AppBar(
             leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
             backgroundColor: Colors.white,
-            title: Text("VOUCHER DETAILS", style:TextStyle(color:KColors.primaryColor))),
-        body:  _buildVoucherDetailsPage(null)/*StreamBuilder<VoucherDetailsPage>(
-          stream: null,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return _buildVoucherDetailsPage(snapshot.data);
-            } else if (snapshot.hasError) {
-              return ErrorPage(onClickAction: (){*//*userDataBloc.fetchDailyOrders(UserTokenModel.fake());*//*});
-            }
-            return Center(child: CircularProgressIndicator());
-          }
-      ),*/
+            title: Text("${AppLocalizations.of(context).translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),
+        body:  _buildVoucherDetailsPage(null)
     );
   }
 
@@ -53,60 +75,62 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
             child: Column(
                 children: <Widget>[
                   SizedBox(height:10),
-                  Text("Bon de Reduction", style: KStyles.hintTextStyle_gray),
+                  Text("${AppLocalizations.of(context).translate('voucher_')}", style: KStyles.hintTextStyle_gray),
                   SizedBox(height:10),
                   /* code qr; s'il est possible de partager cela */
                   Stack(
                     children: <Widget>[
                       Container(height: 160, width: 160,
                           child: QrImage(
-                            data: 'This is a simple QR code',
+                            data: '${widget.voucher.qr_code}',
                             version: QrVersions.auto,
                             size: 160,
                             gapless: false,
                             foregroundColor: Colors.black,
-                            embeddedImage: AssetImage('assets/images/png/kaba_log_red_man_square.png'),
+//                            embeddedImage: AssetImage('assets/images/png/kaba_log_red_man_square.png'),
                             embeddedImageStyle: QrEmbeddedImageStyle(
                               size: Size(35, 35),
                             ),
                           )
                       ),
-                      Positioned(left: 63, top:63,child:
-                      Container(decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(
-                        width: 2,color: KColors.primaryColor
-                      ), color: Colors.white), padding: EdgeInsets.all(8),
-                          child: Icon(Icons.directions_bike, color: Colors.yellow, size: 18))),
+                      Positioned(left: 64, top:64,child:
+                      Container(
+                          decoration: BoxDecoration(shape: BoxShape.circle,
+                              border: Border.all(
+                                  width: 2,color: KColors.primaryYellowColor
+                              ), color: Colors.white),
+                          padding: EdgeInsets.all(8),
+                          child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 18)))),
                     ],
                   ),
 
                   SizedBox(height: 10),
 
-                  /* price */
-                  /*     Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                    Text('2000',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
-                    Text(" FCFA", style: TextStyle(fontSize: 10, color: KColors.primaryColor)),
-                  ]),*/
                   Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-                    Text('-10',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 22)),
-                    Text(" %", style: TextStyle(fontSize: 16, color: KColors.primaryColor)),
+                    Text('-${widget.voucher.value}',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 24)),
+                    Text(" ${widget.voucher.type == 1 ? "${AppLocalizations.of(context).translate('currency')}" : "%"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   ]),
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("WINGS'N SHAKE TOTSI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 10),
-                  Column(
+                  Text("${widget.voucher?.restaurant_entity?.id == null ? "" : widget.voucher?.restaurant_entity?.name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  widget.voucher?.restaurant_entity?.id != null ? Column(
                     children: <Widget>[
-                      Text("This voucher can only be used if your order includes these meals", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
-                   /* start a mini food list .. */
+                      SizedBox(height: 10),
+                      Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
+                      /* start a mini food list .. */
 //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
-                    _miniFoodWidget(RestaurantFoodModel.randomFood())
-                    ],
-                  ),
+                      //  _miniFoodWidget(RestaurantFoodModel.randomFood())
+                    ]..addAll(
+                        List.generate(widget.voucher.products?.length, (int index){
+                          return _miniFoodWidget(widget.voucher.products[index]);
+                        })
+                    ),
+                  ) : Container(),
                   SizedBox(height: 20),
                   Column(
                     children: <Widget>[
-                      Text("CODE PROMO", style: KStyles.hintTextStyle_gray),
+                      Text("${AppLocalizations.of(context).translate('voucher_code')}", style: KStyles.hintTextStyle_gray),
                     ],
                   ),
                   SizedBox(height:10),
@@ -117,8 +141,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                     padding: EdgeInsets.only(top:20, bottom:20),
                     child:
                     InkWell(
-                        onTap: ()=>_copyIntoClipboard("WINGS10PIECES20"),
-                        child: Text('WINGS10PIECES20',textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
+                        onTap: ()=>_copyIntoClipboard("${widget.voucher.subscription_code}".toUpperCase()),
+                        child: Text('${widget.voucher.subscription_code}'.toUpperCase(),textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
                   ),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* debut d'utilisation */
@@ -130,20 +154,20 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       children: <Widget>[
                         Column(
                             children: <Widget>[
-                              Text("Available Since", style: TextStyle(color: Colors.green, fontSize: 13)),
-                              Text("2019-02-20",style: TextStyle(fontSize: 13))
+                              Text("${AppLocalizations.of(context).translate('available_since')}", style: TextStyle(color: Colors.green, fontSize: 13)),
+                              Text("${Utils.timeStampToDate(widget.voucher.start_date)}",style: TextStyle(fontSize: 13))
                             ]
                         ),
                         Column(
                             children: <Widget>[
-                              Text("Expiry date",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
-                              Text("2019-02-20",style: TextStyle(fontSize: 13))
+                              Text("${AppLocalizations.of(context).translate('expiry_date')}",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
+                              Text("${Utils.timeStampToDate(widget.voucher.end_date)}",style: TextStyle(fontSize: 13))
                             ]
                         )
                       ]),
                   /* powered by */
                   SizedBox(height: 20),
-                  Text('Powered By Kaba Technlogies', style: TextStyle(color: Colors.grey, fontSize: 10)),
+                  Text('${AppLocalizations.of(context).translate('powered_by_kaba_tech')}', style: TextStyle(color: Colors.grey, fontSize: 10)),
                 ]
             ),
           ),
@@ -154,15 +178,12 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   void _copyIntoClipboard(String codePromo) {
     ClipboardManager.copyToClipBoard(codePromo).then((result) {
-      final snackBar = SnackBar(
-        content: Text('${codePromo} Copied to Clipboard'),
-        /*  action: SnackBarAction(
-//          label: 'Undo',
-          onPressed: () {},
-        ),*/
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
+      mToast("${codePromo} ${AppLocalizations.of(context).translate('copied_c')}");
     });
+  }
+
+  void mToast(String message) {
+    Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
   _miniFoodWidget(RestaurantFoodModel food) {

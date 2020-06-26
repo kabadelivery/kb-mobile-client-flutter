@@ -277,5 +277,25 @@
 
 
   "choose_coupon": "Choose a coupon",
-  "add_coupon": "Add a Voucher"
+  "add_coupon": "Add a Voucher",
+  "PROMO_CODE": "CODE",
+  "subscribe": "subscribe",
+  "congrats_subscribe": "Congratulation, you just subscribe to a new COUPON !\\nHave fun using it !",
+  "insert_voucher_hint": "Please insert the CODE of your voucher to subscribe and get it!",
+  "voucher_details": "VOUCHER DETAILS",
+  "voucher_": "Discount voucher",
+  "voucher_code": "VOUCHER CODE",
+  "available_since": "Available Since",
+  "expiry_date": "Expiry Date",
+  "copied_c": "Copied to Clipboard",
+  "voucher_for_spec_foods": "This voucher can only be used if your order includes these meals",
+
+  "voucher_no_exist": "Sorry, this voucher doesn't exists.",
+  "voucher_invalid_params": "Sorry, invalid parameters.",
+  "voucher_no_self_subscribe": "Sorry, You can't self subscribe for this voucher.",
+  "voucher_expired": "Sorry, This voucher has expired.",
+  "voucher_disabled": "Sorry, This voucher is disabled.",
+  "voucher_already_subscribed": "Sorry, You have already subscribed to this voucher.",
+  "voucher_max_count_reached": "Sorry, The maximum count of people that can subscribe to this voucher has been reached."
+
 }

@@ -171,7 +171,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         _selectedAddress = results['selection'];
       });
       // launch request for retrieving the delivery prices and so on.
-      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
+      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
       showLoading(true);
       Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     }
@@ -854,7 +854,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         if (Utils.isCode(_mCode)) {
           widget.presenter.payNow(
               widget.customer, widget.foods, _selectedAddress, _mCode,
-              _addInfoController.text);
+              _addInfoController.text, _selectedVoucher);
         } else {
           mToast("${AppLocalizations.of(context).translate('wrong_code')}");
         }
@@ -904,7 +904,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         if (Utils.isCode(_mCode)) {
           widget.presenter.payAtDelivery(
               widget.customer, widget.foods, _selectedAddress, _mCode,
-              _addInfoController.text);
+              _addInfoController.text, _selectedVoucher);
         } else {
           mToast("${AppLocalizations.of(context).translate('wrong_code')}");
         }
@@ -1672,8 +1672,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       MaterialPageRoute(
         builder: (context) => MyVouchersPage(pick: true,
             presenter: VoucherPresenter(),
-            restaurantId: 17,
-            foods: [9949, 8833, 3772]
+            restaurantId: widget?.restaurant?.id,
+            foods: _getFoodsIdArray(widget.foods)
         ),
       ),
     );
@@ -1682,12 +1682,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       setState(() {
         _selectedVoucher = results['voucher'];
       });
+
+      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
       // launch request for retrieving the delivery prices and so on.
 //      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress);
 //      showLoading(true);
 //      Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
-
-
     }
 
   }
@@ -1736,8 +1736,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       ]);
     } else {
 //      _selectedVoucher
-    return MyVoucherMiniWidget(voucher: _selectedVoucher);
+      return Stack(
+        children: <Widget>[
+          Positioned(left:10,bottom:10,child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.black, size: 30), onPressed: (){
+            setState(() {
+              _selectedVoucher = null;
+            });
+          })),
+          MyVoucherMiniWidget(voucher: _selectedVoucher, isForOrderConfirmation: true),
+        ],
+      );
     }
+  }
+
+  _getFoodsIdArray(Map<RestaurantFoodModel, int> foods) {
+    List<int> foodsId = List();
+    foods.forEach((foodItem, quantity) => {
+      foodsId.add(foodItem.id)
+    });
+    return foodsId;
   }
 
 

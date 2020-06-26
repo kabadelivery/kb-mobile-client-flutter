@@ -1,3 +1,5 @@
+import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,16 +11,18 @@ class VoucherModel {
   int id;
   String restaurant_name;
   String details;
-  String value;
+  int value;
   int state; //
   int category; // category,
   int type; // type, food, delivery, type
-  List<int> restaurant_id;
+  List<RestaurantFoodModel> products;
+//  List<int> restaurant_id;
+  RestaurantModel restaurant_entity;
   int use_count; // who's use count , total or mine
   String subscription_code;
   String qr_code;
-  int ts_start, ts_end; // timestamp
-  String tags;
+  String start_date, end_date; // timestamp
+  String tag;
 
 //  int reward_category;
 //  int reward_cash_value;
@@ -54,15 +58,77 @@ class VoucherModel {
 
 
   VoucherModel({this.id, this.details, this.value, this.state, this.category,
-    }); // timestamp
+  }); // timestamp
+
+  /*"id":8,
+  "name":"First Voucher for Ulrich",
+  "type":1,
+  "category":1,
+  "max_persons":3690,
+  "value":20,
+  "use_count":2,
+  "restaurant_id":3,
+  "restaurant_entity":{
+  "id":3,
+  "name":"Mami"
+  },
+  "products":[],
+  "start_date":"1592611200",
+  "end_date":"1593475200",
+  "can_self_subscribe":1,
+  "enabled":1,
+  "is_rewarded":0,
+  "reward_on_food":0,
+  "reward_type":null,
+  "reward_cash_value":null,
+  "reward_percentage_value":null,
+  "subscription_code":"UL-01",
+  "qr_code":"aa92f142629bd6bfe091f820d6ffeV",
+  "tag":null,
+  "created_at":"1593110001",
+  "updated_at":"1593110001",
+  "state":1*/
+
+  /*int id;
+  String restaurant_name;
+  String details;
+  String value;
+  int state; //
+  int category; // category,
+  int type; // type, food, delivery, type
+  List<int> restaurant_id;
+  int use_count; // who's use count , total or mine
+  String subscription_code;
+  String qr_code;
+  int start_date, end_date; // timestamp
+  String tag;*/
 
   VoucherModel.fromJson(Map<String, dynamic> json) {
+
+    id = json['id'];
+    restaurant_name = json['restaurant_name'];
     category = json['category'];
-    details = json['details'];
+//    details = json['details'];
     value = json['value'];
     state = json['state'];
     category = json['category'];
+    type = json['type'];
+    if (json['restaurant_id'] != null && json['restaurant_entity'] != null && json['restaurant_entity'] != [])
+      restaurant_entity = RestaurantModel(id:json['restaurant_entity']['id'], name: json['restaurant_entity']['name']);
+    use_count = json['use_count'];
+    subscription_code = json['subscription_code'];
+    qr_code = json['qr_code'];
+    tag = json['tag'];
+    start_date = json['start_date'];
+
+    if (json['products'] != null || json['products'] != []) {
+      l = json["products"];
+      products = l?.map((r) => RestaurantFoodModel.fromJson(r))?.toList();
+    }
+
+    end_date = json['end_date'];
   }
+
 
   Map toJson () => {
     "category" : (category as int),
@@ -87,17 +153,17 @@ class VoucherModel {
     id = 100;
     restaurant_name = "CHILLILOCO";
     details = "";
-    value = "1000";
+    value = 1000;
     state = 1; // no deleted
     category = 1; // percentage or value
     type = 1; // RESTAURANT
-    restaurant_id = [17];
+//    restaurant_id = [17];
     use_count = 10;
     subscription_code = "LOCODEC20";
     qr_code = "";
-    ts_start = 123454321;
-    ts_end = 123454321;
-    tags = "";
+    start_date = "123454321";
+    end_date = "123454321";
+    tag = "";
   }
 
   VoucherModel.randomDelivery() : super() {
@@ -105,17 +171,17 @@ class VoucherModel {
     id = 100;
     restaurant_name = "DELIVERY";
     details = "this voucher works for everyrestaurant"; // DEPENDS IF IT WORKS ONLY ON A RESTAURANT
-    value = "10";
+    value = 10;
     state = 1; // no deleted
     category = 1; // percentage or value
     type = 2; // DELIVERY
-    restaurant_id = [17]; // if specific || if -1, all restaurant, if array plenty restaurant, or single one restaurant, otherwise all restaurant
+//    restaurant_id = [17]; // if specific || if -1, all restaurant, if array plenty restaurant, or single one restaurant, otherwise all restaurant
     use_count = 10; // how many times did i use them myself
     subscription_code = "FFURIOUS029"; // i want to subscribe, how do i do it
     qr_code = ""; // code qr
-    ts_start = 123454321;
-    ts_end = 123454321;
-    tags = "";
+    start_date = "123454321";
+    end_date = "123454321";
+    tag = "";
   }
 
   VoucherModel.randomBoth() : super() {
@@ -126,27 +192,26 @@ class VoucherModel {
     id = 100;
     restaurant_name = "CHILLILOCO&KABA";
     details = "";
-    value = "1000";
+    value = 1000;
     state = 1; // no deleted
     category = 1; // percentage or value
     type = 3; // BOTH
     // add specificity for foods...
-    restaurant_id = []; // all -1, specific [17,89]
+//    restaurant_id = []; // all -1, specific [17,89]
     use_count = 10;
     subscription_code = "KABA0029";
     qr_code = "";
-    ts_start = 123454321;
-    ts_end = 123454321;
-    tags = "";
+    start_date = "123454321";
+    end_date = "123454321";
+    tag = "";
   }
 
-
   getRestaurantsName() {
-    if (restaurant_id == null || restaurant_id?.length == 0) {
-      return null;
-    }
+//    if (restaurant_id == null || restaurant_id?.length == 0) {
+//      return null;
+//    }
     // send the appended restaurant names or so.
-      return restaurant_name;
+    return restaurant_entity?.name;
   }
 
 

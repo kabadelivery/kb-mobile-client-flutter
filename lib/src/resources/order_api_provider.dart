@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client;
@@ -21,7 +22,7 @@ class OrderApiProvider {
   Client client = Client();
 
 
-  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address) async {
+  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher) async {
 
     DebugTools.iPrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -52,7 +53,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
+  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -104,6 +105,7 @@ class OrderApiProvider {
         'infos' : '$infos',
         'device': device, // device informations
         'push_token':'$token', // push token
+        "voucher_id": voucher?.id
       });
 
       print("000 _ "+_data.toString());

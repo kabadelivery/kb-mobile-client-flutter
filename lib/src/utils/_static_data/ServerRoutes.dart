@@ -144,7 +144,7 @@ class ServerRoutes {
       "/api/resto/state/get";
 
   static const String LINK_COMPUTE_BILLING = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/commandBilling/get";
+      "/mobile/api/commandBilling/v3/get";
 
   static const String LINK_GET_LASTEST_FEEDS = ServerConfig.SERVER_ADDRESS+
       "/mobile/api/feeds/get";
@@ -209,7 +209,7 @@ class ServerRoutes {
   static const String CGU_PAGE = ServerConfig.SERVER_ADDRESS+"/page/cgu";
 
   // vouchers
-  static const String LINK_GET_MY_VOUCHERS = ServerConfig.SERVER_ADDRESS+"/mobile/api/voucher/all";
+//  static const String LINK_GET_MY_VOUCHERS = ServerConfig.SERVER_ADDRESS+"/mobile/api/voucher/all";
 
   /* top up */
   static const String LINK_GET_TOPUP_CHOICES = LINK_HOME_PAGE;
@@ -249,5 +249,11 @@ class ServerRoutes {
   static const String  LINK_TOPUP_FEES_RATE = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get";
 
   static const String  LINK_CHECK_UNREAD_MESSAGES = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/new/message/check";
+
+  static const String  LINK_GET_MY_VOUCHERS = ServerConfig.SERVER_ADDRESS+"/mobile/api/vouchers/get";
+
+  static const String  LINK_GET_VOUCHERS_FOR_ORDER = ServerConfig.SERVER_ADDRESS+"/mobile/api/vouchers/valid/get";
+
+  static const String  LINK_SUBSCRIBE_VOUCHERS = ServerConfig.SERVER_ADDRESS+"/mobile/api/vouchers/subscribe";
 
 }

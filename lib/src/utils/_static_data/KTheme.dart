@@ -20,6 +20,7 @@ class KColors {
   static MaterialColor colorCustom = MaterialColor(hexToInt("#cc1641"), color);
   static MaterialColor colorMainYellow = MaterialColor(hexToInt("#FFC102"), color);
   static MaterialColor white = MaterialColor(hexToInt("#ffffff"), color);
+  static MaterialColor darkish = MaterialColor(hexToInt("#000000"), color);
 
   static Map<int, Color> color = {
     50: Color.fromRGBO(204, 22, 65, 1),

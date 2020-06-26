@@ -17,33 +17,35 @@ class VoucherApiProvider {
 
   Client client = Client();
 
-  loadVouchers(CustomerModel customer) async {
-
+  loadVouchers({CustomerModel customer, bool pick = false}) async {
+/*
     return List.generate(3, (index) => VoucherModel.randomRestaurant()).toList()..addAll(
         List.generate(3, (index) => VoucherModel.randomBoth()).toList()
     )..addAll(
         List.generate(3, (index) => VoucherModel.randomDelivery()).toList()
     );
-
-    /*DebugTools.iPrint("entered loadVouchers");
+*/
+    DebugTools.iPrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
-          body: json.encode({"coordinates": '${position.latitude}:${position.longitude}'}),
+          .post(ServerRoutes.LINK_GET_MY_VOUCHERS,
+//          body: json.encode({"coordinates": '${position.latitude}:${position.longitude}'}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
+      String resp = response.body.toString();
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-          String description_details = json.decode(response.body)["data"]["display_name"];
-          String suburb = json.decode(response.body)["data"]["address"]["suburb"];
-          var m = Map();
-          m.putIfAbsent("suburb", ()=>suburb);
-          m.putIfAbsent("description_details", ()=>description_details);
-          return m;
-
+          Iterable lo = json.decode(response.body)["data"];
+          if (lo == null) {
+            return [];
+          } else {
+            List<VoucherModel> vouchers = lo?.map((voucher) =>
+                VoucherModel.fromJson(voucher))?.toList();
+            return vouchers;
+          }
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -51,7 +53,35 @@ class VoucherApiProvider {
       }
     } else {
       throw Exception(-2); // you have no network
-    }*/
+    } /**/
   }
 
+  subscribeVoucher(CustomerModel customer, String promoCode,
+      {bool isQrCode = false}) async {
+    DebugTools.iPrint("entered subscribeVoucher");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS,
+          body: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
+            "code": "${promoCode}"
+          }),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          // rfeturn voucher , with instance of .
+          return VoucherModel.fromJson(json.decode(response.body)["data"]);
+        } else {
+          // -1, -2,
+          return errorCode;
+        }
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 }

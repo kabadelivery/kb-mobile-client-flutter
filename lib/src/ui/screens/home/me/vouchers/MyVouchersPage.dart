@@ -1,14 +1,17 @@
+import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 
 
@@ -40,7 +43,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   String barcode = "";
 
-  bool isLoading = false;
+  bool isLoading = true;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
@@ -49,9 +52,8 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     widget.presenter.voucherView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-
       // according to if we are picking something, we can just request stuffs differently
-      widget.presenter.loadVoucherList(customer);
+      widget.presenter.loadVoucherList(customer: customer);
     });
     super.initState();
   }
@@ -64,6 +66,10 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
         backgroundColor: Colors.white,
         title: Text("${AppLocalizations.of(context).translate('my_vouchers')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        actions: <Widget>[
+          IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: Colors.black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
+          IconButton(icon: Icon(Icons.add_box, color: KColors.primaryColor),onPressed: ()=>_jumpToAddNewVoucher_Code())
+        ],
       ),
       body: Stack(
         children: <Widget>[
@@ -95,22 +101,44 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadVoucherList(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadVoucherList(customer: widget.customer); });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
-      widget.presenter.loadVoucherList(widget.customer);
+      widget.presenter.loadVoucherList(customer: widget.customer);
     });
   }
 
-  Future _jumpToAddNewVoucher() async {
-    Navigator.push(
+  Future _jumpToAddNewVoucher_Scan() async {
+
+    // when come back refresh this page.
+    Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => QrCodeScannerPage(),
       ),
-    ).then((results)=>kk(results));
+    );
+
+    if (results != null && results.containsKey('data')) {
+      // update
+   // subscribe through add whatever
+      _jumpToAddNewVoucher_Code(qrCode: results["data"]);
+    }
+  }
+
+
+  Future _jumpToAddNewVoucher_Code({String qrCode}) async {
+
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+      ),
+    );
+
+    // when you come back,
+    widget.presenter.loadVoucherList(customer: widget.customer, pick: widget.pick);
   }
 
   /// Deal with QRCode data
@@ -177,7 +205,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
           ]..addAll(
               List<Widget>.generate(widget.data?.length+1, (int index) {
                 if (index < widget.data?.length)
-                  return MyVoucherMiniWidget(voucher: widget.data[index]);
+                  return MyVoucherMiniWidget(voucher: widget.data[index], pick: widget.pick);
                 else
                   return Container(height: 100);
               })

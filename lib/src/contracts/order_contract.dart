@@ -7,6 +7,7 @@ import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 
@@ -14,9 +15,11 @@ class OrderConfirmationContract {
 
 //  void login (String password, String phoneCode){}
 //  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-  void computeBilling (RestaurantModel restaurant, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) {}
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) {}
   void checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) {}
+  void computeBilling (RestaurantModel restaurant, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher){}
+  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher){}
+  Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end){}
 }
 
 class OrderConfirmationView {
@@ -51,12 +54,12 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
   @override
   Future computeBilling(RestaurantModel restaurantModel, CustomerModel customer, Map<RestaurantFoodModel, int> foods,
-      DeliveryAddressModel address) async {
+      DeliveryAddressModel address, VoucherModel voucher) async {
     if (isWorking)
       return;
     isWorking = true;
     try {
-      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address);
+      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address, voucher);
       _orderConfirmationView.showLoading(false);
       _orderConfirmationView.inflateBillingConfiguration2(orderBillConfiguration);
       isWorking = false;
@@ -76,13 +79,15 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     _orderConfirmationView = value;
   }
 
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
+
+  @override
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
-      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos);
+      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher);
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
@@ -97,14 +102,14 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos) async {
+  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
       _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos);
+      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher);
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
@@ -140,7 +145,6 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     }
     isWorking = false;
   }
-
 
   Future<void> checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) async {
 

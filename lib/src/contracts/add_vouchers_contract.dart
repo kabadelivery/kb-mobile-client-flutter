@@ -3,46 +3,52 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/vouchers_api_provider.dart';
 
-class VoucherContract {
+class AddVoucherContract {
 
-  void loadVoucherList ({CustomerModel customer, bool pick=false}){}
+  void subscribeVoucher (CustomerModel customer, String promoCode, {bool isQrCode = false}){}
 }
 
-class VoucherView {
+class AddVoucherView {
   void showLoading(bool isLoading) {}
   void systemError () {}
   void networkError () {}
-  void inflateVouchers(List<VoucherModel> vouchers) {}
+  void subscribeSuccessfull(VoucherModel voucher) {}
+  void subscribeSuccessError(int error) {}
 }
 
 /* login presenter */
-class VoucherPresenter implements VoucherContract {
+class AddVoucherPresenter implements AddVoucherContract {
 
   bool isWorking = false;
 
   VoucherApiProvider provider;
 
-  VoucherView _voucherView;
+  AddVoucherView _voucherView;
 
-  VoucherPresenter () {
+  AddVoucherPresenter () {
     provider = new VoucherApiProvider();
   }
 
-  set voucherView(VoucherView value) {
+  set addVoucherView(AddVoucherView value) {
     _voucherView = value;
   }
 
   @override
-  Future<void> loadVoucherList({CustomerModel customer, bool pick=false}) async {
+  Future<void> subscribeVoucher(CustomerModel customer, String promoCode, {bool isQrCode = false}) async {
+
     if (isWorking)
       return;
     isWorking = true;
     _voucherView.showLoading(true);
     try {
-      List<VoucherModel> deliverVouchers = await provider.loadVouchers(customer:customer, pick:pick);
+      var mVoucher = await provider.subscribeVoucher(customer, promoCode, isQrCode: isQrCode);
       // also get the restaurant entity here.
       _voucherView.showLoading(false);
-      _voucherView.inflateVouchers(deliverVouchers);
+      if (mVoucher is VoucherModel && mVoucher?.id != null) {
+        _voucherView.subscribeSuccessfull(mVoucher);
+      } else {
+       _voucherView.subscribeSuccessError(mVoucher);
+      }
     } catch (_) {
       /* BestSeller failure */
       _voucherView.showLoading(false);
