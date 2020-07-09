@@ -47,10 +47,12 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
                 Positioned(
                   top: 50,
                   left:0,
+                  right:0,
                   child:  Column(mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
 
-                      Container(width: 200,height:200,
+                      Container(width: MediaQuery.of(context).size.width*0.9,
+                        height: MediaQuery.of(context).size.width*16*0.3/9,
                         child: FlareActor(
                             FlareData.success_check,
                             alignment: Alignment.center,
@@ -61,7 +63,7 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
                       ),
 
                       SizedBox(height: 10),
-                      Text("${AppLocalizations.of(context).translate('congrats_subscribe')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray),
+                      Container(margin: EdgeInsets.only(left:10,right:10),child: Text("${AppLocalizations.of(context).translate('congrats_subscribe')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
 
                       SizedBox(height: 20),
 
@@ -97,16 +99,17 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
 
   Future<void> _playMusicForSuccess() async {
     
-    return;
     // play music
     AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioPlayer.setVolume(1.0);
     AudioPlayer.logEnabled = true;
     var audioCache = new AudioCache(fixedPlayer: audioPlayer);
-    audioCache.play(MusicData.money_transfer_successfull);
+    audioCache.play(MusicData.voucher_subscribe_success);
     if (await Vibration.hasVibrator ()
     ) {
       Vibration.vibrate(duration: 500);
     }
+
+
   }
 }

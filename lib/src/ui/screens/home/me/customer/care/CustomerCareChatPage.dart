@@ -125,7 +125,8 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                           SizedBox(height: 15),
                           Row(mainAxisAlignment: widget.messages[position]?.user_id == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
                             children: <Widget>[
-                              widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
+//                              widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
+                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
                               Expanded(flex:8,
                                 child: Container(decoration: BoxDecoration(color: widget.messages[position]?.user_id == 0 ?  Colors.white : KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
                                   padding: EdgeInsets.all(10),
@@ -144,7 +145,9 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                                   ),
                                 ),
                               ),
-                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
+                              widget.messages[position]?.user_id == 0 ?  Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
+//                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
+
                             ],
                           ),
                         ],

@@ -29,7 +29,6 @@ import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -55,7 +54,7 @@ var generalRoutes = {
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   MySoldePage.routeName : (BuildContext context) => MySoldePage(),
-  QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
+//  QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
   TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(presenter: TransactionPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
@@ -23,6 +24,7 @@ import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart'
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -52,6 +54,7 @@ import 'package:vibration/vibration.dart';
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
 
+import 'package:qrscan/qrscan.dart' as scanner;
 
 
 class HomeWelcomePage extends StatefulWidget {
@@ -95,7 +98,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void initState() {
     super.initState();
 
-    popupMenus = ["Logout", "Settings"];
+    popupMenus = ["Scan","Settings","Logout",];
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
@@ -106,7 +109,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         this.widget.presenter.updateToken(customer);
       }
       widget.customer = customer;
-      popupMenus = ["${AppLocalizations.of(context).translate('logout')}","${AppLocalizations.of(context).translate('settings')}"];
+      popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
     });
 
     this.widget.presenter.fetchHomePage();
@@ -244,15 +247,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     /* jump to the other activity */
     switch(popupMenus.indexOf(value)) {
       case 0:
-      /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete((){
-          //       get back to the splash page.
-//          Navigator.popUntil(context, ModalRoute.withName(SplashPage.routeName));
-          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
-        });
+      // scan
+        _jumpToScanPage();
         break;
       case 1:
         _jumpToPage(context, SettingsPage());
+        break;
+      case 2:
+      /* logout */
+        CustomerUtils.clearCustomerInformations().whenComplete((){
+          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+        });
         break;
     }
   }
@@ -748,6 +753,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         return Container();
       }
     }
+  }
+
+  Future<void> _jumpToScanPage() async {
+
+    String qrCode = await scanner.scan();
+
+    /* Map results = await*/
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+      ),
+    );
   }
 }
 

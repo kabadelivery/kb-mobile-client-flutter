@@ -520,8 +520,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               ),
               SizedBox(height: 10),
               _buildAddress(_selectedAddress),
-              _buildCouponSpace(),
               SizedBox(height: 25),
+              _buildCouponSpace(),
+              SizedBox(height: 15),
               isConnecting
                   ? Center(child: CircularProgressIndicator())
                   : Container(),
@@ -1715,7 +1716,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 color: KColors.primaryYellowColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(10)
+                ),
               ),
               /* please choose a voucher. */
               child: Column(
@@ -1740,23 +1742,30 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 //      _selectedVoucher
       return Stack(
         children: <Widget>[
-          MyVoucherMiniWidget(voucher: _selectedVoucher, isForOrderConfirmation: true),
-          Positioned(right:10,top:10,child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.black, size: 30), onPressed: (){
-            setState(() {
-              _selectedVoucher = null;
-            });
-            // launch request for retrieving the delivery prices and so on.
-            if (_selectedAddress != null) {
-              widget.presenter.computeBilling(
-                  widget.restaurant, widget.customer, widget.foods,
-                  _selectedAddress, _selectedVoucher);
-              showLoading(true);
-              Timer(Duration(milliseconds: 100), () =>
-                  _listController.jumpTo(
-                      _listController.position.maxScrollExtent));
-            }
-          })),
-
+          Container(padding: EdgeInsets.only(top:10),child: MyVoucherMiniWidget(voucher: _selectedVoucher, isForOrderConfirmation: true)),
+          Positioned(right:10,top:0,child: Center(
+            child: Container(width:40,height:40, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue,
+//                borderRadius: BorderRadius.all(Radius.circular(10))
+            ),
+              child: Center(
+                child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.white, size: 20), onPressed: (){
+                  setState(() {
+                    _selectedVoucher = null;
+                  });
+                  // launch request for retrieving the delivery prices and so on.
+                  if (_selectedAddress != null) {
+                    widget.presenter.computeBilling(
+                        widget.restaurant, widget.customer, widget.foods,
+                        _selectedAddress, _selectedVoucher);
+                    showLoading(true);
+                    Timer(Duration(milliseconds: 100), () =>
+                        _listController.jumpTo(
+                            _listController.position.maxScrollExtent));
+                  }
+                }),
+              ),
+            ),
+          )),
         ],
       );
     }

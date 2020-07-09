@@ -57,7 +57,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
+  //  popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
   }
 
   @override
@@ -136,7 +136,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text("${widget.food?.name.toUpperCase()}", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+                                      Text("${widget.food?.name?.toUpperCase()}", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
                                       SizedBox(height: 20),
                                       Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -176,7 +176,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                                     shape: BoxShape.circle,
                                                     image: new DecorationImage(
                                                         fit: BoxFit.cover,
-                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget.food.pic))
+                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.food?.pic))
                                                     )
                                                 )
                                             ),
@@ -329,7 +329,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   _buildFlexibleWidget() {
+
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
+    var images = widget.food?.food_details_pictures;
+    if (images == null){
+      images = [widget.food.pic];
+    }
+
     return  new SliverAppBar(
       leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: ()=> Navigator.pop(context)),
       actions: <Widget>[
@@ -351,20 +357,20 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
               padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top),
               child: Stack(
                 children: <Widget>[
-                  widget.food?.food_details_pictures?.length == null ||  widget.food?.food_details_pictures?.length == 0 ?
+                  /*  widget.food?.food_details_pictures?.length == null ||  widget.food?.food_details_pictures?.length == 0 ?
                   Container(height: 9*MediaQuery.of(context).size.width/16,
-                      width: 9*MediaQuery.of(context).size.width, color: Colors.white) :
+                      width: 9*MediaQuery.of(context).size.width, color: Colors.white) :*/
                   CarouselSlider(
                     onPageChanged: _carousselPageChanged,
                     viewportFraction: 1.0,
-                    autoPlay: widget.food.food_details_pictures.length > 1 ? true:false,
-                    reverse: widget.food.food_details_pictures.length > 1 ? true:false,
-                    enableInfiniteScroll: widget.food.food_details_pictures.length > 1 ? true:false,
+                    autoPlay: images?.length != null && images.length > 1 ? true:false,
+                    reverse: images?.length != null && images.length > 1 ? true:false,
+                    enableInfiniteScroll: images?.length != null && images.length > 1 ? true:false,
                     autoPlayInterval: Duration(seconds: 5),
                     autoPlayAnimationDuration: Duration(milliseconds: 300),
                     autoPlayCurve: Curves.fastOutSlowIn,
                     height: expandedHeight,
-                    items: widget.food.food_details_pictures?.map((pictureLink) {
+                    items: images?.map((pictureLink) {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
@@ -387,13 +393,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                         child: Row(
                           children: <Widget>[]
                             ..addAll(
-                                List<Widget>.generate(widget.food?.food_details_pictures?.length == null ? 0 : widget.food?.food_details_pictures?.length, (int index) {
+                                List<Widget>.generate(images?.length == null ? 0 : images?.length, (int index) {
                                   return Container(
                                       margin: EdgeInsets.only(right:2.5, top: 2.5),
                                       height: 9,width:9,
                                       decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
                                           border: new Border.all(color: Colors.white),
-                                          color: (index==_carousselPageIndex || index==widget.food.food_details_pictures.length)?Colors.white:Colors.transparent
+                                          color: (index==_carousselPageIndex || index== images.length)?Colors.white:Colors.transparent
                                       ));
                                 })
                               /* add a list of rounded views */

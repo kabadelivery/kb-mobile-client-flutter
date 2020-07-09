@@ -37,7 +37,7 @@ dependencies:
   permission_handler: ^3.2.2
   place_picker: ^0.9.14
   font_awesome_flutter: ^8.5.0
-  flutter_qr_reader: ^1.0.2
+#  flutter_qr_reader: ^1.0.2
   qr_flutter: ^3.0.1
   image_picker: ^0.6.1+4
   flutter_datetime_picker: ^1.2.6
@@ -54,6 +54,7 @@ dependencies:
   provider: ^3.0.0
   clipboard_manager: ^0.0.1
   uni_links: ^0.4.0
+  qrscan: ^0.2.17
 #  pub_semver: ^1.4.4
   android_intent: any
   nice_intro:
@@ -129,7 +130,7 @@ flutter:
     - assets/command_success_hold_on.mp3
     - assets/money_transfer_successfull.mp3
     - assets/new_message.mp3
-
+    - assets/voucher_subscribe_success.mp3
   #  - images/a_dot_ham.jpeg
 
 

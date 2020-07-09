@@ -5,6 +5,7 @@ import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 
 import 'DeliveryTimeFrameModel.dart';
+import 'VoucherModel.dart';
 
 class CommandModel {
 
@@ -50,6 +51,8 @@ class CommandModel {
   int preorder = 0;///////
   DeliveryTimeFrameModel preorder_hour;
 
+  VoucherModel voucher_entity;
+
   int rating;
   String comment;
 
@@ -62,7 +65,7 @@ class CommandModel {
     this.preorder_shipping_pricing, this.preorder_food_pricing,
     this.promotion_total_pricing, this.promotion_shipping_pricing,
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
-    this.preorder_discount, this.preorder, this.preorder_hour});
+    this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity});
 
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -121,6 +124,14 @@ class CommandModel {
     if (json["preorder_hour"] != null )
       preorder_hour = DeliveryTimeFrameModel.fromJson(json['preorder_hour']);
 
+    try {
+      if (json["voucher_entity"] != null) {
+      voucher_entity = VoucherModel.fromJson(json["voucher_entity"]);
+//        voucher_entity = VoucherModel.randomDelivery();
+      }
+    } catch (_) {
+      print(_);
+    }
   }
 
   Map toJson () => {

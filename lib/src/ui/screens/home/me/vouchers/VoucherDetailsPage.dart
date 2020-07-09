@@ -117,7 +117,11 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   widget.voucher?.restaurant_entity?.id != null ? Column(
                     children: <Widget>[
                       SizedBox(height: 10),
+                      widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
+                      Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
+              :
                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
+
                       /* start a mini food list .. */
 //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())

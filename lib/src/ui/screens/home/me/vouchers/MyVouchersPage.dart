@@ -9,10 +9,12 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
+//import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 
 
 class MyVouchersPage extends StatefulWidget {
@@ -112,19 +114,36 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   Future _jumpToAddNewVoucher_Scan() async {
 
-    // when come back refresh this page.
+    /*  // when come back refresh this page.
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => QrCodeScannerPage(),
       ),
     );
-
     if (results != null && results.containsKey('data')) {
       // update
    // subscribe through add whatever
       _jumpToAddNewVoucher_Code(qrCode: results["data"]);
+    }*/
+
+    String promoCode = await scanner.scan();
+    promoCode = promoCode?.toUpperCase();
+
+    /* check if this code could be a code */
+
+    if (_checkPromoCode(promoCode)) {
+      _jumpToAddNewVoucher_Code(qrCode: promoCode);
+    } else {
+      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
     }
+  }
+
+  bool _checkPromoCode(String promoCode) {
+    if (promoCode?.length < 3 || promoCode?.length>15 || promoCode.contains(":") || promoCode.contains(".")) {
+      return false;
+    }
+    return true;
   }
 
 
@@ -213,6 +232,67 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
       ),
     );
   }
+
+  void mDialog(String message) {
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+
 
 }
 

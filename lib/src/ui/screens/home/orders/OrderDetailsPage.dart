@@ -4,6 +4,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -131,7 +132,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                         children: <Widget>[
                           Center(child: Text("${AppLocalizations.of(context).translate('rating')}".toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white))),
                           SizedBox(height: 5),
-                          Row(children: <Widget>[]
+                          Row(mainAxisAlignment: widget?.command?.comment == null ? MainAxisAlignment.center : MainAxisAlignment.start, children: <Widget>[]
                             ..addAll(
                                 List<Widget>.generate(widget?.command?.rating, (int index) {
                                   return Icon(Icons.star, color: KColors.primaryYellowColor, size: 20);
@@ -140,7 +141,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                           SizedBox(height: 5),
                           Row(
                             children: <Widget>[
-                              Flexible(child: Text(widget?.command?.comment, textAlign: TextAlign.left, style: TextStyle(color:Colors.white, fontSize: 17))),
+                              Flexible(child: Text("${widget?.command?.comment == null ? "" : widget?.command?.comment} ", textAlign: TextAlign.left, style: TextStyle(color:Colors.white, fontSize: 17))),
                             ],
                           )
                         ]
@@ -244,6 +245,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: Column(children:List.generate(widget.command.food_list.length, (int index) {
                     return SingleOrderFoodWidget(widget.command.food_list[index]);
                   }))),
+              SizedBox(height: 10),
+              /* if we have a voucher, we will show it */
+              _buildVoucher(),
               SizedBox(height: 10),
               /* bill */
               _buildBill(),
@@ -570,6 +574,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
       // ask launch.
       Toast.show("Call error", context);
     }
+  }
+
+  _buildVoucher() {
+    // build voucher if we have it
+    if (widget?.command != null && widget?.command?.voucher_entity != null) {
+      return MyVoucherMiniWidget(voucher: widget?.command?.voucher_entity);
+    }
+    return Container();
   }
 
 }

@@ -7,4 +7,6 @@ class MusicData {
 
  static final String new_message = "new_message.mp3";
 
+ static final String voucher_subscribe_success = "voucher_subscribe_success.mp3";
+
 }
