@@ -385,6 +385,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _jumpToPage (BuildContext context, page) {
+
     Navigator.push(
       context,
       MaterialPageRoute(

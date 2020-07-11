@@ -204,4 +204,50 @@ class AppApiProvider {
       throw Exception(-2);
     }
   }
+
+
+  /*
+  SELECT * FROM `food`, menu WHERE food.name LIKE '%piment%' AND
+   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
+   food.description LIKE '%piment%' GROUP BY food.id
+  * */
+
+  /*
+  *  second proposal
+  *
+   SELECT food.name, (SELECT command.id FROM command WHERE command.food_command LIKE CONCAT("",food.id,"")) as order_count FROM `food`, menu WHERE food.name LIKE '%piment%' AND
+   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
+   food.description LIKE '%piment%' GROUP BY food.id ORDER BY order_count desc
+  *
+  * */
+
+
+  /*
+  fuck this
+
+   SELECT food.name, (SELECT count(command.id) FROM command WHERE command.start_time > '2020-07-01'  AND command.food_command LIKE CONCAT("",food.id,"")) as order_count FROM `food`, menu WHERE food.name LIKE '%piment%' AND
+   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
+   food.description LIKE '%piment%' GROUP BY food.id ORDER BY order_count desc LIMIT 0,10
+
+   */
+  /* order by most sold count */
+  fetchFoodFromRestaurantByName(String desc) async {
+
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES,
+          body: {"desc":"${desc == null ? "" : desc}"}
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        bool data = json.decode(response.body)["data"];
+        return data;
+      }
+      else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2);
+    }
+  }
 }

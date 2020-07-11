@@ -14,6 +14,7 @@ import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 
 class RestaurantListPage extends StatefulWidget {
@@ -33,6 +34,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   var _filterEditController = TextEditingController();
 
   List<RestaurantModel> data;
+
+  bool _searchMode = false;
 
   @override
   void initState() {
@@ -100,7 +103,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,
-    //    leading: null,
+        //    leading: null,
         backgroundColor: Colors.grey.shade100,
         title: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -112,8 +115,19 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           child:Row(
             children: <Widget>[
               Expanded(
-                child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
-                    decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
+                child: Focus( onFocusChange: (hasFocus) {
+                  if(hasFocus) {
+                    // do staff
+                    _searchMode = true;
+                  } else {
+                    // out search mode
+//                    mToast("Out search mode");
+                    _searchMode = false;
+                  }
+                },
+                  child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
+                      decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
+                ),
               ),
               IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
                 _clearFocus();
@@ -131,9 +145,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 //                  SizedBox(height: 40)
                 ]
                   ..addAll(
-                      List<Widget>.generate(_filteredData(data).length, (int index) {
-                        return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
-                      })
+                      !_searchMode ? List<Widget>.generate(data.length, (int index) {
+                        return RestaurantListWidget(restaurantModel: data[index]);
+                      }).toList()  : _showSearchPage()
                   ),
               ),
             ),
@@ -196,15 +210,87 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   _filteredData(List<RestaurantModel> data) {
     String content = _filterEditController.text;
     List<RestaurantModel> d = List();
+
     for (var restaurant in data) {
-      if ("${restaurant.name}".toLowerCase().contains(content.trim().toLowerCase())) {
+      if (removeAccentFromString("${restaurant.name}".toLowerCase()).contains(removeAccentFromString(content.trim().toLowerCase()))) {
         d.add(restaurant);
       }
     }
     return d;
   }
 
+  String removeAccentFromString(String sentence) {
+
+    return
+      sentence
+      ..replaceAll("é", "e")
+      ..replaceAll("è", "e")
+      ..replaceAll("ê", "e")
+      ..replaceAll("ë", "e")
+      ..replaceAll("ē", "e")
+      ..replaceAll("ė", "e")
+      ..replaceAll("ę", "e")
+
+      ..replaceAll("à", "a")
+      ..replaceAll("á", "a")
+      ..replaceAll("â", "a")
+      ..replaceAll("ä", "a")
+      ..replaceAll("æ", "a")
+      ..replaceAll("ã", "a")
+      ..replaceAll("ā", "a")
+
+      ..replaceAll("ô", "o")
+      ..replaceAll("ö", "o")
+      ..replaceAll("ò", "o")
+      ..replaceAll("ó", "o")
+      ..replaceAll("œ", "o")
+      ..replaceAll("ø", "o")
+      ..replaceAll("ō", "o")
+      ..replaceAll("õ", "o")
+
+      ..replaceAll("î", "i")
+      ..replaceAll("ï", "i")
+      ..replaceAll("í", "i")
+      ..replaceAll("ī", "i")
+      ..replaceAll("į", "i")
+      ..replaceAll("ì", "i")
+
+      ..replaceAll("û", "u")
+      ..replaceAll("ü", "u")
+      ..replaceAll("ù", "u")
+      ..replaceAll("ú", "u")
+      ..replaceAll("ū", "u")
+    ;
+  }
+
   void _clearFocus() {
     _filterEditController.clear();
+  }
+
+  void mToast(String message) {
+    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  _showSearchPage() {
+    /* show first few restaurants with a show more button, */
+    return <Widget>[]
+      ..addAll(List<Widget>.generate(_filteredData(data).length > 3 ? 3 : _filteredData(data).length, (int index) {
+        return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
+      }).toList())
+      ..add(Container(color: Colors.green, width: MediaQuery.of(context).size.width, height:1, margin: EdgeInsets.only(top:10,bottom:10, right:10,left:10)))
+      ..add(
+          StreamBuilder(
+              stream: restaurantBloc.restaurantList,
+              builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
+                if (snapshot.hasData) {
+//                  return _buildRestaurantList(snapshot.data);
+                  return Container(child: Text("Are we done?"));
+                } else if (snapshot.hasError) {
+                  return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
+                }
+                return Center(child: CircularProgressIndicator());
+              })
+      )
+    ;
   }
 }

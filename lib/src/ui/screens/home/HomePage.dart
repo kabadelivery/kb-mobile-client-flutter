@@ -80,7 +80,6 @@ class _HomePageState extends State<HomePage> {
     meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();
-
     //    popupMenus = ["${AppLocalizations.of(context).translate('settings')}"];
     //    jump to what i need to.
   }

@@ -123,19 +123,25 @@ class GroupAdsModel {
   String title_theme;
   AdModel big_pub;
   AdModel small_pub;
+  List<AdModel> level_one;
+  List<AdModel> level_two;
 
-  GroupAdsModel({this.title, this.title_theme, this.big_pub, this.small_pub});
+
+  GroupAdsModel({this.title, this.title_theme, this.big_pub, this.small_pub, this.level_one, this.level_two});
 
   GroupAdsModel.fromJson(Map<String, dynamic> json) {
-
 
     title = json['title'];
     title_theme = json['title_theme'];
 
     big_pub = AdModel.fromJson(json["big_pub"]);
     small_pub = AdModel.fromJson(json["small_pub"]);
-//    big_pub = json['big_pub'];
-//    small_pub = json['small_pub'];
+
+    l = json["level_one"];
+    level_one = l?.map((f) => AdModel.fromJson(f))?.toList();
+
+    l = json["level_two"];
+    level_two = l?.map((f) => AdModel.fromJson(f))?.toList();
   }
 
   Map toJson () => {

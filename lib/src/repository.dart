@@ -20,6 +20,8 @@ class Repository {
   final appApiProvider = AppApiProvider();
   Future<String> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
   Future<List<RestaurantModel>> fetchRestaurantList(Position position) => appApiProvider.fetchRestaurantList(position);
+  Future<List<RestaurantModel>> fetchFoodFromRestaurantByName(String desc) => appApiProvider.fetchFoodFromRestaurantByName(desc);
+
 //Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Position position) => appApiProvider.checkLocationDetails(userToken, position);
 
 

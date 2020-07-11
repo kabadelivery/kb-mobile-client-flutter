@@ -16,6 +16,7 @@ import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/customwidgets/Group2AdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
@@ -61,7 +62,6 @@ class HomeWelcomePage extends StatefulWidget {
 
   HomeScreenModel data;
 
-
   var argument;
 
   var destination;
@@ -93,12 +93,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
-
   @override
   void initState() {
     super.initState();
 
-    popupMenus = ["Scan","Settings","Logout",];
+    popupMenus = ["Scan","Settings","Logout"];
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
@@ -579,7 +578,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       children: <Widget>[]
                         ..addAll(
                             List<Widget>.generate(data.groupad.length, (int index) {
-                              return GroupAdsWidget(groupAd: data.groupad[index]);
+                              return Group2AdsWidget(groupAd: data.groupad[index]);
                             })
                         )
                   )

@@ -390,22 +390,19 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),
-                                    TableCell(child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-//                                            IconButton (icon:Icon(, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
-                                           SizedBox(
-                                             child: IconButton(icon:  SvgPicture.asset(
-                                                 VectorsData.coupon
-                                             ), iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()))),
-                                           ),
-                                            SizedBox(height:10),
-                                            Text("${AppLocalizations.of(context).translate('coupon')}", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
-                                          ],
+                                      TableCell(
+                                        child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              IconButton (icon:Icon(Icons.card_giftcard, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()))),
+                                              SizedBox(height:10),
+                                              Text("${AppLocalizations.of(context).translate('coupon')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),)
+                                            ],
+                                          ),
                                         ),
-                                      )),
+                                      ),
                                       TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),

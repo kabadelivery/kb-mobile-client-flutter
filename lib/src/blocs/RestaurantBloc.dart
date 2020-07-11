@@ -44,13 +44,26 @@ class RestaurantBloc {
     }
   }
 
+  fetchFoodFromRestaurantByName(String desc) async {
+
+    try {
+//      if (_isDisposedForRestaurantList)
+//        return;
+      List<RestaurantModel> restaurantList = await _repository.fetchFoodFromRestaurantByName(desc);
+      _restaurantListFetcher.sink.add(restaurantList);
+//      _isDisposedForRestaurantList = true;
+    } catch (_) {
+      _restaurantListFetcher.sink.addError(_.message);
+    }
+  }
+
   fetchCommentList(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     try {
       if (_isDisposedForComments)
         return;
       List<CommentModel> commentList = await _repository.fetchRestaurantComment(restaurantModel, userToken);
       _commentListFetcher.sink.add(commentList);
-     _isDisposedForComments = true;
+      _isDisposedForComments = true;
     } catch (_) {
       _commentListFetcher.sink.addError(_.message);
     }
@@ -62,13 +75,11 @@ class RestaurantBloc {
         return;
       List<RestaurantSubMenuModel> restaurantMenu = await _repository.fetchRestaurantMenuList(restaurantModel);
       _restaurantMenuFetcher.sink.add(restaurantMenu);
-     _isDisposedForRestaurantMenu = true;
+      _isDisposedForRestaurantMenu = true;
     } catch (_) {
       _restaurantListFetcher.sink.addError(_.message);
     }
   }
-
-
 
   dispose() {
 
