@@ -43,9 +43,9 @@ var miniImages = [
           Stack(
               children: <Widget>[
                 Container(
-                    margin: EdgeInsets.only(bottom: 20),
-//                    color: Colors.grey.shade300.withAlpha(50),
-                    padding: EdgeInsets.only(top:30),
+//                    margin: EdgeInsets.only(bottom: 20),
+                    color: Colors.grey.shade100,
+                    padding: EdgeInsets.only(top:20, bottom: 20),
                     child: Column(
                         children:<Widget>[
 //                          GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0), child:

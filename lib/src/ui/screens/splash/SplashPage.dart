@@ -332,7 +332,6 @@ class _SplashPageState extends State<SplashPage> {
 * /order/000
 * /transactions
 * /restaurant/900
-*
 * */
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'

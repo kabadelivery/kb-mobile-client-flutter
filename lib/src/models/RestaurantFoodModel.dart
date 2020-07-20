@@ -47,7 +47,7 @@ class RestaurantFoodModel {
         id = json['id'];
         name = json['name'];
         pic = json['pic'];
-        promotion_price = json['promotion_price'];
+        promotion_price = "${json['promotion_price'] == null ? "" : json['promotion_price']}";
         price = json['price'];
         menu_id = json['menu_id'];
         restaurant_id = json['restaurant_id'];
