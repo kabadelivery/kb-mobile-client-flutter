@@ -57,6 +57,8 @@ class SplashPage extends StatefulWidget { // translated
 
 class _SplashPageState extends State<SplashPage> {
 
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -96,6 +98,9 @@ class _SplashPageState extends State<SplashPage> {
           prefs.remove("_login_expiration_date");
         } else {
           // check if there is a destination out of deep-linking before doing this.
+
+          // this page should take unto consideration eventual destination given buy the handle links
+
           launchPage = HomePage(destination: widget.destination, argument: widget.argument);
         }
       }
@@ -219,7 +224,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void _listenToUniLinks() {
     initUniLinks();
-    initUniLinksStream();
+//    initUniLinksStream();
   }
 
 // uni-links
@@ -245,7 +250,10 @@ class _SplashPageState extends State<SplashPage> {
     // Attach a listener to the stream
     _sub = getLinksStream().listen((String link) {
       // Parse the link and warn the user, if it is not correct
+      if (link == null)
+        return;
       print("initialLinkStream ${link}");
+      // send the links to home page to handle them instead
       _handleLinksImmediately(link);
     }, onError: (err) {
       // Handle exception by warning the user their action did not succeed
@@ -255,7 +263,7 @@ class _SplashPageState extends State<SplashPage> {
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
 
-  void _handleLinksImmediately(String link) {
+  void _handleLinksImmediately(String link) {  /* streams */
 
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
@@ -267,19 +275,26 @@ class _SplashPageState extends State<SplashPage> {
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
     List<String> pathSegments = mUri.pathSegments.toList();
+
+    /*
+     * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
+     * */
+
     switch(pathSegments[0]) {
       case "transactions":
-        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+//        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
         break;
       case "restaurants":
-        widget.destination = SplashPage.RESTAURANT_LIST;
+    //    widget.destination = SplashPage.RESTAURANT_LIST;
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
           print("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+//          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "order":
@@ -287,7 +302,8 @@ class _SplashPageState extends State<SplashPage> {
           print("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "food":
@@ -296,6 +312,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+
         }
         break;
       case "menu":
@@ -304,6 +321,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+
         }
         break;
       case "review-order":
@@ -311,7 +329,8 @@ class _SplashPageState extends State<SplashPage> {
           print("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
     }
@@ -320,6 +339,9 @@ class _SplashPageState extends State<SplashPage> {
   void _handleLinks(String link) {
 
     // if you are logged in, we can just move to the activity.
+    if (link == null)
+      return;
+
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
     print("host -> ${mUri.host}");

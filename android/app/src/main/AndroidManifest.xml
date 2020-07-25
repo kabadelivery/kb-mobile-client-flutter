@@ -36,9 +36,12 @@
         android:roundIcon="@mipmap/launcher_icon"
         android:networkSecurityConfig="@xml/network_security"
         android:icon="@mipmap/launcher_icon">
+
+
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
+            android:allowTaskReparenting="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"

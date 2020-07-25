@@ -136,43 +136,47 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       }
     });
 
-    if (widget?.destination != null) {
-      switch(widget.destination) {
-        case SplashPage.TRANSACTIONS:
+    Timer.run(() {
+
+      if (widget?.destination != null) {
+        switch(widget.destination) {
+          case SplashPage.TRANSACTIONS:
 //          navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
 //          _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
-              builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
-            ),
-          );
-          break;
-        case SplashPage.RESTAURANT_LIST:
-          StateContainer.of(context).tabPosition = 1;
-          break;
-        case SplashPage.RESTAURANT:
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
+                builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+              ),
+            );
+            break;
+          case SplashPage.RESTAURANT_LIST:
+            StateContainer.of(context).tabPosition = 1;
+            break;
+          case SplashPage.RESTAURANT:
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: widget.argument);
-          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
-          break;
-        case SplashPage.ORDER:
+            _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+            break;
+          case SplashPage.ORDER:
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          break;
-        case SplashPage.FOOD:
+            _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            break;
+          case SplashPage.FOOD:
 //          navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: widget.argument);
-          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
-          break;
-        case SplashPage.MENU:
+            _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+            break;
+          case SplashPage.MENU:
 //          navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: widget.argument);
-          _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
-          break;
-        case SplashPage.REVIEW_ORDER:
+            _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+            break;
+          case SplashPage.REVIEW_ORDER:
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          break;
+            _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            break;
+        }
       }
-    }
+    });
+
   }
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();

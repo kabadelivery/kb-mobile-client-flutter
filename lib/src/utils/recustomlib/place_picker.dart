@@ -630,7 +630,6 @@ class SearchInputState extends State<SearchInput> {
               color: Colors.black,
             ), onPressed: (){onSearchInputChange();},
           ),
-
         ],
       ),
       decoration: BoxDecoration(
