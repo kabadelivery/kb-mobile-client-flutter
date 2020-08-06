@@ -113,8 +113,14 @@ class VoucherModel {
     state = json['state'];
     type = json['type'];
     category = json['category'];
-    if (json['restaurant_id'] != null && json['restaurant_entity'] != null && json['restaurant_entity'] != [])
-      restaurant_entity = RestaurantModel(id:json['restaurant_entity']['id'], name: json['restaurant_entity']['name']);
+    try {
+      if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
+          json['restaurant_entity'] != [])
+        restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
+            name: json['restaurant_entity']['name']);
+    } catch(_) {
+      print(_);
+    }
     use_count = json['use_count'];
     subscription_code = json['subscription_code'];
     qr_code = json['qr_code'];

@@ -2,7 +2,7 @@
 
 class ServerConfig {
 
-//  static const String ip_address = "app.kaba-delivery.com"; // prod server
+//  static const String ip_address = "app1.kaba-delivery.com"; // prod server
 //  static const String pay_ip_address = "pay.kaba-delivery.com";
 
   static const String ip_address = "dev.kaba-delivery.com"; // dev server

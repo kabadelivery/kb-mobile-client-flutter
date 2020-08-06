@@ -18,7 +18,6 @@ class OrderItemModel {
    List<String> food_details_pictures;
    double stars;
 
-
    OrderItemModel({this.id, this.name, this.price, this.promotion,
       this.promotion_price, this.pic, this.details, this.quantity,
       this.menu_id, this.restaurant_id, this.food_description,

@@ -48,6 +48,7 @@ class MeAccountPage extends StatefulWidget {
 
   @override
   _MeAccountPageState createState() => _MeAccountPageState();
+
 }
 
 class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateMixin{
@@ -234,7 +235,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.balance,
                                         )),
                                     SizedBox(height:10),
+
                                     Text("${AppLocalizations.of(context).translate('currency')} ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+
                                   ],
                                 ),
                               ),

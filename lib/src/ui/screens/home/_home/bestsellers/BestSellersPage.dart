@@ -227,6 +227,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                               "${data?.food_entity?.price}",
                               style: TextStyle(
                                   color: Colors.black,
+                                  decoration:  TextDecoration.lineThrough,
                                   fontSize: 30,
                                   fontWeight: FontWeight
                                       .bold)),

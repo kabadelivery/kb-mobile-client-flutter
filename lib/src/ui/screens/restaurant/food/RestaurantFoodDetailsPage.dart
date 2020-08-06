@@ -143,7 +143,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                           children: <Widget>[
 
                                             widget.food.promotion==0 ?
-                                            Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+                                            Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: Colors.black, decoration:  TextDecoration.lineThrough, fontSize: 30, fontWeight: FontWeight.bold)),
 
                                             widget.food.promotion!=0 ? Row(children: <Widget>[
                                               SizedBox(width: 10),

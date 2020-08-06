@@ -53,7 +53,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             )
                         )
                     ),
-                    trailing: widget.restaurantModel.coming_soon == 0 ? IconButton(icon: Icon(Icons.menu, color: KColors.primaryColor,), onPressed: (){_jumpToRestaurantMenu(context, widget.restaurantModel);}) : null,
+                    trailing: widget.restaurantModel.coming_soon == 0 ? IconButton(icon: Icon(Icons.info, size: 30, color: KColors.primaryColor), onPressed: (){_jumpToRestaurantDetails(context, widget.restaurantModel);}) : null,
                     title:Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +112,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                     ))
               ])
           )),
-          onTap: (){widget.restaurantModel.coming_soon==0?_jumpToRestaurantDetails(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
+          onTap: (){widget.restaurantModel.coming_soon==0?_jumpToRestaurantMenu(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
   }
 
   void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {

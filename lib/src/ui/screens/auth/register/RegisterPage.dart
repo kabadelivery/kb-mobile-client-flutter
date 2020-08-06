@@ -420,7 +420,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   @override
-  void onSysError({String message = ""}) {
+  void onSysError({String message = "Sys error"}) {
     mToast(message);
   }
 

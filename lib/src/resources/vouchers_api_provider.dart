@@ -17,7 +17,7 @@ class VoucherApiProvider {
 
   Client client = Client();
 
-  loadVouchers({CustomerModel customer, bool pick = false}) async {
+  loadVouchers({CustomerModel customer, int restaurantId = -1, List<int> foodsId, bool pick = false}) async {
 /*
     return List.generate(3, (index) => VoucherModel.randomRestaurant()).toList()..addAll(
         List.generate(3, (index) => VoucherModel.randomBoth()).toList()
@@ -29,7 +29,7 @@ class VoucherApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_MY_VOUCHERS,
-//          body: json.encode({"coordinates": '${position.latitude}:${position.longitude}'}),
+          body: restaurantId == -1 ? {} : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));

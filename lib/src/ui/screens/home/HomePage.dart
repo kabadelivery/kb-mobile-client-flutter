@@ -8,6 +8,7 @@ import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     /* check the login status */
     checkLogin();
     homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter(), destination: widget.destination, argument: widget.argument);
-    restaurantListPage = RestaurantListPage(key: restaurantKey);
+    restaurantListPage = RestaurantListPage(key: restaurantKey, presenter: RestaurantFoodProposalPresenter());
     dailyOrdersPage = DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
     pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];

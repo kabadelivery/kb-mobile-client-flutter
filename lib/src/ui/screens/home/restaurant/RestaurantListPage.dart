@@ -1,4 +1,8 @@
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
+import 'package:KABA/src/ui/customwidgets/RestaurantFoodListWidget.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,17 +23,17 @@ import 'package:toast/toast.dart';
 
 class RestaurantListPage extends StatefulWidget {
 
-
   Position location;
 
-  RestaurantListPage({Key key, this.location}) : super(key: key);
+  RestaurantFoodProposalPresenter presenter;
 
+  RestaurantListPage({Key key, this.location, this.presenter}) : super(key: key);
 
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
 }
 
-class _RestaurantListPageState extends State<RestaurantListPage> {
+class _RestaurantListPageState extends State<RestaurantListPage> implements RestaurantFoodProposalView {
 
   var _filterEditController = TextEditingController();
 
@@ -37,10 +41,24 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
   bool _searchMode = false;
 
+  Color filter_unactive_button_color = KColors.primaryColor, filter_active_button_color = Colors.white,
+      filter_unactive_text_color = Colors.white, filter_active_text_color = KColors.primaryColor;
+
+  int searchTypePosition = 1;
+
+  bool searchMenuHasSystemError = false, searchMenuHasNetworkError = false;
+  bool isSearchingMenus = false;
+
+  List<RestaurantFoodModel> foodProposals = null;
+
+//  Widget _pay_prepayed_switch = CustomSwitchPage(button_1_name: "RESTAURANT", button_2_name: "REPAS", active_text_color: KColors.primaryColor,
+//  unactive_text_color: Colors.white, active_button_color: Colors.white, unactive_button_color: KColors.primaryColor);
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    widget.presenter.restaurantFoodProposalView = this;
 
     _filterEditController.addListener(_filterEditContent);
 
@@ -141,14 +159,42 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           Expanded(
             child: SingleChildScrollView(
               child: Column(
-                children: <Widget>[
+                  children: <Widget>[
+                    SizedBox(height:10),
+                    AnimatedContainer(
+                      decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
+                        border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
+                      ),
+                      padding: EdgeInsets.all(5),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("RESTAURANT", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                            SizedBox(width: 10),
+                            RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("REPAS", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                          ]), duration: Duration(milliseconds: 700),
+                    ),
+                    SizedBox(height:10)
 //                  SizedBox(height: 40)
-                ]
-                  ..addAll(
-                      !_searchMode ? List<Widget>.generate(data.length, (int index) {
-                        return RestaurantListWidget(restaurantModel: data[index]);
-                      }).toList()  : _showSearchPage()
-                  ),
+                  ]
+                    ..addAll(
+                      /* according to the search position, show a different page. */
+                      searchTypePosition == 1 ? (
+                          !_searchMode ? List<Widget>.generate(data.length, (int index) {
+                            return RestaurantListWidget(restaurantModel: data[index]);
+                          }).toList()  : _showSearchPage()) :
+                      <Widget>[
+//                        (Center(child: Text("Let's see something right here."))),
+                        Container(
+                            child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
+                            (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
+                            searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
+                            _buildSearchedFoodList()
+                            )
+                        )
+                      ],
+                    )
               ),
             ),
           ),
@@ -157,7 +203,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     );
   }
 
+  _choice(int selected) {
+    setState(() {
+      this.searchTypePosition = selected;
+    });
+  }
+
   _checkLocationActivated () async {
+    return;
     if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
@@ -202,9 +255,28 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     }
   }
 
+  _buildSearchMenuNetworkErrorPage() {
+    return Text("_buildSearchMenuNetworkErrorPage");
+  }
+
+  _buildSearchMenuSysErrorPage() {
+    return Text("_buildSearchMenuSysErrorPage");
+  }
+
+  _buildSearchedFoodList() {
+    if (foodProposals?.length == null || foodProposals?.length == 0)
+      return Container();
+
+    return List<Widget>.generate(foodProposals?.length, (int index) {
+      return RestaurantFoodListWidget(food: foodProposals[index]);
+    }).toList();
+  }
 
   List<RestaurantModel> _filterEditContent() {
-    setState(() {});
+//    setState(() {});
+    /* launching request to look for food, but at the same moment, we need to cancel previous links. */
+    if (searchTypePosition == 2)
+    widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
   }
 
   _filteredData(List<RestaurantModel> data) {
@@ -216,6 +288,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         d.add(restaurant);
       }
     }
+
     return d;
   }
 
@@ -223,43 +296,43 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
     return
       sentence
-      ..replaceAll("é", "e")
-      ..replaceAll("è", "e")
-      ..replaceAll("ê", "e")
-      ..replaceAll("ë", "e")
-      ..replaceAll("ē", "e")
-      ..replaceAll("ė", "e")
-      ..replaceAll("ę", "e")
+        ..replaceAll("é", "e")
+        ..replaceAll("è", "e")
+        ..replaceAll("ê", "e")
+        ..replaceAll("ë", "e")
+        ..replaceAll("ē", "e")
+        ..replaceAll("ė", "e")
+        ..replaceAll("ę", "e")
 
-      ..replaceAll("à", "a")
-      ..replaceAll("á", "a")
-      ..replaceAll("â", "a")
-      ..replaceAll("ä", "a")
-      ..replaceAll("æ", "a")
-      ..replaceAll("ã", "a")
-      ..replaceAll("ā", "a")
+        ..replaceAll("à", "a")
+        ..replaceAll("á", "a")
+        ..replaceAll("â", "a")
+        ..replaceAll("ä", "a")
+        ..replaceAll("æ", "a")
+        ..replaceAll("ã", "a")
+        ..replaceAll("ā", "a")
 
-      ..replaceAll("ô", "o")
-      ..replaceAll("ö", "o")
-      ..replaceAll("ò", "o")
-      ..replaceAll("ó", "o")
-      ..replaceAll("œ", "o")
-      ..replaceAll("ø", "o")
-      ..replaceAll("ō", "o")
-      ..replaceAll("õ", "o")
+        ..replaceAll("ô", "o")
+        ..replaceAll("ö", "o")
+        ..replaceAll("ò", "o")
+        ..replaceAll("ó", "o")
+        ..replaceAll("œ", "o")
+        ..replaceAll("ø", "o")
+        ..replaceAll("ō", "o")
+        ..replaceAll("õ", "o")
 
-      ..replaceAll("î", "i")
-      ..replaceAll("ï", "i")
-      ..replaceAll("í", "i")
-      ..replaceAll("ī", "i")
-      ..replaceAll("į", "i")
-      ..replaceAll("ì", "i")
+        ..replaceAll("î", "i")
+        ..replaceAll("ï", "i")
+        ..replaceAll("í", "i")
+        ..replaceAll("ī", "i")
+        ..replaceAll("į", "i")
+        ..replaceAll("ì", "i")
 
-      ..replaceAll("û", "u")
-      ..replaceAll("ü", "u")
-      ..replaceAll("ù", "u")
-      ..replaceAll("ú", "u")
-      ..replaceAll("ū", "u")
+        ..replaceAll("û", "u")
+        ..replaceAll("ü", "u")
+        ..replaceAll("ù", "u")
+        ..replaceAll("ú", "u")
+        ..replaceAll("ū", "u")
     ;
   }
 
@@ -277,7 +350,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       ..addAll(List<Widget>.generate(_filteredData(data).length > 3 ? 3 : _filteredData(data).length, (int index) {
         return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
       }).toList())
-      ..add(Container(color: Colors.green, width: MediaQuery.of(context).size.width, height:1, margin: EdgeInsets.only(top:10,bottom:10, right:10,left:10)))
+    /*  ..add(Container(color: Colors.green, width: MediaQuery.of(context).size.width, height:1, margin: EdgeInsets.only(top:10,bottom:10, right:10,left:10)))
       ..add(
           StreamBuilder(
               stream: restaurantBloc.restaurantList,
@@ -290,7 +363,42 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 }
                 return Center(child: CircularProgressIndicator());
               })
-      )
+      )*/
     ;
   }
+
+
+  @override
+  void inflateFoodsProposal(List<RestaurantFoodModel> foods) {
+    setState(() {
+      this.foodProposals = foods;
+    });
+  }
+
+  @override
+  void searchMenuNetworkError() {
+    setState(() {
+      searchMenuHasNetworkError = true;
+    });
+  }
+
+
+  @override
+  void searchMenuSystemError() {
+    setState(() {
+      searchMenuHasSystemError = true;
+    });
+  }
+
+  @override
+  void searchMenuShowLoading(bool isLoading) {
+    setState(() {
+      if (isLoading == true) {
+        this.searchMenuHasNetworkError = false;
+        this.searchMenuHasSystemError = false;
+      }
+      this.isSearchingMenus = isLoading;
+    });
+  }
+
 }

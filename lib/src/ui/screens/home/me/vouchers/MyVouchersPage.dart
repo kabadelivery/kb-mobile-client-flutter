@@ -33,7 +33,7 @@ class MyVouchersPage extends StatefulWidget {
 
   int restaurantId;
 
-  MyVouchersPage({Key key, this.presenter, this.pick = false, this.restaurantId, this.foods, this.title}) : super(key: key);
+  MyVouchersPage({Key key, this.presenter, this.pick = false, this.restaurantId = -1, this.foods, this.title}) : super(key: key);
 
   final String title;
 
@@ -55,7 +55,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // according to if we are picking something, we can just request stuffs differently
-      widget.presenter.loadVoucherList(customer: customer);
+      widget.presenter.loadVoucherList(customer: customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
     });
     super.initState();
   }
@@ -103,12 +103,12 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadVoucherList(customer: widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){  widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods); });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
-      widget.presenter.loadVoucherList(customer: widget.customer);
+      widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
     });
   }
 
@@ -157,7 +157,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     );
 
     // when you come back,
-    widget.presenter.loadVoucherList(customer: widget.customer, pick: widget.pick);
+    widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
   }
 
   /// Deal with QRCode data
@@ -172,7 +172,6 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   @override
   void inflateVouchers(List<VoucherModel> vouchers) {
-
     setState(() {
       widget.data = vouchers;
     });
