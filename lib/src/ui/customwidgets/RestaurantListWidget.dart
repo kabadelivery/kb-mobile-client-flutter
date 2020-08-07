@@ -58,9 +58,9 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(widget.restaurantModel.name, overflow: TextOverflow.ellipsis,maxLines: 2, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)),
+                        Text("${widget?.restaurantModel?.name}", overflow: TextOverflow.ellipsis,maxLines: 2, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)),
                         SizedBox(height:10),
-                        Text(widget.restaurantModel.address, maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 13, color: Colors.black.withAlpha(150))),
+                        Text("${widget?.restaurantModel?.address}", maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 13, color: Colors.black.withAlpha(150))),
                       ],
                     )
                 ),
@@ -79,9 +79,9 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(children:[
-                          _getRestaurantStateTag(widget.restaurantModel),
+                          _getRestaurantStateTag(widget?.restaurantModel),
                           SizedBox(width: 5),
-                          widget.restaurantModel.coming_soon == 1 ?
+                          widget?.restaurantModel?.coming_soon == 1 ?
                           Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryColor),
@@ -112,7 +112,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                     ))
               ])
           )),
-          onTap: (){widget.restaurantModel.coming_soon==0?_jumpToRestaurantMenu(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
+          onTap: (){widget?.restaurantModel?.coming_soon==0?_jumpToRestaurantMenu(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
   }
 
   void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {

@@ -91,6 +91,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         widget.presenter.fetchMenuWithMenuId(widget.menuId);
     }
 
+    // TODO when we open menu with a food id, or menu id, we should set it at the top, and maybe highlight the choosen item
+
+
+
+
     _controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 700));
 //    foodAddAnimation = Tween(begin: 1.5, end: 1.0).animate(_controller);

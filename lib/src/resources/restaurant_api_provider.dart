@@ -117,19 +117,15 @@ class RestaurantApiProvider {
           if (lo == null) {
             return [];
           } else {
-            /*  List<VoucherModel> vouchers = lo?.map((voucher) =>
-                VoucherModel.fromJson(voucher))?.toList();
-            return vouchers;*/
+
             // foods with restaurant inside.
-
             List<RestaurantFoodModel> foods = [];
-
             lo?.map((food_restaurant){
               RestaurantFoodModel f = RestaurantFoodModel.fromJson(food_restaurant["food"]);
               f.restaurant_entity = RestaurantModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);
             })?.toList();
-
+            return foods;
           }
         } else
           throw Exception(-1); // there is an error in your request
@@ -140,5 +136,4 @@ class RestaurantApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
 }

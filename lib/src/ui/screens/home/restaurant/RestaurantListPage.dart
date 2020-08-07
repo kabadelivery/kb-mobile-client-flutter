@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
+import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantFoodListWidget.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -114,9 +115,17 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     /*  */
   }
 
+
+  Map pageRestaurants = Map<int, dynamic>();
+
   _buildRestaurantList(List<RestaurantModel> d) {
 
     this.data = d;
+
+    // filter restaurant into a map
+    d.forEach((restaurant) {
+      pageRestaurants[restaurant.id] = restaurant;
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -147,9 +156,17 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                       decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
                 ),
               ),
-              IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
-                _clearFocus();
-              })
+              Row(
+                children: <Widget>[
+                  IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
+                    _clearFocus();
+                  }),
+                  searchTypePosition == 2 ? IconButton(icon: Icon(Icons.search, color: KColors.primaryYellowDarkColor), onPressed: () {
+                    if (searchTypePosition == 2)
+                      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+                  }) : Container(),
+                ],
+              )
             ],
           ),
         ),
@@ -161,19 +178,21 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
               child: Column(
                   children: <Widget>[
                     SizedBox(height:10),
-                    AnimatedContainer(
-                      decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
-                        border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
+                    Center(
+                      child: AnimatedContainer(
+                        decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
+                          border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
+                        ),
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("RESTAURANT", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                              SizedBox(width: 10),
+                              RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("REPAS", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                            ]), duration: Duration(milliseconds: 700),
                       ),
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("RESTAURANT", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
-                            SizedBox(width: 10),
-                            RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("REPAS", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
-                          ]), duration: Duration(milliseconds: 700),
                     ),
                     SizedBox(height:10)
 //                  SizedBox(height: 40)
@@ -185,7 +204,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                             return RestaurantListWidget(restaurantModel: data[index]);
                           }).toList()  : _showSearchPage()) :
                       <Widget>[
-//                        (Center(child: Text("Let's see something right here."))),
                         Container(
                             child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
                             (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
@@ -265,18 +283,23 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   _buildSearchedFoodList() {
     if (foodProposals?.length == null || foodProposals?.length == 0)
-      return Container();
-
-    return List<Widget>.generate(foodProposals?.length, (int index) {
-      return RestaurantFoodListWidget(food: foodProposals[index]);
-    }).toList();
+      return Container(child: Center(
+        child: Column(children: <Widget>[
+          SizedBox(height:20),
+          Icon(Icons.restaurant, color: Colors.grey),
+          SizedBox(height:10),
+          Text("Veuillez insérer le menu de votre choix")
+        ])
+      ));
+    return Column(children: <Widget>[]
+      ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {
+        return FoodWithRestaurantDetailsWidget(food: foodProposals[index]);
+      }).toList()));
   }
 
   List<RestaurantModel> _filterEditContent() {
-//    setState(() {});
+    setState(() {});
     /* launching request to look for food, but at the same moment, we need to cancel previous links. */
-    if (searchTypePosition == 2)
-    widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
   }
 
   _filteredData(List<RestaurantModel> data) {
@@ -371,6 +394,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   @override
   void inflateFoodsProposal(List<RestaurantFoodModel> foods) {
     setState(() {
+
+      for (var i = 0; i < foods?.length; i++) {
+        if (foods[i]?.restaurant_entity?.id != null &&  pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
+          // we get the restaurant and we switch it.
+          foods[i].restaurant_entity =  pageRestaurants[foods[i]?.restaurant_entity?.id];
+        }
+      }
+
       this.foodProposals = foods;
     });
   }
