@@ -104,17 +104,33 @@ class RestaurantApiProvider {
     DebugTools.iPrint("entered fetchRestaurantFoodProposalFromTag ${tag}");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
+          .post(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG,
         body: json.encode({'tag': tag}),
-//          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-          RestaurantFoodModel foodModel = RestaurantFoodModel.fromJson(json.decode(response.body)["data"]["proposal"]);
-          return foodModel;
+
+          Iterable lo = json.decode(response.body)["data"];
+          if (lo == null) {
+            return [];
+          } else {
+            /*  List<VoucherModel> vouchers = lo?.map((voucher) =>
+                VoucherModel.fromJson(voucher))?.toList();
+            return vouchers;*/
+            // foods with restaurant inside.
+
+            List<RestaurantFoodModel> foods = [];
+
+            lo?.map((food_restaurant){
+              RestaurantFoodModel f = RestaurantFoodModel.fromJson(food_restaurant["food"]);
+              f.restaurant_entity = RestaurantModel.fromJson(food_restaurant["restaurant"]);
+              foods.add(f);
+            })?.toList();
+
+          }
         } else
           throw Exception(-1); // there is an error in your request
       } else {

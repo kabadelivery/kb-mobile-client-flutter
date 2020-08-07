@@ -174,6 +174,9 @@ class ServerRoutes {
   static const String LINK_GET_FOOD_DETAILS_SIMPLE =  ServerConfig.SERVER_ADDRESS+
       "/api/food/details/get";
 
+  static const String LINK_SEARCH_FOOD_BY_TAG = ServerConfig.SERVER_ADDRESS +
+      "/api/food/search";
+
   static const String LINK_GET_EVENEMENTS_LIST = ServerConfig.SERVER_ADDRESS +
       "/api/event/get";
 
