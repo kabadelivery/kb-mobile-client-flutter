@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/material.dart';
 class MyOrderWidget extends StatefulWidget {
 
   CommandModel command;
+
+  VoucherModel voucher = VoucherModel(type: 1);
 
   MyOrderWidget({this.command});
 
@@ -27,9 +30,47 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
   _MyOrderWidgetState(this.command);
 
+  /* restaurant voucher gradient */
+  var restaurantVoucherBg = [Color(0xFFEAEB12), Color(0xFFF1AA00)];
+  /* delivery voucher gradient */
+  var deliveryVoucherBg = [Color(0xFFCC1641), Color(0xFFFF7E9C)];
+  /* all voucher gradient */
+  var bothVoucherBg = [ Color(0xFFEEEEEE), Color(0xFFFFFFFF)];
+
+  var textColorWhite = Color(0xFFFFFFFF);
+  var textColorBlack = Color(0xFF000000);
+  var textColorYellow = KColors.colorMainYellow;
+  var textColorRed = KColors.colorCustom;
+
+  var restaurantNameColor, priceColor, voucherCodeColor, expiresDateColor, typeIconColor;
+
   @override
   void initState() {
     super.initState();
+
+    switch(widget.voucher.type){
+      case 1: // restaurant (yellow background)
+        restaurantNameColor = textColorWhite;
+        priceColor = textColorRed;
+        voucherCodeColor = textColorRed;
+        expiresDateColor = textColorBlack;
+        typeIconColor = textColorBlack;
+        break;
+      case 2: // delivery (red background)
+        restaurantNameColor = textColorBlack;
+        priceColor = textColorYellow;
+        voucherCodeColor = textColorWhite;
+        expiresDateColor = textColorBlack;
+        typeIconColor = textColorWhite;
+        break;
+      case 3: // both (white bg)
+        restaurantNameColor = textColorBlack;
+        priceColor = textColorYellow;
+        voucherCodeColor = textColorRed;
+        expiresDateColor = textColorBlack;
+        typeIconColor = textColorBlack;
+        break;
+    }
   }
 
   List<String> dayz = [];
@@ -103,10 +144,32 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               ],
                             ),
                             /* quartier */
-                            Center(child: Container(decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey
-                            ),padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),child: Text("${command.shipping_address.quartier}", style: TextStyle(fontWeight:FontWeight.bold, color: Colors.white, fontSize: 16)))),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                ClipPath(
+                                    clipper: MiniVoucherClipper(),
+                                    child: Container(width:70,height:40,
+                                        margin: EdgeInsets.only(left:10),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
+                                            colors: widget.voucher.type == 1 ? restaurantVoucherBg : (widget.voucher.type == 2 ? deliveryVoucherBg : bothVoucherBg),
+                                            tileMode: TileMode.repeated, // repeats the gradient over the canvas
+                                          ),
+                                        ),
+                                        child: Center(child:Text("-1000", style: TextStyle(color:priceColor, fontWeight: FontWeight.bold))))),
+                                Container(decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    color: Colors.grey
+                                ),
+                                    padding: EdgeInsets.only(top:5, bottom:5, right:5, left:5),
+                                    child: Text("${command.shipping_address.quartier}",
+                                        style: TextStyle(fontWeight:FontWeight.bold,
+                                            color: Colors.white, fontSize: 16))),
+                                Container(width: 10, height: 8)
+                              ],
+                            ),
                             Container(padding: EdgeInsets.only(top:10),
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                                 Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
@@ -183,6 +246,32 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 }
 
+class MiniVoucherClipper extends CustomClipper<Path> {
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    double radius = 16;
+
+    path.moveTo(0, radius);
+    path.arcToPoint(Offset(radius, 0), clockwise: false, radius: Radius.circular(radius));
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(radius, size.height);
+    path.arcToPoint(Offset(0, size.height-radius), clockwise: false, radius: Radius.circular(radius));
+
+
+//    path.lineTo(0, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip (MiniVoucherClipper oldClipper) => true;
+
+}
+
+
 
 
 class SingleOrderFoodWidget extends StatelessWidget {
@@ -200,51 +289,51 @@ class SingleOrderFoodWidget extends StatelessWidget {
             Flexible(flex: 7,
               child: Row(children: <Widget>[
                 /* PICTURE */
-               Container(
-                      height: 65, width: 65,
-                      decoration: BoxDecoration(
-                          border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
-                          )
+                Container(
+                  height: 65, width: 65,
+                  decoration: BoxDecoration(
+                      border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                      )
                   ),
                 ),
                 SizedBox(width: 10),
 
                 /* NAME AND PRICE ZONE */
-              Flexible(flex: 2,
-                child: Container(
-                      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+                Flexible(flex: 2,
+                  child: Container(
+                    child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
 
-                        /* food name */
-                        Text("${food.name?.toUpperCase()}", overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, maxLines: 2, style: TextStyle(fontSize: 16, color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+                      /* food name */
+                      Text("${food.name?.toUpperCase()}", overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, maxLines: 2, style: TextStyle(fontSize: 16, color: KColors.primaryColor, fontWeight: FontWeight.bold)),
 
-                        /* food price*/
-                        Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                          /* price has a line on top in case */
-                          Text("${food?.price}", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
-                          SizedBox(width: 5),
-                          (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
-                              : Container()),
-                          Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
-                        ]),
+                      /* food price*/
+                      Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                        /* price has a line on top in case */
+                        Text("${food?.price}", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
+                        SizedBox(width: 5),
+                        (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
+                            : Container()),
+                        Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                       ]),
-                    ),
-              ),
+                    ]),
+                  ),
+                ),
               ]),
             ),
 
             /* QUANTITY */
-           RichText(
-                text: new TextSpan(
-                  text: 'X ',
-                  style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                  children: <TextSpan>[
-                    TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                  ],
-                ),
+            RichText(
+              text: new TextSpan(
+                text: 'X ',
+                style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                children: <TextSpan>[
+                  TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                ],
+              ),
             ),
           ]
       ),

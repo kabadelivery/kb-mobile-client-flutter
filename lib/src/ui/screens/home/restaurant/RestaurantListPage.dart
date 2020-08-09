@@ -108,7 +108,11 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                   if (snapshot.hasData) {
                     return _buildRestaurantList(snapshot.data);
                   } else if (snapshot.hasError) {
-                    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
+                    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
+                      setState(() {
+                        restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);
+                      });
+                    });
                   }
                   return Center(child: CircularProgressIndicator());
                 })));
@@ -161,7 +165,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                   IconButton(icon: Icon(Icons.close, color: Colors.grey), onPressed: () {
                     _clearFocus();
                   }),
-                  searchTypePosition == 2 ? IconButton(icon: Icon(Icons.search, color: KColors.primaryYellowDarkColor), onPressed: () {
+                  searchTypePosition == 2 ? IconButton(icon: Icon(Icons.search, color: KColors.primaryYellowColor), onPressed: () {
                     if (searchTypePosition == 2)
                       widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
                   }) : Container(),
@@ -284,12 +288,12 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   _buildSearchedFoodList() {
     if (foodProposals?.length == null || foodProposals?.length == 0)
       return Container(child: Center(
-        child: Column(children: <Widget>[
-          SizedBox(height:20),
-          Icon(Icons.restaurant, color: Colors.grey),
-          SizedBox(height:10),
-          Text("Veuillez insérer le menu de votre choix")
-        ])
+          child: Column(children: <Widget>[
+            SizedBox(height:20),
+            Icon(Icons.restaurant, color: Colors.grey),
+            SizedBox(height:10),
+            Text("Veuillez insérer le menu de votre choix")
+          ])
       ));
     return Column(children: <Widget>[]
       ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {

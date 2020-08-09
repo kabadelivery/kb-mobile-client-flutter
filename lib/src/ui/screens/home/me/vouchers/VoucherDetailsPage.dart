@@ -87,7 +87,6 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                             size: 160,
                             gapless: false,
                             foregroundColor: Colors.black,
-//                            embeddedImage: AssetImage('assets/images/png/kaba_log_red_man_square.png'),
                             embeddedImageStyle: QrEmbeddedImageStyle(
                               size: Size(35, 35),
                             ),
@@ -96,11 +95,9 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       Positioned(left: 64, top:64,child:
                       Container(
                           decoration: BoxDecoration(shape: BoxShape.circle,
-                              border: Border.all(
-                                  width: 2,color: KColors.primaryYellowColor
-                              ), color: Colors.white),
-                          padding: EdgeInsets.all(8),
-                          child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 18)))),
+                              border: Border.all(width: 2, color: KColors.primaryYellowColor), color: Colors.white),
+                          padding: EdgeInsets.all(6),
+                          child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 16)))),
                     ],
                   ),
 
@@ -119,7 +116,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       SizedBox(height: 10),
                       widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
-              :
+                          :
                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
 
                       /* start a mini food list .. */

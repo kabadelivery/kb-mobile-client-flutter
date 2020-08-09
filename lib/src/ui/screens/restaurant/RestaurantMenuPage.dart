@@ -29,7 +29,11 @@ class RestaurantMenuPage extends StatefulWidget {
 
   bool fromNotification;
 
-  RestaurantMenuPage({Key key, this.presenter, this.restaurant = null, this.menuId = -1, this.fromNotification=false}) : super(key: key);
+  int highlightedFoodId;
+
+  int foodId;
+
+  RestaurantMenuPage({Key key, this.presenter, this.restaurant = null, this.menuId = -1, this.foodId = -1, this.highlightedFoodId = -1, this.fromNotification=false}) : super(key: key);
 
   @override
   _RestaurantMenuPageState createState() => _RestaurantMenuPageState();
@@ -42,6 +46,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   /* app config */
   GlobalKey _menuBasketKey;
   Offset _menuBasketOffset;
+
+  final dataKey = new GlobalKey();
 
   /* add data */
   List<RestaurantSubMenuModel> data;
@@ -75,7 +81,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   Animation foodAddAnimation;
 
-
   @override
   void initState() {
     WidgetsBinding.instance
@@ -85,22 +90,31 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     widget.presenter.menuView = this;
 
     if (!widget.fromNotification) {
-      if (widget.menuId == -1)
-        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
-      else
-        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+//      if (widget.menuId == -1)
+//        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+//      else {
+//        /* be able to fetch menu with food_id, and highlight the food with some interesting color. */
+//        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+//      }
+
+      if (widget.menuId != -1) {
+        widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+      } else if (widget.foodId != -1){
+        widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+      } else {
+        widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+      }
     }
 
     // TODO when we open menu with a food id, or menu id, we should set it at the top, and maybe highlight the choosen item
-
-
-
 
     _controller = AnimationController(
         vsync: this, duration: Duration(milliseconds: 700));
 //    foodAddAnimation = Tween(begin: 1.5, end: 1.0).animate(_controller);
     foodAddAnimation = Tween(begin: 0.0, end: 2*pi).animate(_controller);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +284,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
           List.generate(data[currentIndex]?.foods?.length, (index){
             return Row(mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                _buildFoodListWidget2(food: data[currentIndex]?.foods[index], foodIndex: index, menuIndex: currentIndex),
+                _buildFoodListWidget2(food: data[currentIndex]?.foods[index], foodIndex: index, menuIndex: currentIndex, highlightedFoodId: widget.highlightedFoodId),
               ],
             );
           })
@@ -402,7 +416,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
 
-  Widget _buildFoodListWidget2({RestaurantFoodModel food, int foodIndex, int menuIndex}) {
+  Widget _buildFoodListWidget2({RestaurantFoodModel food, int foodIndex, int menuIndex, int highlightedFoodId}) {
 
     /*return Expanded(
     child: InkWell(
@@ -412,9 +426,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
     return InkWell(  onTap: ()=> _jumpToFoodDetails(context, food),
       child: Card(
-//          margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+          key: food?.id == highlightedFoodId ? dataKey : null,
           child: Container(width: 7*MediaQuery.of(context).size.width/11,
             padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+            color: food?.id == highlightedFoodId ? Colors.yellow.withAlpha(50) : Colors.white,
             child: Column(
               children: <Widget>[
                 Row(children: <Widget>[
@@ -552,44 +567,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 //    final position = renderBoxRed.localToGlobal(Offset.zero);
 //    print("POSITION of Red: $position ");
 
-    if (!food.is_addon) {
-      if (food_selected.containsKey(food)) {
-        if (_foodCount < FOOD_MAX) {
-//          _launchAddToBasketAnimation(position, food);
-          setState(() {
-            food_selected.update(
-                food, (int val) => 1 + food_selected[food].toInt());
-          });
-        }
-        else {
-          showToast("${AppLocalizations.of(context).translate('max_reached')}");
-        }
-      } else {
-//        _launchAddToBasketAnimation(position, food);
+    if (_foodCount < FOOD_MAX) {
+      if (food_selected.containsKey(food))
+        setState(() {
+          food_selected.update(
+              food, (int val) => 1 + food_selected[food].toInt());
+        });
+      else {
         setState(() {
           food_selected.putIfAbsent(food, () => 1);
         });
       }
     } else {
-      if (!food.is_addon) {
-        if (adds_on_selected.containsKey(food)) {
-          if (_addOnCount < ADD_ON_COUNT) {
-//            _launchAddToBasketAnimation(position, food);
-            setState(() {
-              adds_on_selected.update(
-                  food, (int val) => 1 + adds_on_selected[food].toInt());
-            });
-          }
-          else {
-            showToast("${AppLocalizations.of(context).translate('max_reached')}");
-          }
-        } else {
-//          _launchAddToBasketAnimation(position, food);
-          setState(() {
-            adds_on_selected.putIfAbsent(food, () => 1);
-          });
-        }
-      }
+      showToast("${AppLocalizations.of(context).translate('max_reached')}");
     }
     _updateCounts();
   }
@@ -653,7 +643,26 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _showMenuBottomSheet(int type) async {
-    await Navigator.push(
+
+    await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuDetails(
+                restaurant: widget.restaurant,
+                FOOD_MAX: FOOD_MAX,
+                type: type,
+                food_selected: food_selected,
+                adds_on_selected: adds_on_selected),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+  /*  await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuDetails(
@@ -663,7 +672,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             food_selected: food_selected,
             adds_on_selected: adds_on_selected),
       ),
-    );
+    );*/
     _updateCounts();
   }
 
@@ -686,9 +695,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
         FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
+      /* make sure, the menu_id is selected. */
       this.data = data;
+
+      currentIndex = this.data.indexWhere((subMenu) {
+        if (subMenu?.id == widget.menuId)
+          return true;
+        return false;
+      });
+      if (currentIndex < 0 || currentIndex > this.data.length){
+        currentIndex = 0;
+      }
     });
     showLoading(false);
+    // two seconds after, we jump
+    Future.delayed(Duration(seconds: 2), () {
+      Scrollable.ensureVisible(dataKey.currentContext);
+    });
   }
 
   @override
@@ -709,20 +732,42 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   _buildSysErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){
-      if (widget.menuId == -1)
+      /*  if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
         widget.presenter.fetchMenuWithMenuId(widget.menuId);
+*/
+      if (widget.menuId != -1) {
+        widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+      } else if (widget.foodId != -1){
+        widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+      } else {
+        widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+      }
     });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
-      if (widget.menuId == -1)
+      /*   if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
-        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+        widget.presenter.fetchMenuWithMenuId(widget.menuId);*/
+
+      if (widget.menuId != -1) {
+        widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+      } else if (widget.foodId != -1){
+        widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+      } else {
+        widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+      }
     });
+  }
+
+  @override
+  void highLightFood(int menuId, int foodId) {
+    widget.menuId = menuId;
+    widget.highlightedFoodId = foodId;
   }
 }
 

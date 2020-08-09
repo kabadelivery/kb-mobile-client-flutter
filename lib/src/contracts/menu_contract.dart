@@ -16,6 +16,7 @@ class MenuContract {
 //  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
   void fetchMenuWithRestaurantId(int restaurantId) {}
+  void fetchMenuWithFoodId (int foodId) {}
   fetchMenuWithMenuId(int menuId) {}
 }
 
@@ -26,6 +27,7 @@ class MenuView {
   void systemError () {}
   void networkError () {}
   void inflateMenu (RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {}
+  void highLightFood(int menuId, int foodId) {}
 }
 
 
@@ -68,6 +70,8 @@ class MenuPresenter implements MenuContract {
     }
   }
 
+
+
   Future<void> fetchMenuWithMenuId(int menuId) async {
     if (isWorking)
       return;
@@ -77,6 +81,33 @@ class MenuPresenter implements MenuContract {
       Map<String, dynamic> res = await provider.fetchRestaurantMenuListWithMenuId(menuId);
       // also get the restaurant entity here.
       _menuView.showLoading(false);
+      _menuView.inflateMenu(res["restaurant"], res["menus"]);
+    } catch (_) {
+      /* login failure */
+      _menuView.showLoading(false);
+      print("error ${_}");
+      if (_ == -2) {
+        _menuView.systemError();
+      } else {
+        _menuView.networkError();
+      }
+      isWorking = false;
+    }
+  }
+
+  @override
+  Future<void> fetchMenuWithFoodId(int foodId) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _menuView.showLoading(true);
+    try {
+      Map<String, dynamic> res = await provider.fetchRestaurantMenuListWithFoodId(foodId);
+      int menuId = 0;
+      // also get the restaurant entity here.
+      _menuView.showLoading(false);
+      RestaurantFoodModel food = res["food"];
+      _menuView.highLightFood(int.parse(food.menu_id),foodId);
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */

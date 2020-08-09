@@ -29,7 +29,7 @@ class VoucherApiProvider {
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_MY_VOUCHERS,
-          body: restaurantId == -1 ? {} : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
+          body: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));

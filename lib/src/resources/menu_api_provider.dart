@@ -48,6 +48,45 @@ class MenuApiProvider {
     }
   }
 
+
+  fetchRestaurantMenuListWithFoodId(int foodId) async {
+
+    DebugTools.iPrint("entered fetchRestaurantMenuListWithFoodId");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
+        body: json.encode({'food_id': foodId}),
+//          headers: Utils.getHeadersWithToken()
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          RestaurantFoodModel food = RestaurantFoodModel.fromJson(json.decode(response.body)["data"]["food"]);
+
+          Iterable lo = json.decode(response.body)["data"]["menus"];
+          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
+          RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["resto"]);
+
+          Map<String, dynamic> mapRes = new Map();
+          mapRes.putIfAbsent("restaurant", () => restaurantModel);
+          mapRes.putIfAbsent("menus", () => restaurantSubModel);
+          mapRes.putIfAbsent("food", () => food);
+
+          return mapRes;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+
+
   Future<Map> fetchRestaurantMenuListWithMenuId(int menuId) async {
 
     DebugTools.iPrint("entered fetchRestaurantMenuListWithMenuId");

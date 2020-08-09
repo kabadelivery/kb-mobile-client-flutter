@@ -136,12 +136,25 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   Future<void> _moveToRegisterPage() async {
 
-    Map results = await Navigator.push(
+  /*  Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RegisterPage (presenter: RegisterPresenter()),
       ),
-    );
+    );*/
+
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RegisterPage (presenter: RegisterPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
     if (results != null && results.containsKey('phone_number') && results.containsKey('password')) {
       setState(() {
@@ -158,11 +171,26 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         builder: (BuildContext context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())), (
         r) => false);*/
 
-    Navigator.pushReplacement(
+    Navigator.of(context).pushReplacement(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+//            RegisterPage (presenter: RegisterPresenter()),
+        RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+  /*  Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())),
-    );
+          builder: (context) =>
+              RecoverPasswordPage(presenter: RecoverPasswordPresenter())),
+    );*/
   }
 
   Future _launchConnexion() async {

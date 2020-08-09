@@ -217,8 +217,8 @@ class _HomePageState extends State<HomePage> {
           print("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
-
+//          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+          _jumpToPage(context, RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter()));
         }
         break;
       case "menu":

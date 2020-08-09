@@ -117,22 +117,49 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
 
   void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
 
-    Navigator.push(
+   /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(),),
+        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
 
-    Navigator.push(
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+
+   /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
       ),
-    );
+    );*/
   }
 
   void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
@@ -162,7 +189,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
             child: new Text(
                 "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
             onPressed: () {
-                Navigator.of(context).pop();
+              Navigator.of(context).pop();
             },
           ),
         ]

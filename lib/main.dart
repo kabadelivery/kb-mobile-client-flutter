@@ -261,7 +261,6 @@ class _MyAppState extends State<MyApp> {
       case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
         _jumpToServiceClient();
         break;
-
     }
   }
 

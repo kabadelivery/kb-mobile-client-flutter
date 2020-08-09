@@ -1,7 +1,9 @@
+import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -22,7 +24,6 @@ class FoodWithRestaurantDetailsWidget extends StatefulWidget {
 
   @override
   _FoodWithRestaurantDetailsWidgetState createState() {
-    // TODO: implement createState
     return _FoodWithRestaurantDetailsWidgetState();
   }
 
@@ -30,14 +31,11 @@ class FoodWithRestaurantDetailsWidget extends StatefulWidget {
 
 class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDetailsWidget> with SingleTickerProviderStateMixin {
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -201,13 +199,18 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantFoodDetailsPage (food: food),
+        builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
       ),
     );
+    /*Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantFoodDetailsPage (food: food),
+      ),
+    );*/
   }
 
   void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
-
     Navigator.push(
       context,
       MaterialPageRoute(

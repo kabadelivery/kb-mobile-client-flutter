@@ -1,6 +1,15 @@
 
 
+import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
@@ -141,27 +150,95 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
             }));
   }
 
-  _jumpToAdd(NotificationFDestination destination) {
+  _jumpToAdd(NotificationFDestination notificationFDestination) {
 
-    switch (destination.type) {
+    switch (notificationFDestination.type) {
+    /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
-
+        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
         break;
-      case NotificationFDestination.RESTAURANT_MENU:
-
-        break;
-      case NotificationFDestination.RESTAURANT_PAGE:
-
+      case NotificationFDestination.COMMAND_PAGE:
+      case NotificationFDestination.COMMAND_DETAILS:
+      case NotificationFDestination.COMMAND_PREPARING:
+      case NotificationFDestination.COMMAND_SHIPPING:
+      case NotificationFDestination.COMMAND_END_SHIPPING:
+      case NotificationFDestination.COMMAND_CANCELLED:
+      case NotificationFDestination.COMMAND_REJECTED:
+        _jumpToCommandDetails(notificationFDestination.product_id);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
+        _jumpToTransactionHistory();
+        break;
+      case NotificationFDestination.SPONSORSHIP_TRANSACTION_ACTION:
+        _jumpToTransactionHistory();
         break;
       case NotificationFDestination.ARTICLE_DETAILS:
-
+//        _jumpToArticleInterface(notificationFDestination.product_id);
         break;
-      default:
-
+      case NotificationFDestination.RESTAURANT_PAGE:
+//        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
+        break;
+      case NotificationFDestination.RESTAURANT_MENU:
+        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
+        break;
+      case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
+        _jumpToServiceClient();
         break;
     }
+  }
+
+  _jumpToCommandDetails(int orderId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter()),
+      ),
+    );
+  }
+
+  void _jumpToTransactionHistory() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+      ),
+    );
+  }
+
+  void _jumpToArticleInterface(int product_id) {
+//    navigatorKey.currentState.pushNamed(WebViewPage.routeName, arguments: product_id);
+  }
+
+  void _jumpToRestaurantDetailsPage(int product_id) {
+//    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
+  }
+
+  void _jumpToRestaurantMenuPage(int product_id) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
+      ),
+    );
+  }
+
+  void _jumpToFoodDetailsWithId (int food_id){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
+      ),
+    );
+  }
+
+  void _jumpToServiceClient() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
+      ),
+    );
   }
 
 /* _jumpToFoodDetails(RestaurantFoodModel food_entity) {

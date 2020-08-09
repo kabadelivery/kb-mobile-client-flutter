@@ -48,14 +48,13 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vibration/vibration.dart';
+
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
-
-import 'package:qrscan/qrscan.dart' as scanner;
 
 
 class HomeWelcomePage extends StatefulWidget {
@@ -141,8 +140,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       if (widget?.destination != null) {
         switch(widget.destination) {
           case SplashPage.TRANSACTIONS:
-//          navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-//          _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
             Navigator.of(context).push(
               MaterialPageRoute(
                 settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
@@ -154,23 +151,24 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             StateContainer.of(context).tabPosition = 1;
             break;
           case SplashPage.RESTAURANT:
-//          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: widget.argument);
             _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.ORDER:
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
             break;
           case SplashPage.FOOD:
-//          navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: widget.argument);
-            _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
+            if (widget?.argument != null)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), highlightedFoodId: widget.argument),
+                ),
+              );
             break;
           case SplashPage.MENU:
-//          navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: widget.argument);
             _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
             break;
           case SplashPage.REVIEW_ORDER:
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: widget.argument);
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
             break;
         }
@@ -582,7 +580,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       children: <Widget>[]
                         ..addAll(
                             List<Widget>.generate(data.groupad.length, (int index) {
-                              return Group2AdsWidget(groupAd: data.groupad[index]);
+                              return GroupAdsWidget(groupAd: data.groupad[index]);
                             })
                         )
                   )
@@ -602,7 +600,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 SizedBox(height: 5),
                 Container(margin: EdgeInsets.only(left:20,right:20),child: Text("${AppLocalizations.of(context).translate('home_page_loading_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
                 SizedBox(height: 5),
-
                 RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(18.0),

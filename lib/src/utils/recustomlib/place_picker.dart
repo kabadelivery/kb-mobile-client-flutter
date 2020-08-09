@@ -70,7 +70,7 @@ class PlacePicker extends StatefulWidget {
   /// [here](https://cloud.google.com/maps-platform/)
   final String apiKey;
 
-  LatLng initialTarget;
+//  LatLng initialTarget;
 
   PlacePicker(this.apiKey);
 
@@ -86,7 +86,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// is fetched.
 
 //  static final LatLng initialTarget = LatLng(6.221316, 1.188478);
-  static  LatLng initialTarget = LatLng(6.221316, 1.188478);
+  static LatLng initialTarget = LatLng(6.221316, 1.188478);
 
   final Completer<GoogleMapController> mapController = Completer();
 
