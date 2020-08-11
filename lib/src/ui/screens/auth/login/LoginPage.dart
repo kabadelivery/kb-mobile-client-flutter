@@ -237,8 +237,21 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
 //    mToast("Login Successfull");
 
-    Navigator.of(context).pushReplacement(new MaterialPageRoute(
+   /* Navigator.of(context).pushReplacement(new MaterialPageRoute(
         builder: (BuildContext context) => HomePage()));
+*/
+    Navigator.of(context).pushReplacement(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+        HomePage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   @override

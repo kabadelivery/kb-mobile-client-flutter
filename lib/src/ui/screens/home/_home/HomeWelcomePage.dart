@@ -48,6 +48,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -100,10 +101,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
-    CustomerUtils.getCustomer().then((customer) {
+    CustomerUtils.getCustomer().then((customer) async {
       // check if i token updates successfully
       // ignore: unrelated_type_equality_checks
-      if (CustomerUtils.isPusTokenUploaded() != true) {
+      if (!(await CustomerUtils.isPusTokenUploaded())) {
         this.widget.presenter.updateToken(customer);
       }
       widget.customer = customer;
@@ -303,23 +304,47 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void _jumpToBestSeller() {
-//    Navigator.pushNamed(context, BestSellersPage.routeName);
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BestSellersPage (presenter: BestSellerPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            BestSellersPage (presenter: BestSellerPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToEvents() {
-//    Navigator.pushNamed(context, BestSellersPage.routeName);
-    Navigator.push(
+    /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EvenementPage (presenter: EvenementPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            EvenementPage (presenter: EvenementPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
 
@@ -332,12 +357,26 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
 
   void _jumpToInfoPage() {
-    Navigator.push(
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            InfoPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+    /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => InfoPage(), // ramener infos
       ),
-    );
+    );*/
   }
 
   Widget _buildHomeScreen(HomeScreenModel data) {
@@ -684,12 +723,25 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   _jumpToAdsList(List<AdModel> slider, int position) {
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   _textSizeWithText(String feed) {
@@ -757,15 +809,35 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   Future<void> _jumpToScanPage() async {
 
+    /* before we get here, we should ask some permission, the camera permission */
+    if (!(await Permission.camera.request().isGranted)) {
+      return;
+    }
+
+    
     String qrCode = await scanner.scan();
 
     /* Map results = await*/
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+        builder: (context) =>
+            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 }
 
@@ -786,12 +858,25 @@ class KabaRoundTopClipper extends CustomClipper<Path> {
 }
 
 void _jumpToPage (BuildContext context, page) {
-  Navigator.push(
+  /* Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => page,
     ),
-  );
+  );*/
+
+  Navigator.of(context).push(
+      PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+      page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin:begin, end:end);
+            var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          }
+      ));
 }
 
 Future<void> _playMusicForNewMessage() async {
@@ -809,10 +894,24 @@ Future<void> _playMusicForNewMessage() async {
 
 void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
 
-  Navigator.push(
+  /* Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+      builder: (context) =>
+          RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
     ),
-  );
+  );*/
+
+  Navigator.of(context).push(
+      PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+          RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin:begin, end:end);
+            var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+          }
+      ));
 }

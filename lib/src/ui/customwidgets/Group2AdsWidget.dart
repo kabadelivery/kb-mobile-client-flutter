@@ -33,7 +33,6 @@ var miniTitles = ["Faites-vous livrer", "Commandez une chambre", "Mangez saint!"
 var miniImages = [
   "https://image.freepik.com/free-vector/fast-food-icons-set-cartoon-style-isolated-white-background_71374-539.jpg",
   "https://www.zzzone.co.uk/wp-content/uploads/2016/11/Food-Photography-on-a-white-background.jpg",
-
 ];
 
   @override

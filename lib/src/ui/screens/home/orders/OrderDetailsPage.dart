@@ -390,12 +390,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
       if (command.rating < 1 && Utils.within3days(command?.last_update) && command.state == 3 /*within 3 days, you can still do it.*/) {
         // must review.
         /* jump to review pager. */
-        Map results = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OrderFeedbackPage(orderId: widget?.command?.id, presenter: OrderFeedbackPresenter()),
-          ),
-        );
+        Map results = await Navigator.of(context).push(
+            PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+                OrderFeedbackPage(orderId: widget?.command?.id, presenter: OrderFeedbackPresenter()),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  var begin = Offset(1.0, 0.0);
+                  var end = Offset.zero;
+                  var curve = Curves.ease;
+                  var tween = Tween(begin:begin, end:end);
+                  var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+                  return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+                }
+            ));
+
         if (results != null && results.containsKey('ok')) {
           bool feedBackOk = results['ok'];
           if (feedBackOk) {

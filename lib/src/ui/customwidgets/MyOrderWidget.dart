@@ -14,7 +14,7 @@ class MyOrderWidget extends StatefulWidget {
 
   CommandModel command;
 
-  VoucherModel voucher = VoucherModel(type: 1);
+//  VoucherModel voucher = VoucherModel(type: 1);
 
   MyOrderWidget({this.command});
 
@@ -48,7 +48,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   void initState() {
     super.initState();
 
-    switch(widget.voucher.type){
+    switch(widget?.command?.voucher_entity?.type){
       case 1: // restaurant (yellow background)
         restaurantNameColor = textColorWhite;
         priceColor = textColorRed;
@@ -146,7 +146,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                             /* quartier */
                             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                ClipPath(
+                                widget?.command?.voucher_entity != null ?  ClipPath(
                                     clipper: MiniVoucherClipper(),
                                     child: Container(width:70,height:40,
                                         margin: EdgeInsets.only(left:10),
@@ -154,11 +154,11 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                           gradient: LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
-                                            colors: widget.voucher.type == 1 ? restaurantVoucherBg : (widget.voucher.type == 2 ? deliveryVoucherBg : bothVoucherBg),
+                                            colors: widget?.command?.voucher_entity?.type == 1 ? restaurantVoucherBg : (widget?.command?.voucher_entity?.type == 2 ? deliveryVoucherBg : bothVoucherBg),
                                             tileMode: TileMode.repeated, // repeats the gradient over the canvas
                                           ),
                                         ),
-                                        child: Center(child:Text("-1000", style: TextStyle(color:priceColor, fontWeight: FontWeight.bold))))),
+                                        child: Center(child:Text("-${widget?.command?.voucher_entity?.category == 1 ? "%" : "F"} ${widget?.command?.voucher_entity?.value}", style: TextStyle(color:priceColor, fontWeight: FontWeight.bold))))) :  Container(width: 10, height: 8),
                                 Container(decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
                                     color: Colors.grey
@@ -237,12 +237,25 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   _jumpToCommandDetails(CommandModel command) {
-    Navigator.push(
+    /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 }
 

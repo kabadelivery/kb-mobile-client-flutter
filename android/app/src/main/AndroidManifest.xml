@@ -15,9 +15,10 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false"  />
 
     <!-- something tells me that we don't need this permission. -->
-    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<!--    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+<!--    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
     <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!-- barcode scanner use -->
 
     <!-- we need to be able to ask these permissions at the right moment. -->
@@ -40,7 +41,6 @@
         android:roundIcon="@mipmap/kaba_logo_round"
         android:networkSecurityConfig="@xml/network_security"
         android:icon="@mipmap/launcher_icon">
-
 
         <activity
             android:name=".MainActivity"
@@ -79,10 +79,8 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0"/>
-
-        <!--        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs"/>-->
+        <!-- ulrichabiguime@gmail.com kaba-tmye-2018 -->
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -90,16 +88,10 @@
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
-        <!-- barcode scanner  -->
-        <!--        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>-->
 
-       <!-- <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/launcher_icon" />-->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
 
     </application>
 

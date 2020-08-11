@@ -91,6 +91,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   List<String> dayz = [];
 
+  GlobalKey poweredByKey = GlobalKey();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -159,12 +161,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     });
 
     /* jump and get it */
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyAddressesPage(pick: true, presenter: AddressPresenter()),
-      ),
-    );
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            MyAddressesPage(pick: true, presenter: AddressPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
     if (results != null && results.containsKey('selection')) {
       setState(() {
@@ -173,7 +181,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       // launch request for retrieving the delivery prices and so on.
       widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
       showLoading(true);
-      Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+      Future.delayed(Duration(seconds: 1), () {
+        Scrollable.ensureVisible(poweredByKey.currentContext);
+      });
     }
   }
 
@@ -568,6 +578,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 !_isPreorderSelected() ? _buildOrderPayAtArrivalButton() : Container(),
                 SizedBox(height: 30),
               ])) : Container(),
+              Center(key: poweredByKey,child: Padding(
+                padding: const EdgeInsets.only(top:8,bottom:16.0),
+                child: Text("Provided by KABA Technlogies", style: TextStyle(color: Colors.grey)),
+              ))
             ])
       ),
     );
@@ -1567,9 +1581,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
     // jump to topup page.
     var results = await Navigator.of(context).push(
-        new MaterialPageRoute<dynamic>(
-            builder: (BuildContext context) {
-              return TopUpPage(presenter: TopUpPresenter());
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            TopUpPage(presenter: TopUpPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
             }
         ));
 

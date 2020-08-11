@@ -155,12 +155,25 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   }
 
   _jumpToVoucherDetails() {
-    Navigator.push(
+   /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => VoucherDetailsPage(voucher: widget.voucher),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            VoucherDetailsPage(voucher: widget.voucher),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   _onLongPressVoucher() {

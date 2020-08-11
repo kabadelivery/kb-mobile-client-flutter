@@ -115,7 +115,7 @@ class CustomerUtils {
 
  static Future<bool> isPusTokenUploaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("is_push_token_uploaed");
+    return prefs.getBool("is_push_token_uploaed") == true;
   }
 
   static Future<void> setPushTokenUploadedSuccessfully() async {

@@ -26,7 +26,6 @@ import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -52,13 +51,11 @@ var generalRoutes = {
   AddVouchersPage.routeName : (BuildContext context) => AddVouchersPage(),
   Personal2Page.routeName : (BuildContext context) => Personal2Page(presenter: PersonnalPagePresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
-  WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   MySoldePage.routeName : (BuildContext context) => MySoldePage(),
 //  QrCodeScannerPage.routeName : (BuildContext context) => QrCodeScannerPage(),
   TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(presenter: TransactionPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
-  WebViewPage.routeName : (BuildContext context) => WebViewPage(),
   OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
   TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),

@@ -139,11 +139,24 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
 
   _jumpToAdsList(List<AdModel> slider, int position) {
 
-    Navigator.push(
+   /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 }

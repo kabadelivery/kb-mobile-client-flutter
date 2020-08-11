@@ -74,12 +74,25 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
   }
 
   _editAddress(DeliveryAddressModel address) {
-    Navigator.push(
+  /*  Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditAddressPage(address: address),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            EditAddressPage(address: address),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
 

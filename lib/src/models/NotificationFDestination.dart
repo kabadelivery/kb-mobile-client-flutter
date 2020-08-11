@@ -11,6 +11,7 @@ class NotificationFDestination {
  static const int SPONSORSHIP_TRANSACTION_ACTION = 889 ;
  static const int MESSAGE_SERVICE_CLIENT = 200;
 
+ static const int IMPORTANT_INFORMATION = 999;
 
   /* get comand details */
  static const int COMMAND_PAGE = 90;
@@ -27,7 +28,6 @@ class NotificationFDestination {
 
 // TYPE_ARTICLE_WEB
   /* get food / menu details */
-
 
 
   /* help to know which activity we're going in */

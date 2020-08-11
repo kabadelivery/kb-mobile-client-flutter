@@ -149,12 +149,18 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   Future _jumpToAddNewVoucher_Code({String qrCode}) async {
 
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
-      ),
-    );
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
     // when you come back,
     widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);

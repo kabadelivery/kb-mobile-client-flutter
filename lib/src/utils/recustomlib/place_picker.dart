@@ -85,7 +85,6 @@ class PlacePickerState extends State<PlacePicker> {
   /// Initial waiting location for the map before the current user location
   /// is fetched.
 
-//  static final LatLng initialTarget = LatLng(6.221316, 1.188478);
   static LatLng initialTarget = LatLng(6.221316, 1.188478);
 
   final Completer<GoogleMapController> mapController = Completer();
@@ -116,10 +115,13 @@ class PlacePickerState extends State<PlacePicker> {
 
   String previousSearchTerm = '';
 
-
   void onMapCreated(GoogleMapController controller) {
     this.mapController.complete(controller);
     moveToCurrentUserLocation();
+
+//    location.onLocationChanged().listen((LocationData cLoc) {
+//      moveToLocation(LatLng(cLoc.latitude, cLoc.longitude));
+//    });
   }
 
   @override
@@ -137,6 +139,7 @@ class PlacePickerState extends State<PlacePicker> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -181,9 +184,9 @@ class PlacePickerState extends State<PlacePicker> {
                   } else
                     Navigator.of(context).pop(this.target);
                 }),
-                Divider(
+              /*  Divider(
                   height: 8,
-                ),
+                ),*/
                 Padding(
                   child: Text(
                     "${AppLocalizations.of(context).translate('nearby_places')}",
@@ -626,9 +629,9 @@ class SearchInputState extends State<SearchInput> {
             width: 8,
           ),
           IconButton(icon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ), onPressed: (){onSearchInputChange();},
+            Icons.search,
+            color: Colors.black,
+          ), onPressed: (){onSearchInputChange();},
           ),
         ],
       ),
@@ -655,6 +658,7 @@ class SelectPlaceAction extends StatelessWidget {
           this.onTap();
         },
         child: Container(
+          color: KColors.primaryYellowColor,
           padding: EdgeInsets.symmetric(
             horizontal: 24,
             vertical: 16,
@@ -668,13 +672,15 @@ class SelectPlaceAction extends StatelessWidget {
                     Text(
                       locationName,
                       style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
                     Text(
                       "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: Colors.black,
                         fontSize: 15,
                       ),
                     ),

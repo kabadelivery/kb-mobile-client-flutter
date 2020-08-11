@@ -127,7 +127,6 @@ class CommandModel {
     try {
       if (json["voucher_entity"] != null) {
       voucher_entity = VoucherModel.fromJson(json["voucher_entity"]);
-//        voucher_entity = VoucherModel.randomDelivery();
       }
     } catch (_) {
       print(_);

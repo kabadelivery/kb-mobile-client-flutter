@@ -24,7 +24,6 @@ class RestaurantDetailsPage extends StatefulWidget {
 
   RestaurantModel restaurant;
 
-
   CustomerModel customer;
 
   RestaurantDetailsPresenter presenter;
@@ -33,8 +32,8 @@ class RestaurantDetailsPage extends StatefulWidget {
 
   List<CommentModel> commentList;
 
-  RestaurantDetailsPage({this.restaurant, this.presenter}) {
-    restaurantId = restaurant.id;
+  RestaurantDetailsPage({this.restaurant, this.restaurantId, this.presenter}) {
+//    restaurantId = restaurant.id;
   }
 
   @override
@@ -272,12 +271,25 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 
   void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   _buildCommentsList(List<CommentModel> comments) {

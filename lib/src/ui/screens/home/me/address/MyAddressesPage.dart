@@ -165,12 +165,27 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
   _editAddress(DeliveryAddressModel address) async {
 
-    Map results = await Navigator.push(
+
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            EditAddressPage(address: address, presenter: EditAddressPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+  /* Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditAddressPage(address: address, presenter: EditAddressPresenter()),
       ),
-    );
+    );*/
+
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
       // update
       widget.presenter.loadAddressList(widget.customer);
@@ -185,12 +200,18 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
   _createAddress() async {
 
     // when come back update the thing.
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditAddressPage(presenter: EditAddressPresenter()),
-      ),
-    );
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            EditAddressPage(presenter: EditAddressPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
       // update

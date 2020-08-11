@@ -134,7 +134,6 @@ class OrderApiProvider {
     DebugTools.iPrint("entered loadOrderFromId");
     if (await Utils.hasNetwork()) {
 
-
       final response = await client
           .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
           body:  json.encode({"command_id": orderId}),

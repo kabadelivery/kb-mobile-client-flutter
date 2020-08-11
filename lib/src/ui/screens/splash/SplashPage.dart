@@ -1,33 +1,22 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:KABA/src/contracts/food_contract.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
-import 'package:KABA/src/contracts/order_details_contract.dart';
-import 'package:KABA/src/contracts/restaurant_details_contract.dart';
-import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:KABA/src/contracts/login_contract.dart';
-import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/home/HomePage.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
-import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -213,18 +202,8 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  void _jumpToTermsPage() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WebViewPage(title: "${AppLocalizations.of(context).translate('cgu')}",link: ServerRoutes.CGU_PAGE, agreement: true),
-      ),
-    );
-  }
-
   void _listenToUniLinks() {
     initUniLinks();
-//    initUniLinksStream();
   }
 
 // uni-links
@@ -311,8 +290,9 @@ class _SplashPageState extends State<SplashPage> {
           print("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
-
+          _jumpToPage(context,
+              RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter())
+          );
         }
         break;
       case "menu":
@@ -407,12 +387,24 @@ class _SplashPageState extends State<SplashPage> {
 
   void _jumpToPage (BuildContext context, page) {
 
-    Navigator.push(
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=> page,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+   /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => page,
       ),
-    );
+    );*/
   }
 
 }

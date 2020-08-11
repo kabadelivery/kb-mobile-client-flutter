@@ -8,11 +8,13 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share/share.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {
@@ -268,7 +270,8 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   void menuChoiceAction(String value) {
-
+   /* share a link */
+    Share.share('check out my website https://${ServerConfig.ip_address}/food/${widget.food?.id}', subject: 'Look what I made, isnt it great!?');
   }
 
   void _continuePurchase() {
@@ -282,12 +285,26 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     totalPrice = int.parse(widget.food.promotion == 0  /* no promotion */ ? widget.food.price : widget.food.promotion_price) * quantity;
 
     /* data */
-    Navigator.push(
+   /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderConfirmationPage2(restaurant: widget.restaurant, presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
+        builder: (context) =>
+            OrderConfirmationPage2(restaurant: widget.restaurant, presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            OrderConfirmationPage2(restaurant: widget.restaurant, presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   @override

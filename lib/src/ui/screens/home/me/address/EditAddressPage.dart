@@ -1,22 +1,20 @@
-import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:android_intent/android_intent.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
+import 'package:android_intent/android_intent.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart' as geo;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lo;
+import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
 
@@ -39,7 +37,7 @@ class EditAddressPage extends StatefulWidget {
 
 class _EditAddressPageState extends State<EditAddressPage> implements EditAddressView {
 
-  String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
+//  String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
 
   LatLng selectedLocation;
   DeliveryAddressModel address;
@@ -118,6 +116,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
+
+//                                  isPickLocation
+                                  isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
+
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
@@ -173,29 +175,57 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
   void showPlacePicker (BuildContext context) async {
 
     /* get last know position */
-    GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
+    geo.GeolocationStatus geolocationStatus  = await  geo.Geolocator().checkGeolocationPermissionStatus();
 
-    if(geolocationStatus == GeolocationStatus.granted) {
+    if(geolocationStatus ==  geo.GeolocationStatus.granted) {
       _jumpToPickAddressPage();
     } else {
-      Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
-      geolocationStatus = await Geolocator().checkGeolocationPermissionStatus();
-      if(geolocationStatus != GeolocationStatus.granted) {
+      Map<Permission, perm.PermissionStatus> statuses  = await [Permission.location].request();
+      print(statuses[Permission.location]);
+      geolocationStatus = await  geo.Geolocator().checkGeolocationPermissionStatus();
+      if(geolocationStatus !=  geo.GeolocationStatus.granted) {
         _jumpToPickAddressPage();
       }
     }
   }
 
+  bool isPickLocation = false;
+
   void _jumpToPickAddressPage() async {
+
+//    Location location = Location();
+    /*location.getLocation().then((LocationData cLoc) {
+//      setState(() {
+      print("location : ${cLoc.latitude}:${cLoc.longitude}");
+//      });
+    }).catchError((onError){
+      print(onError);
+    });*/
+
+    if (isPickLocation)
+      return;
+
+    setState(() {
+      isPickLocation = true;
+    });
+
+    lo.LocationData location = await lo.Location().getLocation();
+
+    StateContainer.of(context).updateLocation(location: geo.Position(latitude: location.latitude, longitude: location.longitude));
 
     if (StateContainer.of(context).location != null)
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
+
+    setState(() {
+      isPickLocation = false;
+    });
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
     /* use this location to generate details about the place the user lives and so on. */
+
     if (result != null) {
       /*  */
       setState(() {
@@ -204,7 +234,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       });
       print(address.location);
       // use mvp to launch a request and place the result here.
-      widget.presenter.checkLocationDetails(widget.customer, position:  Position(longitude: result.longitude, latitude: result.latitude));
+      widget.presenter.checkLocationDetails(widget.customer, position:   geo.Position(longitude: result.longitude, latitude: result.latitude));
     } else {}
   }
 
@@ -349,13 +379,13 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
     _checkLocationActivated();
     // save in to state container.
-    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    geo.Position position = await  geo.Geolocator().getLastKnownPosition(desiredAccuracy:  geo.LocationAccuracy.high);
     if (position != null)
       StateContainer.of(context).updateLocation(location: position);
   }
 
   _checkLocationActivated () async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
+    if (!(await  geo.Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
           context: context,
@@ -406,7 +436,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
   }
 
   void mToast(String message) {
-Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
   @override

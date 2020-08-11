@@ -25,15 +25,20 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7649846363-un45k0p103o4i5rkrpoh063uqnhv2qb6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "7649846363-7nq2d5pkll9f6b6gaif1h0fvd3tmuod0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tg.tmye.kaba.brave.one"
+              }
+            }
+          ]
         }
       }
     }

@@ -297,18 +297,23 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   _pickAddress() async {
 
     /* jump and get it */
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyAddressesPage(pick: true, presenter: AddressPresenter()),
-      ),
-    );
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            MyAddressesPage(pick: true, presenter: AddressPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
     if (results != null && results.containsKey('selection')) {
       DeliveryAddressModel _selectedAddress = results['selection'];
 
       String message = "DELIVERY ADDRESS - ${_selectedAddress.name}\n\n";
-
       message+="Phone number: ${_selectedAddress.phone_number}\n";
       message+="District: ${_selectedAddress.district}\n";
       message+="Near by: ${_selectedAddress.near}\n";

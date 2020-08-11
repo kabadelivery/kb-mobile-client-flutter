@@ -3,12 +3,14 @@
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +154,8 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 
   _jumpToAdd(NotificationFDestination notificationFDestination) {
 
+    print(notificationFDestination.toString());
+
     switch (notificationFDestination.type) {
     /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
@@ -176,7 +180,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 //        _jumpToArticleInterface(notificationFDestination.product_id);
         break;
       case NotificationFDestination.RESTAURANT_PAGE:
-//        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
+        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
         break;
       case NotificationFDestination.RESTAURANT_MENU:
         _jumpToRestaurantMenuPage(notificationFDestination.product_id);
@@ -188,21 +192,47 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   }
 
   _jumpToCommandDetails(int orderId) {
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToTransactionHistory() {
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            TransactionHistoryPage(presenter: TransactionPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToArticleInterface(int product_id) {
@@ -210,35 +240,85 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   }
 
   void _jumpToRestaurantDetailsPage(int product_id) {
-//    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantDetailsPage(restaurantId: product_id, presenter: RestaurantDetailsPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToFoodDetailsWithId (int food_id){
-    Navigator.push(
+  /*  Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   void _jumpToServiceClient() {
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
       ),
-    );
+    );*/
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
 /* _jumpToFoodDetails(RestaurantFoodModel food_entity) {

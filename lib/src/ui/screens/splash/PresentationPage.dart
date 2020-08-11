@@ -1,12 +1,9 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:KABA/src/ui/screens/home/me/settings/WebViewPage.dart';
-import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:nice_intro/nice_intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinycolor/tinycolor.dart';

@@ -44,9 +44,7 @@ class OrderItemModel {
       } catch(e){
          print(e);
       }
-
    }
-
 
    Map toJson () => {
       "id" : (id as int),
