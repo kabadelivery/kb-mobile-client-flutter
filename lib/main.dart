@@ -311,6 +311,7 @@ class _MyAppState extends State<MyApp> {
     }
     return Future.value(0);
   }
+
 }
 
 Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
