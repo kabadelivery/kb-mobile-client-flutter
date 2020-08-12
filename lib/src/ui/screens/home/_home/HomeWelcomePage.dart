@@ -128,7 +128,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       } catch(_) {
         has_subscribed = false;
       }
-      if (has_subscribed == false) {
+      if (has_subscribed != true) {
         FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
         _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
           prefs.setBool('has_subscribed', true)

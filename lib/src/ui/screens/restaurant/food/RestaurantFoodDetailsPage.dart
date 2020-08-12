@@ -271,7 +271,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
   void menuChoiceAction(String value) {
    /* share a link */
-    Share.share('check out my website https://${ServerConfig.ip_address}/food/${widget.food?.id}', subject: 'Look what I made, isnt it great!?');
+    Share.share('Look, i\'ve discovered this amazing menu on Kaba App ${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} , Check it out !', subject: '');
   }
 
   void _continuePurchase() {

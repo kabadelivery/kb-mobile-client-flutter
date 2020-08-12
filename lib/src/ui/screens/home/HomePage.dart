@@ -57,12 +57,11 @@ class HomePage extends StatefulWidget {
 }
 
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class _HomePageState extends State<HomePage> {
 
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<
+      NavigatorState>();
 
   HomeWelcomePage homeWelcomePage;
   RestaurantListPage restaurantListPage;
@@ -79,8 +78,7 @@ class _HomePageState extends State<HomePage> {
       meKey = PageStorageKey("meKey");
 
   Future checkLogin() async {
-
-    StatefulWidget launchPage =  LoginPage(presenter: LoginPresenter());
+    StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate = prefs.getString("_login_expiration_date");
     if (expDate != null) {
@@ -100,11 +98,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     /* check the login status */
     checkLogin();
-    homeWelcomePage = HomeWelcomePage(key: homeKey, presenter: HomeWelcomePresenter(), destination: widget.destination, argument: widget.argument);
-    restaurantListPage = RestaurantListPage(key: restaurantKey, presenter: RestaurantFoodProposalPresenter());
-    dailyOrdersPage = DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
+    homeWelcomePage = HomeWelcomePage(key: homeKey,
+        presenter: HomeWelcomePresenter(),
+        destination: widget.destination,
+        argument: widget.argument);
+    restaurantListPage = RestaurantListPage(
+        key: restaurantKey, presenter: RestaurantFoodProposalPresenter());
+    dailyOrdersPage =
+        DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
-    pages = [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
+    pages =
+    [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();
     Timer.run(() {
       // here we handle the signal
@@ -114,67 +118,24 @@ class _HomePageState extends State<HomePage> {
     //    jump to what i need to.
 
 
-
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    _firebaseMessaging = FirebaseMessaging();
-
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid = new AndroidInitializationSettings('mipmap/ic_launcher');
-
-    var initializationSettingsIOS = IOSInitializationSettings(
-        requestBadgePermission: true,
-        requestAlertPermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-
-    var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-
-    // firebase
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandling,
-    );
-
-    _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() async {
-      SharedPreferences prefs_ = await SharedPreferences.getInstance();
-      prefs_.setBool('has_subscribed', true);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[StateContainer.of(context).tabPosition],
+      body: pages[StateContainer
+          .of(context)
+          .tabPosition],
       bottomNavigationBar: BottomNavigationBar(
-        items:  <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             title: Text("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
-            title: Text('${AppLocalizations.of(context).translate('restaurant')}'),
+            title: Text(
+                '${AppLocalizations.of(context).translate('restaurant')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
@@ -185,7 +146,9 @@ class _HomePageState extends State<HomePage> {
             title: Text('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
-        currentIndex: StateContainer.of(context).tabPosition,
+        currentIndex: StateContainer
+            .of(context)
+            .tabPosition,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -200,7 +163,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       StateContainer.of(context).updateTabPosition(tabPosition: value);
     });
-    if (value == 1){
+    if (value == 1) {
       // ask for permission gps
 //     restaurantListPage._getLastKnowLocation();
     }
@@ -210,7 +173,6 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription _sub;
 
   Future<Null> initUniLinksStream() async {
-
     // Attach a listener to the stream
     _sub = getLinksStream().listen((String link) {
       // Parse the link and warn the user, if it is not correct
@@ -227,7 +189,8 @@ class _HomePageState extends State<HomePage> {
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
 
-  void _handleLinksImmediately(String link) {  /* streams */
+  void _handleLinksImmediately(String link) {
+    /* streams */
 
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
@@ -244,9 +207,10 @@ class _HomePageState extends State<HomePage> {
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
 
-    switch(pathSegments[0]) {
+    switch (pathSegments[0]) {
       case "transactions":
-        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        _jumpToPage(
+            context, TransactionHistoryPage(presenter: TransactionPresenter()));
 //        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
         break;
       case "restaurants":
@@ -260,7 +224,9 @@ class _HomePageState extends State<HomePage> {
           print("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+          _jumpToPage(context, RestaurantDetailsPage(
+              restaurant: RestaurantModel(id: widget.argument),
+              presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
@@ -269,7 +235,8 @@ class _HomePageState extends State<HomePage> {
           print("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: widget.argument, presenter: OrderDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
@@ -279,7 +246,8 @@ class _HomePageState extends State<HomePage> {
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
-          _jumpToPage(context, RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter()));
+          _jumpToPage(context, RestaurantMenuPage(
+              foodId: widget.argument, presenter: MenuPresenter()));
         }
         break;
       case "menu":
@@ -287,7 +255,8 @@ class _HomePageState extends State<HomePage> {
           print("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+          _jumpToPage(context, RestaurantMenuPage(
+              menuId: widget.argument, presenter: MenuPresenter()));
         }
         break;
       case "review-order":
@@ -295,7 +264,8 @@ class _HomePageState extends State<HomePage> {
           print("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: widget.argument, presenter: OrderDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
@@ -303,7 +273,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleLinks(String link) {
-
     // if you are logged in, we can just move to the activity.
     if (link == null)
       return;
@@ -326,7 +295,7 @@ class _HomePageState extends State<HomePage> {
 
     List<String> pathSegments = mUri.pathSegments.toList();
 //    if (pathSegments[0])
-    switch(pathSegments[0]) {
+    switch (pathSegments[0]) {
       case "transactions":
         widget.destination = SplashPage.TRANSACTIONS;
         break;
@@ -371,8 +340,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _jumpToPage (BuildContext context, page) {
-
+  void _jumpToPage(BuildContext context, page) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -380,163 +348,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
-    print("onDidReceiveLocalNotification ${payload}");
-    _handlePayLoad(payload);
-  }
-
-  Future onSelectNotification(String payload) {
-    print("onSelectedNotification ${payload}");
-    _handlePayLoad(payload);
-  }
-
-  static  NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
-
-    if (Platform.isIOS) {
-      // Android-specific code
-      try {
-        var _data = json.decode(message_entry["data"])["data"];
-        NotificationItem notificationItem = new NotificationItem(
-            title: _data["notification"]["title"],
-            body: _data["notification"]["body"],
-            image_link: _data["notification"]["image_link"],
-            priority: "${_data["notification"]["destination"]["priority"]}",
-            destination: NotificationFDestination(
-                type: _data["notification"]["destination"]["type"],
-                product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-        );
-        return notificationItem;
-      } catch (_) {
-        print(_);
-      }
-    } else if (Platform.isAndroid) {
-      // IOS-specific code
-      try {
-        var _data = json.decode(message_entry["data"]["data"])["data"];
-        NotificationItem notificationItem = new NotificationItem(
-            title: _data["notification"]["title"],
-            body: _data["notification"]["body"],
-            image_link: _data["notification"]["image_link"],
-            priority: "${_data["notification"]["destination"]["priority"]}",
-            destination: NotificationFDestination(
-                type: _data["notification"]["destination"]["type"],
-                product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-        );
-        return notificationItem;
-      } catch (_) {
-        print(_);
-      }
-    }
-  }
-
-  void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _handlePayLoad(String payload) {
-    NotificationFDestination notificationFDestination;
-
-    try {
-      notificationFDestination = NotificationFDestination
-          .fromJson(json.decode(payload));
-      print(notificationFDestination.toString());
-    } catch (_) {
-      print(_);
-    }
-
-    switch (notificationFDestination.type) {
-    /* go to the activity we are supposed to go to with only the id */
-      case NotificationFDestination.FOOD_DETAILS:
-        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.COMMAND_PAGE:
-      case NotificationFDestination.COMMAND_DETAILS:
-      case NotificationFDestination.COMMAND_PREPARING:
-      case NotificationFDestination.COMMAND_SHIPPING:
-      case NotificationFDestination.COMMAND_END_SHIPPING:
-      case NotificationFDestination.COMMAND_CANCELLED:
-      case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.MONEY_MOVMENT:
-        _jumpToTransactionHistory();
-        break;
-      case NotificationFDestination.SPONSORSHIP_TRANSACTION_ACTION:
-        _jumpToTransactionHistory();
-        break;
-      case NotificationFDestination.ARTICLE_DETAILS:
-//        _jumpToArticleInterface(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.RESTAURANT_PAGE:
-        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.RESTAURANT_MENU:
-        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
-        _jumpToServiceClient();
-        break;
-      case NotificationFDestination.IMPORTANT_INFORMATION:
-      /* important information */
-        break;
-    }
-  }
-
-
-  void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToTransactionHistory() {
-    navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-  }
-
-  /* void _jumpToArticleInterface(int product_id) {
-    navigatorKey.currentState.pushNamed(WebViewPage.routeName, arguments: product_id);
-  }*/
-
-  void _jumpToRestaurantDetailsPage(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToServiceClient() {
-    navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
-  }
-
-  static Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) {
-    print("onBackgroundMessage: $message");
-    /* send json version of notification object. */
-    if (Platform.isAndroid) {
-      NotificationItem notificationItem = _notificationFromMessage(message);
-      return iLaunchNotifications(notificationItem);
-    }
-    return Future.value(0);
-  }
-
 }
-
-  Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
-
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-        importance: Importance.Max, priority: Priority.High, ticker: notificationItem?.title);
-
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-
-    return flutterLocalNotificationsPlugin.show(
-        0, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-        payload: notificationItem?.destination?.toSpecialString()
-    );
-  }
-
 
 class AppbarhintFieldWidget extends StatelessWidget {
 
