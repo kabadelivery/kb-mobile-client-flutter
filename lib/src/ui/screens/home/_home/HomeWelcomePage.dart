@@ -97,7 +97,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void initState() {
     super.initState();
 
-    popupMenus = ["Scan","Settings","Logout"];
+    popupMenus = ["Scan QR","Settings","Logout"];
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
@@ -623,7 +623,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                             })
                         )
                   )
-                ]
+                ]..add(
+                    Container(
+                      margin: EdgeInsets.only(top: 15, bottom: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
+                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
+                        ],
+                      ),
+                    ))
             ),
           ));
     else {
@@ -814,7 +824,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       return;
     }
 
-    
+
     String qrCode = await scanner.scan();
 
     /* Map results = await*/

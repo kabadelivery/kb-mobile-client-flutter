@@ -34,6 +34,9 @@ class RestaurantDetailsPage extends StatefulWidget {
 
   RestaurantDetailsPage({this.restaurant, this.restaurantId, this.presenter}) {
 //    restaurantId = restaurant.id;
+    if (restaurant != null && restaurant?.id != null) {
+      this.restaurantId = restaurant?.id;
+    }
   }
 
   @override
@@ -259,8 +262,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Icon(Icons.star, size: 20, color: KColors.primaryColor),
-                                Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(color: KColors.primaryColor),)
+//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
+                                Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
                               ],
                             ),
                           )
@@ -380,7 +383,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     });
     if (widget.commentList?.length > 0) {
       // scroll to bottom
-   /*   Timer(Duration(milliseconds: 800), () {
+      /*   Timer(Duration(milliseconds: 800), () {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
       });*/
     }

@@ -60,6 +60,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   String _requestId;
 
+  bool isAccountRegistering = false;
+
   @override
   void initState() {
     super.initState();
@@ -180,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                       children: <Widget>[
                         Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
-                        isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
+                        (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
                     SizedBox(height: 50),
@@ -256,7 +258,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     prefs.clear();
   }
 
-  _saveRequestParams (String login, String requestId) async {
+Future<void> _saveRequestParams (String login, String requestId) async {
     /* check the content */
     /* save type of request */
     /* save login */
@@ -267,7 +269,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     await prefs.setString('login', login);
     await prefs.setString('nickname', _nicknameFieldController.text);
     await prefs.setString('request_id', requestId);
-
     this._requestId = requestId;
   }
 
@@ -296,17 +297,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
     if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
 
-      /* if code sent, do something else,  */
-      isCodeSent = true;
-      this._requestId = prefs.getString("request_id");
-
       setState(() {
+        /* if code sent, do something else,  */
+        isCodeSent = true;
+        this._requestId = prefs.getString("request_id");
         _loginFieldController.text = prefs.getString("login");
         _nicknameFieldController.text = prefs.getString("nickname");
       });
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+          print("time has ellapsed;");
           setState(() {
             isCodeSent = false;
           });
@@ -321,6 +322,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
           });
         }
       });
+    } else {
+      print("time has not yet ellapsed;");
     }
   }
 
@@ -387,6 +390,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         } while (_mCode1 != _mCode2);
       }
 
+      setState(() {
+        isAccountRegistering = true;
+      });
+
       /* launch create account request, and if success*/
       this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
           phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
@@ -403,14 +410,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void keepRequestId(String login, String requestId) {
     /* save the id somewhere in my .... */
-//    mToast("request Id ${requestId}");
-
     this._requestId = requestId;
     /* start minute-count of the seconds into the message thing */
-    _saveRequestParams(login, requestId);
-    _retrieveRequestParams();
-    setState(() {
-      isCodeSent = true;
+    _saveRequestParams(login, requestId).then((value) {
+      _retrieveRequestParams();
     });
   }
 
@@ -427,7 +430,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void registerSuccess(String phone_number, String password) {
     /*  */
-    mToast("${AppLocalizations.of(context).translate('account_created_successfully')}");
+    Toast.show("${AppLocalizations.of(context).translate('account_created_successfully')}", context, duration: Toast.LENGTH_LONG);
     Navigator.of(context).pop({'phone_number':phone_number, 'password':password});
   }
 

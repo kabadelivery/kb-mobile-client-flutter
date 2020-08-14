@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
@@ -51,9 +53,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   bool isSearchingMenus = false;
 
   List<RestaurantFoodModel> foodProposals = null;
-
-//  Widget _pay_prepayed_switch = CustomSwitchPage(button_1_name: "RESTAURANT", button_2_name: "REPAS", active_text_color: KColors.primaryColor,
-//  unactive_text_color: Colors.white, active_button_color: Colors.white, unactive_button_color: KColors.primaryColor);
 
   @override
   void initState() {
@@ -192,9 +191,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("RESTAURANT", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                              RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("${AppLocalizations.of(context).translate('search_restaurant')}", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
                               SizedBox(width: 10),
-                              RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("REPAS", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+                              RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
                             ]), duration: Duration(milliseconds: 700),
                       ),
                     ),
@@ -232,7 +231,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   }
 
   _checkLocationActivated () async {
-    return;
+//    return;
     if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
@@ -266,35 +265,60 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
 
-    print("location :: ${position?.toJson()?.toString()}");
+    var geolocator = Geolocator();
+    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
-    if (position != null)
-      StateContainer.of(context).updateLocation(location: position);
-    if (StateContainer.of(context).location != null) {
-      restaurantBloc.fetchRestaurantList(position: StateContainer
-          .of(context)
-          .location);
-    }
+   /* StreamSubscription<Position> positionStream =*/
+    geolocator.getPositionStream(locationOptions).listen(
+            (Position position) {
+//          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
+          print("location :: ${position?.toJson()?.toString()}");
+          if (position != null)
+            StateContainer.of(context).updateLocation(location: position);
+          if (StateContainer.of(context).location != null) {
+            restaurantBloc.fetchRestaurantList(position: StateContainer
+                .of(context)
+                .location);
+          }});
   }
 
   _buildSearchMenuNetworkErrorPage() {
-    return Text("_buildSearchMenuNetworkErrorPage");
+    /* show a page that will help us search more back. */
+    return ErrorPage(message:"${AppLocalizations.of(context).translate('sys_error')}", onClickAction: (){
+      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+    });
   }
 
   _buildSearchMenuSysErrorPage() {
-    return Text("_buildSearchMenuSysErrorPage");
+    /* show a page that will help us search more back. */
+    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
+        widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+    });
   }
 
   _buildSearchedFoodList() {
-    if (foodProposals?.length == null || foodProposals?.length == 0)
+    if (foodProposals == null)
       return Container(child: Center(
           child: Column(children: <Widget>[
             SizedBox(height:20),
             Icon(Icons.restaurant, color: Colors.grey),
             SizedBox(height:10),
-            Text("Veuillez insérer le menu de votre choix")
+            Text("${AppLocalizations.of(context).translate('please_search_food')}")
           ])
       ));
+
+    if (foodProposals?.length == 0) {
+      return Container(child: Center(
+          child: Column(children: <Widget>[
+            SizedBox(height:20),
+            Icon(Icons.restaurant, color: Colors.grey),
+            SizedBox(height:10),
+            Text("${AppLocalizations.of(context).translate('sorry_cant_find_food')}")
+          ])
+      ));
+    }
+
+    /* generating food proposals lazily */
     return Column(children: <Widget>[]
       ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {
         return FoodWithRestaurantDetailsWidget(food: foodProposals[index]);
@@ -315,7 +339,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
         d.add(restaurant);
       }
     }
-
     return d;
   }
 
@@ -374,23 +397,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   _showSearchPage() {
     /* show first few restaurants with a show more button, */
     return <Widget>[]
-      ..addAll(List<Widget>.generate(_filteredData(data).length > 3 ? 3 : _filteredData(data).length, (int index) {
+      ..addAll(List<Widget>.generate(_filteredData(data).length, (int index) {
         return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
       }).toList())
-    /*  ..add(Container(color: Colors.green, width: MediaQuery.of(context).size.width, height:1, margin: EdgeInsets.only(top:10,bottom:10, right:10,left:10)))
-      ..add(
-          StreamBuilder(
-              stream: restaurantBloc.restaurantList,
-              builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
-                if (snapshot.hasData) {
-//                  return _buildRestaurantList(snapshot.data);
-                  return Container(child: Text("Are we done?"));
-                } else if (snapshot.hasError) {
-                  return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);});
-                }
-                return Center(child: CircularProgressIndicator());
-              })
-      )*/
     ;
   }
 

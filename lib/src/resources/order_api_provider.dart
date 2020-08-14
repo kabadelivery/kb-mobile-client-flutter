@@ -140,8 +140,8 @@ class OrderApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-
-      print(response.body.toString());
+String content = response.body.toString();
+      print(content);
       if (response.statusCode == 200) {
         return CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
       } else

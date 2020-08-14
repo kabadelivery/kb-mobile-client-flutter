@@ -579,8 +579,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 SizedBox(height: 30),
               ])) : Container(),
               Center(key: poweredByKey,child: Padding(
-                padding: const EdgeInsets.only(top:8,bottom:16.0),
-                child: Text("Provided by KABA Technlogies", style: TextStyle(color: Colors.grey)),
+                padding: const EdgeInsets.only(top:8,bottom:20.0),
+                child: Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize:12, color: Colors.grey)),
               ))
             ])
       ),
@@ -1708,6 +1708,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         widget.presenter.computeBilling(
             widget.restaurant, widget.customer, widget.foods, _selectedAddress,
             _selectedVoucher);
+        Future.delayed(Duration(seconds: 1), () {
+          Scrollable.ensureVisible(poweredByKey.currentContext);
+        });
         showLoading(true);
         Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
       }
@@ -1778,9 +1781,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                         widget.restaurant, widget.customer, widget.foods,
                         _selectedAddress, _selectedVoucher);
                     showLoading(true);
-                    Timer(Duration(milliseconds: 100), () =>
-                        _listController.jumpTo(
-                            _listController.position.maxScrollExtent));
+                    Future.delayed(Duration(seconds: 1), () {
+                      Scrollable.ensureVisible(poweredByKey.currentContext);
+                    });
                   }
                 }),
               ),

@@ -121,9 +121,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
     if (widget.fromNotification) {
       final int args = ModalRoute.of(context).settings.arguments;
-      if (args != null && args != 0)
-        widget.menuId = args;
-      widget.presenter.fetchMenuWithMenuId(widget.menuId);
+      if (args != null && args != 0) {
+        if (args < 0) {
+          widget.foodId = -1 * args;
+          widget.highlightedFoodId = widget.foodId;
+          widget.presenter.fetchMenuWithFoodId(widget.foodId);
+        } else {
+          widget.menuId = args;
+          widget.presenter.fetchMenuWithMenuId(widget.menuId);
+        }
+      }
     }
 
     var appBar = AppBar(
@@ -549,7 +556,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
 
     food.restaurant_entity = widget.restaurant;
-  /*  Navigator.push(
+    /*  Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantFoodDetailsPage(food: food),
@@ -675,7 +682,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             }
         ));
 
-  /*  await Navigator.push(
+    /*  await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuDetails(

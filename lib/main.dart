@@ -200,14 +200,6 @@ class _MyAppState extends State<MyApp> {
       try {
         var _data = json.decode(message_entry["data"]["data"])["data"];
 
-        /*String title = _data["notification"]["title"];
-        String body = _data["notification"]["body"];
-        String image_link = _data["notification"]["image_link"];
-        String priority = "${_data["notification"]["destination"]["priority"]}";
-        int type = int.parse("${_data["notification"]["destination"]["type"]}");
-        int product_id = int.parse("${_data["notification"]["destination"]["product_id"]}");
-*/
-
         NotificationItem notificationItem = new NotificationItem(
             title: _data["notification"]["title"],
             body: _data["notification"]["body"],
@@ -225,7 +217,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantFoodDetailsPage.routeName, arguments: product_id);
+    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
   }
 
   void _handlePayLoad(String payload) {
@@ -291,6 +283,7 @@ class _MyAppState extends State<MyApp> {
   }*/
 
   void _jumpToRestaurantDetailsPage(int product_id) {
+    /* send a negative id when we want to show the food inside the menu */
     navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
   }
 

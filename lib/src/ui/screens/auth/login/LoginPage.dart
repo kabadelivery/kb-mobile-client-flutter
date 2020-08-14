@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   Future<void> _moveToRegisterPage() async {
 
-  /*  Map results = await Navigator.push(
+    /*  Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RegisterPage (presenter: RegisterPresenter()),
@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             }
         ));
 
-  /*  Navigator.pushReplacement(
+    /*  Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) =>
@@ -210,6 +210,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           return RetrievePasswordPage(type: 0);
         }
     ));
+
     if (results != null && results.containsKey('code') && results.containsKey('type')) {
       String _mCode = results['code'];
 //      int type = results['type'];
@@ -231,18 +232,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void loginSuccess() {
 
     /* token must be saved by now. */
-
     showLoading(false);
     /* jump to home page. */
-
-//    mToast("Login Successfull");
-
-   /* Navigator.of(context).pushReplacement(new MaterialPageRoute(
-        builder: (BuildContext context) => HomePage()));
-*/
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-        HomePage(),
+            HomePage(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -262,7 +256,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void mToast(String message) {
-//    Toast.show(message, context, duration: Toast.LENGTH_LONG);
     mDialog(message);
   }
 
@@ -369,9 +362,10 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 onPressed: () async {
                   //
                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setBool("_is_ok_with_terms", true);
-                  // dismiss
-                  Navigator.of(context).pop();
+                  prefs.setBool("_is_ok_with_terms", true).then((value) {
+                    // dismiss
+                    Navigator.of(context).pop();
+                  });
                 },
               ),
               OutlineButton(

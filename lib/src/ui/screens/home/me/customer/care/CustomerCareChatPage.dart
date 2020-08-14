@@ -165,7 +165,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                   Stack(
                     children: <Widget>[
                       SizedBox(/*height: 50+50*(_messageController.text.length~/30)*1.5, */ width: MediaQuery.of(context).size.width-80,
-                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble()),child: TextField(controller: _messageController, maxLines: 6, minLines: 1,
+                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble(), top:8, bottom:8),child: TextField(controller: _messageController, maxLines: 6, minLines: 1,
                             decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('insert_message')}")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
                       ),
                       Positioned(right:10,child: IconButton(icon: Icon(Icons.my_location, color: Colors.green), onPressed: ()=>_pickAddress()))

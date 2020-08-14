@@ -2,7 +2,7 @@
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/abiguime/Documents/androidDevSoft/adt-bundle-mac-x86_64-20140702/sdk/flutter"
 export "FLUTTER_APPLICATION_PATH=/Users/abiguime/Documents/dev/devspace/android/kaba_flutter"
-export "FLUTTER_TARGET=lib/main.dart"
+export "FLUTTER_TARGET=/Users/abiguime/Documents/dev/devspace/android/kaba_flutter/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
 export "OTHER_LDFLAGS=$(inherited) -framework Flutter"
@@ -10,6 +10,6 @@ export "FLUTTER_FRAMEWORK_DIR=/Users/abiguime/Documents/androidDevSoft/adt-bundl
 export "FLUTTER_BUILD_NAME=2.3.1"
 export "FLUTTER_BUILD_NUMBER=2.3.1"
 export "DART_OBFUSCATION=false"
-export "TRACK_WIDGET_CREATION=false"
+export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"
 export "PACKAGE_CONFIG=.packages"

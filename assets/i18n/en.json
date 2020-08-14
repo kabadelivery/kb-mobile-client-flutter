@@ -164,7 +164,7 @@
   "review": "Review",
   "see_menu": "Check the Menu",
   "opening_time": "Opening Time",
-  "powered_by_kaba_tech": "Powered by >> Kaba Technlogies",
+  "powered_by_kaba_tech": "Powered by KABA Technologies",
   "min_reached": "MIN REACHED",
   "max_reached": "MAX REACHED",
   "menu": "MENU",
@@ -298,7 +298,16 @@
   "voucher_disabled": "Sorry, This voucher is disabled.",
   "voucher_already_subscribed": "Sorry, You have already subscribed to this voucher.",
   "voucher_max_count_reached": "Sorry, The maximum count of people that can subscribe to this voucher has been reached.",
-  "scan": "Scan",
-  "qr_code_wrong": "Sorry, this QrCode seems not to be a Voucher"
+  "scan": "Scan QrCode",
+  "qr_code_wrong": "Sorry, this QrCode seems not to be a Voucher",
+  "please_search_food": "Please insert the food you want",
+  "sorry_cant_find_food": "Sorry, we can't find the food or menu you've inserted.",
+
+  "search_restaurant": "RESTAURANT",
+  "search_food" : "MENU",
+  "share_food_1": "Look, i\\'ve discovered this amazing menu on Kaba App ",
+  "share_food_2": " , Check it out !",
+  "coupon_use_before": "Must use before"
+
 
 }

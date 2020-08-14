@@ -117,7 +117,7 @@ class RegisterPresenter implements RegisterContract {
     if (error == 0) {
       /* successfully created account */
       /* jump to the login page to login the customer */
-      _registerView.registerSuccess(phone_number.trim().length == 0 ? email : phone_number, password);
+      _registerView.registerSuccess(/*phone_number.trim().length == 0 ? email : */phone_number, password);
     } else{
       _registerView.onSysError(message: json.decode(jsonContent)["message"]);
     }

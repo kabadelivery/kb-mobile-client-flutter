@@ -57,6 +57,34 @@ class _SplashPageState extends State<SplashPage> {
     _listenToUniLinks();
   }
 
+  _checkLocationActivated () async {
+//    return;
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
+                  onPressed: () {
+                    final AndroidIntent intent = AndroidIntent(
+                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+                    intent.launch();
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
   Future _getLastKnowLocation() async {
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
@@ -93,6 +121,8 @@ class _SplashPageState extends State<SplashPage> {
           launchPage = HomePage(destination: widget.destination, argument: widget.argument);
         }
       }
+
+      _checkLocationActivated();
       Navigator.of(context).pushReplacement(new MaterialPageRoute(
           builder: (BuildContext context) => launchPage));
     }
@@ -102,34 +132,6 @@ class _SplashPageState extends State<SplashPage> {
 
     var duration = const Duration(milliseconds: 1500);
     return new Timer(duration, handleTimeout);
-  }
-
-  _checkLocationActivated () async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
-              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("${AppLocalizations.of(context).translate('ok')}"),
-                  onPressed: () {
-                    final AndroidIntent intent = AndroidIntent(
-                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
-
-                    intent.launch();
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
   }
 
   @override

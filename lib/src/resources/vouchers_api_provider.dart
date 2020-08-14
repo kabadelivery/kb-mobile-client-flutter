@@ -28,7 +28,7 @@ class VoucherApiProvider {
     DebugTools.iPrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_MY_VOUCHERS,
+          .post(restaurantId == -1 ? ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER,
           body: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )

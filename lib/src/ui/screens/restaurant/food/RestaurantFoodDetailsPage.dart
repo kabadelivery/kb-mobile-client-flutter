@@ -59,7 +59,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-  //  popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
+    popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
   }
 
   @override
@@ -271,7 +271,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
   void menuChoiceAction(String value) {
    /* share a link */
-    Share.share('Look, i\'ve discovered this amazing menu on Kaba App ${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} , Check it out !', subject: '');
+    Share.share('${AppLocalizations.of(context).translate('share_food_1')}${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} ${AppLocalizations.of(context).translate('share_food_2')}', subject: '');
   }
 
   void _continuePurchase() {
