@@ -1,22 +1,17 @@
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:KABA/src/blocs/UserDataBloc.dart';
-import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/ui/customwidgets/MyAddressListWidget.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 
 
@@ -179,7 +174,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
             }
         ));
 
-  /* Map results = await Navigator.push(
+    /* Map results = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditAddressPage(address: address, presenter: EditAddressPresenter()),
@@ -187,8 +182,15 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
     );*/
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
-      // update
-      widget.presenter.loadAddressList(widget.customer);
+      if (results.containsKey("createdAddress") != null) {
+        if (widget.pick) {
+          DeliveryAddressModel tmp = results["createdAddress"];
+          Navigator.of(context).pop({'selection': tmp});
+        }
+      } else {
+        // update
+        widget.presenter.loadAddressList(widget.customer);
+      }
     }
   }
 
@@ -214,9 +216,17 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
         ));
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
-      // update
-      if (widget.customer != null)
-        widget.presenter.loadAddressList(widget.customer);
+
+      if (results.containsKey("createdAddress") != null){
+        if (widget.pick) {
+          DeliveryAddressModel tmp = results["createdAddress"];
+          Navigator.of(context).pop({'selection': tmp});
+        }
+      } else {
+        // update
+        if (widget.customer != null)
+          widget.presenter.loadAddressList(widget.customer);
+      }
     }
   }
 

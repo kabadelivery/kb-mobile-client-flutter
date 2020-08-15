@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
@@ -106,13 +107,13 @@ class _SplashPageState extends State<SplashPage> {
     } else {
       StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
       prefs = await SharedPreferences.getInstance();
-      String expDate = prefs.getString("_login_expiration_date");
+      String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");
       if (expDate != null) {
         if (DateTime.now().isAfter(DateTime.parse(expDate))) {
           /* session expired : clean params */
           prefs.remove("_customer");
           prefs.remove("_token");
-          prefs.remove("_login_expiration_date");
+          prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
         } else {
           // check if there is a destination out of deep-linking before doing this.
 

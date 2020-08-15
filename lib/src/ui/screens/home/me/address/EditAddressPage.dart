@@ -29,6 +29,8 @@ class EditAddressPage extends StatefulWidget {
 
   CustomerModel customer;
 
+  DeliveryAddressModel createdAddress = null;
+
   EditAddressPage({Key key, this.address, this.presenter}) : super(key: key);
 
   @override
@@ -264,8 +266,9 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
   }
 
   @override
-  void createdSuccess() {
+  void createdSuccess(DeliveryAddressModel address) {
     /* created successful */
+    widget.createdAddress = address;
     _showDialog(
       okBackToHome: true,
       icon: VectorsData.address_creation_success,
@@ -342,8 +345,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
                   if (okBackToHome){
-                    Navigator.of(context).pop({'ok':true});
-                    Navigator.of(context).pop({'ok':true});
+                    Navigator.of(context).pop({'ok':true, 'createdAddress': widget.createdAddress});
+                    Navigator.of(context).pop({'ok':true, 'createdAddress': widget.createdAddress});
                   } else {
                     Navigator.of(context).pop();
                   }

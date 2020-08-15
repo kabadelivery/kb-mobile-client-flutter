@@ -38,8 +38,12 @@ class AddressApiProvider {
       print(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
+        DeliveryAddressModel address = DeliveryAddressModel.fromJson(json.decode(response.body)["data"]);
+        Map res = Map();
         if (errorCode == 0) {
-          return 0;
+          res["error"] = errorCode;
+          res["address"] = address;
+          return res;
         } else
           throw Exception(-1); // there is an error in your request
       } else {

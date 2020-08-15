@@ -110,8 +110,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("${widget.voucher?.restaurant_entity?.id == null ? "" : widget.voucher?.restaurant_entity?.name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
-                  widget.voucher?.restaurant_entity?.id != null ? Column(
+                  Text("${widget.voucher?.getRestaurantsName()}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  widget.voucher?.getRestaurantsName() != null ? Column(
                     children: <Widget>[
                       SizedBox(height: 10),
                       widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?

@@ -211,8 +211,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                             child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
                             (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
                             searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
-                            _buildSearchedFoodList()
-                            )
+                            _buildSearchedFoodList())
                         )
                       ],
                     )

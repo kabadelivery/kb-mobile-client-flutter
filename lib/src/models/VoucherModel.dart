@@ -16,8 +16,8 @@ class VoucherModel {
   int type; // type,
   int category; // category, food, delivery, category
   List<RestaurantFoodModel> products;
-//  List<int> restaurant_id;
-  RestaurantModel restaurant_entity;
+//  RestaurantModel restaurant_entity;
+  List<RestaurantModel> restaurants;
   int use_count; // who's use count , total or mine
   String subscription_code;
   String qr_code;
@@ -27,7 +27,6 @@ class VoucherModel {
 //  int reward_type;
 //  int reward_cash_value;
 //  int reward_percentage_value;
-
 
   // type -> LIVRAISON, REPAS, ALL
   // category -> POURCENTAGE OU VALEURE
@@ -114,10 +113,14 @@ class VoucherModel {
     type = json['type'];
     category = json['category'];
     try {
-      if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
+      if (json['restaurants'] != null || json['restaurants'] != []) {
+        l = json["restaurants"];
+        restaurants = l?.map((r) => RestaurantModel.fromJson(r))?.toList();
+      }
+      /*   if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
           json['restaurant_entity'] != [])
-        restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
-            name: json['restaurant_entity']['name']);
+      restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
+            name: json['restaurant_entity']['name']);*/
     } catch(_) {
       print(_);
     }
@@ -213,11 +216,14 @@ class VoucherModel {
   }
 
   getRestaurantsName() {
-//    if (restaurant_id == null || restaurant_id?.length == 0) {
-//      return null;
-//    }
     // send the appended restaurant names or so.
-    return restaurant_entity?.name;
+    if (this.restaurants?.length == null)
+      return null;
+    else if (this.restaurants?.length == 1){
+      return this.restaurants[0]?.name;
+    } else {
+      return "-1";
+    }
   }
 
 

@@ -18,7 +18,7 @@ class EditAddressContract {
 class EditAddressView {
   void showLoading(bool isLoading) {}
   void modifiedSuccess () {}
-  void createdSuccess () {}
+  void createdSuccess (DeliveryAddressModel address) {}
   void addressModificationFailure (String message) {}
   void inflateDetails(String addressDetails) {}
   void inflateDescription(String description_details, String suburb) {}
@@ -53,10 +53,12 @@ class EditAddressPresenter implements EditAddressContract {
     isWorking = true;
     _editAddressView.showUpdateOrCreatedAddressLoading(true);
     try {
-      int error = await provider.updateOrCreateAddress(address, customer);
+      Map res = await provider.updateOrCreateAddress(address, customer);
+      int error = res["error"];
+      address = res["address"];
       _editAddressView.showUpdateOrCreatedAddressLoading(false);
       if (error == 0)
-        _editAddressView.createdSuccess();
+        _editAddressView.createdSuccess(address);
       else
         _editAddressView.addressModificationFailure("");
       isWorking = false;
@@ -85,7 +87,7 @@ class EditAddressPresenter implements EditAddressContract {
     isAddressDetailsFetching = true;
     _editAddressView.showAddressDetailsLoading(true);
     try {
-     DeliveryAddressModel deliveryAddress = await appProvider.checkLocationDetails(customer, position);
+      DeliveryAddressModel deliveryAddress = await appProvider.checkLocationDetails(customer, position);
       String suburb = deliveryAddress?.quartier;
       String description_details = deliveryAddress?.description;
       _editAddressView.showAddressDetailsLoading(false);

@@ -13,6 +13,7 @@ class ServerConfig {
   static const String PAY_SERVER_ADDRESS_SECURE = "https://"+pay_ip_address;
 
   static String TOPIC = "kaba_flutter";
-//  static String TOPIC = "kaba_delivery_all";
+
+  static String LOGIN_EXPIRATION = "_login_expiration_date_${DateTime.now().year}";
 }
 

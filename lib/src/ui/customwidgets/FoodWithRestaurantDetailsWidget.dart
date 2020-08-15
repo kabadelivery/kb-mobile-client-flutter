@@ -124,7 +124,7 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
                                   )
                               )
                           ),
-                          trailing: widget?.food?.restaurant_entity?.coming_soon == 0 ? IconButton(icon: Icon(Icons.info, size: 30, color: KColors.primaryColor), onPressed: (){_jumpToRestaurantDetails(context, widget?.food?.restaurant_entity);}) : null,
+                          trailing: widget?.food?.restaurant_entity?.coming_soon == 0 ? IconButton(icon: Icon(Icons.home, size: 30, color: KColors.primaryColor), onPressed: (){_jumpToRestaurantDetails(context, widget?.food?.restaurant_entity);}) : null,
                           title:Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

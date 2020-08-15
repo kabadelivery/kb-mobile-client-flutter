@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
@@ -28,7 +29,7 @@ class CustomerUtils {
     /* no need to commit */
     /* expiration date in 3months */
     String expDate = DateTime.now().add(Duration(days: 90)).toIso8601String();
-    prefs.setString("_login_expiration_date", expDate);
+    prefs.setString("${ServerConfig.LOGIN_EXPIRATION}", expDate);
     print(expDate);
   }
 
@@ -70,7 +71,7 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.remove("_loginResponse");
-    prefs.remove("_login_expiration_date");
+    prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
     prefs.remove("_homepage");
     prefs.remove("is_push_token_uploaed");
 
