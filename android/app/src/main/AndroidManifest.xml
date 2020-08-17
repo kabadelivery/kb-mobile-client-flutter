@@ -17,8 +17,10 @@
     <!-- something tells me that we don't need this permission. -->
 <!--    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
 <!--    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
-    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
     <!-- barcode scanner use -->
 
     <!-- we need to be able to ask these permissions at the right moment. -->
