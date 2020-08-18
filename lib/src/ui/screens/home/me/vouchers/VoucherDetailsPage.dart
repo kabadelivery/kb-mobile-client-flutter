@@ -110,7 +110,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("${widget.voucher?.getRestaurantsName()}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("${widget.voucher?.getRestaurantsName() == null? "" : widget.voucher?.getRestaurantsName()}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
                   widget.voucher?.getRestaurantsName() != null ? Column(
                     children: <Widget>[
                       SizedBox(height: 10),
@@ -123,7 +123,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())
                     ]..addAll(
-                        List.generate(widget.voucher.products?.length, (int index){
+                        List.generate(widget?.voucher?.products?.length, (int index){
                           return _miniFoodWidget(widget.voucher.products[index]);
                         })
                     ),
