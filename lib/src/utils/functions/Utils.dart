@@ -13,6 +13,9 @@ int hexToInt(String code) {
   return int.parse(code.substring(1, 7), radix: 16) + 0xFF000000;
 }
 
+int mHexToInt(String code) {
+ return BigInt.parse(strip0x(code), radix: 16);
+}
 
 class Utils {
   static Map<String, String> getHeaders() {
@@ -22,7 +25,6 @@ class Utils {
     headers["cache-control"] = "no-cache";
 
 //    headers["Authorization"] = "Bearer "+token;
-
     return headers;
   }
 

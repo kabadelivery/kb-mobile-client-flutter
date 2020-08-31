@@ -178,8 +178,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   }
 
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
   @override
   void didChangeDependencies() {
     print("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");

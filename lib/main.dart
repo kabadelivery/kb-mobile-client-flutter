@@ -52,8 +52,6 @@ class MyApp extends StatefulWidget {
 }
 
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class _MyAppState extends State<MyApp> {
 
@@ -64,54 +62,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    _firebaseMessaging = FirebaseMessaging();
-
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid = new AndroidInitializationSettings(
-        'mipmap/ic_launcher');
-
-    var initializationSettingsIOS = IOSInitializationSettings(
-        requestBadgePermission: true,
-        requestAlertPermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-
-    var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-
-    // firebase
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        /* send json version of notification object. */
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandling,
-    );
-
-    _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
-        .whenComplete(() async {
-      SharedPreferences prefs_ = await SharedPreferences.getInstance();
-      prefs_.setBool('has_subscribed', true);
-    });
   }
 
   @override
@@ -165,108 +115,8 @@ class _MyAppState extends State<MyApp> {
   }
 
 
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
-    print("onDidReceiveLocalNotification ${payload}");
-    _handlePayLoad(payload);
-  }
-
-  Future onSelectNotification(String payload) {
-    print("onSelectedNotification ${payload}");
-    _handlePayLoad(payload);
-  }
-
-  static  NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
-
-    if (Platform.isIOS) {
-      // Android-specific code
-      try {
-        var _data = json.decode(message_entry["data"])["data"];
-        NotificationItem notificationItem = new NotificationItem(
-            title: _data["notification"]["title"],
-            body: _data["notification"]["body"],
-            image_link: _data["notification"]["image_link"],
-            priority: "${_data["notification"]["destination"]["priority"]}",
-            destination: NotificationFDestination(
-                type: _data["notification"]["destination"]["type"],
-                product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-        );
-        return notificationItem;
-      } catch (_) {
-        print(_);
-      }
-    } else if (Platform.isAndroid) {
-      // IOS-specific code
-      try {
-        var _data = json.decode(message_entry["data"]["data"])["data"];
-
-        NotificationItem notificationItem = new NotificationItem(
-            title: _data["notification"]["title"],
-            body: _data["notification"]["body"],
-            image_link: _data["notification"]["image_link"],
-            priority: "${_data["notification"]["destination"]["priority"]}",
-            destination: NotificationFDestination(
-                type: int.parse("${_data["notification"]["destination"]["type"]}"),
-                product_id: int.parse("${_data["notification"]["destination"]["product_id"]}"))
-        );
-        return notificationItem;
-      } catch (_) {
-        print(_);
-      }
-    }
-  }
-
   void _jumpToFoodDetailsWithId(int product_id) {
     navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
-  }
-
-  void _handlePayLoad(String payload) {
-    NotificationFDestination notificationFDestination;
-
-    try {
-      notificationFDestination = NotificationFDestination
-          .fromJson(json.decode(payload));
-      print(notificationFDestination.toString());
-    } catch (_) {
-      print(_);
-    }
-
-    switch (notificationFDestination.type) {
-    /* go to the activity we are supposed to go to with only the id */
-      case NotificationFDestination.FOOD_DETAILS:
-        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.COMMAND_PAGE:
-      case NotificationFDestination.COMMAND_DETAILS:
-      case NotificationFDestination.COMMAND_PREPARING:
-      case NotificationFDestination.COMMAND_SHIPPING:
-      case NotificationFDestination.COMMAND_END_SHIPPING:
-      case NotificationFDestination.COMMAND_CANCELLED:
-      case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.MONEY_MOVMENT:
-        _jumpToTransactionHistory();
-        break;
-      case NotificationFDestination.SPONSORSHIP_TRANSACTION_ACTION:
-        _jumpToTransactionHistory();
-        break;
-      case NotificationFDestination.ARTICLE_DETAILS:
-//        _jumpToArticleInterface(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.RESTAURANT_PAGE:
-        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.RESTAURANT_MENU:
-        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
-        break;
-      case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
-        _jumpToServiceClient();
-        break;
-      case NotificationFDestination.IMPORTANT_INFORMATION:
-      /* important information */
-        break;
-    }
   }
 
 
@@ -295,32 +145,6 @@ class _MyAppState extends State<MyApp> {
     navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
-  static Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) {
-    print("onBackgroundMessage: $message");
-    /* send json version of notification object. */
-    if (Platform.isAndroid) {
-      NotificationItem notificationItem = _notificationFromMessage(message);
-      return iLaunchNotifications(notificationItem);
-    }
-    return Future.value(0);
-  }
-
 }
 
-Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
-
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.Max, priority: Priority.High, ticker: notificationItem?.title);
-
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-
-  return flutterLocalNotificationsPlugin.show(
-      0, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString()
-  );
-}
 

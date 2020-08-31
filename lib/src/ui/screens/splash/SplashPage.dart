@@ -13,6 +13,7 @@ import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -354,35 +355,40 @@ class _SplashPageState extends State<SplashPage> {
         if (pathSegments.length > 1) {
           print("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
-          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = int.parse("${pathSegments[1]}");
+          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "order":
         if (pathSegments.length > 1) {
           print("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = int.parse("${pathSegments[1]}");
+          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "food":
         if (pathSegments.length > 1) {
           print("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
-          widget.argument = int.parse("${pathSegments[1]}");
+          widget.argument = mHexToInt("${pathSegments[1]}");
+//          widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "menu":
         if (pathSegments.length > 1) {
           print("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
-          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = int.parse("${pathSegments[1]}");
+          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "review-order":
         if (pathSegments.length > 1) {
           print("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = int.parse("${pathSegments[1]}");
+          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
     }

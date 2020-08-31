@@ -285,8 +285,6 @@ class MiniVoucherClipper extends CustomClipper<Path> {
 }
 
 
-
-
 class SingleOrderFoodWidget extends StatelessWidget {
 
   OrderItemModel food;

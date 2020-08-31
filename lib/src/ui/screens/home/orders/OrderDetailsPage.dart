@@ -380,7 +380,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   @override
   Future<void> inflateOrderDetails(CommandModel command) async {
     // showLoading(false);
-
     setState(() {
       widget.command = command;
     });
