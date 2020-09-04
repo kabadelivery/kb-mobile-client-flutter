@@ -8,6 +8,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -72,18 +73,22 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
             bottom: 20,
             right: 0,
             left: 0,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                RaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Row(mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(Icons.add, color: KColors.primaryColor),
-                      SizedBox(width: 10),
-                      Text("${AppLocalizations.of(context).translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
-                    ],
-                  ),
-                ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),
-              ],
+            child: BouncingWidget(
+              duration: Duration(milliseconds: 400),
+              scaleFactor: 2,
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  RaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Row(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(Icons.add, color: KColors.primaryColor),
+                        SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context).translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
+                      ],
+                    ),
+                  ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),
+                ],
+              ),
             ),
           ),
         ],

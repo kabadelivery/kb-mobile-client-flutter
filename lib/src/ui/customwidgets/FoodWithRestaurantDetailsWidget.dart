@@ -20,7 +20,9 @@ class FoodWithRestaurantDetailsWidget extends StatefulWidget {
 
   RestaurantFoodModel food;
 
-  FoodWithRestaurantDetailsWidget({this.food});
+  GlobalKey key;
+
+  FoodWithRestaurantDetailsWidget({this.food, this.key});
 
   @override
   _FoodWithRestaurantDetailsWidgetState createState() {
@@ -33,15 +35,14 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return
       (InkWell(child:Card(
+        key: widget.key,
 //          elevation: 8.0,
 //          margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
           margin: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),

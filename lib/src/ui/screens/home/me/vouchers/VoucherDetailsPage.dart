@@ -110,8 +110,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("${widget.voucher?.getRestaurantsName() == null? "" : widget.voucher?.getRestaurantsName()}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
-                  widget.voucher?.getRestaurantsName() != null ? Column(
+                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Column(
                     children: <Widget>[
                       SizedBox(height: 10),
                       widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
@@ -127,7 +127,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                           return _miniFoodWidget(widget.voucher.products[index]);
                         })
                     ),
-                  ) : Container(),
+                  ),
                   SizedBox(height: 20),
                   Column(
                     children: <Widget>[
@@ -148,9 +148,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* debut d'utilisation */
                   SizedBox(height: 20),
-
                   /* use counts for me \ category of voucher \ type of voucher \ */
-
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Column(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -669,12 +670,16 @@ class SelectPlaceAction extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      locationName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    BouncingWidget(
+                      duration: Duration(milliseconds: 400),
+                      scaleFactor: 3,
+                      child:  Text(
+                        locationName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     Text(
@@ -687,9 +692,13 @@ class SelectPlaceAction extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward,
-              )
+              BouncingWidget(
+                duration: Duration(milliseconds: 200),
+                scaleFactor: 3,
+                child:   Icon(
+                  Icons.arrow_forward,
+                ),
+              ),
             ],
           ),
         ),

@@ -9,11 +9,6 @@
 -->
 <plist version="1.0">
     <dict>
-    
-    <key>com.apple.developer.associated-domains</key>
-     <array>
-         <string>applinks:app.kaba-delivery.com</string>
-     </array>
-    
+
     </dict>
 </plist>

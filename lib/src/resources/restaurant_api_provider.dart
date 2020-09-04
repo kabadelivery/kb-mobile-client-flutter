@@ -117,7 +117,6 @@ class RestaurantApiProvider {
           if (lo == null) {
             return [];
           } else {
-
             // foods with restaurant inside.
             List<RestaurantFoodModel> foods = [];
             lo?.map((food_restaurant){

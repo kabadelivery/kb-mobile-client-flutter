@@ -239,7 +239,7 @@
   "transactions_history": "Transactions History",
   "foods": "Foods",
   "addons": "Add-Ons",
-  "all": "All",
+  "all": "Foods in Basket",
   "search_place": "Search Place",
   "tap_location": "Tap to select this location",
   "this_location": "This location",
@@ -291,7 +291,7 @@
   "voucher_for_spec_foods": "This voucher can only be used if your order includes these meals",
   "voucher_for_spec_foods_all": "This voucher can be used with all FOODS of this restaurant",
 
-  "voucher_no_exist": "Sorry, this voucher doesn't exists.",
+  "voucher_no_exist": "Sorry, this voucher code is wrong. Please check your CODE and try again !",
   "voucher_invalid_params": "Sorry, invalid parameters.",
   "voucher_no_self_subscribe": "Sorry, You can't self subscribe for this voucher.",
   "voucher_expired": "Sorry, This voucher has expired.",
@@ -305,9 +305,17 @@
 
   "search_restaurant": "RESTAURANT",
   "search_food" : "MENU",
-  "share_food_1": "Look, i\\'ve discovered this amazing menu on Kaba App ",
+  "share_food_1": "Look, i've discovered this amazing menu on Kaba App ",
   "share_food_2": " , Check it out !",
-  "coupon_use_before": "Must use before"
+  "coupon_use_before": "Must use before",
 
+  "share": "Share",
 
+  "filter": "filter",
+  "cheap_to_exp" : "Cheapest",
+  "exp_to_cheap" : "Expensive",
+  "nearest": "Nearest",
+  "farest": "Farest",
+
+  "add_voucher": "Voucher Code"
 }

@@ -1,21 +1,13 @@
-import 'dart:convert';
-
+import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
-import 'package:KABA/src/contracts/vouchers_contract.dart';
-import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/utils/_static_data/FlareData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
 import 'package:KABA/src/contracts/personal_page_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -23,14 +15,22 @@ import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
@@ -41,6 +41,8 @@ import 'money/TransferMoneyRequestPage.dart';
 class MeAccountPage extends StatefulWidget {
 
   CustomerModel customerData;
+
+  CustomerModel customer;
 
   MeAccountPage({Key key, this.title}) : super(key: key);
 
@@ -62,13 +64,17 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    popupMenus = ["Logout", "Settings"];
+    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"];
+    CustomerUtils.getCustomer().then((customer) async {
+      widget.customer = customer;
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    popupMenus = ["${AppLocalizations.of(context).translate('logout')}","${AppLocalizations.of(context).translate('settings')}"];
+    popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
   }
 
   /*static getCustomer () async {
@@ -80,19 +86,40 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     return cm;
   }*/
 
+  void _jumpToAddVoucherPage() {
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+  }
+
   void menuChoiceAction(String value) {
     /* jump to the other activity */
     switch(popupMenus.indexOf(value)) {
       case 0:
-      /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete((){
-          //       get back to the splash page.
-//          Navigator.popUntil(context, ModalRoute.withName(SplashPage.routeName));
-          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
-        });
+      // scan
+        _jumpToAddVoucherPage();
         break;
       case 1:
+      // scan
+        _jumpToScanPage();
+        break;
+      case 2:
         _jumpToPage(context, SettingsPage());
+        break;
+      case 3:
+      /* logout */
+        CustomerUtils.clearCustomerInformations().whenComplete((){
+          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+        });
         break;
     }
   }
@@ -468,6 +495,106 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       }
     }
   }
+
+  Future<void> _jumpToScanPage() async {
+
+    /* before we get here, we should ask some permission, the camera permission */
+    if (!(await Permission.camera.request().isGranted)) {
+      return;
+    }
+
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            KabaScanPage(customer: widget.customer),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+    if (results.containsKey("qrcode")) {
+      String qrCode = results["qrcode"];
+      /* continue transaction with this*/
+      Navigator.of(context).push(
+          PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+              AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: "$qrCode".toUpperCase()),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                var begin = Offset(1.0, 0.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin:begin, end:end);
+                var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+              }
+          ));
+    } else
+      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+  }
+
+
+  void mDialog(String message) {
+    _showDialog2(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog2(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
 
   Future<dynamic> _launchURL(String url) async {
     if (await canLaunch(url)) {

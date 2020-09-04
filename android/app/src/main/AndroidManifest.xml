@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-sdk tools:overrideLibrary="net.touchcapture.qr.flutterqr,com.google.zxing.client.android"/>
+
     <!-- Add this permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>

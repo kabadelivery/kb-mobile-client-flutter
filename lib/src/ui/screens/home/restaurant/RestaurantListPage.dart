@@ -1,25 +1,23 @@
 import 'dart:async';
 
+import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantFoodListWidget.dart';
+import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/blocs/RestaurantBloc.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
-import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
-import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -54,9 +52,18 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   List<RestaurantFoodModel> foodProposals = null;
 
+  String _filterDropdownValue;
+
+  GlobalKey firstItemKey = GlobalKey();
+
+  ScrollController _searchListScrollController = ScrollController();
+  ScrollController _restaurantListScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+
+//    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
 
     widget.presenter.restaurantFoodProposalView = this;
 
@@ -155,7 +162,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                     _searchMode = false;
                   }
                 },
-                  child: TextField(controller: _filterEditController, style: TextStyle(color: KColors.primaryColor, fontSize: 16),
+                  child: TextField(controller: _filterEditController, onSubmitted: (val) {
+                    if (searchTypePosition == 2)
+                      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+                  }, style: TextStyle(color: Colors.black, fontSize: 16), textInputAction: TextInputAction.search,
                       decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
                 ),
               ),
@@ -174,51 +184,102 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                  children: <Widget>[
-                    SizedBox(height:10),
-                    Center(
-                      child: AnimatedContainer(
-                        decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
-                          border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
-                        ),
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text("${AppLocalizations.of(context).translate('search_restaurant')}", style: TextStyle(color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)), color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
-                              SizedBox(width: 10),
-                              RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),  color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
-                            ]), duration: Duration(milliseconds: 700),
-                      ),
+      body: Container(color: Colors.white,
+        child: Column(
+          children: <Widget>[
+            SizedBox(height:10),
+            Container(padding: EdgeInsets.only(left:20,right:20),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AnimatedContainer(
+                    decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
+                      border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
                     ),
-                    SizedBox(height:10)
-//                  SizedBox(height: 40)
-                  ]
-                    ..addAll(
-                      /* according to the search position, show a different page. */
-                      searchTypePosition == 1 ? (
-                          !_searchMode ? List<Widget>.generate(data.length, (int index) {
-                            return RestaurantListWidget(restaurantModel: data[index]);
-                          }).toList()  : _showSearchPage()) :
-                      <Widget>[
-                        Container(
-                            child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
-                            (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
-                            searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
-                            _buildSearchedFoodList())
-                        )
-                      ],
-                    )
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          InkWell(onTap: () => _choice(1),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_restaurant')}", style: TextStyle(fontSize: 12, color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)),  decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color,borderRadius: new BorderRadius.circular(30.0)))),
+                          SizedBox(width: 5),
+                          InkWell(onTap: () => _choice(2),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(fontSize: 12, color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),   decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color,borderRadius: new BorderRadius.circular(30.0)))),
+                        ]), duration: Duration(milliseconds: 3000),
+                  ),
+                  DropdownButton<String>(
+                    value: _filterDropdownValue,
+                    hint: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor)),
+                    /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
+                        child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
+                    */
+                    icon: Icon(FontAwesomeIcons.filter, color: KColors.primaryColor, size: 24,),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: KColors.primaryColor),
+                    underline: Container(
+//                      height: 2,
+//                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _filterDropdownValue = newValue;
+                      });
+                    },
+                    items: <String>['${AppLocalizations.of(context).translate('cheap_to_exp')}', '${AppLocalizations.of(context).translate('exp_to_cheap')}', '${AppLocalizations.of(context).translate('nearest')}', '${AppLocalizations.of(context).translate('farest')}']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ],
               ),
             ),
-          ),
-        ],
+            SizedBox(height:15),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                    children: <Widget>[
+//                  SizedBox(height: 40)
+                    ]
+                      ..add(
+                        /* according to the search position, show a different page. */
+                          searchTypePosition == 1 ? (
+                              !_searchMode ?
+                              /* List<Widget>.generate(data.length, (int index) {
+                              return RestaurantListWidget(restaurantModel: data[index]);
+                            }).toList()*/
+                              Container(color: Colors.white,
+                                height: MediaQuery.of(context).size.height,
+//                              padding: EdgeInsets.only(bottom:230),
+                                child: Scrollbar(
+                                  isAlwaysShown: true,
+                                  controller: _restaurantListScrollController,
+                                  child: ListView.builder(
+                                    controller: _restaurantListScrollController,
+                                    itemCount: data?.length != null ? data.length + 1 : 0,
+                                    itemBuilder: (context, index) {
+                                      if (index == data?.length)
+                                        return Container(height:100);
+                                      return RestaurantListWidget(restaurantModel: data[index]);
+                                    },
+                                  ),
+                                ),
+                              )
+                                  : _showSearchPage()) :
+                          Container(
+                              child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
+                              (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
+                              searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
+                              _buildSearchedFoodList())
+                          )
+
+                      )
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -267,7 +328,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     var geolocator = Geolocator();
     var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
-   /* StreamSubscription<Position> positionStream =*/
+    /* StreamSubscription<Position> positionStream =*/
     geolocator.getPositionStream(locationOptions).listen(
             (Position position) {
 //          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
@@ -291,7 +352,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   _buildSearchMenuSysErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
-        widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
     });
   }
 
@@ -318,10 +379,35 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     }
 
     /* generating food proposals lazily */
-    return Column(children: <Widget>[]
+    /*  return Column(children: <Widget>[]
       ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {
         return FoodWithRestaurantDetailsWidget(food: foodProposals[index]);
-      }).toList()));
+      }).toList()));*/
+    var filteredResult =  _filteredFoodProposal(_filterDropdownValue, foodProposals);
+
+    firstItemKey = new GlobalKey();
+
+    Future.delayed(Duration(seconds: 2), () {
+      Scrollable.ensureVisible(firstItemKey.currentContext);
+    });
+
+    return Container(color: Colors.white,
+      height: MediaQuery.of(context).size.height,
+//      padding: EdgeInsets.only(bottom:230),
+      child: Scrollbar(
+        isAlwaysShown: true,
+        controller: _searchListScrollController,
+        child: ListView.builder(
+          controller: _searchListScrollController,
+          itemCount: filteredResult?.length != null ? filteredResult.length + 1 : 0,
+          itemBuilder: (context, index) {
+            if (index == filteredResult?.length)
+              return Container(height:300);
+            return FoodWithRestaurantDetailsWidget(key: index == 0 ? firstItemKey : null, food: filteredResult[index]);
+          },
+        ),
+      ),
+    );
   }
 
   List<RestaurantModel> _filterEditContent() {
@@ -395,11 +481,30 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   _showSearchPage() {
     /* show first few restaurants with a show more button, */
-    return <Widget>[]
+    /*  return <Widget>[]
       ..addAll(List<Widget>.generate(_filteredData(data).length, (int index) {
         return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
-      }).toList())
+      }).toList())*/
     ;
+    return Container(color: Colors.white,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height,
+      padding: EdgeInsets.only(bottom: 230),
+      child: Scrollbar(
+        isAlwaysShown: true,
+        controller: _restaurantListScrollController,
+        child: ListView.builder(
+          controller: _restaurantListScrollController,
+          itemCount: _filteredData(data).length,
+          itemBuilder: (context, index) {
+            return RestaurantListWidget(
+                restaurantModel: _filteredData(data)[index]);
+          },
+        ),
+      ),
+    );
   }
 
 
@@ -442,6 +547,40 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       }
       this.isSearchingMenus = isLoading;
     });
+  }
+
+  _filteredFoodProposal(String filterDropdownValue, List<RestaurantFoodModel> foodProposals) {
+
+    if (filterDropdownValue == ("${AppLocalizations.of(context).translate('cheap_to_exp')}")) {
+      // cheap to exp
+      List<RestaurantFoodModel> fd = foodProposals;
+      fd.sort((fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
+      return fd;
+    }
+
+    if (filterDropdownValue == ("${AppLocalizations.of(context).translate('exp_to_cheap')}")) {
+      // cheap to exp
+      List<RestaurantFoodModel> fd = foodProposals;
+      fd.sort((fd1, fd2) => int.parse(fd2.price).compareTo(int.parse(fd1.price)));
+      return fd;
+    }
+
+    if (filterDropdownValue == ("${AppLocalizations.of(context).translate('farest')}")) {
+      // cheap to exp
+      List<RestaurantFoodModel> fd = foodProposals;
+      fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
+      return fd;
+    }
+
+    if (filterDropdownValue == ("${AppLocalizations.of(context).translate('nearest')}")) {
+      // cheap to exp
+      List<RestaurantFoodModel> fd = foodProposals;
+      fd.sort((fd1, fd2) => int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+      return fd;
+    }
+
+
+    return foodProposals;
   }
 
 }

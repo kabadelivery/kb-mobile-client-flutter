@@ -5,7 +5,6 @@ import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
-import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
@@ -16,7 +15,6 @@ import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/ui/customwidgets/Group2AdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
@@ -26,10 +24,10 @@ import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.d
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
@@ -49,7 +47,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+//import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -97,25 +95,23 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void initState() {
     super.initState();
 
-    popupMenus = ["Scan QR","Settings","Logout"];
+    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"];
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
     CustomerUtils.getCustomer().then((customer) async {
-      // check if i token updates successfully
-      // ignore: unrelated_type_equality_checks
       if (!(await CustomerUtils.isPusTokenUploaded())) {
         this.widget.presenter.updateToken(customer);
       }
       widget.customer = customer;
-      popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
-    });
+     });
 
     this.widget.presenter.fetchHomePage();
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
     });
 
     WidgetsBinding.instance
@@ -248,12 +244,16 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     switch(popupMenus.indexOf(value)) {
       case 0:
       // scan
-        _jumpToScanPage();
+        _jumpToAddVoucherPage();
         break;
       case 1:
-        _jumpToPage(context, SettingsPage());
+      // scan
+        _jumpToScanPage();
         break;
       case 2:
+        _jumpToPage(context, SettingsPage());
+        break;
+      case 3:
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
           Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
@@ -822,21 +822,102 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       return;
     }
 
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            KabaScanPage(customer: widget.customer),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
 
-    String qrCode = await scanner.scan();
+    if (results.containsKey("qrcode")) {
+      String qrCode = results["qrcode"];
+      /* continue transaction with this*/
+      Navigator.of(context).push(
+          PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+              AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: "$qrCode".toUpperCase()),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                var begin = Offset(1.0, 0.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin:begin, end:end);
+                var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+              }
+          ));
+    } else
+      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+  }
 
-    /* Map results = await*/
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
-      ),
-    );*/
 
+  void mDialog(String message) {
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
+  void _jumpToAddVoucherPage() {
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -847,6 +928,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             }
         ));
   }
+
 }
 
 

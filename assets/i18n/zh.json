@@ -239,7 +239,7 @@
   "transactions_history": "交易记录",
   "foods": "饭菜",
   "addons": "附加",
-  "all": "全单",
+  "all": "购物车",
   "search_place": "搜索地方",
   "tap_location": "点击选择此位置",
   "this_location": "这个位置",
@@ -273,5 +273,52 @@
   "insert_message": "请输入信息。。。",
   "reload": "重试",
   "my_vouchers": "我的票圈",
-  "sorry_no_coupon": "您暂时没有票圈。"
+  "sorry_no_coupon": "您暂时没有票圈。",
+
+
+
+  "choose_coupon": "添加优惠卷",
+  "add_coupon": "添加优惠卷",
+  "PROMO_CODE": "优惠码",
+  "subscribe": "订阅优惠券",
+  "congrats_subscribe": "恭喜您成功订阅优惠卷！\n祝您使用愉快",
+  "insert_voucher_hint": "请填写您的优惠码",
+  "voucher_details": "优惠卷详情",
+  "voucher_": "优惠卷",
+  "voucher_code": "优惠码",
+  "available_since": "由于",
+  "expiry_date": "到期",
+  "copied_c": "复制到剪贴板",
+  "voucher_for_spec_foods": "此优惠券仅在您的订单包括这些餐食时使用",
+  "voucher_for_spec_foods_all": "此代金券可用于这家餐厅的所有食品",
+
+  "voucher_no_exist": "抱歉优惠码有误、请检查再试试 !",
+  "voucher_invalid_params": "抱歉，参数无效",
+  "voucher_no_self_subscribe": "抱歉，您不能自行订阅此优惠券",
+  "voucher_expired": "抱歉，优惠卷已过期",
+  "voucher_disabled": "抱歉，优惠卷已禁用",
+  "voucher_already_subscribed": "抱歉，优惠卷已订阅！",
+  "voucher_max_count_reached": "抱歉、订阅限量以达到",
+  "scan": "扫描二维码",
+  "qr_code_wrong": "抱歉、优惠卷有误",
+  "please_search_food": "请输入您要的菜谱",
+  "sorry_cant_find_food": "抱歉、此菜谱找不到",
+
+  "search_restaurant": "饭店",
+  "search_food" : "菜单",
+  "share_food_1": "嗨，我在Kaba App上发现了这个惊人的菜单 ",
+  "share_food_2": " , 查看一下 !",
+  "coupon_use_before": "终止",
+
+  "share": "分享",
+
+  "filter": "筛选",
+  "cheap_to_exp" : "最便宜",
+  "exp_to_cheap" : "最贵",
+  "nearest": "最近",
+  "farest": "最远",
+
+  "add_voucher": "优惠码"
+
+
 }

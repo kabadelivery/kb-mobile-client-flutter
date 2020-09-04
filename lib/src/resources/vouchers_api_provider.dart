@@ -79,7 +79,7 @@ class VoucherApiProvider {
           return errorCode;
         }
       } else
-        throw Exception(-1); // there is an error in your request
+        return -1;
     } else {
       throw Exception(-2); // you have no network
     }

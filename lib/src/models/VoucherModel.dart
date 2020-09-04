@@ -10,6 +10,7 @@ class VoucherModel {
 
   int id;
   String restaurant_name;
+  String trade_name;
   String details;
   int value;
   int state; //
@@ -59,53 +60,15 @@ class VoucherModel {
   VoucherModel({this.id, this.details, this.value, this.state, this.type,
   }); // timestamp
 
-  /*"id":8,
-  "name":"First Voucher for Ulrich",
-  "category":1,
-  "type":1,
-  "max_persons":3690,
-  "value":20,
-  "use_count":2,
-  "restaurant_id":3,
-  "restaurant_entity":{
-  "id":3,
-  "name":"Mami"
-  },
-  "products":[],
-  "start_date":"1592611200",
-  "end_date":"1593475200",
-  "can_self_subscribe":1,
-  "enabled":1,
-  "is_rewarded":0,
-  "reward_on_food":0,
-  "reward_category":null,
-  "reward_cash_value":null,
-  "reward_percentage_value":null,
-  "subscription_code":"UL-01",
-  "qr_code":"aa92f142629bd6bfe091f820d6ffeV",
-  "tag":null,
-  "created_at":"1593110001",
-  "updated_at":"1593110001",
-  "state":1*/
-
-  /*int id;
-  String restaurant_name;
-  String details;
-  String value;
-  int state; //
-  int type; // type,
-  int category; // category, food, delivery, category
-  List<int> restaurant_id;
-  int use_count; // who's use count , total or mine
-  String subscription_code;
-  String qr_code;
-  int start_date, end_date; // timestamp
-  String tag;*/
 
   VoucherModel.fromJson(Map<String, dynamic> json) {
 
     id = json['id'];
-    restaurant_name = json['restaurant_name'];
+
+//    if (json["restaurant_entity"] != null)
+//      restaurant_name = RestaurantModel.fromJson(json['restaurant_entity']).name;
+
+    trade_name = json['trade_name'];
     type = json['type'];
 //    details = json['details'];
     value = json['value'];

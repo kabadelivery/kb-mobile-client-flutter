@@ -2,19 +2,19 @@ import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:flutter/material.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
-//import 'package:KABA/src/ui/screens/home/me/vouchers/QrCodeScanner.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+//import 'package:qrscan/qrscan.dart' as scanner;
 
 
 class MyVouchersPage extends StatefulWidget {
@@ -114,29 +114,43 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   Future _jumpToAddNewVoucher_Scan() async {
 
-    /*  // when come back refresh this page.
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QrCodeScannerPage(),
-      ),
-    );
-    if (results != null && results.containsKey('data')) {
-      // update
-   // subscribe through add whatever
-      _jumpToAddNewVoucher_Code(qrCode: results["data"]);
-    }*/
+    /*  String promoCode = await FlutterBarcodeScanner.scanBarcode(
+        "#849384",
+        "取消",
+        false,
+        ScanMode.QR);*/
 
-    String promoCode = await scanner.scan();
-    promoCode = promoCode?.toUpperCase();
+    if (!(await Permission.camera.request().isGranted)) {
+      return;
+    }
+
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            KabaScanPage(customer: widget.customer),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+    if (results.containsKey("qrcode")) {
+      String qrCode = results["qrcode"];
+      /* continue transaction with this*/
+      _jumpToAddNewVoucher_Code(qrCode: qrCode?.toUpperCase());
+    } else
+      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+
 
     /* check if this code could be a code */
-
-    if (_checkPromoCode(promoCode)) {
-      _jumpToAddNewVoucher_Code(qrCode: promoCode);
-    } else {
-      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
-    }
+//    if (_checkPromoCode(promoCode)) {
+//      _jumpToAddNewVoucher_Code(qrCode: promoCode);
+//    } else {
+//      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+//    }
   }
 
   bool _checkPromoCode(String promoCode) {
@@ -161,7 +175,6 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
               return SlideTransition(position: tween.animate(curvedAnimation), child: child);
             }
         ));
-
     // when you come back,
     widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
   }

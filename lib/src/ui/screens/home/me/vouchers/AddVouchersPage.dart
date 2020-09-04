@@ -55,6 +55,7 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         backgroundColor: Colors.white,
         title: Text("${AppLocalizations.of(context).translate('subscribe')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),

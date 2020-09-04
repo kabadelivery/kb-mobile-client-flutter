@@ -124,9 +124,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                 children: <Widget>[
 
                                   /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
-                                  Text("${widget.voucher.getRestaurantsName() == null ? "" :
-                                  (widget.voucher.getRestaurantsName() == "-1" ? "ALL" :
-                                  widget.voucher.getRestaurantsName())}".toUpperCase(), style: TextStyle(color: restaurantNameColor, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+                                  Text("${widget.voucher.trade_name}", style: TextStyle(color: restaurantNameColor, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+
                                 ],
                               ),
                               SizedBox(height: 10),

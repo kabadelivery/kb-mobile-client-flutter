@@ -11,6 +11,7 @@ class ServerConfig {
   static const String SERVER_ADDRESS = "http://"+ip_address;
   static const String SERVER_ADDRESS_SECURE = "https://"+ip_address;
   static const String PAY_SERVER_ADDRESS_SECURE = "https://"+pay_ip_address;
+  static const String APP_SERVer = "https://app.kaba-delivery.com";
 
   static String TOPIC = "kaba_flutter";
 

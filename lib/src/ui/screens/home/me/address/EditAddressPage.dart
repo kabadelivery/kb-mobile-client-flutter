@@ -9,6 +9,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
 import 'package:android_intent/android_intent.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart' as geo;
@@ -112,20 +113,30 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                          !_checkLocationLoading && address?.location != null ?
+                          Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)) :
+                          BouncingWidget(
+                            duration: Duration(milliseconds: 400),
+                            scaleFactor: 3,
+                            child: Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                          ),
                           Padding(
                             padding: EdgeInsets.only(top:10, bottom:10),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-
 //                                  isPickLocation
                                   isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
 
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
-                                  Icon(Icons.chevron_right, color: KColors.primaryColor)
+                                  !_checkLocationLoading && address?.location != null ? Icon(Icons.chevron_right, color: KColors.primaryColor) :
+                                  BouncingWidget(
+                                    duration: Duration(milliseconds: 200),
+                                    scaleFactor: 3,
+                                    child: Icon(Icons.chevron_right, color: KColors.primaryColor),
+                                  ),
                                 ]),
                           )],
                       )),onTap: () => showPlacePicker(context),

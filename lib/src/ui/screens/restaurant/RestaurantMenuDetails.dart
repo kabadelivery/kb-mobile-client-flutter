@@ -1,4 +1,5 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
@@ -119,7 +120,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     List<Widget> bottomSheetView = <Widget>[
       SizedBox(height: 10),
       Center(child: Container(decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))), margin: EdgeInsets.only(top:10), padding: EdgeInsets.only(left:10, right: 10, top:5, bottom: 5),
-          child: Text("${type == 1 ? "${AppLocalizations.of(context).translate('foods')}".toUpperCase() : (type==2 ? "${AppLocalizations.of(context).translate('addons')}" : "${AppLocalizations.of(context).translate('all')}")}".toUpperCase(), style: TextStyle(color:Colors.white),textAlign: TextAlign.center))),
+          child: Text("${AppLocalizations.of(context).translate('all')}".toUpperCase(), style: TextStyle(color:Colors.white),textAlign: TextAlign.center))),
       SizedBox(height: 10),
     ];
 
@@ -153,7 +154,12 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           ),
         ),
         totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child:
-        RaisedButton(child: Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)), color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
+        RaisedButton(child: BouncingWidget(
+          duration: Duration(milliseconds: 500),
+          scaleFactor: 2,
+          child: Container(child: Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white))),
+        )
+            , color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
       ],
     );
   }

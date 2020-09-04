@@ -14,7 +14,8 @@ int hexToInt(String code) {
 }
 
 int mHexToInt(String code) {
- return BigInt.parse(strip0x(code), radix: 16);
+// return BigInt.parse(strip0x(code), radix: 16);
+return int.parse(code);
 }
 
 class Utils {

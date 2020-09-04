@@ -12,6 +12,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -521,8 +522,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white)),
                             Row(children: <Widget>[
-                              IconButton(icon: Icon(Icons.my_location,
-                                  color: Colors.white), onPressed: null),
+                              BouncingWidget(
+                                duration: Duration(milliseconds: 400),
+                                scaleFactor: 3,
+                                child: IconButton(icon: Icon(Icons.my_location,
+                                    color: Colors.white), onPressed: null),
+                              ),
                             ])
                           ])), onTap: () {
                 _pickDeliveryAddress();

@@ -10,6 +10,7 @@ import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -92,6 +93,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             home: SplashPage(),
+//          home: KabaScanPage(),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
