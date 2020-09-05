@@ -117,7 +117,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                           Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)) :
                           BouncingWidget(
                             duration: Duration(milliseconds: 400),
-                            scaleFactor: 3,
+                            scaleFactor: 2,
                             child: Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                           ),
                           Padding(
@@ -133,8 +133,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                                   SizedBox(width: 10),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.chevron_right, color: KColors.primaryColor) :
                                   BouncingWidget(
-                                    duration: Duration(milliseconds: 200),
-                                    scaleFactor: 3,
+                                    duration: Duration(milliseconds: 300),
+                                    scaleFactor: 2,
                                     child: Icon(Icons.chevron_right, color: KColors.primaryColor),
                                   ),
                                 ]),

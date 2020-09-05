@@ -501,7 +501,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
+ Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   print("onBackgroundMessage: $message");
 /* send json version of notification object. */
   if (Platform.isAndroid) {

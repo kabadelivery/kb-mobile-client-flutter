@@ -86,7 +86,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   bool _checkOpenStateError = false;
 
-  ScrollController _listController;
+//  ScrollController _listController;
 
   _OrderConfirmationPage2State();
 
@@ -98,7 +98,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   void initState() {
     // TODO: implement initState
     super.initState();
-    _listController = new ScrollController();
+//    _listController = new ScrollController();
     _addInfoController = new TextEditingController();
     this.widget.presenter.orderConfirmationView = this;
     CustomerUtils.getCustomer().then((customer) {
@@ -468,7 +468,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     /* we get this one ... then we tend to select and address to end the purchase. */
 
     return SingleChildScrollView(
-      controller: _listController,
+//      controller: _listController,
       child: Column(mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(height: 10)]
@@ -524,7 +524,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                             Row(children: <Widget>[
                               BouncingWidget(
                                 duration: Duration(milliseconds: 400),
-                                scaleFactor: 3,
+                                scaleFactor: 2,
                                 child: IconButton(icon: Icon(Icons.my_location,
                                     color: Colors.white), onPressed: null),
                               ),
@@ -535,7 +535,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               ),
               SizedBox(height: 10),
               _buildAddress(_selectedAddress),
-              SizedBox(height: 25),
+              SizedBox(key: poweredByKey, height: 25),
               _buildCouponSpace(),
               SizedBox(height: 15),
               isConnecting
@@ -583,7 +583,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 !_isPreorderSelected() ? _buildOrderPayAtArrivalButton() : Container(),
                 SizedBox(height: 30),
               ])) : Container(),
-              Center(key: poweredByKey,child: Padding(
+              Center(child: Padding(
                 padding: const EdgeInsets.only(top:8,bottom:20.0),
                 child: Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize:12, color: Colors.grey)),
               ))
@@ -1534,7 +1534,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     setState(() {
       _orderBillConfiguration.isBillBuilt = true;
     });
-    Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+//    Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+    Future.delayed(Duration(milliseconds: 500), () {
+      Scrollable.ensureVisible(poweredByKey.currentContext);
+    });
   }
 
   @override
@@ -1717,7 +1720,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           Scrollable.ensureVisible(poweredByKey.currentContext);
         });
         showLoading(true);
-        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+//        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+        Future.delayed(Duration(milliseconds: 500), () {
+          Scrollable.ensureVisible(poweredByKey.currentContext);
+        });
       }
     }
 

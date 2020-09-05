@@ -317,5 +317,6 @@
   "nearest": "Nearest",
   "farest": "Farest",
 
-  "add_voucher": "Voucher Code"
+  "add_voucher": "Voucher Code",
+  "search_too_short": "Your menu must be more explicit"
 }

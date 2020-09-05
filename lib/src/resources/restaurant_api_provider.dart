@@ -109,16 +109,15 @@ class RestaurantApiProvider {
       )
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
+      List<RestaurantFoodModel> foods = [];
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-
           Iterable lo = json.decode(response.body)["data"];
           if (lo == null) {
             return [];
           } else {
             // foods with restaurant inside.
-            List<RestaurantFoodModel> foods = [];
             lo?.map((food_restaurant){
               RestaurantFoodModel f = RestaurantFoodModel.fromJson(food_restaurant["food"]);
               f.restaurant_entity = RestaurantModel.fromJson(food_restaurant["restaurant"]);
@@ -127,7 +126,8 @@ class RestaurantApiProvider {
             return foods;
           }
         } else
-          throw Exception(-1); // there is an error in your request
+          return foods;
+//          throw Exception(-1); // there is an error in your request
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }

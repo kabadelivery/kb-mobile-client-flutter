@@ -54,8 +54,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: scaffoldColor, key: _scaffoldGlobalKey,
-        appBar: AppBar(
+    return Scaffold(backgroundColor: scaffoldColor,  key: _scaffoldGlobalKey,
+        appBar: AppBar( brightness: Brightness.light,
             leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
             backgroundColor: Colors.white,
             title: Text("${AppLocalizations.of(context).translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),

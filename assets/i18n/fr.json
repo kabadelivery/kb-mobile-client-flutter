@@ -321,6 +321,7 @@
   "nearest": "Proche",
   "farest": "Loin",
 
-  "add_voucher": "Code de Reduction"
+  "add_voucher": "Code de Reduction",
+  "search_too_short": "Veuillez être plus explicite !"
 
 }

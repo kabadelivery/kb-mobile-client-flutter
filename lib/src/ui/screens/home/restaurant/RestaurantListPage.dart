@@ -16,6 +16,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,7 +121,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                       });
                     });
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: Container(margin: EdgeInsets.only(top:20),child: CircularProgressIndicator()));
                 })));
     /*  */
   }
@@ -163,8 +164,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                   }
                 },
                   child: TextField(controller: _filterEditController, onSubmitted: (val) {
-                    if (searchTypePosition == 2)
-                      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+                    if (searchTypePosition == 2) {
+                      if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 3)
+                        widget.presenter.fetchRestaurantFoodProposalFromTag(
+                            _filterEditController.text);
+                      else
+                       mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
+                    }
                   }, style: TextStyle(color: Colors.black, fontSize: 16), textInputAction: TextInputAction.search,
                       decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
                 ),
@@ -205,6 +211,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                           InkWell(onTap: () => _choice(2),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(fontSize: 12, color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),   decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color,borderRadius: new BorderRadius.circular(30.0)))),
                         ]), duration: Duration(milliseconds: 3000),
                   ),
+                  searchTypePosition == 1 ? Container() :
                   DropdownButton<String>(
                     value: _filterDropdownValue,
                     hint: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor)),
@@ -267,7 +274,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                                 ),
                               )
                                   : _showSearchPage()) :
-                          Container(
+                          Container(margin: EdgeInsets.only(top:20),
                               child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
                               (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
                               searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
@@ -289,6 +296,67 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       this.searchTypePosition = selected;
     });
   }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
 
   _checkLocationActivated () async {
 //    return;
@@ -387,7 +455,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
     firstItemKey = new GlobalKey();
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(milliseconds: 300), () {
       Scrollable.ensureVisible(firstItemKey.currentContext);
     });
 
