@@ -45,8 +45,9 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
     });
     if (widget.qrCode != null) {
       _promoCodeFieldController.text = widget.qrCode;
-      widget.presenter.subscribeVoucher(
-          widget.customer, widget.qrCode, isQrCode: true);
+      if (_promoCodeFieldController.text?.trim() != "" && _promoCodeFieldController.text?.trim()?.length != null && _promoCodeFieldController.text?.trim()?.length > 2)
+        widget.presenter.subscribeVoucher(
+            widget.customer, widget.qrCode, isQrCode: true);
     }
   }
 
@@ -166,7 +167,7 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
   void subscribeSuccessfull(VoucherModel voucher) {
     // open success page
     Navigator.pop(context);
-  /*  Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+    /*  Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return VoucherSubscribeSuccessPage(voucher: voucher);
         }

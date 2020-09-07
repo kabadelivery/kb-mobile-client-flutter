@@ -154,12 +154,12 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           ),
         ),
         totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child:
-        RaisedButton(child: BouncingWidget(
-          duration: Duration(milliseconds: 500),
-          scaleFactor: 2,
-          child: Container(child: Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white))),
-        )
-            , color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
+        RaisedButton(
+            child: Container(child:  BouncingWidget(
+                duration: Duration(milliseconds: 500),
+                scaleFactor: 1.5,
+                child: Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)))),
+            color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
       ],
     );
   }

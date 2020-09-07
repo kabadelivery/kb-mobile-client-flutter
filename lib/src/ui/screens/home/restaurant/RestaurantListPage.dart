@@ -65,9 +65,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     super.initState();
 
 //    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
-
     widget.presenter.restaurantFoodProposalView = this;
-
     _filterEditController.addListener(_filterEditContent);
 
     WidgetsBinding.instance
@@ -169,7 +167,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                         widget.presenter.fetchRestaurantFoodProposalFromTag(
                             _filterEditController.text);
                       else
-                       mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
+                        mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
                     }
                   }, style: TextStyle(color: Colors.black, fontSize: 16), textInputAction: TextInputAction.search,
                       decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}", hintStyle: TextStyle(fontSize: 15, color:Colors.grey)), enabled: true),
@@ -634,19 +632,20 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     }
 
     if (filterDropdownValue == ("${AppLocalizations.of(context).translate('farest')}")) {
-      // cheap to exp
+      // farest
       List<RestaurantFoodModel> fd = foodProposals;
-      fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
+      if (fd != null && fd.length > 0 && fd[0]?.restaurant_entity?.delivery_pricing != null)
+        fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
       return fd;
     }
 
     if (filterDropdownValue == ("${AppLocalizations.of(context).translate('nearest')}")) {
-      // cheap to exp
+      // nearest
       List<RestaurantFoodModel> fd = foodProposals;
-      fd.sort((fd1, fd2) => int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+      if (fd != null && fd.length > 0 && fd[0]?.restaurant_entity?.delivery_pricing != null)
+        fd.sort((fd1, fd2) => int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd2?.restaurant_entity?.delivery_pricing)));
       return fd;
     }
-
 
     return foodProposals;
   }

@@ -161,8 +161,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
 
-  Future _jumpToAddNewVoucher_Code({String qrCode}) async {
-
+  Future _jumpToAddNewVoucher_Code({String qrCode = ""}) async {
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
             AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
@@ -178,6 +177,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     // when you come back,
     widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
   }
+
 
   /// Deal with QRCode data
   ///
@@ -227,12 +227,21 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     if (widget.data?.length == null || widget.data?.length == 0){
       // no size
       return Center(
-          child:Column(mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
-              SizedBox(height: 10),
-              Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
-            ],
+          child:GestureDetector(
+            onTap: () => _jumpToAddNewVoucher_Code(),
+            child: Column(mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(icon: Icon(Icons.add, color: Colors.grey)),
+                    SizedBox(width: 10),
+                    IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+              ],
+            ),
           ));
     }
 

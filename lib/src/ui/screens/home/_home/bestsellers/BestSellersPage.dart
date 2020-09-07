@@ -1,4 +1,5 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
@@ -118,31 +119,15 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
             }));
   }
 
-  _jumpToFoodDetails(RestaurantFoodModel food_entity) {
- /*   Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RestaurantFoodDetailsPage (food: food_entity),
-      ),
-    );*/
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RestaurantFoodDetailsPage (food: food_entity),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+  _jumpToFoodDetails(RestaurantFoodModel food_entity) {
+    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: food_entity?.id);
   }
 
   _buildBestSellerListItem(int position, BestSellerModel data) {
 
-   //history is yesterday, y-1, y-2
+    //history is yesterday, y-1, y-2
     var dayz = [
       "${AppLocalizations.of(context).translate('monday_short')}",
       "${AppLocalizations.of(context).translate('tuesday_short')}",
@@ -155,7 +140,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
 
     DateTime date = new DateTime.now();
     int day_of_week = date?.weekday;
-    
+
 //    String daY = dayz[day_of_week-1];
 //    String today = dayz[day_of_week-1 < 0 ? 0:(day_of_week-1)];
 //    String day_m_1 = dayz[day_of_week-2 < 0 ? 0:(day_of_week-2)];
@@ -195,10 +180,11 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                       children: <Widget>[
                         Container(
                             padding: EdgeInsets.only(bottom: 10),
-                            child: Text(data?.food_entity?.restaurant_entity?.name
+                            child: Text("${data?.food_entity?.restaurant_entity?.name}"
                                 .toUpperCase(),
                                 maxLines: 3,
                                 textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 18,
                                     color: KColors.primaryColor,
                                     fontWeight: FontWeight

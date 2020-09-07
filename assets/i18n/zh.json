@@ -273,7 +273,7 @@
   "insert_message": "请输入信息。。。",
   "reload": "重试",
   "my_vouchers": "我的票圈",
-  "sorry_no_coupon": "您暂时没有票圈。",
+  "sorry_no_coupon": "您暂时没有票圈。请添加(+)再使用！",
 
 
 
