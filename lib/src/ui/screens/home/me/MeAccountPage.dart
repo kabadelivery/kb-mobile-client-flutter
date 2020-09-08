@@ -244,7 +244,13 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 )],
             ),
             padding:EdgeInsets.all(10),
-            color: KColors.primaryYellowColor,
+//            color: KColors.primaryYellowColor,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [KColors.primaryYellowColor, Colors.yellow]),
+          ),
           )),
     );
 

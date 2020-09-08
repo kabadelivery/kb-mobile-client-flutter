@@ -8,7 +8,7 @@ class KColors {
   static const Color primaryColor = Color.fromRGBO(204, 22, 65, 1); //exToColor(primaryColorCode);
   static const Color primaryDarkColor = Color.fromRGBO(118,15,39,1);
 
-  static const Color primaryYellowColor = Color.fromRGBO(226, 174, 1, 1);
+  static const Color primaryYellowColor = Color.fromRGBO(255, 204, 51, 1);
   static const Color primaryYellowDarkColor = Color.fromRGBO(115, 95, 11, 1);
 
   static final Color mGreen = hexToColor("#26A69A");

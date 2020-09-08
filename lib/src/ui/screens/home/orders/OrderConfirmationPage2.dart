@@ -1749,7 +1749,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: KColors.primaryYellowColor,
+
+//                color: KColors.primaryYellowColor,
+    gradient: LinearGradient(
+    begin: Alignment.topRight,
+    end: Alignment.bottomLeft,
+    colors: [KColors.primaryYellowColor, Colors.yellow]),
+
                 borderRadius: BorderRadius.all(Radius.circular(10)
                 ),
               ),
