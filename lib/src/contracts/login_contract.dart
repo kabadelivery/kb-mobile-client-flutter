@@ -43,7 +43,7 @@ class LoginPresenter implements LoginContract {
     try {
       _loginView.showLoading(true);
 
-    String jsonContent;
+      String jsonContent;
 
       try {
         jsonContent = await provider.loginAction(app_version: app_version,
@@ -56,8 +56,10 @@ class LoginPresenter implements LoginContract {
           String token = obj["data"]["payload"]["token"];
           CustomerUtils.persistTokenAndUserdata(token, jsonContent);
           _loginView.loginSuccess();
-        } else {
+        } else if (error == 1) {
           /* login failure */
+          _loginView.loginPasswordError();
+        } else if (error == -1) {
           _loginView.accountNoExist();
         }
       } catch(_) {
@@ -69,7 +71,7 @@ class LoginPresenter implements LoginContract {
       print("error ${_}");
       if (_ == -2)
         _loginView.networkError();
-     else
+      else
         _loginView.networkError();
     }
     isWorking = false;

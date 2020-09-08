@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,7 +56,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   String _filterDropdownValue;
 
-  GlobalKey firstItemKey = GlobalKey();
+  GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
@@ -410,14 +411,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */
-    return ErrorPage(message:"${AppLocalizations.of(context).translate('sys_error')}", onClickAction: (){
+    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
       widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
     });
   }
 
   _buildSearchMenuSysErrorPage() {
     /* show a page that will help us search more back. */
-    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
+    return ErrorPage(message:"${AppLocalizations.of(context).translate('system_error')}", onClickAction: (){
       widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
     });
   }
@@ -451,7 +452,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       }).toList()));*/
     var filteredResult =  _filteredFoodProposal(_filterDropdownValue, foodProposals);
 
-    firstItemKey = new GlobalKey();
+    firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
     Future.delayed(Duration(milliseconds: 300), () {
       Scrollable.ensureVisible(firstItemKey.currentContext);
@@ -635,7 +636,11 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       // farest
       List<RestaurantFoodModel> fd = foodProposals;
       if (fd != null && fd.length > 0 && fd[0]?.restaurant_entity?.delivery_pricing != null)
+        try {
         fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
+        } catch (_){
+          print ("error here - farest");
+        }
       return fd;
     }
 
@@ -643,7 +648,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       // nearest
       List<RestaurantFoodModel> fd = foodProposals;
       if (fd != null && fd.length > 0 && fd[0]?.restaurant_entity?.delivery_pricing != null)
-        fd.sort((fd1, fd2) => int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+        try {
+          fd.sort((fd1, fd2) =>
+              int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(
+                  int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+        } catch (_){
+          print ("error here - nearest");
+        }
       return fd;
     }
 

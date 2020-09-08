@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -267,6 +268,20 @@ class Utils {
   static bool within3days(String last_update) {
     int orderLastUpdate = int.parse(last_update);
     return orderLastUpdate > (DateTime.now().millisecondsSinceEpoch/1000 - 3*3600*24);
+  }
+
+
+  // function to generate a random string of length n
+  static String getAlphaNumericString({int n=9})
+  {
+
+    String str = "RandomString_";
+    int nb = new Random().nextInt(1000);
+    for (int i = 0; i < n; i++) {
+      str+="${nb}";
+    }
+    // return the resultant string
+    return str;
   }
 
 }

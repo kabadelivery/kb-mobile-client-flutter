@@ -9,6 +9,7 @@ import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
@@ -196,7 +197,13 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         )
       ],
 //      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
-      leading: null,
+      leading: IconButton(icon: SizedBox(
+          height: 25,
+          width: 25,
+          child: SvgPicture.asset(
+            VectorsData.kaba_icon_svg,
+            color: Colors.white,
+          )), onPressed: (){_jumpToInfoPage();}),
       expandedHeight: expandedHeight,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -651,5 +658,23 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     );
   }
 
+  void _jumpToInfoPage() {
+    Navigator.of(context).push(
+        PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                InfoPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation,
+                child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end);
+              var curvedAnimation = CurvedAnimation(
+                  parent: animation, curve: curve);
+              return SlideTransition(
+                  position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+  }
 
-}
+  }

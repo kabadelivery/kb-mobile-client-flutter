@@ -1,3 +1,4 @@
+import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -121,8 +122,19 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-  _jumpToFoodDetails(RestaurantFoodModel food_entity) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: food_entity?.id);
+  _jumpToFoodDetails(RestaurantFoodModel food) {
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
   }
 
   _buildBestSellerListItem(int position, BestSellerModel data) {
