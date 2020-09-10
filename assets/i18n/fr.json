@@ -316,8 +316,8 @@
   "share": "Partager",
 
   "filter": "Filtrer",
-  "cheap_to_exp" : "Croissant",
-  "exp_to_cheap" : "Décroissant",
+  "cheap_to_exp" : "Bas Prix",
+  "exp_to_cheap" : "Chère",
   "nearest": "Proche",
   "farest": "Loin",
 

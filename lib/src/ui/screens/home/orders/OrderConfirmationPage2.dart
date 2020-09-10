@@ -35,6 +35,7 @@ import 'package:KABA/src/utils/_static_data/NetworkImages.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
@@ -1741,40 +1742,43 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         SizedBox(height: 20),
         /* do you have a voucher you want to use ? */
         InkWell(onTap: () => _selectVoucher(),
-          child: Container(width: MediaQuery
-              .of(context)
-              .size
-              .width,
-              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-              margin: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-
-//                color: KColors.primaryYellowColor,
-    gradient: LinearGradient(
-    begin: Alignment.topRight,
-    end: Alignment.bottomLeft,
-    colors: [KColors.primaryYellowColor, Colors.yellow]),
-
-                borderRadius: BorderRadius.all(Radius.circular(10)
+          child:  Shimmer(
+            duration: Duration(seconds: 2), //Default value
+            color: Colors.white, //Default value
+            enabled: true, //Default value
+            direction: ShimmerDirection.fromLTRB(),
+            child: Container(width: MediaQuery
+                .of(context)
+                .size
+                .width,
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [KColors.primaryYellowColor, Colors.yellow]),
+                  borderRadius: BorderRadius.all(Radius.circular(10)
+                  ),
                 ),
-              ),
-              /* please choose a voucher. */
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        IconButton(icon: Icon(Icons.add, color: KColors.white),
-                            onPressed: () => _selectVoucher()),
-                        IconButton(icon: Icon(
-                            FontAwesomeIcons.ticketAlt, color: Colors.white),
-                            onPressed: () => _selectVoucher())
-                      ],
-                    ),
-                    Text("${AppLocalizations.of(context).translate('add_coupon')}",
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ])
+                /* please choose a voucher. */
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Row(mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(icon: Icon(Icons.add, color: KColors.white),
+                              onPressed: () => _selectVoucher()),
+                          IconButton(icon: Icon(
+                              FontAwesomeIcons.ticketAlt, color: Colors.white),
+                              onPressed: () => _selectVoucher())
+                        ],
+                      ),
+                      Text("${AppLocalizations.of(context).translate('add_coupon')}",
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                    ])
+            ),
           ),
         ),
       ]);

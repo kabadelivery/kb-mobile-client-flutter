@@ -53,6 +53,7 @@ dependencies:
   tinycolor: ^1.0.2
   provider: ^3.0.0
   clipboard_manager: ^0.0.4
+  shimmer_animation: ^0.1.1
   bouncing_widget:
     git:
       url: "https://github.com/blackgerman/bouncing_widget.git"
@@ -135,6 +136,7 @@ flutter:
     - assets/command_success_hold_on.mp3
     - assets/money_transfer_successfull.mp3
     - assets/new_message.mp3
+    - assets/scan_catch.mp3
     - assets/voucher_subscribe_success.mp3
   #  - images/a_dot_ham.jpeg
 

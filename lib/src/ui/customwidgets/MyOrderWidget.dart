@@ -158,7 +158,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                             tileMode: TileMode.repeated, // repeats the gradient over the canvas
                                           ),
                                         ),
-                                        child: Center(child:Text("-${widget?.command?.voucher_entity?.category == 1 ? "%" : "F"} ${widget?.command?.voucher_entity?.value}", style: TextStyle(color:priceColor, fontWeight: FontWeight.bold))))) :  Container(width: 10, height: 8),
+                                        child: Center(child:Text("- ${widget?.command?.voucher_entity?.value}${widget?.command?.voucher_entity?.category == 1 ? "%" : "F"}", style: TextStyle(color:priceColor, fontWeight: FontWeight.bold))))) :  Container(width: 10, height: 8),
                                 Container(decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(Radius.circular(5)),
                                     color: Colors.grey

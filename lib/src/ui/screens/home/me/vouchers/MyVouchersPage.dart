@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 //import 'package:qrscan/qrscan.dart' as scanner;
 
@@ -229,18 +230,24 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
       return Center(
           child:GestureDetector(
             onTap: () => _jumpToAddNewVoucher_Code(),
-            child: Column(mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(icon: Icon(Icons.add, color: Colors.grey)),
-                    SizedBox(width: 10),
-                    IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
-              ],
+            child:  Shimmer(
+              duration: Duration(seconds: 3), //Default value
+              color: Colors.white, //Default value
+              enabled: true, //Default value
+              direction: ShimmerDirection.fromLTRB(),
+              child: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(icon: Icon(Icons.add, color: Colors.grey)),
+                      SizedBox(width: 10),
+                      IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 15)),
+                ],
+              ),
             ),
           ));
     }

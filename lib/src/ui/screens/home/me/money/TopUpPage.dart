@@ -121,7 +121,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                         child: TextField(controller: _amountFieldController, textAlign: TextAlign.center, maxLength: 6, style: TextStyle(color: KColors.primaryColor, fontSize: 30),
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: "3000",
+                              hintText: "0",
                               border: InputBorder.none,
                             )),
                       ),

@@ -172,7 +172,10 @@ class _KabaScanPageState extends State<KabaScanPage>  {
         setState(() {
           _playMusicForSuccess();
           controller?.dispose();
-          Navigator.of(context).pop({"qrcode": scanData});
+          /* wait for 500s and get out */
+          Future.delayed(Duration(milliseconds: 300)).then((value){
+            Navigator.of(context).pop({"qrcode": scanData});
+          });
         });
     });
   }
@@ -223,7 +226,7 @@ class _KabaScanPageState extends State<KabaScanPage>  {
     audioPlayer.setVolume(1.0);
     AudioPlayer.logEnabled = true;
     var audioCache = new AudioCache(fixedPlayer: audioPlayer);
-    audioCache.play(MusicData.voucher_subscribe_success);
+    audioCache.play(MusicData.scan_catch);
     if (await Vibration.hasVibrator ()) {
       Vibration.vibrate(duration: 100);
     }

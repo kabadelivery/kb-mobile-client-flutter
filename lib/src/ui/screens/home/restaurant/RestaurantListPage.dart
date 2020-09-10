@@ -512,49 +512,52 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   String removeAccentFromString(String sentence) {
 
-//    sentence = sentence?.replaceFirst(RegExp(r"\.[^]*"), "");
-
-
-    return
+  String  sentence1 =
       sentence
-        ..replaceAll("é", "e")
-        ..replaceAll("è", "e")
-        ..replaceAll("ê", "e")
-        ..replaceAll("ë", "e")
-        ..replaceAll("ē", "e")
-        ..replaceAll("ė", "e")
-        ..replaceAll("ę", "e")
+        .replaceAll(new RegExp(r'é'), "e")
+        .replaceAll(new RegExp(r'è'), "e")
+        .replaceAll(new RegExp(r'ê'), "e")
+        .replaceAll(new RegExp(r'ë'), "e")
+        .replaceAll(new RegExp(r'ē'), "e")
+        .replaceAll(new RegExp(r'ė'), "e")
+        .replaceAll(new RegExp(r'ę'), "e")
 
-        ..replaceAll("à", "a")
-        ..replaceAll("á", "a")
-        ..replaceAll("â", "a")
-        ..replaceAll("ä", "a")
-        ..replaceAll("æ", "a")
-        ..replaceAll("ã", "a")
-        ..replaceAll("ā", "a")
+        .replaceAll(new RegExp(r'à'), "a")
+        .replaceAll(new RegExp(r'á'), "a")
+        .replaceAll(new RegExp(r'â'), "a")
+        .replaceAll(new RegExp(r'ä'), "a")
+        .replaceAll(new RegExp(r'æ'), "a")
+        .replaceAll(new RegExp(r'ã'), "a")
+        .replaceAll(new RegExp(r'ā'), "a")
 
-        ..replaceAll("ô", "o")
-        ..replaceAll("ö", "o")
-        ..replaceAll("ò", "o")
-        ..replaceAll("ó", "o")
-        ..replaceAll("œ", "o")
-        ..replaceAll("ø", "o")
-        ..replaceAll("ō", "o")
-        ..replaceAll("õ", "o")
+        .replaceAll(new RegExp(r'ô'), "o")
+        .replaceAll(new RegExp(r'ö'), "o")
+        .replaceAll(new RegExp(r'ò'), "o")
+        .replaceAll(new RegExp(r'ó'), "o")
+        .replaceAll(new RegExp(r'œ'), "o")
+        .replaceAll(new RegExp(r'ø'), "o")
+        .replaceAll(new RegExp(r'ō'), "o")
+        .replaceAll(new RegExp(r'õ'), "o")
 
-        ..replaceAll("î", "i")
-        ..replaceAll("ï", "i")
-        ..replaceAll("í", "i")
-        ..replaceAll("ī", "i")
-        ..replaceAll("į", "i")
-        ..replaceAll("ì", "i")
+        .replaceAll(new RegExp(r'î'), "i")
+        .replaceAll(new RegExp(r'ï'), "i")
+        .replaceAll(new RegExp(r'í'), "i")
+        .replaceAll(new RegExp(r'ī'), "i")
+        .replaceAll(new RegExp(r'į'), "i")
+        .replaceAll(new RegExp(r'ì'), "i")
 
-        ..replaceAll("û", "u")
-        ..replaceAll("ü", "u")
-        ..replaceAll("ù", "u")
-        ..replaceAll("ú", "u")
-        ..replaceAll("ū", "u")
+        .replaceAll(new RegExp(r'û'), "u")
+        .replaceAll(new RegExp(r'ü'), "u")
+        .replaceAll(new RegExp(r'ù'), "u")
+        .replaceAll(new RegExp(r'ú'), "u")
+        .replaceAll(new RegExp(r'ū'), "u")
+
+          .replaceAll(new RegExp(r"'"), "")
+          .replaceAll(new RegExp(r" "), "")
     ;
+    print("filtered string ${sentence} => ${sentence1}");
+
+    return sentence;
   }
 
   void _clearFocus() {

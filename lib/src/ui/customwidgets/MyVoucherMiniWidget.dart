@@ -1,12 +1,12 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherDetailsPage.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 
 class MyVoucherMiniWidget extends StatefulWidget {
@@ -63,7 +63,6 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
-
         voucherIcon = FontAwesomeIcons.hamburger;
         break;
       case 2: // delivery (red background)
@@ -72,7 +71,6 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
         voucherCodeColor = textColorWhite;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorWhite;
-
         voucherIcon = FontAwesomeIcons.biking;
         break;
       case 3: // both (white bg)
@@ -81,77 +79,87 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
-
         voucherIcon = FontAwesomeIcons.bullseye;
         break;
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return
-      ClipPath(
-        clipper: VoucherListItemClipper(),
-        child: Card(margin: EdgeInsets.only(left:10,right:10,top:10),
+      Shimmer(
+        duration: Duration(seconds: 2), //Default value
+        color: Colors.white, //Default value
+        enabled: true, //Default value
+        direction: ShimmerDirection.fromLTRB(),  //Default Value
+        child: ClipPath(
+          clipper: VoucherListItemClipper(),
+          child: Card(margin: EdgeInsets.only(left:10,right:10,top:10),
 //              margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            child: Container(
-              /* ACCORDING TO THE MODEL THE GRADIENT IS ALSO DIFFERENT */
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
-                  colors: widget.voucher.type == 1 ? restaurantVoucherBg : (widget.voucher.type == 2 ? deliveryVoucherBg : bothVoucherBg),
-                  tileMode: TileMode.repeated, // repeats the gradient over the canvas
-                ),
-              )
-              ,
-              child: InkWell(
-                  onLongPress: () => _onLongPressVoucher(),
-                  onTap: () => _tapVoucher(),
-                  child: SizedBox(
-                    child: Stack(
-                      children: <Widget>[
-
-                        /* ACCORDING TO THE MODEL THE ICON (FOOD, DELIVERY, ALL) IS ALSO DIFFERENT */
-                        Positioned(bottom:10,right:10,child: Icon(voucherIcon)),
-
-                        Container(
-                            margin: EdgeInsets.only(left:20, right:20),
-                            child: Column(children: <Widget>[
-                              SizedBox(height: 10),
-                              Row(mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-
-                                  /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
-                                  Text("${widget.voucher.trade_name}", style: TextStyle(color: restaurantNameColor, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    /* JUST SHOW IT */
-                                    Row(
+              child: Container(
+                /* ACCORDING TO THE MODEL THE GRADIENT IS ALSO DIFFERENT */
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
+                    colors: widget.voucher.type == 1 ? restaurantVoucherBg : (widget.voucher.type == 2 ? deliveryVoucherBg : bothVoucherBg),
+                    tileMode: TileMode.repeated, // repeats the gradient over the canvas
+                  ),
+                )
+                ,
+                child: InkWell(
+                    onLongPress: () => _onLongPressVoucher(),
+                    onTap: () => _tapVoucher(),
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: <Widget>[
+                            /* ACCORDING TO THE MODEL THE ICON (FOOD, DELIVERY, ALL) IS ALSO DIFFERENT */
+                            Positioned(bottom:10,right:10,child: Icon(voucherIcon)),
+                            Container(
+                                margin: EdgeInsets.only(left:20, right:20),
+                                child: Column(children: <Widget>[
+                                  SizedBox(height: 10),
+                                  Row(mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
+                                      Text("${widget.voucher.trade_name}", style: TextStyle(color: restaurantNameColor, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Icon(FontAwesomeIcons.code, color: voucherCodeColor, size: 15),
-                                        SizedBox(width:10),
-                                        Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                    Text("-${widget.voucher.value}${widget.voucher.category == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
-                                  ]
-                              ),
-                              SizedBox(height: 10),
-                              /* SHOW EXPIRY DATE */
-                              Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget.voucher.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
-                              SizedBox(height: 10),
-                            ])
+                                        /* JUST SHOW IT */
+                                        Row(
+                                          children: <Widget>[
+                                            Icon(FontAwesomeIcons.code, color: voucherCodeColor, size: 15),
+                                            SizedBox(width:10),
+                                            Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
+                                          ],
+                                        ),
+                                        Text("-${widget.voucher.value}${widget.voucher.category == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+                                      ]
+                                  ),
+                                  SizedBox(height: 10),
+                                  /* SHOW EXPIRY DATE */
+                                  Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget.voucher.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
+                                  SizedBox(height: 10),
+                                ])
+                            ),
+                          ],
                         ),
+                        Container(
+                          padding: EdgeInsets.only(top:5,bottom:5,right:5,left:5),
+                          color: widget.voucher.type == 1 ? restaurantVoucherBg[0] : (widget.voucher.type == 2 ? deliveryVoucherBg[0] : bothVoucherBg[0]), //.withAlpha(100),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
+                            Text("DISPONIBLE (9)", style: TextStyle(fontWeight: FontWeight.bold, color: voucherCodeColor)),
+                            Text("UTILISATIONS (9)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                          ]),
+                        )
                       ],
-                    ),
-                  )),
-            )),
+                    )),
+              )),
+        ),
       );
 
   }

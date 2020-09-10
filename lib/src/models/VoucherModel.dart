@@ -19,7 +19,8 @@ class VoucherModel {
   List<RestaurantFoodModel> products;
 //  RestaurantModel restaurant_entity;
   List<RestaurantModel> restaurants;
-  int use_count; // who's use count , total or mine
+  int use_count; // how much time have you used it already
+  int total_used_count; // how much time can you use in total
   String subscription_code;
   String qr_code;
   String start_date, end_date; // timestamp

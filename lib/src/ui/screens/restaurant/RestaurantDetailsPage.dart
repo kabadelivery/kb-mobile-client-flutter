@@ -240,11 +240,11 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                                   // add a button to review the restaurant.
                                     child:Center(
                                       child:   Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                        IconButton(icon: Icon(_latentRate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
-                                        IconButton(icon: Icon(_latentRate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
-                                        IconButton(icon: Icon(_latentRate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
-                                        IconButton(icon: Icon(_latentRate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
-                                        IconButton(icon: Icon(_latentRate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
+                                        IconButton(icon: Icon(_latentRate >= 1 ? Icons.star : Icons.star_border, color: KColors.primaryYellowColor, size: 50),onPressed: () => _starPressed(1)),
+                                        IconButton(icon: Icon(_latentRate >= 2 ? Icons.star : Icons.star_border, color: KColors.primaryYellowColor, size: 50),onPressed: () => _starPressed(2)),
+                                        IconButton(icon: Icon(_latentRate >= 3 ? Icons.star : Icons.star_border, color: KColors.primaryYellowColor, size: 50),onPressed: () => _starPressed(3)),
+                                        IconButton(icon: Icon(_latentRate >= 4 ? Icons.star : Icons.star_border, color: KColors.primaryYellowColor, size: 50),onPressed: () => _starPressed(4)),
+                                        IconButton(icon: Icon(_latentRate >= 5 ? Icons.star : Icons.star_border, color: KColors.primaryYellowColor, size: 50),onPressed: () => _starPressed(5)),
                                       ]),
                                     )
                                 ) : SizedBox(height:20),

@@ -193,7 +193,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 13, fontWeight: FontWeight.w500)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,7 +201,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   /*prix*/
                   Row(children: <Widget>[
                     Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 14, fontWeight: FontWeight.normal)),
-                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 8, fontWeight: FontWeight.normal)),
                   ]),
                 ],
               ),

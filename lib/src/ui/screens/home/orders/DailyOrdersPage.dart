@@ -95,7 +95,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('no_order_today')}", style: TextStyle(color: Colors.grey)),
+              Center(child: Text("${AppLocalizations.of(context).translate('no_order_today')}", style: TextStyle(color: Colors.grey))),
             ],
           ));
   }

@@ -63,17 +63,15 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
 
   _buildOrderList(List<CommandModel> data) {
     if (data != null && data.length > 0)
-      return SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 10)
-          ]
-            ..addAll(
-                List<Widget>.generate(data.length, (int index) {
-                  return MyOrderWidget(command: data[index]);
-                })
-            ),
-        ),
+      return ListView(
+        children: <Widget>[
+          SizedBox(height: 10)
+        ]
+          ..addAll(
+              List<Widget>.generate(data.length, (int index) {
+                return MyOrderWidget(command: data[index]);
+              })
+          ),
       );
     else
       return Center(
