@@ -125,7 +125,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                   )
                               ),
                               SizedBox(width: 10),
-                              Text("${command.restaurant_entity.name}", style: TextStyle(color: Colors.white, fontSize: 14))
+                              Text("${command.restaurant_entity.name}", style: TextStyle(color: Colors.white, fontSize: 14), overflow: TextOverflow.ellipsis)
                             ]),
                             Container(padding: EdgeInsets.all(7), decoration: BoxDecoration(color: Colors.white.withAlpha(100),
 //                            border: new Border.all(color: Colors.white.withAlpha(100)),

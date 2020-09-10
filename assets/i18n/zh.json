@@ -319,6 +319,9 @@
   "farest": "最远",
 
   "add_voucher": "优惠码",
-  "search_too_short": "搜索内容太短"
+  "search_too_short": "搜索内容太短",
+
+  "exit": "输入优惠代码",
+  "sorry_version_not_allowed" : "抱歉、无法扫描二维码。\n请输入代码"
 
 }

@@ -98,7 +98,6 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
 
 
   Future<void> _playMusicForSuccess() async {
-    
     // play music
     AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioPlayer.setVolume(1.0);
@@ -109,7 +108,5 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
     ) {
       Vibration.vibrate(duration: 500);
     }
-
-
   }
 }

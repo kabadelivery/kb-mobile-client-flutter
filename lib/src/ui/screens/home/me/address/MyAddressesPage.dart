@@ -149,7 +149,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
                           style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ),
                   ),
-                  IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
+                  IconButton(icon: Icon(FontAwesomeIcons.edit, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
                 ],
               ),
               Row(children: <Widget>[Text("${AppLocalizations.of(context).translate('contact')}", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),

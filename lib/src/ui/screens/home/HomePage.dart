@@ -29,8 +29,10 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -275,7 +277,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(CupertinoIcons.home),
             title: Text("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
@@ -288,7 +290,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(CupertinoIcons.person),
             title: Text('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
@@ -351,7 +353,6 @@ class _HomePageState extends State<HomePage> {
     /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
-
     switch (pathSegments[0]) {
       case "transactions":
         _jumpToPage(

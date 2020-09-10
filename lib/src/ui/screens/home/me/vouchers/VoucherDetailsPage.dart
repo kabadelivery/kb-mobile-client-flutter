@@ -92,12 +92,12 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                             ),
                           )
                       ),
-                      Positioned(left: 64, top:64,child:
+                   /*   Positioned(left: 64, top:64,child:
                       Container(
                           decoration: BoxDecoration(shape: BoxShape.circle,
                               border: Border.all(width: 2, color: KColors.primaryYellowColor), color: Colors.white),
                           padding: EdgeInsets.all(6),
-                          child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 16)))),
+                          child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 16)))),*/
                     ],
                   ),
 

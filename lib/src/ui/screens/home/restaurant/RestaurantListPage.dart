@@ -130,7 +130,18 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   _buildRestaurantList(List<RestaurantModel> d) {
 
-    this.data = d;
+    /* check if the previous had the distance */
+
+    /* distance of restaurant - client */
+    if (data?.length == null || data?.length == 0) {
+      this.data = d;
+    } else {
+      if (data[0]?.distance == null || data[0]?.distance == "") {
+        this.data = d;
+      }
+    }
+
+//    this.data = d;
 
     // filter restaurant into a map
     d.forEach((restaurant) {
@@ -180,8 +191,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                     _clearFocus();
                   }),
                   searchTypePosition == 2 ? IconButton(icon: Icon(Icons.search, color: KColors.primaryYellowColor), onPressed: () {
-                    if (searchTypePosition == 2)
-                      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+                    if (searchTypePosition == 2) {
+                      if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 3)
+                        widget.presenter.fetchRestaurantFoodProposalFromTag(
+                            _filterEditController.text);
+                      else
+                        mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
+                    }
                   }) : Container(),
                 ],
               )
@@ -496,6 +512,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   String removeAccentFromString(String sentence) {
 
+//    sentence = sentence?.replaceFirst(RegExp(r"\.[^]*"), "");
+
+
     return
       sentence
         ..replaceAll("é", "e")
@@ -621,14 +640,23 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     if (filterDropdownValue == ("${AppLocalizations.of(context).translate('cheap_to_exp')}")) {
       // cheap to exp
       List<RestaurantFoodModel> fd = foodProposals;
-      fd.sort((fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
+      try {
+        fd.sort((fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
+      } catch(_) {
+        print ("error here - cheap_to_exp");
+      }
       return fd;
     }
 
     if (filterDropdownValue == ("${AppLocalizations.of(context).translate('exp_to_cheap')}")) {
       // cheap to exp
       List<RestaurantFoodModel> fd = foodProposals;
-      fd.sort((fd1, fd2) => int.parse(fd2.price).compareTo(int.parse(fd1.price)));
+      try {
+        fd.sort((fd1, fd2) =>
+            int.parse(fd2.price).compareTo(int.parse(fd1.price)));
+      } catch(_) {
+        print ("error here - exp_to_cheap");
+      }
       return fd;
     }
 
@@ -637,7 +665,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
       List<RestaurantFoodModel> fd = foodProposals;
       if (fd != null && fd.length > 0 && fd[0]?.restaurant_entity?.delivery_pricing != null)
         try {
-        fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
+          fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
         } catch (_){
           print ("error here - farest");
         }

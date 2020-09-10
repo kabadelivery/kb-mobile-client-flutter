@@ -318,5 +318,8 @@
   "farest": "Farest",
 
   "add_voucher": "Voucher Code",
-  "search_too_short": "Your menu must be more explicit"
+  "search_too_short": "Your menu must be more explicit",
+
+  "exit": "ENTER VOUCHER CODE",
+  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please insert the code instead."
 }

@@ -189,7 +189,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
     /* get last know position */
     geo.GeolocationStatus geolocationStatus  = await  geo.Geolocator().checkGeolocationPermissionStatus();
-
     if(geolocationStatus ==  geo.GeolocationStatus.granted) {
       _jumpToPickAddressPage();
     } else {

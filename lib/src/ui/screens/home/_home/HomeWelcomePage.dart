@@ -385,254 +385,252 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: SingleChildScrollView(
-            child: Column(
-                children: <Widget>[
-                  /*top slide*/
-                  Stack(
-                    children: <Widget>[
-                      ClipPath(
-                          clipper: KabaRoundTopClipper(),
-                          child:CarouselSlider(
-                            onPageChanged: _carousselPageChanged,
-                            viewportFraction: 1.0,
-                            autoPlay: data.slider.length > 1 ? true:false,
-                            reverse: data.slider.length > 1 ? true:false,
-                            enableInfiniteScroll: data.slider.length > 1 ? true:false,
-                            autoPlayInterval: Duration(seconds: 5),
-                            autoPlayAnimationDuration: Duration(milliseconds: 150),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            height: 9*MediaQuery.of(context).size.width/16,
-                            items: data.slider.map((admodel) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return GestureDetector(
-                                    onTap: ()=>_jumpToAdsList(data.slider, data.slider.indexOf(admodel)),
-                                    child: Container(
-                                        height: 9*MediaQuery.of(context).size.width/16,
-                                        width: MediaQuery.of(context).size.width,
-                                        child:CachedNetworkImage(
-                                            imageUrl: Utils.inflateLink(admodel.pic),
-                                            fit: BoxFit.cover
+          child: ListView(
+              children: <Widget>[
+                /*top slide*/
+                Stack(
+                  children: <Widget>[
+                    ClipPath(
+                        clipper: KabaRoundTopClipper(),
+                        child:CarouselSlider(
+                          onPageChanged: _carousselPageChanged,
+                          viewportFraction: 1.0,
+                          autoPlay: data.slider.length > 1 ? true:false,
+                          reverse: data.slider.length > 1 ? true:false,
+                          enableInfiniteScroll: data.slider.length > 1 ? true:false,
+                          autoPlayInterval: Duration(seconds: 5),
+                          autoPlayAnimationDuration: Duration(milliseconds: 150),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          height: 9*MediaQuery.of(context).size.width/16,
+                          items: data.slider.map((admodel) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return GestureDetector(
+                                  onTap: ()=>_jumpToAdsList(data.slider, data.slider.indexOf(admodel)),
+                                  child: Container(
+                                      height: 9*MediaQuery.of(context).size.width/16,
+                                      width: MediaQuery.of(context).size.width,
+                                      child:CachedNetworkImage(
+                                          imageUrl: Utils.inflateLink(admodel.pic),
+                                          fit: BoxFit.cover
+                                      )
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        )),
+                    Positioned(
+                        bottom: 10,
+                        right:0,
+                        child:Padding(
+                          padding: const EdgeInsets.only(right:9.0),
+                          child: Row(
+                            children: <Widget>[]
+                              ..addAll(
+                                  List<Widget>.generate(data.slider.length, (int index) {
+                                    return Container(
+                                        margin: EdgeInsets.only(right:2.5, top: 2.5),
+                                        height: 9,width:9,
+                                        decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            border: new Border.all(color: Colors.white),
+                                            color: (index==_carousselPageIndex || index==data.slider.length)?Colors.white:Colors.transparent
+                                        ));
+                                  })
+                                /* add a list of rounded views */
+                              ),
+                          ),
+                        )),
+                  ],
+                ),
+                /* top restaurants */
+                SizedBox(child:
+                Table(
+                  children: <TableRow>[]
+                    ..addAll(
+                      // ignore: null_aware_before_operator
+                        List<TableRow>.generate(_getRestaurantRowCount(data.resto.length), (int rowIndex) {
+                          return TableRow(
+                              children:<TableCell>[]
+                                ..addAll(
+                                  /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
+                                    return
+                                      TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
+                                  })*/
+                                    List<TableCell>.generate (3, (int cell_index) {
+                                      if (data.resto.length > rowIndex*3+cell_index) {
+                                        return
+                                          TableCell(
+                                              child: _mainRestaurantWidget(
+                                                  restaurant: data
+                                                      .resto[rowIndex*3+cell_index]));
+                                      } else {
+                                        return TableCell(
+                                            child: Container());
+                                      }
+                                    })
+                                ));
+                        })
+                      /* add a list of rounded views */
+                    ),
+                )),
+                /* all the restaurants button*/
+                SizedBox(height: 10),
+                Container(
+                    padding: EdgeInsets.only(top:20, bottom:20),
+                    color: Colors.grey.shade100,
+                    child:Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        InkWell(onTap: (){_switchAllRestaurant();},
+                            child:Container(
+                                decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topLeft:  const  Radius.circular(20.0), bottomLeft: const  Radius.circular(20.0))),
+                                padding: EdgeInsets.only(left:10),
+                                child:
+                                Row(children:<Widget>[
+                                  Text("${AppLocalizations.of(context).translate('all_restaurants')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+                                  IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor,))
+                                ]))
+                        )
+                      ],
+                    )),
+                Container(
+                    padding: EdgeInsets.only(top:20, bottom:20),
+                    color: Colors.grey.shade100,
+                    child:Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        InkWell(onTap: (){_callCustomerCare();},
+                            child:Container(
+                                decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
+                                padding: EdgeInsets.only(right:10),
+                                child:
+                                Row(children:<Widget>[
+                                  SizedBox(width: 5),
+                                  Container(height: 50, width: 40,
+                                    decoration: BoxDecoration(
+                                        image: new DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
                                         )
                                     ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )),
-                      Positioned(
-                          bottom: 10,
-                          right:0,
-                          child:Padding(
-                            padding: const EdgeInsets.only(right:9.0),
-                            child: Row(
-                              children: <Widget>[]
-                                ..addAll(
-                                    List<Widget>.generate(data.slider.length, (int index) {
-                                      return Container(
-                                          margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                          height: 9,width:9,
-                                          decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                              border: new Border.all(color: Colors.white),
-                                              color: (index==_carousselPageIndex || index==data.slider.length)?Colors.white:Colors.transparent
-                                          ));
-                                    })
-                                  /* add a list of rounded views */
-                                ),
-                            ),
-                          )),
-                    ],
-                  ),
-                  /* top restaurants */
-                  SizedBox(child:
-                  Table(
-                    children: <TableRow>[]
-                      ..addAll(
-                        // ignore: null_aware_before_operator
-                          List<TableRow>.generate(_getRestaurantRowCount(data.resto.length), (int rowIndex) {
-                            return TableRow(
-                                children:<TableCell>[]
-                                  ..addAll(
-                                    /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
-                                      return
-                                        TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
-                                    })*/
-                                      List<TableCell>.generate (3, (int cell_index) {
-                                        if (data.resto.length > rowIndex*3+cell_index) {
-                                          return
-                                            TableCell(
-                                                child: _mainRestaurantWidget(
-                                                    restaurant: data
-                                                        .resto[rowIndex*3+cell_index]));
-                                        } else {
-                                          return TableCell(
-                                              child: Container());
-                                        }
-                                      })
-                                  ));
-                          })
-                        /* add a list of rounded views */
-                      ),
-                  )),
-                  /* all the restaurants button*/
-                  SizedBox(height: 10),
-                  Container(
-                      padding: EdgeInsets.only(top:20, bottom:20),
-                      color: Colors.grey.shade100,
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          InkWell(onTap: (){_switchAllRestaurant();},
-                              child:Container(
-                                  decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topLeft:  const  Radius.circular(20.0), bottomLeft: const  Radius.circular(20.0))),
-                                  padding: EdgeInsets.only(left:10),
-                                  child:
-                                  Row(children:<Widget>[
-                                    Text("${AppLocalizations.of(context).translate('all_restaurants')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
-                                    IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor,))
-                                  ]))
-                          )
-                        ],
-                      )),
-                  Container(
-                      padding: EdgeInsets.only(top:20, bottom:20),
-                      color: Colors.grey.shade100,
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          InkWell(onTap: (){_callCustomerCare();},
-                              child:Container(
-                                  decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
-                                  padding: EdgeInsets.only(right:10),
-                                  child:
-                                  Row(children:<Widget>[
-                                    SizedBox(width: 5),
-                                    Container(height: 50, width: 40,
-                                      decoration: BoxDecoration(
-                                          image: new DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
-                                          )
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text("${AppLocalizations.of(context).translate('call_us')}", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
-                                  ]))
-                          )
-                        ],
-                      )),
-                  /* meilleures ventes, cinema, evenemnts, etc... */
-                  Container(
-                      color: Colors.grey.shade100,
-                      child:Card(
-                        color: Colors.white,
-                        margin: EdgeInsets.all(10),
-                        child: Table(
-                          /* table */
-                          children: <TableRow>[
-                            TableRow(
-                                children: <TableCell>[
-                                  TableCell(
-                                    child: Container(
-                                      padding:EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          InkWell(
-                                              child:Container(
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryColor)),
-                                                      Container(
-                                                        padding: EdgeInsets.all(5),
-                                                        height:90, width: 120,
-                                                        child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
-                                                      ),
-                                                    ],
-                                                  )), onTap: _jumpToBestSeller),
-                                          InkWell(onTap: _jumpToEvents,
-                                            child: Container(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
-                                                  Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    height:90, width: 120,
-                                                    child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
-                                                  ),
-                                                ],
-                                              ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text("${AppLocalizations.of(context).translate('call_us')}", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
+                                ]))
+                        )
+                      ],
+                    )),
+                /* meilleures ventes, cinema, evenemnts, etc... */
+                Container(
+                    color: Colors.grey.shade100,
+                    child:Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.all(10),
+                      child: Table(
+                        /* table */
+                        children: <TableRow>[
+                          TableRow(
+                              children: <TableCell>[
+                                TableCell(
+                                  child: Container(
+                                    padding:EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        InkWell(
+                                            child:Container(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryColor)),
+                                                    Container(
+                                                      padding: EdgeInsets.all(5),
+                                                      height:90, width: 120,
+                                                      child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
+                                                    ),
+                                                  ],
+                                                )), onTap: _jumpToBestSeller),
+                                        InkWell(onTap: _jumpToEvents,
+                                          child: Container(
+                                            child: Column(
+                                              children: <Widget>[
+                                                Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  height:90, width: 120,
+                                                  child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  )
-                                ]
-                            ),
-                            // BON PLANS ET CINEMA
-                            /* TableRow(
-                                children: <TableCell>[
-                                  TableCell(
-                                    child: Container(
-                                      padding:EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          Column(
-                                            children: <Widget>[
-                                              Text("CINEMA", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.mGreen)),
-                                              Container(
-                                                padding: EdgeInsets.all(5),
-                                                height:90, width: 120,
-                                                child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              Text("BON PLANS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: Colors.black)),
-                                              Container(
-                                                padding: EdgeInsets.all(5),
-                                                height:90, width: 120,
-                                                child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                  ),
+                                )
+                              ]
+                          ),
+                          // BON PLANS ET CINEMA
+                          /* TableRow(
+                              children: <TableCell>[
+                                TableCell(
+                                  child: Container(
+                                    padding:EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Column(
+                                          children: <Widget>[
+                                            Text("CINEMA", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.mGreen)),
+                                            Container(
+                                              padding: EdgeInsets.all(5),
+                                              height:90, width: 120,
+                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Text("BON PLANS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: Colors.black)),
+                                            Container(
+                                              padding: EdgeInsets.all(5),
+                                              height:90, width: 120,
+                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  )
-                                ]
-                            ) */
-                          ],
-                        ),
-                      )
-                  ),
-                  /* groups ads */
-                  Column(
-                      children: <Widget>[]
-                        ..addAll(
-                            List<Widget>.generate(data.groupad.length, (int index) {
-                              return GroupAdsWidget(groupAd: data.groupad[index]);
-                            })
-                        )
-                  )
-                ]..add(
-                    Container(
-                      margin: EdgeInsets.only(top: 15, bottom: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
-                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
+                                  ),
+                                )
+                              ]
+                          ) */
                         ],
                       ),
-                    ))
-            ),
+                    )
+                ),
+                /* groups ads */
+                Column(
+                    children: <Widget>[]
+                      ..addAll(
+                          List<Widget>.generate(data.groupad.length, (int index) {
+                            return GroupAdsWidget(groupAd: data.groupad[index]);
+                          })
+                      )
+                )
+              ]..add(
+                  Container(
+                    margin: EdgeInsets.only(top: 15, bottom: 25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
+                        Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
+                      ],
+                    ),
+                  ))
           ));
     else {
       data = HomeWelcomePage.standardData;

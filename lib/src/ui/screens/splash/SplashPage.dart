@@ -110,17 +110,22 @@ class _SplashPageState extends State<SplashPage> {
       prefs = await SharedPreferences.getInstance();
       String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");
       if (expDate != null) {
-        if (DateTime.now().isAfter(DateTime.parse(expDate))) {
-          /* session expired : clean params */
-          prefs.remove("_customer");
-          prefs.remove("_token");
-          prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
-        } else {
-          // check if there is a destination out of deep-linking before doing this.
-
-          // this page should take unto consideration eventual destination given buy the handle links
-
-          launchPage = HomePage(destination: widget.destination, argument: widget.argument);
+        try {
+          if (DateTime.now().isAfter(
+              DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
+            /* session expired : clean params */
+            prefs.remove("_customer");
+            prefs.remove("_token");
+            prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
+          } else {
+            /* how to check user must auto logout */
+            // check if there is a destination out of deep-linking before doing this.
+            // this page should take unto consideration eventual destination given buy the handle links
+            launchPage = HomePage(
+                destination: widget.destination, argument: widget.argument);
+          }
+        } catch (_) {
+          print(_);
         }
       }
 

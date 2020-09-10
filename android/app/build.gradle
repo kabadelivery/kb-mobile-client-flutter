@@ -13,14 +13,14 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '15'
-}
+//if (flutterVersionCode == null) {
+    flutterVersionCode = '102'
+//}
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '2.4.0'
-}
+//if (flutterVersionName == null) {
+    flutterVersionName = '2.4.3'
+//}
 
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"

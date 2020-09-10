@@ -28,9 +28,9 @@ class CustomerUtils {
     prefs.setString("_loginResponse", loginResponse);
     /* no need to commit */
     /* expiration date in 3months */
-    String expDate = DateTime.now().add(Duration(days: 90)).toIso8601String();
+    String expDate = "${DateTime.now().add(Duration(days: 90)).millisecondsSinceEpoch}";
     prefs.setString("${ServerConfig.LOGIN_EXPIRATION}", expDate);
-    print(expDate);
+//    print(expDate);
   }
 
 

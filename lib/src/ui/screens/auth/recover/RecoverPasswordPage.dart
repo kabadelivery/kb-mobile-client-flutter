@@ -84,7 +84,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
           brightness: Brightness.light,
           backgroundColor: Colors.white,
           title: Text("${AppLocalizations.of(context).translate('recover_password')}", style:TextStyle(color:KColors.primaryColor)),
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.of(context).maybePop();}),
         ),
         backgroundColor: Colors.white,
         body: Container(

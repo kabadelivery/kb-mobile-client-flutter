@@ -174,7 +174,7 @@
   "basket": "PANIER",
   "reviewing_success": "Nous vous remercions pour votre avis. Nous en tiendrons compte.",
   "send_review": "COMMENTER",
-  "please_give": "Veuillez nous donner",
+  "please_give": "Veuillez donner à",
   "a_review": "votre avis...",
   "please_review_restaurant": "Veuillez donner un avis sur le restaurant. Nous apprécions vraiment celà. \nMerci",
   "coming_soon_dialog": "Salut! Ce restaurant sera bientôt disponible sur la plateforme KABA.\n\nMerci de patienter",
@@ -322,6 +322,9 @@
   "farest": "Loin",
 
   "add_voucher": "Code de Reduction",
-  "search_too_short": "Veuillez être plus explicite !"
+  "search_too_short": "Veuillez être plus explicite !",
+
+  "exit": "ENTRER LE CODE",
+  "sorry_version_not_allowed" : "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE"
 
 }
