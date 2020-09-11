@@ -258,7 +258,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                     ]
                       ..add(
                           Container(
-                            margin: EdgeInsets.only(top: 15, bottom: 15),
+                            margin: EdgeInsets.only(top: 30, bottom: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[

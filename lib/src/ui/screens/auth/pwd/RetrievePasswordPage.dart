@@ -103,7 +103,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     children: <TableCell>[
                       TableCell(child:Text("")),
                       TableCell(child:MaterialButton(child:Text("0"),color:Colors.grey.shade50, onPressed: () {_passwordAppendChar("0");})),
-                      TableCell(child:MaterialButton(child:Text("${AppLocalizations.of(context).translate('delete')}"),color:Colors.grey.shade50, onPressed: () {_removeChar();}))
+                      TableCell(child:MaterialButton(child:Text("${AppLocalizations.of(context).translate('delete')}", textAlign: TextAlign.center ,style: TextStyle()),color:Colors.grey.shade50, onPressed: () {_removeChar();}))
                     ]
                 ),
               ],

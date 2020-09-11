@@ -477,8 +477,19 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                 )
                               ]
                           )
-                      ))
-                ]),
+                      )),
+                ]..add(
+                    Container(
+                      margin: EdgeInsets.only(top: 15, bottom: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
+                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
+                        ],
+                      ),
+                    ))
+            ),
           )),
     );
   }

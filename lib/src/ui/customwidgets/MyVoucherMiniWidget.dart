@@ -152,8 +152,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                           padding: EdgeInsets.only(top:5,bottom:5,right:5,left:5),
                           color: widget.voucher.type == 1 ? restaurantVoucherBg[0] : (widget.voucher.type == 2 ? deliveryVoucherBg[0] : bothVoucherBg[0]), //.withAlpha(100),
                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-                            Text("DISPONIBLE (9)", style: TextStyle(fontWeight: FontWeight.bold, color: voucherCodeColor)),
-                            Text("UTILISATIONS (9)", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                            Text("DISPONIBLE (${widget.voucher.use_count-widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: voucherCodeColor)),
+                            Text("UTILISATIONS (${widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
                           ]),
                         )
                       ],

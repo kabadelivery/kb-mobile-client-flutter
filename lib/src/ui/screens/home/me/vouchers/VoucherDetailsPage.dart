@@ -200,7 +200,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                 children: <Widget>[
                   /*prix*/
                   Row(children: <Widget>[
-                    Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 14, fontWeight: FontWeight.normal)),
+                    Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12, fontWeight: FontWeight.normal)),
                     Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 8, fontWeight: FontWeight.normal)),
                   ]),
                 ],
@@ -212,7 +212,6 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       ],
     );
   }
-
 }
 
 class VoucherClipper extends CustomClipper<Path> {

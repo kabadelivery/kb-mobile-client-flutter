@@ -141,11 +141,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
         ),
         itemCount: data?.length,
         itemBuilder: (BuildContext context, int index) {
-
 //          print("timestamp is ${data[index].created_at}");
 //          print("eq date is ${Utils.readTimestamp(data[index]?.created_at)}\n\n");
 //          return Container();
-
           return Column(
             children: <Widget>[
               ListTile(

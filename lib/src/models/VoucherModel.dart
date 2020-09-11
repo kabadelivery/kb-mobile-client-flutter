@@ -19,7 +19,9 @@ class VoucherModel {
   List<RestaurantFoodModel> products;
 //  RestaurantModel restaurant_entity;
   List<RestaurantModel> restaurants;
-  int use_count; // how much time have you used it already
+  int use_count; // how much time can i use the voucher
+  int already_used_count;
+
   int total_used_count; // how much time can you use in total
   String subscription_code;
   String qr_code;
@@ -89,6 +91,7 @@ class VoucherModel {
       print(_);
     }
     use_count = json['use_count'];
+    already_used_count = json["already_used_count"];
     subscription_code = json['subscription_code'];
     qr_code = json['qr_code'];
     tag = json['tag'];
@@ -107,6 +110,7 @@ class VoucherModel {
     "type" : (type as int),
     "details" : details,
     "value" : value,
+    "already_used_count" : already_used_count,
     "state" : state,
     "type" : type,
   };
