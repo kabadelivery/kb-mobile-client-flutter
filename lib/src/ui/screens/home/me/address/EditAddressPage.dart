@@ -90,8 +90,9 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _locationNameController,
+                child:TextField(controller: _locationNameController, minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('location_name')}",
+                      hintMaxLines: 5,
                       border: InputBorder.none,
                     ))..controller.text=address?.name,
               ),
@@ -99,9 +100,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _phoneNumberController, maxLength: 8, keyboardType: TextInputType.phone,
+                child:TextField(controller: _phoneNumberController, maxLength: 8, keyboardType: TextInputType.phone, minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('phone_number')}",
                       border: InputBorder.none,
+                      hintMaxLines: 5,
                     ))..controller.text=address?.phone_number,
               ),
               SizedBox(height: 10),
@@ -146,7 +148,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _nearController,
+                child:TextField(controller: _nearController,minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('not_far_from')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.near,
@@ -155,7 +157,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
               Container(
                 padding: EdgeInsets.all(10),
                 color: Colors.white,
-                child:TextField(controller: _descriptionController, maxLines: 4,
+                child:TextField(controller: _descriptionController, minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('address_details')}",
                       border: InputBorder.none,
                     ))..controller.text=address?.description,
