@@ -130,14 +130,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.primaryColor)),
+                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _nicknameFieldController, enabled: !isCodeSent, onChanged: _onNicknameFieldTextChanged, decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:KColors.primaryColor),  keyboardType: TextInputType.text),
+                            child: TextField(controller: _nicknameFieldController, enabled: !isCodeSent, onChanged: _onNicknameFieldTextChanged, decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:Colors.black),  keyboardType: TextInputType.text),
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 30),
@@ -153,7 +153,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:Colors.black), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),

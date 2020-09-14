@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: 8, keyboardType: TextInputType.number, decoration:
-                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:KColors.primaryColor)),
+                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:Colors.black)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                     SizedBox(height: 30),
                     Row(

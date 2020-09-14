@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -28,6 +30,7 @@ class SplashPage extends StatefulWidget { // translated
 
   static const String TRANSACTIONS = "TRANSACTIONS",
       RESTAURANT = "RESTAURANT",
+      VOUCHER = "VOUCHER",
       ORDER = "ORDER",
       FOOD = "FOOD",
       MENU = "MENU",
@@ -362,6 +365,14 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.RESTAURANT;
 //          widget.argument = int.parse("${pathSegments[1]}");
           widget.argument = mHexToInt("${pathSegments[1]}");
+        }
+        break;
+      case "voucher":
+        if (pathSegments.length > 1) {
+          print("voucher id splash -> ${pathSegments[1]}");
+          widget.destination = SplashPage.VOUCHER;
+          /* convert from hexadecimal to decimal */
+          widget.argument = "${pathSegments[1]}";
         }
         break;
       case "order":

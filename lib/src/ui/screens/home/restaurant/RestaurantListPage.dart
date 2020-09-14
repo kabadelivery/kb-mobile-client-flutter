@@ -415,7 +415,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     geolocator.getPositionStream(locationOptions).listen(
             (Position position) {
 //          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
-          print("location :: ${position?.toJson()?.toString()}");
+//          print("location :: ${position?.toJson()?.toString()}");
           if (position != null)
             StateContainer.of(context).updateLocation(location: position);
           if (StateContainer.of(context).location != null) {
@@ -503,7 +503,12 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
     List<RestaurantModel> d = List();
 
     for (var restaurant in data) {
-      if (removeAccentFromString("${restaurant.name}".toLowerCase()).contains(removeAccentFromString(content.trim().toLowerCase()))) {
+
+      String sentence = removeAccentFromString("${restaurant.name}".toLowerCase());
+      String sentence1 = removeAccentFromString(content.trim()).toLowerCase();
+
+//      print("filtered string ${sentence} => ${sentence1}");
+      if (sentence.contains(sentence1)) {
         d.add(restaurant);
       }
     }
@@ -512,8 +517,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
   String removeAccentFromString(String sentence) {
 
-  String  sentence1 =
-      sentence
+    String  sentence1 =
+    sentence
         .replaceAll(new RegExp(r'é'), "e")
         .replaceAll(new RegExp(r'è'), "e")
         .replaceAll(new RegExp(r'ê'), "e")
@@ -552,12 +557,52 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
         .replaceAll(new RegExp(r'ú'), "u")
         .replaceAll(new RegExp(r'ū'), "u")
 
-          .replaceAll(new RegExp(r"'"), "")
-          .replaceAll(new RegExp(r" "), "")
-    ;
-    print("filtered string ${sentence} => ${sentence1}");
+    //
 
-    return sentence;
+        .replaceAll(new RegExp(r'É'), "e")
+        .replaceAll(new RegExp(r'È'), "e")
+        .replaceAll(new RegExp(r'Ê'), "e")
+        .replaceAll(new RegExp(r'Ë'), "e")
+        .replaceAll(new RegExp(r'Ē'), "e")
+        .replaceAll(new RegExp(r'Ė'), "e")
+        .replaceAll(new RegExp(r'Ę'), "e")
+
+        .replaceAll(new RegExp(r'À'), "a")
+        .replaceAll(new RegExp(r'Á'), "a")
+        .replaceAll(new RegExp(r'Â'), "a")
+        .replaceAll(new RegExp(r'Ä'), "a")
+        .replaceAll(new RegExp(r'AÆ'), "a")
+        .replaceAll(new RegExp(r'Ã'), "a")
+        .replaceAll(new RegExp(r'Å'), "a")
+        .replaceAll(new RegExp(r'Ā'), "a")
+
+        .replaceAll(new RegExp(r'Ô'), "o")
+        .replaceAll(new RegExp(r'Ö'), "o")
+        .replaceAll(new RegExp(r'Ò'), "o")
+        .replaceAll(new RegExp(r'Ó'), "o")
+        .replaceAll(new RegExp(r'Œ'), "o")
+        .replaceAll(new RegExp(r'Ø'), "o")
+        .replaceAll(new RegExp(r'Ō'), "o")
+        .replaceAll(new RegExp(r'Õ'), "o")
+
+        .replaceAll(new RegExp(r'Î'), "i")
+        .replaceAll(new RegExp(r'Ï'), "i")
+        .replaceAll(new RegExp(r'Í'), "i")
+        .replaceAll(new RegExp(r'Ī'), "i")
+        .replaceAll(new RegExp(r'Į'), "i")
+        .replaceAll(new RegExp(r'Ì'), "i")
+
+        .replaceAll(new RegExp(r'Û'), "u")
+        .replaceAll(new RegExp(r'Ü'), "u")
+        .replaceAll(new RegExp(r'Ù'), "u")
+        .replaceAll(new RegExp(r'Ú'), "u")
+        .replaceAll(new RegExp(r'Ū'), "u")
+
+        .replaceAll(new RegExp(r"'"), "")
+        .replaceAll(new RegExp(r" "), "")
+    ;
+
+    return sentence1;
   }
 
   void _clearFocus() {

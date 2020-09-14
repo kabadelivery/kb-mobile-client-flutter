@@ -18,7 +18,9 @@ class AddVouchersPage extends StatefulWidget {
 
   var qrCode;
 
-  AddVouchersPage({Key key, this.title, this.customer, this.presenter, this.qrCode = null}) : super(key: key);
+  bool autoSubscribe;
+
+  AddVouchersPage({Key key, this.title, this.customer, this.presenter, this.qrCode = null, this.autoSubscribe = false}) : super(key: key);
 
   final String title;
 
@@ -45,7 +47,8 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
     });
     if (widget.qrCode != null) {
       _promoCodeFieldController.text = widget.qrCode;
-      if (_promoCodeFieldController.text?.trim() != "" && _promoCodeFieldController.text?.trim()?.length != null && _promoCodeFieldController.text?.trim()?.length > 2)
+      if (_promoCodeFieldController.text?.trim() != "" &&
+          _promoCodeFieldController.text?.trim()?.length != null && _promoCodeFieldController.text?.trim()?.length > 2)
         widget.presenter.subscribeVoucher(
             widget.customer, widget.qrCode, isQrCode: true);
     }

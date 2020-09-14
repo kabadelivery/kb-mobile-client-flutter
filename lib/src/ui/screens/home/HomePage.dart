@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
@@ -13,6 +14,7 @@ import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
@@ -27,6 +29,7 @@ import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,6 +42,7 @@ import 'package:uni_links/uni_links.dart';
 import '_home/HomeWelcomePage.dart';
 import 'me/MeAccountPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
+import 'me/vouchers/AddVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
 import 'package:KABA/src/utils/_static_data/Core.dart';
 
@@ -50,6 +54,8 @@ class HomePage extends StatefulWidget {
   var argument;
 
   var destination;
+
+  CustomerModel customer;
 
   HomePage({Key key, this.destination, this.argument}) : super(key: key) ;
 
@@ -118,7 +124,9 @@ class _HomePageState extends State<HomePage> {
     pages =
     [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
     super.initState();
-
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+    });
     // FLUTTER NOTIFICATION
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     _firebaseMessaging = FirebaseMessaging();
@@ -354,6 +362,15 @@ class _HomePageState extends State<HomePage> {
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
     switch (pathSegments[0]) {
+      case "voucher":
+        if (pathSegments.length > 1) {
+          print("voucher id homepage -> ${pathSegments[1]}");
+          widget.destination = SplashPage.VOUCHER;
+          /* convert from hexadecimal to decimal */
+          widget.argument = "${pathSegments[1]}";
+          _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
+        }
+        break;
       case "transactions":
         _jumpToPage(
             context, TransactionHistoryPage(presenter: TransactionPresenter()));

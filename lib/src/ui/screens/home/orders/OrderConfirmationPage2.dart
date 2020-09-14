@@ -570,7 +570,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                         ],
                       ),
                       Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
-                          child: RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}",
+                          child: RaisedButton(child: Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(),
                               style: TextStyle(color: Colors.white)), color: KColors.primaryColor, onPressed: ()=>_topUpAccount())),
                     ],
                   ),
@@ -647,7 +647,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
     return Column(children: <Widget>[
       // pay at arrival button
-      _orderBillConfiguration?.pay_at_delivery
+      _orderBillConfiguration?.pay_at_delivery == true
           ? // pay at delivery and not having ongoing delivery right now.
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -712,10 +712,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
 
-  _buildPurchaseButtons() {
+ /* _buildPurchaseButtons() {
     return Column(children: <Widget>[
       SizedBox(height: 10),
-      /* your account balance is */
+      *//* your account balance is *//*
       Container(
           padding: EdgeInsets.all(10),
           child: Center(
@@ -737,7 +737,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           )
       ),
       SizedBox(height: 30),
-      /* is your balance sufficient for the purchase ?*/
+      *//* is your balance sufficient for the purchase ?*//*
       _orderBillConfiguration?.account_balance != null &&
           _orderBillConfiguration.prepayed &&
           _orderBillConfiguration?.account_balance >
@@ -788,7 +788,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               color: KColors.primaryColor,
               fontWeight: FontWeight.bold)))),
       SizedBox(height: 20),
-      /* check if you can post pay */
+      *//* check if you can post pay *//*
       _orderBillConfiguration.pay_at_delivery &&
           _orderBillConfiguration.trustful == 1 ? (
           _orderBillConfiguration.max_pay >
@@ -854,7 +854,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       SizedBox(height: 30),
     ]);
   }
-
+*/
   _payNow() async {
     // 1. get password
     var results = await Navigator.of(context).push(
@@ -887,7 +887,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   _payAtDelivery(bool isDialogShown) async {
 
     // if untrustful, you can't go further.
-    if (_orderBillConfiguration?.trustful == 0) {
+    if (_orderBillConfiguration?.trustful != 1) {
       _showDialog(
         iccon: VectorsData.questions, // untrustful
         message: "${AppLocalizations.of(context).translate('sorry_ongoing_order')}",
@@ -1290,7 +1290,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   /* order and pay at arrival */
   _buildOrderPayAtArrivalButton() {
-    return Container(
+
+    return _orderBillConfiguration.pay_at_delivery == true ?
+    Container(
       margin: EdgeInsets.only(left: 10, right: 10),
       child: InkWell(onTap: ()=>_payAtDelivery(false),
         child: Card(
@@ -1320,7 +1322,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           ),
         ),
       ),
-    );
+    ) :
+     Container(child: Text("${AppLocalizations.of(context).translate('cant_pay_at_delivery')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+         decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10),
+       margin: EdgeInsets.only(left:20,right:20),
+     );
   }
 
 
@@ -1521,6 +1527,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     _orderBillConfiguration.pay_at_delivery = configuration.pay_at_delivery;
     _orderBillConfiguration.cooking_time = configuration.cooking_time;
     _orderBillConfiguration.prepayed = configuration.prepayed;
+    _orderBillConfiguration.trustful = configuration.trustful;
 
     _orderBillConfiguration.shipping_pricing = configuration.shipping_pricing;
     _orderBillConfiguration.command_pricing = configuration.command_pricing;

@@ -742,7 +742,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     });
     showLoading(false);
     // two seconds after, we jump
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 1), () {
       Scrollable.ensureVisible(dataKey.currentContext);
     });
   }

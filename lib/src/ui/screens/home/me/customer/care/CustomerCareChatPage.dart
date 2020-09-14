@@ -116,7 +116,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     return Container(
       child: Stack(
         children: <Widget>[
-          Container(margin: EdgeInsets.only(bottom:90, right:10, left:10),
+          Container(margin: EdgeInsets.only(bottom:110, right:10, left:10),
             child: (widget.messages == null || widget.messages?.length == 0) ? _buildEmptyPage() :
             ListView(children: <Widget>[]..addAll(
                 List.generate(widget.messages?.length,
@@ -158,7 +158,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
           Positioned(
             bottom: 0,
             child: Padding(
-              padding: const EdgeInsets.only(left:4.0, right:4, bottom:4),
+              padding: const EdgeInsets.only(left:4.0, right:4, bottom:20),
               child: Row(mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   SizedBox(width: 5),

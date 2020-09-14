@@ -150,6 +150,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           case SplashPage.RESTAURANT:
             _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
+          case SplashPage.VOUCHER:
+//            print("voucher homewelcome -> ${widget.argument}");
+            _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(), autoSubscribe: true, customer: widget.customer));
+            break;
           case SplashPage.ORDER:
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
             break;

@@ -584,7 +584,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
   _buildVoucher() {
     // build voucher if we have it
-    if (widget?.command != null && widget?.command?.voucher_entity != null) {
+    if (widget?.command != null && widget?.command?.voucher_entity != null && widget?.command?.voucher_entity?.id != null) {
       return MyVoucherMiniWidget(voucher: widget?.command?.voucher_entity);
     }
     return Container();

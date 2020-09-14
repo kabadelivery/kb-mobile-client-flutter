@@ -195,7 +195,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                         child: InkWell( onTap: (){_jumpToRestaurantMenu(context, widget?.restaurant);},
                             child: Container(padding: EdgeInsets.only(top:5,bottom: 5),
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("${AppLocalizations.of(context).translate('see_menu')}".toUpperCase(), style: TextStyle(color:KColors.primaryColor))]),
+                                Row(children: <Widget>[SizedBox(width: 15), Icon(Icons.menu, color: KColors.primaryColor), SizedBox(width: 15), Text("${AppLocalizations.of(context).translate('see_menu')}".toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, color:KColors.primaryColor))]),
                                 Icon(Icons.chevron_right, color: KColors.primaryColor),
                               ]),
                             )

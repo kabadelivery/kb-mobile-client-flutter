@@ -108,6 +108,9 @@ class Utils {
 
   static String timeStampToDate (String timestamp) {
 
+    if (timestamp == null)
+      return "";
+
     DateTime commandTime = new DateTime
         .fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);;
     String pattern_not_today = "yyyy-MM-dd";

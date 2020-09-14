@@ -142,7 +142,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                   ),
                                   SizedBox(height: 10),
                                   /* SHOW EXPIRY DATE */
-                                  Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget.voucher.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
+                                  Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
                                   SizedBox(height: 10),
                                 ])
                             ),
