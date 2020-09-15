@@ -322,6 +322,9 @@
   "search_too_short": "搜索内容太短",
 
   "exit": "输入优惠代码",
-  "sorry_version_not_allowed" : "抱歉、无法扫描二维码。\n请输入代码"
+  "sorry_version_not_allowed" : "抱歉、无法扫描二维码。\n请输入代码",
+
+  "update": "更新",
+  "new_version_available": "请更新应用 "
 
 }

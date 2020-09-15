@@ -259,4 +259,6 @@ class ServerRoutes {
 
   static const String  LINK_SUBSCRIBE_VOUCHERS = ServerConfig.SERVER_ADDRESS+"/mobile/api/vouchers/subscribe";
 
+  static const String LINK_CHECK_APP_VERSION = ServerConfig.SERVER_ADDRESS+"/api/ltsapp/get";
+
 }

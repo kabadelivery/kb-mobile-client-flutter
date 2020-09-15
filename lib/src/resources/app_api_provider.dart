@@ -250,4 +250,26 @@ class AppApiProvider {
       throw Exception(-2);
     }
   }
+
+  checkVersion() async {
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_CHECK_APP_VERSION
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        String version = json.decode(response.body)["version"];
+        int is_required = int.parse("${json.decode(response.body)["isRequired"]}");
+        Map res = Map();
+        res["version"] = version;
+        res["is_required"] = is_required;
+        return res;
+      }
+      else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2);
+    }
+  }
 }

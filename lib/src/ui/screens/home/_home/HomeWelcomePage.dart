@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
@@ -46,6 +47,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,9 +106,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         this.widget.presenter.updateToken(customer);
       }
       widget.customer = customer;
-     });
+    });
 
     this.widget.presenter.fetchHomePage();
+    this.widget.presenter.checkVersion();
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -162,7 +165,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), highlightedFoodId: widget.argument),
+                  builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), foodId: widget.argument, highlightedFoodId: widget.argument),
                 ),
               );
             break;
@@ -198,13 +201,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //            ),
 //            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
 
-              child:Container( margin: EdgeInsets.only(bottom: 15, top: 20),
-                decoration: BoxDecoration(
-                  border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
+              child:GestureDetector(onTap: (){
+                setState(() {
+                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
+                });
+              },
+                child: Container(margin: EdgeInsets.only(bottom: 15, top: 20),
+                  decoration: BoxDecoration(
+                    border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
-                ),
-                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+                  ),
+                  child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
+                ),
               )),
           leading: IconButton(icon: SizedBox(
               height: 25,
@@ -931,9 +940,113 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         ));
   }
 
+  @override
+  void checkVersion(String code, int force) {
+
+    String mCode = code.replaceAll(new RegExp(r'\.'), "");
+
+    int _code = int.parse(mCode);
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
+      String appCode_ = packageInfo.version.replaceAll(new RegExp(r'\.'), "");
+      int appCode = int.parse(appCode_);
+//      print("net-code = $code");
+//      print("app-code = $appCode");
+      if (appCode < _code) {
+        // 2.3.4 < 4.5.6
+        if (force == 1){
+          /* show the dialog. */
+          Future.delayed(new Duration(seconds: 1)).then((value) {
+            iShowDialog(code, 1);
+          });
+        } else {
+          /* check if  already shown, if not then we show it again.*/
+          /* give a way to say no. */
+          /* and save it to the shared preferences not to bother the client in the future */
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          if (prefs.get("${code}") != 1) {
+            prefs.setInt("${code}", 1).then((value) {
+              Future.delayed(new Duration(seconds: 1)).then((value) {
+                iShowDialog(code, 0);
+              });
+            });
+          }
+        }
+      }
+    });
+  }
+
+
+  void iShowDialog(String version, int force) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+              content: Column(mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                        height: 80,
+                        width: 80,
+                        child: Icon(Icons.settings, size: 80, color: KColors.primaryColor)),
+                    SizedBox(height: 10),
+                    Text("${AppLocalizations.of(context).translate('new_version_available')} $version", textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black, fontSize: 13))
+                  ]
+              ),
+              actions:
+              force == 1 ? <Widget>[
+                OutlineButton(
+                  child: new Text(
+                      "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
+                  onPressed: () {
+                    _updateApp();
+                  },
+                ),
+              ] :
+              <Widget>[
+                OutlineButton(
+                  borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                  child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)), // update
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                OutlineButton(
+                  borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                  child: new Text(
+                      "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
+                  onPressed: () {
+                    _updateApp();
+                  },
+                ),
+              ]
+          );
+        });
+//  });
+  }
+
+  void _updateApp() {
+    if (Platform.isAndroid) {
+      _launchURL(ServerConfig.ANDROID_APP_LINK);
+    } else if (Platform.isIOS) {
+      _launchURL(ServerConfig.IOS_APP_LINK);
+    }
+  }
+
+  Future<dynamic> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      return await launch(url);
+    } else {
+      try {
+        throw 'Could not launch $url';
+      } catch (_) {
+        print(_);
+      }
+    }
+    return -1;
+  }
+
 }
-
-
 class KabaRoundTopClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

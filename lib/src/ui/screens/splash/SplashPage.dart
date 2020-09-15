@@ -363,8 +363,8 @@ class _SplashPageState extends State<SplashPage> {
         if (pathSegments.length > 1) {
           print("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "voucher":
@@ -379,32 +379,32 @@ class _SplashPageState extends State<SplashPage> {
         if (pathSegments.length > 1) {
           print("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "food":
         if (pathSegments.length > 1) {
           print("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
-          widget.argument = mHexToInt("${pathSegments[1]}");
-//          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "menu":
         if (pathSegments.length > 1) {
           print("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
       case "review-order":
         if (pathSegments.length > 1) {
           print("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
         }
         break;
     }

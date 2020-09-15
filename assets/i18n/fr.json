@@ -325,6 +325,9 @@
   "search_too_short": "Veuillez être plus explicite !",
 
   "exit": "ENTRER LE CODE",
-  "sorry_version_not_allowed" : "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE"
+  "sorry_version_not_allowed" : "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE",
+
+  "update": "METTRE À JOUR",
+  "new_version_available": "Nouvelle version de l'Application disponible ! Veuillez mettre à jour l'application à la version "
 
 }

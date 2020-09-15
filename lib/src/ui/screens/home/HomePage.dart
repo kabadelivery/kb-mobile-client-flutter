@@ -387,7 +387,7 @@ class _HomePageState extends State<HomePage> {
           print("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           /* convert from hexadecimal to decimal */
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context, RestaurantDetailsPage(
               restaurant: RestaurantModel(id: widget.argument),
               presenter: RestaurantDetailsPresenter()));
@@ -398,8 +398,8 @@ class _HomePageState extends State<HomePage> {
         if (pathSegments.length > 1) {
           print("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
           _jumpToPage(context, OrderDetailsPage(
               orderId: widget.argument, presenter: OrderDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
@@ -409,8 +409,8 @@ class _HomePageState extends State<HomePage> {
         if (pathSegments.length > 1) {
           print("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
 //          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
           _jumpToPage(context, RestaurantMenuPage(
               foodId: widget.argument, presenter: MenuPresenter()));
@@ -420,8 +420,8 @@ class _HomePageState extends State<HomePage> {
         if (pathSegments.length > 1) {
           print("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
           _jumpToPage(context, RestaurantMenuPage(
               menuId: widget.argument, presenter: MenuPresenter()));
         }
@@ -430,8 +430,8 @@ class _HomePageState extends State<HomePage> {
         if (pathSegments.length > 1) {
           print("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
-//          widget.argument = int.parse("${pathSegments[1]}");
-          widget.argument = mHexToInt("${pathSegments[1]}");
+          widget.argument = int.parse("${pathSegments[1]}");
+//          widget.argument = mHexToInt("${pathSegments[1]}");
           _jumpToPage(context, OrderDetailsPage(
               orderId: widget.argument, presenter: OrderDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);

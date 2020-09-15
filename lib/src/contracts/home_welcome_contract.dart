@@ -25,6 +25,7 @@ class HomeWelcomeView {
   void networkError(){}
   void tokenUpdateSuccessfully() {}
   void hasUnreadMessages(bool hasNewMessage) {}
+  void checkVersion(String code, int force) {}
 }
 
 /* login presenter */
@@ -115,11 +116,11 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
   Future updateToken(CustomerModel customer) async {
 
     try {
-     int error = await provider.updateToken(customer);
-     if (error == 0) {
-       // we have successfully did it.
-      _homeWelcomeView.tokenUpdateSuccessfully();
-     }
+      int error = await provider.updateToken(customer);
+      if (error == 0) {
+        // we have successfully did it.
+        _homeWelcomeView.tokenUpdateSuccessfully();
+      }
     } catch (_) {
       print(_);
     }
@@ -130,16 +131,25 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
     try {
       bool hasNewMessage = await provider.checkUnreadMessages(customer);
-     _homeWelcomeView.hasUnreadMessages(hasNewMessage);
+      _homeWelcomeView.hasUnreadMessages(hasNewMessage);
     } catch (_) {
       print(_);
       _homeWelcomeView.hasUnreadMessages(false);
     }
   }
 
+  Future<void> checkVersion() async {
+    try {
+      Map version = await provider.checkVersion();
+      String code = version["version"];
+      int force = version["is_required"];
+      _homeWelcomeView.checkVersion(code, force);
+    } catch (_) {
+      /* RestaurantReview failure */
+      print("error ${_}");
+    }
+  }
 
-//    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-//    String token = await firebaseMessaging.getToken();
 
 
 }

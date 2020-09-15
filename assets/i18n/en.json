@@ -321,5 +321,8 @@
   "search_too_short": "Your menu must be more explicit",
 
   "exit": "ENTER VOUCHER CODE",
-  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please insert the code instead."
+  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please insert the code instead.",
+
+  "update": "UPDATE APP",
+  "new_version_available":"New version available ! Please update your app to version "
 }
