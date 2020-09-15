@@ -416,7 +416,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Kaba.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.4.8;
+				CURRENT_PROJECT_VERSION = 2.4.9;
 				DEVELOPMENT_TEAM = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -430,7 +430,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -562,7 +562,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Kaba.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.4.8;
+				CURRENT_PROJECT_VERSION = 2.4.9;
 				DEVELOPMENT_TEAM = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -576,7 +576,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -598,7 +598,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/KabaRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.4.8;
+				CURRENT_PROJECT_VERSION = 2.4.9;
 				DEVELOPMENT_TEAM = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -612,7 +612,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";

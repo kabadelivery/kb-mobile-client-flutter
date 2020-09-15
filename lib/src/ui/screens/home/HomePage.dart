@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
+            icon: Icon(Icons.home),
             title: Text("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
@@ -298,7 +298,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person),
+            icon: Icon(Icons.person),
             title: Text('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
