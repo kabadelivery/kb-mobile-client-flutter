@@ -7,6 +7,7 @@ class TopUpContract {
 
   void launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) {}
   void fetchFees(CustomerModel customer) {}
+  void fetchTopUpConfiguration(CustomerModel customer) {}
 }
 
 class TopUpView {
@@ -78,6 +79,11 @@ class TopUpPresenter implements TopUpContract {
       isWorking = false;
     }
     _topUpView.showGetFeesLoading(false);
+  }
+
+  @override
+  void fetchTopUpConfiguration(CustomerModel customer) {
+
   }
 
 

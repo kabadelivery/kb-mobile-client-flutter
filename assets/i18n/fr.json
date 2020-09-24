@@ -296,6 +296,7 @@
   "voucher_invalid_params": "Désolé, Paramètres invalides",
   "voucher_no_self_subscribe": "Désolé, Vous ne pouvez pas autosouscrire à ce bon",
   "voucher_expired": "Désolé, ce bon a expiré",
+  "voucher_not_yet_available" : "Désolé, ce bon est indisponible",
   "voucher_disabled": "Désolé, ce bon est désactivé",
 
   "voucher_already_subscribed": "Désolé, vous avez déjà souscris à ce bon",
@@ -328,6 +329,14 @@
   "sorry_version_not_allowed" : "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE",
 
   "update": "METTRE À JOUR",
-  "new_version_available": "Nouvelle version de l'Application disponible ! Veuillez mettre à jour l'application à la version "
+  "new_version_available": "Nouvelle version de l'Application disponible ! Veuillez mettre à jour l'application à la version ",
+
+  "disponible": "DISPONIBLE",
+  "utilisation" : "UTILISÉ",
+
+  "phone_number_field_": "Numéro de Téléphone",
+
+  "foods_": "Repas"
+
 
 }

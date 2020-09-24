@@ -295,6 +295,7 @@
   "voucher_invalid_params": "Sorry, invalid parameters.",
   "voucher_no_self_subscribe": "Sorry, You can't self subscribe for this voucher.",
   "voucher_expired": "Sorry, This voucher has expired.",
+  "voucher_not_yet_available" : "Sorry, This voucher is not yet available",
   "voucher_disabled": "Sorry, This voucher is disabled.",
   "voucher_already_subscribed": "Sorry, You have already subscribed to this voucher.",
   "voucher_max_count_reached": "Sorry, The maximum count of people that can subscribe to this voucher has been reached.",
@@ -324,5 +325,12 @@
   "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please insert the code instead.",
 
   "update": "UPDATE APP",
-  "new_version_available":"New version available ! Please update your app to version "
+  "new_version_available":"New version available ! Please update your app to version ",
+
+  "disponible": "AVAILABLE",
+  "utilisation" : "USE",
+
+  "phone_number_field_": "Phone number",
+  "foods_" : "Foods"
+
 }

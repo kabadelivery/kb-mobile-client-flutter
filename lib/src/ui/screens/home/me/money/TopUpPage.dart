@@ -54,7 +54,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     _amountFieldController.addListener(_updateFees);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.fetchFees(widget.customer);
+//      widget.presenter.fetchFees(widget.customer);
+//      widget.presenter.fetchTopUpConfiguration(widget.customer);
     });
   }
 
@@ -85,12 +86,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
                 child: Center(
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                    Expanded(flex: 4, child: Center(child: Text("${AppLocalizations.of(context).translate('phone_number')}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
+                    Expanded(flex: 4, child: Center(child: Text("${AppLocalizations.of(context).translate('phone_number_field_')}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
                     Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: KColors.primaryColor),
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "90XXXX90"
+                            hintText: "90XXXXXX"
                         )),
                     )
                   ]),

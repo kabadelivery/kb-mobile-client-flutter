@@ -9,18 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class CustomerUtils {
-/*
-  static popBack(BuildContext context) {
-    if (!Navigator.pop(context)) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SplashPage(),
-        ),
-      );
-    }
-  }*/
+
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,9 +17,8 @@ class CustomerUtils {
     prefs.setString("_loginResponse", loginResponse);
     /* no need to commit */
     /* expiration date in 3months */
-    String expDate = "${DateTime.now().add(Duration(days: 90)).millisecondsSinceEpoch}";
+    String expDate = "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
     prefs.setString("${ServerConfig.LOGIN_EXPIRATION}", expDate);
-//    print(expDate);
   }
 
 

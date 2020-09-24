@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             onGenerateTitle: (BuildContext context) =>
-//            "${AppLocalizations.of(context).translate('app_title')}",
+//          "${AppLocalizations.of(context).translate('app_title')}",
             "KABA",
             theme: ThemeData(primarySwatch: KColors.colorCustom),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),

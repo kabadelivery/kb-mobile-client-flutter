@@ -1,5 +1,6 @@
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
 import 'package:KABA/src/contracts/personal_page_contract.dart';
@@ -8,7 +9,9 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/transfer_money_request_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -230,7 +233,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                               image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
                           )
                       )
-                  ), onTap: ()=> _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
+                  ), onTap: ()=>
+                    _seeProfilePicture()
+//                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
                 ),
                 Container(
                     padding: EdgeInsets.only(right:20),
@@ -675,6 +680,26 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     );
   }
 
+  _seeProfilePicture() {
+
+    List<AdModel> slider = [AdModel(pic:"${widget?.customerData?.profile_picture}")];
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AdsPreviewPage(data: slider, position:0, presenter: AdsViewerPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+  }
+
+
+
   void _jumpToInfoPage() {
     Navigator.of(context).push(
         PageRouteBuilder(
@@ -694,4 +719,5 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         ));
   }
 
-  }
+
+}

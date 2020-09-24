@@ -296,6 +296,7 @@
   "voucher_invalid_params": "抱歉，参数无效",
   "voucher_no_self_subscribe": "抱歉，您不能自行订阅此优惠券",
   "voucher_expired": "抱歉，优惠卷已过期",
+  "voucher_not_yet_available" : "抱歉、优惠卷还不可用。",
   "voucher_disabled": "抱歉，优惠卷已禁用",
   "voucher_already_subscribed": "抱歉，优惠卷已订阅！",
   "voucher_max_count_reached": "抱歉、订阅限量以达到",
@@ -325,6 +326,13 @@
   "sorry_version_not_allowed" : "抱歉、无法扫描二维码。\n请输入代码",
 
   "update": "更新",
-  "new_version_available": "请更新应用 "
+  "new_version_available": "请更新应用 ",
+
+  "disponible": "可用",
+  "utilisation" : "已用",
+
+  "phone_number_field_": "电话号码",
+  "foods_" : "饭菜"
+
 
 }

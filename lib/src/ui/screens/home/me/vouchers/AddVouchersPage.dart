@@ -151,6 +151,9 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
       case -3: // expired
         errorMessage = "${AppLocalizations.of(context).translate('voucher_expired')}";
         break;
+      case -7: // expired
+        errorMessage = "${AppLocalizations.of(context).translate('voucher_not_yet_available')}";
+        break;
       case -4: // deactivate
         errorMessage = "${AppLocalizations.of(context).translate('voucher_disabled')}";
         break;

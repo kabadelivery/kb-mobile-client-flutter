@@ -12,6 +12,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:toast/toast.dart';
 
 
@@ -34,7 +35,6 @@ class AdsPreviewPage extends StatefulWidget {
 }
 
 class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerView {
-
 
   bool isLoading = false;
 
@@ -75,23 +75,35 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
                           items: widget.data.map((admodel) {
                             return Builder(
                               builder: (BuildContext context) {
-                                return Container(
+//                                PinchZoom(
+//                                    image: Image.network('http://placerabbit.com/200/333'),
+//                                    zoomedBackgroundColor: Colors.black.withOpacity(0.5),
+//                                    resetDuration: const Duration(milliseconds: 100),
+//                                    maxScale: 2.5,
+                                return PinchZoom(
+                                  image: Container(
 //                                    height: 9*MediaQuery.of(context).size.width/16,
-                                    height: MediaQuery.of(context).size.width,
-                                    width: MediaQuery.of(context).size.width,
-                                    child:CachedNetworkImage(
-                                        imageUrl: Utils.inflateLink(admodel.pic),
-                                        fit: BoxFit.contain
-                                    )
+                                      height: MediaQuery.of(context).size.width,
+                                      width: MediaQuery.of(context).size.width,
+                                      child:CachedNetworkImage(
+                                          imageUrl: Utils.inflateLink(admodel.pic),
+                                          fit: BoxFit.contain
+                                      )
 //                                    child: PhotoView(
 //                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
 //                                    )
+                                  ),
+                                  zoomedBackgroundColor: Colors.black,
+                                    resetDuration: const Duration(milliseconds: 100),
+                                    maxScale: 2.5,
+                                  onZoomStart: (){},
+                                  onZoomEnd: () {},
                                 );
                               },
                             );
                           }).toList(),
                         )),
-                    Positioned(
+                  widget.data.length > 1 ?  Positioned(
                         bottom: 10,
                         right:0,
                         child:Padding(
@@ -112,13 +124,13 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
                               ),
                           ),
                         )
-                    ),
+                    ) : Container(),
                   ],
                 ),
               ),
             ),
             _getVoirMenuTextFromAd(widget.data[widget.position]) != "" ?
-             Positioned(top: 0,right: 10,
+            Positioned(top: 0,right: 10,
                 child: OutlineButton(onPressed: () => _onAdsButtonPressed(widget.data[widget.position]), color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
                     child: Row(
                       children: <Widget>[
@@ -140,7 +152,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
                   child: Container(
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.all(4),
-                      child: Text(widget.data[widget.position]?.description,
+                      child: Text("${widget.data[widget.position]?.description == null ? "" : widget.data[widget.position]?.description}",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 7,
                           style: TextStyle(color: Colors.white))),
@@ -195,7 +207,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
         break;
       case AdModel.TYPE_MENU:
       // use the id and get the restaurant id for here.
-       _jumpToRestaurantMenuPage(data.entity_id);
+        _jumpToRestaurantMenuPage(data.entity_id);
         break;
     }
   }

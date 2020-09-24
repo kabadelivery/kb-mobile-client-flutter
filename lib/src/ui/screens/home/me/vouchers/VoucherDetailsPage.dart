@@ -16,7 +16,9 @@ class VoucherDetailsPage extends StatefulWidget {
 
   VoucherModel voucher;
 
-  VoucherDetailsPage({Key key, this.title, this.voucher}) : super(key: key);
+  bool food_see_more;
+
+  VoucherDetailsPage({Key key, this.title, this.voucher, this.food_see_more = false}) : super(key: key);
 
   final String title;
 
@@ -118,15 +120,23 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
                           :
                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
-
                       /* start a mini food list .. */
 //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())
-                    ]..addAll(
+                    ]..add(InkWell(onTap: (){setState(() {
+                      widget.food_see_more = true;
+                    });},
+                      child: Container(margin: EdgeInsets.only(top:10),
+                        child: Text(
+                          "${_miniFoodsText(widget?.voucher?.products)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: KColors.primaryYellowColor, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ))
+                    /*..addAll(
                         List.generate(widget?.voucher?.products?.length, (int index){
                           return _miniFoodWidget(widget.voucher.products[index]);
                         })
-                    ),
+                    )*/,
                   ),
                   SizedBox(height: 20),
                   Column(
@@ -211,6 +221,22 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
         Container(height:1, margin: EdgeInsets.only(top:5, bottom:5), color: Colors.green),
       ],
     );
+  }
+
+  _miniFoodsText(List<RestaurantFoodModel> products) {
+
+    if (products?.length > 20 && widget.food_see_more == false) {
+      return "${products?.length} ${AppLocalizations.of(context).translate('foods_')}\n\n> See More <";
+    } else {
+      String res = "";
+      for (int i = 0; i < products?.length; i++) {
+        res += "${products[i]?.name}(${products[i]?.price})";
+        if (i != products?.length - 1) {
+          res += "\n";
+        }
+      }
+      return res.toUpperCase();
+    }
   }
 }
 
