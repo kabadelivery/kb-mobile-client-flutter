@@ -20,7 +20,6 @@ class TopUpPage extends StatefulWidget {
 
   TopUpPage({Key key, this.presenter}) : super(key: key);
 
-
   CustomerModel customer;
 
   @override
@@ -29,9 +28,9 @@ class TopUpPage extends StatefulWidget {
 
 class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
-
   TextEditingController _phoneNumberFieldController;
   TextEditingController _amountFieldController;
+  TextEditingController _totalAmountFieldController;
 
   String operator = "---";
 
@@ -39,25 +38,38 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   var isLaunching = false;
 
-  String feesDescription = "";
 
+  String feesDescription = "";
   bool isGetFeesLoading = false;
+  FocusNode _totalFocusNode, _amountFocusNode;
+
+  int selectedPaymentMode = 0;
+
+  TextEditingController _feesFieldController; // 0 tmoney 1 bank card 2 flooz
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.presenter.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
-    _phoneNumberFieldController.addListener(_checkOperator);
+    _totalAmountFieldController = new TextEditingController();
     _amountFieldController = new TextEditingController();
-    _amountFieldController.addListener(_updateFees);
+    _feesFieldController = new TextEditingController();
+
+    _phoneNumberFieldController.addListener(_checkOperator);
+    _amountFieldController.addListener(_updateFromInitialAmountTotal);
+    _totalAmountFieldController.addListener(_updateFromTotal);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
 //      widget.presenter.fetchFees(widget.customer);
 //      widget.presenter.fetchTopUpConfiguration(widget.customer);
     });
+
+    _totalFocusNode = new FocusNode();
+    _amountFocusNode = new FocusNode();
   }
+
+
 
   @override
   void didChangeDependencies() {
@@ -67,114 +79,131 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(backgroundColor: Color.fromRGBO(230, 230, 230, 1),
+      appBar: AppBar(backgroundColor: Colors.white,
         brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: Colors.white,
         title: Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
         child: Column(
             children: <Widget>[
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
-                child: Center(
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                    Expanded(flex: 4, child: Center(child: Text("${AppLocalizations.of(context).translate('phone_number_field_')}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),))),
-                    Expanded(flex: 6, child: TextField(controller: _phoneNumberFieldController,maxLength: 8, textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: KColors.primaryColor),
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "90XXXXXX"
-                        )),
-                    )
+              SizedBox(height: 15),
+              /* define mobile money and visa-card */
+              Container(padding: EdgeInsets.all(10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
+                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 0), child: Container(child: Text("T-MONEY", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 0 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
+                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 1), child: Container(child: Text("BANK CARD", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 1 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
+                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 2), child: Container(child: Text("FLOOZ", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 2 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5)))))
+                ]),
+              ),
+
+
+          selectedPaymentMode == 2 ? Column(children: [
+                SizedBox(height: 15),
+                /* phone number just in case we are working with moov*/
+                Container(color: Colors.white, padding: EdgeInsets.all(10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(flex:3, child: Text("Numéro de Téléphone")),
+                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: TextField(controller: _phoneNumberFieldController, textAlign: TextAlign.right,
+                          style: TextStyle(fontSize: 20),
+                          decoration: InputDecoration(fillColor: Colors.yellow,
+                              border: InputBorder.none,
+                              hintMaxLines: 5,
+                              hintStyle: TextStyle(fontSize: 13)
+                          ),
+                          keyboardType: TextInputType.phone
+                      ),
+                    ))
                   ]),
                 ),
-              ),
+              ]) : Container(),
 
-              SizedBox(height: 10),
-
-              Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryColor),
-                margin: EdgeInsets.only(left:15, right: 15),
-                padding: EdgeInsets.only(top:20,bottom:20, left:15, right: 15),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 5, child: Text("${AppLocalizations.of(context).translate('operator')}", textAlign: TextAlign.start, style: TextStyle(color: Colors.white))),
-                  Expanded(flex: 5, child: Text("${operator}", textAlign: TextAlign.end, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)))
-                ]),
-              ),
-
-              SizedBox(height: 20),
-
-              Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.white),
-                  margin: EdgeInsets.only(left:15, right: 15),
-                  padding: EdgeInsets.only(top:5,bottom:5, left:5, right: 5),
-                  child: Center(
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                      Expanded(flex: 4, child: Container(child: Center(child: Text("${AppLocalizations.of(context).translate('amount')}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),)))),
-                      Expanded(flex: 6, child: Container(
-                        child: TextField(controller: _amountFieldController, textAlign: TextAlign.center, maxLength: 6, style: TextStyle(color: KColors.primaryColor, fontSize: 30),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "0",
+              Column(children: [
+                SizedBox(height: 30),
+                /* amount you wanna get paid */
+                Container(color: Colors.white, padding: EdgeInsets.all(10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(flex:3, child: Text("Montant à Recharger")),
+                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: TextField(controller: _amountFieldController, textAlign: TextAlign.right,
+                          style: TextStyle(fontSize: 20),
+                          decoration: InputDecoration(fillColor: Colors.yellow,
                               border: InputBorder.none,
-                            )),
+                              hintMaxLines: 5,
+                              hintStyle: TextStyle(fontSize: 13)
+                          ),
+                          keyboardType: TextInputType.number
                       ),
-                      )
-                    ]),
-                  )),
+                    ))
+                  ]),
+                ),
+              ]),
+
 
               SizedBox(height: 10),
 
-              Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(feesDescription, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+              Text("* Les frais s'élèvent à ${widget.feesPercentage}% du montant à recharger", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor)),
 
-              SizedBox(height: 10),
+              Column(children: [
+                SizedBox(height: 10),
+                /* amount you wanna get paid */
+                Container(color: Colors.white, padding: EdgeInsets.all(10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(flex:3, child: Text("Frais")),
+                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: TextField(controller: _feesFieldController, enabled: false, textAlign: TextAlign.right,
+                          style: TextStyle(fontSize: 20),
+                          decoration: InputDecoration(fillColor: Colors.yellow,
+                              border: InputBorder.none,
+                              hintMaxLines: 5,
+                              hintStyle: TextStyle(fontSize: 13)
+                          ),
+                          keyboardType: TextInputType.number
+                      ),
+                    ))
+                  ]),
+                ),
+              ]),
 
-              isGetFeesLoading ? Center(child: Container(padding: EdgeInsets.all(10), child: SizedBox(height:30, width:30,child: CircularProgressIndicator()))) : Container(
-                margin: EdgeInsets.only(top:10),
-                padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
-                color: Colors.white,
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 4, child: Text("${AppLocalizations.of(context).translate('fees')} (${widget.feesPercentage}%)", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
-                  Expanded(flex: 6, child: Text("${widget.fees} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 15,color: Colors.green, fontWeight: FontWeight.bold
-                  )))
-                ]),
-              ),
 
-              SizedBox(height: 10),
+              Column(children: [
+                SizedBox(height: 10),
+                /* amount you wanna get paid */
+                Container(color: Colors.white, padding: EdgeInsets.all(10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(flex:3, child: Text("Montant Total")),
+                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: CommandStateColor.delivered.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: TextField(controller: _totalAmountFieldController, textAlign: TextAlign.right,
+                          style: TextStyle(fontSize: 20),
+                          decoration: InputDecoration(fillColor: Colors.yellow,
+                              border: InputBorder.none,
+                              hintMaxLines: 5,
+                              hintStyle: TextStyle(fontSize: 13)
+                          ),
+                          keyboardType: TextInputType.number
+                      ),
+                    ))
+                  ]),
+                ),
+              ]),
 
-              Container(
-                margin: EdgeInsets.only(top:10),
-                padding: EdgeInsets.only(top:15,bottom:15, left:15, right: 15),
-                color: Colors.white,
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-                  Expanded(flex: 4, child: Text("${AppLocalizations.of(context).translate('total')}", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
-                  Expanded(flex: 6, child: Text("${widget.total} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: KColors.primaryColor))),
-                ]),
-              ),
+              SizedBox(height: 30),
 
-              SizedBox(height: 50),
 
               Row(mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
+                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(40))),
+                    child: RaisedButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: KColors.primaryColor, child: Row(
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                        SizedBox(width: 8),
-                        Text("${_getTotal()} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 24, color: Colors.yellow)),
-                        isLaunching ?  Row(
-                          children: <Widget>[
-                            SizedBox(width: 10),
-                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
-                          ],
-                        )  : Container(),
+                        Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width:10),
+                        Text("${_totalAmountFieldController.text} XOF", style: TextStyle(color: Colors.white, fontSize: 20))
                       ],
                     ), onPressed: () {
                       iLaunchTransaction();
@@ -182,6 +211,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   ),
                 ],
               ),
+
+              SizedBox(height: 50)
             ]
         ),
       ),
@@ -251,9 +282,16 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
     } else {
       if (widget.customer != null)
+        if (selectedPaymentMode == 0 || selectedPaymentMode == 2)
         widget.presenter.launchTopUp(
             widget.customer, "${_phoneNumberFieldController.text}",
             "${_amountFieldController.text}", widget.feesPercentage);
+        else {
+          // launch pay dunya
+          widget.presenter.launchPayDunya(
+              widget.customer, "${_phoneNumberFieldController.text}",
+              "${_amountFieldController.text}", widget.feesPercentage);
+        }
       else
         mToast("${AppLocalizations.of(context).translate('system_error')}");
     }
@@ -263,32 +301,95 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
-  _getFees() {
-    String amount = _amountFieldController.text;
-    int amount_;
-    if(amount == null || "" == amount.trim())
-      amount_ = 0;
-    else
-      amount_ = int.parse(amount);
-    return ((widget.feesPercentage.toDouble()*amount_.toDouble())~/100).toInt();
-  }
 
-  _getTotal() {
-    String amount = _amountFieldController.text;
-    int amount_;
-    if(amount == null || "" == amount.trim())
-      amount_ = 0;
-    else
-      amount_ = int.parse(amount);
-    return amount_+_getFees();
-  }
 
-  void _updateFees() {
+  void _updateFromTotal () {
+    /* check which one has focus before updating */
     setState(() {
-      widget.fees = _getFees();
-      widget.total = _getTotal();
+      if (!_amountFocusNode.hasFocus) {
+        // update fees
+        print("amount field doesnt have  focus ");
+        _amountFieldController.removeListener(_updateFromInitialAmountTotal);
+        _amountFieldController.text = "${_getRealInitialAmountFromTotal()}";
+        _amountFieldController.addListener(_updateFromInitialAmountTotal);
+        widget.fees = _getFeesFromTotal();
+        _feesFieldController.text = "${widget.fees}";
+        // update amount
+      } else {
+        print("amount field has  focus ");
+      }
     });
   }
+
+  void _updateFromInitialAmountTotal () {
+    /* check which one has focus before updating */
+    setState(() {
+      if (!_totalFocusNode.hasFocus) {
+        // update fees
+        print("total field doesnt have  focus ");
+        widget.fees = _getFeesFromAmount();
+        _feesFieldController.text = "${widget.fees}";
+        _totalAmountFieldController.removeListener(_updateFromTotal);
+        _totalAmountFieldController.text = "${_getRealTotalAmountFromInitial()}";
+        _totalAmountFieldController.addListener(_updateFromTotal);
+        // update amount
+      } else {
+        print("total field has  focus ");
+      }
+    });
+  }
+
+  _getFeesFromAmount() {
+    String amount = _amountFieldController.text;
+    int amount_;
+    if(amount == null || "" == amount.trim())
+      amount_ = 0;
+    else
+      amount_ = int.parse(amount);
+
+    return ((widget.feesPercentage.toDouble()*amount_.toDouble())~/100);
+  }
+
+  _getFeesFromTotal() {
+    String amount = _totalAmountFieldController.text;
+    int amount_;
+    if(amount == null || "" == amount.trim())
+      amount_ = 0;
+    else
+      amount_ = int.parse(amount);
+
+    // total = 1 + x | 1.10 // price 9000 -> 9000 / 1.10
+    int fees = (amount_ * (1 - 1/(widget.feesPercentage.toDouble()/100 + 1.0))).toInt();
+   return fees;
+  }
+
+  _getRealInitialAmountFromTotal () {
+
+    int fees = _getFeesFromTotal();
+    String _total = _totalAmountFieldController.text;
+    int total;
+    if(_total == null || "" == _total.trim())
+      total = 0;
+    else
+      total = int.parse(_total);
+    return total - fees;
+  }
+
+  _getRealTotalAmountFromInitial () {
+
+    int fees = _getFeesFromAmount();
+    String _amount = _amountFieldController.text;
+    int amount;
+    if(_amount == null || "" == _amount.trim())
+      amount = 0;
+    else
+      amount = int.parse(_amount);
+
+    return amount + fees;
+  }
+
+
+
 
   @override
   void updateFees(int feesPercentage) {
@@ -297,10 +398,11 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     });
   }
 
+
   @override
   void showGetFeesLoading(bool isGetFeesLoading) {
-     setState(() {
-       this.isGetFeesLoading = isGetFeesLoading;
-     });
+    setState(() {
+      this.isGetFeesLoading = isGetFeesLoading;
+    });
   }
 }

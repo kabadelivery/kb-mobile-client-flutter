@@ -92,7 +92,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
 //      backgroundBlendMode: BlendMode.saturation,
 //    ),
 
-    return widget.voucher.use_count-widget.voucher.already_used_count == 0 ?
+    return widget.voucher.use_count-widget.voucher.already_used_count == 0 || Utils.isEndDateReached(widget?.voucher?.end_date) ?
     Container(
         foregroundDecoration: BoxDecoration(
           color: Colors.grey,
@@ -289,6 +289,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       _jumpToVoucherDetails();
     }
   }
+
 
 
 }

@@ -244,7 +244,7 @@
   "tap_location": "Tap to select this location",
   "this_location": "This location",
   "nearby_places": "Nearby Places",
-  "identifier": "Identifier",
+  "identifier": "Phone / E-mail",
   "no_upcoming_events": "Sorry, there is no upcoming event for now!",
   "monday_long": "Monday",
   "tuesday_long": "Tuesday",
@@ -331,6 +331,9 @@
   "utilisation" : "USE",
 
   "phone_number_field_": "Phone number",
-  "foods_" : "Foods"
+  "foods_" : "Foods",
+  "amount_to_top_up" : "Top Up Amount",
+
+  "register_code_error": "Register Code Error"
 
 }

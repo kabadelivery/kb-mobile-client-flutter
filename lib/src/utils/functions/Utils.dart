@@ -16,7 +16,7 @@ int hexToInt(String code) {
 
 int mHexToInt(String code) {
 // return BigInt.parse(strip0x(code), radix: 16);
-return int.parse(code);
+  return int.parse(code);
 }
 
 class Utils {
@@ -285,6 +285,12 @@ class Utils {
     }
     // return the resultant string
     return str;
+  }
+
+  static bool isEndDateReached(String endTimeStamp) {
+
+    DateTime endDate = new DateTime.fromMillisecondsSinceEpoch(int.parse(endTimeStamp) * 1000);
+    return endDate.isBefore(DateTime.now());
   }
 
 }

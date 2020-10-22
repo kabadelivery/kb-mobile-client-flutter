@@ -244,7 +244,7 @@
   "tap_location": "点击选择此位置",
   "this_location": "这个位置",
   "nearby_places": "附近地方",
-  "identifier": "手机号码",
+  "identifier": "手机号 / 邮箱地址",
   "no_upcoming_events": "抱歉，暂时没有即将举行的活动！",
   "monday_long": "周一",
   "tuesday_long": "周二",
@@ -332,7 +332,10 @@
   "utilisation" : "已用",
 
   "phone_number_field_": "电话号码",
-  "foods_" : "饭菜"
+  "foods_" : "饭菜",
+  "amount_to_top_up" : "余额",
+
+  "register_code_error": "验证码错误"
 
 
 }

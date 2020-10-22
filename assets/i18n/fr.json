@@ -244,7 +244,7 @@
   "tap_location": "Sélectionnez cet endroit",
   "this_location": "Cet endroit",
   "nearby_places": "Endroit proches",
-  "identifier": "Identifiant",
+  "identifier": "Téléphone / E-mail",
   "no_upcoming_events": "Désolé, Aucun évènement à venir sur #KABA",
   "monday_long": "Lundi",
   "tuesday_long": "Mardi",
@@ -336,7 +336,10 @@
 
   "phone_number_field_": "Numéro de Téléphone",
 
-  "foods_": "Repas"
+  "foods_": "Repas",
+  "amount_to_top_up" : "Amount à Recharger",
+
+  "register_code_error": "Code erroné"
 
 
 }

@@ -60,9 +60,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
     this.widget.presenter.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
-      if (customer != null && customer.phone_number != null) {
+      if (customer != null) {
         setState(() {
-          _loginFieldController.text = customer.phone_number;
+          if (customer.phone_number == null)
+            _loginFieldController.text = customer.email;
+          else
+            _loginFieldController.text = customer.phone_number;
         });
       }
     });
@@ -103,7 +106,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:Colors.black)),
+                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:Colors.black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
 
@@ -157,15 +160,15 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
         ));
   }
 
-  void _handleRadioValueChange (int value) {
-    setState(() {
-      /* clean the content */
-      if (isCodeSent)
-        return;
-      this._loginFieldController.text = "";
-      this._codeFieldController.text = "";
-    });
-  }
+//  void _handleRadioValueChange (int value) {
+//    setState(() {
+//      /* clean the content */
+//      if (isCodeSent)
+//        return;
+//      this._loginFieldController.text = "";
+//      this._codeFieldController.text = "";
+//    });
+//  }
 
   void _sendCodeAction() {
 
@@ -174,12 +177,16 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     /* check the fields */
 
     /* phone number */
-    String phoneNumber = login;
-    if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
+
+    if (Utils.isPhoneNumber_TGO(login)) {
+      this.widget.presenter.sendVerificationCode(login);
+    } else if (Utils.isEmailValid(login)) {
+      this.widget.presenter.sendVerificationCode(login);
+    } else {
+      /* login error */
       setState(() {
         isLoginError = true;
       });
-      return;
     }
 
     /* setState(() {
@@ -187,7 +194,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     });*/
     /* send request, to the server, and if ok, save request params and update fields. */
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-    this.widget.presenter.sendVerificationCode(login);
+//    this.widget.presenter.sendVerificationCode(login);
     /* _save request params */
   }
 

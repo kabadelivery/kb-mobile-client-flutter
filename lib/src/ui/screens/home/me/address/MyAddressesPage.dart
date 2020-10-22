@@ -191,6 +191,8 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
         if (widget.pick) {
           DeliveryAddressModel tmp = results["createdAddress"];
           Navigator.of(context).pop({'selection': tmp});
+        } else {
+          widget.presenter.loadAddressList(widget.customer); // maj
         }
       } else {
         // update

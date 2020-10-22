@@ -4,11 +4,15 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:KABA/src/contracts/edit_address_contract.dart';
+import 'package:KABA/src/contracts/register_contract.dart';
+import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -94,7 +98,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             home: SplashPage(),
-//          home: KabaScanPage(),
+//          home: RegisterPage(presenter: RegisterPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
@@ -103,7 +107,7 @@ class _MyAppState extends State<MyApp> {
 //      home: FeedsPage(presenter: FeedPresenter(),),
 //      home: EvenementPage(presenter: EvenementPresenter(),),
 //      home: NotificationTestPage(),
-//      home: TopUpPage(presenter: TopUpPresenter()),
+//            home: TopUpPage(presenter: TopUpPresenter()),
 //      home: WebViewPage(agreement: true),
 //      home: WebTestPage(),
 //      home: TransferMoneySuccessPage(),

@@ -30,16 +30,16 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   int _registerModeRadioValue = 0;
 
-  List<String> recoverModeHints ;
+  List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
   List<String> _loginFieldHint;
 
   String _nicknameFieldHint;
 
-  List<TextInputType> _loginFieldInputType = [TextInputType.phone/*, TextInputType.emailAddress*/];
+  List<TextInputType> _loginFieldInputType = [TextInputType.phone, TextInputType.emailAddress];
 
-  List<int> _loginMaxLength = [8/*,100*/];
+  List<int> _loginMaxLength = [8,100];
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
@@ -79,8 +79,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}"];
-    _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}"/*, "xxxxxx@yyy.zzz"*/];
+    recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}", "Email-${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}"];
+    _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
     _nicknameFieldHint = "${AppLocalizations.of(context).translate('nickname')}";
   }
 
@@ -102,11 +102,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 30),
-//                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
+                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
-//                    SizedBox(height: 10),
                     /* radiobutton - check who are you */
-                    /*!isCodeSent ? Row(
+                  !isCodeSent ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Radio(
@@ -123,24 +122,35 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           ), new Text(
                               'E-mail',
                               style: new TextStyle(fontSize: 16.0)),
-                        ]) : Container(),*/
+                        ]) : Container(),
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: 8, keyboardType: TextInputType.number, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
+                            child: TextField(controller: _loginFieldController,
+                                enabled: !isCodeSent,
+                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.number : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _nicknameFieldController, enabled: !isCodeSent, onChanged: _onNicknameFieldTextChanged, decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:Colors.black),  keyboardType: TextInputType.text),
+                            child: TextField(controller: _nicknameFieldController,
+                                enabled: !isCodeSent,
+                                onChanged: _onNicknameFieldTextChanged,
+                                decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:Colors.black),
+                                keyboardType: TextInputType.text),
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     SizedBox(height: 30),
+
+                    (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
+                    SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
+                        height: 15, width: 15) : Container(),
+
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
                         "${AppLocalizations.of(context).translate('press_code_hint')}",
@@ -532,6 +542,11 @@ Future<void> _saveRequestParams (String login, String requestId) async {
         );
       },
     );
+  }
+
+  @override
+  void codeError() {
+   mToast("${AppLocalizations.of(context).translate('register_code_error')}");
   }
 
 }

@@ -13,6 +13,7 @@ import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
@@ -43,6 +44,7 @@ import '_home/HomeWelcomePage.dart';
 import 'me/MeAccountPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
+import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
 import 'package:KABA/src/utils/_static_data/Core.dart';
 
@@ -94,15 +96,20 @@ class _HomePageState extends State<HomePage> {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate = prefs.getString("_login_expiration_date");
-    if (expDate != null) {
-      if (DateTime.now().isAfter(DateTime.parse(expDate))) {
-        /* session expired : clean params */
-        prefs.remove("_customer");
-        prefs.remove("_token");
-        prefs.remove("_login_expiration_date");
-      } else {
-        launchPage = HomePage();
+    try {
+      if (expDate != null) {
+        if (DateTime.now().isAfter(DateTime.parse(expDate))) {
+          /* session expired : clean params */
+          prefs.remove("_customer");
+          prefs.remove("_token");
+          prefs.remove("_login_expiration_date");
+        } else {
+          launchPage = HomePage();
+        }
       }
+    } catch (_) {
+      print ("error checklogin() ");
+      launchPage = HomePage();
     }
   }
 
@@ -112,6 +119,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     /* check the login status */
     checkLogin();
+
     homeWelcomePage = HomeWelcomePage(key: homeKey,
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,
@@ -371,6 +379,12 @@ class _HomePageState extends State<HomePage> {
           _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
         }
         break;
+      case "vouchers":
+        print("vouchers page");
+        widget.destination = SplashPage.VOUCHERS;
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        break;
       case "transactions":
         _jumpToPage(
             context, TransactionHistoryPage(presenter: TransactionPresenter()));
@@ -438,6 +452,7 @@ class _HomePageState extends State<HomePage> {
         }
         break;
     }
+    pathSegments[0] = null;
   }
 
   void _handleLinks(String link) {
@@ -519,7 +534,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 
- Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
+Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   print("onBackgroundMessage: $message");
 /* send json version of notification object. */
   if (Platform.isAndroid) {

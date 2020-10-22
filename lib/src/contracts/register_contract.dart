@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 
 
 /* Register contract */
@@ -30,6 +31,8 @@ class RegisterView {
   void codeIsOk(bool isOk){}
 
   void userExistsAlready(){}
+
+  void codeError(){}
 
   void codeRequestSentOk(){}
 }
@@ -113,11 +116,12 @@ class RegisterPresenter implements RegisterContract {
 
     String jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, phone_number: phone_number, email: email, request_id: request_id);
     int error = json.decode(jsonContent)["error"];
-
     if (error == 0) {
       /* successfully created account */
       /* jump to the login page to login the customer */
-      _registerView.registerSuccess(/*phone_number.trim().length == 0 ? email : */phone_number, password);
+      _registerView.registerSuccess(Utils.isEmailValid(email) ? email : phone_number, password);
+    } else if (error == 301) {
+      _registerView.codeError();
     } else{
       _registerView.onSysError(message: json.decode(jsonContent)["message"]);
     }

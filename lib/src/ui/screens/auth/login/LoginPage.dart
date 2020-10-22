@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number;
-      if (Utils.isPhoneNumber_TGO(widget.phone_number) && widget?.password?.length == 4)
+      if ((Utils.isPhoneNumber_TGO(widget.phone_number) || Utils.isEmailValid(widget.phone_number)) && widget?.password?.length == 4)
         widget.presenter.login(widget.phone_number, widget.password, widget.version);
     }
   }
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: 8, keyboardType: TextInputType.number, decoration:
+                            child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
                             InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:Colors.black)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                     SizedBox(height: 30),

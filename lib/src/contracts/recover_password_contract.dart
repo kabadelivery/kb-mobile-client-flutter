@@ -93,7 +93,7 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
   }
 
   @override
-  Future<void> updatePassword(String phoneNumber, String newCode,
+  Future<void> updatePassword(String login, String newCode,
       String requestId) async {
 // post it to the server.
     if (isWorking)
@@ -102,15 +102,16 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
     _recoverPasswordView.sendVerificationCodeLoading(true);
     try {
       String jsonContent = await provider.passwordResetAction(
-          phoneNumber, newCode, requestId);
-      _recoverPasswordView.sendVerificationCodeLoading(true);
+          login, newCode, requestId);
+      _recoverPasswordView.sendVerificationCodeLoading(false);
       int error = json.decode(jsonContent)["error"];
       if (error == 0) {
-        _recoverPasswordView.recoverSuccess(phoneNumber, newCode);
+        _recoverPasswordView.recoverSuccess(login, newCode);
       } else {
         _recoverPasswordView.recoverFails();
       }
     } catch (_) {
+      _recoverPasswordView.sendVerificationCodeLoading(false);
       print(_);
       _recoverPasswordView.recoverFails();
     }

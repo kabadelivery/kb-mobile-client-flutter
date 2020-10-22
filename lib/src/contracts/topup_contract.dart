@@ -6,6 +6,7 @@ import 'package:KABA/src/resources/menu_api_provider.dart';
 class TopUpContract {
 
   void launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) {}
+  void launchPayDunya(CustomerModel customer, String phoneNumber, String balance, int fees) {}
   void fetchFees(CustomerModel customer) {}
   void fetchTopUpConfiguration(CustomerModel customer) {}
 }
@@ -58,6 +59,29 @@ class TopUpPresenter implements TopUpContract {
       isWorking = false;
     }
   }
+
+  @override
+  Future<void> launchPayDunya(CustomerModel customer, String phoneNumber, String balance, int fees) async {
+
+    if (isWorking)
+      return;
+    isWorking = true;
+    _topUpView.showLoading(true);
+    try {
+      String link = await provider.launchTopUp(customer, phoneNumber, balance, fees);
+      _topUpView.topUpToWeb(link);
+      isWorking = false;
+    } catch (_) {
+      print("error ${_}");
+      if (_ == -2) {
+        _topUpView.systemError();
+      } else {
+        _topUpView.networkError();
+      }
+      isWorking = false;
+    }
+  }
+
 
   @override
   Future<void> fetchFees(CustomerModel customer) async {

@@ -434,7 +434,8 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
-          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+//          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+         .post(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
@@ -473,13 +474,18 @@ class ClientPersonalApiProvider {
     }
   }
 
-  Future<String>  passwordResetAction(String phoneNumber, String newCode, String requestId) async {
+  Future<String>  passwordResetAction(String login, String newCode, String requestId) async {
 
     DebugTools.iPrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_PASSWORD_RESET,
-          body: json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${phoneNumber}"}))
+          body:
+
+         Utils.isEmailValid(login) ?
+         json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
+         json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
+
           .timeout(const Duration(seconds: 60));
       print(response.body.toString());
       if (response.statusCode == 200) {

@@ -78,7 +78,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+    setState(() {
+      popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+    });
   }
 
   /*static getCustomer () async {
@@ -151,7 +153,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
 
   void _jumpToPage (BuildContext context, page) {
-  /*  Navigator.push(
+    /*  Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => page,
@@ -160,7 +162,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            page,
+        page,
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -223,17 +225,17 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 GestureDetector(
-                  child: Container(
-                      height:100, width: 100,
-                      decoration: BoxDecoration(
-                          border: new Border.all(color: Colors.white, width: 2),
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
-                          )
-                      )
-                  ), onTap: ()=>
+                    child: Container(
+                        height:100, width: 100,
+                        decoration: BoxDecoration(
+                            border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+                            )
+                        )
+                    ), onTap: ()=>
                     _seeProfilePicture()
 //                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
                 ),
@@ -244,18 +246,19 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                         children: <Widget>[
                           Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
                           SizedBox(height:10),
-                          Text("XXXX${widget.customerData.username.substring(4)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
+
+                          Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
                         ])
                 )],
             ),
             padding:EdgeInsets.all(10),
 //            color: KColors.primaryYellowColor,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [KColors.primaryYellowColor, Colors.yellow]),
-          ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [KColors.primaryYellowColor, Colors.yellow]),
+            ),
           )),
     );
 
@@ -697,7 +700,6 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             }
         ));
   }
-
 
 
   void _jumpToInfoPage() {

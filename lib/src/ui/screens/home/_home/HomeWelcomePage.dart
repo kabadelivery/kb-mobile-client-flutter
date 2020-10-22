@@ -176,6 +176,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
             break;
         }
+        widget.destination = null;
       }
     });
 

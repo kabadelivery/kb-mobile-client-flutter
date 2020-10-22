@@ -8,6 +8,7 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -31,6 +32,7 @@ class SplashPage extends StatefulWidget { // translated
   static const String TRANSACTIONS = "TRANSACTIONS",
       RESTAURANT = "RESTAURANT",
       VOUCHER = "VOUCHER",
+      VOUCHERS = "VOUCHERS",
       ORDER = "ORDER",
       FOOD = "FOOD",
       MENU = "MENU",
@@ -186,6 +188,7 @@ class _SplashPageState extends State<SplashPage> {
     }
     if (isFirstTime == null)
       isFirstTime = true;
+
     return isFirstTime;
   }
 
@@ -270,14 +273,29 @@ class _SplashPageState extends State<SplashPage> {
     /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
-
     switch(pathSegments[0]) {
+      case "voucher":
+        if (pathSegments.length > 1) {
+          print("voucher id splash -> ${pathSegments[1]}");
+          widget.destination = SplashPage.VOUCHER;
+          /* convert from hexadecimal to decimal */
+          widget.argument = "${pathSegments[1]}";
+          navigatorKey.currentState.pushNamed(AddVouchersPage.routeName, arguments: widget.argument);
+        }
+        break;
+      case "vouchers":
+        print("vouchers page");
+        widget.destination = SplashPage.VOUCHERS;
+        /* convert from hexadecimal to decimal */
+        navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
+        break;
       case "transactions":
 //        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        widget.destination = SplashPage.TRANSACTIONS;
         navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
         break;
       case "restaurants":
-    //    widget.destination = SplashPage.RESTAURANT_LIST;
+          widget.destination = SplashPage.RESTAURANT_LIST;
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
@@ -313,7 +331,6 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
-
         }
         break;
       case "review-order":
@@ -375,6 +392,11 @@ class _SplashPageState extends State<SplashPage> {
           widget.argument = "${pathSegments[1]}";
         }
         break;
+      case "vouchers":
+        print("vouchers page");
+        widget.destination = SplashPage.VOUCHERS;
+        /* convert from hexadecimal to decimal */
+        break;
       case "order":
         if (pathSegments.length > 1) {
           print("order id -> ${pathSegments[1]}");
@@ -424,7 +446,7 @@ class _SplashPageState extends State<SplashPage> {
             }
         ));
 
-   /* Navigator.push(
+    /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => page,

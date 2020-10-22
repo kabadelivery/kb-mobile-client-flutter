@@ -96,32 +96,22 @@ class _SplashPageState extends State<PresentationPage> {
   _endOfTheSlides() async {
     // set seen at true, and move to whatever page the other page which is terms and conditions
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("_first_time", false);
+    prefs.setBool("_first_time", false).then((value) {
 
-    // jump to splashscreen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SplashPage(),
-      ),
-    );
+      // jump to splashscreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SplashPage(),
+        ),
+      );
+
+    });
+
+
   }
 
 
-  Future<bool> _getIsOkWithTerms() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isOkWithTerms = false;
-    try {
-      // prove me it's not first time
-      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
-    } catch(_){
-      // is first time
-      isOkWithTerms = false;
-    }
-    if (isOkWithTerms == null)
-      isOkWithTerms = false;
 
-    return isOkWithTerms;
-  }
 
 }
