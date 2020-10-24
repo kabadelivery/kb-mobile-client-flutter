@@ -5,6 +5,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:toast/toast.dart';
 
 
@@ -14,9 +15,15 @@ class TopUpPage extends StatefulWidget {
 
   TopUpPresenter presenter;
 
-  var feesPercentage = 10;
+//  var feesPercentage = 10;
   var total = 0;
   var fees = 0;
+
+  int fees_tmoney = 10;
+
+  int fees_flooz = 10;
+
+  var fees_bankcard = 10;
 
   TopUpPage({Key key, this.presenter}) : super(key: key);
 
@@ -43,9 +50,11 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   bool isGetFeesLoading = false;
   FocusNode _totalFocusNode, _amountFocusNode;
 
-  int selectedPaymentMode = 0;
+  int selectedPaymentMode = 0;  // 0 tmoney 1 bank card 2 flooz
 
-  TextEditingController _feesFieldController; // 0 tmoney 1 bank card 2 flooz
+  TextEditingController _feesFieldController;
+
+  int BANK_MIN_AMOUNT = 200;
 
   @override
   void initState() {
@@ -61,7 +70,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     _totalAmountFieldController.addListener(_updateFromTotal);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-//      widget.presenter.fetchFees(widget.customer);
+      widget.presenter.fetchFees(widget.customer);
 //      widget.presenter.fetchTopUpConfiguration(widget.customer);
     });
 
@@ -103,7 +112,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
               ),
 
 
-          selectedPaymentMode == 2 ? Column(children: [
+              selectedPaymentMode != 1 ? Column(children: [
                 SizedBox(height: 15),
                 /* phone number just in case we are working with moov*/
                 Container(color: Colors.white, padding: EdgeInsets.all(10),
@@ -145,10 +154,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 ),
               ]),
 
-
               SizedBox(height: 10),
 
-              Text("* Les frais s'élèvent à ${widget.feesPercentage}% du montant à recharger", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor)),
+              isGetFeesLoading ?  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)), height: 15, width: 15) : Container(),
+
+              SizedBox(height: 5),
+
+              Text("* Les frais s'élèvent à ${_getFees()}% du montant à recharger", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
 
               Column(children: [
                 SizedBox(height: 10),
@@ -203,7 +215,14 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                       children: <Widget>[
                         Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width:10),
-                        Text("${_totalAmountFieldController.text} XOF", style: TextStyle(color: Colors.white, fontSize: 20))
+                        Text("${_totalAmountFieldController.text} XOF", style: TextStyle(color: Colors.white, fontSize: 20)),
+                        SizedBox(width: 8),
+                        isLaunching ?  Row(
+                          children: <Widget>[
+                            SizedBox(width: 10),
+                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
+                          ],
+                        )  : Container(),
                       ],
                     ), onPressed: () {
                       iLaunchTransaction();
@@ -252,8 +271,14 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     if (Utils.isPhoneNumber_TGO(number)) {
       if (Utils.isPhoneNumber_Moov(number)) {
         mOperator = "MOOV";
+        setState(() {
+          selectedPaymentMode = 2;
+        });
       } else if (Utils.isPhoneNumber_Tgcel(number)) {
         mOperator = "TOGOCEL";
+        setState(() {
+          selectedPaymentMode = 0;
+        });
       } else {
         mOperator = "---";
       }
@@ -278,19 +303,24 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       return;
     }
 
-    if (!_checkOperator()) {
+    if (selectedPaymentMode != 1 && !Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text)) {
       mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
     } else {
       if (widget.customer != null)
         if (selectedPaymentMode == 0 || selectedPaymentMode == 2)
-        widget.presenter.launchTopUp(
-            widget.customer, "${_phoneNumberFieldController.text}",
-            "${_amountFieldController.text}", widget.feesPercentage);
+          widget.presenter.launchTopUp(
+              widget.customer, "${_phoneNumberFieldController.text}",
+              "${_amountFieldController.text}", _getFees());
         else {
           // launch pay dunya
-          widget.presenter.launchPayDunya(
-              widget.customer, "${_phoneNumberFieldController.text}",
-              "${_amountFieldController.text}", widget.feesPercentage);
+          String amount = "${_amountFieldController.text}";
+          int _amount = int.parse(amount);
+          if (_amount >= BANK_MIN_AMOUNT)
+            widget.presenter.launchPayDunya(
+                widget.customer,
+                "${_amountFieldController.text}", _getFees());
+          else
+            mDialog("Bank card Top up amount must be at least ${BANK_MIN_AMOUNT}");
         }
       else
         mToast("${AppLocalizations.of(context).translate('system_error')}");
@@ -299,6 +329,66 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   void mToast(String message) {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
   }
 
 
@@ -347,7 +437,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     else
       amount_ = int.parse(amount);
 
-    return ((widget.feesPercentage.toDouble()*amount_.toDouble())~/100);
+    return ((_getFees().toDouble()*amount_.toDouble())~/100);
   }
 
   _getFeesFromTotal() {
@@ -359,8 +449,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       amount_ = int.parse(amount);
 
     // total = 1 + x | 1.10 // price 9000 -> 9000 / 1.10
-    int fees = (amount_ * (1 - 1/(widget.feesPercentage.toDouble()/100 + 1.0))).toInt();
-   return fees;
+    int fees = (amount_ * (1 - 1/(_getFees().toDouble()/100 + 1.0))).toInt();
+    return fees;
   }
 
   _getRealInitialAmountFromTotal () {
@@ -388,15 +478,22 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     return amount + fees;
   }
 
+  @override
+  void updateFees(fees_tmoney, fees_flooz, fees_bankcard) {
+    setState(() {
+      widget.fees_tmoney = fees_tmoney;
+      widget.fees_flooz = fees_flooz;
+      widget.fees_bankcard = fees_bankcard;
+    });
+  }
 
-
-
+/*
   @override
   void updateFees(int feesPercentage) {
     setState(() {
       widget.feesPercentage = feesPercentage;
     });
-  }
+  }*/
 
 
   @override
@@ -405,4 +502,20 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       this.isGetFeesLoading = isGetFeesLoading;
     });
   }
+
+  _getFees() {
+    switch(selectedPaymentMode){
+      case 0:
+        return widget.fees_tmoney;
+        break;
+      case 1:
+        return widget.fees_bankcard;
+        break;
+      case 2:
+        return widget.fees_flooz;
+    }
+    return 10;
+  }
+
+
 }

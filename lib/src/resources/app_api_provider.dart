@@ -272,4 +272,31 @@ class AppApiProvider {
       throw Exception(-2);
     }
   }
+
+  /*hack */
+  checkBalance(CustomerModel customer) async {
+
+    DebugTools.iPrint("entered checkBalance vHomePage");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_GET_BALANCE,
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          String balance = json.decode(response.body)["data"]["balance"];
+          return balance;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
 }

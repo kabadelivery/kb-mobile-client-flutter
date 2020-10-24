@@ -1162,7 +1162,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       color: Colors.white,
       child: Column(
         children: <Widget>[
-          _orderBillConfiguration.open_type == 0 ? Container(decoration: BoxDecoration(color: KColors.mBlue, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10), child: Text("Sorry,the restaurant is closed right now.\nPlease try Pre-Ordering.", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))) : Container(),
+          _orderBillConfiguration.open_type == 0 ? Container(decoration: BoxDecoration(color: KColors.mBlue, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10),
+              child: Text("${AppLocalizations.of(context).translate('sorry_restaurant_close')}\n\n${AppLocalizations.of(context).translate('open_time')} ${_orderBillConfiguration.working_hour}\n\n${AppLocalizations.of(context).translate('try_preordering')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))) : Container(),
           _orderBillConfiguration.open_type == 1 ?  Row(children: <Widget>[
             Radio(value: 0,
                 groupValue: widget.orderOrPreorderChoice,

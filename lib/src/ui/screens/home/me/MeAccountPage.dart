@@ -71,7 +71,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"];
     CustomerUtils.getCustomer().then((customer) async {
       widget.customer = customer;
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
+        "${AppLocalizations.of(context).translate('scan')}",
+        "${AppLocalizations.of(context).translate('settings')}",
+        "${AppLocalizations.of(context).translate('logout')}",];
     });
   }
 
@@ -79,7 +82,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
-      popupMenus = ["${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
+        "${AppLocalizations.of(context).translate('scan')}",
+        "${AppLocalizations.of(context).translate('settings')}",
+        "${AppLocalizations.of(context).translate('logout')}",];
     });
   }
 
@@ -221,35 +227,61 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
               ))*/
           background: Container(
             child:
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                GestureDetector(
-                    child: Container(
-                        height:100, width: 100,
-                        decoration: BoxDecoration(
-                            border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+            Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    GestureDetector(
+                        child: Container(
+                            height:100, width: 100,
+                            decoration: BoxDecoration(
+                                border: new Border.all(color: Colors.white, width: 2),
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+                                )
                             )
-                        )
-                    ), onTap: ()=>
-                    _seeProfilePicture()
+                        ), onTap: ()=>
+                        _seeProfilePicture()
 //                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(right:20),
+//                    decoration: BoxDecoration(border: Border),
+                        child:Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
+                              SizedBox(height:10),
+                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
+                              SizedBox(height:10),
+                            ])
+                    )],
                 ),
-                Container(
-                    padding: EdgeInsets.only(right:20),
-                    child:Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
-                          SizedBox(height:10),
-
-                          Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
-                        ])
-                )],
+                SizedBox(height: 20),
+                Center(
+                  child: Row(mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                          decoration: BoxDecoration(
+                            border: new Border.all(
+                                color: KColors.primaryColor,
+                                width: 2.0,
+                                style: BorderStyle.solid
+                            ),
+                          ),
+                          padding: EdgeInsets.all(10), child: Row(children: [
+                        Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
+                        SizedBox(width:20),
+                        Text("XXX", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
+                      ])),
+                    ],
+                  ),
+                ),
+              ],
             ),
             padding:EdgeInsets.all(10),
 //            color: KColors.primaryYellowColor,
@@ -257,7 +289,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
               gradient: LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
-                  colors: [KColors.primaryYellowColor, Colors.yellow]),
+                  colors: [KColors.primaryYellowColor, Colors.yellow]
+              ),
             ),
           )),
     );
@@ -296,8 +329,15 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.balance,
                                         )),
                                     SizedBox(height:10),
-
-                                    Text("${AppLocalizations.of(context).translate('currency')} ${StateContainer.of(context).balance == null ? "" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Row(
+                                      children: [
+                                        Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                        Text(" ${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                      /*  SizedBox(width:10),
+                                        StateContainer.of(context).isBalanceLoading ?
+                                        SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
+                                      */],
+                                    )
 
                                   ],
                                 ),

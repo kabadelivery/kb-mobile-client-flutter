@@ -25,6 +25,7 @@ class TransactionHistoryPage extends StatefulWidget {
 
   @override
   _TransactionHistoryPageState createState() => _TransactionHistoryPageState();
+
 }
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> implements TransactionView {
@@ -49,7 +50,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   bool isLoading = true;
   bool isBalanceLoading = false;
   bool hasNetworkError = false;
-
 
 
   @override

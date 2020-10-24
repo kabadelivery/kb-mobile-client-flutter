@@ -25,7 +25,10 @@ class HomeWelcomeView {
   void networkError(){}
   void tokenUpdateSuccessfully() {}
   void hasUnreadMessages(bool hasNewMessage) {}
-  void checkVersion(String code, int force) {}
+  void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
+
+  void showBalanceLoading(bool isLoading) {}
+  void showBalance(String balance) {}
 }
 
 /* login presenter */
@@ -36,6 +39,8 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
   AppApiProvider provider;
 
   HomeWelcomeView _homeWelcomeView;
+
+  bool isFetchBalanceWorking = false;
 
   HomeWelcomePresenter() {
     provider = AppApiProvider();
@@ -143,10 +148,36 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       Map version = await provider.checkVersion();
       String code = version["version"];
       int force = version["is_required"];
-      _homeWelcomeView.checkVersion(code, force);
+      String cl_en = version["changeLog"]["en"];
+      String cl_fr = version["changeLog"]["fr"];
+      String cl_zh = version["changeLog"]["zh"];
+      _homeWelcomeView.checkVersion(code, force, cl_en, cl_fr, cl_zh);
     } catch (_) {
       /* RestaurantReview failure */
       print("error ${_}");
+    }
+  }
+
+  Future<void> checkBalance(CustomerModel customer) async {
+
+    if (isFetchBalanceWorking)
+      return;
+    isFetchBalanceWorking = true;
+    _homeWelcomeView.showBalanceLoading(true);
+    try {
+      String balance = await provider.checkBalance(customer);
+      // also get the restaurant entity here.
+      _homeWelcomeView.showBalance(balance);
+      isFetchBalanceWorking = false;
+    } catch (_) {
+      /* Transaction failure */
+      print("error ${_}");
+      if (_ == -2) {
+//        _transactionView.balanceSystemError();
+      } else {
+//        _transactionView.balanceSystemError();
+      }
+      isFetchBalanceWorking = false;
     }
   }
 

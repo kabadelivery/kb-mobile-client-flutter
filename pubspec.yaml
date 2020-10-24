@@ -41,12 +41,14 @@ dependencies:
   qr_flutter: ^3.0.1
   image_picker: ^0.6.1+4
   flutter_datetime_picker: ^1.2.6
-  photo_view: ^0.9.1
+  photo_view: ^0.10.2
   vibration: ^1.2.4
   audioplayers: ^0.15.1
   device_info: ^0.4.1+4
-  firebase_messaging: ^7.0.2
-#  firebase_core: ^0.4.0+9
+#  firebase_messaging: ^7.0.3
+#    firebase_core: ^0.4.0+9
+  firebase_messaging: ^6.0.9
+  firebase_core: ^0.4.0+9
   flutter_local_notifications: ^1.4.3
   url_launcher: ^5.4.5
   flare_flutter: ^2.0.3

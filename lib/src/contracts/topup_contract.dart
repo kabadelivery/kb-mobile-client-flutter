@@ -6,7 +6,7 @@ import 'package:KABA/src/resources/menu_api_provider.dart';
 class TopUpContract {
 
   void launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) {}
-  void launchPayDunya(CustomerModel customer, String phoneNumber, String balance, int fees) {}
+  void launchPayDunya(CustomerModel customer, String balance, int fees) {}
   void fetchFees(CustomerModel customer) {}
   void fetchTopUpConfiguration(CustomerModel customer) {}
 }
@@ -17,7 +17,7 @@ class TopUpView {
   void topUpToWeb(String link) {}
   void systemError () {}
   void networkError () {}
-  void updateFees(int fees) {}
+  void updateFees(fees_tmoney, fees_flooz, fees_bankcard) {}
 }
 
 
@@ -61,14 +61,14 @@ class TopUpPresenter implements TopUpContract {
   }
 
   @override
-  Future<void> launchPayDunya(CustomerModel customer, String phoneNumber, String balance, int fees) async {
+  Future<void> launchPayDunya(CustomerModel customer, String balance, int fees) async {
 
     if (isWorking)
       return;
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      String link = await provider.launchTopUp(customer, phoneNumber, balance, fees);
+      String link = await provider.launchPayDunya(customer, balance, fees);
       _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
@@ -90,10 +90,16 @@ class TopUpPresenter implements TopUpContract {
     isWorking = true;
     _topUpView.showGetFeesLoading(true);
     try {
-      int fees = await provider.fetchFees(customer);
-      _topUpView.updateFees(fees);
+      var fees_obj = await provider.fetchFees(customer);
+      _topUpView.showGetFeesLoading(false);
+     int fees_flooz = fees_obj["fees_flooz"];
+      int fees_tmoney = fees_obj["fees_tmoney"];
+      int fees_bankcard = fees_obj["fees_bankcard"];
+      _topUpView.showGetFeesLoading(false);
+      _topUpView.updateFees(fees_tmoney, fees_flooz, fees_bankcard);
       isWorking = false;
     } catch (_) {
+      _topUpView.showGetFeesLoading(false);
       print("error ${_}");
       if (_ == -2) {
         _topUpView.systemError();

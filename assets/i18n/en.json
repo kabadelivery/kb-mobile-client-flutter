@@ -49,7 +49,7 @@
   "all_restaurants": "ALL RESTAURANTS",
   "call_us": "CALL US",
   "best_seller": "BEST SELLER",
-  "events": "EVENEMENTS",
+  "events": "GOOD PLANS !",
   "try_again": "TRY AGAIN",
   "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again.",
   "error_message": "Error message",
@@ -245,7 +245,7 @@
   "this_location": "This location",
   "nearby_places": "Nearby Places",
   "identifier": "Phone / E-mail",
-  "no_upcoming_events": "Sorry, there is no upcoming event for now!",
+  "no_upcoming_events": "Sorry, there is no good plans for now! Stay tuned !",
   "monday_long": "Monday",
   "tuesday_long": "Tuesday",
   "wednesday_long": "Wednesday",
@@ -334,6 +334,11 @@
   "foods_" : "Foods",
   "amount_to_top_up" : "Top Up Amount",
 
-  "register_code_error": "Register Code Error"
+  "register_code_error": "Register Code Error",
+  "sorry_restaurant_close": "Sorry,the restaurant is closed right now.",
+  "open_time": "Open Time: ",
+  "try_preordering": "Please try Pre-Ordering.",
+
+  "your_kaba_points": "YOUR POINTS KABA"
 
 }

@@ -43,11 +43,11 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
     super.initState();
     widget.presenter.transferMoneyRequestView = this;
     _phoneNumberFieldController = TextEditingController();
-    _phoneNumberFieldController.addListener((){
+   /* _phoneNumberFieldController.addListener((){
       setState(() {
         isTgoNumber = Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text);
       });
-    });
+    });*/
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
     });
@@ -77,7 +77,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
                   Text("${AppLocalizations.of(context).translate('account')}"),
                   SizedBox(width:20),
                   Expanded(flex: 7, child:
-                  TextField(controller: _phoneNumberFieldController, maxLength: 8, style: TextStyle(fontSize: 20), keyboardType: TextInputType.number, enabled: !isLaunching,
+                  TextField(controller: _phoneNumberFieldController, maxLength: TextField.noMaxLength, style: TextStyle(fontSize: 18), keyboardType: TextInputType.text, enabled: !isLaunching,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ))
@@ -95,7 +95,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
               Container(margin: EdgeInsets.only(top:15, bottom:15, left:20, right:20),
                 child: SizedBox(
                   width: double.infinity,
-                  child: MaterialButton(color: isTgoNumber ? KColors.primaryColor : KColors.primaryColor.withAlpha(150),  padding: EdgeInsets.only(top:5, bottom:5),
+                  child: MaterialButton(color: KColors.primaryColor,  padding: EdgeInsets.only(top:5, bottom:5),
                       child: Row(mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text("${AppLocalizations.of(context).translate('next')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white)),
@@ -139,10 +139,10 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
   void iLaunchTransaction() {
 
     String phoneNumber = _phoneNumberFieldController.text;
-    if (Utils.isPhoneNumber_TGO(phoneNumber)) {
+//    if (Utils.isPhoneNumber_TGO(phoneNumber)) {
       // can launch
       if (widget.customer != null) {
-       if (widget.customer.phone_number != phoneNumber)
+       if (widget.customer.phone_number != phoneNumber && widget.customer.email != phoneNumber)
         widget.presenter.launchTransferMoneyRequest(
             widget.customer, phoneNumber);
        else
@@ -150,12 +150,12 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
              message:"${AppLocalizations.of(context).translate('cant_transfer_own_account')}",
              icon: Icon(FontAwesomeIcons.user, color: KColors.primaryColor)
          );
-      }else
+      } else
         mToast("${AppLocalizations.of(context).translate('system_error')}");
-    } else {
+    /* } else {
       // can't launch
       mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
-    }
+    }*/
   }
 
   void mToast(String message) {

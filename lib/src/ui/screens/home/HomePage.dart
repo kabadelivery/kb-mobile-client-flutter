@@ -327,9 +327,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       StateContainer.of(context).updateTabPosition(tabPosition: value);
     });
-    if (value == 1) {
+    if (value == 3) {
       // ask for permission gps
 //     restaurantListPage._getLastKnowLocation();
+
     }
   }
 

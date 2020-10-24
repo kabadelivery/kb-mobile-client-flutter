@@ -106,10 +106,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         this.widget.presenter.updateToken(customer);
       }
       widget.customer = customer;
+      /* check kaba points */
+      Future.delayed(Duration(seconds: 1)).then((value){
+        this.widget.presenter.checkBalance(customer);
+      });
     });
 
     this.widget.presenter.fetchHomePage();
     this.widget.presenter.checkVersion();
+
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -558,7 +563,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             child:Container(
                                                 child: Column(
                                                   children: <Widget>[
-                                                    Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryColor)),
+                                                    Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:14, color: KColors.primaryColor)),
                                                     Container(
                                                       padding: EdgeInsets.all(5),
                                                       height:90, width: 120,
@@ -570,7 +575,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                           child: Container(
                                             child: Column(
                                               children: <Widget>[
-                                                Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.primaryYellowColor)),
+                                                Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:14, color: KColors.primaryYellowColor)),
                                                 Container(
                                                   padding: EdgeInsets.all(5),
                                                   height:90, width: 120,
@@ -942,9 +947,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   @override
-  void checkVersion(String code, int force) {
+  void checkVersion(String code, int force, String cl_en, String cl_fr, String cl_zh) {
 
     String mCode = code.replaceAll(new RegExp(r'\.'), "");
+
+    String defaultLocale = Platform.localeName;
+    String cl = cl_fr;
+
+    if (defaultLocale.contains("en")) {
+      cl = cl_en;
+    } else if (defaultLocale.contains("fr")) {
+      cl = cl_fr;
+    } else if (defaultLocale.contains("zh")) {
+      cl = cl_zh;
+    }
 
     int _code = int.parse(mCode);
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
@@ -957,7 +973,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         if (force == 1){
           /* show the dialog. */
           Future.delayed(new Duration(seconds: 1)).then((value) {
-            iShowDialog(code, 1);
+            iShowDialog(code, 1, change_log: cl);
           });
         } else {
           /* check if  already shown, if not then we show it again.*/
@@ -967,7 +983,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           if (prefs.get("${code}") != 1) {
             prefs.setInt("${code}", 1).then((value) {
               Future.delayed(new Duration(seconds: 1)).then((value) {
-                iShowDialog(code, 0);
+                iShowDialog(code, 0, change_log: cl);
               });
             });
           }
@@ -977,7 +993,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
 
-  void iShowDialog(String version, int force) {
+  void iShowDialog(String version, int force,{String change_log=null} ) {
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -990,7 +1006,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                         width: 80,
                         child: Icon(Icons.settings, size: 80, color: KColors.primaryColor)),
                     SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context).translate('new_version_available')} $version", textAlign: TextAlign.center,
+                    Text("${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} $version", textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13))
                   ]
               ),
@@ -1045,6 +1061,18 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       }
     }
     return -1;
+  }
+
+  @override
+  void showBalance(String balance) {
+    print("balance ${balance}");
+    StateContainer.of(context).updateBalance(balance: int.parse(balance));
+    showBalanceLoading(false);
+  }
+
+  @override
+  void showBalanceLoading(bool isLoading) {
+    StateContainer.of(context).updateBalanceLoadingState(isBalanceLoading: isLoading);
   }
 
 }

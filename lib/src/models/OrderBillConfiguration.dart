@@ -77,6 +77,7 @@ class OrderBillConfiguration {
   int can_preorder;
   String discount;
   int open_type = -1;
+  String working_hour = "";
   String reason;
 List<DeliveryTimeFrameModel> deliveryFrames;
 
@@ -125,7 +126,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     this.total_pricing, this.total_normal_pricing, this.account_balance,
     this.out_of_range, this.pay_at_delivery, this.prepayed, this.trustful,
     this.max_pay, this.cooking_time, this.can_preorder, this.discount,
-    this.open_type, this.reason, this.deliveryFrames, this.isBillBuilt});
+    this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt});
 
 
   OrderBillConfiguration.fromJson(Map<String, dynamic> json) {

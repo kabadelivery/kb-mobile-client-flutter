@@ -1,4 +1,5 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.da
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class AdsPreviewPage extends StatefulWidget {
@@ -190,6 +192,19 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
     }
   }
 
+  Future<dynamic> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      return await launch(url);
+    } else {
+      try {
+        throw 'Could not launch $url';
+      } catch (_) {
+        print(_);
+      }
+    }
+    return -1;
+  }
+
   _onAdsButtonPressed(AdModel data) {
 
     /* jump to supposed activity */
@@ -200,7 +215,9 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //      case AdModel.TYPE_ARTICLE:
 //        break;
       case AdModel.TYPE_ARTICLE_WEB:
-      // go the article page.
+      // go the article page //
+      print("Go to link -> ${ServerConfig.SERVER_ADDRESS+"/link/${data.link}"}");
+        _launchURL(ServerConfig.SERVER_ADDRESS+"/link/${data.link}");
         break;
       case AdModel.TYPE_RESTAURANT:
         widget.presenter.loadRestaurantFromId(data.entity_id, /* for menu 1*/);

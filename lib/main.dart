@@ -78,11 +78,15 @@ class _MyAppState extends State<MyApp> {
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           return MaterialApp(
+
             supportedLocales: [
+
               Locale('en', 'US'),
               Locale('fr', 'FR'),
               Locale.fromSubtags(languageCode: 'zh')
+
             ],
+
             localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

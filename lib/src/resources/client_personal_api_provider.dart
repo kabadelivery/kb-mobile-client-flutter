@@ -218,7 +218,7 @@ class ClientPersonalApiProvider {
         body:  json.encode({"username": login, "password":password, 'device':device }),
       ).timeout(const Duration(seconds: 30));
       print(response.body.toString());
-        return response.body.toString();
+      return response.body.toString();
     } else {
       throw Exception(-2); // there is an error in your request
     }
@@ -340,13 +340,38 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchTransferMoneyRequest(CustomerModel customer, String phoneNumber) async {
+  launchPayDunya(CustomerModel customer, String balance, int fees) async {
+    DebugTools.iPrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.LINK_TOPUP_PAYDUNYA,
+          body: json.encode({"amount": balance, 'fees':'$fees'}),
+          headers: Utils.getHeadersWithToken(customer.token))
+          .timeout(const Duration(seconds: 30));
+      print(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          String link = json.decode(response.body)["data"]["url"];
+          return link;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+
+  launchTransferMoneyRequest(CustomerModel customer, String username) async {
 
     DebugTools.iPrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CHECK_USER_ACCOUNT,
-          body: json.encode({"phone_number": phoneNumber}),
+          body: json.encode({"username": username}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
@@ -404,22 +429,25 @@ class ClientPersonalApiProvider {
     }
   }
 
-  Future<int> fetchFees(CustomerModel customer) async {
+  Future<dynamic> fetchFees(CustomerModel customer) async {
 
     DebugTools.iPrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_TOPUP_FEES_RATE,
+          .post(ServerRoutes.LINK_TOPUP_FEES_RATE_V2,
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
       print(response.body.toString());
       if (response.statusCode == 200) {
         // check the fees, if an error during this process, throw error no pb
-        int fees = json.decode(response.body)["data"]["fees"];
-        if (fees > 0)
+//        int fees_flooz = json.decode(response.body)["data"]["fees_flooz"];
+//        int fees_tmoney = json.decode(response.body)["data"]["fees_tmoney"];
+//        int fees_bankcard = json.decode(response.body)["data"]["fees_bankcard"];
+        /* if (fees > 0)
           return fees;
-        return 10;
+        return 10;*/
+        return json.decode(response.body)["data"];
       }
       else {
         throw Exception(response.statusCode); // you have no right to do this
@@ -435,7 +463,7 @@ class ClientPersonalApiProvider {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
 //          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
-         .post(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+          .post(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
@@ -482,9 +510,9 @@ class ClientPersonalApiProvider {
           .post(ServerRoutes.LINK_PASSWORD_RESET,
           body:
 
-         Utils.isEmailValid(login) ?
-         json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
-         json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
+          Utils.isEmailValid(login) ?
+          json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
+          json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
 
           .timeout(const Duration(seconds: 60));
       print(response.body.toString());
@@ -497,6 +525,7 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+
 
 
 }

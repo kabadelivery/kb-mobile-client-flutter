@@ -223,13 +223,15 @@ class ServerRoutes {
   /* t-money top up */
   static const String LINK_TOPUP_TMONEY = ServerConfig.PAY_SERVER_ADDRESS_SECURE+"/mobile/api/web/payment/init";
 
+  static const String LINK_TOPUP_PAYDUNYA = ServerConfig.PAY_SERVER_ADDRESS_SECURE+ "/mobile/api/bankcard/payment/init";
+
   /* reset password */
   static const String LINK_PASSWORD_RESET = ServerConfig.SERVER_ADDRESS_SECURE+"/api/password/reset";
   
-  static const String common_server_address = "";
+//  static const String common_server_address = "";
 
   // money transfer check customer identity
-  static const  String LINK_CHECK_USER_ACCOUNT = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/phone_number/valid/check";
+  static const  String LINK_CHECK_USER_ACCOUNT = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/username/valid/check";
 
   // money transfer interface
   static const  String LINK_MONEY_TRANSFER = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/send/credit";
@@ -250,6 +252,8 @@ class ServerRoutes {
   static const String LINK_SEND_ORDER_FEEDBACK = ServerConfig.SERVER_ADDRESS +"/mobile/api/command/delivery/rate";
 
   static const String  LINK_TOPUP_FEES_RATE = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get";
+
+  static const String  LINK_TOPUP_FEES_RATE_V2 = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get/v2";
 
   static const String  LINK_CHECK_UNREAD_MESSAGES = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/new/message/check";
 
