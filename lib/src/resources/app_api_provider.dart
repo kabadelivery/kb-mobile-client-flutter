@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,12 +24,12 @@ class AppApiProvider {
 
 
   Future<String> fetchHomeScreenModel() async {
-    DebugTools.iPrint("entered fetchHomeScreenModel");
+    xrint("entered fetchHomeScreenModel");
     if (await Utils.hasNetwork()) {
       final response = await client
           .get(ServerRoutes.LINK_HOME_PAGE,
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0)
@@ -44,14 +45,14 @@ class AppApiProvider {
   }
 
   Future<List<RestaurantModel>> fetchRestaurantList(Position position) async {
-    DebugTools.iPrint("entered fetchRestaurantList");
+    xrint("entered fetchRestaurantList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_RESTO_LIST_V2,
           body: position == null ? "" : json.encode(
               {"location": "${position?.latitude}:${position?.longitude}"}),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -73,7 +74,7 @@ class AppApiProvider {
 
   /* send the location and get back the not far from */
   Future<DeliveryAddressModel> checkLocationDetails(CustomerModel customer, Position position) async {
-    DebugTools.iPrint("entered checkLocationDetails");
+    xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
@@ -81,7 +82,7 @@ class AppApiProvider {
               {"coordinates": "${position.latitude}:${position.longitude}"}),
           headers: Utils.getHeadersWithToken(customer.token)).timeout(
           const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -92,7 +93,7 @@ class AppApiProvider {
           /* return only the content we need */
           DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(
               description: description_details, quartier: quartier);
-          print("${description_details} , ${quartier}");
+         xrint("${description_details} , ${quartier}");
           return deliveryAddressModel;
         }
         else
@@ -108,13 +109,13 @@ class AppApiProvider {
   Future<List<EvenementModel>> fetchEvenementList() async {
 
     /* get the events and show it */
-    DebugTools.iPrint("entered fetchEvenementList");
+    xrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_EVENEMENTS_LIST).timeout(
           const Duration(seconds: 30));
 
-      print(response.body.toString());
+     xrint(response.body.toString());
 
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -137,7 +138,7 @@ class AppApiProvider {
   updateToken(CustomerModel customer) async {
 
     /* get the events and show it */
-    DebugTools.iPrint("entered updateToken");
+    xrint("entered updateToken");
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
@@ -148,7 +149,7 @@ class AppApiProvider {
     if (Platform.isAndroid) {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
+     xrint('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
       _data = json.encode({
         'os_version': '${androidInfo.version.baseOS}',
         'build_device': '${androidInfo.device}',
@@ -159,7 +160,7 @@ class AppApiProvider {
       });
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
+     xrint('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
       _data = json.encode({
         'os_version': '${iosInfo.systemVersion}',
         'build_device': '${iosInfo.utsname.sysname}',
@@ -175,7 +176,7 @@ class AppApiProvider {
           .post(ServerRoutes.LINK_REGISTER_PUSH_TOKEN, body: _data,
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
 
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -193,7 +194,7 @@ class AppApiProvider {
           .post(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES,
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         bool data = json.decode(response.body)["data"];
         return data;
@@ -239,7 +240,7 @@ class AppApiProvider {
           body: {"desc":"${desc == null ? "" : desc}"}
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         bool data = json.decode(response.body)["data"];
         return data;
@@ -257,13 +258,14 @@ class AppApiProvider {
           .post(ServerRoutes.LINK_CHECK_APP_VERSION
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         String version = json.decode(response.body)["version"];
         int is_required = int.parse("${json.decode(response.body)["isRequired"]}");
         Map res = Map();
         res["version"] = version;
         res["is_required"] = is_required;
+        res["changeLog"] = json.decode(response.body)["changeLog"];
         return res;
       }
       else
@@ -276,7 +278,7 @@ class AppApiProvider {
   /*hack */
   checkBalance(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered checkBalance vHomePage");
+    xrint("entered checkBalance vHomePage");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_BALANCE,
@@ -284,7 +286,7 @@ class AppApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -299,4 +301,35 @@ class AppApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+
+
+  checkKabaPoints(CustomerModel customer) async {
+
+    xrint("entered checkKabaPoints");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.GET_KABA_POINTS,
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+     xrint(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          int kabaPoints = json.decode(response.body)["total_kaba_point"]/*["balance"]*/;
+
+          return "${kabaPoints}";
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+
+  }
+
+
 }

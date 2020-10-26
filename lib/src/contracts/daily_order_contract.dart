@@ -4,6 +4,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/resources/commands_api_provider.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class DailyOrderContract {
 
@@ -54,7 +55,7 @@ class DailyOrderPresenter implements DailyOrderContract {
     } catch (_) {
       /* BestSeller failure */
       _dailyOrderView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _dailyOrderView.systemError();
       } else {

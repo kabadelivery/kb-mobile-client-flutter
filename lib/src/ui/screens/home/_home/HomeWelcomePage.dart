@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
@@ -11,6 +12,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -21,11 +23,13 @@ import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -161,6 +165,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           case SplashPage.VOUCHER:
 //            print("voucher homewelcome -> ${widget.argument}");
             _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(), autoSubscribe: true, customer: widget.customer));
+            break;
+          case SplashPage.VOUCHERS:
+//            print("voucher homewelcome -> ${widget.argument}");
+            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+            break;
+          case SplashPage.ADDRESSES:
+//            print("voucher homewelcome -> ${widget.argument}");
+            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
             break;
           case SplashPage.ORDER:
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
@@ -1006,7 +1018,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                         width: 80,
                         child: Icon(Icons.settings, size: 80, color: KColors.primaryColor)),
                     SizedBox(height: 10),
-                    Text("${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} $version", textAlign: TextAlign.center,
+                    Text("$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ", textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13))
                   ]
               ),
@@ -1072,7 +1084,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void showBalanceLoading(bool isLoading) {
-    StateContainer.of(context).updateBalanceLoadingState(isBalanceLoading: isLoading);
+    setState(() {
+      StateContainer.of(context).updateBalanceLoadingState(isBalanceLoading: isLoading);
+    });
+  }
+
+  @override
+  void updateKabaPoints(String kabaPoints) {
+    StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
   }
 
 }

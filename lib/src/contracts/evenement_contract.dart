@@ -1,5 +1,6 @@
 import 'package:KABA/src/models/EvenementModel.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class EvenementContract {
 
@@ -46,7 +47,7 @@ class EvenementPresenter implements EvenementContract {
       _evenementView.inflateEvenement(evenements);
     } catch (_) {
       /* Evenement failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _evenementView.systemError();
       } else {

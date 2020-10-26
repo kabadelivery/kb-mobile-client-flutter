@@ -127,7 +127,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                     child:
                     Container(
                         padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: KColors.primaryColor),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight:Radius.circular(7), bottomRight:Radius.circular(7)), color: KColors.primaryColor),
                         child:Text(
                             widget.groupAd.title?.toUpperCase(),
                             style: TextStyle(color: Colors.white, fontSize: 14)

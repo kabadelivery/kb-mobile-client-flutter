@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 
 /* Register contract */
@@ -112,7 +113,7 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
       }
     } catch (_) {
       _recoverPasswordView.sendVerificationCodeLoading(false);
-      print(_);
+      xrint(_);
       _recoverPasswordView.recoverFails();
     }
     isWorking = false;

@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class TopUpContract {
 
@@ -50,7 +51,7 @@ class TopUpPresenter implements TopUpContract {
       _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _topUpView.systemError();
       } else {
@@ -72,7 +73,7 @@ class TopUpPresenter implements TopUpContract {
       _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _topUpView.systemError();
       } else {
@@ -100,7 +101,7 @@ class TopUpPresenter implements TopUpContract {
       isWorking = false;
     } catch (_) {
       _topUpView.showGetFeesLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _topUpView.systemError();
       } else {

@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/vouchers_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class VoucherContract {
 
@@ -46,7 +47,7 @@ class VoucherPresenter implements VoucherContract {
     } catch (_) {
       /* BestSeller failure */
       _voucherView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _voucherView.systemError();
       } else {

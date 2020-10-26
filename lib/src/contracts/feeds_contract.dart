@@ -3,6 +3,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/FeedModel.dart';
 import 'package:KABA/src/resources/feed_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class FeedContract {
 
@@ -49,7 +50,7 @@ class FeedPresenter implements FeedContract {
       _feedView.inflateFeed(feeds);
     } catch (_) {
       /* Feed failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _feedView.systemError();
       } else {

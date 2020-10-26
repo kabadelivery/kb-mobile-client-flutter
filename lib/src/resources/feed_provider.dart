@@ -4,6 +4,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/FeedModel.dart';
@@ -17,7 +18,7 @@ class FeedApiProvider {
 
   Future<Object> fetchFeedList (CustomerModel customer) async {
 
-    DebugTools.iPrint("entered getFeedHistory");
+    xrint("entered getFeedHistory");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_LASTEST_FEEDS,
@@ -25,7 +26,7 @@ class FeedApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {

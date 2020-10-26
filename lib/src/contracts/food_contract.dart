@@ -1,6 +1,7 @@
 
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class FoodContract {
 
@@ -44,7 +45,7 @@ class FoodPresenter implements FoodContract {
       _foodView.inflateFood(foodModel);
     } catch (_) {
       /* Food failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _foodView.systemError();
       } else {

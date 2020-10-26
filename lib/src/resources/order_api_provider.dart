@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client;
@@ -24,7 +25,7 @@ class OrderApiProvider {
 
   Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher) async {
 
-    DebugTools.iPrint("entered computeBillingAction");
+    xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
 
       List<Object> food_quantity = List();
@@ -34,7 +35,7 @@ class OrderApiProvider {
 
       var _data = json.encode({'food_command': food_quantity, 'restaurant_id': restaurant.id, 'shipping_address': address.id, "voucher_id": voucher?.id});
 
-      print(_data.toString());
+     xrint(_data.toString());
 
       final response = await client
           .post(ServerRoutes.LINK_COMPUTE_BILLING,
@@ -43,7 +44,7 @@ class OrderApiProvider {
       )
           .timeout(const Duration(seconds: 30));
 
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         return OrderBillConfiguration.fromJson(json.decode(response.body)["data"]);
       } else
@@ -65,7 +66,7 @@ class OrderApiProvider {
     if (Platform.isAndroid) {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      print("Running on ${androidInfo.model}");  // e.g. "Moto G (4)"
+     xrint("Running on ${androidInfo.model}");  // e.g. "Moto G (4)"
       device = {
         "os_version":"${androidInfo.version.baseOS}",
         "build_device":"${androidInfo.device}",
@@ -76,7 +77,7 @@ class OrderApiProvider {
       };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print("Running on ${iosInfo.utsname.machine}");  // e.g. "iPod7,1"
+     xrint("Running on ${iosInfo.utsname.machine}");  // e.g. "iPod7,1"
       device = {
         "os_version":"${iosInfo.systemVersion}",
         "build_device":"${iosInfo.utsname.sysname}",
@@ -87,8 +88,8 @@ class OrderApiProvider {
       };
     }
 
-    DebugTools.iPrint("entered payAtDelivery");
-    DebugTools.iPrint("entered payAtDelivery");
+    xrint("entered payAtDelivery");
+    xrint("entered payAtDelivery");
     if (await Utils.hasNetwork()) {
 
       List<Object> food_quantity = List();
@@ -108,7 +109,7 @@ class OrderApiProvider {
         "voucher_id": voucher?.id
       });
 
-      print("000 _ "+_data.toString());
+     xrint("000 _ "+_data.toString());
 
       final response = await client
           .post(ServerRoutes.LINK_CREATE_COMMAND,
@@ -117,7 +118,7 @@ class OrderApiProvider {
       )
           .timeout(const Duration(seconds: 60));
 
-      print("001 _ "+response.body.toString());
+     xrint("001 _ "+response.body.toString());
 
       if (response.statusCode == 200) {
         // if ok, send true or false
@@ -131,7 +132,7 @@ class OrderApiProvider {
 
   loadOrderFromId(CustomerModel customer, int orderId) async {
 
-    DebugTools.iPrint("entered loadOrderFromId");
+    xrint("entered loadOrderFromId");
     if (await Utils.hasNetwork()) {
 
       final response = await client
@@ -141,7 +142,7 @@ class OrderApiProvider {
       )
           .timeout(const Duration(seconds: 30));
 String content = response.body.toString();
-      print(content);
+     xrint(content);
       if (response.statusCode == 200) {
         return CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
       } else
@@ -153,14 +154,14 @@ String content = response.body.toString();
 
   Future<String> checkOpeningStateOfRestaurant(CustomerModel customer, RestaurantModel restaurant) async {
 
-    DebugTools.iPrint("entered checkOpeningStateOfRestaurant");
+    xrint("entered checkOpeningStateOfRestaurant");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN,
           body:  json.encode({"restaurant_id": restaurant.id}),
           headers: Utils.getHeadersWithToken(customer.token)
       ).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else
@@ -176,14 +177,14 @@ String content = response.body.toString();
 //    *command_id : “8834”,
 //    comment: “The delivery man was very rude”,
 
-    DebugTools.iPrint("entered sendFeedback");
+    xrint("entered sendFeedback");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_SEND_ORDER_FEEDBACK,
           body:  json.encode({"command_id": orderId, "rate": rating, "comment" : message}),
           headers: Utils.getHeadersWithToken(customer.token)
       ).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         return json.decode(response.body)["error"];
       } else
@@ -204,7 +205,7 @@ String content = response.body.toString();
     if (Platform.isAndroid) {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+     xrint('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
       device = {
         'os_version':'${androidInfo.version.baseOS}',
         'build_device':'${androidInfo.device}',
@@ -215,7 +216,7 @@ String content = response.body.toString();
       };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+     xrint('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
       device = {
         'os_version':'${iosInfo.systemVersion}',
         'build_device':'${iosInfo.utsname.sysname}',
@@ -226,7 +227,7 @@ String content = response.body.toString();
       };
     }
 
-    DebugTools.iPrint("entered payAtDelivery");
+    xrint("entered payAtDelivery");
     if (await Utils.hasNetwork()) {
 
       List<Object> food_quantity = List();
@@ -247,14 +248,14 @@ String content = response.body.toString();
         'push_token':'$token', // push token
       });
 
-      print("000 _ "+_data.toString());
+     xrint("000 _ "+_data.toString());
 
       final response = await client
           .post(ServerRoutes.LINK_CREATE_COMMAND,
           body:  _data,
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 60));
-      print("001 _ "+response.body.toString());
+     xrint("001 _ "+response.body.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false
         return json.decode(response.body)["error"];

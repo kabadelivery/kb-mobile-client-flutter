@@ -9,6 +9,7 @@ import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class OrderDetailsContract {
 
@@ -63,7 +64,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
     } catch(_) {
       /* Food failure */
       _orderDetailsView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderDetailsView.systemError();
       } else {

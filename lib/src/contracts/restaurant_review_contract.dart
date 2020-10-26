@@ -5,6 +5,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class RestaurantReviewContract {
 
@@ -53,7 +54,7 @@ class RestaurantReviewPresenter implements RestaurantReviewContract {
       }
     } catch (_) {
       /* RestaurantReview failure */
-      print("error ${_}");
+      xrint("error ${_}");
       _restaurantReviewView.showSendingReviewLoading(false);
       if (_ == -2) {
         _restaurantReviewView.systemError();

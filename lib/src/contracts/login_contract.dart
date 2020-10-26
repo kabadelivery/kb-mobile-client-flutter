@@ -1,10 +1,9 @@
 /* login contract */
 import 'dart:convert';
 
-import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:KABA/src/xrint.dart';
 
 class LoginContract {
 
@@ -48,7 +47,7 @@ class LoginPresenter implements LoginContract {
       try {
         jsonContent = await provider.loginAction(app_version: app_version,
             login: login, password: password);
-        print(jsonContent);
+        xrint(jsonContent);
         var obj = json.decode(jsonContent);
         int error = obj["error"];
         if (error == 0/* && token != null && token.length > 0*/) {
@@ -63,12 +62,12 @@ class LoginPresenter implements LoginContract {
           _loginView.accountNoExist();
         }
       } catch(_) {
-        print(_);
+        xrint(_);
         _loginView.loginPasswordError();
       }
     } catch(_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2)
         _loginView.networkError();
       else

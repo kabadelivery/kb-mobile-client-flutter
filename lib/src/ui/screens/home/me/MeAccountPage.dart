@@ -265,19 +265,22 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 Center(
                   child: Row(mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                          decoration: BoxDecoration(
-                            border: new Border.all(
-                                color: KColors.primaryColor,
-                                width: 2.0,
-                                style: BorderStyle.solid
+                      InkWell(
+                        child: Container(
+                            decoration: BoxDecoration(
+                              border: new Border.all(
+                                  color: KColors.primaryColor,
+                                  width: 2.0,
+                                  style: BorderStyle.solid
+                              ),
                             ),
-                          ),
-                          padding: EdgeInsets.all(10), child: Row(children: [
-                        Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
-                        SizedBox(width:20),
-                        Text("XXX", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
-                      ])),
+                            padding: EdgeInsets.all(10), child: Row(children: [
+                          Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
+                          SizedBox(width:20),
+                          Text("${StateContainer.of(context).kabaPoints == null ? "???" : StateContainer.of(context).kabaPoints}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
+                        ])),
+                        onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
+                      ),
                     ],
                   ),
                 ),
@@ -329,14 +332,19 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.balance,
                                         )),
                                     SizedBox(height:10),
-                                    Row(
-                                      children: [
-                                        Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                                        Text(" ${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-                                      /*  SizedBox(width:10),
-                                        StateContainer.of(context).isBalanceLoading ?
-                                        SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
-                                      */],
+                                    Center(
+                                      child: Center(
+                                        child: Row(mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                            SizedBox(width:5),
+                                            Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                          /*  SizedBox(width:10),
+                                            StateContainer.of(context).isBalanceLoading ?
+                                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
+                                          */],
+                                        ),
+                                      ),
                                     )
 
                                   ],

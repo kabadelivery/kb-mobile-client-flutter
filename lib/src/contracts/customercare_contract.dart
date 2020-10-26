@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/customerchat_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class CustomerCareChatContract {
 
@@ -54,7 +55,7 @@ class CustomerCareChatPresenter implements CustomerCareChatContract {
       _customerCareChatView.inflateCustomerCareChat(CustomerCareChats);
     } catch (_) {
       /* CustomerCareChat failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _customerCareChatView.systemError();
       } else {
@@ -82,7 +83,7 @@ class CustomerCareChatPresenter implements CustomerCareChatContract {
     } catch (_) {
       /* CustomerCareChat failure */
       _customerCareChatView.sendMessageLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _customerCareChatView.sendMessagesystemError();
       } else {

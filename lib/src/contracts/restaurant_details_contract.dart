@@ -5,6 +5,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class RestaurantDetailsContract {
 
@@ -30,7 +31,7 @@ class RestaurantDetailsView {
 /* RestaurantDetails presenter */
 class RestaurantDetailsPresenter implements RestaurantDetailsContract {
 
-  bool isWorking = false, isCommentWorking = false;
+  bool isWorking = false, isCommentWorking = false, isFetchRestaurantDetailsWorking = false;
 
   RestaurantDetailsView _restaurantDetailsView;
 
@@ -48,9 +49,9 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
 
   @override
   Future fetchRestaurantDetailsById(CustomerModel customer, int restaurantDetailsId) async {
-    if (isWorking)
+    if (isFetchRestaurantDetailsWorking)
       return;
-    isWorking = true;
+    isFetchRestaurantDetailsWorking = true;
     _restaurantDetailsView.showLoading(true);
     try {
       RestaurantModel restaurantModel = await provider.fetchRestaurantWithId(customer, restaurantDetailsId);
@@ -61,14 +62,14 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
         _restaurantDetailsView.systemError();
     } catch (_) {
       /* RestaurantDetails failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _restaurantDetailsView.systemError();
       } else {
         _restaurantDetailsView.networkError();
       }
-      isWorking = false;
     }
+    isFetchRestaurantDetailsWorking = false;
   }
 
   Future<void> fetchCommentList(CustomerModel customer, RestaurantModel restaurant) async {
@@ -88,7 +89,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     } catch (_) {
       /* Feed failure */
       _restaurantDetailsView.showCommentLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _restaurantDetailsView.commentSystemErrorComment();
       } else {
@@ -114,7 +115,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
       _restaurantDetailsView.showCanCommentLoading(true);
     } catch (_) {
       /* RestaurantReview failure */
-      print("error ${_}");
+      xrint("error ${_}");
       _restaurantDetailsView.showCanCommentLoading(false);
       if (_ == -2) {
         _restaurantDetailsView.canComment(0);

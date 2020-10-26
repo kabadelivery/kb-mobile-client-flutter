@@ -6,6 +6,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
@@ -37,13 +38,15 @@ class SplashPage extends StatefulWidget { // translated
       FOOD = "FOOD",
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
-      RESTAURANT_LIST = "RESTAURANT-LIST";
+      RESTAURANT_LIST = "RESTAURANT-LIST",
+  ADDRESSES = "ADDRESSES";
 
   static var routeName = "/SplashPage";
 
   var destination;
 
   var argument;
+
 
   SplashPage({Key key, this.destination = 0, this.argument = 0}) : super(key: key);
 
@@ -289,6 +292,12 @@ class _SplashPageState extends State<SplashPage> {
         /* convert from hexadecimal to decimal */
         navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
         break;
+      case "addresses":
+        print("addresses page");
+        widget.destination = SplashPage.ADDRESSES;
+        /* convert from hexadecimal to decimal */
+        navigatorKey.currentState.pushNamed(MyAddressesPage.routeName);
+        break;
       case "transactions":
 //        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
         widget.destination = SplashPage.TRANSACTIONS;
@@ -396,6 +405,10 @@ class _SplashPageState extends State<SplashPage> {
         print("vouchers page");
         widget.destination = SplashPage.VOUCHERS;
         /* convert from hexadecimal to decimal */
+        break;
+      case "addresses":
+        print("addresses page");
+        widget.destination = SplashPage.ADDRESSES;
         break;
       case "order":
         if (pathSegments.length > 1) {

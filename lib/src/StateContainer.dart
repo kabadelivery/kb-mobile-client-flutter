@@ -11,12 +11,13 @@ class StateContainer extends StatefulWidget {
   final Widget child;
   int tabPosition;
   int balance;
+  String kabaPoints;
   bool isBalanceLoading = false;
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;
   Position position;
 
-  StateContainer({@required this.child, this.balance, this.hasGotNewMessageOnce, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false});
+  StateContainer({@required this.child, this.balance, this.hasGotNewMessageOnce, this.kabaPoints, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false});
 
   static StateContainerState of(BuildContext context) {
 //    return (context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>()).data;
@@ -33,6 +34,7 @@ class StateContainerState extends State<StateContainer> {
 
   int tabPosition;
   int balance;
+  String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
   bool hasUnreadMessage;
@@ -126,6 +128,18 @@ class StateContainerState extends State<StateContainer> {
       data: this,
       child: widget.child,
     );
+  }
+
+  Future<void> updateKabaPoints({String kabaPoints}) async {
+
+    if (kabaPoints != null) {
+      setState(() {
+        this.kabaPoints = kabaPoints;
+      });
+      /* save it to shared preferences */
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('kabaPoints', kabaPoints);
+    }
   }
 }
 

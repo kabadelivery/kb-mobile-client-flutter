@@ -9,6 +9,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class MenuContract {
 
@@ -60,7 +61,7 @@ class MenuPresenter implements MenuContract {
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _menuView.systemError();
       } else {
@@ -85,7 +86,7 @@ class MenuPresenter implements MenuContract {
     } catch (_) {
       /* login failure */
       _menuView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _menuView.systemError();
       } else {
@@ -112,7 +113,7 @@ class MenuPresenter implements MenuContract {
     } catch (_) {
       /* login failure */
       _menuView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _menuView.systemError();
       } else {

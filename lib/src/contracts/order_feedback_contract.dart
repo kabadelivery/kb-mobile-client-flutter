@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class OrderFeedbackContract {
 
@@ -57,7 +58,7 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
     } catch(_) {
       /* Food failure */
       _orderFeedbackView.sendFeedBackLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderFeedbackView.sendFeedbackError(-1);
       } else {
@@ -86,7 +87,7 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
       }
     } catch(_) {
       /* Food failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderFeedbackView.systemError();
       } else {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -15,7 +16,7 @@ class CommandsApiProvider {
 
   Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchDailyOrders");
+    xrint("entered fetchDailyOrders");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT,
@@ -23,7 +24,7 @@ class CommandsApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -44,7 +45,7 @@ class CommandsApiProvider {
   /* order details */
   Future<CommandModel> fetchOrderDetails(CustomerModel customer, int orderId) async {
 
-    DebugTools.iPrint("entered fetchOrderDetails");
+    xrint("entered fetchOrderDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
@@ -52,7 +53,7 @@ class CommandsApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -72,7 +73,7 @@ class CommandsApiProvider {
   /* all orders details */
   Future<List<CommandModel>> fetchLastOrders(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchLastOrders");
+    xrint("entered fetchLastOrders");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_ALL_COMMAND_LIST,
@@ -80,7 +81,7 @@ class CommandsApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       try {
         if (response.statusCode == 200) {
           int errorCode = json.decode(response.body)["error"];
@@ -95,7 +96,7 @@ class CommandsApiProvider {
             throw Exception(-1); // there is an error in your request
         } }
       catch(_) {
-        print(_);
+       xrint(_);
         return List<CommandModel>();
       }
     } else {

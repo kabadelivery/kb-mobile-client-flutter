@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
@@ -20,6 +21,7 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
@@ -385,6 +387,12 @@ class _HomePageState extends State<HomePage> {
         widget.destination = SplashPage.VOUCHERS;
         /* convert from hexadecimal to decimal */
         _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        break;
+      case "addresses":
+        print("addresses page");
+        widget.destination = SplashPage.ADDRESSES;
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
         break;
       case "transactions":
         _jumpToPage(

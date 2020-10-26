@@ -1,23 +1,20 @@
-import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/_static_data/Vectors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {

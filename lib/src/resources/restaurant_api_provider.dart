@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
@@ -15,7 +16,7 @@ class RestaurantApiProvider {
 
   Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(RestaurantModel restaurantModel) async {
 
-    DebugTools.iPrint("entered fetchRestaurantMenuList");
+    xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
@@ -23,7 +24,7 @@ class RestaurantApiProvider {
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -44,7 +45,7 @@ class RestaurantApiProvider {
   Future<RestaurantModel> loadRestaurantFromId(int restaurantIdOrMenuId/*, int DESTINATION*/) async {
 
 
-    DebugTools.iPrint("entered loadRestaurantFromId");
+    xrint("entered loadRestaurantFromId");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(
@@ -53,12 +54,12 @@ class RestaurantApiProvider {
           body: /*DESTINATION == 1 ? */json.encode({'id': restaurantIdOrMenuId}) /*: json.encode({'menu_id': restaurantIdOrMenuId}),*/
       )
           .timeout(const Duration(seconds: 30));
-      print("001_ "+response.body.toString());
+     xrint("001_ "+response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
-//          print(json.decode(response.body)["data"]);
-//          print(json.decode(response.body)["data"][0]);
+//         xrint(json.decode(response.body)["data"]);
+//         xrint(json.decode(response.body)["data"][0]);
           RestaurantModel restaurantModel = RestaurantModel.fromJson(json.decode(response.body)["data"]["restaurant"]);
           return restaurantModel;
         } else
@@ -75,7 +76,7 @@ class RestaurantApiProvider {
   /// load food from id
   Future<RestaurantFoodModel> loadFoodFromId(int foodId) async {
 
-    DebugTools.iPrint("entered loadFoodFromId ${foodId} ");
+    xrint("entered loadFoodFromId ${foodId} ");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
@@ -83,7 +84,7 @@ class RestaurantApiProvider {
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -101,14 +102,14 @@ class RestaurantApiProvider {
 
   fetchRestaurantFoodProposalFromTag(String tag) async {
 
-    DebugTools.iPrint("entered fetchRestaurantFoodProposalFromTag ${tag}");
+    xrint("entered fetchRestaurantFoodProposalFromTag ${tag}");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG,
         body: json.encode({'tag': tag}),
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       List<RestaurantFoodModel> foods = [];
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

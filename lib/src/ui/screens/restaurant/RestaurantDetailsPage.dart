@@ -86,7 +86,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     final int args = ModalRoute.of(context).settings.arguments;
     if (args != null && args != 0)
       widget.restaurantId = args;
-    if (widget.restaurant == null){
+    if (widget.restaurant == null || widget.restaurant?.name == null){
       showLoading(true);
       // there must be a food id.
       if (widget.customer != null) {
@@ -95,7 +95,13 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       }
       else {
         showLoading(true);
-        Future.delayed(Duration(seconds: 1)).then((onValue) {
+        /*Future.delayed(Duration(seconds: 1)).then((onValue) {
+          widget.restaurant = RestaurantModel(id: widget.restaurantId);
+          widget.presenter.fetchRestaurantDetailsById(
+              widget.customer, widget.restaurantId);
+        });*/
+        CustomerUtils.getCustomer().then((customer) {
+          widget.customer = customer;
           widget.restaurant = RestaurantModel(id: widget.restaurantId);
           widget.presenter.fetchRestaurantDetailsById(
               widget.customer, widget.restaurantId);

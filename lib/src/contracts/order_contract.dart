@@ -10,6 +10,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
+import 'package:KABA/src/xrint.dart';
 
 class OrderConfirmationContract {
 
@@ -65,7 +66,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       isWorking = false;
     } catch (_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemOpeningStateError();
       } else {
@@ -91,7 +92,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemError();
       } else {
@@ -113,7 +114,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemError();
       } else {
@@ -135,7 +136,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemError();
       } else {
@@ -156,7 +157,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     try {
       String response = await provider.checkOpeningStateOfRestaurant(customer, restaurant);
       // send back the resultat obc
-      print(response);
+      xrint(response);
       OrderBillConfiguration configuration;
 
       int open_type  =0;
@@ -186,7 +187,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     } catch (_) {
       /* login failure */
       _orderConfirmationView.isRestaurantOpenConfigLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _orderConfirmationView.systemOpeningStateError();
       } else {

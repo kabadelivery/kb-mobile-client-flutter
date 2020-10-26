@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class TransferMoneyRequestContract {
 
@@ -45,7 +46,7 @@ class TransferMoneyRequestPresenter implements TransferMoneyRequestContract {
       _transferMoneyRequestView.continueTransaction(customerModel);
       isWorking = false;
     } catch (_) {
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _transferMoneyRequestView.systemError();
       } else {

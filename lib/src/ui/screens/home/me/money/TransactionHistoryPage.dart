@@ -204,4 +204,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
     });
   }
 
+  @override
+  void updateKabaPoints(String kabaPoints) {
+setState(() {
+  StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
+});
+  }
+
 }

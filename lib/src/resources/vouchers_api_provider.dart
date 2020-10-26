@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
@@ -25,7 +26,7 @@ class VoucherApiProvider {
         List.generate(3, (index) => VoucherModel.randomDelivery()).toList()
     );
 */
-    DebugTools.iPrint("entered loadVouchers");
+    xrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(restaurantId == -1 ? ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER,
@@ -33,7 +34,7 @@ class VoucherApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       String resp = response.body.toString();
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -58,7 +59,7 @@ class VoucherApiProvider {
 
   subscribeVoucher(CustomerModel customer, String promoCode,
       {bool isQrCode = false}) async {
-    DebugTools.iPrint("entered subscribeVoucher");
+    xrint("entered subscribeVoucher");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS,
@@ -68,7 +69,7 @@ class VoucherApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {

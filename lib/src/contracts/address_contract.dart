@@ -1,6 +1,7 @@
 /* login contract */
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
@@ -56,7 +57,7 @@ class AddressPresenter implements AddressContract {
     } catch (_) {
       /* BestSeller failure */
       _addressView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _addressView.systemError();
       } else {
@@ -85,7 +86,7 @@ class AddressPresenter implements AddressContract {
     } catch (_) {
       /* BestSeller failure */
       _addressView.showLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _addressView.deleteNetworkError();
       } else {

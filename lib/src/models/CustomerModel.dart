@@ -1,5 +1,7 @@
 
 
+import 'package:KABA/src/xrint.dart';
+
 class CustomerModel {
 
    int id;
@@ -22,7 +24,6 @@ class CustomerModel {
        this.profile_picture, this.theme_picture, this.isSet});
 
    CustomerModel.fromJson(Map<String, dynamic> json) {
-
       id = json['id'];
       username = json['username'];
       phone_number = json['phone_number'];

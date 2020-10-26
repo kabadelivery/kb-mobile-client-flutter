@@ -42,24 +42,32 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
 
   String localPicture;
 
-  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(),/* _emailFieldController = TextEditingController(),*/ _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
+  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(), _emailFieldController = TextEditingController(), _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
 
   bool isUpdating = false;
+
+  int accountType = 1; // 1 phone-number , 2 email
 
   TextEditingValue s ;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     this.widget.presenter.personnalPageView = this;
     _phoneNumberFieldController.text = widget.customer?.phone_number;
-//    _emailFieldController.text = widget.customer?.email;
+    _emailFieldController.text = widget.customer?.email;
     _nickNameFieldController.text = widget.customer?.nickname;
     _jobTitleFieldController.text = widget.customer?.job_title;
     _districtFieldController.text = widget.customer?.district;
 //    _emailFieldController.text = widget.customer?.email;
+
+    setState(() {
+      if (widget.customer?.phone_number != null)
+        accountType = 1;
+      if (widget.customer?.email != null)
+        accountType = 2;
+    });
   }
 
   File _image;
@@ -116,7 +124,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                     child: new Column(
                         children: <Widget>[
                           SizedBox(height: 20),
-                          InkWell(
+                      accountType == 1 ? InkWell(
                             onTap: ()=> setUpLogin(1),
                             child: Container(
                               padding: EdgeInsets.all(10),
@@ -127,20 +135,20 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                                     border: InputBorder.none,
                                   )),
                             ),
-                          ),
-                     /*     SizedBox(height: 20),
-                          InkWell(
+                          ) : Container(),
+                           SizedBox(height: 20),
+                        accountType == 2 ?  InkWell(
                             onTap: ()=> setUpLogin(2),
                             child: Container(
                               padding: EdgeInsets.all(10),
                               color: Colors.white,
-                              *//* phone number must be confirmed by another interface before setting it up. *//*
+                              /* phone number must be confirmed by another interface before setting it up. */
                               child:TextField(controller: _emailFieldController, enabled: false,
-                                  decoration: InputDecoration(labelText: "Email", *//* if  already sat, we cant put nothing else *//*
+                                  decoration: InputDecoration(labelText: "Email", /* if  already sat, we cant put nothing else */
                                     border: InputBorder.none,
                                   )),
                             ),
-                          ),*/
+                          ) : Container(),
                           SizedBox(height: 20),
                           Container(
                             padding: EdgeInsets.all(10),

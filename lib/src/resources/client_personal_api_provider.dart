@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
@@ -26,13 +27,13 @@ class ClientPersonalApiProvider {
   ///
   /// Get restaurants comments list
   fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
-    DebugTools.iPrint("entered fetchRestaurantComment");
+    xrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS,
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -61,12 +62,12 @@ class ClientPersonalApiProvider {
   ///
   /// Get customer account's delivery address
   Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) async {
-    DebugTools.iPrint("entered fetchMyAddresses");
+    xrint("entered fetchMyAddresses");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_ADRESSES,
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -85,7 +86,7 @@ class ClientPersonalApiProvider {
 
   /* register sending code */
   Future<String> registerSendingCodeAction (String login) async {
-    DebugTools.iPrint("entered registerSendingCodeAction");
+    xrint("entered registerSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
@@ -95,7 +96,7 @@ class ClientPersonalApiProvider {
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -109,15 +110,15 @@ class ClientPersonalApiProvider {
   Future<String> checkRequestCodeAction(String code, String requestId) async {
 
     /*  */
-    DebugTools.iPrint("entered checkRequestCodeAction");
+    xrint("entered checkRequestCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
           .post(ServerRoutes.LINK_CHECK_VERIFCATION_CODE,
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));
-      print(json.encode({"code": code, "request_id": requestId}));
-      print(response.body.toString());
+      xrint(json.encode({"code": code, "request_id": requestId}));
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -130,14 +131,14 @@ class ClientPersonalApiProvider {
 
   Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id}) async {
 
-    DebugTools.iPrint("entered registerCreateAccountAction");
+    xrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
           .post(ServerRoutes.LINK_USER_REGISTER,
           body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -151,7 +152,7 @@ class ClientPersonalApiProvider {
   /*
   Future<String> loginAction({String login, String password}) async {
 
-    DebugTools.iPrint("entered loginAction");
+    xrint("entered loginAction");
     if (await Utils.hasNetwork()) {
 //      await Future.delayed(const Duration(seconds: 1));
       var request =   MultipartRequest("POST", Uri.parse(ServerRoutes.LINK_USER_LOGIN));
@@ -176,7 +177,7 @@ class ClientPersonalApiProvider {
 
   Future<String> loginAction({String login, String password, String app_version}) async {
 
-    DebugTools.iPrint("entered loginAction");
+    xrint("entered loginAction");
     if (await Utils.hasNetwork()) {
 
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -189,7 +190,7 @@ class ClientPersonalApiProvider {
       if (Platform.isAndroid) {
         // Android-specific code
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+        xrint('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
         device = {
           'app_version' : 'Flutter $app_version',
           'os_version':'${androidInfo.version.baseOS}',
@@ -201,7 +202,7 @@ class ClientPersonalApiProvider {
         };
       } else if (Platform.isIOS) {
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+        xrint('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
         device = {
           'app_version' : 'Flutter $app_version',
           'os_version':'${iosInfo.systemVersion}',
@@ -217,7 +218,7 @@ class ClientPersonalApiProvider {
           .post(ServerRoutes.LINK_USER_LOGIN_V2,
         body:  json.encode({"username": login, "password":password, 'device':device }),
       ).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       return response.body.toString();
     } else {
       throw Exception(-2); // there is an error in your request
@@ -228,7 +229,7 @@ class ClientPersonalApiProvider {
   ///
   ///
   Future<CustomerModel> updatePersonnalPage(CustomerModel customer) async {
-    DebugTools.iPrint("entered updatePersonnalPage");
+    xrint("entered updatePersonnalPage");
     if (await Utils.hasNetwork()) {
       var _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
       if (customer.profile_picture != null)
@@ -237,14 +238,13 @@ class ClientPersonalApiProvider {
           .post(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS,
           body: _data,
           headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
           /* return resulting customer that has to be saved in the shared preferences again. */
           var obj = json.decode(response.body);
           customer = CustomerModel.fromJson(obj["data"]);
-
           return customer;
         } else
           throw Exception(-1); // there is an error in your request
@@ -261,7 +261,7 @@ class ClientPersonalApiProvider {
   /* all orders details */
   Future<List<TransactionModel>> fetchTransactionsHistory(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchLastTransactions");
+    xrint("entered fetchLastTransactions");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_TRANSACTION_HISTORY,
@@ -269,7 +269,7 @@ class ClientPersonalApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -290,7 +290,7 @@ class ClientPersonalApiProvider {
 
   checkBalance(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered checkBalance");
+    xrint("entered checkBalance");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_BALANCE,
@@ -298,7 +298,7 @@ class ClientPersonalApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -316,7 +316,7 @@ class ClientPersonalApiProvider {
 
   launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) async {
 
-    DebugTools.iPrint("entered launchTopUp");
+    xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ,
@@ -324,7 +324,7 @@ class ClientPersonalApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -341,14 +341,14 @@ class ClientPersonalApiProvider {
   }
 
   launchPayDunya(CustomerModel customer, String balance, int fees) async {
-    DebugTools.iPrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
+    xrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_TOPUP_PAYDUNYA,
           body: json.encode({"amount": balance, 'fees':'$fees'}),
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -367,7 +367,7 @@ class ClientPersonalApiProvider {
 
   launchTransferMoneyRequest(CustomerModel customer, String username) async {
 
-    DebugTools.iPrint("entered launchTransferMoneyRequest");
+    xrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CHECK_USER_ACCOUNT,
@@ -375,7 +375,7 @@ class ClientPersonalApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == -2) {
@@ -399,7 +399,7 @@ class ClientPersonalApiProvider {
 
   launchTransferMoneyAction(CustomerModel customer, int receiverId, String transaction_password, String amount) async {
 
-    DebugTools.iPrint("entered launchTransferMoneyAction");
+    xrint("entered launchTransferMoneyAction");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MONEY_TRANSFER,
@@ -407,7 +407,7 @@ class ClientPersonalApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         Map res = Map();
         int errorCode = json.decode(response.body)["error"];
@@ -431,14 +431,14 @@ class ClientPersonalApiProvider {
 
   Future<dynamic> fetchFees(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchFees");
+    xrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_TOPUP_FEES_RATE_V2,
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         // check the fees, if an error during this process, throw error no pb
 //        int fees_flooz = json.decode(response.body)["data"]["fees_flooz"];
@@ -458,7 +458,7 @@ class ClientPersonalApiProvider {
   }
 
   Future<String> recoverPasswordSendingCodeAction (String login) async {
-    DebugTools.iPrint("entered recoverPasswordSendingCodeAction");
+    xrint("entered recoverPasswordSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
@@ -469,7 +469,7 @@ class ClientPersonalApiProvider {
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -483,15 +483,15 @@ class ClientPersonalApiProvider {
   Future<String> checkRecoverPasswordRequestCodeAction(String code, String requestId) async {
 
     /*  */
-    DebugTools.iPrint("entered checkRecoverPasswordRequestCodeAction");
+    xrint("entered checkRecoverPasswordRequestCodeAction");
     if (await Utils.hasNetwork()) {
 //      await Future.delayed(const Duration(seconds: 1));
       final response = await client
           .post(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE,
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));
-      print(json.encode({"code": code, "request_id": requestId}));
-      print(response.body.toString());
+      xrint(json.encode({"code": code, "request_id": requestId}));
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -504,7 +504,7 @@ class ClientPersonalApiProvider {
 
   Future<String>  passwordResetAction(String login, String newCode, String requestId) async {
 
-    DebugTools.iPrint("entered passwordResetAction");
+    xrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_PASSWORD_RESET,
@@ -515,7 +515,7 @@ class ClientPersonalApiProvider {
           json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
 
           .timeout(const Duration(seconds: 60));
-      print(response.body.toString());
+      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -524,6 +524,34 @@ class ClientPersonalApiProvider {
     } else {
       throw Exception(-2); // you have no network
     }
+  }
+
+
+  checkKabaPoints(CustomerModel customer) async {
+
+    xrint("entered checkKabaPoints");
+    if (await Utils.hasNetwork()) {
+      final response = await client
+          .post(ServerRoutes.GET_KABA_POINTS,
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer.token)
+      )
+          .timeout(const Duration(seconds: 30));
+      xrint(response.body.toString());
+      if (response.statusCode == 200) {
+        int errorCode = json.decode(response.body)["error"];
+        if (errorCode == 0) {
+          int kabaPoints = json.decode(response.body)["total_kaba_point"]/*["balance"]*/;
+          return "${kabaPoints}";
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+
   }
 
 

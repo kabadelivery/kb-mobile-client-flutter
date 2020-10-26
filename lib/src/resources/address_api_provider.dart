@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
@@ -18,7 +19,7 @@ class AddressApiProvider {
 
   Future<Object> updateOrCreateAddress(DeliveryAddressModel address, CustomerModel customer) async {
 
-    DebugTools.iPrint("entered updateorCreateAddress");
+    xrint("entered updateorCreateAddress");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CREATE_NEW_ADRESS,
@@ -35,7 +36,7 @@ class AddressApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         DeliveryAddressModel address = DeliveryAddressModel.fromJson(json.decode(response.body)["data"]);
@@ -56,7 +57,7 @@ class AddressApiProvider {
 
   checkLocationDetails(CustomerModel customer, Position position) async {
 
-    DebugTools.iPrint("entered checkLocationDetails");
+    xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
@@ -64,7 +65,7 @@ class AddressApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -87,13 +88,13 @@ class AddressApiProvider {
 
   Future<List<DeliveryAddressModel>> fetchAddressList(CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchAddressList");
+    xrint("entered fetchAddressList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_ADRESSES,
           headers: Utils.getHeadersWithToken(customer.token)).timeout(
           const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -113,7 +114,7 @@ class AddressApiProvider {
 
   deleteAddress(CustomerModel customer, DeliveryAddressModel address) async {
 
-    DebugTools.iPrint("entered deleteAddress");
+   xrint("entered deleteAddress");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_DELETE_ADRESS,
@@ -123,7 +124,7 @@ class AddressApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {

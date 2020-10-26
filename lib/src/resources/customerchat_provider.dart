@@ -4,6 +4,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client;
@@ -20,7 +21,7 @@ class CustomerCareChatApiProvider {
 
   Future<Object> fetchCustomerChatList (CustomerModel customer) async {
 
-    DebugTools.iPrint("entered fetchCustomerChatList");
+    xrint("entered fetchCustomerChatList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES,
@@ -28,7 +29,7 @@ class CustomerCareChatApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -52,7 +53,7 @@ class CustomerCareChatApiProvider {
 
   Future<int> sendMessageToCCare(CustomerModel customer, String message) async {
 
-    DebugTools.iPrint("entered sendMessageToCCare");
+    xrint("entered sendMessageToCCare");
     if (await Utils.hasNetwork()) {
 
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -65,7 +66,7 @@ class CustomerCareChatApiProvider {
       if (Platform.isAndroid) {
         // Android-specific code
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+       xrint('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
         device = {
           'os_version':'${androidInfo.version.baseOS}',
           'build_device':'${androidInfo.device}',
@@ -76,7 +77,7 @@ class CustomerCareChatApiProvider {
         };
       } else if (Platform.isIOS) {
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+       xrint('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
         device = {
           'os_version':'${iosInfo.systemVersion}',
           'build_device':'${iosInfo.utsname.sysname}',
@@ -93,7 +94,7 @@ class CustomerCareChatApiProvider {
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
          return errorCode;

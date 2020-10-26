@@ -9,6 +9,7 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWelcomeContract {
@@ -29,6 +30,7 @@ class HomeWelcomeView {
 
   void showBalanceLoading(bool isLoading) {}
   void showBalance(String balance) {}
+  void updateKabaPoints(String kabaPoints) {}
 }
 
 /* login presenter */
@@ -64,7 +66,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
           HomeScreenModel _model = HomeScreenModel.fromJson(json.decode(pageJson)["data"]);
           _homeWelcomeView.updateHomeWelcomePage(_model);
         } catch(e){
-          print(e);
+          xrint(e);
           _homeWelcomeView.showLoading(true);
         }
         // save it to the shared preferences
@@ -93,7 +95,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
     String jsonContent = await provider.loginAction(
         login: login, password: password);
     try {
-      print(jsonContent);
+      xrint(jsonContent);
       var obj = json.decode(jsonContent);
       int error = obj["error"];
       String token = obj["data"]["payload"]["token"];
@@ -127,7 +129,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
         _homeWelcomeView.tokenUpdateSuccessfully();
       }
     } catch (_) {
-      print(_);
+      xrint(_);
     }
     return null;
   }
@@ -138,7 +140,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       bool hasNewMessage = await provider.checkUnreadMessages(customer);
       _homeWelcomeView.hasUnreadMessages(hasNewMessage);
     } catch (_) {
-      print(_);
+      xrint(_);
       _homeWelcomeView.hasUnreadMessages(false);
     }
   }
@@ -154,7 +156,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       _homeWelcomeView.checkVersion(code, force, cl_en, cl_fr, cl_zh);
     } catch (_) {
       /* RestaurantReview failure */
-      print("error ${_}");
+      xrint("error ${_}");
     }
   }
 
@@ -166,12 +168,14 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
     _homeWelcomeView.showBalanceLoading(true);
     try {
       String balance = await provider.checkBalance(customer);
+//      String kabaPoints = await provider.checkKabaPoints(customer);
       // also get the restaurant entity here.
       _homeWelcomeView.showBalance(balance);
+//      _homeWelcomeView.updateKabaPoints(kabaPoints);
       isFetchBalanceWorking = false;
     } catch (_) {
       /* Transaction failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
 //        _transactionView.balanceSystemError();
       } else {

@@ -3,6 +3,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/TransactionModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class TransactionContract {
 
@@ -20,6 +21,7 @@ class TransactionView {
   void inflateTransaction(List<TransactionModel> transactions) {}
   void showBalance(String balance) {}
   void balanceSystemError() {}
+  void updateKabaPoints(String kabaPoints) {}
 }
 
 
@@ -52,7 +54,7 @@ class TransactionPresenter implements TransactionContract {
       _transactionView.inflateTransaction(bsellers);
     } catch (_) {
       /* Transaction failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _transactionView.systemError();
       } else {
@@ -70,12 +72,14 @@ class TransactionPresenter implements TransactionContract {
     _transactionView.showBalanceLoading(true);
     try {
       String balance = await provider.checkBalance(customer);
+      String kabaPoints = await provider.checkKabaPoints(customer);
       // also get the restaurant entity here.
       _transactionView.showBalance(balance);
+      _transactionView.updateKabaPoints(kabaPoints);
       isFetchBalanceWorking = false;
     } catch (_) {
       /* Transaction failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _transactionView.balanceSystemError();
       } else {

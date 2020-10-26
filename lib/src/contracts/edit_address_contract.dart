@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:KABA/src/resources/app_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
@@ -65,7 +66,7 @@ class EditAddressPresenter implements EditAddressContract {
     } catch (_) {
       _editAddressView.showUpdateOrCreatedAddressLoading(false);
       /* Transaction failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
       } else {
       }
@@ -96,7 +97,7 @@ class EditAddressPresenter implements EditAddressContract {
     } catch (_) {
       /* Transaction failure */
       _editAddressView.showAddressDetailsLoading(false);
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _editAddressView.networkError();
       } else {

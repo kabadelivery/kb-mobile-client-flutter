@@ -67,7 +67,7 @@ class PersonnalPagePresenter implements PersonnalPageContract {
     String jsonContent = await provider.loginAction(
         login: login, password: password);
     try {
-      print(jsonContent);
+      xrint(jsonContent);
       var obj = json.decode(jsonContent);
       int error = obj["error"];
       String token = obj["data"]["payload"]["token"];

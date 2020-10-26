@@ -207,6 +207,8 @@ class ServerRoutes {
   static const String LINK_GET_BALANCE =  ServerConfig.PAY_SERVER_ADDRESS_SECURE +
       "/mobile/api/user/transaction/balance/get";
 
+  static const String GET_KABA_POINTS = ServerConfig.SERVER_ADDRESS+"/mobile/api/user/kaba/point/get";
+
   static const String FAQ_PAGE = ServerConfig.SERVER_ADDRESS+"/page/faq";
 
   static const String CGU_PAGE = ServerConfig.SERVER_ADDRESS+"/page/cgu";

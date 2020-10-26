@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/BestSellerModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -17,7 +18,7 @@ class MenuApiProvider {
 
   Future<Map> fetchRestaurantMenuList(int restaurantId) async {
 
-    DebugTools.iPrint("entered fetchRestaurantMenuList");
+    xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
@@ -25,7 +26,7 @@ class MenuApiProvider {
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -51,7 +52,7 @@ class MenuApiProvider {
 
   fetchRestaurantMenuListWithFoodId(int foodId) async {
 
-    DebugTools.iPrint("entered fetchRestaurantMenuListWithFoodId");
+    xrint("entered fetchRestaurantMenuListWithFoodId");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
@@ -59,7 +60,7 @@ class MenuApiProvider {
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -89,7 +90,7 @@ class MenuApiProvider {
 
   Future<Map> fetchRestaurantMenuListWithMenuId(int menuId) async {
 
-    DebugTools.iPrint("entered fetchRestaurantMenuListWithMenuId");
+    xrint("entered fetchRestaurantMenuListWithMenuId");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
@@ -97,7 +98,7 @@ class MenuApiProvider {
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -124,14 +125,14 @@ class MenuApiProvider {
 
   Future<List<BestSellerModel>> fetchBestSellerList() async {
 
-    DebugTools.iPrint("entered fetchBestSellerList");
+    xrint("entered fetchBestSellerList");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_BESTSELLERS_LIST,
         body: json.encode([]),
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -150,15 +151,15 @@ class MenuApiProvider {
 
   fetchFoodDetailsWithId(int foodId) async {
 
-    DebugTools.iPrint("entered fetchFoodDetailsWithId");
+    xrint("entered fetchFoodDetailsWithId");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
         body: json.encode({"food_id": foodId}),
       )
           .timeout(const Duration(seconds: 30));
-      print("fetchFoodDetailsWithId ${foodId}");
-      print(response.body.toString());
+     xrint("fetchFoodDetailsWithId ${foodId}");
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -176,7 +177,7 @@ class MenuApiProvider {
 
   fetchRestaurantWithId(CustomerModel customer, int restaurantDetailsId) async {
 
-    DebugTools.iPrint("entered fetchRestaurantWithId");
+    xrint("entered fetchRestaurantWithId");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_GET_RESTAURANT_DETAILS,
@@ -184,7 +185,7 @@ class MenuApiProvider {
         headers: Utils.getHeadersWithToken(customer.token),
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode == 0) {
@@ -202,7 +203,7 @@ class MenuApiProvider {
 
   reviewRestaurant(CustomerModel customer, RestaurantModel restaurant, int stars, String message) async {
 
-    DebugTools.iPrint("entered reviewRestaurant");
+    xrint("entered reviewRestaurant");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_POST_COMMENT,
@@ -210,7 +211,7 @@ class MenuApiProvider {
         headers: Utils.getHeadersWithToken(customer.token),
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
         if (errorCode != -1) {
@@ -227,7 +228,7 @@ class MenuApiProvider {
 
   checkCanComment(CustomerModel customer, RestaurantModel restaurant) async {
 
-    DebugTools.iPrint("entered checkCanComment");
+    xrint("entered checkCanComment");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(ServerRoutes.LINK_CHECK_CAN_COMMENT,
@@ -235,7 +236,7 @@ class MenuApiProvider {
         headers: Utils.getHeadersWithToken(customer.token),
       )
           .timeout(const Duration(seconds: 30));
-      print(response.body.toString());
+     xrint(response.body.toString());
       if (response.statusCode == 200) {
 
         // get restaurant entity here

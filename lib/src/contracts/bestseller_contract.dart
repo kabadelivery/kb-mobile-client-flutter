@@ -1,6 +1,7 @@
 
 import 'package:KABA/src/models/BestSellerModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/xrint.dart';
 
 class BestSellerContract {
 
@@ -47,7 +48,7 @@ class BestSellerPresenter implements BestSellerContract {
       _bestSellerView.inflateBestSeller(bsellers);
     } catch (_) {
       /* BestSeller failure */
-      print("error ${_}");
+      xrint("error ${_}");
       if (_ == -2) {
         _bestSellerView.systemError();
       } else {
