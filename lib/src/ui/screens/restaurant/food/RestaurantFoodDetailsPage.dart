@@ -5,6 +5,7 @@ import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -75,7 +76,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     }
   }
 
-  _carousselPageChanged(int index) {
+  _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
     setState(() {
       _carousselPageIndex = index;
     });
@@ -97,7 +98,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Container(
-            child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+            child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
             _buildRestaurantFoodPage())
         ),
       ),
@@ -378,15 +379,17 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                   Container(height: 9*MediaQuery.of(context).size.width/16,
                       width: 9*MediaQuery.of(context).size.width, color: Colors.white) :*/
                   CarouselSlider(
-                    onPageChanged: _carousselPageChanged,
-                    viewportFraction: 1.0,
-                    autoPlay: images?.length != null && images.length > 1 ? true:false,
-                    reverse: images?.length != null && images.length > 1 ? true:false,
-                    enableInfiniteScroll: images?.length != null && images.length > 1 ? true:false,
-                    autoPlayInterval: Duration(seconds: 5),
-                    autoPlayAnimationDuration: Duration(milliseconds: 300),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    height: expandedHeight,
+                    options: CarouselOptions(
+                      viewportFraction: 1.0,
+                      autoPlay: images?.length != null && images.length > 1 ? true:false,
+                      reverse: images?.length != null && images.length > 1 ? true:false,
+                      enableInfiniteScroll: images?.length != null && images.length > 1 ? true:false,
+                      autoPlayInterval: Duration(seconds: 5),
+                      autoPlayAnimationDuration: Duration(milliseconds: 300),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      height: expandedHeight,
+                      onPageChanged: _carousselPageChanged,
+                    ),
                     items: images?.map((pictureLink) {
                       return Builder(
                         builder: (BuildContext context) {

@@ -42,7 +42,7 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -119,7 +119,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     this.widget.presenter.fetchHomePage();
     this.widget.presenter.checkVersion();
 
-
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
@@ -137,7 +136,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         has_subscribed = false;
       }
       if (has_subscribed != true) {
-        FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
         _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
           prefs.setBool('has_subscribed', true)
         });
@@ -163,15 +162,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.VOUCHER:
-//            print("voucher homewelcome -> ${widget.argument}");
+//           xrint("voucher homewelcome -> ${widget.argument}");
             _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(), autoSubscribe: true, customer: widget.customer));
             break;
           case SplashPage.VOUCHERS:
-//            print("voucher homewelcome -> ${widget.argument}");
+//           xrint("voucher homewelcome -> ${widget.argument}");
             _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
             break;
           case SplashPage.ADDRESSES:
-//            print("voucher homewelcome -> ${widget.argument}");
+//           xrint("voucher homewelcome -> ${widget.argument}");
             _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
             break;
           case SplashPage.ORDER:
@@ -201,7 +200,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void didChangeDependencies() {
-    print("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
+   xrint("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
     super.didChangeDependencies();
   }
 
@@ -287,6 +286,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       case 3:
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
+
+          StateContainer.of(context).updateBalance(balance: 0);
+          StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+          StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+          StateContainer.of(context).updateTabPosition(tabPosition: 0);
+
           Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
         });
         break;
@@ -297,7 +302,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     /* zwitch */
   }
 
-  _carousselPageChanged(int index) {
+  _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
     setState(() {
       _carousselPageIndex = index;
     });
@@ -424,6 +429,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                     ClipPath(
                         clipper: KabaRoundTopClipper(),
                         child:CarouselSlider(
+                        options: CarouselOptions(
                           onPageChanged: _carousselPageChanged,
                           viewportFraction: 1.0,
                           autoPlay: data.slider.length > 1 ? true:false,
@@ -433,6 +439,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                           autoPlayAnimationDuration: Duration(milliseconds: 150),
                           autoPlayCurve: Curves.fastOutSlowIn,
                           height: 9*MediaQuery.of(context).size.width/16,
+                        ),
                           items: data.slider.map((admodel) {
                             return Builder(
                               builder: (BuildContext context) {
@@ -978,8 +985,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
       String appCode_ = packageInfo.version.replaceAll(new RegExp(r'\.'), "");
       int appCode = int.parse(appCode_);
-//      print("net-code = $code");
-//      print("app-code = $appCode");
+//     xrint("net-code = $code");
+//     xrint("app-code = $appCode");
       if (appCode < _code) {
         // 2.3.4 < 4.5.6
         if (force == 1){
@@ -1069,7 +1076,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       try {
         throw 'Could not launch $url';
       } catch (_) {
-        print(_);
+       xrint(_);
       }
     }
     return -1;
@@ -1077,7 +1084,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void showBalance(String balance) {
-    print("balance ${balance}");
+   xrint("balance ${balance}");
     StateContainer.of(context).updateBalance(balance: int.parse(balance));
     showBalanceLoading(false);
   }

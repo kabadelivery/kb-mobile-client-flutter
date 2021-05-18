@@ -26,7 +26,7 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
 
   // Replace with server token from firebase console settings.
   final String serverToken = 'AAAA-vm6MJM:APA91bFGAiFy4g8s6UnGAWrR0qMUg1H4NKpZcdotMhZLXT6M_xShHrgAMIRNwDpWAAwCKjq0pVO3sx9aXc4Mm5rM7SC_UOofUNPoqqDSvrmgPQWnHUhCsAZ88tF8SJuixwRvY4ZMXfJr';
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
 
 
@@ -34,15 +34,15 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
 
       print ("On click");
 
-      await firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
-      );
+//      await firebaseMessaging.requestNotificationPermissions(
+//        const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
+//      );
       Client http = Client();
 
       String token = await firebaseMessaging.getToken();
 
       final response = await http.post(
-        'https://fcm.googleapis.com/fcm/send',
+          Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization': 'key=$serverToken',

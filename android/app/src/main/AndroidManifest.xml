@@ -9,6 +9,7 @@
     <!-- Add this permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -40,20 +41,44 @@
          FlutterApplication and put your custom class here. -->
     <application
         tools:replace="android:icon"
-        android:name=".Application"
         android:label="KABA"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/kaba_logo_round"
         android:networkSecurityConfig="@xml/network_security"
         android:icon="@mipmap/launcher_icon">
 
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <meta-data android:name="io.flutter.network-policy"
+            android:resource="@xml/network_security"/>
+
+
+
         <activity
-            android:name=".MainActivity"
+            android:name="io.flutter.embedding.android.FlutterActivity"
             android:launchMode="singleInstance"
             android:allowTaskReparenting="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+
+
+            <!-- Specify that the launch screen should continue being displayed -->
+            <!-- until Flutter renders its first frame. -->
+            <meta-data
+                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+                android:resource="@drawable/launch_background" />
+
+            <!-- Theme to apply as soon as Flutter begins rendering frames -->
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
+
             <!-- This keeps the window background of the activity showing
                  until Flutter renders its first frame. It can be removed if
                  there is no splash screen (such as the default splash screen

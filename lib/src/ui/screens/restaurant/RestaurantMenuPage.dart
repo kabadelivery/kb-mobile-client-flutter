@@ -7,6 +7,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -239,7 +240,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             ),
             Expanded(flex: 8, child:
             isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: MyLoadingProgressWidget())
                 : (hasNetworkError ? ErrorPage(
                 message: "${AppLocalizations.of(context).translate('network_error')}", onClickAction: () {
               if (!widget.fromNotification) {

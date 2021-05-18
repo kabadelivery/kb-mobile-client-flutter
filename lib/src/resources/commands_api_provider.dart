@@ -19,7 +19,7 @@ class CommandsApiProvider {
     xrint("entered fetchDailyOrders");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT,
+          .post(Uri.parse(ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -48,7 +48,7 @@ class CommandsApiProvider {
     xrint("entered fetchOrderDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS),
           body: json.encode({"command_id": orderId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -76,7 +76,7 @@ class CommandsApiProvider {
     xrint("entered fetchLastOrders");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_ALL_COMMAND_LIST,
+          .post(Uri.parse(ServerRoutes.LINK_GET_ALL_COMMAND_LIST),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -86,12 +86,18 @@ class CommandsApiProvider {
         if (response.statusCode == 200) {
           int errorCode = json.decode(response.body)["error"];
           if (errorCode == 0) {
-            Iterable lo = json.decode(response.body)["data"]["commands"];
-            if (lo == null || lo.isEmpty || lo.length == 0)
+
+            try {
+              Iterable lo = json.decode(response.body)["data"]["commands"];
+              if (lo == null || lo.isEmpty || lo.length == 0)
+                return List<CommandModel>();
+              /// else
+              List<CommandModel> commandModel = lo?.map((command) =>
+                  CommandModel.fromJson(command))?.toList();
+              return commandModel;
+            } catch (_) {
               return List<CommandModel>();
-            /// else
-            List<CommandModel> commandModel = lo?.map((command) => CommandModel.fromJson(command))?.toList();
-            return commandModel;
+            }
           } else
             throw Exception(-1); // there is an error in your request
         } }

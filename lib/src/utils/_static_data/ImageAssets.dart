@@ -7,4 +7,7 @@ class ImageAssets {
 
  static final String kaba_copyright_presentation = "assets/images/png/kaba_copyright_presentation.png";
 
+ static final String splash_screen = "assets/images/jpg/flu_splash.jpeg";
+
+
 }

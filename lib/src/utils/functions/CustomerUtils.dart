@@ -63,6 +63,7 @@ class CustomerUtils {
     prefs.remove("_homepage");
     prefs.remove("is_push_token_uploaed");
 
+
     /*String jsonCustomer = prefs.getString("_loginResponse");
     var obj = json.decode(jsonCustomer);
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);

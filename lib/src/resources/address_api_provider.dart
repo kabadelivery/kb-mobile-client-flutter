@@ -22,7 +22,7 @@ class AddressApiProvider {
     xrint("entered updateorCreateAddress");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CREATE_NEW_ADRESS,
+          .post(Uri.parse(ServerRoutes.LINK_CREATE_NEW_ADRESS),
           body: json.encode({
             "id": address?.id,
             "name":address?.name,
@@ -60,7 +60,7 @@ class AddressApiProvider {
     xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS),
           body: json.encode({"coordinates": '${position.latitude}:${position.longitude}'}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -91,7 +91,7 @@ class AddressApiProvider {
     xrint("entered fetchAddressList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_ADRESSES,
+          .post(Uri.parse(ServerRoutes.LINK_GET_ADRESSES),
           headers: Utils.getHeadersWithToken(customer.token)).timeout(
           const Duration(seconds: 30));
      xrint(response.body.toString());
@@ -117,7 +117,7 @@ class AddressApiProvider {
    xrint("entered deleteAddress");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_DELETE_ADRESS,
+          .post(Uri.parse(ServerRoutes.LINK_DELETE_ADRESS),
           body: json.encode({
             "id": address?.id
           }),

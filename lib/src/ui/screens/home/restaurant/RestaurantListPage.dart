@@ -7,6 +7,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -30,13 +31,17 @@ class RestaurantListPage extends StatefulWidget {
 
   RestaurantFoodProposalPresenter presenter;
 
-  RestaurantListPage({Key key, this.location, this.presenter}) : super(key: key);
+  PageStorageKey key;
+
+  BuildContext context;
+
+  RestaurantListPage({this.key, this.context, this.location, this.presenter}) : super(key: key);
 
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
 }
 
-class _RestaurantListPageState extends State<RestaurantListPage> implements RestaurantFoodProposalView {
+class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticKeepAliveClientMixin<RestaurantListPage> implements RestaurantFoodProposalView  {
 
   var _filterEditController = TextEditingController();
 
@@ -80,17 +85,23 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
         has_subscribed = false;
       }
       if (has_subscribed == false) {
-        FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+        FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
         _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
           prefs.setBool('has_subscribed', true)
         });
       }
 
-      if (StateContainer?.of(context)?.location == null) {
-        restaurantBloc.fetchRestaurantList();
-        _getLastKnowLocation();
-      } else
-        restaurantBloc.fetchRestaurantList(position: StateContainer?.of(context)?.location);
+      if (mounted) {
+        if (StateContainer
+            ?.of(context)
+            ?.location == null) {
+          restaurantBloc.fetchRestaurantList();
+          _getLastKnowLocation();
+        } else
+          restaurantBloc.fetchRestaurantList(position: StateContainer
+              ?.of(context)
+              ?.location);
+      }
     });
   }
 
@@ -120,9 +131,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
                       });
                     });
                   }
-                  return Center(child: Container(margin: EdgeInsets.only(top:20),child: CircularProgressIndicator()));
+                  return Center(child: Container(margin: EdgeInsets.only(top:20),child: MyLoadingProgressWidget()));
                 })));
-    /*  */
   }
 
 
@@ -131,7 +141,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   _buildRestaurantList(List<RestaurantModel> d) {
 
     /* check if the previous had the distance */
-
     /* distance of restaurant - client */
     if (data?.length == null || data?.length == 0) {
       this.data = d;
@@ -373,7 +382,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
   }
 
 
-  _checkLocationActivated () async {
+  /*_checkLocationActivated () async {
 //    return;
     if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
@@ -399,20 +408,24 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
         );
       }
     }
-  }
+  }*/
+
+  StreamSubscription<Position> positionStream;
+
+
 
   Future _getLastKnowLocation() async {
 
-    _checkLocationActivated();
+//    _checkLocationActivated();
 
     // save in to state container.
-    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+//    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
 
-    var geolocator = Geolocator();
-    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+//    var geolocator = Geolocator();
+//    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
     /* StreamSubscription<Position> positionStream =*/
-    geolocator.getPositionStream(locationOptions).listen(
+    /* geolocator.getPositionStream(locationOptions).listen(
             (Position position) {
 //          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
 //          print("location :: ${position?.toJson()?.toString()}");
@@ -422,8 +435,55 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
             restaurantBloc.fetchRestaurantList(position: StateContainer
                 .of(context)
                 .location);
-          }});
+          }});*/
+
+    /*positionStream = Geolocator.getPositionStream().listen(
+            (Position position) {
+          if (position != null)
+            StateContainer.of(context).updateLocation(location: position);
+          if (StateContainer.of(context).location != null) {
+            restaurantBloc.fetchRestaurantList(position: StateContainer
+                .of(context)
+                .location);
+          }
+        }
+    );*/
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+    } else if (permission == LocationPermission.denied) {
+      Geolocator.requestPermission();
+    } else {
+      // location is enabled
+      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
+      if (!isLocationServiceEnabled) {
+        await Geolocator.openLocationSettings();
+      } else {
+        positionStream = Geolocator.getPositionStream().listen(
+                (Position position) {
+
+              Position tmpLocation = StateContainer.of(widget.context).location;
+              if (position?.latitude != null && tmpLocation?.latitude != null &&
+                  (position.latitude*10000).round() == (tmpLocation.latitude*10000).round() &&
+                  (position.longitude*10000).round() == (tmpLocation.longitude*10000).round())
+                return;
+
+              if (position != null) {
+                StateContainer.of(widget.context).updateLocation(
+                    location: position);
+                tmpLocation = position;
+              }
+              if (tmpLocation != null) {
+                restaurantBloc.fetchRestaurantList(position: StateContainer
+                    .of(widget.context)
+                    .location);
+              }
+            });
+      }
+    }
   }
+
 
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */
@@ -736,5 +796,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> implements Rest
 
     return foodProposals;
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
 }

@@ -110,7 +110,7 @@ class ServerRoutes {
       "/api/device/add";
 
   /* update phone / user push_token */
-  static const String LINK_PHONE_UPDATE_SERVER_PUSH_TOKEN = ServerConfig.SERVER_ADDRESS+"/mobile/api/update_client_push_token";
+//  static const String LINK_PHONE_UPDATE_SERVER_PUSH_TOKEN = ServerConfig.SERVER_ADDRESS+"/mobile/api/update_client_push_token";
 
   /* get notification food data */
   static const String LINK_NOTIFICATION_FOOD_DATA =  ServerConfig.SERVER_ADDRESS+

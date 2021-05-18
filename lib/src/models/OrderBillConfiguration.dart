@@ -43,9 +43,11 @@ class OrderBillConfiguration {
 
   int shipping_pricing;
   int promotion_shipping_pricing;
+
   int promotion_pricing; // promotion food pricing.
   int command_pricing; // command pricing
   int remise;
+
   int total_pricing; // total current pricing
   int total_normal_pricing; // total normal pricing to set difference between this and promotion time
 

@@ -6,11 +6,11 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -143,7 +143,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
           child: Center(child:Container(padding: EdgeInsets.all(20),
             child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: <Widget>[
               // loading page.
-              SizedBox(child: CircularProgressIndicator(), height: 80, width: 80),
+              SizedBox(child: MyLoadingProgressWidget(), height: 80, width: 80),
               SizedBox(height: 30),
               Text("${AppLocalizations.of(context).translate('processing_payment')}", textAlign: TextAlign.center,)
             ]),

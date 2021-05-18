@@ -27,7 +27,7 @@ class AppApiProvider {
     xrint("entered fetchHomeScreenModel");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .get(ServerRoutes.LINK_HOME_PAGE,
+          .get(Uri.parse(ServerRoutes.LINK_HOME_PAGE),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
       if (response.statusCode == 200) {
@@ -48,7 +48,7 @@ class AppApiProvider {
     xrint("entered fetchRestaurantList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_RESTO_LIST_V2,
+          .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
           body: position == null ? "" : json.encode(
               {"location": "${position?.latitude}:${position?.longitude}"}),
           headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
@@ -77,7 +77,7 @@ class AppApiProvider {
     xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_LOCATION_DETAILS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS),
           body: position == null ? "" : json.encode(
               {"coordinates": "${position.latitude}:${position.longitude}"}),
           headers: Utils.getHeadersWithToken(customer.token)).timeout(
@@ -112,7 +112,7 @@ class AppApiProvider {
     xrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_EVENEMENTS_LIST).timeout(
+          .post(Uri.parse(ServerRoutes.LINK_GET_EVENEMENTS_LIST)).timeout(
           const Duration(seconds: 30));
 
      xrint(response.body.toString());
@@ -141,8 +141,20 @@ class AppApiProvider {
     xrint("entered updateToken");
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-    String token = await firebaseMessaging.getToken();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    String token = await firebaseMessaging.getToken(
+        vapidKey: "BIGpDv3l5-XEgAyf9Y96gJ1vDTkQc0gH6v354UbR1flxhjl4UgRhKmqPaizF7ho4_rT5p2Pb8YBmUbAbwB0StY8");
 
     var _data;
 
@@ -173,7 +185,7 @@ class AppApiProvider {
 
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_REGISTER_PUSH_TOKEN, body: _data,
+          .post(Uri.parse(ServerRoutes.LINK_REGISTER_PUSH_TOKEN), body: _data,
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
@@ -191,7 +203,7 @@ class AppApiProvider {
 //
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
@@ -236,7 +248,7 @@ class AppApiProvider {
 
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
           body: {"desc":"${desc == null ? "" : desc}"}
       )
           .timeout(const Duration(seconds: 30));
@@ -255,7 +267,7 @@ class AppApiProvider {
   checkVersion() async {
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_APP_VERSION
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_APP_VERSION)
       )
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
@@ -281,7 +293,7 @@ class AppApiProvider {
     xrint("entered checkBalance vHomePage");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_BALANCE,
+          .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -308,7 +320,7 @@ class AppApiProvider {
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.GET_KABA_POINTS,
+          .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )

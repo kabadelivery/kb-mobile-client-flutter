@@ -4,7 +4,8 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayers/audio_cache.dart';
+//import 'package:audioplayers/audio_cache.dart';
+//import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +138,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
     // play music
     AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioPlayer.setVolume(1.0);
-    AudioPlayer.logEnabled = true;
+//    AudioPlayer.logEnabled = true;
     var audioCache = new AudioCache(fixedPlayer: audioPlayer);
     audioCache.play(MusicData.money_transfer_successfull);
     if (await Vibration.hasVibrator ()

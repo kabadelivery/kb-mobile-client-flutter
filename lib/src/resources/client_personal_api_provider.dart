@@ -30,7 +30,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS),
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
@@ -65,7 +65,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchMyAddresses");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_ADRESSES,
+          .post(Uri.parse(ServerRoutes.LINK_GET_ADRESSES),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
       if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
-          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS,
+          .post(Uri.parse(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS),
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
@@ -114,7 +114,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_VERIFCATION_CODE,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_VERIFCATION_CODE),
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));
       xrint(json.encode({"code": code, "request_id": requestId}));
@@ -135,7 +135,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
-          .post(ServerRoutes.LINK_USER_REGISTER,
+          .post(Uri.parse(ServerRoutes.LINK_USER_REGISTER),
           body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
           .timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
@@ -184,7 +184,7 @@ class ClientPersonalApiProvider {
 
       var device;
 
-      final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
       String token = await firebaseMessaging.getToken();
 
       if (Platform.isAndroid) {
@@ -215,7 +215,7 @@ class ClientPersonalApiProvider {
       }
 
       final response = await client
-          .post(ServerRoutes.LINK_USER_LOGIN_V2,
+          .post(Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2),
         body:  json.encode({"username": login, "password":password, 'device':device }),
       ).timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
@@ -235,7 +235,7 @@ class ClientPersonalApiProvider {
       if (customer.profile_picture != null)
         _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
       final response = await client
-          .post(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS,
+          .post(Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS),
           body: _data,
           headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
@@ -264,11 +264,11 @@ class ClientPersonalApiProvider {
     xrint("entered fetchLastTransactions");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_TRANSACTION_HISTORY,
+          .post(Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(seconds: 60));
       xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -293,11 +293,11 @@ class ClientPersonalApiProvider {
     xrint("entered checkBalance");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_BALANCE,
+          .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(seconds: 60));
       xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];
@@ -319,7 +319,7 @@ class ClientPersonalApiProvider {
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ,
+          .post(Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ),
           body: json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -344,7 +344,7 @@ class ClientPersonalApiProvider {
     xrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_TOPUP_PAYDUNYA,
+          .post(Uri.parse(ServerRoutes.LINK_TOPUP_PAYDUNYA),
           body: json.encode({"amount": balance, 'fees':'$fees'}),
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
@@ -370,7 +370,7 @@ class ClientPersonalApiProvider {
     xrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_USER_ACCOUNT,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_USER_ACCOUNT),
           body: json.encode({"username": username}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -402,7 +402,7 @@ class ClientPersonalApiProvider {
     xrint("entered launchTransferMoneyAction");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MONEY_TRANSFER,
+          .post(Uri.parse(ServerRoutes.LINK_MONEY_TRANSFER),
           body: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -434,7 +434,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_TOPUP_FEES_RATE_V2,
+          .post(Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
@@ -463,7 +463,7 @@ class ClientPersonalApiProvider {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
 //          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
-          .post(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+          .post(Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS),
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
@@ -487,7 +487,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
 //      await Future.delayed(const Duration(seconds: 1));
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE),
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));
       xrint(json.encode({"code": code, "request_id": requestId}));
@@ -507,7 +507,7 @@ class ClientPersonalApiProvider {
     xrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_PASSWORD_RESET,
+          .post(Uri.parse(ServerRoutes.LINK_PASSWORD_RESET),
           body:
 
           Utils.isEmailValid(login) ?
@@ -532,7 +532,7 @@ class ClientPersonalApiProvider {
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.GET_KABA_POINTS,
+          .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )

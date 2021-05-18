@@ -73,7 +73,7 @@ class HomePage extends StatefulWidget {
 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 
 class _HomePageState extends State<HomePage> {
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,
         argument: widget.argument);
-    restaurantListPage = RestaurantListPage(
+    restaurantListPage = RestaurantListPage(context: context,
         key: restaurantKey, presenter: RestaurantFoodProposalPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
     });
     // FLUTTER NOTIFICATION
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    _firebaseMessaging = FirebaseMessaging();
+    _firebaseMessaging = FirebaseMessaging.instance;
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid = new AndroidInitializationSettings(
@@ -151,34 +151,48 @@ class _HomePageState extends State<HomePage> {
         requestSoundPermission: true,
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
+    var initializationSettingsMacOs = MacOSInitializationSettings();
+
     var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+       android: initializationSettingsAndroid,
+       iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
-    // firebase
-    _firebaseMessaging.configure(
+    // new try
+   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+     print('pnotif Got a message whilst in the foreground!');
+     print('pnotif Message data: ${message.data}');
+
+     if (message.notification != null) {
+       print('pnotif Message also contained a notification: ${message.notification}');
+     }
+   });
+
+    // firebase - old config
+ /*   _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        /* send json version of notification object. */
+        print("onMessage: ");
+        *//* send json version of notification object. *//*
         NotificationItem notificationItem = _notificationFromMessage(message);
         iLaunchNotifications(notificationItem);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        /* send json version of notification object. */
+        *//* send json version of notification object. *//*
         NotificationItem notificationItem = _notificationFromMessage(message);
         iLaunchNotifications(notificationItem);
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        /* send json version of notification object. */
+        *//* send json version of notification object. *//*
         NotificationItem notificationItem = _notificationFromMessage(message);
         iLaunchNotifications(notificationItem);
       },
       onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandling,
-    );
+    );*/
 
     _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
@@ -598,12 +612,12 @@ Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.Max, priority: Priority.High, ticker: notificationItem?.title);
+      importance: Importance.max, priority: Priority.high, ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
   return flutterLocalNotificationsPlugin.show(
       0, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,

@@ -1,5 +1,7 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -68,12 +70,14 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
                   children: <Widget>[
                     ClipPath(
                         child:CarouselSlider(
-                          onPageChanged: _carousselPageChanged,
-                          viewportFraction: 1.0,
-                          initialPage: widget.position,
+                          options: CarouselOptions(
+                            onPageChanged: _carousselPageChanged,
+                            viewportFraction: 1.0,
+                            initialPage: widget.position,
 //                      autoPlay: widget.data.length > 1 ? true:false,
-                          enableInfiniteScroll: widget.data.length > 1 ? true:false,
-                          height:  MediaQuery.of(context).size.width,
+                            enableInfiniteScroll: widget.data.length > 1 ? true:false,
+                            height:  MediaQuery.of(context).size.width,
+                          ),
                           items: widget.data.map((admodel) {
                             return Builder(
                               builder: (BuildContext context) {
@@ -83,7 +87,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //                                    resetDuration: const Duration(milliseconds: 100),
 //                                    maxScale: 2.5,
                                 return PinchZoom(
-                                  image: Container(
+                                image: Container(
 //                                    height: 9*MediaQuery.of(context).size.width/16,
                                       height: MediaQuery.of(context).size.width,
                                       width: MediaQuery.of(context).size.width,
@@ -95,6 +99,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
 //                                    )
                                   ),
+
                                   zoomedBackgroundColor: Colors.black,
                                     resetDuration: const Duration(milliseconds: 100),
                                     maxScale: 2.5,
@@ -139,7 +144,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
                         /* circular progress */
                         isLoading ? Row(
                           children: <Widget>[
-                            SizedBox(height: 12, width: 12,child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white))),
+                            SizedBox(height: 12, width: 12,child: MyLoadingProgressWidget(color: Colors.white)),
                             SizedBox(width: 5),
                           ],
                         ) : Container(),
@@ -164,7 +169,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
         ));
   }
 
-  _carousselPageChanged(int index) {
+  _carousselPageChanged(int index, CarouselPageChangedReason changedReason) {
     setState(() {
       widget.position = index;
     });
@@ -199,7 +204,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
       try {
         throw 'Could not launch $url';
       } catch (_) {
-        print(_);
+       xrint(_);
       }
     }
     return -1;
@@ -216,8 +221,8 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //        break;
       case AdModel.TYPE_ARTICLE_WEB:
       // go the article page //
-      print("Go to link -> ${ServerConfig.SERVER_ADDRESS+"/link/${data.link}"}");
-        _launchURL(ServerConfig.SERVER_ADDRESS+"/link/${data.link}");
+     xrint("Go to link -> ${ServerConfig.SERVER_ADDRESS+"/api/link/${data.link}"}");
+        _launchURL(ServerConfig.SERVER_ADDRESS+"/api/link/${data.link}");
         break;
       case AdModel.TYPE_RESTAURANT:
         widget.presenter.loadRestaurantFromId(data.entity_id, /* for menu 1*/);

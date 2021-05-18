@@ -21,7 +21,7 @@ class FeedApiProvider {
     xrint("entered getFeedHistory");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_LASTEST_FEEDS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_LASTEST_FEEDS),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )

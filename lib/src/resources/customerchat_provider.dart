@@ -24,7 +24,7 @@ class CustomerCareChatApiProvider {
     xrint("entered fetchCustomerChatList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES,
+          .post(Uri.parse(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -60,7 +60,7 @@ class CustomerCareChatApiProvider {
 
       var device;
 
-      final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
       String token = await firebaseMessaging.getToken();
 
       if (Platform.isAndroid) {
@@ -89,7 +89,7 @@ class CustomerCareChatApiProvider {
       }
 
       final response = await client
-          .post(ServerRoutes.LINK_POST_SUGGESTION,
+          .post(Uri.parse(ServerRoutes.LINK_POST_SUGGESTION),
           body: json.encode({"message":message, 'device': device}),
           headers: Utils.getHeadersWithToken(customer.token)
       )

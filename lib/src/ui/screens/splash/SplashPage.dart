@@ -14,11 +14,13 @@ import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:android_intent/android_intent.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -39,7 +41,7 @@ class SplashPage extends StatefulWidget { // translated
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
       RESTAURANT_LIST = "RESTAURANT-LIST",
-  ADDRESSES = "ADDRESSES";
+      ADDRESSES = "ADDRESSES";
 
   static var routeName = "/SplashPage";
 
@@ -69,7 +71,7 @@ class _SplashPageState extends State<SplashPage> {
 
   _checkLocationActivated () async {
 //    return;
-    if (!(await Geolocator().isLocationServiceEnabled())) {
+    /*if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
           context: context,
@@ -92,16 +94,16 @@ class _SplashPageState extends State<SplashPage> {
           },
         );
       }
-    }
+    }*/
   }
 
-  Future _getLastKnowLocation() async {
+  /* Future _getLastKnowLocation() async {
     // save in to state container.
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
 
     if (position != null)
       StateContainer.of(context).updateLocation(location: position);
-  }
+  }*/
 
   Future handleTimeout() async {
 
@@ -151,29 +153,85 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    String link = "https://i.pinimg.com/originals/9d/93/2a/9d932a2b1f2361cac910d67d63066972.jpg";
+
     // for ios only.
+    final assetImage = Image(image: CachedNetworkImageProvider(link), width: MediaQuery.of(context).size.width);  //Image.asset(link);
+
+
+    if (/*assetImage == null || */false) {
+
+      print("wll asset image null");
+      precacheImage(assetImage.image, context);
+
+      return Scaffold(
+        body:  AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    /* image */
+                    SizedBox(
+                        height: 50,
+                        width: 50,
+                        child:SvgPicture.asset(
+                          VectorsData.kaba_icon_svg,
+                          color: KColors.primaryColor,
+                          semanticsLabel: 'LOGO',
+                        )),
+                    /* text */
+                    SizedBox(height: 10),
+                    Text("${AppLocalizations.of(context).translate('app_title')}",
+                        style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                  ]
+              )),
+        ),
+      );
+    } else {
+
+      print("wll asset image NOT null");
+
+      return Scaffold(
+        body:  AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark,
+            child:
+            Column(children:[
+              Expanded(child: assetImage)
+            ])
+        ),
+      );
+    }
+
     return Scaffold(
       body:  AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  /* image */
-                  SizedBox(
-                      height: 50,
-                      width: 50,
-                      child:SvgPicture.asset(
-                        VectorsData.kaba_icon_svg,
-                        color: KColors.primaryColor,
-                        semanticsLabel: 'LOGO',
-                      )),
-                  /* text */
-                  SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate('app_title')}",
-                      style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-                ]
-            )),
+        child:
+        Column(children:[
+          Expanded(child: Image(image: AssetImage(ImageAssets.splash_screen), width: MediaQuery.of(context).size.width),)
+        ])
+        ,
+        // Center(
+        //     child: Column(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: <Widget>[
+        //           /* image */
+        //           SizedBox(
+        //               height: 50,
+        //               width: 50,
+        //               child:SvgPicture.asset(
+        //                 VectorsData.kaba_icon_svg,
+        //                 color: KColors.primaryColor,
+        //                 semanticsLabel: 'LOGO',
+        //               )),
+        //           /* text */
+        //           SizedBox(height: 10),
+        //           Text("${AppLocalizations.of(context).translate('app_title')}",
+        //               style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+        //         ]
+        //     )),
+
       ),
     );
   }
@@ -304,7 +362,7 @@ class _SplashPageState extends State<SplashPage> {
         navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
         break;
       case "restaurants":
-          widget.destination = SplashPage.RESTAURANT_LIST;
+        widget.destination = SplashPage.RESTAURANT_LIST;
         break;
       case "restaurant":
         if (pathSegments.length > 1) {

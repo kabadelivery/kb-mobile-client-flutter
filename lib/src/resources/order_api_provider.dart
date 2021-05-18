@@ -38,7 +38,7 @@ class OrderApiProvider {
      xrint(_data.toString());
 
       final response = await client
-          .post(ServerRoutes.LINK_COMPUTE_BILLING,
+          .post(Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING),
           body:  _data,
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -47,8 +47,10 @@ class OrderApiProvider {
      xrint(response.body.toString());
       if (response.statusCode == 200) {
         return OrderBillConfiguration.fromJson(json.decode(response.body)["data"]);
-      } else
+      } else {
+        xrint("computeBilling error ${response.statusCode}");
         throw Exception(-1); // there is an error in your request
+      }
     } else {
       throw Exception(-2); // you have no right to do this
     }
@@ -60,7 +62,7 @@ class OrderApiProvider {
 
     var device;
 
-    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String token = await firebaseMessaging.getToken();
 
     if (Platform.isAndroid) {
@@ -112,11 +114,11 @@ class OrderApiProvider {
      xrint("000 _ "+_data.toString());
 
       final response = await client
-          .post(ServerRoutes.LINK_CREATE_COMMAND,
+          .post(Uri.parse(ServerRoutes.LINK_CREATE_COMMAND),
           body:  _data,
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 90));
 
      xrint("001 _ "+response.body.toString());
 
@@ -136,7 +138,7 @@ class OrderApiProvider {
     if (await Utils.hasNetwork()) {
 
       final response = await client
-          .post(ServerRoutes.LINK_GET_COMMAND_DETAILS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS),
           body:  json.encode({"command_id": orderId}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
@@ -157,7 +159,7 @@ String content = response.body.toString();
     xrint("entered checkOpeningStateOfRestaurant");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN),
           body:  json.encode({"restaurant_id": restaurant.id}),
           headers: Utils.getHeadersWithToken(customer.token)
       ).timeout(const Duration(seconds: 30));
@@ -180,7 +182,7 @@ String content = response.body.toString();
     xrint("entered sendFeedback");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_SEND_ORDER_FEEDBACK,
+          .post(Uri.parse(ServerRoutes.LINK_SEND_ORDER_FEEDBACK),
           body:  json.encode({"command_id": orderId, "rate": rating, "comment" : message}),
           headers: Utils.getHeadersWithToken(customer.token)
       ).timeout(const Duration(seconds: 30));
@@ -199,7 +201,7 @@ String content = response.body.toString();
 
     var device;
 
-    final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String token = await firebaseMessaging.getToken();
 
     if (Platform.isAndroid) {
@@ -251,10 +253,10 @@ String content = response.body.toString();
      xrint("000 _ "+_data.toString());
 
       final response = await client
-          .post(ServerRoutes.LINK_CREATE_COMMAND,
+          .post(Uri.parse(ServerRoutes.LINK_CREATE_COMMAND),
           body:  _data,
           headers: Utils.getHeadersWithToken(customer.token))
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 90));
      xrint("001 _ "+response.body.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false

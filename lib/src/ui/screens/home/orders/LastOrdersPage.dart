@@ -2,6 +2,7 @@ import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -57,7 +58,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
                     userDataBloc.fetchLastOrders(widget.customer);
                   });
               }
-              return Center(child: CircularProgressIndicator());
+              return Center(child: MyLoadingProgressWidget());
             }));
   }
 
@@ -79,7 +80,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('no_order_today')}", style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('no_past_order')}", style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

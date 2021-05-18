@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -12,11 +14,9 @@ import 'package:android_intent/android_intent.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart' as geo;
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lo;
-import 'package:permission_handler/permission_handler.dart' as perm;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
 
 
@@ -72,6 +72,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       widget.customer = customer;
       _getLastKnowLocation();
     });
+  }
+
+  @override
+  void dispose() {
+    positionStream?.cancel();
+    super.dispose();
   }
 
   @override
@@ -187,18 +193,29 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     );
   }
 
+  StreamSubscription<Position> positionStream;
+
   void showPlacePicker (BuildContext context) async {
 
     /* get last know position */
-    geo.GeolocationStatus geolocationStatus  = await  geo.Geolocator().checkGeolocationPermissionStatus();
-    if(geolocationStatus ==  geo.GeolocationStatus.granted) {
-      _jumpToPickAddressPage();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+    } else if (permission == LocationPermission.denied) {
+      Geolocator.requestPermission();
     } else {
-      Map<Permission, perm.PermissionStatus> statuses  = await [Permission.location].request();
-      print(statuses[Permission.location]);
-      geolocationStatus = await  geo.Geolocator().checkGeolocationPermissionStatus();
-      if(geolocationStatus !=  geo.GeolocationStatus.granted) {
-        _jumpToPickAddressPage();
+        // location is enabled
+      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
+      if (!isLocationServiceEnabled) {
+        await Geolocator.openLocationSettings();
+      } else {
+          positionStream = Geolocator.getPositionStream().listen(
+                (Position position) {
+                  /* only once */
+                  print("position stream");
+                  _jumpToPickAddressPage();
+                  positionStream?.cancel();
+            });
       }
     }
   }
@@ -225,7 +242,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
     lo.LocationData location = await lo.Location().getLocation();
 
-    StateContainer.of(context).updateLocation(location: geo.Position(latitude: location.latitude, longitude: location.longitude));
+    StateContainer.of(context).updateLocation(location: Position(latitude: location.latitude, longitude: location.longitude));
 
     if (StateContainer.of(context).location != null)
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
@@ -233,6 +250,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     setState(() {
       isPickLocation = false;
     });
+
+    print("i pick address");
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
@@ -248,8 +267,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       });
       print(address.location);
       // use mvp to launch a request and place the result here.
-      widget.presenter.checkLocationDetails(widget.customer, position:   geo.Position(longitude: result.longitude, latitude: result.latitude));
-    } else {}
+      widget.presenter.checkLocationDetails(widget.customer, position:   Position(longitude: result.longitude, latitude: result.latitude));
+    } else {
+      setState(() {
+        isPickLocation = false;
+      });
+    }
   }
 
   void _exit() {
@@ -392,15 +415,34 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   Future _getLastKnowLocation() async {
 
-    _checkLocationActivated();
+    /*_checkLocationActivated();
     // save in to state container.
-    geo.Position position = await  geo.Geolocator().getLastKnownPosition(desiredAccuracy:  geo.LocationAccuracy.high);
-    if (position != null)
-      StateContainer.of(context).updateLocation(location: position);
+    Position position = await  Geolocator().getLastKnownPosition(desiredAccuracy:  LocationAccuracy.high);*/
+//    if (position != null)
+//      StateContainer.of(context).updateLocation(location: position);
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+    } else if (permission == LocationPermission.denied) {
+      Geolocator.requestPermission();
+    } else {
+      // location is enabled
+      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
+      if (!isLocationServiceEnabled) {
+        await Geolocator.openLocationSettings();
+      } else {
+        positionStream = Geolocator.getPositionStream().listen(
+                (Position position) {
+              if (position != null && mounted)
+                StateContainer.of(context).updateLocation(location: position);
+            });
+      }
+    }
   }
 
-  _checkLocationActivated () async {
-    if (!(await  geo.Geolocator().isLocationServiceEnabled())) {
+ /* _checkLocationActivated () async {
+    if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
           context: context,
@@ -424,7 +466,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
         );
       }
     }
-  }
+  }*/
 
 
   @override

@@ -281,13 +281,14 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
   @override
   void showLoading(bool isLoading) {
-    setState(() {
-      this.isLoading = isLoading;
-      if (isLoading == true) {
-        this.hasNetworkError = false;
-        this.hasSystemError = false;
-      }
-    });
+    if (mounted)
+      setState(() {
+        this.isLoading = isLoading;
+        if (isLoading == true) {
+          this.hasNetworkError = false;
+          this.hasSystemError = false;
+        }
+      });
   }
 
   _buildSysErrorPage() {

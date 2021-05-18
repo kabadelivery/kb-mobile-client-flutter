@@ -419,6 +419,13 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     // logout.
     StateContainer.of(context).balance = 0;
     CustomerUtils.clearCustomerInformations().whenComplete((){
+
+      StateContainer.of(context).updateBalance(balance: 0);
+      StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+
+
       Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
           builder: (BuildContext context) => LoginPage(presenter: LoginPresenter(), phone_number: phoneNumber, password: newCode, autoLogin: true)), (
           r) => false);

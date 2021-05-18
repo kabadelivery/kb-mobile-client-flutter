@@ -1,6 +1,7 @@
 import 'package:KABA/src/contracts/order_feedback_contract.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -60,7 +61,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   Widget build(BuildContext context) {
     return Scaffold(
       body:
-      isLoading ? Center(child: CircularProgressIndicator()) : (
+      isLoading ? Center(child: MyLoadingProgressWidget()) : (
           hasNetworkError || hasSystemError ? ErrorPage(message: "Network error, please try again.", onClickAction: ()=>  widget.presenter.loadOrderDetailsForFeedback(widget.customer, widget.orderId)) :
           Stack(
             children: <Widget>[

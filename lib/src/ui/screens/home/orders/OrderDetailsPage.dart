@@ -3,6 +3,7 @@ import 'package:KABA/src/contracts/order_feedback_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
@@ -87,7 +88,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             title: Text("${AppLocalizations.of(context).translate('order_details')}",
                 style: TextStyle(fontSize: 20, color: Colors.white))),
         body:
-        isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+        isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
         _inflateDetails())
     );
   }

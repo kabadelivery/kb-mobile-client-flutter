@@ -58,17 +58,22 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
     CustomerUtils.getOldWelcomePage().then((pageJson) async {
 
-      try {
-        _homeWelcomeView.showLoading(true);
-        HomeScreenModel _model;
-        // load previous page
+      _homeWelcomeView.showLoading(true);
+      HomeScreenModel _model;
+      // load previous page
+
+      if (pageJson != null) {
         try {
-          HomeScreenModel _model = HomeScreenModel.fromJson(json.decode(pageJson)["data"]);
+          HomeScreenModel _model = HomeScreenModel.fromJson(
+              json.decode(pageJson)["data"]);
           _homeWelcomeView.updateHomeWelcomePage(_model);
-        } catch(e){
+        } catch (e) {
           xrint(e);
           _homeWelcomeView.showLoading(true);
         }
+      }
+
+      try {
         // save it to the shared preferences
         String _dataResponse = await provider.fetchHomeScreenModel();
         _model = HomeScreenModel.fromJson(json.decode(_dataResponse)["data"]);
@@ -81,6 +86,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
           _homeWelcomeView.showErrorMessage("");
         }
       }
+      _homeWelcomeView.showLoading(false);
       isWorking = false;
     });
   }

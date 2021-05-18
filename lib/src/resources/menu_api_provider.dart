@@ -21,7 +21,7 @@ class MenuApiProvider {
     xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
+          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),
         body: json.encode({'id': restaurantId}),
 //          headers: Utils.getHeadersWithToken()
       )
@@ -55,7 +55,7 @@ class MenuApiProvider {
     xrint("entered fetchRestaurantMenuListWithFoodId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
+          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
         body: json.encode({'food_id': foodId}),
 //          headers: Utils.getHeadersWithToken()
       )
@@ -93,7 +93,7 @@ class MenuApiProvider {
     xrint("entered fetchRestaurantMenuListWithMenuId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID, // by menu_id
+          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
         body: json.encode({'menu_id': menuId}),
 //          headers: Utils.getHeadersWithToken()
       )
@@ -128,7 +128,7 @@ class MenuApiProvider {
     xrint("entered fetchBestSellerList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_BESTSELLERS_LIST,
+          .post(Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST),
         body: json.encode([]),
       )
           .timeout(const Duration(seconds: 30));
@@ -154,7 +154,7 @@ class MenuApiProvider {
     xrint("entered fetchFoodDetailsWithId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
+          .post(Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE),
         body: json.encode({"food_id": foodId}),
       )
           .timeout(const Duration(seconds: 30));
@@ -180,7 +180,7 @@ class MenuApiProvider {
     xrint("entered fetchRestaurantWithId");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_RESTAURANT_DETAILS,
+          .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS),
         body: json.encode({"id": restaurantDetailsId}),
         headers: Utils.getHeadersWithToken(customer.token),
       )
@@ -206,7 +206,7 @@ class MenuApiProvider {
     xrint("entered reviewRestaurant");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_POST_COMMENT,
+          .post(Uri.parse(ServerRoutes.LINK_POST_COMMENT),
         body: json.encode({"restaurant_id": restaurant?.id, "stars": stars, "comment": message}),
         headers: Utils.getHeadersWithToken(customer.token),
       )
@@ -231,7 +231,7 @@ class MenuApiProvider {
     xrint("entered checkCanComment");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_CHECK_CAN_COMMENT,
+          .post(Uri.parse(ServerRoutes.LINK_CHECK_CAN_COMMENT),
         body: json.encode({"restaurant_id": restaurant?.id}),
         headers: Utils.getHeadersWithToken(customer.token),
       )

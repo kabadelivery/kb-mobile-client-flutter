@@ -72,11 +72,22 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
 
   File _image;
 
+  final picker = ImagePicker();
+
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    setState(() {
+//      _image = image;
+//    });
+
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
     });
   }
 

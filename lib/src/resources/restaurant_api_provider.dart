@@ -19,7 +19,7 @@ class RestaurantApiProvider {
     xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID,
+          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),
         body: json.encode({'id': restaurantModel.id.toString()}),
 //          headers: Utils.getHeadersWithToken()
       )
@@ -50,7 +50,7 @@ class RestaurantApiProvider {
       final response = await client
           .post(
 //        DESTINATION == 1 ?
-          ServerRoutes.LINK_GET_RESTAURANT_DETAILS/* : ServerRoutes.LINK_MENU_BY_ID*/,
+          Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS)/* : ServerRoutes.LINK_MENU_BY_ID*/,
           body: /*DESTINATION == 1 ? */json.encode({'id': restaurantIdOrMenuId}) /*: json.encode({'menu_id': restaurantIdOrMenuId}),*/
       )
           .timeout(const Duration(seconds: 30));
@@ -79,7 +79,7 @@ class RestaurantApiProvider {
     xrint("entered loadFoodFromId ${foodId} ");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE,
+          .post(Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE),
         body: json.encode({'food_id': foodId}),
 //          headers: Utils.getHeadersWithToken()
       )
@@ -105,7 +105,7 @@ class RestaurantApiProvider {
     xrint("entered fetchRestaurantFoodProposalFromTag ${tag}");
     if (await Utils.hasNetwork()) {
       final response = await client
-          .post(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG,
+          .post(Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG),
         body: json.encode({'tag': tag}),
       )
           .timeout(const Duration(seconds: 30));

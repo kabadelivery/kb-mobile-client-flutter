@@ -25,6 +25,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,9 +46,21 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: KColors.primaryColor, // navigation bar color
   ));
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print("onBackgroundMessage: $message");
+/* send json version of notification object. */
+//  if (Platform.isAndroid) {
+//    NotificationItem notificationItem = _notificationFromMessage(message);
+//    return iLaunchNotifications(notificationItem);
+//  }
+//  return Future.value(0);
+}
 
 
 class MyApp extends StatefulWidget {
@@ -64,6 +77,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  // initialize flutter fire
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -102,7 +117,8 @@ class _MyAppState extends State<MyApp> {
             onGenerateTitle: (BuildContext context) =>
 //          "${AppLocalizations.of(context).translate('app_title')}",
             "KABA",
-            theme: ThemeData(primarySwatch: KColors.colorCustom),
+            theme: ThemeData(primarySwatch: KColors.colorCustom,
+                fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             home: SplashPage(),
@@ -132,7 +148,6 @@ class _MyAppState extends State<MyApp> {
   void _jumpToFoodDetailsWithId(int product_id) {
     navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
   }
-
 
   void _jumpToOrderDetailsWithId(int product_id) {
     navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);

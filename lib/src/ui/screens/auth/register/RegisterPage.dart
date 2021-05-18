@@ -37,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   String _nicknameFieldHint;
 
-  List<TextInputType> _loginFieldInputType = [TextInputType.phone, TextInputType.emailAddress];
+  List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress, TextInputType.emailAddress];
 
   List<int> _loginMaxLength = [8,100];
 
