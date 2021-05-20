@@ -160,7 +160,7 @@ class _SplashPageState extends State<SplashPage> {
     final assetImage = Image(image: CachedNetworkImageProvider(link), width: MediaQuery.of(context).size.width);  //Image.asset(link);
 
 
-    if (/*assetImage == null || */false) {
+    if (/*assetImage == null || */true) {
 
       print("wll asset image null");
       precacheImage(assetImage.image, context);
