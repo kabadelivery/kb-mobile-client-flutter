@@ -339,6 +339,8 @@
   "open_time": "Open Time: ",
   "try_preordering": "Please try Pre-Ordering.",
 
-  "your_kaba_points": "YOUR POINTS KABA"
+  "your_kaba_points": "YOUR POINTS KABA",
+
+  "lost_your_password" : "Recover Password ?"
 
 }

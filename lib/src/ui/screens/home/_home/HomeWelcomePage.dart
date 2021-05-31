@@ -664,7 +664,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
+                               Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
+                        SizedBox(height:5),
                         Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
                       ],
                     ),

@@ -25,7 +25,9 @@ class RecoverPasswordPage extends StatefulWidget {
 
   RecoverPasswordPresenter presenter;
 
-  RecoverPasswordPage({Key key, this.presenter}) : super(key: key);
+  bool is_a_process;
+
+  RecoverPasswordPage({Key key, this.presenter, this.is_a_process = false}) : super(key: key);
 
   @override
   _RecoverPasswordPageState createState() => _RecoverPasswordPageState();
@@ -428,20 +430,29 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   void recoverSuccess(String phoneNumber, String newCode) {
     /* send to login page and */
     mToast("${AppLocalizations.of(context).translate('password_updated_success')}");
-    // logout.
-    StateContainer.of(context).balance = 0;
-    CustomerUtils.clearCustomerInformations().whenComplete((){
 
-      StateContainer.of(context).updateBalance(balance: 0);
-      StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+    if (widget.is_a_process) {
+      // go back and reload all the to order page
 
+    } else {
+      // logout.
+      StateContainer
+          .of(context)
+          .balance = 0;
+      CustomerUtils.clearCustomerInformations().whenComplete(() {
+        StateContainer.of(context).updateBalance(balance: 0);
+        StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+        StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
-      Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-          builder: (BuildContext context) => LoginPage(presenter: LoginPresenter(), phone_number: phoneNumber, password: newCode, autoLogin: true)), (
-          r) => false);
-    });
+        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+            builder: (BuildContext context) =>
+                LoginPage(presenter: LoginPresenter(),
+                    phone_number: phoneNumber,
+                    password: newCode,
+                    autoLogin: true)), (r) => false);
+      });
+    }
   }
 
   void mDialog(String message) {

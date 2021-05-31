@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
@@ -8,6 +9,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
+import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
@@ -584,9 +586,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 !_isPreorderSelected() ? _buildOrderPayAtArrivalButton() : Container(),
                 SizedBox(height: 30),
               ])) : Container(),
-              Center(child: Padding(
-                padding: const EdgeInsets.only(top:8,bottom:20.0),
-                child: Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize:12, color: Colors.grey)),
+              Center(child: InkWell(
+                onTap: ()=>_jumpToRecoverPage(),
+                child: Padding(
+                  padding: const EdgeInsets.only(top:8,bottom:20.0),
+                  child: Row(mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(FontAwesomeIcons.questionCircle, color: Colors.grey),
+                      SizedBox(width: 5),
+                      Text("${AppLocalizations.of(context).translate('lost_your_password')}", style: TextStyle(fontSize:12, color: Colors.grey)),
+                    ],
+                  ),
+                ),
               ))
             ])
       ),
@@ -631,6 +642,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   void mToast(String message) {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  }
+
+  _jumpToRecoverPage() {
+    /* can back once the password is changed */
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+      ),
+    );
   }
 
   @override
