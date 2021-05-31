@@ -90,9 +90,10 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                   style: TextStyle(color: Colors.white, fontSize: 12)
                               )) : Container(),
                         ]),
-
                         Row(children: <Widget>[
-                          widget.restaurantModel?.distance == null ? Container() : Container(
+                          widget.restaurantModel?.distance == null ? Container() :
+                          widget.restaurantModel?.delivery_pricing == "0" ? Container () :
+                          Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryYellowColor),
                               child:Row(

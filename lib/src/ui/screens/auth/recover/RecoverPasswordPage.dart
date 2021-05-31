@@ -6,6 +6,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -61,9 +62,20 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null) {
         setState(() {
-          if (customer.phone_number == null)
-            _loginFieldController.text = customer.email;
-          else
+          if (customer.phone_number == null) {
+            if (customer.email == null) {
+              // check if logged in, if yes, log out...
+              CustomerUtils.clearCustomerInformations().whenComplete((){
+                StateContainer.of(context).updateBalance(balance: 0);
+                StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+                StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+                StateContainer.of(context).updateTabPosition(tabPosition: 0);
+                Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+              });
+            } else {
+              _loginFieldController.text = customer.email;
+            }
+          } else
             _loginFieldController.text = customer.phone_number;
         });
       }

@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
@@ -31,16 +32,16 @@ class RestaurantBloc {
 
 
 
-  fetchRestaurantList({Position position}) async {
+  fetchRestaurantList({CustomerModel customer, Position position}) async {
 
     try {
 //      if (_isDisposedForRestaurantList)
 //        return;
-      List<RestaurantModel> restaurantList = await _repository.fetchRestaurantList(position);
+      List<RestaurantModel> restaurantList = await _repository.fetchRestaurantList(customer, position);
       _restaurantListFetcher.sink.add(restaurantList);
 //      _isDisposedForRestaurantList = true;
     } catch (_) {
-      _restaurantListFetcher.sink.addError(_.message);
+      _restaurantListFetcher.sink.addError(_);
     }
   }
 

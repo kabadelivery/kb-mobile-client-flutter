@@ -44,14 +44,15 @@ class AppApiProvider {
     }
   }
 
-  Future<List<RestaurantModel>> fetchRestaurantList(Position position) async {
-    xrint("entered fetchRestaurantList");
+  Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel model, Position position) async {
+    xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
           body: position == null ? "" : json.encode(
               {"location": "${position?.latitude}:${position?.longitude}"}),
-          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
+          // headers: Utils.getHeaders()).timeout(const Duration(seconds: 30)
+      );
      xrint(response.body.toString());
       if (response.statusCode == 200) {
         int errorCode = json.decode(response.body)["error"];

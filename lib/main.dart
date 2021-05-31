@@ -46,21 +46,26 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: KColors.primaryColor, // navigation bar color
   ));
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    AppConfig.CHANNEL_ID, // id
+    AppConfig.CHANNEL_NAME, // title
+    AppConfig.CHANNEL_DESCRIPTION, // description
+    importance: Importance.max,
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+  await Firebase.initializeApp();
+
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingOpenedAppHandler);
   runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
 
-  print("onBackgroundMessage: $message");
-/* send json version of notification object. */
-//  if (Platform.isAndroid) {
-//    NotificationItem notificationItem = _notificationFromMessage(message);
-//    return iLaunchNotifications(notificationItem);
-//  }
-//  return Future.value(0);
-}
+FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
 
 class MyApp extends StatefulWidget {
@@ -72,7 +77,6 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
-
 
 
 class _MyAppState extends State<MyApp> {
@@ -91,7 +95,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    Image(image: AssetImage(ImageAssets.kaba_main));
+    precacheImage(AssetImage(ImageAssets.kaba_main), context);
 
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
@@ -112,6 +116,7 @@ class _MyAppState extends State<MyApp> {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             onGenerateTitle: (BuildContext context) =>

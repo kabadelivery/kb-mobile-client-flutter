@@ -30,6 +30,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
-  void initState() {
+void initState() {
     /* check the login status */
     checkLogin();
 
@@ -143,7 +144,7 @@ class _HomePageState extends State<HomePage> {
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid = new AndroidInitializationSettings(
-        'mipmap/ic_launcher');
+        'kaba_notification_default');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         requestBadgePermission: true,
@@ -154,45 +155,40 @@ class _HomePageState extends State<HomePage> {
     var initializationSettingsMacOs = MacOSInitializationSettings();
 
     var initializationSettings = InitializationSettings(
-       android: initializationSettingsAndroid,
-       iOS: initializationSettingsIOS);
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
     // new try
-   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('pnotif Got a message whilst in the foreground!');
+      print('pnotif Message data: ${message.data}');
 
-     print('pnotif Got a message whilst in the foreground!');
-     print('pnotif Message data: ${message.data}');
+      if (message.notification != null) {
+        print('pnotif Message also contained a notification: ${message
+            .notification}');
 
-     if (message.notification != null) {
-       print('pnotif Message also contained a notification: ${message.notification}');
-     }
-   });
+        NotificationItem notificationItem = _notificationFromMessage(message.data);
+        iLaunchNotifications(notificationItem);
+      }
 
-    // firebase - old config
- /*   _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: ");
-        *//* send json version of notification object. *//*
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        *//* send json version of notification object. *//*
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        *//* send json version of notification object. *//*
-        NotificationItem notificationItem = _notificationFromMessage(message);
-        iLaunchNotifications(notificationItem);
-      },
-      onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandling,
-    );*/
+    });
+
+
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
+      if (initialMessage != null) {
+        _firebaseMessagingOpenedAppHandler(initialMessage);
+      } else {
+        FirebaseMessaging.onBackgroundMessage(
+            _firebaseMessagingBackgroundHandler);
+        FirebaseMessaging.onMessageOpenedApp.listen(
+            _firebaseMessagingOpenedAppHandler);
+      }
+    });
 
     _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
@@ -204,9 +200,32 @@ class _HomePageState extends State<HomePage> {
       // here we handle the signal
       initUniLinksStream();
     });
-    //    popupMenus = ["${AppLocalizations.of(context).translate('settings')}"];
-    //    jump to what i need to.
   }
+
+
+  Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
+    print("_firebaseMessagingOpenedAppHandler: ${message.data})");
+    if (message.notification != null) {
+      print('p_notify Message also contained a notification: ${message
+          .data}');
+      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      _handlePayLoad(notificationItem.destination.toSpecialString());
+    }
+  }
+
+
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+
+    print("_firebaseMessagingBackgroundHandler: ${message.data})");
+    if (message.notification != null) {
+      print('p_notify Message also contained a notification: ${message
+          .data}');
+      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      _handlePayLoad(notificationItem.destination.toSpecialString());
+    }
+  }
+
 
   Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
     print("onDidReceiveLocalNotification ${payload}");
@@ -572,7 +591,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   if (Platform.isIOS) {
 // Android-specific code
     try {
-      var _data = json.decode(message_entry["data"])["data"];
+      var _data = json.decode(message_entry["data"]);
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -589,7 +608,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   } else if (Platform.isAndroid) {
 // IOS-specific code
     try {
-      var _data = json.decode(message_entry["data"]["data"])["data"];
+      var _data = json.decode(message_entry["data"])["data"];
 
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
@@ -612,15 +631,15 @@ Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.max, priority: Priority.high, ticker: notificationItem?.title);
+      importance: Importance.max, priority: Priority.max, ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
   return flutterLocalNotificationsPlugin.show(
-      0, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
+      notificationItem.hashCode, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
       payload: notificationItem?.destination?.toSpecialString()
   );
 }

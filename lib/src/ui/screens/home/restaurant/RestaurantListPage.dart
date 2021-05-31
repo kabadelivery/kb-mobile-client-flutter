@@ -4,6 +4,7 @@ import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
@@ -12,6 +13,7 @@ import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -34,6 +37,8 @@ class RestaurantListPage extends StatefulWidget {
   PageStorageKey key;
 
   BuildContext context;
+
+  CustomerModel customer;
 
   RestaurantListPage({this.key, this.context, this.location, this.presenter}) : super(key: key);
 
@@ -74,6 +79,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     widget.presenter.restaurantFoodProposalView = this;
     _filterEditController.addListener(_filterEditContent);
 
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+    });
+
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
 
@@ -95,19 +104,17 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         if (StateContainer
             ?.of(context)
             ?.location == null) {
-          restaurantBloc.fetchRestaurantList();
+          restaurantBloc.fetchRestaurantList(customer: widget.customer);
           _getLastKnowLocation();
         } else
-          restaurantBloc.fetchRestaurantList(position: StateContainer
-              ?.of(context)
-              ?.location);
+          restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
       }
     });
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    // restaurantBloc.dispose();
     _filterEditController.dispose();
     super.dispose();
   }
@@ -127,7 +134,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                   } else if (snapshot.hasError) {
                     return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
                       setState(() {
-                        restaurantBloc.fetchRestaurantList(position: StateContainer.of(context).location);
+                        restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
                       });
                     });
                   }
@@ -411,7 +418,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   }*/
 
   StreamSubscription<Position> positionStream;
-
+  Position tmpLocation;
 
 
   Future _getLastKnowLocation() async {
@@ -463,27 +470,23 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         positionStream = Geolocator.getPositionStream().listen(
                 (Position position) {
 
-              Position tmpLocation = StateContainer.of(widget.context).location;
+                tmpLocation = StateContainer.of(widget.context).location;
               if (position?.latitude != null && tmpLocation?.latitude != null &&
                   (position.latitude*10000).round() == (tmpLocation.latitude*10000).round() &&
                   (position.longitude*10000).round() == (tmpLocation.longitude*10000).round())
                 return;
 
-              if (position != null) {
-                StateContainer.of(widget.context).updateLocation(
-                    location: position);
-                tmpLocation = position;
+              if (position != null && mounted) {
+                StateContainer.of(context).updateLocation(location: position);
+                restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
               }
-              if (tmpLocation != null) {
-                restaurantBloc.fetchRestaurantList(position: StateContainer
-                    .of(widget.context)
-                    .location);
-              }
+            /*  if (tmpLocation != null) {
+                restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
+              }*/
             });
       }
     }
   }
-
 
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */

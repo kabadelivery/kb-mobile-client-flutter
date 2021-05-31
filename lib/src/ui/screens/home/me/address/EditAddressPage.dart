@@ -135,7 +135,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                                 children: <Widget>[
 //                                  isPickLocation
                                   isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
-
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
                                   SizedBox(width: 10),
@@ -247,10 +246,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     if (StateContainer.of(context).location != null)
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
 
-    setState(() {
-      isPickLocation = false;
-    });
-
     print("i pick address");
 
     /* get my position */
@@ -258,6 +253,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
         builder: (context) =>
             Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
     /* use this location to generate details about the place the user lives and so on. */
+
+    setState(() {
+      isPickLocation = false;
+    });
 
     if (result != null) {
       /*  */

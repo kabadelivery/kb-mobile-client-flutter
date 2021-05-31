@@ -121,6 +121,8 @@ class OrderApiProvider {
           .timeout(const Duration(seconds: 90));
 
      xrint("001 _ "+response.body.toString());
+      xrint("002 _status code  "+response.statusCode.toString());
+
 
       if (response.statusCode == 200) {
         // if ok, send true or false

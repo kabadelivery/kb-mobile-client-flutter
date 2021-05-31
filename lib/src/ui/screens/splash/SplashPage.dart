@@ -147,23 +147,12 @@ class _SplashPageState extends State<SplashPage> {
 
   startTimeout() async {
 
-    var duration = const Duration(milliseconds: 1500);
+    var duration = const Duration(milliseconds: 2000);
     return new Timer(duration, handleTimeout);
   }
 
   @override
   Widget build(BuildContext context) {
-
-    String link = "https://i.pinimg.com/originals/9d/93/2a/9d932a2b1f2361cac910d67d63066972.jpg";
-
-    // for ios only.
-    final assetImage = Image(image: CachedNetworkImageProvider(link), width: MediaQuery.of(context).size.width);  //Image.asset(link);
-
-
-    if (/*assetImage == null || */true) {
-
-      print("wll asset image null");
-      precacheImage(assetImage.image, context);
 
       return Scaffold(
         body:  AnnotatedRegion<SystemUiOverlayStyle>(
@@ -189,51 +178,6 @@ class _SplashPageState extends State<SplashPage> {
               )),
         ),
       );
-    } else {
-
-      print("wll asset image NOT null");
-
-      return Scaffold(
-        body:  AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child:
-            Column(children:[
-              Expanded(child: assetImage)
-            ])
-        ),
-      );
-    }
-
-    return Scaffold(
-      body:  AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child:
-        Column(children:[
-          Expanded(child: Image(image: AssetImage(ImageAssets.splash_screen), width: MediaQuery.of(context).size.width),)
-        ])
-        ,
-        // Center(
-        //     child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: <Widget>[
-        //           /* image */
-        //           SizedBox(
-        //               height: 50,
-        //               width: 50,
-        //               child:SvgPicture.asset(
-        //                 VectorsData.kaba_icon_svg,
-        //                 color: KColors.primaryColor,
-        //                 semanticsLabel: 'LOGO',
-        //               )),
-        //           /* text */
-        //           SizedBox(height: 10),
-        //           Text("${AppLocalizations.of(context).translate('app_title')}",
-        //               style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-        //         ]
-        //     )),
-
-      ),
-    );
   }
 
   Future<bool> _getIsFirstTime() async {
