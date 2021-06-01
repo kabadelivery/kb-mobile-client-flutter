@@ -8,6 +8,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:iphone_has_notch/iphone_has_notch.dart';
 import 'package:toast/toast.dart';
 
 
@@ -155,7 +156,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         ),
         totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child:
         RaisedButton(
-            child: Container(child:  Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white))),
+            child: Container(child:  Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)),
+            padding: EdgeInsets.only(bottom: IphoneHasNotch.hasNotch ? 20 : 0),),
             color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
       ],
     );

@@ -61,7 +61,11 @@ Future<void> main() async {
 
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingOpenedAppHandler);
-  runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
+  });
 }
 
 
@@ -95,6 +99,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
+    // precache logo of the splashPage
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
 
     return ChangeNotifierProvider<AppLanguage>(

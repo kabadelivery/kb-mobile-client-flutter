@@ -1,6 +1,9 @@
+import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class RetrievePasswordPage extends StatefulWidget {
@@ -20,7 +23,6 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   int _inputCount = 4;
 
   String pwd = "";
-
 
   /* create - confirm - insert */
   List<String> retrievePasswordTitle;
@@ -107,8 +109,41 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     ]
                 ),
               ],
-            ))
+            )),
+            widget.type == 3 ? Center(
+              child: Row(mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height:19),
+                  Center(child: InkWell(
+                    onTap: ()=>_jumpToRecoverPage(),
+                    // only when you are about to launch an order.
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:8,bottom:20.0),
+                      child: Row(mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.questionCircle, color: Colors.grey),
+                          SizedBox(width: 5),
+                          Text("${AppLocalizations.of(context).translate('lost_your_password')}", style: TextStyle(fontSize:12, color: Colors.grey)),
+                        ],
+
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+            ) : Container(),
           ]
+      ),
+    );
+  }
+
+  _jumpToRecoverPage() {
+    /* can back once the password is changed */
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter(), is_a_process: true),
       ),
     );
   }

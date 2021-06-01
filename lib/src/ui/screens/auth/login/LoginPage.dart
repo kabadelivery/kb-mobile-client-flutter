@@ -13,6 +13,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -119,9 +120,17 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
                         ]),
                     SizedBox(height: 30),
-                    GestureDetector(
-                      child:Text("${AppLocalizations.of(context).translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
-                      onTap: (){_moveToRecoverPasswordPage();},
+                    Center(
+                      child: InkWell(
+                        child:Row(mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(FontAwesomeIcons.questionCircle, color: Colors.grey),
+                            SizedBox(width: 5),
+                            Text("${AppLocalizations.of(context).translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
+                          ],
+                        ),
+                        onTap: (){_moveToRecoverPasswordPage();},
+                      ),
                     ),
                     SizedBox(height: 50),
                   ]

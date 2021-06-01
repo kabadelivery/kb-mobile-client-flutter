@@ -113,7 +113,7 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
       }
     } catch (_) {
       _recoverPasswordView.sendVerificationCodeLoading(false);
-      xrint(_);
+      xrint(_.toString());
       _recoverPasswordView.recoverFails();
     }
     isWorking = false;

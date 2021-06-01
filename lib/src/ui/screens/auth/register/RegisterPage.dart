@@ -265,7 +265,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     prefs.remove("last_code_sent_time");
     prefs.remove("login");
     prefs.remove("request_id");
-    prefs.clear();
+    // prefs.clear();
   }
 
 Future<void> _saveRequestParams (String login, String requestId) async {

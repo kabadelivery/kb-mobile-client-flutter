@@ -649,7 +649,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter(), is_a_process: true),
       ),
     );
   }

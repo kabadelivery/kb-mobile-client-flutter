@@ -6,10 +6,12 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,10 +65,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     this.widget.presenter.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null) {
+        xrint("recoverpasswordPage : "+customer.toJson().toString());
         setState(() {
           if (customer.phone_number == null) {
             if (customer.email == null) {
               // check if logged in, if yes, log out...
+              xrint("cstomer email is no null");
               CustomerUtils.clearCustomerInformations().whenComplete((){
                 StateContainer.of(context).updateBalance(balance: 0);
                 StateContainer.of(context).updateKabaPoints(kabaPoints: "");
@@ -216,7 +220,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     prefs.remove("vlcst");
     prefs.remove("vl");
     prefs.remove("vri");
-    prefs.clear();
+    // prefs.clear();
   }
 
   _saveRequestParams (String login, String requestId) async {
@@ -380,9 +384,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     mToast(message);
   }
 
-
-
-
   @override
   void showLoading(bool isLoading) {
 
@@ -429,12 +430,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   @override
   void recoverSuccess(String phoneNumber, String newCode) {
     /* send to login page and */
-    mToast("${AppLocalizations.of(context).translate('password_updated_success')}");
+    mToast("${AppLocalizations.of(context).translate(
+        'password_updated_success')}");
 
-    if (widget.is_a_process) {
-      // go back and reload all the to order page
-
-    } else {
+    if (!widget.is_a_process) {
       // logout.
       StateContainer
           .of(context)
@@ -465,7 +464,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -498,7 +497,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actionIfYes();
                 },
               ),
             ] : <Widget>[
@@ -508,6 +506,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  if (widget.is_a_process)
+                    Navigator.of(context).pop();
                 },
               ),
             ]

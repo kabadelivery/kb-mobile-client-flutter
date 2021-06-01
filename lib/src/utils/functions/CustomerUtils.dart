@@ -62,7 +62,7 @@ class CustomerUtils {
     prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
     prefs.remove("_homepage");
     prefs.remove("is_push_token_uploaed");
-
+// prefs.clear();
 
     /*String jsonCustomer = prefs.getString("_loginResponse");
     var obj = json.decode(jsonCustomer);

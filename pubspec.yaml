@@ -87,6 +87,7 @@ dependencies:
   pinch_zoom: ^0.1.0
   flutter_linkify: ^5.0.2
   flutter_icons: ^1.1.0
+  iphone_has_notch: ^1.0.0
 
 
 
