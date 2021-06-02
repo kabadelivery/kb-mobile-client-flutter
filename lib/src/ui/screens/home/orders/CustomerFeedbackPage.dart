@@ -7,6 +7,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -210,7 +211,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   @override
   void inflateOrderDetails(CommandModel command) {
 
-    print("images ${command?.restaurant_entity?.pic}");
+    xrint("images ${command?.restaurant_entity?.pic}");
     setState(() {
       widget.command = command;
     });

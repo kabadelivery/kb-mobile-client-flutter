@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -348,7 +349,7 @@ class PlacePickerState extends State<PlacePicker> {
         displayAutoCompleteSuggestions(suggestions);
       }
     }).catchError((error) {
-      print(error);
+      xrint(error);
     });
   }
 
@@ -372,7 +373,7 @@ class PlacePickerState extends State<PlacePicker> {
         moveToLocation(latLng);
       }
     }).catchError((error) {
-      print(error);
+      xrint(error);
     });
   }
 
@@ -498,7 +499,7 @@ class PlacePickerState extends State<PlacePicker> {
         });
       }
     }).catchError((error) {
-      print(error);
+      xrint(error);
     });
   }
 
@@ -530,7 +531,7 @@ class PlacePickerState extends State<PlacePicker> {
       moveToLocation(target);
     }).catchError((error) {
       // TODO: Handle the exception here
-      print(error);
+      xrint(error);
     });
   }
 }
@@ -847,15 +848,15 @@ class Uuid {
     return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
         '${_bitsDigits(16, 4)}-'
         '4${_bitsDigits(12, 3)}-'
-        '${_printDigits(special, 1)}${_bitsDigits(12, 3)}-'
+        '${_xrintDigits(special, 1)}${_bitsDigits(12, 3)}-'
         '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
   }
 
   String _bitsDigits(int bitCount, int digitCount) =>
-      _printDigits(_generateBits(bitCount), digitCount);
+      _xrintDigits(_generateBits(bitCount), digitCount);
 
   int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
 
-  String _printDigits(int value, int count) =>
+  String _xrintDigits(int value, int count) =>
       value.toRadixString(16).padLeft(count, '0');
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -72,7 +73,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
 
   _onPositionChanged(Position position) {
     this._myPosition = position;
-    print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
+    xrint(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
   }
 
   _getCamerationPosition (Position position) {

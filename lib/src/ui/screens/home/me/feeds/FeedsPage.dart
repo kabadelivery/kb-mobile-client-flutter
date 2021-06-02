@@ -12,6 +12,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
@@ -154,7 +155,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 
   _jumpToAdd(NotificationFDestination notificationFDestination) {
 
-    print(notificationFDestination.toString());
+    xrint(notificationFDestination.toString());
 
     switch (notificationFDestination.type) {
     /* go to the activity we are supposed to go to with only the id */

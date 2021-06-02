@@ -3,6 +3,8 @@ import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:flutter/foundation.dart';
 
+import '../xrint.dart';
+
 
 class VoucherModel {
 
@@ -88,7 +90,7 @@ class VoucherModel {
       restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
             name: json['restaurant_entity']['name']);*/
     } catch(_) {
-      print(_);
+      xrint(_);
     }
     use_count = json['use_count'];
     already_used_count = json["already_used_count"];

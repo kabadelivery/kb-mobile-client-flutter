@@ -15,6 +15,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -434,8 +435,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     /* StreamSubscription<Position> positionStream =*/
     /* geolocator.getPositionStream(locationOptions).listen(
             (Position position) {
-//          print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
-//          print("location :: ${position?.toJson()?.toString()}");
+//          xrint(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
+//          xrint("location :: ${position?.toJson()?.toString()}");
           if (position != null)
             StateContainer.of(context).updateLocation(location: position);
           if (StateContainer.of(context).location != null) {
@@ -570,7 +571,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       String sentence = removeAccentFromString("${restaurant.name}".toLowerCase());
       String sentence1 = removeAccentFromString(content.trim()).toLowerCase();
 
-//      print("filtered string ${sentence} => ${sentence1}");
+//      xrint("filtered string ${sentence} => ${sentence1}");
       if (sentence.contains(sentence1)) {
         d.add(restaurant);
       }
@@ -754,7 +755,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       try {
         fd.sort((fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
       } catch(_) {
-        print ("error here - cheap_to_exp");
+        xrint ("error here - cheap_to_exp");
       }
       return fd;
     }
@@ -766,7 +767,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         fd.sort((fd1, fd2) =>
             int.parse(fd2.price).compareTo(int.parse(fd1.price)));
       } catch(_) {
-        print ("error here - exp_to_cheap");
+        xrint ("error here - exp_to_cheap");
       }
       return fd;
     }
@@ -778,7 +779,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         try {
           fd.sort((fd1, fd2) => int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(int.parse(fd1.restaurant_entity?.delivery_pricing)));
         } catch (_){
-          print ("error here - farest");
+          xrint ("error here - farest");
         }
       return fd;
     }
@@ -792,7 +793,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
               int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(
                   int.parse(fd2?.restaurant_entity?.delivery_pricing)));
         } catch (_){
-          print ("error here - nearest");
+          xrint ("error here - nearest");
         }
       return fd;
     }

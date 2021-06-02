@@ -35,6 +35,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     } catch (_) {
-      print ("error checklogin() ");
+      xrint ("error checklogin() ");
       launchPage = HomePage();
     }
   }
@@ -163,11 +164,11 @@ void initState() {
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('pnotif Got a message whilst in the foreground!');
-      print('pnotif Message data: ${message.data}');
+      xrint('pnotif Got a message whilst in the foreground!');
+      xrint('pnotif Message data: ${message.data}');
 
       if (message.notification != null) {
-        print('pnotif Message also contained a notification: ${message
+        xrint('pnotif Message also contained a notification: ${message
             .notification}');
 
         NotificationItem notificationItem = _notificationFromMessage(message.data);
@@ -204,9 +205,9 @@ void initState() {
 
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
-    print("_firebaseMessagingOpenedAppHandler: ${message.data})");
+    xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
     if (message.notification != null) {
-      print('p_notify Message also contained a notification: ${message
+      xrint('p_notify Message also contained a notification: ${message
           .data}');
       NotificationItem notificationItem = _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
@@ -217,9 +218,9 @@ void initState() {
   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
-    print("_firebaseMessagingBackgroundHandler: ${message.data})");
+    xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
     if (message.notification != null) {
-      print('p_notify Message also contained a notification: ${message
+      xrint('p_notify Message also contained a notification: ${message
           .data}');
       NotificationItem notificationItem = _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
@@ -228,12 +229,12 @@ void initState() {
 
 
   Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
-    print("onDidReceiveLocalNotification ${payload}");
+    xrint("onDidReceiveLocalNotification ${payload}");
     _handlePayLoad(payload);
   }
 
   Future onSelectNotification(String payload) {
-    print("onSelectedNotification ${payload}");
+    xrint("onSelectedNotification ${payload}");
     _handlePayLoad(payload);
   }
 
@@ -244,9 +245,9 @@ void initState() {
     try {
       notificationFDestination = NotificationFDestination
           .fromJson(json.decode(payload));
-      print(notificationFDestination.toString());
+      xrint(notificationFDestination.toString());
     } catch (_) {
-      print(_);
+      xrint(_);
     }
 
     switch (notificationFDestination.type) {
@@ -377,12 +378,12 @@ void initState() {
       // Parse the link and warn the user, if it is not correct
       if (link == null)
         return;
-      print("initialLinkStream ${link}");
+      xrint("initialLinkStream ${link}");
       // send the links to home page to handle them instead
       _handleLinksImmediately(link);
     }, onError: (err) {
       // Handle exception by warning the user their action did not succeed
-      print("initialLinkStreamError");
+      xrint("initialLinkStreamError");
     });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
@@ -394,9 +395,9 @@ void initState() {
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
-    print("host -> ${mUri.host}");
-    print("path -> ${mUri.path}");
-    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
@@ -408,7 +409,7 @@ void initState() {
     switch (pathSegments[0]) {
       case "voucher":
         if (pathSegments.length > 1) {
-          print("voucher id homepage -> ${pathSegments[1]}");
+          xrint("voucher id homepage -> ${pathSegments[1]}");
           widget.destination = SplashPage.VOUCHER;
           /* convert from hexadecimal to decimal */
           widget.argument = "${pathSegments[1]}";
@@ -416,13 +417,13 @@ void initState() {
         }
         break;
       case "vouchers":
-        print("vouchers page");
+        xrint("vouchers page");
         widget.destination = SplashPage.VOUCHERS;
         /* convert from hexadecimal to decimal */
         _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
         break;
       case "addresses":
-        print("addresses page");
+        xrint("addresses page");
         widget.destination = SplashPage.ADDRESSES;
         /* convert from hexadecimal to decimal */
         _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
@@ -440,7 +441,7 @@ void initState() {
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
-          print("restaurant id -> ${pathSegments[1]}");
+          xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           /* convert from hexadecimal to decimal */
           widget.argument = int.parse("${pathSegments[1]}");
@@ -452,7 +453,7 @@ void initState() {
         break;
       case "order":
         if (pathSegments.length > 1) {
-          print("order id -> ${pathSegments[1]}");
+          xrint("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -463,7 +464,7 @@ void initState() {
         break;
       case "food":
         if (pathSegments.length > 1) {
-          print("food id -> ${pathSegments[1]}");
+          xrint("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -474,7 +475,7 @@ void initState() {
         break;
       case "menu":
         if (pathSegments.length > 1) {
-          print("menu id -> ${pathSegments[1]}");
+          xrint("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -484,7 +485,7 @@ void initState() {
         break;
       case "review-order":
         if (pathSegments.length > 1) {
-          print("review-order id -> ${pathSegments[1]}");
+          xrint("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -504,9 +505,9 @@ void initState() {
 
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
-    print("host -> ${mUri.host}");
-    print("path -> ${mUri.path}");
-    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
 /*
 * /food/345
 * /menu/890
@@ -529,35 +530,35 @@ void initState() {
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
-          print("restaurant id -> ${pathSegments[1]}");
+          xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "order":
         if (pathSegments.length > 1) {
-          print("order id -> ${pathSegments[1]}");
+          xrint("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "food":
         if (pathSegments.length > 1) {
-          print("food id -> ${pathSegments[1]}");
+          xrint("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "menu":
         if (pathSegments.length > 1) {
-          print("menu id -> ${pathSegments[1]}");
+          xrint("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
       case "review-order":
         if (pathSegments.length > 1) {
-          print("review-order id -> ${pathSegments[1]}");
+          xrint("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
         }
@@ -577,7 +578,7 @@ void initState() {
 
 
 Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
-  print("onBackgroundMessage: $message");
+  xrint("onBackgroundMessage: $message");
 /* send json version of notification object. */
   if (Platform.isAndroid) {
     NotificationItem notificationItem = _notificationFromMessage(message);
@@ -603,7 +604,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
       );
       return notificationItem;
     } catch (_) {
-      print(_);
+      xrint(_);
     }
   } else if (Platform.isAndroid) {
 // IOS-specific code
@@ -621,7 +622,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
       );
       return notificationItem;
     } catch (_) {
-      print(_);
+      xrint(_);
     }
   }
   return null;

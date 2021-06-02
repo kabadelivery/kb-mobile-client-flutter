@@ -3,6 +3,7 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/KabaShippingMan.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/xrint.dart';
 
 import 'DeliveryTimeFrameModel.dart';
 import 'VoucherModel.dart';
@@ -129,7 +130,7 @@ class CommandModel {
       voucher_entity = VoucherModel.fromJson(json["voucher_entity"]);
       }
     } catch (_) {
-      print(_);
+      xrint(_.toString());
     }
   }
 

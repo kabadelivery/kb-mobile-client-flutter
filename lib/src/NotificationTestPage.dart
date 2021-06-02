@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:KABA/src/xrint.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' show Client;
@@ -32,7 +33,7 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
 
     Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
 
-      print ("On click");
+      xrint ("On click");
 
 //      await firebaseMessaging.requestNotificationPermissions(
 //        const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
@@ -65,15 +66,15 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
         ),
       );
 
-      print("token is ${token}");
-      print(response.body.toString());
+      xrint("token is ${token}");
+      xrint(response.body.toString());
 
      /* final Completer<Map<String, dynamic>> completer =
       Completer<Map<String, dynamic>>();*/
-      print("On before onConfigure");
+      xrint("On before onConfigure");
     /*  firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          print("INside on configure");
+          xrint("INside on configure");
           completer.complete(message);
         },
       );*/

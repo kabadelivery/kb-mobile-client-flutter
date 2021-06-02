@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
@@ -49,7 +50,7 @@ class CustomerUtils {
       String _sd = json.encode(obj);
       prefs.setString("_loginResponse", _sd);
     } catch (_) {
-      print ("error updateCustomerPersist");
+      xrint ("error updateCustomerPersist");
     }
     return customer;
   }
@@ -62,8 +63,8 @@ class CustomerUtils {
     prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
     prefs.remove("_homepage");
     prefs.remove("is_push_token_uploaed");
-// prefs.clear();
 
+// prefs.clear();
     /*String jsonCustomer = prefs.getString("_loginResponse");
     var obj = json.decode(jsonCustomer);
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
@@ -82,7 +83,7 @@ class CustomerUtils {
       var obj = json.decode(jsonCustomer);
       tok = obj["data"]["payload"]["token"];
     } catch (_) {
-      print(_);
+      xrint(_);
     }
 
     UserTokenModel token = UserTokenModel(token: tok);

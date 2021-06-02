@@ -1,11 +1,27 @@
 import 'dart:io';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
+import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -173,10 +189,127 @@ class _KabaScanPageState extends State<KabaScanPage>  {
           controller?.dispose();
           /* wait for 500s and get out */
           Future.delayed(Duration(milliseconds: 300)).then((value){
+
+            /* check if the data maps with a specific URI, if yes go on...
+                otherwise check if goes to the */
             Navigator.of(context).pop({"qrcode": scanData});
           });
         });
     });
+  }
+
+  void _jumpToPage(BuildContext context, page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
+
+  void _handleLinksImmediately(String link) {
+    /* streams */
+
+    // if you are logged in, we can just move to the activity.
+    Uri mUri = Uri.parse(link);
+//    mUri.scheme == "https";
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+
+// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+
+    List<String> pathSegments = mUri.pathSegments.toList();
+
+    /*
+     * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
+     * */
+    var arg = null;
+    
+    switch (pathSegments[0]) {
+      case "voucher":
+        if (pathSegments.length > 1) {
+          xrint("voucher id homepage -> ${pathSegments[1]}");
+          // widget.destination = SplashPage.VOUCHER;
+          /* convert from hexadecimal to decimal */
+          arg = "${pathSegments[1]}";
+          _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${arg}".toUpperCase(),customer: widget.customer));
+        }
+        break;
+      case "vouchers":
+        xrint("vouchers page");
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        break;
+      case "addresses":
+        xrint("addresses page");
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+        break;
+      case "transactions":
+        _jumpToPage(
+            context, TransactionHistoryPage(presenter: TransactionPresenter()));
+//        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+        break;
+      case "restaurants":
+      //    widget.destination = SplashPage.RESTAURANT_LIST;
+        StateContainer.of(context).updateTabPosition(tabPosition: 1);
+        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+            builder: (BuildContext context) => HomePage()), (
+            r) => false);
+        break;
+      case "restaurant":
+        if (pathSegments.length > 1) {
+          xrint("restaurant id -> ${pathSegments[1]}");
+          /* convert from hexadecimal to decimal */
+          arg = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantDetailsPage(
+              restaurant: RestaurantModel(id: arg),
+              presenter: RestaurantDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+      case "order":
+        if (pathSegments.length > 1) {
+          xrint("order id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: arg, presenter: OrderDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+      case "food":
+        if (pathSegments.length > 1) {
+          xrint("food id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+//          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: arg, presenter: FoodPresenter()));
+          _jumpToPage(context, RestaurantMenuPage(
+              foodId: arg, presenter: MenuPresenter()));
+        }
+        break;
+      case "menu":
+        if (pathSegments.length > 1) {
+          xrint("menu id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantMenuPage(
+              menuId: arg, presenter: MenuPresenter()));
+        }
+        break;
+      case "review-order":
+        if (pathSegments.length > 1) {
+          xrint("review-order id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: arg, presenter: OrderDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+    }
+    pathSegments[0] = null;
   }
 
   @override

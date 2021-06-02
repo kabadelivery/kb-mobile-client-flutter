@@ -19,6 +19,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +136,7 @@ class _SplashPageState extends State<SplashPage> {
                 destination: widget.destination, argument: widget.argument);
           }
         } catch (_) {
-          print(_);
+          xrint(_);
         }
       }
 
@@ -233,12 +234,12 @@ class _SplashPageState extends State<SplashPage> {
       String initialLink = await getInitialLink();
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
-      print("initialLink ${initialLink}");
+      xrint("initialLink ${initialLink}");
       _handleLinks(initialLink);
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
-      print("initialLink PlatformException");
+      xrint("initialLink PlatformException");
     }
   }
 
@@ -251,12 +252,12 @@ class _SplashPageState extends State<SplashPage> {
       // Parse the link and warn the user, if it is not correct
       if (link == null)
         return;
-      print("initialLinkStream ${link}");
+      xrint("initialLinkStream ${link}");
       // send the links to home page to handle them instead
       _handleLinksImmediately(link);
     }, onError: (err) {
       // Handle exception by warning the user their action did not succeed
-      print("initialLinkStreamError");
+      xrint("initialLinkStreamError");
     });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
@@ -267,9 +268,9 @@ class _SplashPageState extends State<SplashPage> {
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
-    print("host -> ${mUri.host}");
-    print("path -> ${mUri.path}");
-    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
@@ -281,7 +282,7 @@ class _SplashPageState extends State<SplashPage> {
     switch(pathSegments[0]) {
       case "voucher":
         if (pathSegments.length > 1) {
-          print("voucher id splash -> ${pathSegments[1]}");
+          xrint("voucher id splash -> ${pathSegments[1]}");
           widget.destination = SplashPage.VOUCHER;
           /* convert from hexadecimal to decimal */
           widget.argument = "${pathSegments[1]}";
@@ -289,13 +290,13 @@ class _SplashPageState extends State<SplashPage> {
         }
         break;
       case "vouchers":
-        print("vouchers page");
+        xrint("vouchers page");
         widget.destination = SplashPage.VOUCHERS;
         /* convert from hexadecimal to decimal */
         navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
         break;
       case "addresses":
-        print("addresses page");
+        xrint("addresses page");
         widget.destination = SplashPage.ADDRESSES;
         /* convert from hexadecimal to decimal */
         navigatorKey.currentState.pushNamed(MyAddressesPage.routeName);
@@ -310,7 +311,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
-          print("restaurant id -> ${pathSegments[1]}");
+          xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
@@ -319,7 +320,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "order":
         if (pathSegments.length > 1) {
-          print("order id -> ${pathSegments[1]}");
+          xrint("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
@@ -328,7 +329,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "food":
         if (pathSegments.length > 1) {
-          print("food id -> ${pathSegments[1]}");
+          xrint("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context,
@@ -338,7 +339,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "menu":
         if (pathSegments.length > 1) {
-          print("menu id -> ${pathSegments[1]}");
+          xrint("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
           _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
@@ -346,7 +347,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "review-order":
         if (pathSegments.length > 1) {
-          print("review-order id -> ${pathSegments[1]}");
+          xrint("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
@@ -364,9 +365,9 @@ class _SplashPageState extends State<SplashPage> {
 
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
-    print("host -> ${mUri.host}");
-    print("path -> ${mUri.path}");
-    print("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
 /*
 * /food/345
 * /menu/890
@@ -389,7 +390,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "restaurant":
         if (pathSegments.length > 1) {
-          print("restaurant id -> ${pathSegments[1]}");
+          xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -397,24 +398,24 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "voucher":
         if (pathSegments.length > 1) {
-          print("voucher id splash -> ${pathSegments[1]}");
+          xrint("voucher id splash -> ${pathSegments[1]}");
           widget.destination = SplashPage.VOUCHER;
           /* convert from hexadecimal to decimal */
           widget.argument = "${pathSegments[1]}";
         }
         break;
       case "vouchers":
-        print("vouchers page");
+        xrint("vouchers page");
         widget.destination = SplashPage.VOUCHERS;
         /* convert from hexadecimal to decimal */
         break;
       case "addresses":
-        print("addresses page");
+        xrint("addresses page");
         widget.destination = SplashPage.ADDRESSES;
         break;
       case "order":
         if (pathSegments.length > 1) {
-          print("order id -> ${pathSegments[1]}");
+          xrint("order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -422,7 +423,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "food":
         if (pathSegments.length > 1) {
-          print("food id -> ${pathSegments[1]}");
+          xrint("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
 //          widget.argument = mHexToInt("${pathSegments[1]}");
           widget.argument = int.parse("${pathSegments[1]}");
@@ -430,7 +431,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "menu":
         if (pathSegments.length > 1) {
-          print("menu id -> ${pathSegments[1]}");
+          xrint("menu id -> ${pathSegments[1]}");
           widget.destination = SplashPage.MENU;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
@@ -438,7 +439,7 @@ class _SplashPageState extends State<SplashPage> {
         break;
       case "review-order":
         if (pathSegments.length > 1) {
-          print("review-order id -> ${pathSegments[1]}");
+          xrint("review-order id -> ${pathSegments[1]}");
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -196,7 +197,7 @@ class Utils {
 
     String mbalance = reverseString(balance);
     try {
-      print(mbalance);
+      xrint(mbalance);
 
       String res = "";
 
@@ -206,7 +207,7 @@ class Utils {
           res += ".";
         }
       }
-      print(reverseString(mbalance));
+      xrint(reverseString(mbalance));
       return reverseString(res);
     } catch(_){
       return "...";
@@ -250,7 +251,7 @@ class Utils {
       return daY;
 
     } catch (e){
-      e.printStackTrace();
+      e.xrintStackTrace();
     }
     return "-- --";
   }
@@ -263,7 +264,7 @@ class Utils {
       DateTime date = new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
       return new DateFormat("Hm").format(date);
     } catch (e){
-      e.printStackTrace();
+      e.xrintStackTrace();
     }
     return "-- --";
   }

@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -258,7 +259,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
         quantity--;
       });
     else  /* toast that we can't go less*/
-      print("");
+      xrint("");
   }
 
   _increaseQuantity() {
@@ -267,7 +268,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
         quantity++;
       });
     else  /* toast that we can't go much */
-      print("");
+      xrint("");
   }
 
   void menuChoiceAction(String value) {

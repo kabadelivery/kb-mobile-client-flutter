@@ -20,6 +20,7 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
+import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
@@ -659,15 +660,18 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       )
                 )
               ]..add(
-                  Container(
-                    margin: EdgeInsets.only(top: 15, bottom: 25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                               Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
-                        SizedBox(height:5),
-                        Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
-                      ],
+                  InkWell(
+                    onTap: () {_jumpToInfoPage();},
+                    child: Container(
+                      margin: EdgeInsets.only(top: 15, bottom: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                                 Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
+                          SizedBox(height:5),
+                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
+                        ],
+                      ),
                     ),
                   ))
           ));
@@ -875,7 +879,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     if (results.containsKey("qrcode")) {
       String qrCode = results["qrcode"];
       /* continue transaction with this*/
-      Navigator.of(context).push(
+     var _res = _handleLinksImmediately(qrCode);
+     if (_res == null) {
+       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+     }
+     /* Navigator.of(context).push(
           PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
               AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: "$qrCode".toUpperCase()),
               transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -886,9 +894,115 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
                 return SlideTransition(position: tween.animate(curvedAnimation), child: child);
               }
-          ));
+          ));*/
     } else
       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+  }
+
+  String _handleLinksImmediately(String link) {
+    /* streams */
+
+    // if you are logged in, we can just move to the activity.
+    Uri mUri = Uri.parse(link);
+//    mUri.scheme == "https";
+    xrint("host -> ${mUri.host}");
+    xrint("path -> ${mUri.path}");
+    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
+
+// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+
+    List<String> pathSegments = mUri.pathSegments.toList();
+
+    /*
+     * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
+     * */
+    var arg = null;
+
+    switch (pathSegments[0]) {
+      case "voucher":
+        if (pathSegments.length > 1) {
+          xrint("voucher id homepage -> ${pathSegments[1]}");
+          // widget.destination = SplashPage.VOUCHER;
+          /* convert from hexadecimal to decimal */
+          arg = "${pathSegments[1]}";
+          _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${arg}".toUpperCase(),customer: widget.customer));
+        }
+        break;
+      case "vouchers":
+        xrint("vouchers page");
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        break;
+      case "addresses":
+        xrint("addresses page");
+        /* convert from hexadecimal to decimal */
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+        break;
+      case "transactions":
+        _jumpToPage(
+            context, TransactionHistoryPage(presenter: TransactionPresenter()));
+//        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+        break;
+      case "restaurants":
+      //    widget.destination = SplashPage.RESTAURANT_LIST;
+        StateContainer.of(context).updateTabPosition(tabPosition: 1);
+        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+            builder: (BuildContext context) => HomePage()), (
+            r) => false);
+        break;
+      case "restaurant":
+        if (pathSegments.length > 1) {
+          xrint("restaurant id -> ${pathSegments[1]}");
+          /* convert from hexadecimal to decimal */
+          arg = int.parse("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantDetailsPage(
+              restaurant: RestaurantModel(id: arg),
+              presenter: RestaurantDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+      case "order":
+        if (pathSegments.length > 1) {
+          xrint("order id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: arg, presenter: OrderDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+      case "food":
+        if (pathSegments.length > 1) {
+          xrint("food id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+//          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: arg, presenter: FoodPresenter()));
+          _jumpToPage(context, RestaurantMenuPage(
+              foodId: arg, presenter: MenuPresenter()));
+        }
+        break;
+      case "menu":
+        if (pathSegments.length > 1) {
+          xrint("menu id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, RestaurantMenuPage(
+              menuId: arg, presenter: MenuPresenter()));
+        }
+        break;
+      case "review-order":
+        if (pathSegments.length > 1) {
+          xrint("review-order id -> ${pathSegments[1]}");
+          arg = int.parse("${pathSegments[1]}");
+//          arg = mHexToInt("${pathSegments[1]}");
+          _jumpToPage(context, OrderDetailsPage(
+              orderId: arg, presenter: OrderDetailsPresenter()));
+//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+        }
+        break;
+    }
+    pathSegments[0] = null;
+    return pathSegments[0];
   }
 
 

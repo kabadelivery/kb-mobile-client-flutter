@@ -13,6 +13,7 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -1694,7 +1695,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       try {
         throw 'Could not launch $url';
       } catch (_) {
-        print(_);
+        xrint(_);
       }
     }
     return -1;

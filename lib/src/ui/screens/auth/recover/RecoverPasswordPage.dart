@@ -254,7 +254,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     try {
       lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
     } catch (_) {
-      print("ERROR");
+      xrint("ERROR");
       return;
     }
 
@@ -294,7 +294,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       mainTimer.cancel();
     } catch(_) {
 //      mToast("Time cancel error");
-      print(_);
+      xrint(_);
     }
     super.dispose();
   }
@@ -363,7 +363,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   @override
   void keepRequestId(String login, String requestId) {
     /* save the id somewhere in my .... */
-    print("request Id ${requestId}");
+    xrint("request Id ${requestId}");
 
     this._requestId = requestId;
     /* start minute-count of the seconds into the message thing */

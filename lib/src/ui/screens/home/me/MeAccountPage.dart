@@ -29,6 +29,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -687,7 +688,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       try {
         throw 'Could not launch $url';
       } catch (_) {
-        print(_);
+        xrint(_);
       }
     }
     return -1;

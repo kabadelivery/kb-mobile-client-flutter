@@ -6,6 +6,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../StateContainer.dart';
@@ -141,8 +142,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
         ),
         itemCount: data?.length,
         itemBuilder: (BuildContext context, int index) {
-//          print("timestamp is ${data[index].created_at}");
-//          print("eq date is ${Utils.readTimestamp(data[index]?.created_at)}\n\n");
+//          xrint("timestamp is ${data[index].created_at}");
+//          xrint("eq date is ${Utils.readTimestamp(data[index]?.created_at)}\n\n");
 //          return Container();
           return Column(
             children: <Widget>[
@@ -189,7 +190,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   @override
   void showBalance(String balance) {
 
-    print("balance ${balance}");
+    xrint("balance ${balance}");
     StateContainer.of(context).updateBalance(balance: int.parse(balance));
     showBalanceLoading(false);
     setState(() {

@@ -4,6 +4,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:toast/toast.dart';
@@ -398,7 +399,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     setState(() {
       if (!_amountFocusNode.hasFocus) {
         // update fees
-        print("amount field doesnt have  focus ");
+        xrint("amount field doesnt have  focus ");
         _amountFieldController.removeListener(_updateFromInitialAmountTotal);
         _amountFieldController.text = "${_getRealInitialAmountFromTotal()}";
         _amountFieldController.addListener(_updateFromInitialAmountTotal);
@@ -406,7 +407,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
         _feesFieldController.text = "${widget.fees}";
         // update amount
       } else {
-        print("amount field has  focus ");
+        xrint("amount field has  focus ");
       }
     });
   }
@@ -416,7 +417,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     setState(() {
       if (!_totalFocusNode.hasFocus) {
         // update fees
-        print("total field doesnt have  focus ");
+        xrint("total field doesnt have  focus ");
         widget.fees = _getFeesFromAmount();
         _feesFieldController.text = "${widget.fees}";
         _totalAmountFieldController.removeListener(_updateFromTotal);
@@ -424,7 +425,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
         _totalAmountFieldController.addListener(_updateFromTotal);
         // update amount
       } else {
-        print("total field has  focus ");
+        xrint("total field has  focus ");
       }
     });
   }

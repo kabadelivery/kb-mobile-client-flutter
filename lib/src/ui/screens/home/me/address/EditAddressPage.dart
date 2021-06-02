@@ -10,6 +10,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
+import 'package:KABA/src/xrint.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +212,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           positionStream = Geolocator.getPositionStream().listen(
                 (Position position) {
                   /* only once */
-                  print("position stream");
+                  xrint("position stream");
                   _jumpToPickAddressPage();
                   positionStream?.cancel();
             });
@@ -226,10 +227,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 //    Location location = Location();
     /*location.getLocation().then((LocationData cLoc) {
 //      setState(() {
-      print("location : ${cLoc.latitude}:${cLoc.longitude}");
+      xrint("location : ${cLoc.latitude}:${cLoc.longitude}");
 //      });
     }).catchError((onError){
-      print(onError);
+      xrint(onError);
     });*/
 
     if (isPickLocation)
@@ -246,7 +247,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     if (StateContainer.of(context).location != null)
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
 
-    print("i pick address");
+    xrint("i pick address");
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
@@ -264,7 +265,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
         _checkLocationLoading = true;
         address.location = "${result.latitude}:${result.longitude}";
       });
-      print(address.location);
+      xrint(address.location);
       // use mvp to launch a request and place the result here.
       widget.presenter.checkLocationDetails(widget.customer, position:   Position(longitude: result.longitude, latitude: result.latitude));
     } else {

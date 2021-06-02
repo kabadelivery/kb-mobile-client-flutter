@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
@@ -299,7 +300,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
     try {
       lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
     } catch (_) {
-      print("ERROR");
+      xrint("ERROR");
       return;
     }
 
@@ -317,7 +318,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
-          print("time has ellapsed;");
+          xrint("time has ellapsed;");
           setState(() {
             isCodeSent = false;
           });
@@ -333,7 +334,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
         }
       });
     } else {
-      print("time has not yet ellapsed;");
+      xrint("time has not yet ellapsed;");
     }
   }
 
@@ -344,7 +345,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
     try {
       mainTimer.cancel();
     } catch(_) {
-      print(_);
+      xrint(_);
     }
     super.dispose();
   }

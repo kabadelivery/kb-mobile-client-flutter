@@ -7,6 +7,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -86,7 +87,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        xrint('No image selected.');
       }
     });
   }
@@ -216,9 +217,9 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               DatePicker.showDatePicker(context,
                                   showTitleActions: true,
                                   onChanged: (date) {
-//                        print('change $date');
+//                        xrint('change $date');
                                   }, onConfirm: (date) {
-                                    print('confirm $date');
+                                    xrint('confirm $date');
                                     setState(() {
                                       widget.customer.birthday = "${date.year} - ${date.month<10 ? "0${date.month}" : "${date.month}"} - ${date.day<10 ? "0${date.day}" : "${date.day}"}";
                                     });
@@ -286,7 +287,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
 
       if (_image != null) { /* convert to base64, and upload to server. */
         List<int> imageBytes = await _image.readAsBytesSync();
-        print(imageBytes);
+        // xrint(imageBytes);
         String base64Image = base64Encode(imageBytes);
         widget.customer.profile_picture = base64Image;
       } else {

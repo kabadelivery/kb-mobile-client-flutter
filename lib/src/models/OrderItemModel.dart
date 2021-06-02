@@ -1,6 +1,7 @@
 
 
 import 'package:KABA/src/models/HomeScreenModel.dart';
+import 'package:KABA/src/xrint.dart';
 
 class OrderItemModel {
 
@@ -42,7 +43,7 @@ class OrderItemModel {
          food_description = json['food_description'];
          stars = json['stars'];
       } catch(e){
-         print(e);
+         xrint(e.toString());
       }
    }
 
