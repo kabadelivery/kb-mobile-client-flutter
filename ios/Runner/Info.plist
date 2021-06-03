@@ -39,6 +39,10 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>AppleMusic permission is needed to play a sound for several actions in the app.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth is used to make sure you have the best experience</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth is used to make sure you have the best experience</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Calendars permission is needed for the user to schedule eating time notifications if needed.</string>
 	<key>NSCameraUsageDescription</key>

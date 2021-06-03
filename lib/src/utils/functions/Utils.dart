@@ -294,5 +294,10 @@ class Utils {
     return endDate.isBefore(DateTime.now());
   }
 
+  static bool isWebLink(String link) {
+    bool _validURL = Uri.parse(link).isAbsolute;
+    return _validURL;
+  }
+
 }
 

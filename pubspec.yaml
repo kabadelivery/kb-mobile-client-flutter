@@ -11,7 +11,7 @@ description: Kaba under Flutter framework
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.5.4
+version: 3.0.0
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -50,7 +50,8 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   photo_view: ^0.11.1
   vibration: ^1.2.4
-  audioplayers: ^0.19.0
+  audioplayer: ^0.8.1
+#  audioplayers: ^0.19.0
   device_info: ^2.0.0
   #  firebase_messaging: ^7.0.3
   #    firebase_core: ^0.4.0+9

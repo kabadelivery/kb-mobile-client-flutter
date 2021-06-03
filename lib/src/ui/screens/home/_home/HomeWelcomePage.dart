@@ -44,7 +44,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -201,7 +201,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void didChangeDependencies() {
-   xrint("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
+    xrint("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
     super.didChangeDependencies();
   }
 
@@ -430,17 +430,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                     ClipPath(
                         clipper: KabaRoundTopClipper(),
                         child:CarouselSlider(
-                        options: CarouselOptions(
-                          onPageChanged: _carousselPageChanged,
-                          viewportFraction: 1.0,
-                          autoPlay: data.slider.length > 1 ? true:false,
-                          reverse: data.slider.length > 1 ? true:false,
-                          enableInfiniteScroll: data.slider.length > 1 ? true:false,
-                          autoPlayInterval: Duration(seconds: 5),
-                          autoPlayAnimationDuration: Duration(milliseconds: 150),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          height: 9*MediaQuery.of(context).size.width/16,
-                        ),
+                          options: CarouselOptions(
+                            onPageChanged: _carousselPageChanged,
+                            viewportFraction: 1.0,
+                            autoPlay: data.slider.length > 1 ? true:false,
+                            reverse: data.slider.length > 1 ? true:false,
+                            enableInfiniteScroll: data.slider.length > 1 ? true:false,
+                            autoPlayInterval: Duration(seconds: 5),
+                            autoPlayAnimationDuration: Duration(milliseconds: 150),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            height: 9*MediaQuery.of(context).size.width/16,
+                          ),
                           items: data.slider.map((admodel) {
                             return Builder(
                               builder: (BuildContext context) {
@@ -667,7 +667,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                                 Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
+                          Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
                           SizedBox(height:5),
                           Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
                         ],
@@ -879,130 +879,122 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     if (results.containsKey("qrcode")) {
       String qrCode = results["qrcode"];
       /* continue transaction with this*/
-     var _res = _handleLinksImmediately(qrCode);
-     if (_res == null) {
-       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
-     }
-     /* Navigator.of(context).push(
-          PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-              AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: "$qrCode".toUpperCase()),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                var begin = Offset(1.0, 0.0);
-                var end = Offset.zero;
-                var curve = Curves.ease;
-                var tween = Tween(begin:begin, end:end);
-                var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              }
-          ));*/
-    } else
+      xrint("scan data : "+qrCode);
+      var _res = _handleLinksImmediately(qrCode);
+      if (_res == null) {
+        xrint("_handleLinksImmediately sends  NULL");
+      } else {
+        // if it's a link, open the browser
+        if (Utils.isWebLink(qrCode)) {
+          xrint("is weblink");
+          _launchURL(qrCode);
+        } else {
+          xrint("not link, then show dialog");
+          mDialog(qrCode);
+        }
+        xrint("_handleLinksImmediately DO NOT SEND NULL");
+      }
+    } else {
+      xrint("_handleLinksImmediately SCANNING WENT WRONG");
       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+    }
   }
 
-  String _handleLinksImmediately(String link) {
+  String _handleLinksImmediately(String data) {
     /* streams */
 
     // if you are logged in, we can just move to the activity.
-    Uri mUri = Uri.parse(link);
-//    mUri.scheme == "https";
-    xrint("host -> ${mUri.host}");
-    xrint("path -> ${mUri.path}");
-    xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
-
-// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+    Uri mUri = Uri.parse(data);
 
     List<String> pathSegments = mUri.pathSegments.toList();
-
-    /*
-     * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
-     * */
     var arg = null;
 
-    switch (pathSegments[0]) {
-      case "voucher":
-        if (pathSegments.length > 1) {
-          xrint("voucher id homepage -> ${pathSegments[1]}");
-          // widget.destination = SplashPage.VOUCHER;
-          /* convert from hexadecimal to decimal */
-          arg = "${pathSegments[1]}";
-          _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${arg}".toUpperCase(),customer: widget.customer));
-        }
-        break;
-      case "vouchers":
-        xrint("vouchers page");
-        /* convert from hexadecimal to decimal */
-        _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
-        break;
-      case "addresses":
-        xrint("addresses page");
-        /* convert from hexadecimal to decimal */
-        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
-        break;
-      case "transactions":
-        _jumpToPage(
-            context, TransactionHistoryPage(presenter: TransactionPresenter()));
-//        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-        break;
-      case "restaurants":
-      //    widget.destination = SplashPage.RESTAURANT_LIST;
-        StateContainer.of(context).updateTabPosition(tabPosition: 1);
-        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-            builder: (BuildContext context) => HomePage()), (
-            r) => false);
-        break;
-      case "restaurant":
-        if (pathSegments.length > 1) {
-          xrint("restaurant id -> ${pathSegments[1]}");
-          /* convert from hexadecimal to decimal */
-          arg = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantDetailsPage(
-              restaurant: RestaurantModel(id: arg),
-              presenter: RestaurantDetailsPresenter()));
-//          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "order":
-        if (pathSegments.length > 1) {
-          xrint("order id -> ${pathSegments[1]}");
-          arg = int.parse("${pathSegments[1]}");
-//          arg = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(
-              orderId: arg, presenter: OrderDetailsPresenter()));
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "food":
-        if (pathSegments.length > 1) {
-          xrint("food id -> ${pathSegments[1]}");
-          arg = int.parse("${pathSegments[1]}");
-//          arg = mHexToInt("${pathSegments[1]}");
-//          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: arg, presenter: FoodPresenter()));
-          _jumpToPage(context, RestaurantMenuPage(
-              foodId: arg, presenter: MenuPresenter()));
-        }
-        break;
-      case "menu":
-        if (pathSegments.length > 1) {
-          xrint("menu id -> ${pathSegments[1]}");
-          arg = int.parse("${pathSegments[1]}");
-//          arg = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantMenuPage(
-              menuId: arg, presenter: MenuPresenter()));
-        }
-        break;
-      case "review-order":
-        if (pathSegments.length > 1) {
-          xrint("review-order id -> ${pathSegments[1]}");
-          arg = int.parse("${pathSegments[1]}");
-//          arg = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(
-              orderId: arg, presenter: OrderDetailsPresenter()));
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
+    if ("${mUri.host}" != ServerConfig.APP_SERVER_HOST || pathSegments.length == 0
+        || mUri.scheme != "https") {
+      return data;
     }
-    pathSegments[0] = null;
-    return pathSegments[0];
+
+    if (pathSegments.length > 0) {
+      switch (pathSegments[0]) {
+        case "voucher":
+          if (pathSegments.length > 1) {
+            xrint("voucher id homepage -> ${pathSegments[1]}");
+            // widget.destination = SplashPage.VOUCHER;
+            /* convert from hexadecimal to decimal */
+            arg = "${pathSegments[1]}";
+            _jumpToPage(context, AddVouchersPage(
+                presenter: AddVoucherPresenter(),
+                qrCode: "${arg}".toUpperCase(),
+                customer: widget.customer));
+          }
+          break;
+        case "vouchers":
+          xrint("vouchers page");
+          /* convert from hexadecimal to decimal */
+          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+          break;
+        case "addresses":
+          xrint("addresses page");
+          /* convert from hexadecimal to decimal */
+          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+          break;
+        case "transactions":
+          _jumpToPage(
+              context,
+              TransactionHistoryPage(presenter: TransactionPresenter()));
+          break;
+        case "restaurants":
+          StateContainer.of(context).updateTabPosition(tabPosition: 1);
+          Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+              builder: (BuildContext context) => HomePage()), (r) => false);
+          break;
+        case "restaurant":
+          if (pathSegments.length > 1) {
+            xrint("restaurant id -> ${pathSegments[1]}");
+            /* convert from hexadecimal to decimal */
+            arg = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantDetailsPage(
+                restaurant: RestaurantModel(id: arg),
+                presenter: RestaurantDetailsPresenter()));
+          }
+          break;
+        case "order":
+          if (pathSegments.length > 1) {
+            xrint("order id -> ${pathSegments[1]}");
+            arg = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, OrderDetailsPage(
+                orderId: arg, presenter: OrderDetailsPresenter()));
+          }
+          break;
+        case "food":
+          if (pathSegments.length > 1) {
+            xrint("food id -> ${pathSegments[1]}");
+            arg = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantMenuPage(
+                foodId: arg, presenter: MenuPresenter()));
+          }
+          break;
+        case "menu":
+          if (pathSegments.length > 1) {
+            xrint("menu id -> ${pathSegments[1]}");
+            arg = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantMenuPage(
+                menuId: arg, presenter: MenuPresenter()));
+          }
+          break;
+        case "review-order":
+          if (pathSegments.length > 1) {
+            xrint("review-order id -> ${pathSegments[1]}");
+            arg = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, OrderDetailsPage(
+                orderId: arg, presenter: OrderDetailsPresenter()));
+          }
+          break;
+        default:
+          return data;
+      }
+      return null;
+    }
   }
 
 
@@ -1191,7 +1183,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       try {
         throw 'Could not launch $url';
       } catch (_) {
-       xrint(_);
+        xrint(_);
       }
     }
     return -1;
@@ -1199,7 +1191,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void showBalance(String balance) {
-   xrint("balance ${balance}");
+    xrint("balance ${balance}");
     StateContainer.of(context).updateBalance(balance: int.parse(balance));
     showBalanceLoading(false);
   }
@@ -1256,11 +1248,8 @@ void _jumpToPage (BuildContext context, page) {
 
 Future<void> _playMusicForNewMessage() async {
   // play music
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-  audioPlayer.setVolume(1.0);
-  AudioPlayer.logEnabled = true;
-  var audioCache = new AudioCache(fixedPlayer: audioPlayer);
-  audioCache.play(MusicData.new_message);
+  AudioPlayer audioPlayer = AudioPlayer();
+  audioPlayer.play(MusicData.new_message);
   /*if (await Vibration.hasVibrator()
   ) {
     Vibration.vibrate(duration: 500);

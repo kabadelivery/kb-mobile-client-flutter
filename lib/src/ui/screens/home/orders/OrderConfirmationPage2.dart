@@ -14,7 +14,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -1087,11 +1087,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   Future<void> _playMusicForSuccess() async {
     // play music
-    AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-    audioPlayer.setVolume(1.0);
-    AudioPlayer.logEnabled = true;
-    var audioCache = new AudioCache(fixedPlayer: audioPlayer);
-    audioCache.play(MusicData.command_success_hold_on);
+    // AudioPlayer audioPlayer = AudioPlayer();
+    // audioPlayer.play(MusicData.command_success_hold_on);
     if (await Vibration.hasVibrator()
     ) {
       Vibration.vibrate(duration: 500);
