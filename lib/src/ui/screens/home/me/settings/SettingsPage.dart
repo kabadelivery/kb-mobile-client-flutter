@@ -90,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+        builder: (context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter(), is_a_process: true),
       ),
     );
   }
