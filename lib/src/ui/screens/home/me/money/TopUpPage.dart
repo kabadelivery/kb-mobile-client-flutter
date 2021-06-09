@@ -16,7 +16,6 @@ class TopUpPage extends StatefulWidget {
 
   TopUpPresenter presenter;
 
-//  var feesPercentage = 10;
   var total = 0;
   var fees = 0;
 
@@ -46,6 +45,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   var isLaunching = false;
 
+  double euroRatio = 657.60;
 
   String feesDescription = "";
   bool isGetFeesLoading = false;
@@ -55,7 +55,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   TextEditingController _feesFieldController;
 
-  int BANK_MIN_AMOUNT = 200;
+  int BANK_MIN_AMOUNT = 10000;
 
   @override
   void initState() {
@@ -87,9 +87,15 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     feesDescription = "${AppLocalizations.of(context).translate('why_top_up_fees')}";
   }
 
+  void _updateSelectedPaymentMode (int mode) {
+    selectedPaymentMode = mode;
+    _updateFromInitialAmountTotal();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Color.fromRGBO(230, 230, 230, 1),
+    return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white,
         brightness: Brightness.light,
         leading: IconButton(
@@ -106,19 +112,18 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
               /* define mobile money and visa-card */
               Container(padding: EdgeInsets.all(10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 0), child: Container(child: Text("T-MONEY", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 0 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 1), child: Container(child: Text("BANK CARD", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 1 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  InkWell(onTap: ()=> setState(() => selectedPaymentMode = 2), child: Container(child: Text("FLOOZ", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 2 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5)))))
+                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(0)), child: Container(child: Text("T-MONEY", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 0 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
+                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(1)), child: Container(child: Text("BANK CARD", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 1 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
+                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(2)), child: Container(child: Text("FLOOZ", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 2 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5)))))
                 ]),
               ),
-
 
               selectedPaymentMode != 1 ? Column(children: [
                 SizedBox(height: 15),
                 /* phone number just in case we are working with moov*/
                 Container(color: Colors.white, padding: EdgeInsets.all(10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("Numéro de Téléphone")),
+                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('topup_phone_number')}")),
                     Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: TextField(controller: _phoneNumberFieldController, textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 20),
@@ -139,7 +144,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 /* amount you wanna get paid */
                 Container(color: Colors.white, padding: EdgeInsets.all(10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("Montant à Recharger")),
+                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('amount_to_topup')}")),
                     Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: TextField(controller: _amountFieldController, textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 20),
@@ -161,14 +166,14 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 5),
 
-              Text("* Les frais s'élèvent à ${_getFees()}% du montant à recharger", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+              Text("* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"} ${_getFees()}%", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
 
               Column(children: [
                 SizedBox(height: 10),
                 /* amount you wanna get paid */
                 Container(color: Colors.white, padding: EdgeInsets.all(10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("Frais")),
+                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('fees')}")),
                     Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: TextField(controller: _feesFieldController, enabled: false, textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 20),
@@ -190,7 +195,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 /* amount you wanna get paid */
                 Container(color: Colors.white, padding: EdgeInsets.all(10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("Montant Total")),
+                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('total_amount')}")),
                     Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: CommandStateColor.delivered.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: TextField(controller: _totalAmountFieldController, textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 20),
@@ -208,10 +213,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 30),
 
+              Center(child: Text("${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €")),
+
+              SizedBox(height: 30),
 
               Row(mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(40))),
+                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(60))),
                     child: RaisedButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: KColors.primaryColor, child: Row(
                       children: <Widget>[
                         Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white)),
@@ -321,7 +329,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                 widget.customer,
                 "${_amountFieldController.text}", _getFees());
           else
-            mDialog("Bank card Top up amount must be at least ${BANK_MIN_AMOUNT}");
+            mDialog("${AppLocalizations.of(context).translate('bank_card_top_up_min')} ${BANK_MIN_AMOUNT}");
         }
       else
         mToast("${AppLocalizations.of(context).translate('system_error')}");
@@ -516,6 +524,10 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
         return widget.fees_flooz;
     }
     return 10;
+  }
+
+  _getTotalAmountEuro() {
+    return double.parse(((_getRealTotalAmountFromInitial()/euroRatio)).toStringAsFixed(2));
   }
 
 

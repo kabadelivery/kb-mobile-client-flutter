@@ -197,8 +197,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
     if (Utils.isPhoneNumber_TGO(login)) {
       this.widget.presenter.sendVerificationCode(login);
+      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
     } else if (Utils.isEmailValid(login)) {
       this.widget.presenter.sendVerificationCode(login);
+      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
     } else {
       /* login error */
       setState(() {
@@ -213,6 +215,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
 //    this.widget.presenter.sendVerificationCode(login);
     /* _save request params */
+
   }
 
   _clearSharedPreferences () async {

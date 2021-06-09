@@ -342,7 +342,21 @@
   "try_preordering": "请尝试预订购",
 
   "your_kaba_points": "KABA积分",
+  "lost_your_password" : "找回密码 ?",
+  "location_explanation" : "本APP为了提高您的体验需要获取您的位置。您愿意允许这个权限吗？",
+  "info": "通知",
 
-  "lost_your_password" : "找回密码 ?"
+
+
+  "pnumber_registration_code_too_long": "请在短信里查看您的验证码。如果延迟、请耐心等待",
+  "email_registration_code_too_long" : "请邮箱里查看您的验证码。 如果找不到、请检查您的垃圾邮件中，验证码有可能在那里 ! :-) . ",
+
+
+
+  "amount_to_topup": "充值值 (FCFA)",
+  "top_up_fees_are": "充值费用 : ",
+  "total_amount": "充值总算",
+  "topup_phone_number" : "充值手机号码",
+  "bank_card_top_up_min": "银行卡充值起价位 "
 
 }

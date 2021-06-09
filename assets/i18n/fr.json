@@ -346,5 +346,22 @@
 
   "your_kaba_points": "VOS POINTS KABA",
 
-  "lost_your_password" : "Récupérer mot de passe ?"
+  "lost_your_password" : "Récupérer mot de passe ?",
+
+  "location_explanation" : "À KABA, nous avons besoin de votre position pour améliorer la précision de nos livraisons. Voulez vous nous autoriser à accéder à votre position ?",
+  "info": "Information",
+
+
+  "pnumber_registration_code_too_long": "Un code de confirmation vous a été envoyé par SMS. Les codes de vérification peuvent prendre du temps en fonction de votre réseau. Veuillez patienter svp.",
+  "email_registration_code_too_long" : "Un code de confirmation vous a été envoyé par mail. Prière de vérifier vos spams si vous ne le trouvez pas dans la boîte de réception. ",
+
+
+  "amount_to_topup": "Montant à Recharger (FCFA)",
+  "top_up_fees_are": "Frais de rechargement : ",
+  "total_amount": "Montant Total",
+  "topup_phone_number" : "Numéro de Téléphone",
+
+
+  "bank_card_top_up_min": "Les rechargements par carte bancaire ont un minimum de "
+
 }

@@ -331,6 +331,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
+
+                          /* le solde ! */
                           Expanded(flex:1,
                             child: InkWell(
                               onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
@@ -350,9 +352,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                       child: Center(
                                         child: Row(mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                                            SizedBox(width:5),
-                                            Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                            Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                            // Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                            // SizedBox(width:5),
+                                            // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
                                           /*  SizedBox(width:10),
                                             StateContainer.of(context).isBalanceLoading ?
                                             SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
@@ -366,6 +369,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                               ),
                             ),
                           ),
+                          //////////  //////////  //////////  //////////  //////////  //////////
+
                           Expanded(flex:1,
                             child: InkWell(
                               onTap: () => _jumpToTopUpPage(),

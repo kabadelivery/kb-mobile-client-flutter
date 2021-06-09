@@ -106,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     /* radiobutton - check who are you */
-                  !isCodeSent ? Row(
+                    !isCodeSent ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new Radio(
@@ -250,14 +250,31 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       return;
     }
 
-
     setState(() {
       isCodeSending = true;
     });
     /* send request, to the server, and if ok, save request params and update fields. */
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
     this.widget.presenter.sendVerificationCode(login);
-    /* _save request params */
+
+
+    if (_registerModeRadioValue == 0) {
+      // phone number
+      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
+    } else if (_registerModeRadioValue == 1) {
+      // email...
+      /* if email, tell customer that the message could hide into the spams. */
+      // mailbox
+      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
+    }
+  }
+
+  void mDialog(String message) {
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
   }
 
   _clearSharedPreferences () async {
@@ -269,7 +286,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     // prefs.clear();
   }
 
-Future<void> _saveRequestParams (String login, String requestId) async {
+  Future<void> _saveRequestParams (String login, String requestId) async {
     /* check the content */
     /* save type of request */
     /* save login */
@@ -484,14 +501,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
     }
   }
 
-  void mDialog(String message) {
 
-    _showDialog(
-      icon: Icon(Icons.info_outline, color: Colors.red),
-      message: "${message}",
-      isYesOrNo: false,
-    );
-  }
 
   void _showDialog(
       {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
@@ -547,7 +557,7 @@ Future<void> _saveRequestParams (String login, String requestId) async {
 
   @override
   void codeError() {
-   mToast("${AppLocalizations.of(context).translate('register_code_error')}");
+    mToast("${AppLocalizations.of(context).translate('register_code_error')}");
   }
 
 }

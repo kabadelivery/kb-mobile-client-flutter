@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -71,6 +72,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
+  SharedPreferences prefs;
 
   @override
   void initState() {
@@ -83,6 +85,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
     });
+
+
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
@@ -146,6 +150,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
   Map pageRestaurants = Map<int, dynamic>();
 
+
   _buildRestaurantList(List<RestaurantModel> d) {
 
     /* check if the previous had the distance */
@@ -157,8 +162,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         this.data = d;
       }
     }
-
-//    this.data = d;
 
     // filter restaurant into a map
     d.forEach((restaurant) {
@@ -424,69 +427,98 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
   Future _getLastKnowLocation() async {
 
-//    _checkLocationActivated();
+    /* show a dialog describing that we are going to need to use permissions
+    * //
+    * */
 
-    // save in to state container.
-//    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
 
-//    var geolocator = Geolocator();
-//    var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
 
-    /* StreamSubscription<Position> positionStream =*/
-    /* geolocator.getPositionStream(locationOptions).listen(
-            (Position position) {
-//          xrint(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
-//          xrint("location :: ${position?.toJson()?.toString()}");
-          if (position != null)
-            StateContainer.of(context).updateLocation(location: position);
-          if (StateContainer.of(context).location != null) {
-            restaurantBloc.fetchRestaurantList(position: StateContainer
-                .of(context)
-                .location);
-          }});*/
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title:  Text("${AppLocalizations.of(context).translate('info')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height:100, width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(ImageAssets.location_permission),
+                            )
+                        )
+                    ),
+                    SizedBox(height:10),
+                    Text("${AppLocalizations.of(context).translate('location_explanation')}", textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text("${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    _getLastKnowLocation();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        // permission has been accepted
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          await Geolocator.openAppSettings();
+        } else if (permission == LocationPermission.denied) {
+          Geolocator.requestPermission();
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            await Geolocator.openLocationSettings();
+          } else {
+            positionStream = Geolocator.getPositionStream().listen(
+                    (Position position) {
 
-    /*positionStream = Geolocator.getPositionStream().listen(
-            (Position position) {
-          if (position != null)
-            StateContainer.of(context).updateLocation(location: position);
-          if (StateContainer.of(context).location != null) {
-            restaurantBloc.fetchRestaurantList(position: StateContainer
-                .of(context)
-                .location);
+                  tmpLocation = StateContainer.of(widget.context).location;
+                  if (position?.latitude != null && tmpLocation?.latitude != null &&
+                      (position.latitude*10000).round() == (tmpLocation.latitude*10000).round() &&
+                      (position.longitude*10000).round() == (tmpLocation.longitude*10000).round())
+                    return;
+
+                  if (position != null && mounted) {
+                    StateContainer.of(context).updateLocation(location: position);
+                    restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
+                  }
+                });
           }
         }
-    );*/
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-    } else if (permission == LocationPermission.denied) {
-      Geolocator.requestPermission();
-    } else {
-      // location is enabled
-      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
-      if (!isLocationServiceEnabled) {
-        await Geolocator.openLocationSettings();
-      } else {
-        positionStream = Geolocator.getPositionStream().listen(
-                (Position position) {
-
-                tmpLocation = StateContainer.of(widget.context).location;
-              if (position?.latitude != null && tmpLocation?.latitude != null &&
-                  (position.latitude*10000).round() == (tmpLocation.latitude*10000).round() &&
-                  (position.longitude*10000).round() == (tmpLocation.longitude*10000).round())
-                return;
-
-              if (position != null && mounted) {
-                StateContainer.of(context).updateLocation(location: position);
-                restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
-              }
-            /*  if (tmpLocation != null) {
-                restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
-              }*/
-            });
       }
-    }
+    });
   }
 
   _buildSearchMenuNetworkErrorPage() {

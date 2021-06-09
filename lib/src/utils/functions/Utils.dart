@@ -226,10 +226,24 @@ class Utils {
     return balance.split('').reversed.join('');
   }
 
-  static String hidePhoneNumber(String phone_number) {
-    if (phone_number == null)
+  static String hidePhoneNumber(String phone_number_email) {
+    if (phone_number_email == null)
       return "********";
-    return phone_number.substring(0,2)+"****"+phone_number.substring(6,8);
+    if (Utils.isEmailValid(phone_number_email)) {
+      // hide email
+      int ind = phone_number_email.lastIndexOf("@");
+      if (ind > 3) {
+        return phone_number_email.substring(0,3)+"****"+phone_number_email.substring(ind);
+      } else {
+        phone_number_email;
+      }
+    } else  if (Utils.isPhoneNumber_TGO(phone_number_email)) {
+      // hide phone number
+      return phone_number_email.substring(0,2)+"****"+phone_number_email.substring(6,8);
+    } else {
+      return "********";
+    }
+
   }
 
   static String timeStampToDayDate (String timeStamp, {List<String> dayz}) {

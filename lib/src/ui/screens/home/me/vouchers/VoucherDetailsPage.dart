@@ -2,6 +2,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                     children: <Widget>[
                       Container(height: 160, width: 160,
                           child: QrImage(
-                            data: '${widget.voucher.qr_code}',
+                            data: '${_getVoucherShareLink()}',
                             version: QrVersions.auto,
                             size: 160,
                             gapless: false,
@@ -94,7 +95,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                             ),
                           )
                       ),
-                   /*   Positioned(left: 64, top:64,child:
+                      /*   Positioned(left: 64, top:64,child:
                       Container(
                           decoration: BoxDecoration(shape: BoxShape.circle,
                               border: Border.all(width: 2, color: KColors.primaryYellowColor), color: Colors.white),
@@ -183,6 +184,10 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
         ),
       ),
     );
+  }
+
+  String _getVoucherShareLink (){
+    return ServerConfig.APP_SERVer+"/voucher/"+widget.voucher.qr_code;
   }
 
   void _copyIntoClipboard(String codePromo) {

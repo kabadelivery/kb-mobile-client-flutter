@@ -6,6 +6,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lo;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 
@@ -63,6 +65,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     }
   }
 
+  SharedPreferences prefs;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -73,6 +77,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       widget.customer = customer;
       _getLastKnowLocation();
     });
+    _locationNameController.text = address?.name;
+    _phoneNumberController.text = address?.phone_number;
+    _nearController.text = address?.near;
+    _descriptionController.text = address?.description;
   }
 
   @override
@@ -101,7 +109,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('location_name')}",
                       hintMaxLines: 5,
                       border: InputBorder.none,
-                    ))..controller.text=address?.name,
+                    )),
               ),
               SizedBox(height: 10),
               Container(
@@ -111,7 +119,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('phone_number')}",
                       border: InputBorder.none,
                       hintMaxLines: 5,
-                    ))..controller.text=address?.phone_number,
+                    )),
               ),
               SizedBox(height: 10),
               Container(
@@ -157,7 +165,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 child:TextField(controller: _nearController,minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('not_far_from')}",
                       border: InputBorder.none,
-                    ))..controller.text=address?.near,
+                    )),
               ),
               SizedBox(height: 10),
               Container(
@@ -166,7 +174,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                 child:TextField(controller: _descriptionController, minLines: 2, maxLines: 5, style: TextStyle(fontSize: 13),
                     decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('address_details')}",
                       border: InputBorder.none,
-                    ))..controller.text=address?.description,
+                    )),
               ),
               SizedBox(height: 20),
               Row(mainAxisAlignment: MainAxisAlignment.center,
@@ -197,27 +205,93 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   void showPlacePicker (BuildContext context) async {
 
-    /* get last know position */
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-    } else if (permission == LocationPermission.denied) {
-      Geolocator.requestPermission();
-    } else {
-        // location is enabled
-      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
-      if (!isLocationServiceEnabled) {
-        await Geolocator.openLocationSettings();
+
+    // confirm you want localisation here...
+
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
+
+
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
+
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title:  Text("${AppLocalizations.of(context).translate('info')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height:100, width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(ImageAssets.location_permission),
+                            )
+                        )
+                    ),
+                    SizedBox(height:10),
+                    Text("${AppLocalizations.of(context).translate('location_explanation')}", textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text("${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    showPlacePicker(context);
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
       } else {
-          positionStream = Geolocator.getPositionStream().listen(
-                (Position position) {
+
+        /* get last know position */
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          await Geolocator.openAppSettings();
+        } else if (permission == LocationPermission.denied) {
+          Geolocator.requestPermission();
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled = await Geolocator
+              .isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            await Geolocator.openLocationSettings();
+          } else {
+            positionStream = Geolocator.getPositionStream().listen(
+                    (Position position) {
                   /* only once */
                   xrint("position stream");
                   _jumpToPickAddressPage();
                   positionStream?.cancel();
-            });
+                });
+          }
+        }
       }
-    }
+    });
   }
 
   bool isPickLocation = false;
@@ -415,58 +489,92 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   Future _getLastKnowLocation() async {
 
-    /*_checkLocationActivated();
-    // save in to state container.
-    Position position = await  Geolocator().getLastKnownPosition(desiredAccuracy:  LocationAccuracy.high);*/
-//    if (position != null)
-//      StateContainer.of(context).updateLocation(location: position);
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-    } else if (permission == LocationPermission.denied) {
-      Geolocator.requestPermission();
-    } else {
-      // location is enabled
-      bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
-      if (!isLocationServiceEnabled) {
-        await Geolocator.openLocationSettings();
-      } else {
-        positionStream = Geolocator.getPositionStream().listen(
-                (Position position) {
-              if (position != null && mounted)
-                StateContainer.of(context).updateLocation(location: position);
-            });
-      }
-    }
-  }
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
 
- /* _checkLocationActivated () async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        showDialog(
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
           context: context,
+          barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
-              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
+              title: Text("${AppLocalizations.of(context).translate('info')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100, width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(
+                                  ImageAssets.location_permission),
+                            )
+                        )
+                    ),
+                    SizedBox(height: 10),
+                    Text("${AppLocalizations.of(context).translate(
+                        'location_explanation')}", textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
               actions: <Widget>[
-                FlatButton(
-                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
                   onPressed: () {
-                    final AndroidIntent intent = AndroidIntent(
-                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
-                    intent.launch();
-                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    _getLastKnowLocation();
+                    Navigator.of(context).pop();
+                  },
+                )
               ],
             );
           },
         );
+      } else {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          await Geolocator.openAppSettings();
+        } else if (permission == LocationPermission.denied) {
+          Geolocator.requestPermission();
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled = await Geolocator
+              .isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            await Geolocator.openLocationSettings();
+          } else {
+            positionStream = Geolocator.getPositionStream().listen(
+                    (Position position) {
+                  if (position != null && mounted)
+                    StateContainer.of(context).updateLocation(
+                        location: position);
+                });
+          }
+        }
       }
-    }
-  }*/
+    });
+  }
+
 
 
   @override

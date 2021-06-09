@@ -44,7 +44,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
       widget.presenter.fetchTransaction(customer);
       widget.presenter.checkBalance(customer);
     });
-//widget.presenter.fetchTransaction(widget.);
   }
 
   bool hasSystemError = false;
@@ -72,7 +71,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                 padding: EdgeInsets.only(right: 20.0),
                 child: /*isBalanceLoading ? SizedBox(height: 20, width: 20,child: CircularProgressIndicator()) :*/ GestureDetector(
                     onTap: () {},
-                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: KColors.primaryYellowColor)))
+                    child: Center(child: Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance} ${AppLocalizations.of(context).translate('currency')}", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: KColors.primaryYellowColor)))
                 )
             ),
           ],

@@ -20,8 +20,6 @@ class StateContainer extends StatefulWidget {
   StateContainer({@required this.child, this.balance, this.hasGotNewMessageOnce, this.kabaPoints, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false});
 
   static StateContainerState of(BuildContext context) {
-//    return (context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>()).data;
-//  final widget = context.inheritFromWidgetOfExactType(InheritedStateContainer) as InheritedStateContainer;
   final widget = context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
     return widget.data;
   }

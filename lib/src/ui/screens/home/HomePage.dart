@@ -330,20 +330,20 @@ void initState() {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text("${AppLocalizations.of(context).translate('home')}"),
+            label: ("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
-            title: Text(
+            label: (
                 '${AppLocalizations.of(context).translate('restaurant')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
-            title: Text('${AppLocalizations.of(context).translate('orders')}'),
+            label: ('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            title: Text('${AppLocalizations.of(context).translate('account')}'),
+            label: ('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
         currentIndex: StateContainer
@@ -365,8 +365,8 @@ void initState() {
     });
     if (value == 3) {
       // ask for permission gps
-//     restaurantListPage._getLastKnowLocation();
-
+      xrint("we are starting to load balance fees");
+      //
     }
   }
 
