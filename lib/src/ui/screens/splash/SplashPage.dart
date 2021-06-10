@@ -70,41 +70,7 @@ class _SplashPageState extends State<SplashPage> {
     _listenToUniLinks();
   }
 
-  _checkLocationActivated () async {
-//    return;
-    /*if (!(await Geolocator().isLocationServiceEnabled())) {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
-              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
-                  onPressed: () {
-                    final AndroidIntent intent = AndroidIntent(
-                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
-                    intent.launch();
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }*/
-  }
 
-  /* Future _getLastKnowLocation() async {
-    // save in to state container.
-    Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
-
-    if (position != null)
-      StateContainer.of(context).updateLocation(location: position);
-  }*/
 
   Future handleTimeout() async {
 
@@ -117,19 +83,27 @@ class _SplashPageState extends State<SplashPage> {
       // jump to presentation screens
       _jumpToFirstTimeScreen();
     } else {
+
+      // if logged in, go directly to home page
+
       StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
-      prefs = await SharedPreferences.getInstance();
-      String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");
-      if (expDate != null) {
+      launchPage = HomePage(
+          destination: widget.destination, argument: widget.argument);
+
+      // prefs = await SharedPreferences.getInstance();
+      // String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");
+     /* if (expDate != null) {
         try {
           if (DateTime.now().isAfter(
               DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
-            /* session expired : clean params */
+
+            *//* session expired : clean params *//*
             prefs.remove("_customer");
             prefs.remove("_token");
             prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
+
           } else {
-            /* how to check user must auto logout */
+            *//* how to check user must auto logout *//*
             // check if there is a destination out of deep-linking before doing this.
             // this page should take unto consideration eventual destination given buy the handle links
             launchPage = HomePage(
@@ -138,9 +112,8 @@ class _SplashPageState extends State<SplashPage> {
         } catch (_) {
           xrint(_);
         }
-      }
+      }*/
 
-      _checkLocationActivated();
       Navigator.of(context).pushReplacement(new MaterialPageRoute(
           builder: (BuildContext context) => launchPage));
     }

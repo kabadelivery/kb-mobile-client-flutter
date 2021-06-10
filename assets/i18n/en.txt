@@ -12,8 +12,8 @@
   "address_desc": "Choose a delivery address",
   "enjoy": "Enjoy",
   "enjoy_desc": "Enjoy your food !",
-  "login_phonenumber_hint": "Enter the Phone number or E-mail you used to create your KABA account",
-  "connexion": "CONNECTION",
+  "login_phonenumber_hint": "Insert the Phone number or E-mail you used to create your KABA account",
+  "connexion": "CONNEXION",
   "recover_password": "Recover Password",
   "login_error": "Sorry, Login error",
   "accept_terms_and_conditions": "Do you accept our terms and conditions",
@@ -26,7 +26,7 @@
   "network_error": "Sorry, Network error. Please check network and try again.",
   "refuse": "REFUSE",
   "accept": "ACCEPT",
-  "new_account_phonenumber_hint": "Enter Your Phone number or E-mail.\n\n (Only TOGOLESE phone numbers are allowed)",
+  "new_account_phonenumber_hint": "Insert Your Phone number or E-mail.\n\n (Only TOGOLESE phone numbers are allowed)",
   "phone_number_hint": "90 XX XX XX",
   "nickname": "Nickname",
   "register": "REGISTER",
@@ -35,9 +35,9 @@
   "account_created_successfully": "Account created successfully",
   "user_exists": "User Exists Already",
   "wrong_code": "Code is WRONG",
-  "press_code_hint": "Press on code the code button. \n\nPlease enter the code you will receive",
-  "recover_password_hint": "Enter the Phone number or E-mail you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
-  "insert_phone_number": "Please enter your account Phone number or E-mail",
+  "press_code_hint": "Press on code the code button. \n\nPlease insert the code you will receive",
+  "recover_password_hint": "Insert the Phone number or E-mail you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
+  "insert_phone_number": "Please insert your account Phone number or E-mail",
   "password_updated_success": "Password updated successfully",
   "password_recover_fails": "Sorry password recovery can't happen now. Please try again.",
   "home": "Home",
@@ -106,7 +106,7 @@
   "send_message_system_error": "Send message system error",
   "message_too_short": "Sorry, message to short. Can't send",
   "balance": "Solde",
-  "kaba_points": "KABA Points",
+  "kaba_points": "DELETE",
   "why_top_up_fees": "Fees allow us to support the transactions cost with T-money and Flooz",
   "operator": "OPERATEUR",
   "amount": "AMOUNT",
@@ -270,7 +270,7 @@
   "min_short": "min",
   "skip_text": "SKIP",
   "refresh": "refresh",
-  "insert_message": "Enter your message",
+  "insert_message": "Insert your message",
   "reload": "Reload",
   "my_vouchers": "My Vouchers",
   "sorry_no_coupon": "Sorry, you have no available voucher. \nPress (+) to Subscribe",
@@ -281,7 +281,7 @@
   "PROMO_CODE": "CODE",
   "subscribe": "subscribe",
   "congrats_subscribe": "Congratulation, you just subscribe to a new COUPON !\nHave fun using it !",
-  "insert_voucher_hint": "Please enter the CODE of your voucher to subscribe and get it!",
+  "insert_voucher_hint": "Please insert the CODE of your voucher to subscribe and get it!",
   "voucher_details": "VOUCHER DETAILS",
   "voucher_": "Discount voucher",
   "voucher_code": "VOUCHER CODE",
@@ -301,8 +301,8 @@
   "voucher_max_count_reached": "Sorry, The maximum count of people that can subscribe to this voucher has been reached.",
   "scan": "Scan QrCode",
   "qr_code_wrong": "Sorry, this QrCode seems not to be a Voucher",
-  "please_search_food": "Please enter the food you want",
-  "sorry_cant_find_food": "Sorry, we can't find the food or menu you've entered.",
+  "please_search_food": "Please insert the food you want",
+  "sorry_cant_find_food": "Sorry, we can't find the food or menu you've inserted.",
 
   "search_restaurant": "RESTAURANTS",
   "search_food" : "MENU",
@@ -322,7 +322,7 @@
   "search_too_short": "Your menu must be more explicit",
 
   "exit": "ENTER VOUCHER CODE",
-  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please enter the code instead.",
+  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please insert the code instead.",
 
   "update": "UPDATE APP",
   "new_version_available":"New version available ! Please update your app to version ",
@@ -353,17 +353,8 @@
   "total_amount": "Total amount",
   "topup_phone_number" : "Phone number",
 
-  "bank_card_top_up_min": "Bank card Top up amount must be at least",
+  "bank_card_top_up_min": "Bank card Top up amount must be at least"
 
-  "please_login_before_going_forward_title" : "Login",
-  "please_login_before_going_forward_description_orders" : "You must logging in order to see your recent orders",
-  "please_login_before_going_forward_description_account" : "You must logging in order to see account details",
-  "please_login_before_going_forward_description_place_order" : "You must logging in order to place an order",
-  "please_login_before_going_forward_description_comment" : "You must logging in order to place a review",
-
-
-  "login": "Login",
-  "not_now": "Not now"
 
 
 }

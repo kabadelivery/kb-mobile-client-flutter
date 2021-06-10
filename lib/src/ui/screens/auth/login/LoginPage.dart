@@ -1,3 +1,4 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
@@ -30,7 +31,9 @@ class LoginPage extends StatefulWidget {
 
   String version;
 
-  LoginPage({Key key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false}) : super(key: key);
+  bool fromOrderingProcess;
+
+  LoginPage({Key key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false, this.fromOrderingProcess = false}) : super(key: key);
 
   final String title;
 
@@ -173,9 +176,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void _moveToRecoverPasswordPage() {
-    /*Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-        builder: (BuildContext context) => RecoverPasswordPage(presenter: RecoverPasswordPresenter())), (
-        r) => false);*/
+
 
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
@@ -191,12 +192,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             }
         ));
 
-    /*  Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              RecoverPasswordPage(presenter: RecoverPasswordPresenter())),
-    );*/
+
   }
 
   Future _launchConnexion() async {
@@ -237,21 +233,41 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void loginSuccess() {
 
+
+
+    /* if you are coming from another process like already making an order, then just pop */
+
     /* token must be saved by now. */
     showLoading(false);
-    /* jump to home page. */
-    Navigator.of(context).pushReplacement(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            HomePage(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+
+    if (widget.fromOrderingProcess) {
+      // pop
+      Navigator.of(context).pop();
+      StateContainer
+          .of(context)
+          .updateLoggingState(state: 1);
+    } else {
+      /* jump to home page. */
+      StateContainer
+          .of(context)
+          .updateLoggingState(state: 1);
+      Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomePage(),
+              transitionsBuilder: (context, animation, secondaryAnimation,
+                  child) {
+                var begin = Offset(1.0, 0.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin: begin, end: end);
+                var curvedAnimation = CurvedAnimation(
+                    parent: animation, curve: curve);
+                return SlideTransition(
+                    position: tween.animate(curvedAnimation), child: child);
+              }
+          ));
+    }
   }
 
   @override

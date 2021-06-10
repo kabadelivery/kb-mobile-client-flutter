@@ -140,6 +140,7 @@ flutter:
     - assets/images/png/kaba_copyright_presentation.png
     - assets/images/png/ic_transaction_success.png
     - assets/images/png/arrived.png
+    - assets/images/png/login_description.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

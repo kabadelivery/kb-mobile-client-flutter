@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_review_contract.dart';
@@ -9,15 +10,19 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/ReviewRestaurantPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../../StateContainer.dart';
 
 class RestaurantDetailsPage extends StatefulWidget {
 
@@ -238,7 +243,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               ),
                               /* 4.0 - stars */
                               SizedBox(height:20),
-                              isLoading || commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildNetworkErrorPage() : commentHasNetworkError ? _buildSysErrorPage():
+
+                              isLoading || commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildCommentNetworkErrorPage() : commentHasNetworkError ? _buildCommentSysErrorPage():
                               Column(children: <Widget>[
                                 _canComment == 1 ? Container(margin: EdgeInsets.only(left:20, right: 20),
                                     child: Text("${AppLocalizations.of(context).translate('review_us')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)): Container(),
@@ -321,6 +327,24 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
+  }
+
+
+  _buildCommentSysErrorPage() {
+    if (StateContainer
+        .of(context)
+        .loggingState == 0)
+      return Container();
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
+  }
+
+  _buildCommentNetworkErrorPage() {
+    if (StateContainer
+        .of(context)
+        .loggingState == 0)
+      return Container();
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId); });
+
   }
 
   @override
@@ -507,13 +531,79 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   }
 
   _starPressed(int rate) {
-    setState(() {
-      _latentRate = rate;
-    });
-    // after two seconds, i jump to the review activity.
-    Future.delayed(Duration(seconds: 1), () {
-      _reviewRestaurant();
-    });
+
+
+    if ( StateContainer.of(context).loggingState == 0) {
+
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${AppLocalizations.of(context).translate(
+                'please_login_before_going_forward_title')}"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  /* add an image*/
+                  // location_permission
+                  Container(
+                      height: 100, width: 100,
+                      decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(
+                                ImageAssets.login_description),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate(
+                      "please_login_before_going_forward_description_comment")}",
+                      textAlign: TextAlign.center)
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('not_now')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('login')}"),
+                onPressed: () {
+                  /* */
+                  /* jump to login page... */
+                  Navigator.of(context).pop();
+
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          LoginPage(presenter: LoginPresenter(), fromOrderingProcess: true)));
+                },
+              )
+            ],
+          );
+        },
+      );
+
+    } else {
+
+      setState(() {
+        _latentRate = rate;
+      });
+      // after two seconds, i jump to the review activity.
+      Future.delayed(Duration(seconds: 1), () {
+        _reviewRestaurant();
+      });
+    }
+
   }
+
 
 }

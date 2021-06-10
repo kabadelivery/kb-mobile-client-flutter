@@ -362,16 +362,6 @@
   "topup_phone_number" : "Numéro de Téléphone",
 
 
-  "bank_card_top_up_min": "Les rechargements par carte bancaire ont un minimum de ",
-
-  "please_login_before_going_forward_title" : "Login",
-  "please_login_before_going_forward_description_orders" : "Vous devez vous connecter pour avoir accès à vos commandes récentes.",
-  "please_login_before_going_forward_description_account" : "Vous devez vous connecter pour avoir accès à votre compte KABA",
-  "please_login_before_going_forward_description_place_order" : "Vous devez vous connecter pour passer une commande",
-  "please_login_before_going_forward_description_comment" : "Vous devez vous connecter pour placer un commentaire",
-
-
-  "login": "Connexion",
-  "not_now": "Pas maintenant"
+  "bank_card_top_up_min": "Les rechargements par carte bancaire ont un minimum de "
 
 }

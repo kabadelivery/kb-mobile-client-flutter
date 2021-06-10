@@ -72,6 +72,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               // check if logged in, if yes, log out...
               xrint("cstomer email is no null");
               CustomerUtils.clearCustomerInformations().whenComplete((){
+                StateContainer.of(context).updateLoggingState(state: 0);
                 StateContainer.of(context).updateBalance(balance: 0);
                 StateContainer.of(context).updateKabaPoints(kabaPoints: "");
                 StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);

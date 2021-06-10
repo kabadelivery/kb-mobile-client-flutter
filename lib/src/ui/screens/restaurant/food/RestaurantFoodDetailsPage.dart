@@ -1,13 +1,17 @@
 import 'dart:collection';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -277,17 +281,18 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   void _continuePurchase() {
-
     Map<RestaurantFoodModel, int> adds_on_selected = HashMap();
     Map<RestaurantFoodModel, int> food_selected = HashMap();
     int totalPrice = 0;
 
     /* init */
     food_selected.putIfAbsent(widget.food, () => quantity);
-    totalPrice = int.parse(widget.food.promotion == 0  /* no promotion */ ? widget.food.price : widget.food.promotion_price) * quantity;
+    totalPrice = int.parse(widget.food.promotion == 0 /* no promotion */
+        ? widget.food.price
+        : widget.food.promotion_price) * quantity;
 
     /* data */
-   /* Navigator.push(
+    /* Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
@@ -295,18 +300,88 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            OrderConfirmationPage2(restaurant: widget.restaurant, presenter: OrderConfirmationPresenter(),foods: food_selected, addons: adds_on_selected),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    if (StateContainer
+        .of(context)
+        .loggingState == 0) {
+      // not logged in... show dialog and also go there
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${AppLocalizations.of(context).translate(
+                'please_login_before_going_forward_title')}"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  /* add an image*/
+                  // location_permission
+                  Container(
+                      height: 100, width: 100,
+                      decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(
+                                ImageAssets.login_description),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate(
+                      "please_login_before_going_forward_description_place_order")}",
+                      textAlign: TextAlign.center)
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('not_now')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('login')}"),
+                onPressed: () {
+                  /* */
+                  /* jump to login page... */
+                  Navigator.of(context).pop();
+
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          LoginPage(presenter: LoginPresenter(), fromOrderingProcess: true)));
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
+    else {
+      Navigator.of(context).push(
+          PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  OrderConfirmationPage2(restaurant: widget.restaurant,
+                      presenter: OrderConfirmationPresenter(),
+                      foods: food_selected,
+                      addons: adds_on_selected),
+              transitionsBuilder: (context, animation, secondaryAnimation,
+                  child) {
+                var begin = Offset(1.0, 0.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin: begin, end: end);
+                var curvedAnimation = CurvedAnimation(
+                    parent: animation, curve: curve);
+                return SlideTransition(
+                    position: tween.animate(curvedAnimation), child: child);
+              }
+          ));
+    }
   }
 
   @override

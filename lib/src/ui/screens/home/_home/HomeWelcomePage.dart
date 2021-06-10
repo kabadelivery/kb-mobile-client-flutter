@@ -88,7 +88,20 @@ class HomeWelcomePage extends StatefulWidget {
 
 class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelcomeView {
 
-  static List<String> popupMenus;
+
+  List<String> popupMenus;
+
+
+   List<String> _popupMenus () {
+
+     if (StateContainer
+         .of(context)
+         .loggingState == 0) {
+       return null;
+     } else {
+      return popupMenus;
+     }
+  }
 
   int _carousselPageIndex = 0;
 
@@ -98,11 +111,16 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
+
   @override
   void initState() {
     super.initState();
 
-    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"];
+    /* if logged in .. we have settings and loggout */
+
+      popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"]; // standard
+
+
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
 
@@ -256,7 +274,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
-                return popupMenus.map((String menuName){
+                return _popupMenus().map((String menuName){
                   return PopupMenuItem<String>(value: menuName, child: Text(menuName));
                 }).toList();
               },
@@ -272,7 +290,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch(popupMenus.indexOf(value)) {
+    switch(_popupMenus().indexOf(value)) {
       case 0:
       // scan
         _jumpToAddVoucherPage();
@@ -288,6 +306,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
 
+          StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           StateContainer.of(context).updateKabaPoints(kabaPoints: "");
           StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);

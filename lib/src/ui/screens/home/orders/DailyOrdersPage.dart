@@ -62,7 +62,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
       return SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 40),
+            SizedBox(height: 50),
             Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
               InkWell(onTap: ()=> widget.presenter.loadDailyOrders(widget.customer),
                 child: Container(

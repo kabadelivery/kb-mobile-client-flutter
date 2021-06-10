@@ -17,6 +17,7 @@ class TopUpPage extends StatefulWidget {
   TopUpPresenter presenter;
 
   var total = 0;
+
   var fees = 0;
 
   int fees_tmoney = 10;

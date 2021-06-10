@@ -96,33 +96,39 @@ class _HomePageState extends State<HomePage> {
       orderKey = PageStorageKey("orderKey"),
       meKey = PageStorageKey("meKey");
 
-  Future checkLogin() async {
+  SharedPreferences prefs;
+
+
+  Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate = prefs.getString("_login_expiration_date");
+    int res = 0; // not logged in
     try {
       if (expDate != null) {
-        if (DateTime.now().isAfter(DateTime.parse(expDate))) {
+        if (DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
           prefs.remove("_customer");
           prefs.remove("_token");
           prefs.remove("_login_expiration_date");
         } else {
-          launchPage = HomePage();
+          res = 1; // is logged in
         }
       }
     } catch (_) {
       xrint ("error checklogin() ");
-      launchPage = HomePage();
+      res = 0; // not logged in
     }
+    return res;
   }
 
+  // 0 not logged in
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
 void initState() {
-    /* check the login status */
-    checkLogin();
+
+
 
     homeWelcomePage = HomeWelcomePage(key: homeKey,
         presenter: HomeWelcomePresenter(),
@@ -178,18 +184,7 @@ void initState() {
     });
 
 
-    // Get any messages which caused the application to open from
-    // a terminated state.
-    FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
-      if (initialMessage != null) {
-        _firebaseMessagingOpenedAppHandler(initialMessage);
-      } else {
-        FirebaseMessaging.onBackgroundMessage(
-            _firebaseMessagingBackgroundHandler);
-        FirebaseMessaging.onMessageOpenedApp.listen(
-            _firebaseMessagingOpenedAppHandler);
-      }
-    });
+
 
     _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
@@ -320,8 +315,36 @@ void initState() {
     navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
+  int loginStuffChecked = 0;
+
   @override
   Widget build(BuildContext context) {
+
+    if (loginStuffChecked == 0) {
+      /* check the login status */
+      checkLogin().then((value) {
+        StateContainer.of(context).updateLoggingState(state: value);
+      }); // keep the value somewhere
+
+      // Get any messages which caused the application to open from
+      // a terminated state.
+      if (StateContainer
+          .of(context)
+          .loggingState == 1) {
+        FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
+          if (initialMessage != null) {
+            _firebaseMessagingOpenedAppHandler(initialMessage);
+          } else {
+            FirebaseMessaging.onBackgroundMessage(
+                _firebaseMessagingBackgroundHandler);
+            FirebaseMessaging.onMessageOpenedApp.listen(
+                _firebaseMessagingOpenedAppHandler);
+          }
+        });
+      }
+
+      loginStuffChecked  = 1;
+    }
     return Scaffold(
       body: pages[StateContainer
           .of(context)
@@ -358,15 +381,91 @@ void initState() {
   }
 
   /* keep gps location inside STATE CONTAINER and use it even for the map. */
-  void _onItemTapped(int value) {
-    /* zwitch */
-    setState(() {
-      StateContainer.of(context).updateTabPosition(tabPosition: value);
-    });
-    if (value == 3) {
-      // ask for permission gps
-      xrint("we are starting to load balance fees");
-      //
+    _onItemTapped(int value) {
+
+    /* first check if user is connected / logged in
+    * - if yes, switch
+    * - otherwise, no switch, send him to login page...
+    *
+    * */
+var msg = ["please_login_before_going_forward_description_orders", "please_login_before_going_forward_description_account"];
+    if (value == 2 || value == 3) {
+      if (StateContainer
+          .of(context)
+          .loggingState == 0) {
+        // not logged in... show dialog and also go there
+          showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("${AppLocalizations.of(context).translate(
+                  'please_login_before_going_forward_title')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100, width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(
+                                  ImageAssets.login_description),
+                            )
+                        )
+                    ),
+                    SizedBox(height: 10),
+                    Text("${AppLocalizations.of(context).translate(
+                        msg[value%2])}",
+                        textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('not_now')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('login')}"),
+                  onPressed: () {
+                    /* */
+                    /* jump to login page... */
+                    Navigator.of(context).pop();
+
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            LoginPage(presenter: LoginPresenter())));
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        /* zwitch */
+        setState(() {
+          StateContainer.of(context).updateTabPosition(tabPosition: value);
+        });
+        if (value == 3) {
+          // ask for permission gps
+          xrint("we are starting to load balance fees");
+          //
+        }
+      }
+    } else {
+      // 0,1
+      setState(() {
+        StateContainer.of(context).updateTabPosition(tabPosition: value);
+      });
     }
   }
 

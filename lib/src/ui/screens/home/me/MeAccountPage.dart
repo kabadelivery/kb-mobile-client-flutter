@@ -140,6 +140,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       case 3:
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
+          StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           StateContainer.of(context).updateKabaPoints(kabaPoints: "");
           StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
@@ -275,29 +276,29 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                             ])
                     )],
                 ),
-                SizedBox(height: 20),
-                Center(
-                  child: Row(mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        child: Container(
-                            decoration: BoxDecoration(
-                              border: new Border.all(
-                                  color: KColors.primaryColor,
-                                  width: 2.0,
-                                  style: BorderStyle.solid
-                              ),
-                            ),
-                            padding: EdgeInsets.all(10), child: Row(children: [
-                          Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
-                          SizedBox(width:20),
-                          Text("${StateContainer.of(context).kabaPoints == null ? "???" : StateContainer.of(context).kabaPoints}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
-                        ])),
-                        onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
-                      ),
-                    ],
-                  ),
-                ),
+                // SizedBox(height: 20),
+                // Center(
+                //   child: Row(mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       InkWell(
+                //         child: Container(
+                //             decoration: BoxDecoration(
+                //               border: new Border.all(
+                //                   color: KColors.primaryColor,
+                //                   width: 2.0,
+                //                   style: BorderStyle.solid
+                //               ),
+                //             ),
+                //             padding: EdgeInsets.all(10), child: Row(children: [
+                //           Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
+                //           SizedBox(width:20),
+                //           Text("${StateContainer.of(context).kabaPoints == null ? "???" : StateContainer.of(context).kabaPoints}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
+                //         ])),
+                //         onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             padding:EdgeInsets.all(10),

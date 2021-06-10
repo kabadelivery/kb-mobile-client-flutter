@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
@@ -9,10 +10,12 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
@@ -90,8 +93,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   bool _checkOpenStateError = false;
 
-//  ScrollController _listController;
-
   _OrderConfirmationPage2State();
 
   List<String> dayz = [];
@@ -110,6 +111,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       // check opening state of the restaurant
       widget.presenter.checkOpeningStateOf(customer, widget.restaurant);
     });
+
+    /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
+
+
   }
 
   @override
@@ -129,6 +134,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
             leading: IconButton(
@@ -157,6 +163,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             : ErrorPage(onClickAction: ()=>  widget.presenter.checkOpeningStateOf(widget.customer, widget.restaurant))))
     );
   }
+
 
   Future _pickDeliveryAddress() async {
     setState(() {
