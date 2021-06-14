@@ -363,7 +363,8 @@
   "please_login_before_going_forward_random" : "You must logging in order to access this content",
 
   "login": "Login",
-  "not_now": "Not now"
+  "not_now": "Not now",
+  "no_past_order" : "Sorry you have no recent orders."
 
 
 }

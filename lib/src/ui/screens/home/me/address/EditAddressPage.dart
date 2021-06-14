@@ -284,6 +284,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
             positionStream = Geolocator.getPositionStream().listen(
                     (Position position) {
                   /* only once */
+                      // show once per click
+
                   xrint("position stream");
                   _jumpToPickAddressPage();
                   positionStream?.cancel();

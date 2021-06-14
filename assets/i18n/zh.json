@@ -368,7 +368,9 @@
   "please_login_before_going_forward_random" : "请登录 !",
 
   "login": "登陆",
-  "not_now": "稍后"
+  "not_now": "稍后",
+
+  "no_past_order" : "抱歉、您最近没有订单"
 
 
 }

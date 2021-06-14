@@ -2,7 +2,7 @@
   "app_title": "KABA",
   "cgu": "CGU",
   "cant_get_location": "Récupération de la position impossible",
-  "please_enable_gps": "Veuillez vous assurer que votre GPS est activé et réessayez",
+  "please_enable_gps": "Veuillez-vous assurer que votre GPS est activé et réessayez",
   "ok": "Ok",
   "choice": "Choix",
   "choice_desc": "Choisissez vos menus favoris",
@@ -51,7 +51,7 @@
   "best_seller": "MEILLEURES VENTES",
   "events": "BONS PLANS !",
   "try_again": "RÉESSAYEZ",
-  "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again.",
+  "home_page_loading_error": "Désolé, il s'est produit une erreur sur la page d'accueil. Veuillez vérifier votre connexion internet et réessayez !",
   "error_message": "Message d'Erreur",
   "new": "NOUVEAU",
   "promo": "PROMO",
@@ -115,7 +115,7 @@
   "please_wait_fees_percentage": "Veuillez patienter. Nous mettons à jour les frais de transaction",
   "phone_number_wrong": "Numéro de Téléphone erroné",
   "my_balance": "MON SOLDE",
-  "sorry_empty_transactions": "Désolé, vous n'avez encore effectué aucune transaction !",
+  "sorry_empty_transactions": "Désolé, vous n'avez pas encore effectué de transaction !",
   "top_kaba_account": "VERS COMPTE KABA",
   "insert_transfer_amount": "Veuillez entrer le montant que vous voulez transférer",
   "pay": "PAYER",
@@ -123,7 +123,7 @@
   "balance_not_sufficient": "Désolé, votre solde est insuffisant pour transférer ce montant. Veuillez recharger votre compte avec Flooz / T-money et réessayer",
   "password_wrong_": "Désolé, Mot de Passe erroné. Veuillez vérifier votre mot de passe et réessayer",
   "transaction_error": "Désolé, Erreur de Transaction.\nVeuillez contacter le service client.",
-  "real_time_transfer_no_refunded": "Les transferts instantanés ne sont pas remboursables.",
+  "real_time_transfer_no_refunded": "Les transferts instantannés ne sont pas remboursables.",
   "next": "CONTINUER",
   "cant_transfer_own_account": "Désolé, Impossible de transférer de l'argent vers votre propre Compte",
   "user_no_exists_in_db": "Désolé, Cet utilisateur n'existe pas dans notre base de données",
@@ -198,10 +198,10 @@
   "your_balance_is": "Votre Solde est : ",
   "restaurant_no_allow_prepay": "Impossible de prépayer, ce restaurant n'autorise pas le PréPayement",
   "balance_insufficient": "Impossible de prépayer car solde insuffisant",
-  "cant_pay_at_delivery_max_pay_reached":"Impossible de payer à la livraison car vous avez excéder le maximum pour payer à la livraison. Veuillez contacter l'administrateur",
-  "cant_pay_because_ongoing_order": "Vous ne pouvez pas payer parce que vous avez une autre Commande en cours. Veuillez SVP contacter l'administrateur.\nMerci",
+  "cant_pay_at_delivery_max_pay_reached":"Impossible de payer à la livraison car vous avez excéder le maximum pour payer à la livraison. Veuillez contacter le service client.",
+  "cant_pay_because_ongoing_order": "Vous ne pouvez pas payer parce que vous avez une autre Commande en cours. Veuillez SVP contacter le service client.\nMerci",
   "restaurant_no_allow_pay_at_delivery": "Désolé, Ce restaurant n'autorise pas de paiement à l'arrivée",
-  "sorry_ongoing_order": "Désolé, Compte temporairement interdit de passer des commandes avec Paiement à l'arrivée. Veuillez contacter le service client pour plus d'informations. Merci",
+  "sorry_ongoing_order": "Désolé, vous ne pouvez pas payer à l'arrivée avec un compte E-mail. Veuillez recharger votre compte et payer maintenant. Merci",
   "prevent_pay_at_delivery":"En Choisissant ce mode de paiement, vous acceptez d'avoir la somme exacte à la livraison. Merci",
   "choose_delivery_frame": "Veuillez choisir une période de livraison",
   "food_will_be_delivered_on": "Votre repas vous sera livré",
@@ -215,7 +215,7 @@
   "305_308_balance_insufficient": "Désolé, Solde insuffisant",
   "306_account_error": "Votre compte KABA rencontre des soucis. Veuillez contacter le service client",
   "307_unable_preorder": "Désolé, Précommande non autorisée",
-  "309_system_error": "Désolé. Notre service rencontre des difficultées. Veuillez réessayer plutard. Merci",
+  "309_system_error": "Désolé. Notre service rencontre des difficultés. Veuillez réessayer plutard. Merci",
   "order_congratz_praise": "Félicitations pour avoir passé votre commande avec succès. Veuillez garder votre téléphone à proximité pour vous informer en temps réel sur l'état de votre commande. Merci",
   "order_get_delivered_now_hint": "Commandez et faites-vous livrer maintenant",
   "preorder_now_hint": "Précommandez maintenant et faites-vous livrer à une heure spécifique",
@@ -236,7 +236,7 @@
   "shipping_price": "FRAIS DE LIVRAISON",
   "delivery_day": "Jour de Livraison:",
   "delivery_time_frame": "Heure de Livraison:",
-  "transactions_history": "Historique de Transactions",
+  "transactions_history": "Historique des Transactions",
   "foods": "Repas",
   "addons": "Suppléments",
   "all": "Panier de Repas",
@@ -299,7 +299,7 @@
   "voucher_not_yet_available" : "Désolé, ce bon est indisponible",
   "voucher_disabled": "Désolé, ce bon est désactivé",
 
-  "voucher_already_subscribed": "Désolé, vous avez déjà souscris à ce bon",
+  "voucher_already_subscribed": "Désolé, vous avez déjà souscrit à ce bon",
 
   "voucher_max_count_reached": "Désolé, nombre maximum de souscriptions atteint pour ce bon",
   "scan": "Scanner Code QR",
@@ -348,11 +348,11 @@
 
   "lost_your_password" : "Récupérer mot de passe ?",
 
-  "location_explanation" : "À KABA, nous avons besoin de votre position pour améliorer la précision de nos livraisons. Voulez vous nous autoriser à accéder à votre position ?",
+  "location_explanation" : "Nous avons besoin de votre position pour améliorer la précision de nos livraisons. Voulez-vous nous autoriser à accéder à votre position ?",
   "info": "Information",
 
 
-  "pnumber_registration_code_too_long": "Un code de confirmation vous a été envoyé par SMS. Les codes de vérification peuvent prendre du temps en fonction de votre réseau. Veuillez patienter svp.",
+  "pnumber_registration_code_too_long": "Un code de confirmation vous a été envoyé par SMS. Les codes de confirmation peuvent prendre du temps en fonction de votre réseau. Veuillez patienter svp.",
   "email_registration_code_too_long" : "Un code de confirmation vous a été envoyé par mail. Prière de vérifier vos spams si vous ne le trouvez pas dans la boîte de réception. ",
 
 
@@ -373,6 +373,8 @@
 
 
   "login": "Connexion",
-  "not_now": "Pas maintenant"
+  "not_now": "Pas maintenant",
+
+  "no_past_order" : "Désolé vous n'avez pas de commandes récentes à afficher."
 
 }

@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/TransactionModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -69,7 +70,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
           ],
         ),
         body: Container(
-            child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+            child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
             _buildTransactionHistoryList())
         )
     );
@@ -123,7 +124,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
             children: <Widget>[
               IconButton(icon: Icon(Icons.monetization_on, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('sorry_empty_transactions')}", style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('sorry_empty_transactions')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
             ],
           ));
 

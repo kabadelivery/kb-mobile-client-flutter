@@ -80,7 +80,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('no_past_order')}", style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context).translate('no_past_order')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

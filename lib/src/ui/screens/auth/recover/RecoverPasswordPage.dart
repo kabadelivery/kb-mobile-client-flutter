@@ -198,24 +198,16 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
     if (Utils.isPhoneNumber_TGO(login)) {
       this.widget.presenter.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
     } else if (Utils.isEmailValid(login)) {
       this.widget.presenter.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}", is_code_confirmation: true);
     } else {
       /* login error */
       setState(() {
         isLoginError = true;
       });
     }
-
-    /* setState(() {
-      isCodeSending = true;
-    });*/
-    /* send request, to the server, and if ok, save request params and update fields. */
-    ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-//    this.widget.presenter.sendVerificationCode(login);
-    /* _save request params */
 
   }
 
@@ -458,17 +450,18 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     }
   }
 
-  void mDialog(String message) {
+  void mDialog(String message, {bool is_code_confirmation = false}) {
 
     _showDialog(
       icon: Icon(Icons.info_outline, color: Colors.red),
       message: "${message}",
       isYesOrNo: false,
+        is_code_confirmation : is_code_confirmation
     );
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false}) {
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool is_code_confirmation}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -510,7 +503,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  if (widget.is_a_process)
+                  if (widget.is_a_process && is_code_confirmation == false)
                     Navigator.of(context).pop();
                 },
               ),

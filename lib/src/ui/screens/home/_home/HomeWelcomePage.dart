@@ -19,6 +19,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
@@ -712,7 +713,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: Center(child : isLoading ? CircularProgressIndicator() :
+          child: Center(child : isLoading ? MyLoadingProgressWidget() :
           Container(
             child: Column(mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

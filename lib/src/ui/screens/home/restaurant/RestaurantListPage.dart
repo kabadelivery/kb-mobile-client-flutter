@@ -310,7 +310,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                               )
                                   : _showSearchPage()) :
                           Container(margin: EdgeInsets.only(top:20),
-                              child: isSearchingMenus ? Center(child:CircularProgressIndicator()) :
+                              child: isSearchingMenus ? Center(child:MyLoadingProgressWidget()) :
                               (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
                               searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
                               _buildSearchedFoodList())
