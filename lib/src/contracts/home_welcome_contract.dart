@@ -146,7 +146,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       bool hasNewMessage = await provider.checkUnreadMessages(customer);
       _homeWelcomeView.hasUnreadMessages(hasNewMessage);
     } catch (_) {
-      xrint(_);
+      xrint(_.toString());
       _homeWelcomeView.hasUnreadMessages(false);
     }
   }

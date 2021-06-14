@@ -36,6 +36,7 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
   @override
-void initState() {
+  void initState() {
 
 
 
@@ -170,12 +171,13 @@ void initState() {
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
       xrint('pnotif Got a message whilst in the foreground!');
       xrint('pnotif Message data: ${message.data}');
 
       if (message.notification != null) {
         xrint('pnotif Message also contained a notification: ${message
-            .notification}');
+            .notification.toString()}');
 
         NotificationItem notificationItem = _notificationFromMessage(message.data);
         iLaunchNotifications(notificationItem);
@@ -200,6 +202,8 @@ void initState() {
 
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
+    await Firebase.initializeApp();
+
     xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
     if (message.notification != null) {
       xrint('p_notify Message also contained a notification: ${message
@@ -212,6 +216,7 @@ void initState() {
 
   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
+    await Firebase.initializeApp();
 
     xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
     if (message.notification != null) {
@@ -328,20 +333,20 @@ void initState() {
 
       // Get any messages which caused the application to open from
       // a terminated state.
-      if (StateContainer
-          .of(context)
-          .loggingState == 1) {
-        FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
-          if (initialMessage != null) {
-            _firebaseMessagingOpenedAppHandler(initialMessage);
-          } else {
-            FirebaseMessaging.onBackgroundMessage(
-                _firebaseMessagingBackgroundHandler);
-            FirebaseMessaging.onMessageOpenedApp.listen(
-                _firebaseMessagingOpenedAppHandler);
-          }
-        });
-      }
+      // if (StateContainer
+      //     .of(context)
+      //     .loggingState == 1) {
+      FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
+        if (initialMessage != null) {
+          _firebaseMessagingOpenedAppHandler(initialMessage);
+        } else {
+          FirebaseMessaging.onBackgroundMessage(
+              _firebaseMessagingBackgroundHandler);
+          FirebaseMessaging.onMessageOpenedApp.listen(
+              _firebaseMessagingOpenedAppHandler);
+        }
+      });
+      // }
 
       loginStuffChecked  = 1;
     }
@@ -381,20 +386,20 @@ void initState() {
   }
 
   /* keep gps location inside STATE CONTAINER and use it even for the map. */
-    _onItemTapped(int value) {
+  _onItemTapped(int value) {
 
     /* first check if user is connected / logged in
     * - if yes, switch
     * - otherwise, no switch, send him to login page...
     *
     * */
-var msg = ["please_login_before_going_forward_description_orders", "please_login_before_going_forward_description_account"];
+    var msg = ["please_login_before_going_forward_description_orders", "please_login_before_going_forward_description_account"];
     if (value == 2 || value == 3) {
       if (StateContainer
           .of(context)
           .loggingState == 0) {
         // not logged in... show dialog and also go there
-          showDialog<void>(
+        showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
@@ -507,30 +512,36 @@ var msg = ["please_login_before_going_forward_description_orders", "please_login
      * */
     switch (pathSegments[0]) {
       case "voucher":
-        if (pathSegments.length > 1) {
-          xrint("voucher id homepage -> ${pathSegments[1]}");
-          widget.destination = SplashPage.VOUCHER;
-          /* convert from hexadecimal to decimal */
-          widget.argument = "${pathSegments[1]}";
-          _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
-        }
+        _checkIfLoggedInAndDoAction(() {
+          if (pathSegments.length > 1) {
+            xrint("voucher id homepage -> ${pathSegments[1]}");
+            widget.destination = SplashPage.VOUCHER;
+            /* convert from hexadecimal to decimal */
+            widget.argument = "${pathSegments[1]}";
+            _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
+          }});
         break;
       case "vouchers":
-        xrint("vouchers page");
-        widget.destination = SplashPage.VOUCHERS;
-        /* convert from hexadecimal to decimal */
-        _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        _checkIfLoggedInAndDoAction(() {
+          xrint("vouchers page");
+          widget.destination = SplashPage.VOUCHERS;
+          /* convert from hexadecimal to decimal */
+          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+        });
         break;
       case "addresses":
-        xrint("addresses page");
-        widget.destination = SplashPage.ADDRESSES;
-        /* convert from hexadecimal to decimal */
-        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+        _checkIfLoggedInAndDoAction(() {
+          xrint("addresses page");
+          widget.destination = SplashPage.ADDRESSES;
+          /* convert from hexadecimal to decimal */
+          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+        });
         break;
       case "transactions":
-        _jumpToPage(
-            context, TransactionHistoryPage(presenter: TransactionPresenter()));
-//        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+        _checkIfLoggedInAndDoAction(() {
+          _jumpToPage(
+              context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        });
         break;
       case "restaurants":
       //    widget.destination = SplashPage.RESTAURANT_LIST;
@@ -551,23 +562,21 @@ var msg = ["please_login_before_going_forward_description_orders", "please_login
         }
         break;
       case "order":
-        if (pathSegments.length > 1) {
-          xrint("order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
-//          widget.argument = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(
-              orderId: widget.argument, presenter: OrderDetailsPresenter()));
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
-        }
+        _checkIfLoggedInAndDoAction(() {
+          if (pathSegments.length > 1) {
+            xrint("order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, OrderDetailsPage(
+                orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          }
+        });
         break;
       case "food":
         if (pathSegments.length > 1) {
           xrint("food id -> ${pathSegments[1]}");
           widget.destination = SplashPage.FOOD;
           widget.argument = int.parse("${pathSegments[1]}");
-//          widget.argument = mHexToInt("${pathSegments[1]}");
-//          _jumpToPage(context, RestaurantFoodDetailsPage(foodId: widget.argument, presenter: FoodPresenter()));
           _jumpToPage(context, RestaurantMenuPage(
               foodId: widget.argument, presenter: MenuPresenter()));
         }
@@ -583,15 +592,15 @@ var msg = ["please_login_before_going_forward_description_orders", "please_login
         }
         break;
       case "review-order":
-        if (pathSegments.length > 1) {
-          xrint("review-order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.REVIEW_ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
-//          widget.argument = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, OrderDetailsPage(
-              orderId: widget.argument, presenter: OrderDetailsPresenter()));
-//          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
-        }
+        _checkIfLoggedInAndDoAction(() {
+          if (pathSegments.length > 1) {
+            xrint("review-order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.REVIEW_ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, OrderDetailsPage(
+                orderId: widget.argument, presenter: OrderDetailsPresenter()));
+          }
+        });
         break;
     }
     pathSegments[0] = null;
@@ -666,14 +675,82 @@ var msg = ["please_login_before_going_forward_description_orders", "please_login
   }
 
   void _jumpToPage(BuildContext context, page) {
+
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => page,
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => page,
+        ));
   }
+
+  void _checkIfLoggedInAndDoAction(Function callback) {
+    if (StateContainer
+        .of(context)
+        .loggingState == 0) {
+      // not logged in... show dialog and also go there
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${AppLocalizations.of(context).translate(
+                'please_login_before_going_forward_title')}"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  /* add an image*/
+                  // location_permission
+                  Container(
+                      height: 100, width: 100,
+                      decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(
+                                ImageAssets.login_description),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate(
+                      "please_login_before_going_forward_random")}",
+                      textAlign: TextAlign.center)
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('not_now')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('login')}"),
+                onPressed: () {
+                  /* */
+                  /* jump to login page... */
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          LoginPage(presenter: LoginPresenter())));
+                },
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      callback();
+    }
+  }
+
 }
+
+
 
 
 Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
@@ -682,16 +759,21 @@ Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   if (Platform.isAndroid) {
     NotificationItem notificationItem = _notificationFromMessage(message);
     return iLaunchNotifications(notificationItem);
+  } else {
+    NotificationItem notificationItem = _notificationFromMessage(message);
+    return iLaunchNotifications(notificationItem);
   }
   return Future.value(0);
 }
 
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 
+  xrint(message_entry.toString());
+
   if (Platform.isIOS) {
 // Android-specific code
     try {
-      var _data = json.decode(message_entry["data"]);
+      var _data = json.decode(message_entry["data"])["data"];
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -703,13 +785,12 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
       );
       return notificationItem;
     } catch (_) {
-      xrint(_);
+      xrint(_.toString());
     }
   } else if (Platform.isAndroid) {
 // IOS-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
-
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],

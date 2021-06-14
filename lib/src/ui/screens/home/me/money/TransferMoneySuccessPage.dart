@@ -4,7 +4,6 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayer/audioplayer.dart';
 //import 'package:audioplayers/audio_cache.dart';
 //import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -85,6 +84,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                 )
                             ),
                             SizedBox(height: 10),
+
                             Text("${widget?.moneyReceiver?.username}", textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),),
                             SizedBox(height:5),
                             Text("${Utils.hidePhoneNumber(widget?.moneyReceiver?.phone_number)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.normal),),

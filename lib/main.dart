@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
@@ -25,6 +26,8 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +74,7 @@ Future<void> main() async {
 
 FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
+FirebaseAnalytics analytics = FirebaseAnalytics();
 
 class MyApp extends StatefulWidget {
 
@@ -97,6 +101,7 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -114,6 +119,9 @@ class _MyAppState extends State<MyApp> {
               Locale('fr', 'FR'),
               Locale.fromSubtags(languageCode: 'zh')
 
+            ],
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: analytics),
             ],
 
             localizationsDelegates: [
@@ -133,6 +141,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             home: SplashPage(),
+          // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),

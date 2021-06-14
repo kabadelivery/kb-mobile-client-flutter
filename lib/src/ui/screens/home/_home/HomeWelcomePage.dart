@@ -44,7 +44,6 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:audioplayer/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -448,7 +447,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   children: <Widget>[
                     ClipPath(
                         clipper: KabaRoundTopClipper(),
-                        child:CarouselSlider(
+                        child:
+
+                        data.slider.length > 1 ?  CarouselSlider(
                           options: CarouselOptions(
                             onPageChanged: _carousselPageChanged,
                             viewportFraction: 1.0,
@@ -477,7 +478,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                               },
                             );
                           }).toList(),
-                        )),
+                        ) :
+                        GestureDetector(
+                          onTap: ()=>_jumpToAdsList(data.slider, 0),
+                          child: Container(
+                              height: 9*MediaQuery.of(context).size.width/16,
+                              width: MediaQuery.of(context).size.width,
+                              child:CachedNetworkImage(
+                                  imageUrl: Utils.inflateLink(data.slider[0].pic),
+                                  fit: BoxFit.cover
+                              )
+                          ),
+                        )
+                    ),
                     Positioned(
                         bottom: 10,
                         right:0,
@@ -1267,8 +1280,8 @@ void _jumpToPage (BuildContext context, page) {
 
 Future<void> _playMusicForNewMessage() async {
   // play music
-  AudioPlayer audioPlayer = AudioPlayer();
-  audioPlayer.play(MusicData.new_message);
+  // AudioPlayer audioPlayer = AudioPlayer();
+  // audioPlayer.play(MusicData.new_message);
   /*if (await Vibration.hasVibrator()
   ) {
     Vibration.vibrate(duration: 500);

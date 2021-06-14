@@ -2,12 +2,16 @@
 
 import 'dart:math';
 
-import 'package:flare_dart/math/mat2d.dart';
+import 'package:KABA/src/utils/_static_data/MusicData.dart';
+import 'package:flare_flutter/base/animation/actor_animation.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
+// import 'package:just_audio/just_audio.dart';
+import 'package:vibration/vibration.dart';
+
 
 class TestPage extends StatefulWidget {
   @override
@@ -19,32 +23,46 @@ class _TestPageState extends State<TestPage> {
   @override
   Widget build(BuildContext context) {
 //    return Scaffold();
-    return  new MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: TrackingInput(),
+    return new Scaffold(
+        body: Center(
+          child: MaterialButton(
+              child: Text("ok"),
+              onPressed: () {
+_playMusic();
+              }
+          ),
+        )
+
+      //TrackingInput(),
     );
   }
 
 
+}
 
-
-/*Future<void> _playMusic() async {
+ Future<void> _playMusic() async {
 
     // play music
-    AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  /*  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     audioPlayer.setVolume(1.0);
     AudioPlayer.logEnabled = true;
-    var audioCache = new AudioCache(fixedPlayer: audioPlayer);
-    audioCache.play(MusicData.command_success_hold_on);
+    audioPlayer.play(MusicData.command_success_hold_on);*/
+
+   // final player = AudioPlayer();
+   // player.setAudioSource(AudioSource.uri(Uri.parse(
+   //     "${MusicData.command_success_hold_on}")));
+   // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
+   //
+   // player.setAudioSource(AudioSource.uri(Uri.parse('asset:///${MusicData.c_command_success_hold_on}')),
+   //      initialPosition: Duration.zero, preload: true);
+   //
+   // player.play();
     if (await Vibration.hasVibrator ()
     ) {
       Vibration.vibrate(duration: 500);
     }
-  }*/
-}
+  }
+
 
 
 // track user input
@@ -216,7 +234,7 @@ class TrackingState extends State<TrackingInput> {
   ///we'll use this to increase how much water the user has drunk, hooked
   ///via button
   void _incrementWater() {
-    setState(() {
+   /* setState(() {
       if (currentWaterCount < selectedGlasses) {
         currentWaterCount = currentWaterCount + 1;
 
@@ -233,7 +251,7 @@ class TrackingState extends State<TrackingInput> {
         _flareController.playAnimation("iceboy_win");
       }
     });
-  }
+  */}
 
   ///we'll use this to decrease our user's water intake, hooked to a button
   void _decrementWater() {
@@ -244,7 +262,7 @@ class TrackingState extends State<TrackingInput> {
 
         _flareController.updateWaterPercent(diff);
 
-        _flareController.playAnimation("ripple");
+        // _flareController.playAnimation("ripple");
       } else {
         currentWaterCount = 0;
       }
@@ -374,7 +392,7 @@ class AnimationControls extends FlareController {
 
 
   ///called from the 'tracking_input'
-  void playAnimation(String animName){
+ /* void playAnimation(String animName){
     ActorAnimation animation = _artboard.getAnimation(animName);
     if (animation != null) {
       _baseAnimations.add(FlareAnimationLayer()
@@ -382,7 +400,7 @@ class AnimationControls extends FlareController {
         ..animation = animation
       );
     }
-  }
+  }*/
   ///called from the 'tracking_input'
   ///updates the water fill line
   void updateWaterPercent(double amt){

@@ -163,11 +163,19 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
               SizedBox(height: 10),
 
-              isGetFeesLoading ?  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)), height: 15, width: 15) : Container(),
+              isGetFeesLoading ?  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.mGreen)), height: 15, width: 15) : Container(),
 
               SizedBox(height: 5),
 
-              Text("* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"} ${_getFees()}%", textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+              /* please be patient ... */
+
+              isGetFeesLoading ? Text("${"${AppLocalizations.of(context).translate('please_wait_fees_percentage')}"}", textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)) :
+              Text("* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"}"
+                  " ${_getFees()}%", textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+
+
 
               Column(children: [
                 SizedBox(height: 10),
@@ -395,6 +403,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   Navigator.of(context).pop();
                 },
               ),
+
             ]
         );
       },

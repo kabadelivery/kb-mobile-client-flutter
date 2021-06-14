@@ -182,7 +182,7 @@ class MenuApiProvider {
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS),
         body: json.encode({"id": restaurantDetailsId}),
-        headers: Utils.getHeadersWithToken(customer.token),
+        headers: Utils.getHeadersWithToken(customer?.token),
       )
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
@@ -233,7 +233,7 @@ class MenuApiProvider {
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_CAN_COMMENT),
         body: json.encode({"restaurant_id": restaurant?.id}),
-        headers: Utils.getHeadersWithToken(customer.token),
+        headers: Utils.getHeadersWithToken(customer?.token),
       )
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());

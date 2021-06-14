@@ -236,11 +236,13 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               SizedBox(height: 20),
                               Container(height: 1, width: MediaQuery.of(context).size.width, color: Colors.grey.withAlpha(100)),
                               SizedBox(height: 20),
-                              Row(mainAxisAlignment: MainAxisAlignment.start,
+                             StateContainer
+                                  .of(context)
+                                  .loggingState == 1 ? Row(mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text("${AppLocalizations.of(context).translate('note_reviews')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                                 ],
-                              ),
+                              ) : Container(),
                               /* 4.0 - stars */
                               SizedBox(height:20),
 

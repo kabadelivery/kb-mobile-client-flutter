@@ -22,7 +22,6 @@ class OrderApiProvider {
 
   Client client = Client();
 
-
   Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher) async {
 
     xrint("entered computeBillingAction");

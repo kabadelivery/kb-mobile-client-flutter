@@ -4,7 +4,7 @@ import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -191,7 +191,11 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   }
 
   void _copyIntoClipboard(String codePromo) {
-    ClipboardManager.copyToClipBoard(codePromo).then((result) {
+    // ClipboardManager.copyToClipBoard(codePromo).then((result) {
+    //   mToast("${codePromo} ${AppLocalizations.of(context).translate('copied_c')}");
+    // });
+
+    FlutterClipboard.copy(codePromo).then((value) {
       mToast("${codePromo} ${AppLocalizations.of(context).translate('copied_c')}");
     });
   }

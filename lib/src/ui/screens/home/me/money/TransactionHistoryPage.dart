@@ -144,8 +144,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                   child: Container(
                     padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
                     width: MediaQuery.of(context).size.width*0.9,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                      Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontSize: 30)),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                      Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontSize: 24)),
                       Row(
                         children: [
                           Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
@@ -162,7 +162,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                   child: Container(
                     padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
                     width: MediaQuery.of(context).size.width*0.9,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                       Text("${AppLocalizations.of(context).translate('kaba_points')}", style: TextStyle(fontSize: 24)),
                       Row(
                         children: [

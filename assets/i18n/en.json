@@ -13,7 +13,7 @@
   "enjoy": "Enjoy",
   "enjoy_desc": "Enjoy your food !",
   "login_phonenumber_hint": "Enter the Phone number or E-mail you used to create your KABA account",
-  "connexion": "CONNECTION",
+  "connexion": "LOGIN",
   "recover_password": "Recover Password",
   "login_error": "Sorry, Login error",
   "accept_terms_and_conditions": "Do you accept our terms and conditions",
@@ -360,7 +360,7 @@
   "please_login_before_going_forward_description_account" : "You must logging in order to see account details",
   "please_login_before_going_forward_description_place_order" : "You must logging in order to place an order",
   "please_login_before_going_forward_description_comment" : "You must logging in order to place a review",
-
+  "please_login_before_going_forward_random" : "You must logging in order to access this content",
 
   "login": "Login",
   "not_now": "Not now"

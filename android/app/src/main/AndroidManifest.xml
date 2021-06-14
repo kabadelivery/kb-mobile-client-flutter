@@ -59,6 +59,8 @@
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
             android:launchMode="singleInstance"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:allowTaskReparenting="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

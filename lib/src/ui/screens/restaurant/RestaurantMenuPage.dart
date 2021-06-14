@@ -187,7 +187,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     return Scaffold(
       appBar: appBar,
       body: Container(
-          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+          child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
           Row(children: <Widget>[
             Expanded(flex:4,
               child: Center(
