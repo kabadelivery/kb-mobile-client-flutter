@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
@@ -290,16 +291,20 @@ class _HomePageState extends State<HomePage> {
 
 
   void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
+
+    _jumpToPage(context, RestaurantMenuPage(foodId: product_id, presenter: MenuPresenter()));
+    // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
   }
 
 
   void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
+    _jumpToPage(context, OrderDetailsPage(orderId: product_id, presenter: OrderDetailsPresenter()));
+    // navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
-    navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+    _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+    // navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
   }
 
   /* void _jumpToArticleInterface(int product_id) {
@@ -313,11 +318,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
+
+    _jumpToPage(context, RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()));
+    // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
   void _jumpToServiceClient() {
-    navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
+    _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+    // navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
   int loginStuffChecked = 0;
@@ -336,7 +344,7 @@ class _HomePageState extends State<HomePage> {
       // if (StateContainer
       //     .of(context)
       //     .loggingState == 1) {
-      FirebaseMessaging.instance.getInitialMessage().then((initialMessage) {
+      _firebaseMessaging.getInitialMessage().then((initialMessage) {
         if (initialMessage != null) {
           _firebaseMessagingOpenedAppHandler(initialMessage);
         } else {

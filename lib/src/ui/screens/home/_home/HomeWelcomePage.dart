@@ -262,6 +262,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           actions: <Widget>[
             InkWell(onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
               child: Container(width: 60,height:60,
+
+                // setup whatsapp button
                 child: FlareActor(
                     FlareData.new_message,
                     alignment: Alignment.center,

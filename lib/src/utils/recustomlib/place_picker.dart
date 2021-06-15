@@ -499,7 +499,7 @@ class PlacePickerState extends State<PlacePicker> {
         });
       }
     }).catchError((error) {
-      xrint(error);
+      xrint(error.toString());
     });
   }
 

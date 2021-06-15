@@ -135,6 +135,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                           BouncingWidget(
                             duration: Duration(milliseconds: 400),
                             scaleFactor: 2,
+                            onPressed: () => showPlacePicker(context),
                             child: Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                           ),
                           Padding(
@@ -151,6 +152,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                                   BouncingWidget(
                                     duration: Duration(milliseconds: 300),
                                     scaleFactor: 2,
+                                    onPressed: () => showPlacePicker(context),
                                     child: Icon(Icons.chevron_right, color: KColors.primaryColor),
                                   ),
                                 ]),
@@ -281,15 +283,11 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           if (!isLocationServiceEnabled) {
             await Geolocator.openLocationSettings();
           } else {
-            positionStream = Geolocator.getPositionStream().listen(
-                    (Position position) {
-                  /* only once */
-                      // show once per click
-
-                  xrint("position stream");
-                  _jumpToPickAddressPage();
-                  positionStream?.cancel();
-                });
+            Stream<Position> positionStream = Geolocator.getPositionStream();
+            positionStream.first.then((position) {
+              xrint("position stream");
+              _jumpToPickAddressPage();
+            });
           }
         }
       }
@@ -309,42 +307,58 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       xrint(onError);
     });*/
 
-    if (isPickLocation)
+    if (isPickLocation) {
+      xrint("already picking address, OUTTTTT");
       return;
-
-    setState(() {
-      isPickLocation = true;
-    });
-
-    lo.LocationData location = await lo.Location().getLocation();
-
-    StateContainer.of(context).updateLocation(location: Position(latitude: location.latitude, longitude: location.longitude));
-
-    if (StateContainer.of(context).location != null)
-      Pp.PlacePickerState.initialTarget = LatLng(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude);
-
-    xrint("i pick address");
-
-    /* get my position */
-    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
-    /* use this location to generate details about the place the user lives and so on. */
-
-    setState(() {
-      isPickLocation = false;
-    });
-
-    if (result != null) {
-      /*  */
-      setState(() {
-        _checkLocationLoading = true;
-        address.location = "${result.latitude}:${result.longitude}";
-      });
-      xrint(address.location);
-      // use mvp to launch a request and place the result here.
-      widget.presenter.checkLocationDetails(widget.customer, position:   Position(longitude: result.longitude, latitude: result.latitude));
     } else {
+      setState(() {
+        isPickLocation = true;
+      });
+
+      lo.LocationData location = await lo.Location().getLocation();
+
+      StateContainer.of(context).updateLocation(location: Position(
+          latitude: location.latitude, longitude: location.longitude));
+
+      if (StateContainer
+          .of(context)
+          .location != null)
+        Pp.PlacePickerState.initialTarget = LatLng(StateContainer
+            .of(context)
+            .location
+            .latitude, StateContainer
+            .of(context)
+            .location
+            .longitude);
+
+      xrint("i pick address");
+
+      /* get my position */
+      LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
+      /* use this location to generate details about the place the user lives and so on. */
+
+      if (result != null) {
+        /*  */
+        setState(() {
+          _checkLocationLoading = true;
+          address.location = "${result.latitude}:${result.longitude}";
+        });
+        xrint(address.location);
+        // use mvp to launch a request and place the result here.
+        widget.presenter.checkLocationDetails(widget.customer,
+            position: Position(
+                longitude: result.longitude, latitude: result.latitude));
+        // setState(() {
+        //   isPickLocation = false;
+        // });
+
+      } else {
+        // setState(() {
+        //   isPickLocation = false;
+        // });
+      }
       setState(() {
         isPickLocation = false;
       });

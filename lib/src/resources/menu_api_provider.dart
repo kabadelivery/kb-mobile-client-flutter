@@ -177,12 +177,12 @@ class MenuApiProvider {
 
   fetchRestaurantWithId(CustomerModel customer, int restaurantDetailsId) async {
 
-    xrint("entered fetchRestaurantWithId");
+    xrint("entered fetchRestaurantWithId with $restaurantDetailsId and ${customer?.toJson()?.toString()}");
     if (await Utils.hasNetwork()) {
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS),
         body: json.encode({"id": restaurantDetailsId}),
-        headers: Utils.getHeadersWithToken(customer?.token),
+        headers: customer?.token == null ? Map() : Utils.getHeadersWithToken(customer?.token),
       )
           .timeout(const Duration(seconds: 30));
      xrint(response.body.toString());
