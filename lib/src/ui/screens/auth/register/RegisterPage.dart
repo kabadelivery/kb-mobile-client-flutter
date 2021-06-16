@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
@@ -37,6 +38,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> _loginFieldHint;
 
   String _nicknameFieldHint;
+  String _whatsappPhoneNumberHint;
 
   List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress, TextInputType.emailAddress];
 
@@ -45,12 +47,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
   TextEditingController _nicknameFieldController = new TextEditingController();
+  TextEditingController _whatsappPhonenumberController = new TextEditingController();
 
   bool isCodeSent = false;
   bool isLoginError = false;
   bool isEmailError = false;
   bool isCodeError = false;
   bool isNicknameError = false;
+  bool isWhaNumberError = false;
 
   /* circle loading progressing */
   bool isCodeSending = false;
@@ -70,6 +74,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     recoverModeHints = [""];
     _loginFieldHint = [""];
     _nicknameFieldHint = "";
+    _whatsappPhoneNumberHint = "";
 
     this.widget.presenter.registerView = this;
     /* retrieve state of the app */
@@ -83,6 +88,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}", "Email-${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}"];
     _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
     _nicknameFieldHint = "${AppLocalizations.of(context).translate('nickname')}";
+    _whatsappPhoneNumberHint = "${AppLocalizations.of(context).translate('whatsapp_number_hint')}";
   }
 
   @override
@@ -146,8 +152,44 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 keyboardType: TextInputType.text),
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
-                    SizedBox(height: 30),
+                    _registerModeRadioValue == 1 ? SizedBox(height: 20) : Container(),
 
+                    _registerModeRadioValue == 1 ? Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
+                        "${AppLocalizations.of(context).translate('please_enter_whatsapp_no')}",
+                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)) : Container(),
+                    _registerModeRadioValue == 1 ?  SizedBox(height: 10) : Container(),
+
+                    _registerModeRadioValue == 1 /* email */ ?
+                    Row(mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CountryCodePicker(
+                          flagWidth: 16,
+                          onChanged: _onCountryChanged,
+                          // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                          initialSelection: 'FR',
+                          favorite: ['+33','FR'],
+                          // optional. Shows only country name and flag
+                          showCountryOnly: false,
+                          // optional. Shows only country name and flag when popup is closed.
+                          showOnlyCountryWhenClosed: false,
+                          // optional. aligns the flag and the Text left
+                          alignLeft: false,
+                        ),
+                        SizedBox(width: 160,
+                            child: Container(
+                                padding: EdgeInsets.all(14),
+                                child: TextField(controller: _whatsappPhonenumberController,
+                                    enabled: !isCodeSent,
+                                    onChanged: _onWhaNumberieldTextChanged,
+                                    decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:Colors.black),
+                                    keyboardType: TextInputType.phone),
+                                decoration:  isWhaNumberError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                            )),
+                      ],
+                    )
+                        : Container(),
+
+                    SizedBox(height: 30),
                     (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
                     SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
                         height: 15, width: 15) : Container(),
@@ -380,6 +422,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
   }
 
+  void _onWhaNumberieldTextChanged (String value) {
+    setState(() {
+      isWhaNumberError = false;
+    });
+  }
+
   void mToast(String message) {
 //    Toast.show(message, context, duration: Toast.LENGTH_LONG);
     mDialog(message);
@@ -422,11 +470,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         isAccountRegistering = true;
       });
 
+      String whatsapp_number = "${countryDialCode.substring(1)}${_whatsappPhonenumberController.text}"; // append entered phone number
+
+      xrint("whatsappNo ${whatsapp_number}");
+
       /* launch create account request, and if success*/
       this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
           phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
           email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
-          request_id: this._requestId
+          request_id: this._requestId, whatsapp_number: whatsapp_number
       );
     }
   }
@@ -559,5 +611,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void codeError() {
     mToast("${AppLocalizations.of(context).translate('register_code_error')}");
   }
+
+
+  String countryDialCode = "+33";
+  void _onCountryChanged(CountryCode value) {
+     countryDialCode = value.dialCode;
+  }
+
 
 }

@@ -42,6 +42,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -146,6 +147,53 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
+
+      /* if you are email... and you've been created in the last 2 minutes... congratualitions, you've created e-mail account. */
+      /* make sure you show it once on a single device... */
+
+      SharedPreferences.getInstance().then((value) async {
+        prefs = value;
+
+        String _has_seen_email_account_notification = prefs.getString("_has_seen_email_account_notification");
+
+        if (_has_seen_email_account_notification != "1")
+        showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("${AppLocalizations.of(context).translate(
+                  'info')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100, width: 100,
+                        child: Icon(Icons.info, color: KColors.primaryColor, size: 100,)
+                    ),
+                    SizedBox(height: 10),
+                    Text("${AppLocalizations.of(context).translate(
+                        "congrats_for_email_account")}",
+                        textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('ok')}"),
+                  onPressed: () {
+                    prefs.setString("_has_seen_email_account_notification", "1");
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        });
     });
     // FLUTTER NOTIFICATION
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -756,6 +804,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
 }
 
 
@@ -831,6 +880,7 @@ Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
       notificationItem.hashCode, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
       payload: notificationItem?.destination?.toSpecialString()
   );
+
 }
 
 
@@ -844,5 +894,7 @@ class AppbarhintFieldWidget extends StatelessWidget {
       color: Colors.transparent,
     );
   }
+
+
 
 }

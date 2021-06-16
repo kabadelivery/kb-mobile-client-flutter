@@ -43,7 +43,9 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
 
   String localPicture;
 
-  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(), _emailFieldController = TextEditingController(), _nickNameFieldController = TextEditingController(), _districtFieldController = TextEditingController();
+  TextEditingController _phoneNumberFieldController = TextEditingController(), _jobTitleFieldController = TextEditingController(),
+      _emailFieldController = TextEditingController(), _nickNameFieldController = TextEditingController(),
+      _whatsappNoFieldController = TextEditingController(), _districtFieldController = TextEditingController();
 
   bool isUpdating = false;
 
@@ -61,6 +63,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
     _nickNameFieldController.text = widget.customer?.nickname;
     _jobTitleFieldController.text = widget.customer?.job_title;
     _districtFieldController.text = widget.customer?.district;
+    _whatsappNoFieldController.text = widget.customer?.whatsapp_number;
 //    _emailFieldController.text = widget.customer?.email;
 
     setState(() {
@@ -170,6 +173,18 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                                 validator: this._validateName,
                                 onSaved: (String value) {
                                   widget.customer.nickname = value;
+                                }
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            color: Colors.white,
+                            child:TextFormField(controller: _whatsappNoFieldController,
+                                decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('whatsapp_number_hint_ex')}", border: InputBorder.none),
+                                // validator: this._validateName,
+                                onSaved: (String value) {
+                                  widget.customer.whatsapp_number = value;
                                 }
                             ),
                           ),
@@ -284,6 +299,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
       widget.customer.district = _districtFieldController.text;
       widget.customer.job_title = _jobTitleFieldController.text;
       widget.customer.nickname = _nickNameFieldController.text;
+      widget.customer.whatsapp_number = _whatsappNoFieldController.text;
 
       if (_image != null) { /* convert to base64, and upload to server. */
         List<int> imageBytes = await _image.readAsBytesSync();

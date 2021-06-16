@@ -51,6 +51,7 @@ dependencies:
   firebase_analytics: ^8.1.2
   photo_view: ^0.11.1
   vibration: ^1.2.4
+  country_code_picker: ^2.0.1
 #  audioplayer: ^0.19.0
 #  audioplayers: ^0.19.0
   device_info: ^2.0.0

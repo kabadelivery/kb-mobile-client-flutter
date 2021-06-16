@@ -32,6 +32,8 @@ class CustomerUtils {
       customer = CustomerModel.fromJson(obj["data"]["customer"]);
       String token = obj["data"]["payload"]["token"];
       customer.token = token;
+      customer.created_at = obj["data"]["customer"]["created_at"];
+      // created_at
     } catch (_) {
     }
     return customer;

@@ -141,6 +141,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     this.widget.presenter.fetchHomePage();
     this.widget.presenter.checkVersion();
+    // check what type of account are you... if email...
+    // we going to tell you only if you are just from creating
+    // your account
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -1251,14 +1254,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   _jumpToWhatsapp() async {
 
-      final link = WhatsAppUnilink(
-        phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
-        text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
-      );
-      // Convert the WhatsAppUnilink instance to a string.
-      // Use either Dart's string interpolation or the toString() method.
-      // The "launch" method is part of "url_launcher".
-      await launch('$link');
+    final link = WhatsAppUnilink(
+      phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+      text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
+    );
+    // Convert the WhatsAppUnilink instance to a string.
+    // Use either Dart's string interpolation or the toString() method.
+    // The "launch" method is part of "url_launcher".
+    await launch('$link');
   }
 }
 

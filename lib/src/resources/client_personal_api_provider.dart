@@ -129,14 +129,14 @@ class ClientPersonalApiProvider {
     }
   }
 
-  Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id}) async {
+  Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id, String whatsapp_number}) async {
 
     xrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_USER_REGISTER),
-          body: json.encode({"nickname": nickname, "password": password, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
+          body: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
           .timeout(const Duration(seconds: 30));
       xrint(response.body.toString());
       if (response.statusCode == 200) {
@@ -231,9 +231,9 @@ class ClientPersonalApiProvider {
   Future<CustomerModel> updatePersonnalPage(CustomerModel customer) async {
     xrint("entered updatePersonnalPage");
     if (await Utils.hasNetwork()) {
-      var _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
+      var _data = json.encode({'nickname':customer.nickname, 'whatsapp_number': customer.whatsapp_number, 'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
       if (customer.profile_picture != null)
-        _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
+        _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'whatsapp_number': customer.whatsapp_number, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS),
           body: _data,

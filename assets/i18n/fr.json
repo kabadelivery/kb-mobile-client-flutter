@@ -377,7 +377,12 @@
 
   "no_past_order" : "Désolé vous n'avez pas de commandes récentes à afficher.",
 
-  "i_have_an_inquiry": "Salut KABA ! Pourriez-vous m'aider s'il vous plait?"
+  "i_have_an_inquiry": "Salut KABA ! Pourriez-vous m'aider s'il vous plait?",
+
+  "whatsapp_number_hint" : "No Whatsapp",
+  "whatsapp_number_hint_ex" : "Numéro Whatsapp",
+  "please_enter_whatsapp_no": "Veuillez entrer votre numéro whatsapp s'il vous plait",
+  "congrats_for_email_account": "Félicitations cher Client. Merci d'utiliser un compte de type E-mail."
 
 
 }

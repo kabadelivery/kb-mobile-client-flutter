@@ -108,13 +108,13 @@ class RegisterPresenter implements RegisterContract {
   }
 
   @override
-  Future createAccount({String nickname, String password, String phone_number="", String email="", String request_id}) async {
+  Future createAccount({String nickname, String password, String whatsapp_number, String phone_number="", String email="", String request_id}) async {
 
     if (isWorking)
       return;
     isWorking = true;
 
-    String jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, phone_number: phone_number, email: email, request_id: request_id);
+    String jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, whatsapp_number: whatsapp_number, phone_number: phone_number, email: email, request_id: request_id);
     int error = json.decode(jsonContent)["error"];
     if (error == 0) {
       /* successfully created account */

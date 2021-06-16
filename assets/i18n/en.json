@@ -366,7 +366,12 @@
   "not_now": "Not now",
   "no_past_order" : "Sorry you have no recent orders.",
 
-  "i_have_an_inquiry": "Hello KABA ! I have an inquiry. Can you please help me?"
+  "i_have_an_inquiry": "Hello KABA ! I have an inquiry. Can you please help me?",
+
+  "whatsapp_number_hint" : "Whatsapp No",
+  "whatsapp_number_hint_ex" : "Whatsapp Number",
+  "please_enter_whatsapp_no": "Please enter your whatsapp number",
+  "congrats_for_email_account": "Hello Dear customer. Thanks for using an Email type account."
 
 
 }
