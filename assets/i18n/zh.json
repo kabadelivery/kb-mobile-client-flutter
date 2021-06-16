@@ -370,7 +370,8 @@
   "login": "登陆",
   "not_now": "稍后",
 
-  "no_past_order" : "抱歉、您最近没有订单"
+  "no_past_order" : "抱歉、您最近没有订单",
 
+  "i_have_an_inquiry": "你好KABA。请问您能帮我送东西吗 ？"
 
 }

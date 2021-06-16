@@ -375,6 +375,9 @@
   "login": "Connexion",
   "not_now": "Pas maintenant",
 
-  "no_past_order" : "Désolé vous n'avez pas de commandes récentes à afficher."
+  "no_past_order" : "Désolé vous n'avez pas de commandes récentes à afficher.",
+
+  "i_have_an_inquiry": "Salut KABA ! Pourriez-vous m'aider s'il vous plait?"
+
 
 }

@@ -38,6 +38,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -58,6 +59,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+// For Flutter applications, you'll most likely want to use
+// the url_launcher package.
 
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
@@ -92,15 +96,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   List<String> popupMenus;
 
 
-   List<String> _popupMenus () {
+  List<String> _popupMenus () {
 
-     if (StateContainer
-         .of(context)
-         .loggingState == 0) {
-       return null;
-     } else {
+    if (StateContainer
+        .of(context)
+        .loggingState == 0) {
+      return null;
+    } else {
       return popupMenus;
-     }
+    }
   }
 
   int _carousselPageIndex = 0;
@@ -118,7 +122,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     /* if logged in .. we have settings and loggout */
 
-      popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"]; // standard
+    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"]; // standard
 
 
     this.widget.presenter.homeWelcomeView = this;
@@ -260,16 +264,18 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               )), onPressed: (){_jumpToInfoPage();}),
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
-            InkWell(onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-              child: Container(width: 60,height:60,
-
-                // setup whatsapp button
-                child: FlareActor(
+            InkWell(onTap: ()=>_jumpToWhatsapp(),
+              child: Container(width: 42,height:42,
+                child: IconButton(
+                  icon: Image.asset(ImageAssets.whatsapp),
+                  onPressed: ()=>_jumpToWhatsapp(),
+                  // setup whatsapp button
+                  /*child: FlareActor(
                     FlareData.new_message,
                     alignment: Alignment.center,
                     animation: "normal",
                     fit: BoxFit.contain,
-                    isPaused : StateContainer.of(context).hasUnreadMessage != true
+                    isPaused : StateContainer.of(context).hasUnreadMessage != true*/
                 ),
               ),
             ),
@@ -1243,7 +1249,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
   }
 
+  _jumpToWhatsapp() async {
+
+      final link = WhatsAppUnilink(
+        phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+        text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
+      );
+      // Convert the WhatsAppUnilink instance to a string.
+      // Use either Dart's string interpolation or the toString() method.
+      // The "launch" method is part of "url_launcher".
+      await launch('$link');
+  }
 }
+
+
 class KabaRoundTopClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

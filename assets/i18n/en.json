@@ -364,7 +364,9 @@
 
   "login": "Login",
   "not_now": "Not now",
-  "no_past_order" : "Sorry you have no recent orders."
+  "no_past_order" : "Sorry you have no recent orders.",
+
+  "i_have_an_inquiry": "Hello KABA ! I have an inquiry. Can you please help me?"
 
 
 }

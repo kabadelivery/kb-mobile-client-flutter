@@ -11,7 +11,7 @@ description: Kaba under Flutter framework
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.9
+version: 3.1.1
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -93,6 +93,7 @@ dependencies:
   flutter_icons: ^1.1.0
   iphone_has_notch: ^1.0.0
   clipboard: ^0.1.3
+  whatsapp_unilink: ^2.0.0
 
 
 
@@ -137,6 +138,7 @@ flutter:
     - assets/images/vectors/address_creation_error.svg
     - assets/fonts/MyFlutterApp.ttf
     - assets/images/png/kaba_ico.png
+    - assets/images/png/whatsapp.png
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_logo_red_man.png
     - assets/images/png/kaba_copyright_presentation.png
