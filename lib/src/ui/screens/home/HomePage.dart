@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
 
         String _has_seen_email_account_notification = prefs.getString("_has_seen_email_account_notification");
 
-        if (_has_seen_email_account_notification != "1")
+        if (_has_seen_email_account_notification != "1" && Utils.isEmailValid(customer?.email))
         showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!

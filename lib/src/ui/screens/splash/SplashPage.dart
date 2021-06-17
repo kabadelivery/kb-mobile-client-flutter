@@ -65,7 +65,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays ([]);
+    // SystemChrome.setEnabledSystemUIOverlays ([]);
     startTimeout();
     _listenToUniLinks();
   }
@@ -75,7 +75,7 @@ class _SplashPageState extends State<SplashPage> {
     // TODO: implement dispose
     super.dispose();
     // Exit full screen
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
 
@@ -167,7 +167,7 @@ class _SplashPageState extends State<SplashPage> {
     bool isFirstTime = true;
     try {
       // prove me it's not first time
-      isFirstTime = prefs.getBool("_first_time");
+      isFirstTime = prefs.getBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP);
     } catch(_){
       // is first time
       isFirstTime = true;

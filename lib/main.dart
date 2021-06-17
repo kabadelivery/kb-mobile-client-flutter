@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> {
                 fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-            home: PresentationPage(),
+            home: SplashPage(),
           // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),

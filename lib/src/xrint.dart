@@ -1,6 +1,6 @@
 
 
-xrint (String message,{bool debug = true}){
+xrint (String message,{bool debug = false}){
   if (debug){
     print("${message}");
   }

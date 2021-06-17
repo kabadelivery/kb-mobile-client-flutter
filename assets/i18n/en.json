@@ -26,7 +26,7 @@
   "network_error": "Sorry, Network error. Please check network and try again.",
   "refuse": "REFUSE",
   "accept": "ACCEPT",
-  "new_account_phonenumber_hint": "Enter Your Phone number or E-mail.\n\n (Only TOGOLESE phone numbers are allowed)",
+  "new_account_phonenumber_hint": "Enter Your Phone number.\n\n (Only TOGOLESE phone numbers are allowed)",
   "phone_number_hint": "90 XX XX XX",
   "nickname": "Nickname",
   "register": "REGISTER",
@@ -35,7 +35,7 @@
   "account_created_successfully": "Account created successfully",
   "user_exists": "User Exists Already",
   "wrong_code": "Code is WRONG",
-  "press_code_hint": "Press on code the code button. \n\nPlease enter the code you will receive",
+  "press_code_hint": "Press on code the code button. \n\nPlease enter the code you will receive by SMS or Email",
   "recover_password_hint": "Enter the Phone number or E-mail you used to create your account.\n\nOnly TOGOLESE phone numbers are allowed.",
   "insert_phone_number": "Please enter your account Phone number or E-mail",
   "password_updated_success": "Password updated successfully",
@@ -373,6 +373,8 @@
   "please_enter_whatsapp_no": "Please enter your whatsapp number",
   "congrats_for_email_account": "Hello Dear customer. Thanks for using an Email type account.",
   "done_text": "DONE",
-  "next_text": "NEXT"
+  "next_text": "NEXT",
+
+  "new_account_email_hint" : "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)"
 
 }

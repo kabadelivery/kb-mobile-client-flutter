@@ -157,7 +157,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
             ]),
           )),
         ):
-        (checkIsRestaurantOpenConfigIsLoading ? Center(child: CircularProgressIndicator())
+        (checkIsRestaurantOpenConfigIsLoading ? Center(child: MyLoadingProgressWidget())
             :  (_checkOpenStateError || (_orderBillConfiguration!= null && _orderBillConfiguration.open_type>= 0 && _orderBillConfiguration.open_type <=3)  ? _buildOrderConfirmationPage2()
             : ErrorPage(onClickAction: ()=>  widget.presenter.checkOpeningStateOf(widget.customer, widget.restaurant))))
     );
@@ -549,7 +549,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
               _buildCouponSpace(),
               SizedBox(height: 15),
               isConnecting
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(child: MyLoadingProgressWidget())
                   : Container(),
               SizedBox(height: 20),
               _orderBillConfiguration != null && _orderBillConfiguration?.isBillBuilt == true ?

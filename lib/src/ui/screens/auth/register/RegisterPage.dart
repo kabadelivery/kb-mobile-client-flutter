@@ -67,6 +67,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   bool isAccountRegistering = false;
 
+  String _initialSelection = "FR";
+
   @override
   void initState() {
     super.initState();
@@ -85,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}", "Email-${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}"];
+    recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}", "${AppLocalizations.of(context).translate('new_account_email_hint')}"];
     _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
     _nicknameFieldHint = "${AppLocalizations.of(context).translate('nickname')}";
     _whatsappPhoneNumberHint = "${AppLocalizations.of(context).translate('whatsapp_number_hint')}";
@@ -133,6 +135,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
+
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
@@ -141,6 +144,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.number : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
+
+
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
@@ -166,15 +171,16 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           flagWidth: 16,
                           onChanged: _onCountryChanged,
                           // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                          initialSelection: 'FR',
-                          favorite: ['+33','FR'],
+                          initialSelection: _initialSelection,
+                          // favorite: ['+33','FR'],
                           // optional. Shows only country name and flag
                           showCountryOnly: false,
                           // optional. Shows only country name and flag when popup is closed.
                           showOnlyCountryWhenClosed: false,
                           // optional. aligns the flag and the Text left
                           alignLeft: false,
-                        ),
+                        )
+                         ,
                         SizedBox(width: 160,
                             child: Container(
                                 padding: EdgeInsets.all(14),
@@ -299,7 +305,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
     this.widget.presenter.sendVerificationCode(login);
 
-
     if (_registerModeRadioValue == 0) {
       // phone number
       mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
@@ -322,6 +327,9 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   _clearSharedPreferences () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("register_type");
+    prefs.remove("whatsapp_number_area_code");
+    prefs.remove("whatsapp_number_id");
+    prefs.remove("whatsapp_number_no");
     prefs.remove("last_code_sent_time");
     prefs.remove("login");
     prefs.remove("request_id");
@@ -339,6 +347,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     await prefs.setString('login', login);
     await prefs.setString('nickname', _nicknameFieldController.text);
     await prefs.setString('request_id', requestId);
+
+    if (_registerModeRadioValue == 1) {
+      // String whatsapp_number = "${countryDialCode.substring(1)}${_whatsappPhonenumberController.text}"; // append entered phone number
+      await prefs.setString('whatsapp_number_id', "${countryDialCode.code}"); // FR
+      await prefs.setString('whatsapp_number_area_code', "${countryDialCode.dialCode}"); //33
+      await prefs.setString('whatsapp_number_no', "${_whatsappPhonenumberController.text}");
+    }
+
     this._requestId = requestId;
   }
 
@@ -367,13 +383,34 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
     if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
 
+
+      int register_type = prefs.getInt("register_type");
+
       setState(() {
         /* if code sent, do something else,  */
         isCodeSent = true;
         this._requestId = prefs.getString("request_id");
         _loginFieldController.text = prefs.getString("login");
         _nicknameFieldController.text = prefs.getString("nickname");
+        _registerModeRadioValue = register_type;
       });
+
+
+      if (register_type == 1) {
+
+        String whatsapp_number_id = prefs.getString("whatsapp_number_id"); // FR
+        String whatsapp_number_no = prefs.getString("whatsapp_number_no");
+        String whatsapp_number_area_code = prefs.getString("whatsapp_number_area_code"); // 33
+
+        countryDialCode = CountryCode(code: whatsapp_number_id, dialCode: whatsapp_number_area_code);
+
+        setState(() {
+        // whatsapp no
+        _whatsappPhonenumberController.text = whatsapp_number_no;
+        // whatsapp id
+        _initialSelection = whatsapp_number_id;
+        });
+      }
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
@@ -470,7 +507,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         isAccountRegistering = true;
       });
 
-      String whatsapp_number = "${countryDialCode.substring(1)}${_whatsappPhonenumberController.text}"; // append entered phone number
+      String whatsapp_number = "${countryDialCode?.dialCode?.substring(1)}${_whatsappPhonenumberController.text}"; // append entered phone number
 
       xrint("whatsappNo ${whatsapp_number}");
 
@@ -613,9 +650,11 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
 
-  String countryDialCode = "+33";
+  CountryCode countryDialCode = CountryCode(code: "FR");
+
   void _onCountryChanged(CountryCode value) {
-     countryDialCode = value.dialCode;
+     countryDialCode = value;
+     _initialSelection = value.code;
   }
 
 

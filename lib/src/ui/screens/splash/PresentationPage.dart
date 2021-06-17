@@ -2,6 +2,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SplashPageState extends State<PresentationPage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays ([]);
+    // SystemChrome.setEnabledSystemUIOverlays ([]);
   }
 
   @override
@@ -34,7 +35,7 @@ class _SplashPageState extends State<PresentationPage> {
     // TODO: implement dispose
     super.dispose();
     // Exit full screen
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
   @override
@@ -57,7 +58,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('choice')}",
                 ),
                 titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white),
+                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
                 mainImage: Image.asset(
                   ImageAssets.choice,
                   height: 285.0,
@@ -76,7 +77,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('payment')}",
                 ),
                 titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white),
+                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
                 mainImage: Image.asset(
                   ImageAssets.payment,
                   height: 285.0,
@@ -85,7 +86,7 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor: Color(0x8830DBFF),
+                pageColor: Color(0x88FF873B),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
@@ -95,7 +96,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('address')}",
                 ),
                 titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white),
+                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
                 mainImage: Image.asset(
                   ImageAssets.address,
                   height: 285.0,
@@ -114,7 +115,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('enjoy')}",
                 ),
                 titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white),
+                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
                 mainImage: Image.asset(
                   ImageAssets.enjoy,
                   height: 285.0,
@@ -153,7 +154,7 @@ class _SplashPageState extends State<PresentationPage> {
   _endOfTheSlides() async {
     // set seen at true, and move to whatever page the other page which is terms and conditions
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("_first_time", false).then((value) {
+    prefs.setBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP, false).then((value) {
 
       // jump to splashscreen
       Navigator.pushReplacement(
