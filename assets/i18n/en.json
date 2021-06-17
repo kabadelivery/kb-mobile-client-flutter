@@ -371,7 +371,8 @@
   "whatsapp_number_hint" : "Whatsapp No",
   "whatsapp_number_hint_ex" : "Whatsapp Number",
   "please_enter_whatsapp_no": "Please enter your whatsapp number",
-  "congrats_for_email_account": "Hello Dear customer. Thanks for using an Email type account."
-
+  "congrats_for_email_account": "Hello Dear customer. Thanks for using an Email type account.",
+  "done_text": "DONE",
+  "next_text": "NEXT"
 
 }

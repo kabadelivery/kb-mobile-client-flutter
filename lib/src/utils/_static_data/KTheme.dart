@@ -11,7 +11,7 @@ class KColors {
   static const Color primaryYellowColor = Color.fromRGBO(255, 204, 51, 1);
   static const Color primaryYellowDarkColor = Color.fromRGBO(115, 95, 11, 1);
 
-  static final Color mGreen = hexToColor("#26A69A");
+  static final Color mGreen = hexToColor("#00695c");
   static final Color mBlue = hexToColor("#1976D2");
 
 //  00695c

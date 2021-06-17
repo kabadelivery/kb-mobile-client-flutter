@@ -268,7 +268,7 @@
   "order_delivered": "Commande a été Livrée",
   "order_rejected": "Commande rejetée",
   "min_short": "min",
-  "skip_text": "PASSER",
+  "skip_text": "SAUTER",
   "refresh": "Actualiser",
   "insert_message": "Veuillez entrer votre message",
   "reload": "Recharger",
@@ -382,7 +382,8 @@
   "whatsapp_number_hint" : "No Whatsapp",
   "whatsapp_number_hint_ex" : "Numéro Whatsapp",
   "please_enter_whatsapp_no": "Veuillez entrer votre numéro whatsapp s'il vous plait",
-  "congrats_for_email_account": "Félicitations cher Client. Merci d'utiliser un compte de type E-mail."
+  "congrats_for_email_account": "Félicitations cher Client. Merci d'utiliser un compte de type \nE-mail.",
 
-
+  "done_text": "TERMINER",
+  "next_text": "SUIVANT"
 }

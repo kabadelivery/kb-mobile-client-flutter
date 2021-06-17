@@ -180,7 +180,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                           Container(
                             padding: EdgeInsets.all(10),
                             color: Colors.white,
-                            child:TextFormField(controller: _whatsappNoFieldController,
+                            child:TextFormField(controller: _whatsappNoFieldController, keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(labelText: "${AppLocalizations.of(context).translate('whatsapp_number_hint_ex')}", border: InputBorder.none),
                                 // validator: this._validateName,
                                 onSaved: (String value) {
@@ -232,7 +232,7 @@ class _Personal2PageState extends State<Personal2Page> implements PersonnalPageV
                               DatePicker.showDatePicker(context,
                                   showTitleActions: true,
                                   onChanged: (date) {
-//                        xrint('change $date');
+                       xrint('change $date');
                                   }, onConfirm: (date) {
                                     xrint('confirm $date');
                                     setState(() {

@@ -78,10 +78,7 @@ dependencies:
   share: ^2.0.1
   #  pub_semver: ^1.4.4
   android_intent: ^2.0.2
-  nice_intro:
-    git:
-      url: "https://github.com/blackgerman/nice_intro.git"
-    version: 0.1.3
+  intro_views_flutter: '^3.2.0'
 
   #  flutter_statusbar_manager: ^1.0.2
   #  flutter_inappwebview: ^2.1.0+1
@@ -146,6 +143,10 @@ flutter:
     - assets/images/png/ic_transaction_success.png
     - assets/images/png/arrived.png
     - assets/images/png/login_description.png
+    - assets/images/png/payment.png
+    - assets/images/png/address.png
+    - assets/images/png/choice.png
+    - assets/images/png/enjoy.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

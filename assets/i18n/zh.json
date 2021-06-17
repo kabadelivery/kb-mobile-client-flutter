@@ -378,8 +378,9 @@
   "whatsapp_number_hint_ex" : "Whatsapp手机号码",
   "please_enter_whatsapp_no": "请输入您的WhatsApp手机号码",
 
-  "congrats_for_email_account": "您在使用一个E-mail类型账户"
+  "congrats_for_email_account": "您在使用一个E-mail类型账户",
 
-
+  "done_text": "完成",
+  "next_text": "下一个"
 
 }

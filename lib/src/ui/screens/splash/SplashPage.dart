@@ -65,11 +65,18 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setEnabledSystemUIOverlays ([]);
     startTimeout();
-
     _listenToUniLinks();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    // Exit full screen
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
 
 
   Future handleTimeout() async {

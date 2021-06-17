@@ -3,6 +3,7 @@ class ImageAssets {
 
  static final String kaba_main = "assets/images/png/kaba_ico.png";
 
+
  static final String location_permission = "assets/images/png/arrived.png";
 
  static final String mailbox = "assets/images/png/mailbox.png";
@@ -17,5 +18,11 @@ class ImageAssets {
 
  static final String splash_screen = "assets/images/jpg/flu_splash.jpeg";
 
+
+ // presentation page images
+ static final String payment = "assets/images/png/payment.png";
+ static final String address = "assets/images/png/address.png";
+ static final String choice = "assets/images/png/choice.png";
+ static final String enjoy = "assets/images/png/enjoy.png";
 
 }

@@ -283,11 +283,34 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           if (!isLocationServiceEnabled) {
             await Geolocator.openLocationSettings();
           } else {
-            Stream<Position> positionStream = Geolocator.getPositionStream();
-            positionStream.first.then((position) {
-              xrint("position stream");
-              _jumpToPickAddressPage();
-            });
+
+            if (isPickLocation) {
+              xrint("already picking address, OUTTTTT");
+              return;
+            } else {
+              setState(() {
+                isPickLocation = true;
+              });
+
+              Stream<Position> positionStream = Geolocator.getPositionStream();
+              positionStream.first.then((position) {
+                xrint("position stream");
+                /* do it recursevely until two positions are identical*/
+                positionStream = Geolocator.getPositionStream();
+                positionStream.first.then((position1) {
+                  // we do it twice to make sure we get a good location
+                  _jumpToPickAddressPage();
+                }).catchError((onError){
+                  setState(() {
+                    isPickLocation = false;
+                  });
+                });
+              }).catchError((onError){
+                setState(() {
+                  isPickLocation = false;
+                });
+              });
+            }
           }
         }
       }
@@ -298,71 +321,53 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   void _jumpToPickAddressPage() async {
 
-//    Location location = Location();
-    /*location.getLocation().then((LocationData cLoc) {
-//      setState(() {
-      xrint("location : ${cLoc.latitude}:${cLoc.longitude}");
-//      });
-    }).catchError((onError){
-      xrint(onError);
-    });*/
+    lo.LocationData location = await lo.Location().getLocation();
 
-    if (isPickLocation) {
-      xrint("already picking address, OUTTTTT");
-      return;
-    } else {
-      setState(() {
-        isPickLocation = true;
-      });
+    StateContainer.of(context).updateLocation(location: Position(
+        latitude: location.latitude, longitude: location.longitude));
 
-      lo.LocationData location = await lo.Location().getLocation();
-
-      StateContainer.of(context).updateLocation(location: Position(
-          latitude: location.latitude, longitude: location.longitude));
-
-      if (StateContainer
+    if (StateContainer
+        .of(context)
+        .location != null)
+      Pp.PlacePickerState.initialTarget = LatLng(StateContainer
           .of(context)
-          .location != null)
-        Pp.PlacePickerState.initialTarget = LatLng(StateContainer
-            .of(context)
-            .location
-            .latitude, StateContainer
-            .of(context)
-            .location
-            .longitude);
+          .location
+          .latitude, StateContainer
+          .of(context)
+          .location
+          .longitude);
 
-      xrint("i pick address");
+    xrint("i pick address");
 
-      /* get my position */
-      LatLng result = await Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
-      /* use this location to generate details about the place the user lives and so on. */
+    /* get my position */
+    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
+    /* use this location to generate details about the place the user lives and so on. */
 
-      if (result != null) {
-        /*  */
-        setState(() {
-          _checkLocationLoading = true;
-          address.location = "${result.latitude}:${result.longitude}";
-        });
-        xrint(address.location);
-        // use mvp to launch a request and place the result here.
-        widget.presenter.checkLocationDetails(widget.customer,
-            position: Position(
-                longitude: result.longitude, latitude: result.latitude));
-        // setState(() {
-        //   isPickLocation = false;
-        // });
-
-      } else {
-        // setState(() {
-        //   isPickLocation = false;
-        // });
-      }
+    if (result != null) {
+      /*  */
       setState(() {
-        isPickLocation = false;
+        _checkLocationLoading = true;
+        address.location = "${result.latitude}:${result.longitude}";
       });
+      xrint(address.location);
+      // use mvp to launch a request and place the result here.
+      widget.presenter.checkLocationDetails(widget.customer,
+          position: Position(
+              longitude: result.longitude, latitude: result.latitude));
+      // setState(() {
+      //   isPickLocation = false;
+      // });
+
+    } else {
+      // setState(() {
+      //   isPickLocation = false;
+      // });
     }
+    setState(() {
+      isPickLocation = false;
+    });
   }
 
   void _exit() {
