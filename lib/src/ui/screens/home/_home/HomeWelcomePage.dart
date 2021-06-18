@@ -148,7 +148,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+        popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
     });
 
     WidgetsBinding.instance
@@ -282,7 +282,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 ),
               ),
             ),
-            PopupMenuButton<String>(
+          StateContainer.of(context).loggingState == 0 ? SizedBox(width:15) : PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
                 return _popupMenus().map((String menuName){

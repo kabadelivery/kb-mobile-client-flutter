@@ -35,7 +35,7 @@
   "account_created_successfully": "Compte créé avec succès",
   "user_exists": "Ce compte existe déjà. Veuillez-vous connecter",
   "wrong_code": "Code erroné",
-  "press_code_hint": "Veuillez cliquer sur le bouton CODE. \n\nVeuillez entrer le code qui vous sera envoyé par SMS ou MAIL dans le champ ci dessous",
+  "press_code_hint": "Veuillez cliquer sur le bouton CODE. \n\nVeuillez entrer le code qui vous sera envoyé par SMS ou MAIL dans le champ ci-dessous",
 
   "recover_password_hint": "Veuillez entrer votre Numéro de Téléphone ou E-mail utilisé pour créer le Compte KABA \n\n(Seuls les Numéros Togolais sont autorisés)",
   "insert_phone_number": "Veuillez entrer le numéro de Téléphone ou E-mail utilisé pour créer votre compte KABA",
@@ -388,5 +388,13 @@
   "done_text": "TERMINER",
   "next_text": "SUIVANT",
 
-  "new_account_email_hint" : "Veuillez entrer votre adresse E-mail.\n\n(Les Comptes E-mail sont uniquement destinés à la diaspora)"
+  "new_account_email_hint" : "Veuillez entrer votre adresse E-mail.\n\n(Les Comptes E-mail sont uniquement destinés à la diaspora)",
+
+  "reason": "Motif",
+  "menu_not_availabe": "Repas non disponible",
+  "restaurant_in_break": "Restaurant en pause",
+  "restaurant_closed": "Restaurant fermé",
+  "reason_beyond_control": "Votre commande a été rejetée pour des raisons indépendantes de notre volonté"
+
+
 }

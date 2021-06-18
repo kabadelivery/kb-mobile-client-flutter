@@ -93,6 +93,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     );
   }
 
+  var reasonsArray = ["menu_not_availabe", "restaurant_in_break", "restaurant_closed", "reason_beyond_control"];
+
+  // <string-array name="motives">
+  // <item>Menu is not available</item>
+  // <item>Restaurant in Pause</item>
+  // <item>Restaurant in Closed</item>
+  // <item>Your command has been rejected for reasons beyond our control.</item>
+  // </string-array>
+
   Widget _inflateDetails() {
 
     return SingleChildScrollView(
@@ -100,11 +109,25 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(top:15, bottom:15, right:10, left:10),
-                  color: Utils.getStateColor(widget?.command?.state),child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      widget?.command?.is_preorder == 0 ? Container() :  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: Colors.white.withAlpha(100)),child: Text("Pre", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(8)),
-                      SizedBox(width: 5),
-                      Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white)),
+                  color: Utils.getStateColor(widget?.command?.state),child:
+                  Column(
+                    children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          widget?.command?.is_preorder == 0 ? Container() :  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: Colors.white.withAlpha(100)),child: Text("Pre", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(8)),
+                          SizedBox(width: 5),
+                          Text(_orderTopLabel(widget.command), textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.white)),
+                          /* if rejected than we need a reason */
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      widget?.command?.state > 3 ? Center(
+                        child: Row(mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(width:300,child: Text("${AppLocalizations.of(context).translate('reason')}: ${_getReason()}",  textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w200))),
+                          ],
+                        ),
+                      ) : Container()
                     ],
                   )),
               /* Progress line */
@@ -589,6 +612,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
       return MyVoucherMiniWidget(voucher: widget?.command?.voucher_entity);
     }
     return Container();
+  }
+
+  _getReason() {
+    if (widget.command.reason >= reasonsArray.length)
+      return "${AppLocalizations.of(context).translate('reason_beyond_control')}";
+    return "${AppLocalizations.of(context).translate('${reasonsArray[widget.command.reason-1 < 0 ? 0 : widget.command.reason-1]}')}";
   }
 
 }

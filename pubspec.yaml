@@ -63,7 +63,7 @@ dependencies:
   firebase_core: "^1.2.0"
   firebase_messaging: "^10.0.0"
   flutter_local_notifications: ^6.0.0
-  url_launcher: ^6.0.3
+  url_launcher: ^6.0.6
   flare_flutter: ^3.0.0
   tinycolor: ^1.0.2
   provider: ^5.0.0

@@ -375,6 +375,12 @@
   "done_text": "DONE",
   "next_text": "NEXT",
 
-  "new_account_email_hint" : "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)"
+  "new_account_email_hint" : "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)",
+
+  "reason": "Reason",
+  "menu_not_availabe": "Menu is not available",
+  "restaurant_in_break": "Restaurant in break",
+  "restaurant_closed": "Restaurant closed",
+  "reason_beyond_control": "Your command has been rejected for reasons beyond our control."
 
 }

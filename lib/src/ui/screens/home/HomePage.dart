@@ -222,6 +222,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
 
       xrint('pnotif Got a message whilst in the foreground!');
+      xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
 
       if (message.notification != null) {
@@ -351,6 +352,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _jumpToTransactionHistory() {
+    xrint("_jumpINGToTransactionHistory");
     _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
     // navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
   }
@@ -809,10 +811,13 @@ class _HomePageState extends State<HomePage> {
 
 
 
+/*
 
 Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   xrint("onBackgroundMessage: $message");
-/* send json version of notification object. */
+*/
+/* send json version of notification object. *//*
+
   if (Platform.isAndroid) {
     NotificationItem notificationItem = _notificationFromMessage(message);
     return iLaunchNotifications(notificationItem);
@@ -822,15 +827,17 @@ Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   }
   return Future.value(0);
 }
+*/
 
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 
-  xrint(message_entry.toString());
+  xrint(" inside notificationFromMessage -- "+message_entry.toString());
 
   if (Platform.isIOS) {
 // Android-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
+      xrint(" inside notificationFromMessage 840 -- "+_data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -848,18 +855,19 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 // IOS-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
+      xrint(" inside notificationFromMessage 857 -- "+_data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
           image_link: _data["notification"]["image_link"],
           priority: "${_data["notification"]["destination"]["priority"]}",
           destination: NotificationFDestination(
-              type: int.parse("${_data["notification"]["destination"]["type"]}"),
-              product_id: int.parse("${_data["notification"]["destination"]["product_id"]}"))
+              type: _data["notification"]["destination"]["type"],
+              product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
       );
       return notificationItem;
     } catch (_) {
-      xrint(_);
+      xrint(_.toString());
     }
   }
   return null;

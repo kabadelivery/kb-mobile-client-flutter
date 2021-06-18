@@ -591,7 +591,6 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         // show a dialog that tells the user to check his balance after he has topup up.
         link = Uri.encodeFull(link);
         _launchURL(link);
-
         _showDialog(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
       }
     }

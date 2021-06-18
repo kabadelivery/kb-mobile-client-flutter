@@ -1,7 +1,9 @@
 
 
-xrint (String message,{bool debug = false}){
+import 'package:flutter/cupertino.dart';
+
+xrint (String message,{bool debug = true}){
   if (debug){
-    print("${message}");
+    debugPrint("${message}");
   }
 }

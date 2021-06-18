@@ -383,6 +383,13 @@
   "done_text": "完成",
   "next_text": "下一个",
 
-  "new_account_email_hint" : "请输入您的邮箱地址。\n\n(电子邮件帐户仅适用于侨民)"
+  "new_account_email_hint" : "请输入您的邮箱地址。\n\n(电子邮件帐户仅适用于侨民)",
+
+  "reason": "原因",
+  "menu_not_availabe": "您点的菜暂时没有",
+  "restaurant_in_break": "饭店在休息中",
+  "restaurant_closed": "饭店已关门",
+  "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝"
+
 
 }
