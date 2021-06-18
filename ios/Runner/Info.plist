@@ -30,6 +30,11 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.lifestyle</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -94,10 +99,5 @@
 	<true/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>https</string>
-      <string>http</string>
-    </array>
 </dict>
 </plist>

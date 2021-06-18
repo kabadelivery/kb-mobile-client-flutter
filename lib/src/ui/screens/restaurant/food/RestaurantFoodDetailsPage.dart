@@ -230,6 +230,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
           child: Container(
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(bottom:40),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[

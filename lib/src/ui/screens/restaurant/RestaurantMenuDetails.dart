@@ -158,10 +158,10 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Wrap(children: bottomSheetView)
           ),
         ),
-        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 50,width: MediaQuery.of(context).size.width,child:
+        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 100,width: MediaQuery.of(context).size.width,child:
         RaisedButton(
             child: Container(child:  Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)),
-              padding: EdgeInsets.only(bottom: IphoneHasNotch.hasNotch ? 20 : 0),),
+              padding: EdgeInsets.only(bottom: IphoneHasNotch.hasNotch ? 50 : 0),),
             color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
       ],
     );

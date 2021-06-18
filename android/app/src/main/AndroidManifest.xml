@@ -42,9 +42,11 @@
          FlutterApplication and put your custom class here. -->
 
     <queries>
+        <!-- Place inside the <queries> element. -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
         </intent>
     </queries>
 

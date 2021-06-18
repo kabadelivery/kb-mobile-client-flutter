@@ -605,7 +605,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                     ],
                   ),
                 ),
-              ))
+              )),
+              SizedBox(height:20)
             ])
       ),
     );

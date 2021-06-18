@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController,
                                 enabled: !isCodeSent,
-                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.number : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
+                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
 
@@ -154,7 +154,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 enabled: !isCodeSent,
                                 onChanged: _onNicknameFieldTextChanged,
                                 decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:Colors.black),
-                                keyboardType: TextInputType.text),
+                                keyboardType: TextInputType.emailAddress),
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
                     _registerModeRadioValue == 1 ? SizedBox(height: 20) : Container(),
@@ -188,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                     enabled: !isCodeSent,
                                     onChanged: _onWhaNumberieldTextChanged,
                                     decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:Colors.black),
-                                    keyboardType: TextInputType.phone),
+                                    keyboardType: TextInputType.emailAddress),
                                 decoration:  isWhaNumberError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                             )),
                       ],
@@ -650,7 +650,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
 
-  CountryCode countryDialCode = CountryCode(code: "FR");
+  CountryCode countryDialCode = CountryCode(code: "FR", dialCode: "33");
 
   void _onCountryChanged(CountryCode value) {
      countryDialCode = value;

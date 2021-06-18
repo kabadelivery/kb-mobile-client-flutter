@@ -801,7 +801,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       try {
         throw 'Could not launch $url';
       } catch (_) {
-        xrint(_);
+        xrint(_.toString());
       }
     }
     return -1;
