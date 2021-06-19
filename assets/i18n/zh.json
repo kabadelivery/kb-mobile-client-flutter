@@ -378,7 +378,7 @@
   "whatsapp_number_hint_ex" : "Whatsapp手机号码",
   "please_enter_whatsapp_no": "请输入您的WhatsApp手机号码",
 
-  "congrats_for_email_account": "您在使用一个E-mail类型账户",
+  "congrats_for_email_account": "你好！ 欢迎来到KABA。 我们很高兴有您成为我们的侨民用户",
 
   "done_text": "完成",
   "next_text": "下一个",
@@ -389,7 +389,9 @@
   "menu_not_availabe": "您点的菜暂时没有",
   "restaurant_in_break": "饭店在休息中",
   "restaurant_closed": "饭店已关门",
-  "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝"
+  "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝",
+
+  "welcome": "欢迎"
 
 
 }

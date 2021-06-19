@@ -383,7 +383,7 @@
   "whatsapp_number_hint" : "No Whatsapp",
   "whatsapp_number_hint_ex" : "Numéro Whatsapp",
   "please_enter_whatsapp_no": "Veuillez entrer votre numéro whatsapp s'il vous plait",
-  "congrats_for_email_account": "Félicitations cher Client. Merci d'utiliser un compte de type \nE-mail.",
+  "congrats_for_email_account": "Salut! Bienvenue sur KABA. Nous sommes ravis de vous compter parmi nos utilisateurs de la diaspora",
 
   "done_text": "TERMINER",
   "next_text": "SUIVANT",
@@ -394,7 +394,9 @@
   "menu_not_availabe": "Repas non disponible",
   "restaurant_in_break": "Restaurant en pause",
   "restaurant_closed": "Restaurant fermé",
-  "reason_beyond_control": "Votre commande a été rejetée pour des raisons indépendantes de notre volonté"
+  "reason_beyond_control": "Votre commande a été rejetée pour des raisons indépendantes de notre volonté",
+  "welcome": "Bienvenue"
+
 
 
 }

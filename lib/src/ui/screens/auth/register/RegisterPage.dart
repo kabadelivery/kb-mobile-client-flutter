@@ -305,15 +305,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
     this.widget.presenter.sendVerificationCode(login);
 
+
+   /*
     if (_registerModeRadioValue == 0) {
       // phone number
       mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
     } else if (_registerModeRadioValue == 1) {
       // email...
-      /* if email, tell customer that the message could hide into the spams. */
+      *//* if email, tell customer that the message could hide into the spams. *//*
       // mailbox
       mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
-    }
+    }*/
   }
 
   void mDialog(String message) {
@@ -532,6 +534,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _saveRequestParams(login, requestId).then((value) {
       _retrieveRequestParams();
     });
+
+    // inform the client to remain patient until he gets the code
+    if (_registerModeRadioValue == 0) {
+      // phone number
+      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
+    } else if (_registerModeRadioValue == 1) {
+      // email...
+      /* if email, tell customer that the message could hide into the spams. */
+      // mailbox
+      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
+    }
   }
 
   @override

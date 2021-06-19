@@ -25,4 +25,7 @@ class ImageAssets {
  static final String choice = "assets/images/png/choice.png";
  static final String enjoy = "assets/images/png/enjoy.png";
 
+ // dialog icons
+ static final String diaspora = "assets/images/png/diaspora.png";
+
 }

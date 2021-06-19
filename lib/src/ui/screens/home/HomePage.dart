@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("${AppLocalizations.of(context).translate(
-                  'info')}"),
+                  'welcome')}"),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -171,12 +171,33 @@ class _HomePageState extends State<HomePage> {
                     // location_permission
                     Container(
                         height: 100, width: 100,
-                        child: Icon(Icons.info, color: KColors.primaryColor, size: 100,)
+                        child: Image.asset(
+                          ImageAssets.diaspora,
+                          height: 100.0,
+                          width: 100.0,
+                          alignment: Alignment.center,
+                        )
                     ),
                     SizedBox(height: 10),
                     Text("${AppLocalizations.of(context).translate(
-                        "congrats_for_email_account")}",
+                        "congrats_for_email_account")} 😊",style: TextStyle(fontSize: 14),
                         textAlign: TextAlign.center)
+          /*      RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: '${AppLocalizations.of(context).translate("congrats_for_email_account")}',
+                      ),
+                      TextSpan(
+                        text: '😊', // emoji characters
+                        // style: TextStyle(
+                        //   fontFamily: 'EmojiOne',
+                        // ),
+                      ),
+                    ],
+                  ),
+                )*/
+
                   ],
                 ),
               ),

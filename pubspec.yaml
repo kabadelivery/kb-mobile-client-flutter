@@ -147,6 +147,7 @@ flutter:
     - assets/images/png/address.png
     - assets/images/png/choice.png
     - assets/images/png/enjoy.png
+    - assets/images/png/diaspora.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg
