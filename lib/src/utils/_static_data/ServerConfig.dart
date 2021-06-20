@@ -22,6 +22,6 @@ static String TOPIC = "kaba_delivery_all";
   static String IOS_APP_LINK = "https://apps.apple.com/us/app/kaba/id1513025430";
   static String ANDROID_APP_LINK = "https://play.google.com/store/apps/details?id=tg.tmye.kaba.brave.one";
 
-  static String SHARED_PREF_FIRST_TIME_IN_APP = "_first_time_";
+  static String SHARED_PREF_FIRST_TIME_IN_APP = "_first_time_19062021";
 }
 

@@ -509,7 +509,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         isAccountRegistering = true;
       });
 
-      String whatsapp_number = "${countryDialCode?.dialCode?.substring(1)}${_whatsappPhonenumberController.text}"; // append entered phone number
+      String whatsapp_number = "${countryDialCode?.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
 
       xrint("whatsappNo ${whatsapp_number}");
 
