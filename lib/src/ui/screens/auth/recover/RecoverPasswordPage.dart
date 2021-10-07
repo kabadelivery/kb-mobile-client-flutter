@@ -37,7 +37,6 @@ class RecoverPasswordPage extends StatefulWidget {
 
 class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements RecoverPasswordView {
 
-
   List<String> recoverModeHints = [""];
 
   String _loginFieldHint = "";

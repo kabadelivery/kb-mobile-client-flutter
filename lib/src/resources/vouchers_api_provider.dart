@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
@@ -16,7 +20,8 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class VoucherApiProvider {
 
-  Client client = Client();
+
+
 
   loadVouchers({CustomerModel customer, int restaurantId = -1, List<int> foodsId, bool pick = false}) async {
 /*
@@ -28,18 +33,39 @@ class VoucherApiProvider {
 */
     xrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
-      final response = await client
-          .post(Uri.parse(restaurantId == -1 ? ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER),
+
+
+     /* final response = await client
+          .post(Uri.parse(restaurantId == -1 ?
+      ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER),
           body: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
-      String resp = response.body.toString();
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+
+      var response = await dio.post(Uri.parse(restaurantId == -1 ?
+      ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER).toString(),
+          data: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}));
+
+
+     xrint(response.data);
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"];
+          Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null) {
             return [];
           } else {
@@ -61,20 +87,39 @@ class VoucherApiProvider {
       {bool isQrCode = false}) async {
     xrint("entered subscribeVoucher");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS),
           body: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
             "code": "${promoCode}"
           }),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS).toString(),
+          data: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
+            "code": "${promoCode}"
+          }));
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          // rfeturn voucher , with instance of .
-          return VoucherModel.fromJson(json.decode(response.body)["data"]);
+          // return voucher , with instance of .
+          return VoucherModel.fromJson(mJsonDecode(response.data)["data"]);
         } else {
           // -1, -2,
           return errorCode;

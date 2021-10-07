@@ -9,6 +9,7 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,7 +66,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       if (pageJson != null) {
         try {
           HomeScreenModel _model = HomeScreenModel.fromJson(
-              json.decode(pageJson)["data"]);
+              mJsonDecode(pageJson)["data"]);
           _homeWelcomeView.updateHomeWelcomePage(_model);
         } catch (e) {
           xrint(e);
@@ -75,10 +76,10 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
       try {
         // save it to the shared preferences
-        String _dataResponse = await provider.fetchHomeScreenModel();
-        _model = HomeScreenModel.fromJson(json.decode(_dataResponse)["data"]);
+        Map<String, dynamic> _dataResponse = await provider.fetchHomeScreenModel();
+        _model = HomeScreenModel.fromJson(_dataResponse["data"]);
         _homeWelcomeView.updateHomeWelcomePage(_model);
-        CustomerUtils.saveWelcomePage(_dataResponse);
+        CustomerUtils.saveWelcomePage(json.encode(_dataResponse));
       } catch(_) {
         if (_ == -2) {
           _homeWelcomeView.networkError();
@@ -102,7 +103,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
         login: login, password: password);
     try {
       xrint(jsonContent);
-      var obj = json.decode(jsonContent);
+      var obj = mJsonDecode(jsonContent);
       int error = obj["error"];
       String token = obj["data"]["payload"]["token"];
       String message = obj["message"];
@@ -135,7 +136,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
         _homeWelcomeView.tokenUpdateSuccessfully();
       }
     } catch (_) {
-      xrint(_);
+      xrint("============================= ERRRRROOOORRR ====================${_}");
     }
     return null;
   }

@@ -25,4 +25,5 @@ class DeliveryTimeFrameModel {
         "end": end,
       };
 
+  // 1300 , 1500
 }

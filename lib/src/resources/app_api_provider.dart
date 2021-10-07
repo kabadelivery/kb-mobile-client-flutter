@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
@@ -17,23 +20,41 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 
+import 'package:http/http.dart';
 
 class AppApiProvider {
 
-  Client client = Client();
 
-
-  Future<String> fetchHomeScreenModel() async {
+  Future<dynamic> fetchHomeScreenModel() async {
     xrint("entered fetchHomeScreenModel");
     if (await Utils.hasNetwork()) {
+
+/*
       final response = await client
           .get(Uri.parse(ServerRoutes.LINK_HOME_PAGE),
-          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_HOME_PAGE).toString(),
+        data:  json.encode({}),
+      );
+
+     xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0)
-          return response.body;
+          return response.data;
         else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -47,17 +68,35 @@ class AppApiProvider {
   Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel model, Position position) async {
     xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
           body: position == null ? "" : json.encode(
               {"location": "${position?.latitude}:${position?.longitude}"}),
-          // headers: Utils.getHeaders()).timeout(const Duration(seconds: 30)
+      );*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2).toString(),
+        data: position == null ? "" : json.encode(
+            {"location": "${position?.latitude}:${position?.longitude}"}),
       );
-     xrint(response.body.toString());
+
+     xrint(response.data);
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"]["resto"];
+          Iterable lo = mJsonDecode(response.data)["data"]["resto"];
           List<RestaurantModel> resto = lo?.map((resto) =>
               RestaurantModel.fromJson(resto))?.toList();
           return resto;
@@ -77,20 +116,43 @@ class AppApiProvider {
   Future<DeliveryAddressModel> checkLocationDetails(CustomerModel customer, Position position) async {
     xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS),
           body: position == null ? "" : json.encode(
               {"coordinates": "${position.latitude}:${position.longitude}"}),
           headers: Utils.getHeadersWithToken(customer.token)).timeout(
-          const Duration(seconds: 30));
-     xrint(response.body.toString());
+          const Duration(seconds: 30));*/
+
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS).toString(),
+        data: position == null ? "" : json.encode(
+            {"coordinates": "${position.latitude}:${position.longitude}"}),
+      );
+
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String description_details = json.decode(
-              response.body)["data"]["display_name"];
+          String description_details = mJsonDecode(
+              response.data)["data"]["display_name"];
           String quartier = DeliveryAddressModel
-              .fromJson(json.decode(response.body)["data"]["address"]).suburb;
+              .fromJson(mJsonDecode(response.data)["data"]["address"]).suburb;
           /* return only the content we need */
           DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(
               description: description_details, quartier: quartier);
@@ -112,16 +174,34 @@ class AppApiProvider {
     /* get the events and show it */
     xrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
-      final response = await client
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_EVENEMENTS_LIST)).timeout(
           const Duration(seconds: 30));
+*/
 
-     xrint(response.body.toString());
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_EVENEMENTS_LIST).toString(),
+        data:  json.encode({}),
+      );
+
+
+     xrint(response.data.toString());
 
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"];
+          Iterable lo = mJsonDecode(response.data)["data"];
           List<EvenementModel> restaurantSubModel = lo?.map((comment) =>
               EvenementModel.fromJson(comment))?.toList();
           return restaurantSubModel;
@@ -185,14 +265,36 @@ class AppApiProvider {
     }
 
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_REGISTER_PUSH_TOKEN), body: _data,
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_REGISTER_PUSH_TOKEN).toString(),
+        data: _data,
+      );
+
+
+      xrint(response.data.toString());
 
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         return errorCode;
       }
       else
@@ -203,13 +305,32 @@ class AppApiProvider {
   checkUnreadMessages(customer) async {
 //
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
           headers: Utils.getHeadersWithToken(customer.token))
           .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+      */
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        bool data = json.decode(response.body)["data"];
+        bool data = mJsonDecode(response.data)["data"];
         return data;
       }
       else
@@ -248,14 +369,33 @@ class AppApiProvider {
   fetchFoodFromRestaurantByName(String desc) async {
 
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
           body: {"desc":"${desc == null ? "" : desc}"}
       )
-          .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES).toString(),
+        data: json.encode( {"desc":"${desc == null ? "" : desc}"}),
+      );
+
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        bool data = json.decode(response.body)["data"];
+        bool data = mJsonDecode(response.data)["data"];
         return data;
       }
       else
@@ -267,18 +407,37 @@ class AppApiProvider {
 
   checkVersion() async {
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+   /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_APP_VERSION)
       )
-          .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_APP_VERSION).toString(),
+      );
+
+
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        String version = json.decode(response.body)["version"];
-        int is_required = int.parse("${json.decode(response.body)["isRequired"]}");
+        String version = mJsonDecode(response.data)["version"];
+        int is_required = int.parse("${mJsonDecode(response.data)["isRequired"]}");
         Map res = Map();
         res["version"] = version;
         res["is_required"] = is_required;
-        res["changeLog"] = json.decode(response.body)["changeLog"];
+        res["changeLog"] = mJsonDecode(response.data)["changeLog"];
         return res;
       }
       else
@@ -293,17 +452,37 @@ class AppApiProvider {
 
     xrint("entered checkBalance vHomePage");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
-          .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_BALANCE).toString(),
+        data:  json.encode({}),
+      );
+
+     xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String balance = json.decode(response.body)["data"]["balance"];
+          String balance = mJsonDecode(response.data)["data"]["balance"];
           return balance;
         } else
           throw Exception(-1); // there is an error in your request
@@ -320,17 +499,37 @@ class AppApiProvider {
 
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
       )
           .timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+     */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.GET_KABA_POINTS).toString(),
+        data:  json.encode({}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          int kabaPoints = json.decode(response.body)["total_kaba_point"]/*["balance"]*/;
+          int kabaPoints = mJsonDecode(response.data)["total_kaba_point"]/*["balance"]*/;
 
           return "${kabaPoints}";
         } else

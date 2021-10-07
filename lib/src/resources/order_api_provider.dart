@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
@@ -20,7 +23,6 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class OrderApiProvider {
 
-  Client client = Client();
 
   Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher) async {
 
@@ -36,16 +38,31 @@ class OrderApiProvider {
 
      xrint(_data.toString());
 
-      final response = await client
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING),
           body:  _data,
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 30));
+*/
+      var dio = Dio();
+      dio.options
+      ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG).toString(),
+        data: _data);
 
-     xrint(response.body.toString());
+     xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return OrderBillConfiguration.fromJson(json.decode(response.body)["data"]);
+        return OrderBillConfiguration.fromJson(mJsonDecode(response.data)["data"]);
       } else {
         xrint("computeBilling error ${response.statusCode}");
         throw Exception(-1); // there is an error in your request
@@ -112,20 +129,35 @@ class OrderApiProvider {
 
      xrint("000 _ "+_data.toString());
 
-      final response = await client
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CREATE_COMMAND),
           body:  _data,
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 90));
+          .timeout(const Duration(seconds: 90));*/
 
-     xrint("001 _ "+response.body.toString());
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 90000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
+          data: _data);
+
+
+     xrint("001 _ "+response.data.toString());
       xrint("002 _status code  "+response.statusCode.toString());
-
 
       if (response.statusCode == 200) {
         // if ok, send true or false
-        return json.decode(response.body)["error"];
+        return mJsonDecode(response.data)["error"];
       } else
         throw Exception(-1); // there is an error in your request
     } else {
@@ -138,16 +170,33 @@ class OrderApiProvider {
     xrint("entered loadOrderFromId");
     if (await Utils.hasNetwork()) {
 
-      final response = await client
+   /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS),
           body:  json.encode({"command_id": orderId}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 30));
-String content = response.body.toString();
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS).toString(),
+          data:  json.encode({"command_id": orderId}));
+
+
+String content = response.data.toString();
      xrint(content);
       if (response.statusCode == 200) {
-        return CommandModel.fromJson(json.decode(response.body)["data"]["command"]);
+        return CommandModel.fromJson(mJsonDecode(response.data)["data"]["command"]);
       } else
         throw Exception(-1); // there is an error in your request
     } else {
@@ -159,14 +208,33 @@ String content = response.body.toString();
 
     xrint("entered checkOpeningStateOfRestaurant");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN),
           body:  json.encode({"restaurant_id": restaurant.id}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       ).timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_CHECK_RESTAURANT_IS_OPEN).toString(),
+          data: json.encode({"restaurant_id": restaurant.id}));
+
+     xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else
         throw Exception(-1); // there is an error in your request
     } else {
@@ -182,14 +250,35 @@ String content = response.body.toString();
 
     xrint("entered sendFeedback");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SEND_ORDER_FEEDBACK),
           body:  json.encode({"command_id": orderId, "rate": rating, "comment" : message}),
-          headers: Utils.getHeadersWithToken(customer.token)
-      ).timeout(const Duration(seconds: 30));
-     xrint(response.body.toString());
+          headers: Utils.getHeadersWithToken(customer?.token)
+      ).timeout(const Duration(seconds: 30));*/
+
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_SEND_ORDER_FEEDBACK).toString(),
+          data: json.encode({"command_id": orderId, "rate": rating, "comment" : message}));
+
+
+     xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return json.decode(response.body)["error"];
+        return mJsonDecode(response.data)["error"];
       } else
         throw Exception(-1); // there is an error in your request
     } else {
@@ -253,15 +342,32 @@ String content = response.body.toString();
 
      xrint("000 _ "+_data.toString());
 
-      final response = await client
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CREATE_COMMAND),
           body:  _data,
-          headers: Utils.getHeadersWithToken(customer.token))
-          .timeout(const Duration(seconds: 90));
-     xrint("001 _ "+response.body.toString());
+          headers: Utils.getHeadersWithToken(customer?.token))
+          .timeout(const Duration(seconds: 90));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 90000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
+          data: _data);
+
+      xrint("001 _ "+response.data.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false
-        return json.decode(response.body)["error"];
+        return mJsonDecode(response.data)["error"];
       } else
         throw Exception(-1); // there is an error in your request
     } else {

@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 
-xrint (String message,{bool debug = false}){
+xrint (dynamic message,{bool debug = true}){
   if (debug){
     debugPrint("${message}");
   }

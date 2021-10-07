@@ -52,7 +52,7 @@
   "events": "活动 ！",
   "try_again": "重试",
   "home_page_loading_error": "对不起，首页加载出现错误。请检查您的网络并重试",
-  "error_message": "系统错误",
+  "error_message": "系统错误。请联系客服",
   "new": "新开店",
   "promo": "活动中",
   "find_menu_or_restaurant": "找饭店吗？菜单吗？",
@@ -391,7 +391,11 @@
   "restaurant_closed": "饭店已关门",
   "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝",
 
-  "welcome": "欢迎"
+  "welcome": "欢迎",
+
+  "permission_": "权限",
+  "request_location_activation_permission" : "请开启您的位置以获得更好的服务体验",
+  "request_location_permission" : "请激活许可位置以获得更好的服务体验"
 
 
 }

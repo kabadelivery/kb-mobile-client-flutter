@@ -457,7 +457,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: new AssetImage(ImageAssets.location_permission),
+                              image: new AssetImage(ImageAssets.address),
                             )
                         )
                     ),
@@ -492,18 +492,165 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         // permission has been accepted
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.deniedForever) {
-          await Geolocator.openAppSettings();
+
+          /*  ---- */
+          // await Geolocator.openAppSettings();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height:100, width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(ImageAssets.address),
+                              )
+                          )
+                      ),
+                      SizedBox(height:10),
+                      Text("${AppLocalizations.of(context).translate('request_location_permission')}", textAlign: TextAlign.center)
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text("${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.openAppSettings();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
         } else if (permission == LocationPermission.denied) {
-          Geolocator.requestPermission();
+          /* ---- */
+          // Geolocator.requestPermission();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height:100, width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(ImageAssets.address),
+                              )
+                          )
+                      ),
+                      SizedBox(height:10),
+                      Text("${AppLocalizations.of(context).translate('request_location_permission')}", textAlign: TextAlign.center)
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text("${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      Geolocator.requestPermission();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
         } else {
           // location is enabled
           bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
-            await Geolocator.openLocationSettings();
+            /*  ---- */
+            // await Geolocator.openLocationSettings();
+            /* ---- */
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        /* add an image*/
+                        // location_permission
+                        Container(
+                            height:100, width: 100,
+                            decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: new AssetImage(ImageAssets.location_permission),
+                                )
+                            )
+                        ),
+                        SizedBox(height:10),
+                        Text("${AppLocalizations.of(context).translate('request_location_activation_permission')}", textAlign: TextAlign.center)
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text("${AppLocalizations.of(context).translate('refuse')}"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text("${AppLocalizations.of(context).translate('accept')}"),
+                      onPressed: () async {
+                        /* */
+                        await Geolocator.openLocationSettings();
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+            /* ---- */
           } else {
             positionStream = Geolocator.getPositionStream().listen(
                     (Position position) {
-
                   tmpLocation = StateContainer.of(widget.context).location;
                   if (position?.latitude != null && tmpLocation?.latitude != null &&
                       (position.latitude*10000).round() == (tmpLocation.latitude*10000).round() &&

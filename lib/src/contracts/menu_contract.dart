@@ -61,7 +61,7 @@ class MenuPresenter implements MenuContract {
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */
-      xrint("error ${_}");
+      xrint("error ${_.toString()}");
       if (_ == -2) {
         _menuView.systemError();
       } else {

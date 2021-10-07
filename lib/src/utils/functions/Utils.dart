@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:KABA/src/xrint.dart';
-import 'package:flutter/material.dart';
+
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/xrint.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 
@@ -18,6 +21,14 @@ int hexToInt(String code) {
 int mHexToInt(String code) {
 // return BigInt.parse(strip0x(code), radix: 16);
   return int.parse(code);
+}
+
+mJsonDecode(dynamic source){
+  if (source.runtimeType is String){
+    return json.decode(source);
+  } else {
+    return source;
+  }
 }
 
 class Utils {
@@ -35,17 +46,24 @@ class Utils {
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
-
     headers["Authorization"] = "Bearer " + token;
-
     return headers;
   }
 
-  static inflateLink(var link) {
-    if (link != null)
-      return ServerConfig.SERVER_ADDRESS + "/" + link;
-    else
-      return ServerConfig.SERVER_ADDRESS+"/"+ "default_pic/kaba_red_rectangle.png";
+  static Map<String, String> getDioHeadersWithToken(String token) {
+    return {
+      "Authorization": "Bearer " + token,
+      "cache-control" : "no-cache",
+      Headers.contentTypeHeader: Headers.jsonContentType,
+    };
+  }
+
+  static inflateLink(String link) {
+    if (link != null) {
+      String slash = (link.length > 0 && link.indexOf("/") == 0) ? "" : "/";
+      return ServerConfig.UNSECURE_SERVER_ADDRESS + slash +link;
+    } else
+      return ServerConfig.UNSECURE_SERVER_ADDRESS+"/default_pic/kaba_red_rectangle.png";
   }
 
   static Future hasNetwork() async {

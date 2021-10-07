@@ -53,7 +53,7 @@
   "events": "BONS PLANS !",
   "try_again": "RÉESSAYEZ",
   "home_page_loading_error": "Désolé, il s'est produit une erreur sur la page d'accueil. Veuillez vérifier votre connexion internet et réessayez !",
-  "error_message": "Message d'Erreur",
+  "error_message": "Le système a rencontré un problème. Veuillez contacter le service client si celà persiste. Merci",
   "new": "NOUVEAU",
   "promo": "PROMO",
   "find_menu_or_restaurant": "Cherchez-vous un Restaurant? Menu ?",
@@ -395,8 +395,11 @@
   "restaurant_in_break": "Restaurant en pause",
   "restaurant_closed": "Restaurant fermé",
   "reason_beyond_control": "Votre commande a été rejetée pour des raisons indépendantes de notre volonté",
-  "welcome": "Bienvenue"
+  "welcome": "Bienvenue",
 
+  "permission_": "Permission",
+  "request_location_activation_permission" : "Veuillez activer votre localisation pour un meilleur service",
+  "request_location_permission" : "Veuillez activer votre localisation pour un meilleur service"
 
 
 }

@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
 import 'package:KABA/src/models/CommentModel.dart';
@@ -19,7 +22,6 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class ClientPersonalApiProvider {
 
-  Client client = Client();
 
   var TGO = "228";
 
@@ -29,17 +31,37 @@ class ClientPersonalApiProvider {
   fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     xrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS),
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(userToken?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS).toString(),
+        data: json.encode({'restaurant_id': restaurantModel.id.toString()}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String stars = json.decode(response.body)["data"]["stars"];
-          String votes = json.decode(response.body)["data"]["votes"];
-          Iterable lo = json.decode(response.body)["data"]["comments"];
+          String stars = mJsonDecode(response.data)["data"]["stars"];
+          String votes = mJsonDecode(response.data)["data"]["votes"];
+          Iterable lo = mJsonDecode(response.data)["data"]["comments"];
           List<CommentModel> comments = lo?.map((comment) => CommentModel.fromJson(comment))?.toList();
 
           Map<String, dynamic> res = Map();
@@ -64,14 +86,33 @@ class ClientPersonalApiProvider {
   Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) async {
     xrint("entered fetchMyAddresses");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+   /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_ADRESSES),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+*/
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(userToken.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_ADRESSES).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"]["adresses"];
+          Iterable lo = mJsonDecode(response.data)["data"]["adresses"];
           List<DeliveryAddressModel> addresses = lo?.map((address) => DeliveryAddressModel.fromJson(address))?.toList();
           return addresses;
         } else
@@ -89,16 +130,36 @@ class ClientPersonalApiProvider {
     xrint("entered registerSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS),
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS).toString(),
+        data:  Utils.isEmailValid(login) ?
+        json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -113,14 +174,33 @@ class ClientPersonalApiProvider {
     xrint("entered checkRequestCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_VERIFCATION_CODE),
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));
+      */
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_VERIFCATION_CODE).toString(),
+        data: json.encode({"code": code, "request_id": requestId})
+      );
+
       xrint(json.encode({"code": code, "request_id": requestId}));
-      xrint(response.body.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -134,13 +214,32 @@ class ClientPersonalApiProvider {
     xrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_USER_REGISTER),
           body: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
+        data: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0})
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -214,12 +313,30 @@ class ClientPersonalApiProvider {
         };
       }
 
-      final response = await client
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2),
         body:  json.encode({"username": login, "password":password, 'device':device }),
       ).timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
-      return response.body.toString();
+      */
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString(),
+          data: json.encode({"username": login, "password":password, 'device':device }),
+      );
+
+
+      xrint(response.data.toString());
+      return response.data.toString();
     } else {
       throw Exception(-2); // there is an error in your request
     }
@@ -234,16 +351,35 @@ class ClientPersonalApiProvider {
       var _data = json.encode({'nickname':customer.nickname, 'whatsapp_number': customer.whatsapp_number, 'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
       if (customer.profile_picture != null)
         _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'whatsapp_number': customer.whatsapp_number, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
-      final response = await client
+
+     /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS),
           body: _data,
-          headers: Utils.getHeadersWithToken(customer.token)).timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+          headers: Utils.getHeadersWithToken(customer?.token)).timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS).toString(),
+        data:  _data,
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           /* return resulting customer that has to be saved in the shared preferences again. */
-          var obj = json.decode(response.body);
+          var obj = mJsonDecode(response.data);
           customer = CustomerModel.fromJson(obj["data"]);
           return customer;
         } else
@@ -263,17 +399,37 @@ class ClientPersonalApiProvider {
 
     xrint("entered fetchLastTransactions");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY),
           body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 60));
-      xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 60000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = json.decode(response.body)["data"];
+          Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null || lo.isEmpty || lo.length == 0)
             return List<TransactionModel>();
           List<TransactionModel> transactionModel = lo?.map((command) => TransactionModel.fromJson(command))?.toList();
@@ -292,17 +448,37 @@ class ClientPersonalApiProvider {
 
     xrint("entered checkBalance");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
           body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 60));
-      xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 60000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_BALANCE).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String balance = json.decode(response.body)["data"]["balance"];
+          String balance = mJsonDecode(response.data)["data"]["balance"];
           return balance;
         } else
           throw Exception(-1); // there is an error in your request
@@ -318,17 +494,35 @@ class ClientPersonalApiProvider {
 
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
-      final response = await client
+    /*  final response = await client
           .post(Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ),
           body: json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ).toString(),
+        data:  json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String link = json.decode(response.body)["data"]["url"];
+          String link = mJsonDecode(response.data)["data"]["url"];
           return link;
         } else
           throw Exception(-1); // there is an error in your request
@@ -343,16 +537,36 @@ class ClientPersonalApiProvider {
   launchPayDunya(CustomerModel customer, String balance, int fees) async {
     xrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_TOPUP_PAYDUNYA),
           body: json.encode({"amount": balance, 'fees':'$fees'}),
-          headers: Utils.getHeadersWithToken(customer.token))
+          headers: Utils.getHeadersWithToken(customer?.token))
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+      */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_TOPUP_PAYDUNYA).toString(),
+        data: json.encode({"amount": balance, 'fees':'$fees'}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String link = json.decode(response.body)["data"]["url"];
+          String link = mJsonDecode(response.data)["data"]["url"];
           return link;
         } else
           throw Exception(-1); // there is an error in your request
@@ -369,23 +583,43 @@ class ClientPersonalApiProvider {
 
     xrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_USER_ACCOUNT),
           body: json.encode({"username": username}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+    */
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_USER_ACCOUNT).toString(),
+        data: json.encode({"username": username}),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == -2) {
           return null;
         } else {
           CustomerModel customer = new CustomerModel();
-          customer.id = json.decode(response.body)["data"]["id"];
-          customer.nickname = json.decode(response.body)["data"]["username"];
-          customer.phone_number = json.decode(response.body)["data"]["phone_number"];
-          customer.profile_picture = json.decode(response.body)["data"]["pic"];
+          customer.id = mJsonDecode(response.data)["data"]["id"];
+          customer.nickname = mJsonDecode(response.data)["data"]["username"];
+          customer.phone_number = mJsonDecode(response.data)["data"]["phone_number"];
+          customer.profile_picture = mJsonDecode(response.data)["data"]["pic"];
           return customer;
         }
       }
@@ -401,23 +635,43 @@ class ClientPersonalApiProvider {
 
     xrint("entered launchTransferMoneyAction");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MONEY_TRANSFER),
           body: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+      */
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_MONEY_TRANSFER).toString(),
+        data: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
+      );
+
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         Map res = Map();
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         res.putIfAbsent("errorCode", ()=> errorCode);
         if (errorCode == 0) {
-          CustomerModel customer = CustomerModel.fromJson(json.decode(response.body)["data"]["customer"]);
+          CustomerModel customer = CustomerModel.fromJson(mJsonDecode(response.data)["data"]["customer"]);
           res.putIfAbsent("customer", ()=>customer);
-          res.putIfAbsent("statut", ()=>json.decode(response.body)["data"]["statut"]);
-          res.putIfAbsent("amount", ()=>json.decode(response.body)["data"]["amount"]);
-          res.putIfAbsent("balance", ()=>json.decode(response.body)["data"]["balance"]);
+          res.putIfAbsent("statut", ()=>mJsonDecode(response.data)["data"]["statut"]);
+          res.putIfAbsent("amount", ()=>mJsonDecode(response.data)["data"]["amount"]);
+          res.putIfAbsent("balance", ()=>mJsonDecode(response.data)["data"]["balance"]);
         }
         return res;
       }
@@ -433,21 +687,39 @@ class ClientPersonalApiProvider {
 
     xrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
           .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+*/
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2).toString(),
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         // check the fees, if an error during this process, throw error no pb
-//        int fees_flooz = json.decode(response.body)["data"]["fees_flooz"];
-//        int fees_tmoney = json.decode(response.body)["data"]["fees_tmoney"];
-//        int fees_bankcard = json.decode(response.body)["data"]["fees_bankcard"];
+//        int fees_flooz = mJsonDecode(response.body)["data"]["fees_flooz"];
+//        int fees_tmoney = mJsonDecode(response.body)["data"]["fees_tmoney"];
+//        int fees_bankcard = mJsonDecode(response.body)["data"]["fees_bankcard"];
         /* if (fees > 0)
           return fees;
         return 10;*/
-        return json.decode(response.body)["data"];
+        return mJsonDecode(response.data)["data"];
       }
       else {
         throw Exception(response.statusCode); // you have no right to do this
@@ -461,17 +733,35 @@ class ClientPersonalApiProvider {
     xrint("entered recoverPasswordSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-      final response = await client
-//          .post(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS,
+   /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS),
           body:
           Utils.isEmailValid(login) ?
           json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       )
-          .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS).toString(),
+        data: Utils.isEmailValid(login) ?
+        json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
+      );
+
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -485,15 +775,32 @@ class ClientPersonalApiProvider {
     /*  */
     xrint("entered checkRecoverPasswordRequestCodeAction");
     if (await Utils.hasNetwork()) {
-//      await Future.delayed(const Duration(seconds: 1));
-      final response = await client
+
+    /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE),
           body: json.encode({"code": code, "request_id": requestId}))
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 60));*/
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 60000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE).toString(),
+          data: json.encode({"code": code, "request_id": requestId})
+      );
+
       xrint(json.encode({"code": code, "request_id": requestId}));
-      xrint(response.body.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -506,18 +813,35 @@ class ClientPersonalApiProvider {
 
     xrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
-      final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_PASSWORD_RESET),
-          body:
 
-          Utils.isEmailValid(login) ?
+    /*  final response = await client
+          .post(Uri.parse(ServerRoutes.LINK_PASSWORD_RESET),
+          body: Utils.isEmailValid(login) ?
           json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
           json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
+          .timeout(const Duration(seconds: 60));*/
 
-          .timeout(const Duration(seconds: 60));
-      xrint(response.body.toString());
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 60000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_PASSWORD_RESET).toString(),
+          data: Utils.isEmailValid(login) ?
+          json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
+          json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"})
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        return response.body;
+        return response.data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -531,17 +855,36 @@ class ClientPersonalApiProvider {
 
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
-      final response = await client
+
+      /*final response = await client
           .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
           body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer.token)
+          headers: Utils.getHeadersWithToken(customer?.token)
       )
-          .timeout(const Duration(seconds: 30));
-      xrint(response.body.toString());
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.GET_KABA_POINTS).toString(),
+        data: json.encode({})
+      );
+
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
-        int errorCode = json.decode(response.body)["error"];
+        int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          int kabaPoints = json.decode(response.body)["total_kaba_point"]/*["balance"]*/;
+          int kabaPoints = mJsonDecode(response.data)["total_kaba_point"]/*["balance"]*/;
           return "${kabaPoints}";
         } else
           throw Exception(-1); // there is an error in your request

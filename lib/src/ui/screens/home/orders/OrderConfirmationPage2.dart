@@ -967,7 +967,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
 
     DeliveryTimeFrameModel selectedFrame;
 
-    // if there is no choosen timerange then error with toast
+    // if there is no choosen time range then error with toast
     if (widget.orderTimeRangeSelected >= 0 && widget.orderTimeRangeSelected < _orderBillConfiguration.deliveryFrames?.length)
       selectedFrame = _orderBillConfiguration.deliveryFrames[widget.orderTimeRangeSelected];
     else {

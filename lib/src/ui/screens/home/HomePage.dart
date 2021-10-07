@@ -415,16 +415,20 @@ class _HomePageState extends State<HomePage> {
       // if (StateContainer
       //     .of(context)
       //     .loggingState == 1) {
-      _firebaseMessaging.getInitialMessage().then((initialMessage) {
-        if (initialMessage != null) {
-          _firebaseMessagingOpenedAppHandler(initialMessage);
-        } else {
-          FirebaseMessaging.onBackgroundMessage(
-              _firebaseMessagingBackgroundHandler);
-          FirebaseMessaging.onMessageOpenedApp.listen(
-              _firebaseMessagingOpenedAppHandler);
-        }
-      });
+      try {
+        _firebaseMessaging.getInitialMessage().then((initialMessage) {
+          if (initialMessage != null) {
+            _firebaseMessagingOpenedAppHandler(initialMessage);
+          } else {
+            FirebaseMessaging.onBackgroundMessage(
+                _firebaseMessagingBackgroundHandler);
+            FirebaseMessaging.onMessageOpenedApp.listen(
+                _firebaseMessagingOpenedAppHandler);
+          }
+        });
+      } catch(_) {
+        xrint("===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
+      }
       // }
 
       loginStuffChecked  = 1;
