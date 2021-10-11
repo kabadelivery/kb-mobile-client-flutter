@@ -209,7 +209,7 @@ class ClientPersonalApiProvider {
     }
   }
 
-  Future<String> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id, String whatsapp_number}) async {
+  Future<dynamic> registerCreateAccountAction({String nickname, String password, String phone_number="", String email="", String request_id, String whatsapp_number}) async {
 
     xrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
@@ -522,8 +522,9 @@ class ClientPersonalApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          String link = mJsonDecode(response.data)["data"]["url"];
-          return link;
+          // String link = mJsonDecode(response.data)["data"]["url"];
+          // return link;
+          return response.data;
         } else
           throw Exception(-1); // there is an error in your request
       } else {

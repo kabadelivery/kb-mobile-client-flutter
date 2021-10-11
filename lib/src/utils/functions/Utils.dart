@@ -23,8 +23,8 @@ int mHexToInt(String code) {
   return int.parse(code);
 }
 
-mJsonDecode(dynamic source){
-  if (source.runtimeType is String){
+mJsonDecode(var source){
+  if (source is String){
     return json.decode(source);
   } else {
     return source;

@@ -4,6 +4,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:KABA/src/TestPage.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
@@ -12,6 +13,7 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
@@ -101,12 +103,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
+
+    StateContainer.of(context);
 
     // precache logo of the splashPage
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
@@ -212,6 +214,7 @@ class _MyAppState extends State<MyApp> {
             home: SplashPage(),
           // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
+//           home: MyAddressesPage(presenter: AddressPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,

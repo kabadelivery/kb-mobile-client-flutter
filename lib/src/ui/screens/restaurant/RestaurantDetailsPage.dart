@@ -1,16 +1,19 @@
 import 'dart:async';
 
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_review_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/ReviewRestaurantPage.dart';
@@ -190,16 +193,19 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
 //                        SizedBox(height: 10),
                       SizedBox(height:20),
                       /* rounded image - */
-                      Container(
-                          height:90, width: 90,
-                          decoration: BoxDecoration(
-                              border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurant?.pic))
-                              )
-                          )
+                      InkWell(
+                        onTap: ()=> _seeProfilePicture(widget?.restaurant?.pic),
+                        child: Container(
+                            height:90, width: 90,
+                            decoration: BoxDecoration(
+                                border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurant?.pic))
+                                )
+                            )
+                        ),
                       ),
                       SizedBox(height:20),
                       /* see the menu entry */
@@ -604,8 +610,25 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         _reviewRestaurant();
       });
     }
-
   }
 
+
+  _seeProfilePicture(String imageLink) {
+
+    List<AdModel> slider = [AdModel(pic:"${imageLink}")];
+
+    Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            AdsPreviewPage(data: slider, position:0, presenter: AdsViewerPresenter()),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+  }
 
 }

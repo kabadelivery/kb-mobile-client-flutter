@@ -143,7 +143,17 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                             Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
                                           ],
                                         ),
-                                        Text("-${widget.voucher.value}${widget.voucher.category == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+                                       widget.voucher.category == 1 ?
+                                       Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+                                           :
+                                       /* superposing two stuffs */
+                                       Column(
+                                         children: [
+                                           Text("-${widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor)),
+                                           Container(width:40, height: 3, color: Colors.white),
+                                           Text("-${widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor)),
+                                         ],
+                                       )
                                       ]
                                   ),
                                   SizedBox(height: 10),

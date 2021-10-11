@@ -189,6 +189,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       setState(() {
         _selectedAddress = results['selection'];
       });
+      /* update / refresh this page */
+      this.widget.presenter.orderConfirmationView = this;
+      CustomerUtils.getCustomer().then((customer) {
+        widget.customer = customer;
+      });
       // launch request for retrieving the delivery prices and so on.
       widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
       showLoading(true);
@@ -1748,6 +1753,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       });
 
       if (_selectedAddress != null) {
+        this.widget.presenter.orderConfirmationView = this;
+        CustomerUtils.getCustomer().then((customer) {
+          widget.customer = customer;
+        });
         widget.presenter.computeBilling(
             widget.restaurant, widget.customer, widget.foods, _selectedAddress,
             _selectedVoucher);
@@ -1829,6 +1838,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                 child: IconButton(icon: Icon(Icons.delete_forever, color: Colors.white, size: 20), onPressed: (){
                   setState(() {
                     _selectedVoucher = null;
+                  });
+                  this.widget.presenter.orderConfirmationView = this;
+                  CustomerUtils.getCustomer().then((customer) {
+                    widget.customer = customer;
                   });
                   // launch request for retrieving the delivery prices and so on.
                   if (_selectedAddress != null) {

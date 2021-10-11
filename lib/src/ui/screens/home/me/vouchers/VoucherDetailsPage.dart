@@ -114,31 +114,36 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   /* details du restaurant */
                   SizedBox(height: 20),
                   Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
-                  Column(
+                  widget.voucher?.description == null ? Container() : Column(
                     children: <Widget>[
                       SizedBox(height: 10),
-                      widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
-                      Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
-                          :
-                      Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
-                      /* start a mini food list .. */
-//                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
-                      //  _miniFoodWidget(RestaurantFoodModel.randomFood())
-                    ]..add(InkWell(onTap: (){setState(() {
-                      widget.food_see_more = true;
-                    });},
-                      child: Container(margin: EdgeInsets.only(top:10),
-                        child: Text(
-                          "${_miniFoodsText(widget?.voucher?.products)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: KColors.primaryYellowColor, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ))
-                    /*..addAll(
-                        List.generate(widget?.voucher?.products?.length, (int index){
-                          return _miniFoodWidget(widget.voucher.products[index]);
-                        })
-                    )*/,
-                  ),
+                     Text("${widget.voucher?.description == null ? "" : widget.voucher?.description}",
+                          textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor))]),
+//                   Column(
+//                     children: <Widget>[
+//                       SizedBox(height: 10),
+//                       widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
+//                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
+//                           :
+//                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
+//                       /* start a mini food list .. */
+// //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
+//                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())
+//                     ]/*..add(InkWell(onTap: (){setState(() {
+//                       widget.food_see_more = true;
+//                     });},
+//                       child: Container(margin: EdgeInsets.only(top:10),
+//                         child: Text(
+//                           "${_miniFoodsText(widget?.voucher?.products)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: KColors.primaryYellowColor, fontWeight: FontWeight.bold),
+//                         ),
+//                       ),
+//                     ))*/
+//                     /*..addAll(
+//                         List.generate(widget?.voucher?.products?.length, (int index){
+//                           return _miniFoodWidget(widget.voucher.products[index]);
+//                         })
+//                     )*/,
+//                   ),
                   SizedBox(height: 20),
                   Column(
                     children: <Widget>[

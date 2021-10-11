@@ -7,6 +7,7 @@ import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -71,7 +72,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
       ),
       body: Container(
-          child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
+          child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
           _buildFeedsList())
       ),
     );
@@ -79,7 +80,6 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 
   @override
   void inflateFeed(List<FeedModel> feeds) {
-
     showLoading(false);
     setState(() {
       this.data = feeds;

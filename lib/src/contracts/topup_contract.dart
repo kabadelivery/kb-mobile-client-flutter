@@ -2,6 +2,7 @@
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 
 class TopUpContract {
@@ -16,6 +17,7 @@ class TopUpView {
   void showLoading(bool isLoading) {}
   void showGetFeesLoading(bool isLoading) {}
   void topUpToWeb(String link) {}
+  void topUpToPush() {}
   void systemError () {}
   void networkError () {}
   void updateFees(fees_tmoney, fees_flooz, fees_bankcard) {}
@@ -47,8 +49,10 @@ class TopUpPresenter implements TopUpContract {
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      String link = await provider.launchTopUp(customer, phoneNumber, balance, fees);
-      _topUpView.topUpToWeb(link);
+      String res = await provider.launchTopUp(customer, phoneNumber, balance, fees);
+      String link = mJsonDecode(res)["data"]["url"];
+      // _topUpView.topUpToWeb(link);
+      _topUpView.topUpToPush();
       isWorking = false;
     } catch (_) {
       xrint("error ${_}");

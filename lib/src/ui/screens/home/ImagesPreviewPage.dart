@@ -63,76 +63,81 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
         backgroundColor: Colors.black,
         body: Stack(
           children: <Widget>[
-            Center(
-              child: Container(
-                // center a picture thing in the middle
-                child:   Stack(
-                  children: <Widget>[
-                    ClipPath(
-                        child:CarouselSlider(
-                          options: CarouselOptions(
-                            onPageChanged: _carousselPageChanged,
-                            viewportFraction: 1.0,
-                            initialPage: widget.position,
+            Container(
+              // color: Colors.red,
+              // center a picture thing in the middle
+              child:   Center(
+                child: Container(
+                  height:  MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: <Widget>[
+                      ClipPath(
+                          child:CarouselSlider(
+                            options: CarouselOptions(
+                              onPageChanged: _carousselPageChanged,
+                              viewportFraction: 1.0,
+                              initialPage: widget.position,
 //                      autoPlay: widget.data.length > 1 ? true:false,
-                            enableInfiniteScroll: widget.data.length > 1 ? true:false,
+                              enableInfiniteScroll: widget.data.length > 1 ? true:false,
                             height:  MediaQuery.of(context).size.width,
-                          ),
-                          items: widget.data.map((admodel) {
-                            return Builder(
-                              builder: (BuildContext context) {
+                            ),
+                            items: widget.data.map((admodel) {
+                              return Builder(
+                                builder: (BuildContext context) {
 //                                PinchZoom(
 //                                    image: Image.network('http://placerabbit.com/200/333'),
 //                                    zoomedBackgroundColor: Colors.black.withOpacity(0.5),
 //                                    resetDuration: const Duration(milliseconds: 100),
 //                                    maxScale: 2.5,
-                                return PinchZoom(
-                                image: Container(
+                                  return PinchZoom(
+                                  image: Container(
+                                    // color: Colors.blueAccent,
 //                                    height: 9*MediaQuery.of(context).size.width/16,
-                                      height: MediaQuery.of(context).size.width,
-                                      width: MediaQuery.of(context).size.width,
-                                      child:CachedNetworkImage(
-                                          imageUrl: Utils.inflateLink(admodel.pic),
-                                          fit: BoxFit.contain
-                                      )
+//                                       height: MediaQuery.of(context).size.width,
+                                        child:CachedNetworkImage(
+                                            imageUrl: Utils.inflateLink(admodel.pic),
+                                            fit: BoxFit.fitWidth,
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              CircularProgressIndicator(value: downloadProgress.progress),
+                                        )
 //                                    child: PhotoView(
 //                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
 //                                    )
-                                  ),
-
-                                  zoomedBackgroundColor: Colors.black,
-                                    resetDuration: const Duration(milliseconds: 100),
-                                    maxScale: 2.5,
-                                  onZoomStart: (){},
-                                  onZoomEnd: () {},
-                                );
-                              },
-                            );
-                          }).toList(),
-                        )),
-                  widget.data.length > 1 ?  Positioned(
-                        bottom: 10,
-                        right:0,
-                        child:Padding(
-                          padding: const EdgeInsets.only(right:9.0),
-                          child: Row(
-                            children: <Widget>[]
-                              ..addAll(
-                                  List<Widget>.generate(widget.data.length, (int index) {
-                                    return Container(
-                                        margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                        height: 9,width:9,
-                                        decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            border: new Border.all(color: Colors.white),
-                                            color: (index==widget.position || index==widget.data.length)?Colors.white : Colors.transparent
-                                        ));
-                                  })
-                                /* add a list of rounded views */
-                              ),
-                          ),
-                        )
-                    ) : Container(),
-                  ],
+                                    ),
+                                    zoomedBackgroundColor: Colors.black,
+                                      resetDuration: const Duration(milliseconds: 100),
+                                      maxScale: 2.5,
+                                    onZoomStart: (){},
+                                    onZoomEnd: () {},
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          )),
+                    widget?.data?.length > 1 ?  Positioned(
+                          bottom: 10,
+                          right:0,
+                          child:Padding(
+                            padding: const EdgeInsets.only(right:9.0),
+                            child: Row(
+                              children: <Widget>[]
+                                ..addAll(
+                                    List<Widget>.generate(widget.data.length, (int index) {
+                                      return Container(
+                                          margin: EdgeInsets.only(right:2.5, top: 2.5),
+                                          height: 9,width:9,
+                                          decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              border: new Border.all(color: Colors.white),
+                                              color: (index==widget.position || index==widget.data.length)?Colors.white : Colors.transparent
+                                          ));
+                                    })
+                                  /* add a list of rounded views */
+                                ),
+                            ),
+                          )
+                      ) : Container(),
+                    ],
+                  ),
                 ),
               ),
             ),

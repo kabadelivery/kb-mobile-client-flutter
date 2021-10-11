@@ -279,6 +279,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     Navigator.of(context).pop({'check_balance': true, 'link': link});
   }
 
+  @override
+  void topUpToPush() {
+    Navigator.of(context).pop({'check_balance': true});
+  }
+
+
   bool _checkOperator() {
 
     String number = "${_phoneNumberFieldController.text}";
@@ -539,6 +545,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   _getTotalAmountEuro() {
     return double.parse(((_getRealTotalAmountFromInitial()/euroRatio)).toStringAsFixed(2));
   }
+
 
 
 }

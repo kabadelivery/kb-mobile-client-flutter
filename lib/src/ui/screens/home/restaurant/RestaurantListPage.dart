@@ -86,8 +86,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       widget.customer = customer;
     });
 
-
-
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
 

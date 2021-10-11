@@ -211,15 +211,16 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                         child: Column(children: <Widget>[
                           Row(
                             children: <Widget>[
-                              Text(data?.food_entity
-                                  ?.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight
-                                          .bold)),
+                              Container(
+                                child: Text("${data?.food_entity?.name?.length > 20 ? data?.food_entity?.name?.substring(0,20): data?.food_entity?.name}${data?.food_entity?.name?.length > 20 ? "...":""}",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight
+                                            .bold)),
+                              ),
                             ],
                           ),
                         ])),

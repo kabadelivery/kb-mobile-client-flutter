@@ -57,7 +57,7 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG).toString(),
+      var response = await dio.post(Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING).toString(),
         data: _data);
 
      xrint(response.data.toString());

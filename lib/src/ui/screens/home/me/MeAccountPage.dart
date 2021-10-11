@@ -238,7 +238,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           /*title: Text("",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16.0,
+                fontSize: 15.0,
               ))*/
           background: Container(
             child:
@@ -271,7 +271,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                             children: <Widget>[
                               Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
                               SizedBox(height:10),
-                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.right,),
+                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.right,),
                               SizedBox(height:10),
                             ])
                     )],
@@ -353,10 +353,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                       child: Center(
                                         child: Row(mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                            Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
                                             // Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
                                             // SizedBox(width:5),
-                                            // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                            // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
                                           /*  SizedBox(width:10),
                                             StateContainer.of(context).isBalanceLoading ?
                                             SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
@@ -386,7 +386,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.topup,
                                         )),
                                     SizedBox(height:5),
-                                    Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
                                   ],
                                 ),
                               ),
@@ -406,7 +406,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           VectorsData.transfer_money,
                                         )),
                                     SizedBox(height:5),
-                                    Text("${AppLocalizations.of(context).translate('transfer')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+                                    Text("${AppLocalizations.of(context).translate('transfer')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
                                   ],
                                 ),
                               ),
@@ -455,7 +455,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter()))),
                                               SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('profile')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),))
+                                              Center(child: Text("${AppLocalizations.of(context).translate('profile')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
                                             ],
                                           ),
                                         ),
@@ -474,7 +474,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                                     color: KColors.primaryColor,
                                                   )),iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage())),
                                               SizedBox(height:10),
-                                              Text("VOUCHERS", style: TextStyle(color: KColors.primaryColor, fontSize: 16),)
+                                              Text("VOUCHERS", style: TextStyle(color: KColors.primaryColor, fontSize: 15),)
                                             ],
                                           ),
                                         ),
@@ -487,7 +487,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()))),
                                               SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('addresses')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),))
+                                              Center(child: Text("${AppLocalizations.of(context).translate('addresses')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
                                             ],
                                           ),
                                         ),
@@ -517,7 +517,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, FeedsPage(presenter: FeedPresenter()))),
                                               SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('feeds')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16),))
+                                              Center(child: Text("${AppLocalizations.of(context).translate('feeds')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 15),))
                                             ],
                                           ),
                                         ),
@@ -527,10 +527,11 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           padding: EdgeInsets.all(10),
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.card_giftcard, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()))),
                                               SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('coupon')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),))
+                                              Center(child: Text("${AppLocalizations.of(context).translate('coupon')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15)))
                                             ],
                                           ),
                                         ),
@@ -543,7 +544,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                             children: <Widget>[
                                               IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
                                               SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('settings')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 16),))
+                                              Center(child: Text("${AppLocalizations.of(context).translate('settings')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
                                             ],
                                           ),
                                         ),
@@ -589,8 +590,10 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       String link = results['link'];
       if (results['check_balance'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
+      if (link != null) {
         link = Uri.encodeFull(link);
         _launchURL(link);
+      }
         _showDialog(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
       }
     }

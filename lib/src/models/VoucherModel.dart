@@ -30,6 +30,9 @@ class VoucherModel {
   String start_date, end_date; // timestamp
   String tag;
 
+  // added 08102021
+  String description;
+
 //  int reward_type;
 //  int reward_cash_value;
 //  int reward_percentage_value;
@@ -98,6 +101,7 @@ class VoucherModel {
     qr_code = json['qr_code'];
     tag = json['tag'];
     start_date = json['start_date'];
+    description = json['description'];
 
     if (json['products'] != null || json['products'] != []) {
       l = json["products"];
@@ -115,6 +119,7 @@ class VoucherModel {
     "already_used_count" : already_used_count,
     "state" : state,
     "type" : type,
+    'description': description
   };
 
   @override
@@ -143,6 +148,7 @@ class VoucherModel {
     start_date = "123454321";
     end_date = "123454321";
     tag = "";
+    description = "i tell what you want to know";
   }
 
   VoucherModel.randomDelivery() : super() {
@@ -161,6 +167,7 @@ class VoucherModel {
     start_date = "123454321";
     end_date = "123454321";
     tag = "";
+    description = "i tell what you want to know";
   }
 
   VoucherModel.randomBoth() : super() {
@@ -183,6 +190,7 @@ class VoucherModel {
     start_date = "123454321";
     end_date = "123454321";
     tag = "";
+    description = "i tell what you want to know";
   }
 
   getRestaurantsName() {

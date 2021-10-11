@@ -344,29 +344,25 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
         builder: (context) =>
             Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
     /* use this location to generate details about the place the user lives and so on. */
+    widget.presenter.editAddressView = this;
 
-    if (result != null) {
-      /*  */
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+
+      if (result != null) {
+        setState(() {
+          _checkLocationLoading = true;
+          address.location = "${result.latitude}:${result.longitude}";
+        });
+        xrint(address.location);
+        // use mvp to launch a request and place the result here.
+        widget.presenter.checkLocationDetails(widget.customer,
+            position: Position(
+                longitude: result.longitude, latitude: result.latitude));
+      }
       setState(() {
-        _checkLocationLoading = true;
-        address.location = "${result.latitude}:${result.longitude}";
+        isPickLocation = false;
       });
-      xrint(address.location);
-      // use mvp to launch a request and place the result here.
-      widget.presenter.checkLocationDetails(widget.customer,
-          position: Position(
-              longitude: result.longitude, latitude: result.latitude));
-      // setState(() {
-      //   isPickLocation = false;
-      // });
-
-    } else {
-      // setState(() {
-      //   isPickLocation = false;
-      // });
-    }
-    setState(() {
-      isPickLocation = false;
     });
   }
 
@@ -380,7 +376,13 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     address.near = _nearController.text;
     address.phone_number = _phoneNumberController.text;
 
-    widget.presenter.updateOrCreateAddress(address, widget.customer);
+    widget.presenter.editAddressView = this;
+
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+      widget.presenter.updateOrCreateAddress(address, widget.customer);
+    });
+
   }
 
   @override

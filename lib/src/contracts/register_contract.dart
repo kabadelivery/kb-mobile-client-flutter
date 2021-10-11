@@ -60,8 +60,8 @@ class RegisterPresenter implements RegisterContract {
     isWorking = true;
 
     _registerView.showLoading(true);
-    String jsonContent = await provider.checkRequestCodeAction(code, requestId);
-    int error = json.decode(jsonContent)["error"];
+    var jsonContent = await provider.checkRequestCodeAction(code, requestId);
+    int error = mJsonDecode(jsonContent)["error"];
 
     try {
       if (error == 0) {
@@ -88,8 +88,8 @@ class RegisterPresenter implements RegisterContract {
     if (isWorking)
       return;
     isWorking = true;
-    String jsonContent = await provider.registerSendingCodeAction(login);
-    int error = json.decode(jsonContent)["error"];
+    var jsonContent = await provider.registerSendingCodeAction(login);
+    int error = mJsonDecode(jsonContent)["error"];
 
     if (error == 500) {
       _registerView.userExistsAlready();
@@ -114,8 +114,8 @@ class RegisterPresenter implements RegisterContract {
       return;
     isWorking = true;
 
-    String jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, whatsapp_number: whatsapp_number, phone_number: phone_number, email: email, request_id: request_id);
-    int error = json.decode(jsonContent)["error"];
+    var jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, whatsapp_number: whatsapp_number, phone_number: phone_number, email: email, request_id: request_id);
+    int error = mJsonDecode(jsonContent)["error"];
     if (error == 0) {
       /* successfully created account */
       /* jump to the login page to login the customer */
