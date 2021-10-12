@@ -224,7 +224,6 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
         ));
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
-
       if (results.containsKey("createdAddress") != null){
         if (widget.pick) {
           DeliveryAddressModel tmp = results["createdAddress"];
@@ -262,7 +261,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
     _showDialog(
         icon: VectorsData.questions,
-        message: "${AppLocalizations.of(context).translate('are_you_sure_to_delete_address')} (${address?.name})",
+        message: "${AppLocalizations.of(context).translate('are_you_sure_to_delete_address')} (${address?.name?.toUpperCase()})",
         isYesOrNo: true,
         actionIfYes: () => _deleteAddress(address)
     );
@@ -336,7 +335,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
               ),
               OutlineButton(
                 borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
-                child: new Text("accept", style: TextStyle(color:KColors.primaryColor)),
+                child: new Text("${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: (){
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -379,9 +378,10 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
           widget.data.removeAt(i);
         }
       }
-    setState(() {
-      widget.data = widget.data;
-    });
+    if (mounted)
+      setState(() {
+        widget.data = widget.data;
+      });
   }
 
   void mToast(String message) {

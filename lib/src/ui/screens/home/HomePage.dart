@@ -256,9 +256,6 @@ class _HomePageState extends State<HomePage> {
 
     });
 
-
-
-
     _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
       SharedPreferences prefs_ = await SharedPreferences.getInstance();

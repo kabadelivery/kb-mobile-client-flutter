@@ -144,7 +144,6 @@ class AddressApiProvider {
     xrint("entered fetchAddressList");
     if (await Utils.hasNetwork()) {
 
-
      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_ADRESSES),
           headers: Utils.getHeadersWithToken(customer?.token)).timeout(
@@ -153,8 +152,8 @@ class AddressApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 30000;
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =

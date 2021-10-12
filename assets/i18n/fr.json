@@ -398,8 +398,8 @@
   "welcome": "Bienvenue",
 
   "permission_": "Permission",
-  "request_location_activation_permission" : "Veuillez activer votre localisation pour un meilleur service",
-  "request_location_permission" : "Veuillez activer votre localisation pour un meilleur service"
+  "request_location_activation_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison",
+  "request_location_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison"
 
 
 }

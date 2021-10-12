@@ -1,51 +1,45 @@
 import 'dart:async';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
-import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/VoucherModel.dart';
-import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
-import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
-import 'package:KABA/src/xrint.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
+import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/_static_data/NetworkImages.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
-//import 'package:vibration/vibration.dart';
-//import 'package:audioplayers/audioplayers.dart';
 
 
 class OrderConfirmationPage2 extends StatefulWidget {
@@ -193,12 +187,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
       this.widget.presenter.orderConfirmationView = this;
       CustomerUtils.getCustomer().then((customer) {
         widget.customer = customer;
-      });
-      // launch request for retrieving the delivery prices and so on.
-      widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
-      showLoading(true);
-      Future.delayed(Duration(seconds: 1), () {
-        Scrollable.ensureVisible(poweredByKey.currentContext);
+        // launch request for retrieving the delivery prices and so on.
+        widget.presenter.computeBilling(widget.restaurant,widget.customer, widget.foods, _selectedAddress, _selectedVoucher);
+        showLoading(true);
+        Future.delayed(Duration(seconds: 1), () {
+          Scrollable.ensureVisible(poweredByKey.currentContext);
+        });
       });
     }
   }
@@ -746,7 +740,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
   }
 
 
- /* _buildPurchaseButtons() {
+  /* _buildPurchaseButtons() {
     return Column(children: <Widget>[
       SizedBox(height: 10),
       *//* your account balance is *//*
@@ -1355,10 +1349,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         ),
       ),
     ) :
-     Container(child: Text("${AppLocalizations.of(context).translate('cant_pay_at_delivery')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-         decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10),
-       margin: EdgeInsets.only(left:20,right:20),
-     );
+    Container(child: Text("${AppLocalizations.of(context).translate('cant_pay_at_delivery')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+      decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(left:20,right:20),
+    );
   }
 
 
@@ -1756,17 +1750,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
         this.widget.presenter.orderConfirmationView = this;
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
-        });
-        widget.presenter.computeBilling(
-            widget.restaurant, widget.customer, widget.foods, _selectedAddress,
-            _selectedVoucher);
-        Future.delayed(Duration(seconds: 1), () {
-          Scrollable.ensureVisible(poweredByKey.currentContext);
-        });
-        showLoading(true);
+
+          widget.presenter.computeBilling(
+              widget.restaurant, widget.customer, widget.foods, _selectedAddress,
+              _selectedVoucher);
+          Future.delayed(Duration(seconds: 1), () {
+            Scrollable.ensureVisible(poweredByKey.currentContext);
+          });
+          showLoading(true);
 //        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
-        Future.delayed(Duration(milliseconds: 500), () {
-          Scrollable.ensureVisible(poweredByKey.currentContext);
+          Future.delayed(Duration(milliseconds: 500), () {
+            Scrollable.ensureVisible(poweredByKey.currentContext);
+          });
         });
       }
     }
@@ -1842,7 +1837,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                   this.widget.presenter.orderConfirmationView = this;
                   CustomerUtils.getCustomer().then((customer) {
                     widget.customer = customer;
-                  });
                   // launch request for retrieving the delivery prices and so on.
                   if (_selectedAddress != null) {
                     widget.presenter.computeBilling(
@@ -1853,6 +1847,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
                       Scrollable.ensureVisible(poweredByKey.currentContext);
                     });
                   }
+                  });
                 }),
               ),
             ),

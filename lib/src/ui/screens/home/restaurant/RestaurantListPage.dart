@@ -442,7 +442,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title:  Text("${AppLocalizations.of(context).translate('info')}"),
+              title:  Text("${AppLocalizations.of(context).translate('info')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -499,7 +499,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
             barrierDismissible: false, // user must tap button!
             builder: (BuildContext context) {
               return AlertDialog(
-                title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                title:  Text("${AppLocalizations.of(context).translate('permission_')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
@@ -550,7 +550,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
             barrierDismissible: false, // user must tap button!
             builder: (BuildContext context) {
               return AlertDialog(
-                title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                title:  Text("${AppLocalizations.of(context).translate('permission_')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
@@ -604,7 +604,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
               barrierDismissible: false, // user must tap button!
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title:  Text("${AppLocalizations.of(context).translate('permission_')}"),
+                  title:  Text("${AppLocalizations.of(context).translate('permission_')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: <Widget>[

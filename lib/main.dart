@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    StateContainer.of(context);
+    // StateContainer.of(context);
 
     // precache logo of the splashPage
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
@@ -117,7 +117,6 @@ class _MyAppState extends State<MyApp> {
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           return MaterialApp(
-
             supportedLocales: [
               Locale('en', 'US'),
               Locale('fr', 'FR'),

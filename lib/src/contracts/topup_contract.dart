@@ -49,10 +49,13 @@ class TopUpPresenter implements TopUpContract {
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      String res = await provider.launchTopUp(customer, phoneNumber, balance, fees);
+      dynamic res = await provider.launchTopUp(customer, phoneNumber, balance, fees);
       String link = mJsonDecode(res)["data"]["url"];
-      // _topUpView.topUpToWeb(link);
-      _topUpView.topUpToPush();
+      int redirect = mJsonDecode(res)["data"]["redirect"];
+      if (redirect == 0)
+        _topUpView.topUpToPush();
+      else
+        _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
       xrint("error ${_}");
@@ -73,8 +76,13 @@ class TopUpPresenter implements TopUpContract {
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      String link = await provider.launchPayDunya(customer, balance, fees);
-      _topUpView.topUpToWeb(link);
+      dynamic res = await provider.launchPayDunya(customer, balance, fees);
+      String link = mJsonDecode(res)["data"]["url"];
+      int redirect = mJsonDecode(res)["data"]["redirect"];
+      if (redirect == 0)
+        _topUpView.topUpToPush();
+      else
+        _topUpView.topUpToWeb(link);
       isWorking = false;
     } catch (_) {
       xrint("error ${_}");
@@ -97,7 +105,7 @@ class TopUpPresenter implements TopUpContract {
     try {
       var fees_obj = await provider.fetchFees(customer);
       _topUpView.showGetFeesLoading(false);
-     int fees_flooz = fees_obj["fees_flooz"];
+      int fees_flooz = fees_obj["fees_flooz"];
       int fees_tmoney = fees_obj["fees_tmoney"];
       int fees_bankcard = fees_obj["fees_bankcard"];
       _topUpView.showGetFeesLoading(false);

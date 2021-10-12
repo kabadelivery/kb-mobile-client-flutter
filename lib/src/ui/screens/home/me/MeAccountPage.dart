@@ -593,6 +593,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       if (link != null) {
         link = Uri.encodeFull(link);
         _launchURL(link);
+      } else {
+        // top up
       }
         _showDialog(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
       }

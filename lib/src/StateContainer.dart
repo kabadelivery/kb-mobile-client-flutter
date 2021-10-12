@@ -23,10 +23,7 @@ class StateContainer extends StatefulWidget {
   static BuildContext mContext;
 
   static StateContainerState of(BuildContext context) {
-    if (mContext == null)
-      mContext = context;
-  final widget = mContext.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
-    // final widget = context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
+    final widget = context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
     return widget.data;
   }
 

@@ -376,13 +376,43 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     address.near = _nearController.text;
     address.phone_number = _phoneNumberController.text;
 
+    /* exces d'intelligence */
     widget.presenter.editAddressView = this;
 
+  /*  *//* validations ? *//*
+    if ("".compareTo(_locationNameController.text) == 0 || _locationNameController.text?.length < 3) {
+      showErrorMessageDialog("Please enter a specific address name");
+      return;
+    }
+
+    if ("".compareTo(_phoneNumberController.text) == 0
+        || _phoneNumberController.text?.length < 3) {
+      showErrorMessageDialog("Please enter a specific phone number to contact");
+      return;
+    }
+
+    if ("".compareTo(address?.location) == 0 || address?.location == null) {
+      showErrorMessageDialog("Please choose your GPS location");
+      return;
+    }
+
+    if ("".compareTo(_nearController.text) == 0 || _nearController.text?.length != null
+        || _nearController.text?.length < 3) {
+      showErrorMessageDialog("Please enter a specific mention for near by");
+      return;
+    }
+
+    if ("".compareTo(_descriptionController.text) == 0 || _descriptionController.text?.length != null
+        || _descriptionController.text?.length < 3) {
+      showErrorMessageDialog("Please enter a specific address description");
+      return;
+    }
+
+*/
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       widget.presenter.updateOrCreateAddress(address, widget.customer);
     });
-
   }
 
   @override
@@ -393,6 +423,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 //      okBackToHome: true,
       icon: VectorsData.address_creation_error,
       message: "${AppLocalizations.of(context).translate('address_modification_failure')}",
+      isYesOrNo: false,
+    );
+  }
+
+  void showErrorMessageDialog(String message){
+    _showDialog(
+      icon: VectorsData.address_creation_error,
+      message: "${message}",
       isYesOrNo: false,
     );
   }
@@ -525,7 +563,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('info')}"),
+              title: Text("${AppLocalizations.of(context).translate('info')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
