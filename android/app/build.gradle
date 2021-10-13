@@ -14,12 +14,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 //if (flutterVersionCode == null) {
-    flutterVersionCode = '318'
+    flutterVersionCode = '319'
 //}
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 //if (flutterVersionName == null) {
-    flutterVersionName = '3.1.8'
+    flutterVersionName = '3.1.9'
 //}
 
 apply plugin: 'com.android.application'
@@ -50,6 +50,9 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        ndk {
+            debugSymbolLevel 'FULL'
+        }
     }
 
     signingConfigs {

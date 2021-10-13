@@ -42,7 +42,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   var textColorYellow = KColors.colorMainYellow;
   var textColorRed = KColors.colorCustom;
 
-  var restaurantNameColor, priceColor, voucherCodeColor, expiresDateColor, typeIconColor;
+  var restaurantNameColor, priceColor, voucherCodeColor, expiresDateColor, typeIconColor, priceDetailsColor, priceBarColor;
+
 
   var voucherIcon = Icons.not_interested;
 
@@ -51,7 +52,6 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
     super.initState();
 
     // according to the type, we set a dark and clear equivalent. --> yellow and red text
-
     // delivery -> money_price:white, restaurant_name:dark, code:yellow(food)
     // restaurant ->  money_price:red, restaurant_name:dark, code:white
     // both ->  money_price:yellow, restaurant_name:black, code:red
@@ -60,6 +60,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       case 1: // restaurant (yellow background)
         restaurantNameColor = textColorWhite;
         priceColor = textColorRed;
+        priceDetailsColor = Colors.black;
+        priceBarColor = Colors.black;
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
@@ -68,6 +70,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       case 2: // delivery (red background)
         restaurantNameColor = textColorBlack;
         priceColor = textColorYellow;
+        priceDetailsColor = Colors.white;
+        priceBarColor = Colors.white;
         voucherCodeColor = textColorWhite;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorWhite;
@@ -76,6 +80,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       case 3: // both (white bg)
         restaurantNameColor = textColorBlack;
         priceColor = textColorYellow;
+        priceDetailsColor = Colors.black;
+        priceBarColor = Colors.black;
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
@@ -143,17 +149,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                             Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
                                           ],
                                         ),
-                                       widget.voucher.category == 1 ?
-                                       Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
-                                           :
-                                       /* superposing two stuffs */
-                                       Column(
-                                         children: [
-                                           Text("-${widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor)),
-                                           Container(width:40, height: 3, color: Colors.white),
-                                           Text("-${widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor)),
-                                         ],
-                                       )
+                                        _buildCFAPriceWidget(),
                                       ]
                                   ),
                                   SizedBox(height: 10),
@@ -227,8 +223,9 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                           Text("${widget.voucher.subscription_code}".toUpperCase(), style: TextStyle(color: voucherCodeColor,fontSize: 16, fontWeight: FontWeight.bold)),
                                         ],
                                       ),
-                                      Text("-${widget.voucher.value}${widget.voucher.category == 1 ? "%" : "F"}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
-                                    ]
+                                      /* superposing two stuffs */
+                                      _buildCFAPriceWidget(),
+                                     ]
                                 ),
                                 SizedBox(height: 10),
                                 /* SHOW EXPIRY DATE */
@@ -298,6 +295,25 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       }
       _jumpToVoucherDetails();
     }
+  }
+
+  _buildCFAPriceWidget() {
+    return
+      widget.voucher.category == 1 ?
+      Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+          :
+      Column(
+      children: [
+        Text("-${(widget.voucher.use_count-widget.voucher.already_used_count)*widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor)),
+        Container(width:110, height: 2, color: priceBarColor, margin: EdgeInsets.only(bottom:1),),
+        Row(
+          children: [
+            Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: priceDetailsColor)),
+            Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: priceDetailsColor)),
+          ],
+        ),
+      ],
+    );
   }
 
 

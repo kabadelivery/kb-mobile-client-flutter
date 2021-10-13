@@ -106,10 +106,12 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   SizedBox(height: 10),
 
-                  Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+                 /* Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('-${widget.voucher.value}',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 24)),
                     Text(" ${widget.voucher.category == 1 ?  "%" : "${AppLocalizations.of(context).translate('currency')}"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                  ]),
+                  ]),*/
+          _buildCFAPriceWidget(),
+
 
                   /* details du restaurant */
                   SizedBox(height: 20),
@@ -189,6 +191,25 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
         ),
       ),
     );
+  }
+
+  _buildCFAPriceWidget() {
+    return
+      widget.voucher.category == 1 ?
+      Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor))
+          :
+      Column(crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text("-${(widget.voucher.use_count-widget.voucher.already_used_count)*widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
+          Container(width:110, height: 2, color: Colors.black, margin: EdgeInsets.only(bottom:1),),
+          Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black)),
+              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.black)),
+            ],
+          ),
+        ],
+      );
   }
 
   String _getVoucherShareLink (){

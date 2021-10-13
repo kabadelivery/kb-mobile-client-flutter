@@ -2,15 +2,20 @@
 
 Kaba under Flutter framework
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+# 3.1.9 Update : 13/10/2021
 
-A few resources to get you started if this is your first Flutter project:
+- amelioration de l'affichage des réductions bons en FCFA pour approche orientée business development
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# 3.1.8 Update : 12/10/2021
+
+- Résolutions des problèmes liés aux certificats SSL
+
+- Optimisation des requêtes de récupération de récupérations de Bons
+
+- Améliorations de l'affichage détaillés des ads
+
+- Android update de 30 -> 31 | Flutter 2.2 -> 2.5
+
+- Adaptation de la redirection des TOP-UP en fonction du type web / push
