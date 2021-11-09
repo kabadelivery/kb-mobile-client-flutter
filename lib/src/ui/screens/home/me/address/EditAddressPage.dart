@@ -12,7 +12,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
 import 'package:KABA/src/xrint.dart';
-import 'package:android_intent/android_intent.dart';
+// import 'package:android_intent/android_intent.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

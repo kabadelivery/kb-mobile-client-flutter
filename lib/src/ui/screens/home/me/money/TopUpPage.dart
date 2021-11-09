@@ -546,6 +546,4 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     return double.parse(((_getRealTotalAmountFromInitial()/euroRatio)).toStringAsFixed(2));
   }
 
-
-
 }

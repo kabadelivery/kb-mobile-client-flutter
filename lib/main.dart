@@ -120,8 +120,8 @@ class _MyAppState extends State<MyApp> {
             supportedLocales: [
               Locale('en', 'US'),
               Locale('fr', 'FR'),
-              Locale.fromSubtags(languageCode: 'zh'),
-              Locale("af"),
+              Locale.fromSubtags(languageCode: 'zh')
+        /*      Locale("af"),
               Locale("am"),
               Locale("ar"),
               Locale("az"),
@@ -187,7 +187,7 @@ class _MyAppState extends State<MyApp> {
               Locale("ug"),
               Locale("ur"),
               Locale("uz"),
-              Locale("vi")
+              Locale("vi")*/
             ],
             navigatorObservers: [
               FirebaseAnalyticsObserver(analytics: analytics),
