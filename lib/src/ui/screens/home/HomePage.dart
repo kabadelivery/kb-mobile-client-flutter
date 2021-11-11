@@ -898,8 +898,12 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME, AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.max, priority: Priority.max, ticker: notificationItem?.title);
+      AppConfig.CHANNEL_ID,
+      AppConfig.CHANNEL_NAME,
+      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.max,
+      ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 

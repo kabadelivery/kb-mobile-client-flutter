@@ -58,7 +58,7 @@ Future<void> main() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     AppConfig.CHANNEL_ID, // id
     AppConfig.CHANNEL_NAME, // title
-    AppConfig.CHANNEL_DESCRIPTION, // description
+    description: AppConfig.CHANNEL_DESCRIPTION, // description
     importance: Importance.max,
   );
 
