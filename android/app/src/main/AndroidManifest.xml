@@ -8,19 +8,9 @@
 
     <uses-sdk tools:overrideLibrary="net.touchcapture.qr.flutterqr,com.google.zxing.client.android"/>
 
-    <!-- Add this permission -->
-<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>-->
-
-<!--    <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />-->
-<!--    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
-
     <uses-feature android:name="android.hardware.location.network" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false"  />
 
-    <!-- something tells me that we don't need this permission. -->
-<!--    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
-<!--    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -75,6 +65,7 @@
 
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
+            android:exported="true"
             android:launchMode="singleInstance"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
@@ -82,8 +73,8 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-
+            android:windowSoftInputMode="adjustResize"
+            >
 
             <!-- Specify that the launch screen should continue being displayed -->
             <!-- until Flutter renders its first frame. -->
