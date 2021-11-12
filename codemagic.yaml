@@ -1,8 +1,12 @@
 workflows:
   my-workflow:
+    environment:
+      groups:
+        - gcloud-playstore-id-json
     publishing:
       google_play:
         credentials: $GCLOUD_KEY_FILE
         track: internal
         in_app_update_priority: 0
         changes_not_sent_for_review: true
+
