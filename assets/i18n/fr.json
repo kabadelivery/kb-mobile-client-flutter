@@ -16,6 +16,7 @@
   "connexion": "CONNEXION",
   "recover_password": "Récupérer mot de passe oublié",
   "login_error": "Désolé, Echec de connexion",
+  "login_time_out": "Echec de connexion. Veuillez réessayer après un moment. Merci",
   "accept_terms_and_conditions": "Acceptez-vous les termes et conditions du Service KABA ?",
   "yes": "OUI",
   "no": "NON",
@@ -399,7 +400,13 @@
 
   "permission_": "Permission",
   "request_location_activation_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison",
-  "request_location_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison"
+  "request_location_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison",
 
+  "identity_verify_page": "Verification",
+  "identity_verify_title": "Identity verification",
 
+  "identity_check_email": "Veuillez vérifer votre email. Nous vous avons envoyer un code à ",
+  "identity_check_pn": "Veuillez vérifer votre téléphone. Nous vous avons envoyer un code au ",
+
+  "verification_code_wrong": "Code erroné. Veuillez réeassayer"
 }

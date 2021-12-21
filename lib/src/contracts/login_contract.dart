@@ -12,10 +12,11 @@ class LoginContract {
 
 class LoginView {
   void showLoading(bool isLoading) {}
-  void loginSuccess () {}
+  void loginSuccess (var obj) {}
   void loginPasswordError () {}
   void networkError () {}
   void accountNoExist() {}
+  void loginTimeOut() {}
 }
 
 
@@ -52,9 +53,7 @@ class LoginPresenter implements LoginContract {
         int error = obj["error"];
         if (error == 0/* && token != null && token.length > 0*/) {
           /* login successful */
-          String token = obj["data"]["payload"]["token"];
-          CustomerUtils.persistTokenAndUserdata(token, jsonContent);
-          _loginView.loginSuccess();
+          _loginView.loginSuccess(jsonContent);
         } else if (error == 1) {
           /* login failure */
           _loginView.loginPasswordError();
@@ -63,7 +62,10 @@ class LoginPresenter implements LoginContract {
         }
       } catch(_) {
         xrint(_);
-        _loginView.loginPasswordError();
+        if ("${_.toString()}".contains("timed out")) {
+          _loginView.loginTimeOut();
+        } else
+          _loginView.loginPasswordError();
       }
     } catch(_) {
       /* login failure */

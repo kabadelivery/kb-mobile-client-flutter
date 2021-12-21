@@ -11,7 +11,6 @@ class ServerConfig {
   // static const String ip_address = "kaba-technology.com"; // dev server
   // static const String pay_ip_address = "pay.kaba-technology.com";
 
-
   static const String UNSECURE_SERVER_ADDRESS = "http://"+ip_address;
   static const String SERVER_ADDRESS = "https://"+ip_address;
   static const String SERVER_ADDRESS_SECURE = "https://"+ip_address;

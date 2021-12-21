@@ -414,6 +414,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         });
       }
 
+      /* make a second-ly second discount for the registration */
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
           xrint("time has ellapsed;");

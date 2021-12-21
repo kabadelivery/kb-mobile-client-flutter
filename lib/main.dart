@@ -237,7 +237,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
 //             home: SplashPage(),
-          home : LoginOTPConfirmationPage(),
+          home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
           // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),

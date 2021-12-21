@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
@@ -10,6 +14,7 @@ import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -72,7 +77,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         _askTerms();
       }
     });
-
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number;
@@ -231,42 +235,69 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  void loginSuccess() {
+  Future<void> loginSuccess(var jsonContent) async {
 
-
+    var obj = json.decode(jsonContent);
+   String otp = "${obj["login_code"]}";
+    CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
 
     /* if you are coming from another process like already making an order, then just pop */
-
     /* token must be saved by now. */
     showLoading(false);
 
-    if (widget.fromOrderingProcess) {
-      // pop
-      Navigator.of(context).pop();
-      StateContainer
-          .of(context)
-          .updateLoggingState(state: 1);
+    /* we make sure the login is a success */
+    Map results = await Navigator.of(context).push(
+        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+            LoginOTPConfirmationPage (username: customer.username, otp_code: otp),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin:begin, end:end);
+              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
+              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
+            }
+        ));
+
+    String res = results['otp_valid'];
+    if ("valid".compareTo(res) == 0) {
+      // login ok
+      // once we have the result we redirect
+      String token = obj["data"]["payload"]["token"];
+      CustomerUtils.persistTokenAndUserdata(token, jsonContent);
+
+      if (widget.fromOrderingProcess) {
+        // pop
+        Navigator.of(context).pop();
+        StateContainer
+            .of(context)
+            .updateLoggingState(state: 1);
+      } else {
+        /* jump to home page. */
+        StateContainer
+            .of(context)
+            .updateLoggingState(state: 1);
+        Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    HomePage(),
+                transitionsBuilder: (context, animation, secondaryAnimation,
+                    child) {
+                  var begin = Offset(1.0, 0.0);
+                  var end = Offset.zero;
+                  var curve = Curves.ease;
+                  var tween = Tween(begin: begin, end: end);
+                  var curvedAnimation = CurvedAnimation(
+                      parent: animation, curve: curve);
+                  return SlideTransition(
+                      position: tween.animate(curvedAnimation), child: child);
+                }
+            ));
+      }
     } else {
-      /* jump to home page. */
-      StateContainer
-          .of(context)
-          .updateLoggingState(state: 1);
-      Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  HomePage(),
-              transitionsBuilder: (context, animation, secondaryAnimation,
-                  child) {
-                var begin = Offset(1.0, 0.0);
-                var end = Offset.zero;
-                var curve = Curves.ease;
-                var tween = Tween(begin: begin, end: end);
-                var curvedAnimation = CurvedAnimation(
-                    parent: animation, curve: curve);
-                return SlideTransition(
-                    position: tween.animate(curvedAnimation), child: child);
-              }
-          ));
+      // login not ok , you have to redo
+      // to re-log with your credentials once again
+      mDialog("Login not ok, you have to redo again");
     }
   }
 
@@ -437,6 +468,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void networkError() {
     mToast("${AppLocalizations.of(context).translate('network_error')}");
+  }
+
+  @override
+  void loginTimeOut() {
+    mToast("${AppLocalizations.of(context).translate('login_time_out')}");
   }
 
 }

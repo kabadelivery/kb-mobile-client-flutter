@@ -98,7 +98,8 @@ class CustomerUtils {
       try {
         String jsonCustomer = prefs.getString("_loginResponse");
         var obj = json.decode(jsonCustomer);
-          otp = obj["login_code"];
+        otp = obj["login_code"];
+        xrint("getLoginOtpCode :: otp = ${otp}");
       } catch (_) {
         xrint("getLoginOtpCode :: otp retrieve error");
       }
@@ -112,7 +113,6 @@ class CustomerUtils {
     return jsonHomePage;
   }
 
-
   static saveWelcomePage(String wp) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -121,12 +121,12 @@ class CustomerUtils {
 
  static Future<bool> isPusTokenUploaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("is_push_token_uploded") == true;
+    return prefs.getBool("is_push_token_uploaded") == true;
   }
 
   static Future<void> setPushTokenUploadedSuccessfully() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("is_push_token_uploded", true);
+    prefs.setBool("is_push_token_uploaded", true);
   }
 
 }

@@ -330,13 +330,12 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString(),
+          Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString(),
           data: json.encode({"username": login, "password":password, 'device':device }),
       );
 
-
-      xrint(response.data.toString());
-      return response.data.toString();
+      xrint(response.data);
+      return json.encode(response.data);
     } else {
       throw Exception(-2); // there is an error in your request
     }

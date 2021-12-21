@@ -131,8 +131,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
 
-
-
     homeWelcomePage = HomeWelcomePage(key: homeKey,
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,

@@ -32,9 +32,11 @@ class LoginOTPConfirmationPage extends StatefulWidget {
 
   RecoverPasswordPresenter presenter;
 
-  bool is_a_process;
+  String username;
 
-  LoginOTPConfirmationPage({Key key, this.presenter, this.is_a_process = false}) : super(key: key);
+  String otp_code;
+
+  LoginOTPConfirmationPage({Key key, this.username, this.otp_code}) : super(key: key);
 
   @override
   _LoginOTPConfirmationPageState createState() => _LoginOTPConfirmationPageState();
@@ -44,7 +46,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
   TextEditingController _otpFieldController = new TextEditingController();
 
-  int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
+  int CODE_EXPIRATION_LAPSE = 2*60; /* minutes *  seconds */
 
   int timeDiff = 0;
 
@@ -54,32 +56,33 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
   String pwd = "";
 
+  int tryCount = 0;
+
+  String username;
+
+  Timer mainTimer;
+
+  DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
+
+  bool loadingToGoOut = false;
+
+  bool showErrorMessage = false;
+
   @override
   void initState() {
     super.initState();
 
-    CustomerUtils.getCustomer().then((customer) {
-      if (customer != null) {
-        xrint("LoginOTPConfirmationPage : "+customer.toJson().toString());
+    // trigger counter
+    mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+        xrint("time has ellapsed;");
+        timer.cancel();
+      } else {
+        /* update text;;; if codeIsSent */
         setState(() {
-          if (customer.phone_number == null) {
-            if (customer.email == null) {
-              // check if logged in, if yes, log out...
-              xrint("customer email is no null");
-              CustomerUtils.clearCustomerInformations().whenComplete(() {
-                StateContainer.of(context).updateLoggingState(state: 0);
-                StateContainer.of(context).updateBalance(balance: 0);
-                StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-                StateContainer.of(context).updateUnreadMessage(
-                    hasUnreadMessage: false);
-                StateContainer.of(context).updateTabPosition(tabPosition: 0);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, SplashPage.routeName, (r) => false);
-              });
-            } else {
-              // _loginFieldController.text = customer.email;
-            }
-          }
+          /* convert into minutes, and show it */
+          Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
+          timeDiff = duration.inSeconds;
         });
       }
     });
@@ -88,8 +91,6 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // _loginFieldHint = "${AppLocalizations.of(context).translate('phone_number_hint')}";
-    // recoverModeHints = ["${AppLocalizations.of(context).translate('recover_password_hint')}",/*"Insert your E-mail address"*/];
   }
 
   @override
@@ -100,7 +101,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle.light,
           backgroundColor: KColors.primaryColor,
-          title: Text("Verify", style:TextStyle(color:KColors.white)),
+          title: Text("${AppLocalizations.of(context).translate('identity_verify_page')}", style:TextStyle(color:KColors.white)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.white), onPressed: (){Navigator.pop(context);}),
         ),
         body: Container(
@@ -126,11 +127,38 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                 children: [
                                   Image.asset(ImageAssets.smartphoneUnlock,height: 90, width: 90, alignment: Alignment.center,),
                                   SizedBox(height: 20),
-                                  Text("Identity verification", style: TextStyle(fontSize: 24)),
+                                  Text("${AppLocalizations.of(context).translate('identity_verify_title')}", style: TextStyle(fontSize: 24)),
                                   SizedBox(height:20),
-                                  Text("Check your email/phone. we have sent you the code at ..8725.", textAlign: TextAlign.center,
+                                  Text("${Utils.isPhoneNumber_TGO(widget.username)? AppLocalizations.of(context).translate('identity_check_pn') : AppLocalizations.of(context).translate('identity_check_email')} "+( Utils.isPhoneNumber_TGO(widget.username)? "XXXX${widget.username.substring(4)}" : "${widget.username.substring(0,4)}****${widget.username.substring(widget.username.lastIndexOf("@")-1)}"), textAlign: TextAlign.center,
                                       style: TextStyle(fontWeight: FontWeight.w100, fontSize: 14, color: Colors.grey)),
                                   SizedBox(height:20),
+                                  /* code error */
+                                  showErrorMessage ?
+                                  Container(
+                                      child: Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Icon(Icons.stop_circle_outlined, color: KColors.primaryColor),
+                                            SizedBox(width:10),
+                                            AnimatedDefaultTextStyle(
+                                              duration: const Duration(milliseconds: 300),
+                                              curve: Curves.bounceOut,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: showErrorMessage ? KColors.primaryColor : Colors.orange
+                                              ),
+                                              child: Text(
+                                                '${AppLocalizations.of(context).translate("verification_code_wrong")}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                            // Text("${AppLocalizations.of(context).translate("verification_code_wrong")}")
+                                          ]
+                                      )
+                                  )
+                                      :
                                   Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[]
@@ -149,6 +177,9 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                         )
                                   ),/* rows for password */
                                   SizedBox(height:20),
+                                  loadingToGoOut ?
+                                  Center(child: SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black)), height: 15, width: 15))
+                                      :
                                   Container(
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
@@ -156,13 +187,14 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                       ),
                                       padding: EdgeInsets.all(10),
                                       child: Center(
-                                        child: Row(mainAxisSize: MainAxisSize.min,
+                                        child:  Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               SizedBox(child: Icon(FontAwesome.clock_o, color: Colors.grey), height: 20, width: 20),
                                               SizedBox(width: 30),
-                                              Text("09 Seconds", style: TextStyle(color: Colors.grey, fontSize: 12))
+                                              Text("${timeDiff} ${AppLocalizations.of(context).translate('seconds')}", style: TextStyle(color: Colors.grey, fontSize: 12))
                                             ]
                                         ),
                                       )
@@ -177,11 +209,11 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                         Table(
                           children: <TableRow>[
                             TableRow(
-                                children: <TableCell>[
-                                  TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.all(5))),
-                                  TableCell(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");})),
-                                  TableCell(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");})),
-                                ],
+                              children: <TableCell>[
+                                TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.all(5))),
+                                TableCell(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");})),
+                                TableCell(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");})),
+                              ],
                             ),
                             TableRow(
                                 children: <TableCell>[
@@ -218,37 +250,6 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
 
 
-  @override
-  void recoverFails() {
-    mToast("${AppLocalizations.of(context).translate('password_recover_fails')}");
-  }
-
-  @override
-  void recoverSuccess(String phoneNumber, String newCode) {
-    /* send to login page and */
-    mToast("${AppLocalizations.of(context).translate(
-        'password_updated_success')}");
-
-    if (!widget.is_a_process) {
-      // logout.
-      StateContainer
-          .of(context)
-          .balance = 0;
-      CustomerUtils.clearCustomerInformations().whenComplete(() {
-        StateContainer.of(context).updateBalance(balance: 0);
-        StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-        StateContainer.of(context).updateTabPosition(tabPosition: 0);
-
-        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-            builder: (BuildContext context) =>
-                LoginPage(presenter: LoginPresenter(),
-                    phone_number: phoneNumber,
-                    password: newCode,
-                    autoLogin: true)), (r) => false);
-      });
-    }
-  }
 
   void _removeChar() {
     setState(() {
@@ -257,6 +258,9 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   void _passwordAppendChar(String char) {
+
+    if (showErrorMessage)
+      return;
 
     xrint("appending -> ${char}");
 
@@ -273,9 +277,32 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
     validateCodeAndConfirm(pwd).then((isOtpValid) {
       if (isOtpValid) {
-        // move to home page
+        // move to home page,,, with pop
+        setState(() {
+          loadingToGoOut = true;
+        });
+        Future.delayed(Duration(seconds: 3), (){
+          Navigator.of(context).pop({'otp_valid':"valid"});
+        });
       } else {
-        /* reduce login chances down and ask again password */
+        tryCount++;
+        setState(() {
+          showErrorMessage = true;
+        });
+        Future.delayed(Duration(seconds: 3), (){
+          setState(() {
+            showErrorMessage = false;
+          });
+          /* reduce login chances down and ask again password */
+          if (tryCount == 3) {
+            // pop out
+            Navigator.of(context).pop({'otp_valid':"no"});
+          } else {
+            setState(() {
+              pwd = "";
+            });
+          }
+        });
       }
     });
   }
@@ -334,8 +361,6 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  if (widget.is_a_process && is_code_confirmation == false)
-                    Navigator.of(context).pop();
                 },
               ),
             ]
@@ -409,7 +434,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   Future<bool> validateCodeAndConfirm(String pwd) async {
-    String otp = await CustomerUtils.getLoginOtpCode();
+    String otp = widget.otp_code;
     return pwd.compareTo(otp) == 0;
   }
 

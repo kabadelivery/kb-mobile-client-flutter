@@ -16,6 +16,7 @@
   "connexion": "LOGIN",
   "recover_password": "Recover Password",
   "login_error": "Sorry, Login error",
+  "login_time_out": "Login timed out. Please try again in a moment.",
   "accept_terms_and_conditions": "Do you accept our terms and conditions",
   "yes": "YES",
   "no": "NO",
@@ -386,6 +387,10 @@
 
   "permission_": "Permission",
   "request_location_activation_permission" : "Please turn on your location for a better service experience",
-"request_location_permission" : "Please activate permission location for better service experience"
-
+"request_location_permission" : "Please activate permission location for better service experience",
+  "identity_verify_page": "Verify",
+  "identity_verify_title": "Identity verification",
+  "identity_check_email": "Check your email. we have sent you the code at ",
+  "identity_check_pn": "Check your phone. we have sent you the code at ",
+  "verification_code_wrong": "Wrong code. Try again"
 }

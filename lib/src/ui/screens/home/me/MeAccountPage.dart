@@ -271,7 +271,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                             children: <Widget>[
                               Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
                               SizedBox(height:10),
-                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.right,),
+                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.right),
                               SizedBox(height:10),
                             ])
                     )],

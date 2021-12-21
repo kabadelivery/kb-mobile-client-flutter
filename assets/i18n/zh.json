@@ -16,6 +16,7 @@
   "connexion": "登录",
   "recover_password": "找回密码",
   "login_error": "对不起，登录错误",
+  "login_time_out": "登录失败。请稍后再试",
   "accept_terms_and_conditions": "亲、您接受我们的条款和条件吗？",
   "yes": "确认",
   "no": "不是",
@@ -395,7 +396,13 @@
 
   "permission_": "权限",
   "request_location_activation_permission" : "请开启您的位置以获得更好的服务体验",
-  "request_location_permission" : "请激活许可位置以获得更好的服务体验"
+  "request_location_permission" : "请激活许可位置以获得更好的服务体验",
 
+  "identity_verify_page": "验证",
+  "identity_verify_title": "身份认证",
 
+  "identity_check_email": "我们向您的邮箱发验证码。请查收并输入输入 ",
+  "identity_check_pn": "我们向您的手机发验证码。请查收并输入输入 ",
+
+  "verification_code_wrong": "验证码有误。请重试一下"
 }
