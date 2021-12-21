@@ -68,7 +68,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
     if (_myPosition != null)
     controller.animateCamera(_getCamerationPosition(_myPosition));
     else
-      showSnack("You still dont have no position;");
+      showSnack("You still don't have no position;");
   }
 
   _onPositionChanged(Position position) {

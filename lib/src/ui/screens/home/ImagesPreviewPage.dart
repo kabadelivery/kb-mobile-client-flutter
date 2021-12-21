@@ -90,7 +90,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //                                    resetDuration: const Duration(milliseconds: 100),
 //                                    maxScale: 2.5,
                                   return PinchZoom(
-                                  image: Container(
+                                  child: Container(
                                     // color: Colors.blueAccent,
 //                                    height: 9*MediaQuery.of(context).size.width/16,
 //                                       height: MediaQuery.of(context).size.width,
@@ -104,7 +104,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
 //                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
 //                                    )
                                     ),
-                                    zoomedBackgroundColor: Colors.black,
+                                    // zoomedBackgroundColor: Colors.black,
                                       resetDuration: const Duration(milliseconds: 100),
                                       maxScale: 2.5,
                                     onZoomStart: (){},

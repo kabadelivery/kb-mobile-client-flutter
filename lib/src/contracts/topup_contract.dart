@@ -20,7 +20,7 @@ class TopUpView {
   void topUpToPush() {}
   void systemError () {}
   void networkError () {}
-  void updateFees(fees_tmoney, fees_flooz, fees_bankcard) {}
+  void updateFees(double fees_tmoney, double fees_flooz, double fees_bankcard) {}
 }
 
 
@@ -105,9 +105,9 @@ class TopUpPresenter implements TopUpContract {
     try {
       var fees_obj = await provider.fetchFees(customer);
       _topUpView.showGetFeesLoading(false);
-      int fees_flooz = fees_obj["fees_flooz"];
-      int fees_tmoney = fees_obj["fees_tmoney"];
-      int fees_bankcard = fees_obj["fees_bankcard"];
+      double fees_flooz = fees_obj["fees_flooz"];
+      double fees_tmoney = fees_obj["fees_tmoney"];
+      double fees_bankcard = fees_obj["fees_bankcard"];
       _topUpView.showGetFeesLoading(false);
       _topUpView.updateFees(fees_tmoney, fees_flooz, fees_bankcard);
       isWorking = false;

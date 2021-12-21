@@ -3,7 +3,6 @@ class ImageAssets {
 
  static final String kaba_main = "assets/images/png/kaba_ico.png";
 
-
  static final String location_permission = "assets/images/png/arrived.png";
 
  static final String mailbox = "assets/images/png/mailbox.png";
@@ -27,5 +26,6 @@ class ImageAssets {
 
  // dialog icons
  static final String diaspora = "assets/images/png/diaspora.png";
+ static final String smartphoneUnlock = "assets/images/png/smartphone_unlock.png";
 
 }

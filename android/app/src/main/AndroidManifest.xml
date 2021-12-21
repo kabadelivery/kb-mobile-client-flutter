@@ -134,6 +134,28 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="kaba-notification-channel-id" />
+<!--
+
+
+        <receiver
+            android:name="com.huawei.hms.flutter.push.receiver.BackgroundMessageBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.huawei.hms.flutter.push.receiver.BACKGROUND_REMOTE_MESSAGE"/>
+            </intent-filter>
+        </receiver>
+
+
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+        android:value="appid=104925749" />
+    &lt;!&ndash; Replace xxx with the actual payment ID, which can be obtained from the app's IAP information. &ndash;&gt; &ndash;&gt;
+    <meta-data
+        android:name="com.huawei.hms.client.cpid"
+        android:value="cpid=2640228000020036107" />
+-->
+
 
     </application>
 

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -20,11 +22,11 @@ class TopUpPage extends StatefulWidget {
 
   var fees = 0;
 
-  int fees_tmoney = 10;
+  double  fees_tmoney = 10.0;
 
-  int fees_flooz = 10;
+  double  fees_flooz = 10.0;
 
-  var fees_bankcard = 10;
+  double  fees_bankcard = 10.0;
 
   TopUpPage({Key key, this.presenter}) : super(key: key);
 
@@ -456,25 +458,27 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   _getFeesFromAmount() {
     String amount = _amountFieldController.text;
-    int amount_;
+    double amount_;
     if(amount == null || "" == amount.trim())
       amount_ = 0;
     else
-      amount_ = int.parse(amount);
+      amount_ = double.parse(amount);
 
     return ((_getFees().toDouble()*amount_.toDouble())~/100);
   }
 
   _getFeesFromTotal() {
     String amount = _totalAmountFieldController.text;
-    int amount_;
+    double amount_;
     if(amount == null || "" == amount.trim())
       amount_ = 0;
-    else
-      amount_ = int.parse(amount);
+    else {
+      amount_ = double.parse(amount);
+    }
 
     // total = 1 + x | 1.10 // price 9000 -> 9000 / 1.10
-    int fees = (amount_ * (1 - 1/(_getFees().toDouble()/100 + 1.0))).toInt();
+    int fees = (amount_ * ((100-_getFees().toDouble())/100)).roundToDouble().toInt();
+
     return fees;
   }
 

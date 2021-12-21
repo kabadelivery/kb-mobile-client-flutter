@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.2.0 <3.0.0"
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 #  intl_translation: any
@@ -29,32 +31,32 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0 # Add this line
   flutter_redux: ^0.8.2
-  location: ^4.1.1
+  location: ^4.3.0
   flutter_redux_dev_tools: ^0.5.1
   shared_preferences: ^2.0.5
   cached_network_image: ^3.0.0
-  flutter_svg: ^0.22.0
-  carousel_slider: ^3.0.0
+  flutter_svg: ^1.0.0
+  carousel_slider: ^4.0.0
   #  webview_flutter: ^0.3.21
   flutter_inner_drawer: ^1.0.0+1
   rxdart: ^0.27.0
   toast: ^0.1.5
-  google_maps_flutter: ^2.0.3
-  geolocator: ^7.7.0
-  permission_handler: ^7.1.0
+  google_maps_flutter: ^2.1.1
+  geolocator: ^8.0.1
+  permission_handler: ^8.3.0
   place_picker: ^0.9.18
   font_awesome_flutter: ^9.0.0
   #  flutter_qr_reader: ^1.0.2
   qr_flutter: ^4.0.0
-  image_picker: ^0.7.5
+  image_picker: ^0.8.4+4
   flutter_datetime_picker: ^1.5.1
-  firebase_analytics: ^8.3.3
+  firebase_analytics: ^9.0.4
   photo_view: ^0.13.0
   vibration: ^1.2.4
   country_code_picker: ^2.0.1
-#  audioplayer: ^0.19.0
-  audioplayers: ^0.20.1
   device_info: ^2.0.0
+  #  audioplayer: ^0.19.0
+  #  audioplayers: ^0.20.1
 #  just_audio: ^0.7.5
   firebase_core: "^1.10.0"
   firebase_messaging: "^11.1.0"
@@ -62,7 +64,7 @@ dependencies:
   url_launcher: ^6.0.6
   flare_flutter: ^3.0.0
   tinycolor: ^1.0.2
-  provider: ^5.0.0
+  provider: ^6.0.1
   shimmer_animation: ^2.0.0
   awesome_loader: ^0.0.3
   bouncing_widget:
@@ -82,7 +84,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
-  pinch_zoom: ^0.1.0
+  pinch_zoom: ^1.0.0
   flutter_linkify: ^5.0.2
   flutter_icons: ^1.1.0
   iphone_has_notch: ^1.0.0
@@ -90,6 +92,7 @@ dependencies:
   whatsapp_unilink: ^2.0.0
   http: ^0.13.3
   dio: ^4.0.0
+#  huawei_push: ^5.3.0+304
 
 
 
@@ -146,6 +149,7 @@ flutter:
     - assets/images/png/choice.png
     - assets/images/png/enjoy.png
     - assets/images/png/diaspora.png
+    - assets/images/png/smartphone_unlock.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

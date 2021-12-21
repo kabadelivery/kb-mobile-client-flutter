@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -11,6 +12,7 @@ import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -29,18 +31,20 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+
 
 import 'src/StateContainer.dart';
 
@@ -77,9 +81,10 @@ Future<void> main() async {
 }
 
 
+
 FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
-FirebaseAnalytics analytics = FirebaseAnalytics();
+FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
 class MyApp extends StatefulWidget {
 
@@ -103,7 +108,28 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // hms.Push.enableLogger();
+    // logTextController = new TextEditingController();
+    // topicTextController = new TextEditingController();
+    // initPlatformState();
   }
+
+
+
+  @override
+  void dispose() {
+    // logTextController.dispose();
+    // topicTextController.dispose();
+    super.dispose();
+  }
+
+
+  void clearLog() {
+    setState(() {
+      // logTextController.text = "";
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +236,8 @@ class _MyAppState extends State<MyApp> {
                 fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-            home: SplashPage(),
+//             home: SplashPage(),
+          home : LoginOTPConfirmationPage(),
           // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),
@@ -265,6 +292,13 @@ class _MyAppState extends State<MyApp> {
     navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
+}
+
+class CustomIntentPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Text("hard"), color: Colors.white);
+  }
 }
 
 

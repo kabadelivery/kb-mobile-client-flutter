@@ -92,6 +92,19 @@ class CustomerUtils {
     return token;
   }
 
+  static Future<String> getLoginOtpCode () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String otp = ".";
+      try {
+        String jsonCustomer = prefs.getString("_loginResponse");
+        var obj = json.decode(jsonCustomer);
+          otp = obj["login_code"];
+      } catch (_) {
+        xrint("getLoginOtpCode :: otp retrieve error");
+      }
+      return otp;
+  }
+
   static getOldWelcomePage() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

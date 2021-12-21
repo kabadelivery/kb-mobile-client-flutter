@@ -2,11 +2,11 @@
 
 class ServerConfig {
 
- static const String ip_address = "app.kaba-delivery.com"; // prod server
- static const String pay_ip_address = "pay.kaba-delivery.com";
+ // static const String ip_address = "app.kaba-delivery.com"; // prod server
+ // static const String pay_ip_address = "pay.kaba-delivery.com";
 
-   // static const String ip_address = "dev.kaba-delivery.com"; // dev server
-  // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+   static const String ip_address = "dev.kaba-delivery.com"; // dev server
+  static const String pay_ip_address = "dev.pay.kaba-delivery.com";
 
   // static const String ip_address = "kaba-technology.com"; // dev server
   // static const String pay_ip_address = "pay.kaba-technology.com";
@@ -19,8 +19,10 @@ class ServerConfig {
   static const String APP_SERVer = "https://app.kaba-delivery.com";
  static const String APP_SERVER_HOST = "app.kaba-delivery.com";
 
-  // static String TOPIC = "kaba_flutter";
-static String TOPIC = "kaba_delivery_all";
+  static String TOPIC = "kaba_flutter";
+ static String HMS_TOPIC = "kaba_flutter";
+// static String TOPIC = "kaba_delivery_all";
+//  static String HMS_TOPIC = "kaba_delivery_all";
 
   static String LOGIN_EXPIRATION = "_login_expiration_date";
 
@@ -28,5 +30,6 @@ static String TOPIC = "kaba_delivery_all";
   static String ANDROID_APP_LINK = "https://play.google.com/store/apps/details?id=tg.tmye.kaba.brave.one";
 
   static String SHARED_PREF_FIRST_TIME_IN_APP = "_first_time_19062021";
+
 }
 
