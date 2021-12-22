@@ -110,11 +110,20 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                     android:scheme="https"
                     android:host="app.kaba-delivery.com" />
             </intent-filter>
+
+            <!-- opening maps in kaba -->
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="maps.google.com" />
+                <data android:scheme="geo" />
+            </intent-filter>
+
         </activity>
 
         <!-- ulrichabiguime@gmail.com kaba-tmye-2018 -->

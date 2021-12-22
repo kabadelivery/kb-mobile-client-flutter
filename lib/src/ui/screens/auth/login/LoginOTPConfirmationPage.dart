@@ -62,11 +62,13 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
   Timer mainTimer;
 
-  DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime lastCodeSentDatetime = DateTime.now();
 
   bool loadingToGoOut = false;
 
   bool showErrorMessage = false;
+
+  bool errorAnimated = false;
 
   @override
   void initState() {
@@ -77,6 +79,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
       if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
         xrint("time has ellapsed;");
         timer.cancel();
+        Navigator.of(context).pop({'otp_valid': "no"});
       } else {
         /* update text;;; if codeIsSent */
         setState(() {
@@ -142,16 +145,17 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                             AnimatedDefaultTextStyle(
                                               duration: const Duration(milliseconds: 300),
                                               curve: Curves.bounceOut,
-                                              style: TextStyle(
+                                              style: errorAnimated ? TextStyle(
                                                 fontSize: 18,
-                                                color: showErrorMessage ? KColors.primaryColor : Colors.orange
+                                                color: KColors.primaryColor
+                                              ) : TextStyle(
+                                                  fontSize: 0,
+                                                  color: Colors.orange
                                               ),
                                               child: Text(
                                                 '${AppLocalizations.of(context).translate("verification_code_wrong")}',
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                ),
+
                                               ),
                                             ),
                                             // Text("${AppLocalizations.of(context).translate("verification_code_wrong")}")
@@ -275,6 +279,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
     if (pwd.length != 4)
       return;
 
+
     validateCodeAndConfirm(pwd).then((isOtpValid) {
       if (isOtpValid) {
         // move to home page,,, with pop
@@ -286,22 +291,36 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
         });
       } else {
         tryCount++;
-        setState(() {
-          showErrorMessage = true;
-        });
-        Future.delayed(Duration(seconds: 3), (){
+
+        Future.delayed(Duration(milliseconds: 700), () {
+          // show error message and hide numbers
           setState(() {
-            showErrorMessage = false;
+            showErrorMessage = true;
           });
-          /* reduce login chances down and ask again password */
-          if (tryCount == 3) {
-            // pop out
-            Navigator.of(context).pop({'otp_valid':"no"});
-          } else {
+
+          // delay start of animation
+          Future.delayed(Duration(milliseconds: 300), () {
             setState(() {
-              pwd = "";
+              this.errorAnimated = true;
             });
-          }
+          });
+
+          // stop error animation
+          Future.delayed(Duration(seconds: 3), () {
+            setState(() {
+              showErrorMessage = false;
+              this.errorAnimated = false;
+            });
+            /* reduce login chances down and ask again password */
+            if (tryCount == 3) {
+              // pop out
+              Navigator.of(context).pop({'otp_valid': "no"});
+            } else {
+              setState(() {
+                pwd = "";
+              });
+            }
+          });
         });
       }
     });

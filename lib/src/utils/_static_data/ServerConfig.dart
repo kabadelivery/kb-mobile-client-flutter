@@ -1,6 +1,6 @@
 
 
-class ServerConfig {
+ class ServerConfig {
 
  // static const String ip_address = "app.kaba-delivery.com"; // prod server
  // static const String pay_ip_address = "pay.kaba-delivery.com";
