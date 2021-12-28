@@ -106,8 +106,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2> impleme
     });
 
     /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
-
-
   }
 
   @override

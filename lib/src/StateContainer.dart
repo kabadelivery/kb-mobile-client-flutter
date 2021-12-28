@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +42,9 @@ class StateContainerState extends State<StateContainer> {
   Position location;
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;
+  // firebase
+  FirebaseAnalytics analytics;
+  FirebaseAnalyticsObserver observer;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
@@ -50,6 +54,14 @@ class StateContainerState extends State<StateContainer> {
       /* save it to shared preferences */
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setInt('balance', balance);
+    }
+  }
+
+  Future<void> updateAnalytics({analytics}) async {
+    if (analytics != null) {
+      setState(() {
+        this.analytics = analytics;
+      });
     }
   }
 
@@ -150,6 +162,14 @@ class StateContainerState extends State<StateContainer> {
       /* save it to shared preferences */
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('kabaPoints', kabaPoints);
+    }
+  }
+
+  Future<void> updateObserver({FirebaseAnalyticsObserver observer}) {
+    if (observer != null) {
+      setState(() {
+        this.observer = observer;
+      });
     }
   }
 }

@@ -489,7 +489,7 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) async {
+  launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees) async {
 
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
@@ -534,7 +534,7 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchPayDunya(CustomerModel customer, String balance, int fees) async {
+  launchPayDunya(CustomerModel customer, String balance, double fees) async {
     xrint("entered launchPayDunya ${json.encode({"amount": balance, 'fees':'$fees'})} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
     if (await Utils.hasNetwork()) {
 

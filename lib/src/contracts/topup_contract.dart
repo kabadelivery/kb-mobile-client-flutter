@@ -7,8 +7,8 @@ import 'package:KABA/src/xrint.dart';
 
 class TopUpContract {
 
-  void launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) {}
-  void launchPayDunya(CustomerModel customer, String balance, int fees) {}
+  void launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees) {}
+  void launchPayDunya(CustomerModel customer, String balance, double fees) {}
   void fetchFees(CustomerModel customer) {}
   void fetchTopUpConfiguration(CustomerModel customer) {}
 }
@@ -42,7 +42,7 @@ class TopUpPresenter implements TopUpContract {
   }
 
   @override
-  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance, int fees) async {
+  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees) async {
 
     if (isWorking)
       return;
@@ -69,7 +69,7 @@ class TopUpPresenter implements TopUpContract {
   }
 
   @override
-  Future<void> launchPayDunya(CustomerModel customer, String balance, int fees) async {
+  Future<void> launchPayDunya(CustomerModel customer, String balance, double fees) async {
 
     if (isWorking)
       return;
@@ -105,9 +105,9 @@ class TopUpPresenter implements TopUpContract {
     try {
       var fees_obj = await provider.fetchFees(customer);
       _topUpView.showGetFeesLoading(false);
-      double fees_flooz = fees_obj["fees_flooz"];
-      double fees_tmoney = fees_obj["fees_tmoney"];
-      double fees_bankcard = fees_obj["fees_bankcard"];
+      double fees_flooz = double.parse("${fees_obj["fees_flooz"]}");
+      double fees_tmoney = double.parse("${fees_obj["fees_tmoney"]}");
+      double fees_bankcard = double.parse("${fees_obj["fees_bankcard"]}");
       _topUpView.showGetFeesLoading(false);
       _topUpView.updateFees(fees_tmoney, fees_flooz, fees_bankcard);
       isWorking = false;

@@ -208,7 +208,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('total_amount')}")),
                     Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: CommandStateColor.delivered.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: TextField(controller: _totalAmountFieldController, textAlign: TextAlign.right,
+                      child: TextField(controller: _totalAmountFieldController, enabled: false, textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 20),
                           decoration: InputDecoration(fillColor: Colors.yellow,
                               border: InputBorder.none,
@@ -419,13 +419,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
 
-
   void _updateFromTotal () {
     /* check which one has focus before updating */
     setState(() {
       if (!_amountFocusNode.hasFocus) {
         // update fees
-        xrint("amount field doesnt have  focus ");
+        xrint("amount field doesnt have focus ");
         _amountFieldController.removeListener(_updateFromInitialAmountTotal);
         _amountFieldController.text = "${_getRealInitialAmountFromTotal()}";
         _amountFieldController.addListener(_updateFromInitialAmountTotal);
@@ -468,31 +467,31 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   _getFeesFromTotal() {
-    String amount = _totalAmountFieldController.text;
-    double amount_;
-    if(amount == null || "" == amount.trim())
-      amount_ = 0;
+    String total = _totalAmountFieldController.text;
+    double total_;
+    if(total_ == null || "" == total.trim())
+      total_ = 0;
     else {
-      amount_ = double.parse(amount);
+      total_ = double.parse(total);
     }
 
-    // total = 1 + x | 1.10 // price 9000 -> 9000 / 1.10
-    int fees = (amount_ * ((100-_getFees().toDouble())/100)).roundToDouble().toInt();
-
+    int fees = total_.toInt() - _getRealInitialAmountFromTotal();
     return fees;
   }
 
   _getRealInitialAmountFromTotal () {
 
-    int fees = _getFeesFromTotal();
     String _total = _totalAmountFieldController.text;
-    int total;
+    double total;
     if(_total == null || "" == _total.trim())
       total = 0;
     else
-      total = int.parse(_total);
-    return total - fees;
+      total = double.parse(_total);
+
+    // amount = total / (1+fees)
+    return (100*total/(100.toDouble()+_getFees().toDouble())).toInt();
   }
+
 
   _getRealTotalAmountFromInitial () {
 
@@ -532,7 +531,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     });
   }
 
-  _getFees() {
+  double _getFees() {
     switch(selectedPaymentMode){
       case 0:
         return widget.fees_tmoney;
@@ -543,7 +542,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       case 2:
         return widget.fees_flooz;
     }
-    return 10;
+    return 10.toDouble();
   }
 
   _getTotalAmountEuro() {

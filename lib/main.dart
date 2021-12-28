@@ -74,6 +74,19 @@ Future<void> main() async {
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingOpenedAppHandler);
 
+  /* Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyCQP7mkpTjBTQEU5rflQrDESuOnKyIwVUY',
+      authDomain: 'kaba-tmye-2018.firebaseio.com',
+      databaseURL: 'https://kaba-tmye-2018.firebaseio.com',
+      projectId: 'kaba-tmye-2018',
+      storageBucket: 'kaba-tmye-2018.appspot.com',
+      messagingSenderId: '7649846363',
+      appId: '1:7649846363:android:102dc75b46bb9974',
+      measurementId: 'G-0N1G9FLDZE',
+    ),
+  );*/
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
@@ -84,13 +97,18 @@ Future<void> main() async {
 
 FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
-FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
 class MyApp extends StatefulWidget {
 
+      FirebaseAnalytics analytics;
+    FirebaseAnalyticsObserver observer;
+
   var appLanguage;
 
-  MyApp({this.appLanguage});
+  MyApp({this.appLanguage}) {
+    analytics = FirebaseAnalytics.instance;
+    observer = FirebaseAnalyticsObserver(analytics: analytics);
+  }
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -100,8 +118,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  // initialize flutter fire
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -112,8 +128,14 @@ class _MyAppState extends State<MyApp> {
     // logTextController = new TextEditingController();
     // topicTextController = new TextEditingController();
     // initPlatformState();
+
   }
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
 
   @override
@@ -216,7 +238,7 @@ class _MyAppState extends State<MyApp> {
               Locale("vi")*/
             ],
             navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: analytics),
+              FirebaseAnalyticsObserver(analytics: widget.analytics),
             ],
 
             localizationsDelegates: [
@@ -236,12 +258,12 @@ class _MyAppState extends State<MyApp> {
                 fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//             home: SplashPage(),
+            home: SplashPage(analytics: widget.analytics, observer: widget.observer),
 //           home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
           // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),
-         home: EditAddressPage(presenter: EditAddressPresenter()),
+//          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
 //      home: TransactionHistoryPage(presenter: TransactionPresenter()),

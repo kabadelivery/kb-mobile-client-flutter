@@ -21,6 +21,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,8 +51,12 @@ class SplashPage extends StatefulWidget { // translated
 
   var argument;
 
+  var observer;
 
-  SplashPage({Key key, this.destination = 0, this.argument = 0}) : super(key: key);
+  var analytics;
+
+
+  SplashPage({Key key, this.destination = 0, this.argument = 0, this.observer, this.analytics}) : super(key: key);
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -79,6 +84,8 @@ class _SplashPageState extends State<SplashPage> {
   }
 
 
+
+
   Future handleTimeout() async {
 
     /* check if first opening the app */
@@ -99,7 +106,7 @@ class _SplashPageState extends State<SplashPage> {
 
       // prefs = await SharedPreferences.getInstance();
       // String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");
-     /* if (expDate != null) {
+      /* if (expDate != null) {
         try {
           if (DateTime.now().isAfter(
               DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
@@ -133,32 +140,45 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-      return Scaffold(
-        body:  AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark,
-          child: Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    /* image */
-                    SizedBox(
-                        height: 50,
-                        width: 50,
-                        child:SvgPicture.asset(
-                          VectorsData.kaba_icon_svg,
-                          color: KColors.primaryColor,
-                          semanticsLabel: 'LOGO',
-                        )),
-                    /* text */
-                    SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context).translate('app_title')}",
-                        style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-                  ]
-              )),
-        ),
-      );
+   /* if (StateContainer.of(context).analytics == null ||
+        StateContainer.of(context).observer == null) {
+      StateContainer.of(context).updateAnalytics(analytics: widget.analytics);
+      StateContainer.of(context).updateObserver(observer: widget.observer);
+    }*/
+
+    return Scaffold(
+      body:  AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  /* image */
+                  SizedBox(
+                      height: 50,
+                      width: 50,
+                      child:SvgPicture.asset(
+                        VectorsData.kaba_icon_svg,
+                        color: KColors.primaryColor,
+                        semanticsLabel: 'LOGO',
+                      )),
+                  /* text */
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate('app_title')}",
+                      style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                ]
+            )),
+      ),
+    );
   }
 
   Future<bool> _getIsFirstTime() async {
