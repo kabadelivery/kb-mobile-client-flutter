@@ -392,5 +392,8 @@
   "identity_verify_title": "Identity verification",
   "identity_check_email": "Check your email. we have sent you the code at ",
   "identity_check_pn": "Check your phone. we have sent you the code at ",
-  "verification_code_wrong": "Wrong code. Try again"
+  "verification_code_wrong": "Wrong code. Try again",
+
+  "gps_": "GPS",
+  "address_last_update": "Updated at :"
 }

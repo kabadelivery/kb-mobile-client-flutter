@@ -3,11 +3,16 @@
 Kaba under Flutter framework
 
 
+#3.2.4: 28/12/2021
 
+- implemented otp control when loginning into the app
+- corrected the % of the top up for an exemple of 2.5% fees of delivery
+- [bug resolved] tried to correct the bug
 
+#3.2.3 : undefined
 
-
-
+- solving issue language that are different from en,zh,fr . (They used to bug)
+- [created bug] on the notification feature.
 
 #3.2.2 : 11/11/2021
 

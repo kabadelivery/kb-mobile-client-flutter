@@ -404,5 +404,7 @@
   "identity_check_email": "我们向您的邮箱发验证码。请查收并输入输入 ",
   "identity_check_pn": "我们向您的手机发验证码。请查收并输入输入 ",
 
-  "verification_code_wrong": "验证码有误。请重试一下"
+  "verification_code_wrong": "验证码有误。请重试一下",
+  "gps_": "定位",
+  "address_last_update": "最后更新时间："
 }

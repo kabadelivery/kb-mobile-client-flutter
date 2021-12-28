@@ -454,13 +454,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           onRefresh: _refresh,
           child: ListView(
               children: <Widget>[
+                /* info when needed*/
+                Container(padding: EdgeInsets.only(left:10, bottom:14, right:10, top:14),
+                  color: Colors.white,
+                  child: Text("Cher clients, les livraisons seront perturbées aujourdhui en raison du manque "
+                      "d'effectif. Merci pour votre comprehension.",textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
+                  alignment: Alignment.center,
+                ),
                 /*top slide*/
                 Stack(
                   children: <Widget>[
                     ClipPath(
                         clipper: KabaRoundTopClipper(),
                         child:
-
                         data.slider.length > 1 ?  CarouselSlider(
                           options: CarouselOptions(
                             onPageChanged: _carousselPageChanged,
@@ -558,6 +565,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                     ),
                 )),
                 /* all the restaurants button*/
+                SizedBox(height: 10),
                 SizedBox(height: 10),
                 Container(
                     padding: EdgeInsets.only(top:20, bottom:20),

@@ -35,7 +35,9 @@ class EditAddressPage extends StatefulWidget {
 
   DeliveryAddressModel createdAddress = null;
 
-  EditAddressPage({Key key, this.address, this.presenter}) : super(key: key);
+  String gps_location = "";
+
+  EditAddressPage({Key key, this.address, this.presenter, this.gps_location}) : super(key: key);
 
   @override
   _EditAddressPageState createState() => _EditAddressPageState(address);
@@ -72,6 +74,16 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     // TODO: implement initState
     super.initState();
     widget.presenter.editAddressView = this;
+    // if we are coming here with a gps location from another app, let us know
+    if (widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
+      address.location = widget.gps_location;
+      Future.delayed(Duration(seconds: 2), () {
+        widget.presenter.checkLocationDetails(widget.customer,
+            position: Position(
+                longitude: double.parse(widget.gps_location.split(":")[1]), latitude: double.parse(widget.gps_location.split(":")[0])));
+        xrint("editaddress -> ${address.toJson().toString()}");
+      });
+     }
     widget.address = address;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -146,7 +158,22 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 //                                  isPickLocation
                                   isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
-                                  !_checkLocationLoading && address?.location != null ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container(),
+                                  !_checkLocationLoading && address?.location != null ?
+                                  Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: KColors.primaryColor.withAlpha(30),
+                                        borderRadius: BorderRadius.all(Radius.circular(5))
+                                    ),
+                                    child: Row(mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("${AppLocalizations.of(context).translate('gps_')} ", style: TextStyle(color: KColors.primaryColor)),
+                                        Icon(Icons.check_circle, color: KColors.primaryColor),
+                                        Text("K", style: TextStyle(color: KColors.primaryColor)),
+                                      ],
+                                    ),
+                                  )
+                                      : Container(),
                                   SizedBox(width: 10),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.chevron_right, color: KColors.primaryColor) :
                                   BouncingWidget(
@@ -319,6 +346,8 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   bool isPickLocation = false;
 
+
+
   void _jumpToPickAddressPage() async {
 
     lo.LocationData location = await lo.Location().getLocation();
@@ -379,7 +408,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     /* exces d'intelligence */
     widget.presenter.editAddressView = this;
 
-  /*  *//* validations ? *//*
+    /*  *//* validations ? *//*
     if ("".compareTo(_locationNameController.text) == 0 || _locationNameController.text?.length < 3) {
       showErrorMessageDialog("Please enter a specific address name");
       return;

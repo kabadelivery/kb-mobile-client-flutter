@@ -29,8 +29,9 @@ class MyAddressesPage extends StatefulWidget {
 
   List<DeliveryAddressModel> data;
 
-  MyAddressesPage({Key key, this.presenter, this.pick = false}) : super(key: key);
+  String gps_location = "";
 
+  MyAddressesPage({Key key, this.presenter, this.pick = false, this.gps_location /*6.33:3.44*/}) : super(key: key);
 
   @override
   _MyAddressesPageState createState() => _MyAddressesPageState();
@@ -53,6 +54,13 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
       widget.presenter.loadAddressList(customer);
     });
     super.initState();
+    if(widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
+      Future.delayed(Duration(seconds: 2), () {
+        _createAddress().then((value){
+          widget.gps_location = "";
+        });
+      });
+    }
   }
 
   @override
@@ -136,25 +144,35 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
         child: Container(padding: EdgeInsets.all(10),
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded (child: Container (child: Text("${address?.name?.toUpperCase()}", style: TextStyle(color: Colors.black.withAlpha(180), fontWeight: FontWeight.bold,fontSize: 18)))),
+                  IconButton(icon: Icon(FontAwesomeIcons.edit, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
                 ],
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded (
-                    child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Container(padding: EdgeInsets.only(top: 5, bottom: 10),
                       child: Text("${address?.description}",maxLines: 2, overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 14, color: Colors.grey)),
                     ),
                   ),
-                  IconButton(icon: Icon(FontAwesomeIcons.edit, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(address)),
                 ],
               ),
-              Row(children: <Widget>[Text("${AppLocalizations.of(context).translate('contact')}", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
-                Text("${address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(children:<Widget>[
+                      Text("${AppLocalizations.of(context).translate('contact')}", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
+                      Text("${address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
+                  ]),
+              SizedBox(height:10),
+              Row(mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("${AppLocalizations.of(context).translate('address_last_update').toUpperCase()} ${DateTime.fromMillisecondsSinceEpoch(int.parse(address?.updated_at)*1000).toIso8601String().split(".")[0].replaceAll("T", " ")}", style: TextStyle(color: Colors.grey)),
+                ],
+              )
             ],
           ),
         ),
@@ -166,10 +184,10 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
 
   _editAddress(DeliveryAddressModel address) async {
 
-
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            EditAddressPage(address: address, presenter: EditAddressPresenter()),
+            EditAddressPage(address: address, presenter: EditAddressPresenter()
+            ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -207,12 +225,13 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
       Navigator.of(context).pop({'selection':address});
   }
 
-  _createAddress() async {
+ Future<void> _createAddress() async {
 
     // when come back update the thing.
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            EditAddressPage(presenter: EditAddressPresenter()),
+            EditAddressPage(presenter: EditAddressPresenter(),
+                gps_location: widget.gps_location),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;

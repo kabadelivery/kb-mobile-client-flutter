@@ -169,12 +169,16 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             }
         ));
 
-    if (results != null && results.containsKey('phone_number') && results.containsKey('password')) {
+    if (results != null && results.containsKey('phone_number') && results.containsKey('password')
+    && results.containsKey('autologin')) {
       setState(() {
         _loginFieldController.text = results['phone_number'];
       });
       showLoading(true);
       // launch request for retrieving the delivery prices and so on.
+      if (results['autologin'] == true){
+        widget.autoLogin = true;
+      }
       widget.presenter.login(results['phone_number'], results['password'], widget.version);
     }
   }
@@ -245,19 +249,30 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     /* token must be saved by now. */
     showLoading(false);
 
-    /* we make sure the login is a success */
-    Map results = await Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            LoginOTPConfirmationPage (username: customer.username, otp_code: otp),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Map results;
+
+    if (!widget.autoLogin) {
+      /* we make sure the login is a success */
+      results = await Navigator.of(context).push(
+          PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  LoginOTPConfirmationPage(
+                      username: customer.username, otp_code: otp),
+              transitionsBuilder: (context, animation, secondaryAnimation,
+                  child) {
+                var begin = Offset(1.0, 0.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin: begin, end: end);
+                var curvedAnimation = CurvedAnimation(
+                    parent: animation, curve: curve);
+                return SlideTransition(
+                    position: tween.animate(curvedAnimation), child: child);
+              }
+          ));
+    } else {
+      results['otp_valid'] = "valid";
+    }
 
     String res = results['otp_valid'];
     if ("valid".compareTo(res) == 0) {

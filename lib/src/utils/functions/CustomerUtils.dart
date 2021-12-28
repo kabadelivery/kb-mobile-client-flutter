@@ -93,17 +93,17 @@ class CustomerUtils {
   }
 
   static Future<String> getLoginOtpCode () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String otp = ".";
-      try {
-        String jsonCustomer = prefs.getString("_loginResponse");
-        var obj = json.decode(jsonCustomer);
-        otp = obj["login_code"];
-        xrint("getLoginOtpCode :: otp = ${otp}");
-      } catch (_) {
-        xrint("getLoginOtpCode :: otp retrieve error");
-      }
-      return otp;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String otp = ".";
+    try {
+      String jsonCustomer = prefs.getString("_loginResponse");
+      var obj = json.decode(jsonCustomer);
+      otp = obj["login_code"];
+      xrint("getLoginOtpCode :: otp = ${otp}");
+    } catch (_) {
+      xrint("getLoginOtpCode :: otp retrieve error");
+    }
+    return otp;
   }
 
   static getOldWelcomePage() async {
@@ -119,7 +119,7 @@ class CustomerUtils {
     prefs.setString("_homepage", wp);
   }
 
- static Future<bool> isPusTokenUploaded() async {
+  static Future<bool> isPusTokenUploaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool("is_push_token_uploaded") == true;
   }
@@ -127,6 +127,19 @@ class CustomerUtils {
   static Future<void> setPushTokenUploadedSuccessfully() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("is_push_token_uploaded", true);
+  }
+
+  static bool isGpsLocation(String gps_latlong) {
+    /* if gps location is under the format z.xxxxxx,y.xxxxx,
+    * thus two different numbers with a length or minimum 6 chars each,
+    * we confirm it's a gps location */
+    List<String> latlong = gps_latlong.split(",").toList();
+    if (latlong.length == 2 &&
+      double.parse(latlong[0]).isFinite && double.parse(latlong[0]).abs() <= 90
+      && double.parse(latlong[1]).isFinite && double.parse(latlong[1]).abs() <= 180){
+        return true;
+      }
+    return false;
   }
 
 }

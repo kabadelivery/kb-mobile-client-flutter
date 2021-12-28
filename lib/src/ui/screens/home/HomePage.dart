@@ -155,32 +155,32 @@ class _HomePageState extends State<HomePage> {
         String _has_seen_email_account_notification = prefs.getString("_has_seen_email_account_notification");
 
         if (_has_seen_email_account_notification != "1" && Utils.isEmailValid(customer?.email))
-        showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate(
-                  'welcome')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    // location_permission
-                    Container(
-                        height: 100, width: 100,
-                        child: Image.asset(
-                          ImageAssets.diaspora,
-                          height: 100.0,
-                          width: 100.0,
-                          alignment: Alignment.center,
-                        )
-                    ),
-                    SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context).translate(
-                        "congrats_for_email_account")} 😊",style: TextStyle(fontSize: 14),
-                        textAlign: TextAlign.center)
-          /*      RichText(
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("${AppLocalizations.of(context).translate(
+                    'welcome')}"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100, width: 100,
+                          child: Image.asset(
+                            ImageAssets.diaspora,
+                            height: 100.0,
+                            width: 100.0,
+                            alignment: Alignment.center,
+                          )
+                      ),
+                      SizedBox(height: 10),
+                      Text("${AppLocalizations.of(context).translate(
+                          "congrats_for_email_account")} 😊",style: TextStyle(fontSize: 14),
+                          textAlign: TextAlign.center)
+                      /*      RichText(
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(
@@ -196,23 +196,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )*/
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context).translate('ok')}"),
-                  onPressed: () {
-                    prefs.setString("_has_seen_email_account_notification", "1");
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-        });
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('ok')}"),
+                    onPressed: () {
+                      prefs.setString("_has_seen_email_account_notification", "1");
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+      });
     });
     // FLUTTER NOTIFICATION
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -583,105 +583,121 @@ class _HomePageState extends State<HomePage> {
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
-    List<String> pathSegments = mUri.pathSegments.toList();
 
-    /*
+    if (link.substring(0,3).compareTo("geo") == 0 && CustomerUtils.isGpsLocation("${mUri.path}")) {
+      // we have a gps location
+      xrint("path is gps location -> ${link}");
+      /*6.33:3.44*/
+      _checkIfLoggedInAndDoAction(() {
+        StateContainer
+            .of(context)
+            .tabPosition = 3;
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+            gps_location: "${mUri.path}".replaceAll(",", ":")));
+      });
+    } else {
+      // we dont have  a gps location
+      xrint("path is not gps location -> ${link}");
+
+      List<String> pathSegments = mUri.pathSegments.toList();
+      /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
-    switch (pathSegments[0]) {
-      case "voucher":
-        _checkIfLoggedInAndDoAction(() {
-          if (pathSegments.length > 1) {
-            xrint("voucher id homepage -> ${pathSegments[1]}");
-            widget.destination = SplashPage.VOUCHER;
+      switch (pathSegments[0]) {
+        case "voucher":
+          _checkIfLoggedInAndDoAction(() {
+            if (pathSegments.length > 1) {
+              xrint("voucher id homepage -> ${pathSegments[1]}");
+              widget.destination = SplashPage.VOUCHER;
+              /* convert from hexadecimal to decimal */
+              widget.argument = "${pathSegments[1]}";
+              _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
+            }});
+          break;
+        case "vouchers":
+          _checkIfLoggedInAndDoAction(() {
+            xrint("vouchers page");
+            widget.destination = SplashPage.VOUCHERS;
             /* convert from hexadecimal to decimal */
-            widget.argument = "${pathSegments[1]}";
-            _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
-          }});
-        break;
-      case "vouchers":
-        _checkIfLoggedInAndDoAction(() {
-          xrint("vouchers page");
-          widget.destination = SplashPage.VOUCHERS;
-          /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
-        });
-        break;
-      case "addresses":
-        _checkIfLoggedInAndDoAction(() {
-          xrint("addresses page");
-          widget.destination = SplashPage.ADDRESSES;
-          /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
-        });
-        break;
-      case "transactions":
-        _checkIfLoggedInAndDoAction(() {
-          _jumpToPage(
-              context, TransactionHistoryPage(presenter: TransactionPresenter()));
-        });
-        break;
-      case "restaurants":
-      //    widget.destination = SplashPage.RESTAURANT_LIST;
-        setState(() {
-          StateContainer.of(context).updateTabPosition(tabPosition: 1);
-        });
-        break;
-      case "restaurant":
-        if (pathSegments.length > 1) {
-          xrint("restaurant id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.RESTAURANT;
-          /* convert from hexadecimal to decimal */
-          widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantDetailsPage(
-              restaurant: RestaurantModel(id: widget.argument),
-              presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+          });
+          break;
+        case "addresses":
+          _checkIfLoggedInAndDoAction(() {
+            xrint("addresses page");
+            widget.destination = SplashPage.ADDRESSES;
+            /* convert from hexadecimal to decimal */
+            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+          });
+          break;
+        case "transactions":
+          _checkIfLoggedInAndDoAction(() {
+            _jumpToPage(
+                context, TransactionHistoryPage(presenter: TransactionPresenter()));
+          });
+          break;
+        case "restaurants":
+        //    widget.destination = SplashPage.RESTAURANT_LIST;
+          setState(() {
+            StateContainer.of(context).updateTabPosition(tabPosition: 1);
+          });
+          break;
+        case "restaurant":
+          if (pathSegments.length > 1) {
+            xrint("restaurant id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.RESTAURANT;
+            /* convert from hexadecimal to decimal */
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantDetailsPage(
+                restaurant: RestaurantModel(id: widget.argument),
+                presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "order":
-        _checkIfLoggedInAndDoAction(() {
-          if (pathSegments.length > 1) {
-            xrint("order id -> ${pathSegments[1]}");
-            widget.destination = SplashPage.ORDER;
-            widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
-                orderId: widget.argument, presenter: OrderDetailsPresenter()));
           }
-        });
-        break;
-      case "food":
-        if (pathSegments.length > 1) {
-          xrint("food id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.FOOD;
-          widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantMenuPage(
-              foodId: widget.argument, presenter: MenuPresenter()));
-        }
-        break;
-      case "menu":
-        if (pathSegments.length > 1) {
-          xrint("menu id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.MENU;
-          widget.argument = int.parse("${pathSegments[1]}");
+          break;
+        case "order":
+          _checkIfLoggedInAndDoAction(() {
+            if (pathSegments.length > 1) {
+              xrint("order id -> ${pathSegments[1]}");
+              widget.destination = SplashPage.ORDER;
+              widget.argument = int.parse("${pathSegments[1]}");
+              _jumpToPage(context, OrderDetailsPage(
+                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            }
+          });
+          break;
+        case "food":
+          if (pathSegments.length > 1) {
+            xrint("food id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.FOOD;
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantMenuPage(
+                foodId: widget.argument, presenter: MenuPresenter()));
+          }
+          break;
+        case "menu":
+          if (pathSegments.length > 1) {
+            xrint("menu id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.MENU;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantMenuPage(
-              menuId: widget.argument, presenter: MenuPresenter()));
-        }
-        break;
-      case "review-order":
-        _checkIfLoggedInAndDoAction(() {
-          if (pathSegments.length > 1) {
-            xrint("review-order id -> ${pathSegments[1]}");
-            widget.destination = SplashPage.REVIEW_ORDER;
-            widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
-                orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            _jumpToPage(context, RestaurantMenuPage(
+                menuId: widget.argument, presenter: MenuPresenter()));
           }
-        });
-        break;
+          break;
+        case "review-order":
+          _checkIfLoggedInAndDoAction(() {
+            if (pathSegments.length > 1) {
+              xrint("review-order id -> ${pathSegments[1]}");
+              widget.destination = SplashPage.REVIEW_ORDER;
+              widget.argument = int.parse("${pathSegments[1]}");
+              _jumpToPage(context, OrderDetailsPage(
+                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            }
+          });
+          break;
+      }
+      pathSegments[0] = null;
     }
-    pathSegments[0] = null;
   }
 
   void _handleLinks(String link) {

@@ -562,7 +562,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void registerSuccess(String phone_number, String password) {
     /*  */
     Toast.show("${AppLocalizations.of(context).translate('account_created_successfully')}", context, duration: Toast.LENGTH_LONG);
-    Navigator.of(context).pop({'phone_number':phone_number, 'password':password});
+    Navigator.of(context).pop({'phone_number':phone_number, 'password':password, 'autologin': true});
   }
 
   @override

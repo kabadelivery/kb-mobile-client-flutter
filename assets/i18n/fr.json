@@ -408,5 +408,7 @@
   "identity_check_email": "Veuillez vérifer votre email. Nous vous avons envoyer un code à ",
   "identity_check_pn": "Veuillez vérifer votre téléphone. Nous vous avons envoyer un code au ",
 
-  "verification_code_wrong": "Code erroné. Veuillez réeassayer"
+  "verification_code_wrong": "Code erroné. Veuillez réeassayer",
+  "gps_": "GPS",
+  "address_last_update": "Modifié le :"
 }
