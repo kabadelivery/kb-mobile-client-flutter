@@ -217,6 +217,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           case SplashPage.REVIEW_ORDER:
             _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
             break;
+          case SplashPage.LOCATION_PICKED:
+            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(), gps_location: widget.argument.toString().replaceAll(",", ":")));
+            break;
         }
         widget.destination = null;
       }

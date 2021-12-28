@@ -410,5 +410,6 @@
 
   "verification_code_wrong": "Code erroné. Veuillez réeassayer",
   "gps_": "GPS",
-  "address_last_update": "Modifié le :"
+  "address_last_update": "Modifié le :",
+  "gps_location_valid": "Position GPS recupérée avec succès"
 }

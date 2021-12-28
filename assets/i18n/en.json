@@ -395,5 +395,6 @@
   "verification_code_wrong": "Wrong code. Try again",
 
   "gps_": "GPS",
-  "address_last_update": "Updated at :"
+  "address_last_update": "Updated at :",
+  "gps_location_valid": "Gps location was successfully set"
 }

@@ -18,6 +18,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -43,7 +44,8 @@ class SplashPage extends StatefulWidget { // translated
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
       RESTAURANT_LIST = "RESTAURANT-LIST",
-      ADDRESSES = "ADDRESSES";
+      ADDRESSES = "ADDRESSES",
+      LOCATION_PICKED = "LOCATION_PICKED";
 
   static var routeName = "/SplashPage";
 
@@ -272,9 +274,23 @@ class _SplashPageState extends State<SplashPage> {
     xrint("path -> ${mUri.path}");
     xrint("pathSegments -> ${mUri.pathSegments.toList().toString()}");
 
-// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
-
     List<String> pathSegments = mUri.pathSegments.toList();
+
+// adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
+    if (link.substring(0,3).compareTo("geo") == 0 && CustomerUtils.isGpsLocation("${mUri.path}")) {
+      // we have a gps location
+      xrint("path is gps location -> ${link}");
+      /*6.33:3.44*/
+   /*   _checkIfLoggedInAndDoAction(() {
+        StateContainer
+            .of(context)
+            .tabPosition = 3;
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+            gps_location: "${mUri.path}".replaceAll(",", ":")));*/
+      widget.destination = SplashPage.LOCATION_PICKED;
+      widget.argument = "${mUri.path}";
+      navigatorKey.currentState.pushNamed(MyAddressesPage.routeName, arguments: widget.argument);
+    } else {
 
     /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
@@ -356,9 +372,9 @@ class _SplashPageState extends State<SplashPage> {
         break;
     }
   }
+}
 
   void _handleLinks(String link) {
-
     // if you are logged in, we can just move to the activity.
     if (link == null)
       return;
@@ -380,71 +396,90 @@ class _SplashPageState extends State<SplashPage> {
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
     List<String> pathSegments = mUri.pathSegments.toList();
+
+
+    if (link.substring(0, 3).compareTo("geo") == 0 &&
+        CustomerUtils.isGpsLocation("${mUri.path}")) {
+      // we have a gps location
+      xrint("path is gps location -> ${link}");
+      /*6.33:3.44*/
+      /*   _checkIfLoggedInAndDoAction(() {
+        StateContainer
+            .of(context)
+            .tabPosition = 3;
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+            gps_location: "${mUri.path}".replaceAll(",", ":")));*/
+      widget.destination = SplashPage.LOCATION_PICKED;
+      widget.argument = "${mUri.path}";
+      navigatorKey.currentState.pushNamed(
+          MyAddressesPage.routeName, arguments: widget.argument);
+    } else {
 //    if (pathSegments[0])
-    switch(pathSegments[0]) {
-      case "transactions":
-        widget.destination = SplashPage.TRANSACTIONS;
-        break;
-      case "restaurants":
-        widget.destination = SplashPage.RESTAURANT_LIST;
-        break;
-      case "restaurant":
-        if (pathSegments.length > 1) {
-          xrint("restaurant id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.RESTAURANT;
-          widget.argument = int.parse("${pathSegments[1]}");
+      switch (pathSegments[0]) {
+        case "transactions":
+          widget.destination = SplashPage.TRANSACTIONS;
+          break;
+        case "restaurants":
+          widget.destination = SplashPage.RESTAURANT_LIST;
+          break;
+        case "restaurant":
+          if (pathSegments.length > 1) {
+            xrint("restaurant id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.RESTAURANT;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-        }
-        break;
-      case "voucher":
-        if (pathSegments.length > 1) {
-          xrint("voucher id splash -> ${pathSegments[1]}");
-          widget.destination = SplashPage.VOUCHER;
+          }
+          break;
+        case "voucher":
+          if (pathSegments.length > 1) {
+            xrint("voucher id splash -> ${pathSegments[1]}");
+            widget.destination = SplashPage.VOUCHER;
+            /* convert from hexadecimal to decimal */
+            widget.argument = "${pathSegments[1]}";
+          }
+          break;
+        case "vouchers":
+          xrint("vouchers page");
+          widget.destination = SplashPage.VOUCHERS;
           /* convert from hexadecimal to decimal */
-          widget.argument = "${pathSegments[1]}";
-        }
-        break;
-      case "vouchers":
-        xrint("vouchers page");
-        widget.destination = SplashPage.VOUCHERS;
-        /* convert from hexadecimal to decimal */
-        break;
-      case "addresses":
-        xrint("addresses page");
-        widget.destination = SplashPage.ADDRESSES;
-        break;
-      case "order":
-        if (pathSegments.length > 1) {
-          xrint("order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+          break;
+        case "addresses":
+          xrint("addresses page");
+          widget.destination = SplashPage.ADDRESSES;
+          break;
+        case "order":
+          if (pathSegments.length > 1) {
+            xrint("order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-        }
-        break;
-      case "food":
-        if (pathSegments.length > 1) {
-          xrint("food id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.FOOD;
+          }
+          break;
+        case "food":
+          if (pathSegments.length > 1) {
+            xrint("food id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.FOOD;
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-          widget.argument = int.parse("${pathSegments[1]}");
-        }
-        break;
-      case "menu":
-        if (pathSegments.length > 1) {
-          xrint("menu id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.MENU;
-          widget.argument = int.parse("${pathSegments[1]}");
+            widget.argument = int.parse("${pathSegments[1]}");
+          }
+          break;
+        case "menu":
+          if (pathSegments.length > 1) {
+            xrint("menu id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.MENU;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-        }
-        break;
-      case "review-order":
-        if (pathSegments.length > 1) {
-          xrint("review-order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.REVIEW_ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+          }
+          break;
+        case "review-order":
+          if (pathSegments.length > 1) {
+            xrint("review-order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.REVIEW_ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-        }
-        break;
+          }
+          break;
+      }
     }
   }
 
@@ -462,12 +497,6 @@ class _SplashPageState extends State<SplashPage> {
             }
         ));
 
-    /* Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => page,
-      ),
-    );*/
   }
 
 }

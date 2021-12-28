@@ -37,6 +37,8 @@ class EditAddressPage extends StatefulWidget {
 
   String gps_location = "";
 
+  bool locationConfirmed = false;
+
   EditAddressPage({Key key, this.address, this.presenter, this.gps_location}) : super(key: key);
 
   @override
@@ -158,7 +160,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 //                                  isPickLocation
                                   isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
-                                  !_checkLocationLoading && address?.location != null ?
+                                  !_checkLocationLoading && address?.location != null && widget.locationConfirmed ?
                                   Container(
                                     padding: EdgeInsets.all(5),
                                     decoration: BoxDecoration(
@@ -367,6 +369,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           .longitude);
 
     xrint("i pick address");
+    widget.locationConfirmed = false;
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
@@ -566,9 +569,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
   void inflateDescription(String description_details, String suburb) {
     showAddressDetailsLoading(false);
     setState(() {
+      widget.locationConfirmed = true;
       address.description = description_details;
       _descriptionController.text = description_details;
       address.quartier = suburb;
+
+      /* if gps_location != null . then show a box to confirm the picking of the address */
+      mToast("${AppLocalizations.of(context).translate('gps_location_valid')}");
+
     });
   }
 
