@@ -172,8 +172,8 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
   Future<void> checkServiceMessage() async {
     try {
       Map smessage = await provider.checkVersion();
+      _homeWelcomeView.checkServiceMessage(null,null,null,null);
       String message_date = smessage["message_date"];
-      // int force = smessage["is_required"];
       String smessage_en = smessage["service_message"]["en"];
       String smessage_fr = smessage["service_message"]["fr"];
       String smessage_zh = smessage["service_message"]["zh"];

@@ -92,6 +92,7 @@ dependencies:
   whatsapp_unilink: ^2.0.0
   http: ^0.13.3
   dio: ^4.0.0
+  overlay_support: ^1.2.1
 #  huawei_push: ^5.3.0+304
 
 
@@ -117,10 +118,14 @@ flutter:
           weight: 500
         - asset: assets/fonts/GoogleSans-Bold.ttf
           weight: 700
-    - family: Dosis
+    - family: Dosis-Light
       fonts:
         - asset: assets/fonts/Dosis-Light.ttf
           weight: 200
+    - family: Dosis-Bold
+      fonts:
+        - asset: assets/fonts/Dosis-Bold.ttf
+          weight: 600
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

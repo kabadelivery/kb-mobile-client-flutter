@@ -411,8 +411,8 @@ class _SplashPageState extends State<SplashPage> {
             gps_location: "${mUri.path}".replaceAll(",", ":")));*/
       widget.destination = SplashPage.LOCATION_PICKED;
       widget.argument = "${mUri.path}";
-      navigatorKey.currentState.pushNamed(
-          MyAddressesPage.routeName, arguments: widget.argument);
+      // navigatorKey.currentState.pushNamed(
+      //     MyAddressesPage.routeName, arguments: widget.argument);
     } else {
 //    if (pathSegments[0])
       switch (pathSegments[0]) {

@@ -8,6 +8,7 @@ import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
@@ -21,6 +22,7 @@ import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
@@ -53,11 +55,12 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
+import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 // For Flutter applications, you'll most likely want to use
@@ -149,7 +152,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
-        popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
     });
 
     WidgetsBinding.instance
@@ -175,12 +178,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       if (widget?.destination != null) {
         switch(widget.destination) {
           case SplashPage.TRANSACTIONS:
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
-                builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
-              ),
-            );
+            _checkIfLoggedInAndDoAction(() {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
+                  builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+                ),
+              );
+            });
             break;
           case SplashPage.RESTAURANT_LIST:
             StateContainer.of(context).tabPosition = 1;
@@ -189,19 +194,32 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.VOUCHER:
-//           xrint("voucher homewelcome -> ${widget.argument}");
-            _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(), autoSubscribe: true, customer: widget.customer));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(context, AddVouchersPage(
+                  presenter: AddVoucherPresenter(),
+                  qrCode: "${widget.argument}".toUpperCase(),
+                  autoSubscribe: true,
+                  customer: widget.customer));
+            });
             break;
           case SplashPage.VOUCHERS:
-//           xrint("voucher homewelcome -> ${widget.argument}");
-            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(
+                  context, MyVouchersPage(presenter: VoucherPresenter()));
+            });
             break;
           case SplashPage.ADDRESSES:
 //           xrint("voucher homewelcome -> ${widget.argument}");
-            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(
+                  context, MyAddressesPage(presenter: AddressPresenter()));
+            });
             break;
           case SplashPage.ORDER:
-            _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(context, OrderDetailsPage(orderId: widget.argument,
+                  presenter: OrderDetailsPresenter()));
+            });
             break;
           case SplashPage.FOOD:
             if (widget?.argument != null)
@@ -216,10 +234,18 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
             break;
           case SplashPage.REVIEW_ORDER:
-            _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(context, OrderDetailsPage(orderId: widget.argument,
+                  presenter: OrderDetailsPresenter()));
+            });
             break;
           case SplashPage.LOCATION_PICKED:
-            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(), gps_location: widget.argument.toString().replaceAll(",", ":")));
+            _checkIfLoggedInAndDoAction(() {
+              _jumpToPage(context, MyAddressesPage(
+                  presenter: AddressPresenter(),
+                  gps_location: widget.argument.toString().replaceAll(
+                      ",", ":")));
+            });
             break;
         }
         widget.destination = null;
@@ -286,7 +312,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 ),
               ),
             ),
-          StateContainer.of(context).loggingState == 0 ? SizedBox(width:15) : PopupMenuButton<String>(
+            StateContainer.of(context).loggingState == 0 ? SizedBox(width:15) : PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
                 return _popupMenus().map((String menuName){
@@ -458,25 +484,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           onRefresh: _refresh,
           child: ListView(
               children: <Widget>[
-                /* info when needed*/
-                /// show must be 1
-                StateContainer.of(context).service_message["show"] == 1 ?
-                Container(padding: EdgeInsets.only(left:10, bottom:14, right:10, top:14),
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      // {"message": smessage, "date": message_date};
-                      Text("${StateContainer.of(context).service_message["message"]}",textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
-                     Container(height:5),
-                      Row(mainAxisAlignment: MainAxisAlignment.end,children: [
-                        Text("${StateContainer.of(context).service_message["date"]}",textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
-                      ])
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                ) : Container(),
+
                 /*top slide*/
                 Stack(
                   children: <Widget>[
@@ -834,7 +842,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    to.Toast.show(message, context, duration: to.Toast.LENGTH_LONG);
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) {
@@ -878,7 +886,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       await launch(url);
     } else {
       // ask launch.
-      Toast.show("Call error", context);
+      to.Toast.show("Call error", context);
     }
   }
 
@@ -1142,6 +1150,34 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   @override
   void checkServiceMessage(String message_date, String smessage_en, String smessage_fr, String smessage_zh) {
 
+    if ( StateContainer.of(context).service_message["show"] == 1)
+      showSimpleNotification(
+        /* info when needed*/
+        /// show must be 1
+          StateContainer.of(context).service_message["show"] == 1 ?
+          Container(padding: EdgeInsets.only(left:8, bottom:5, right:8, top:5),
+            child: Column(
+              children: [
+                // {"message": smessage, "date": message_date};
+                Row(mainAxisAlignment: MainAxisAlignment.start,children: [
+                  Text("${AppLocalizations.of(context).translate('notice')}", style: TextStyle(color: Colors.black, fontFamily: "Dosis-Bold", fontSize: 16))]),
+                Container(height:3),
+                Text("${StateContainer.of(context).service_message["message"]}",textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black, fontFamily: "Dosis-Light", fontSize: 14)),
+                Container(height:5),
+                Row(mainAxisAlignment: MainAxisAlignment.end,children: [
+                  Text("${StateContainer.of(context).service_message["date"]}",textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontFamily: "Dosis-Light", fontSize: 14)),
+                ])
+              ],
+            ),
+            alignment: Alignment.center,
+          ) : Container(),
+          autoDismiss: false,
+          slideDismissDirection: DismissDirection.up,
+          position: NotificationPosition.top,
+          background: Colors.yellow);
+
     String defaultLocale = Platform.localeName;
     String smessage = smessage_fr;
 
@@ -1301,6 +1337,71 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // Use either Dart's string interpolation or the toString() method.
     // The "launch" method is part of "url_launcher".
     await launch('$link');
+  }
+
+  void _checkIfLoggedInAndDoAction(Function callback) {
+    if (StateContainer
+        .of(context)
+        .loggingState == 0) {
+      // not logged in... show dialog and also go there
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${AppLocalizations.of(context).translate(
+                'please_login_before_going_forward_title')}"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  /* add an image*/
+                  // location_permission
+                  Container(
+                      height: 100, width: 100,
+                      decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(
+                                ImageAssets.login_description),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  Text("${AppLocalizations.of(context).translate(
+                      "please_login_before_going_forward_random")}",
+                      textAlign: TextAlign.center)
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('not_now')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('login')}"),
+                onPressed: () {
+                  /* */
+                  /* jump to login page... */
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          LoginPage(presenter: LoginPresenter())));
+                },
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      callback();
+    }
   }
 
 }
