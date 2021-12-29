@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -55,7 +57,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
     });
     super.initState();
     if(widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
-      Future.delayed(Duration(seconds: 2), () {
+      Timer.run(() {
         _createAddress().then((value){
           widget.gps_location = "";
         });

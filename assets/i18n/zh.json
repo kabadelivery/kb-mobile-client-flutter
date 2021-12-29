@@ -407,5 +407,5 @@
   "verification_code_wrong": "验证码有误。请重试一下",
   "gps_": "定位",
   "address_last_update": "最后更新时间：",
-  "gps_location_valid": "位置获取成功"
+  "gps_location_valid": "位置获取成功。请填写其他信息"
 }

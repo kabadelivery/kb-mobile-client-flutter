@@ -50,7 +50,7 @@ class LoginPresenter implements LoginContract {
             login: login, password: password);
         xrint(jsonContent);
         var obj = json.decode(jsonContent);
-        int error = obj["error"];
+        int error = int.parse("${obj["error"]}");
         if (error == 0/* && token != null && token.length > 0*/) {
           /* login successful */
           _loginView.loginSuccess(jsonContent);
@@ -64,8 +64,10 @@ class LoginPresenter implements LoginContract {
         xrint(_);
         if ("${_.toString()}".contains("timed out")) {
           _loginView.loginTimeOut();
-        } else
-          _loginView.loginPasswordError();
+        } else if ("${_.toString()}".contains("-2"))
+          _loginView.networkError();
+        else
+          _loginView.accountNoExist();
       }
     } catch(_) {
       /* login failure */

@@ -154,6 +154,7 @@ flutter:
     - assets/images/png/enjoy.png
     - assets/images/png/diaspora.png
     - assets/images/png/smartphone_unlock.png
+    - assets/images/png/location_check_ok.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

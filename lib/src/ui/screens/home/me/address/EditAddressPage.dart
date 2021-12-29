@@ -79,13 +79,13 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     // if we are coming here with a gps location from another app, let us know
     if (widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
       address.location = widget.gps_location;
-      Future.delayed(Duration(seconds: 2), () {
+      Timer.run(() {
         widget.presenter.checkLocationDetails(widget.customer,
             position: Position(
                 longitude: double.parse(widget.gps_location.split(":")[1]), latitude: double.parse(widget.gps_location.split(":")[0])));
         xrint("editaddress -> ${address.toJson().toString()}");
       });
-     }
+    }
     widget.address = address;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -502,7 +502,10 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
 
 
-  void _showDialog({var icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+  void _showDialog({var icon, var message,
+    bool okBackToHome = false,
+    bool isYesOrNo = false, Function actionIfYes,
+    bool isSvg = true }) {
     // flutter defined function
     showDialog(
       context: context,
@@ -516,9 +519,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                   SizedBox(
                       height: 80,
                       width: 80,
-                      child: SvgPicture.asset(
+                      child:
+                      isSvg ?
+                      SvgPicture.asset(
                         icon,
-                      )),
+                      ) : Image.asset(icon)
+                  ) ,
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 13))
                 ]
@@ -575,15 +581,13 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
       address.quartier = suburb;
 
       /* if gps_location != null . then show a box to confirm the picking of the address */
-      mToast("${AppLocalizations.of(context).translate('gps_location_valid')}");
-
+      mDialog("${AppLocalizations.of(context).translate('gps_location_valid')}");
     });
   }
 
-  @override
-  void inflateDetails(String addressDetails) {
 
-  }
+  @override
+  void inflateDetails(String addressDetails) {}
 
   Future _getLastKnowLocation() async {
 
@@ -707,5 +711,14 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     mToast("${AppLocalizations.of(context).translate('network_error')}");
   }
 
+  void mDialog(String message) {
+    _showDialog(
+      okBackToHome: false,
+      icon: ImageAssets.address_location_pick_ok,
+      message: message,
+      isYesOrNo: false,
+      isSvg : false
+    );
+  }
 
 }

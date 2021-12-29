@@ -29,4 +29,6 @@
   // address creation
   static final String address_creation_success = "assets/images/vectors/address_creation_ok.svg";
   static final String address_creation_error = "assets/images/vectors/address_creation_error.svg";
+
+  // location pick ok
  }

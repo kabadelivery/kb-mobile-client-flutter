@@ -249,7 +249,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     /* token must be saved by now. */
     showLoading(false);
 
-    Map results;
+    Map results = Map();
 
     if (!widget.autoLogin) {
       /* we make sure the login is a success */

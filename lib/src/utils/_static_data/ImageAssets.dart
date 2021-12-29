@@ -28,4 +28,7 @@ class ImageAssets {
  static final String diaspora = "assets/images/png/diaspora.png";
  static final String smartphoneUnlock = "assets/images/png/smartphone_unlock.png";
 
+// image assets
+ static final String address_location_pick_ok = "assets/images/png/location_check_ok.png";
+
 }

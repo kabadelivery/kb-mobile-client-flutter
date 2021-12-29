@@ -3,6 +3,14 @@
 Kaba under Flutter framework
 
 
+#3.2.5: 29/12/2021
+
+- [Android] il est désormais possible de lancer une adresse gps depuis whatsapp vers l'application KABA
+- Amélioration de l'affichage des adresses pour qu'elles mentionne la date de dernière modification
+- Redesign du bouton ok, qui confirm la recuperation de l'adresse gps
+- désormais un client qui vient de creer son compte ou de changer son mot de passe ne passera plus par la case OTP verification (une deuxieme fois)
+- les messages d'erreur en cas de login erronés sont plus explicites |
+
 #3.2.4: 28/12/2021
 
 - implemented otp control when loginning into the app
@@ -19,7 +27,6 @@ Kaba under Flutter framework
 - worked on the source to compile for codemagic
 - updated dependencies ; and upgraded to android 31 version
 
-
 # 3.2.0 : ../10
 
 - ...
@@ -27,7 +34,6 @@ Kaba under Flutter framework
 # 3.1.9 Update : 13/10/2021
 
 - amelioration de l'affichage des réductions bons en FCFA pour approche orientée business development
-
 
 # 3.1.8 Update : 12/10/2021
 

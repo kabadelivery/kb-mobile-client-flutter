@@ -141,6 +141,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     this.widget.presenter.fetchHomePage();
     this.widget.presenter.checkVersion();
+    this.widget.presenter.checkServiceMessage();
     // check what type of account are you... if email...
     // we going to tell you only if you are just from creating
     // your account
@@ -458,13 +459,24 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           child: ListView(
               children: <Widget>[
                 /* info when needed*/
+                /// show must be 1
+                StateContainer.of(context).service_message["show"] == 1 ?
                 Container(padding: EdgeInsets.only(left:10, bottom:14, right:10, top:14),
                   color: Colors.white,
-                  child: Text("Cher clients, les livraisons seront perturbées aujourdhui en raison du manque "
-                      "d'effectif. Merci pour votre comprehension.",textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
+                  child: Column(
+                    children: [
+                      // {"message": smessage, "date": message_date};
+                      Text("${StateContainer.of(context).service_message["message"]}",textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
+                     Container(height:5),
+                      Row(mainAxisAlignment: MainAxisAlignment.end,children: [
+                        Text("${StateContainer.of(context).service_message["date"]}",textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontFamily: "Dosis", fontSize: 16)),
+                      ])
+                    ],
+                  ),
                   alignment: Alignment.center,
-                ),
+                ) : Container(),
                 /*top slide*/
                 Stack(
                   children: <Widget>[
@@ -1128,6 +1140,22 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   @override
+  void checkServiceMessage(String message_date, String smessage_en, String smessage_fr, String smessage_zh) {
+
+    String defaultLocale = Platform.localeName;
+    String smessage = smessage_fr;
+
+    if (defaultLocale.contains("en")) {
+      smessage = smessage_en;
+    } else if (defaultLocale.contains("fr")) {
+      smessage = smessage_fr;
+    } else if (defaultLocale.contains("zh")) {
+      smessage = smessage_zh;
+    }
+    StateContainer.of(context).service_message = {"message": smessage, "date": message_date, "show": 1};
+  }
+
+  @override
   void checkVersion(String code, int force, String cl_en, String cl_fr, String cl_zh) {
 
     String mCode = code.replaceAll(new RegExp(r'\.'), "");
@@ -1274,6 +1302,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     // The "launch" method is part of "url_launcher".
     await launch('$link');
   }
+
 }
 
 

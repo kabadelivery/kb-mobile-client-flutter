@@ -88,19 +88,27 @@ class RegisterPresenter implements RegisterContract {
     if (isWorking)
       return;
     isWorking = true;
-    var jsonContent = await provider.registerSendingCodeAction(login);
-    int error = mJsonDecode(jsonContent)["error"];
+    try {
+      var jsonContent = await provider.registerSendingCodeAction(login);
+      int error = mJsonDecode(jsonContent)["error"];
 
-    if (error == 500) {
-      _registerView.userExistsAlready();
-    } else if (error == 0) {
-      String requestId = json.decode(jsonContent)["data"]["request_id"];
-      _registerView.keepRequestId(login, requestId);
-    } else{
-      _registerView.onSysError(message: json.decode(jsonContent)["message"]);
+      if (error == 500) {
+        _registerView.userExistsAlready();
+      } else if (error == 0) {
+        String requestId = json.decode(jsonContent)["data"]["request_id"];
+        _registerView.keepRequestId(login, requestId);
+      } else {
+        _registerView.onSysError(message: json.decode(jsonContent)["message"]);
+      }
+      isWorking = false;
+      _registerView.codeRequestSentOk(); /*  */
+    } catch (_) {
+      if ("${_.toString()}".contains("-2")) {
+        _registerView.codeRequestSentOk();
+        _registerView.onNetworkError();
+      }
     }
     isWorking = false;
-    _registerView.codeRequestSentOk(); /*  */
   }
 
   set registerView(RegisterView value) {
