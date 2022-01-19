@@ -441,6 +441,7 @@ class PlacePickerState extends State<PlacePicker> {
 
   /// Fetches and updates the nearby places to the provided lat,lng
   void getNearbyPlaces(LatLng latLng) {
+
     http
         .get(Uri.parse("https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
         "key=${widget.apiKey}&" +
@@ -521,7 +522,7 @@ class PlacePickerState extends State<PlacePicker> {
 
     reverseGeocodeLatLng(latLng);
 
-    getNearbyPlaces(latLng);
+    // getNearbyPlaces(latLng);
   }
   LatLng target;
   void moveToCurrentUserLocation() {
