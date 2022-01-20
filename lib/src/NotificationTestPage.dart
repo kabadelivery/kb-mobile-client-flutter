@@ -30,7 +30,6 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
 
-
     Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
 
       xrint ("On click");
