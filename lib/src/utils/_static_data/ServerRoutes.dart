@@ -270,4 +270,6 @@ class ServerRoutes {
 
   static const String LINK_CHECK_APP_VERSION = ServerConfig.SERVER_ADDRESS+"/api/ltsapp/get";
 
+  static const String LINK_CHECK_SYS_MESSAGE = ServerConfig.SERVER_ADDRESS+"/api/alert-message/get";
+
 }

@@ -50,7 +50,7 @@ class AppApiProvider {
         data:  json.encode({}),
       );
 
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0)
@@ -69,7 +69,7 @@ class AppApiProvider {
     xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
           body: position == null ? "" : json.encode(
               {"location": "${position?.latitude}:${position?.longitude}"}),
@@ -92,7 +92,7 @@ class AppApiProvider {
             {"location": "${position?.latitude}:${position?.longitude}"}),
       );
 
-     xrint(response.data);
+      xrint(response.data);
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
@@ -118,7 +118,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
 
 
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS),
           body: position == null ? "" : json.encode(
               {"coordinates": "${position.latitude}:${position.longitude}"}),
@@ -156,7 +156,7 @@ class AppApiProvider {
           /* return only the content we need */
           DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(
               description: description_details, quartier: quartier);
-         xrint("${description_details} , ${quartier}");
+          xrint("${description_details} , ${quartier}");
           return deliveryAddressModel;
         }
         else
@@ -174,7 +174,7 @@ class AppApiProvider {
     /* get the events and show it */
     xrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_EVENEMENTS_LIST)).timeout(
           const Duration(seconds: 30));
 */
@@ -196,7 +196,7 @@ class AppApiProvider {
       );
 
 
-     xrint(response.data.toString());
+      xrint(response.data.toString());
 
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
@@ -242,7 +242,7 @@ class AppApiProvider {
     if (Platform.isAndroid) {
       // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-     xrint('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
+      xrint('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
       _data = json.encode({
         'os_version': '${androidInfo.version.baseOS}',
         'build_device': '${androidInfo.device}',
@@ -253,7 +253,7 @@ class AppApiProvider {
       });
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-     xrint('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
+      xrint('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
       _data = json.encode({
         'os_version': '${iosInfo.systemVersion}',
         'build_device': '${iosInfo.utsname.sysname}',
@@ -370,7 +370,7 @@ class AppApiProvider {
 
     if (await Utils.hasNetwork()) {
 
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
           body: {"desc":"${desc == null ? "" : desc}"}
       )
@@ -405,10 +405,39 @@ class AppApiProvider {
     }
   }
 
+  checkServiceMessage () async {
+
+    if (await Utils.hasNetwork()) {
+
+      var dio = Dio();
+      dio.options
+        ..connectTimeout = 30000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_SYS_MESSAGE).toString(),
+      );
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        return mJsonDecode(response.data);
+      }
+      else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2);
+    }
+  }
+
   checkVersion() async {
     if (await Utils.hasNetwork()) {
 
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_APP_VERSION)
       )
           .timeout(const Duration(seconds: 30));*/
@@ -454,7 +483,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
 
 
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)
@@ -478,7 +507,7 @@ class AppApiProvider {
         data:  json.encode({}),
       );
 
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
@@ -500,7 +529,7 @@ class AppApiProvider {
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
 
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer.token)

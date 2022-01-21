@@ -413,5 +413,6 @@
   "address_last_update": "Modifié le :",
   "gps_location_valid": "Position GPS recupérée avec succès.\nVeuillez remplir les autres informations.",
 
-  "notice": "Notification:"
+  "notice": "Notification:",
+  "alert_message_received": "Bien reçu !"
 }

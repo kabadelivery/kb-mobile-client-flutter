@@ -3,13 +3,16 @@
 Kaba under Flutter framework
 
 
+
 #3.2.5: 29/12/2021
 
+-
+- add top notification functionnality to inform customers
 - [Android] il est désormais possible de lancer une adresse gps depuis whatsapp vers l'application KABA
 - Amélioration de l'affichage des adresses pour qu'elles mentionne la date de dernière modification
 - Redesign du bouton ok, qui confirm la recuperation de l'adresse gps
 - désormais un client qui vient de creer son compte ou de changer son mot de passe ne passera plus par la case OTP verification (une deuxieme fois)
-- les messages d'erreur en cas de login erronés sont plus explicites |
+- les messages d'erreur en cas de login erronés sont plus explicites
 
 #3.2.4: 28/12/2021
 

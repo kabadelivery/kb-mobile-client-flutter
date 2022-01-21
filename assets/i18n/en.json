@@ -397,5 +397,6 @@
   "gps_": "GPS",
   "address_last_update": "Updated at :",
   "gps_location_valid": "Gps location was successfully set.\nPlease fill in the other information",
-  "notice": "Notice:"
+  "notice": "Notice:",
+  "alert_message_received": "Got it !"
 }

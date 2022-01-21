@@ -4,6 +4,7 @@
 /* login contract */
 import 'dart:convert';
 
+import 'package:KABA/src/models/AlertMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
@@ -33,7 +34,7 @@ class HomeWelcomeView {
   void showBalance(String balance) {}
   void updateKabaPoints(String kabaPoints) {}
 
-  void checkServiceMessage(String message_date, String smessage_en, String smessage_fr, String smessage_zh) {}
+  void checkServiceMessage(AlertMessageModel message) {}
 }
 
 /* login presenter */
@@ -171,13 +172,8 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
   Future<void> checkServiceMessage() async {
     try {
-      Map smessage = await provider.checkVersion();
-      _homeWelcomeView.checkServiceMessage(null,null,null,null);
-      String message_date = smessage["message_date"];
-      String smessage_en = smessage["service_message"]["en"];
-      String smessage_fr = smessage["service_message"]["fr"];
-      String smessage_zh = smessage["service_message"]["zh"];
-      _homeWelcomeView.checkServiceMessage(message_date, smessage_en, smessage_fr, smessage_zh);
+      Map smessage = await provider.checkServiceMessage();
+      _homeWelcomeView.checkServiceMessage(AlertMessageModel.fromMap(smessage));
     } catch (_) {
       /* RestaurantReview failure */
       xrint("error ${_}");

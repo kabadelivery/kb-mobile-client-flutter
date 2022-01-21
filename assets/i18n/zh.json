@@ -408,5 +408,6 @@
   "gps_": "定位",
   "address_last_update": "最后更新时间：",
   "gps_location_valid": "位置获取成功。请填写其他信息",
-  "notice": "通知:"
+  "notice": "通知:",
+  "alert_message_received": "收到 !"
 }

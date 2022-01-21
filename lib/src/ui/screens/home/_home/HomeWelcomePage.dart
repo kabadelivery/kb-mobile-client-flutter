@@ -16,6 +16,7 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/AlertMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
@@ -53,6 +54,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -1148,47 +1150,81 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   @override
-  void checkServiceMessage(String message_date, String smessage_en, String smessage_fr, String smessage_zh) {
+  void checkServiceMessage(AlertMessageModel data) {
 
-    if ( StateContainer.of(context).service_message["show"] == 1)
-      showSimpleNotification(
-        /* info when needed*/
-        /// show must be 1
-          StateContainer.of(context).service_message["show"] == 1 ?
-          Container(padding: EdgeInsets.only(left:8, bottom:5, right:8, top:5),
-            child: Column(
-              children: [
-                // {"message": smessage, "date": message_date};
-                Row(mainAxisAlignment: MainAxisAlignment.start,children: [
-                  Text("${AppLocalizations.of(context).translate('notice')}", style: TextStyle(color: Colors.black, fontFamily: "Dosis-Bold", fontSize: 16))]),
-                Container(height:3),
-                Text("${StateContainer.of(context).service_message["message"]}",textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontFamily: "Dosis-Light", fontSize: 14)),
-                Container(height:5),
-                Row(mainAxisAlignment: MainAxisAlignment.end,children: [
-                  Text("${StateContainer.of(context).service_message["date"]}",textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontFamily: "Dosis-Light", fontSize: 14)),
-                ])
-              ],
-            ),
-            alignment: Alignment.center,
-          ) : Container(),
-          autoDismiss: false,
-          slideDismissDirection: DismissDirection.up,
-          position: NotificationPosition.top,
-          background: Colors.yellow);
+    inflateServiceMessage(data);
 
+    isMessageSeenMessageAlert(data).then((value) {
+      if (value == false && StateContainer.of(context).service_message["show"] == 1) {
+        showOverlayNotification(
+          /* info when needed*/
+          /// show must be 1
+            (context) {
+              return StateContainer
+                  .of(context)
+                  .service_message["show"] == 1 ?
+              Container(
+                color: Colors.yellow,
+                padding: EdgeInsets.only(left: 8, bottom: 5, right: 8, top:45),
+                child: Column(
+                  children: [
+                    // {"message": smessage, "date": message_date};
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      Text("${AppLocalizations.of(context).translate(
+                          'notice')}", style: TextStyle(color: Colors.black,
+                          fontFamily: "Dosis-Bold",
+                          fontSize: 16))
+                    ]),
+                    Container(height: 3),
+                    Text("${StateContainer
+                        .of(context)
+                        .service_message["message"]}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black,
+                            fontFamily: "Dosis-Light",
+                            fontSize: 14)),
+                    Container(height: 5),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          saveMessageAsRead(data);
+                          setState(() {
+                            OverlaySupportEntry.of(context).dismiss(animate: true);
+                          });
+                        },
+                        child: Text("${AppLocalizations.of(context).translate(
+                            'alert_message_received')}", textAlign: TextAlign
+                            .center,
+                            style: TextStyle(color: Colors.white,
+                                fontFamily: "Dosis-Bold",
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ])
+                  ],
+                ),
+                alignment: Alignment.center,
+              ) : Container();
+            },
+            position: NotificationPosition.top,
+          duration: Duration.zero
+        );
+      }
+    });
+
+  }
+
+  void inflateServiceMessage(AlertMessageModel data) {
     String defaultLocale = Platform.localeName;
-    String smessage = smessage_fr;
-
+    String smessage = data.messages["fr"];
     if (defaultLocale.contains("en")) {
-      smessage = smessage_en;
+      smessage = data.messages["en"];
     } else if (defaultLocale.contains("fr")) {
-      smessage = smessage_fr;
+      smessage = data.messages["fr"];
     } else if (defaultLocale.contains("zh")) {
-      smessage = smessage_zh;
+      smessage = data.messages["zh"];
     }
-    StateContainer.of(context).service_message = {"message": smessage, "date": message_date, "show": 1};
+    StateContainer.of(context).service_message = {"message": smessage, "show": data.showAlert};
   }
 
   @override
@@ -1402,6 +1438,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     } else {
       callback();
     }
+  }
+
+  Future<bool> isMessageSeenMessageAlert(AlertMessageModel data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool val = false;
+    if (data?.uuid != null && prefs.containsKey(data?.uuid))
+      val = prefs.get(data?.uuid);
+    return val;
+  }
+
+  Future<void> saveMessageAsRead(AlertMessageModel data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (data?.uuid != null)
+      prefs.setBool(data?.uuid, true);
   }
 
 }
