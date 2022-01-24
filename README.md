@@ -6,6 +6,7 @@ Kaba under Flutter framework
 #3.2.6: 24/01/2022
 
 - solving the nearby places removed issue 
+- solving other issues related to gps location picking and modification
 
 
 #3.2.5: 24/01/2022
