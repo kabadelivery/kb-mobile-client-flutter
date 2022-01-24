@@ -10,7 +10,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
-import 'package:KABA/src/utils/recustomlib/place_picker.dart' as Pp;
+import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart' as Pp;
 import 'package:KABA/src/xrint.dart';
 // import 'package:android_intent/android_intent.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
@@ -39,7 +39,12 @@ class EditAddressPage extends StatefulWidget {
 
   bool locationConfirmed = false;
 
-  EditAddressPage({Key key, this.address, this.presenter, this.gps_location}) : super(key: key);
+  EditAddressPage({Key key, this.address, this.presenter, this.gps_location}) : super(key: key){
+    if (this.address?.location != null)
+      locationConfirmed = true;
+    else
+      locationConfirmed = false;
+  }
 
   @override
   _EditAddressPageState createState() => _EditAddressPageState(address);
@@ -160,6 +165,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 //                                  isPickLocation
                                   isPickLocation ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2,valueColor: AlwaysStoppedAnimation<Color>(Colors.green)))) : Container(),
                                   _checkLocationLoading ? SizedBox(height: 15, width: 15,child: Center(child: CircularProgressIndicator(strokeWidth: 2))) : Container(),
+                                  SizedBox(width:5),
                                   !_checkLocationLoading && address?.location != null && widget.locationConfirmed ?
                                   Container(
                                     padding: EdgeInsets.all(5),
@@ -241,7 +247,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
-
 
       String _has_accepted_gps = prefs.getString("_has_accepted_gps");
       /* no need to commit */
@@ -348,8 +353,6 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   bool isPickLocation = false;
 
-
-
   void _jumpToPickAddressPage() async {
 
     lo.LocationData location = await lo.Location().getLocation();
@@ -357,9 +360,24 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     StateContainer.of(context).updateLocation(location: Position(
         latitude: location.latitude, longitude: location.longitude));
 
-    if (StateContainer
-        .of(context)
-        .location != null)
+    /*if (StateContainer.of(context)?.location != null)
+      Pp.PlacePickerState.initialTarget = LatLng(StateContainer
+          .of(context)
+          .location
+          .latitude, StateContainer
+          .of(context)
+          .location
+          .longitude);*/
+
+    xrint(widget.gps_location);
+    if (widget.locationConfirmed && widget.address?.location != null) {
+      xrint("moving to pre-registered location");
+      Pp.PlacePickerState.initialTarget =
+          LatLng(double.parse(widget.address?.location?.split(":")[0]),
+            double.parse(widget.address?.location?.split(":")[1]),);
+    }
+    else {
+      xrint("moving to me");
       Pp.PlacePickerState.initialTarget = LatLng(StateContainer
           .of(context)
           .location
@@ -367,15 +385,15 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
           .of(context)
           .location
           .longitude);
-
+    }
     xrint("i pick address");
-    widget.locationConfirmed = false;
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY)));
+            Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY, alreadyHasLocation:  widget.locationConfirmed)));
     /* use this location to generate details about the place the user lives and so on. */
+    widget.locationConfirmed = false;
     widget.presenter.editAddressView = this;
 
     CustomerUtils.getCustomer().then((customer) {
@@ -713,11 +731,11 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
 
   void mDialog(String message) {
     _showDialog(
-      okBackToHome: false,
-      icon: ImageAssets.address_location_pick_ok,
-      message: message,
-      isYesOrNo: false,
-      isSvg : false
+        okBackToHome: false,
+        icon: ImageAssets.address_location_pick_ok,
+        message: message,
+        isYesOrNo: false,
+        isSvg : false
     );
   }
 

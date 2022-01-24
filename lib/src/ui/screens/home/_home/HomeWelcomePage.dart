@@ -263,8 +263,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     /* init fetch data bloc */
     return Scaffold(
-        appBar: AppBar(brightness: Brightness.dark,
-          title: SizedBox(height: 70,
+        appBar: AppBar(title: SizedBox(height: 70,
 //            margin: EdgeInsets.only(bottom: 30, top: 30),
 //            decoration: BoxDecoration(
 //                border: new Border(bottom: BorderSide(color: Colors.white, width: 2)),
@@ -318,7 +317,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 }).toList();
               },
             )
-          ],
+          ], systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,

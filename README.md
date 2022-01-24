@@ -3,8 +3,12 @@
 Kaba under Flutter framework
 
 
+#3.2.6: 24/01/2022
 
-#3.2.5: 29/12/2021
+- solving the nearby places removed issue 
+
+
+#3.2.5: 24/01/2022
 
 - add top notification functionnality to inform customers
 - [Android] il est désormais possible de lancer une adresse gps depuis whatsapp vers l'application KABA
