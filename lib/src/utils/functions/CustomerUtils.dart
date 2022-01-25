@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -119,6 +120,38 @@ class CustomerUtils {
     prefs.setString("_homepage", wp);
   }
 
+  static Future<void> saveOtpToSharedPreference(String otp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("last_otp", otp);
+    prefs.setString("otp_saved_time", "${DateTime.now().millisecondsSinceEpoch~/1000}");
+  }
+
+  static Future<String> getLastValidOtp({MIN_LAPSED_SECONDS = 60*5}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String otp_saved_time = prefs.getString("otp_saved_time");
+      if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS > (DateTime
+          .now()
+          .millisecondsSinceEpoch / 1000)) {
+        return prefs.getString("last_otp");
+      } else {
+        return "no";
+      }
+    } catch(_) {
+      return "no";
+    }
+  }
+
+  static Future<String> getLastOtp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("last_otp")) {
+      return prefs.getString("last_otp");
+    } else {
+      return "no";
+    }
+  }
+
+
   static Future<bool> isPusTokenUploaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool("is_push_token_uploaded") == true;
@@ -135,11 +168,12 @@ class CustomerUtils {
     * we confirm it's a gps location */
     List<String> latlong = gps_latlong.split(",").toList();
     if (latlong.length == 2 &&
-      double.parse(latlong[0]).isFinite && double.parse(latlong[0]).abs() <= 90
-      && double.parse(latlong[1]).isFinite && double.parse(latlong[1]).abs() <= 180){
-        return true;
-      }
+        double.parse(latlong[0]).isFinite && double.parse(latlong[0]).abs() <= 90
+        && double.parse(latlong[1]).isFinite && double.parse(latlong[1]).abs() <= 180){
+      return true;
+    }
     return false;
   }
+
 
 }

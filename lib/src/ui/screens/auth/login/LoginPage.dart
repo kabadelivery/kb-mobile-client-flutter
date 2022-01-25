@@ -81,7 +81,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number;
       if ((Utils.isPhoneNumber_TGO(widget.phone_number) || Utils.isEmailValid(widget.phone_number)) && widget?.password?.length == 4)
-        widget.presenter.login(widget.phone_number, widget.password, widget.version);
+        widget.presenter.login(false/*bcs autologin*/, widget.phone_number, widget.password, widget.version);
+    } else {
+      // we dont do any another login here
     }
   }
 
@@ -170,7 +172,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
 
     if (results != null && results.containsKey('phone_number') && results.containsKey('password')
-    && results.containsKey('autologin')) {
+        && results.containsKey('autologin')) {
       setState(() {
         _loginFieldController.text = results['phone_number'];
       });
@@ -179,7 +181,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       if (results['autologin'] == true){
         widget.autoLogin = true;
       }
-      widget.presenter.login(results['phone_number'], results['password'], widget.version);
+      widget.presenter.login(false, results['phone_number'], results['password'], widget.version);
     }
   }
 
@@ -226,7 +228,17 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 //      int type = results['type'];
       showLoading(true);
       if (Utils.isCode(_mCode)) {
-        this.widget.presenter.login(login, _mCode, widget.version);
+        /* check if it's important to send another sms according to the time lapsed after the last sending
+      * 1. check last time sent message, if before 5 minutes, then dont send,
+      * 2. otherwise send
+      *  */
+        CustomerUtils.getLastValidOtp().then((otp) {
+          if ("no".compareTo(otp) == 0) {
+            this.widget.presenter.login(true, login, _mCode, widget.version);
+          } else {
+            this.widget.presenter.login(false, login, _mCode, widget.version);
+          }
+        });
       }
     }
   }
@@ -239,11 +251,42 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  Future<void> loginSuccess(var jsonContent) async {
+  Future<void> loginSuccess(dynamic obj) async {
 
-    var obj = json.decode(jsonContent);
-   String otp = "${obj["login_code"]}";
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
+
+    String otp = null;
+
+    if (!widget?.autoLogin) {
+      /* retrieve the otp and save it for later use */
+      try {
+        otp = "${obj["login_code"]}";
+      } catch (_) {
+        otp = null;
+      }
+      /* save it to the shared preferences */
+      if (otp != null) {
+        CustomerUtils.saveOtpToSharedPreference(otp);
+        await nextStepWithOtpConfirmationPage(customer, otp, obj);
+      }
+      else {
+        CustomerUtils.getLastOtp().then((mOtp) async {
+          // this is the otp
+          if ("no".compareTo(mOtp) == 0) {
+            // login_failure
+            showLoading(false);
+          } else {
+            /* if you are coming from another process like already making an order, then just pop */
+            /* token must be saved by now. */
+            await nextStepWithOtpConfirmationPage(customer, mOtp, obj);
+          }
+        });
+      }
+    }
+  }
+
+  Future<void> nextStepWithOtpConfirmationPage(CustomerModel customer, String mOtp, dynamic obj) async {
+
 
     /* if you are coming from another process like already making an order, then just pop */
     /* token must be saved by now. */
@@ -257,7 +300,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: otp),
+                      username: customer.username, otp_code: mOtp),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);
@@ -279,7 +322,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       // login ok
       // once we have the result we redirect
       String token = obj["data"]["payload"]["token"];
-      CustomerUtils.persistTokenAndUserdata(token, jsonContent);
+      CustomerUtils.persistTokenAndUserdata(token, json.encode(obj));
 
       if (widget.fromOrderingProcess) {
         // pop
@@ -489,5 +532,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void loginTimeOut() {
     mToast("${AppLocalizations.of(context).translate('login_time_out')}");
   }
+
 
 }

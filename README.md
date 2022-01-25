@@ -7,6 +7,8 @@ Kaba under Flutter framework
 
 - solving the nearby places removed issue 
 - solving other issues related to gps location picking and modification
+- solving issues to save otp messages money
+- working on load more feature 
 
 
 #3.2.5: 24/01/2022

@@ -32,6 +32,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -53,6 +54,9 @@ import 'src/StateContainer.dart';
 
 
 Future<void> main() async {
+
+  CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
+
 
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
@@ -262,7 +266,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-//           home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
+          // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
             // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),

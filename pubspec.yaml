@@ -34,7 +34,7 @@ dependencies:
   location: ^4.3.0
   flutter_redux_dev_tools: ^0.5.1
   shared_preferences: ^2.0.5
-  cached_network_image: ^3.0.0
+  cached_network_image: ^3.2.0
   flutter_svg: ^1.0.0
   carousel_slider: ^4.0.0
   #  webview_flutter: ^0.3.21

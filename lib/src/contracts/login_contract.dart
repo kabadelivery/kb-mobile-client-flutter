@@ -7,7 +7,7 @@ import 'package:KABA/src/xrint.dart';
 
 class LoginContract {
 
-  void login (String password, String phoneCode, String app_version){}
+  void login (bool shouldSendOtpCode, String password, String phoneCode, String app_version){}
 }
 
 class LoginView {
@@ -34,7 +34,7 @@ class LoginPresenter implements LoginContract {
   }
 
   @override
-  Future login(String login, String password, String app_version) async {
+  Future login(bool shouldSendOtpCode, String login, String password, String app_version) async {
 
     /* make network request, create a lib that makes network request. */
     if (isWorking)
@@ -46,14 +46,14 @@ class LoginPresenter implements LoginContract {
       String jsonContent;
 
       try {
-        jsonContent = await provider.loginAction(app_version: app_version,
-            login: login, password: password);
-        xrint(jsonContent);
-        var obj = json.decode(jsonContent);
+        dynamic obj  = await provider.loginAction(app_version: app_version,
+            login: login, password: password, shouldSendOtpCode: shouldSendOtpCode);
+        // xrint(jsonContent);
+        // var obj = json.decode(jsonContent);
         int error = int.parse("${obj["error"]}");
         if (error == 0/* && token != null && token.length > 0*/) {
           /* login successful */
-          _loginView.loginSuccess(jsonContent);
+          _loginView.loginSuccess(obj);
         } else if (error == 1) {
           /* login failure */
           _loginView.loginPasswordError();

@@ -224,7 +224,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
           ),
         ),
       ),
-      body: Container(color: Colors.white,
+      body: Container(
+        // margin: EdgeInsets.only(bottom: 58),
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             SizedBox(height:10),
@@ -287,9 +289,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                         /* according to the search position, show a different page. */
                           searchTypePosition == 1 ? (
                               !_searchMode ?
-                              /* List<Widget>.generate(data.length, (int index) {
-                              return RestaurantListWidget(restaurantModel: data[index]);
-                            }).toList()*/
                               Container(color: Colors.white,
                                 height: MediaQuery.of(context).size.height,
 //                              padding: EdgeInsets.only(bottom:230),
@@ -298,7 +297,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                                   controller: _restaurantListScrollController,
                                   child: ListView.builder(
                                     controller: _restaurantListScrollController,
-                                    itemCount: data?.length != null ? data.length + 1 : 0,
+                                    itemCount:  10, // data?.length != null ? data.length + 1 : 0,
                                     itemBuilder: (context, index) {
                                       if (index == data?.length)
                                         return Container(height:100);

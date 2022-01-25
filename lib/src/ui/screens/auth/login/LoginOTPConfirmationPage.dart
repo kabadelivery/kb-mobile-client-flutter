@@ -128,25 +128,25 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                             padding: EdgeInsets.only(left: 20, right:20, top:20, bottom: 20),
                             child: Column(mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Image.asset(ImageAssets.smartphoneUnlock,height: 90, width: 90, alignment: Alignment.center,),
+                                  Image.asset(ImageAssets.smartphoneUnlock,height: 50, width: 50, alignment: Alignment.center,),
                                   SizedBox(height: 20),
-                                  Text("${AppLocalizations.of(context).translate('identity_verify_title')}", style: TextStyle(fontSize: 24)),
+                                  Text("${AppLocalizations.of(context).translate('identity_verify_title')}", style: TextStyle(fontSize: 20)),
                                   SizedBox(height:20),
                                   Text("${Utils.isPhoneNumber_TGO(widget.username)? AppLocalizations.of(context).translate('identity_check_pn') : AppLocalizations.of(context).translate('identity_check_email')} "+( Utils.isPhoneNumber_TGO(widget.username)? "XXXX${widget.username.substring(4)}" : "${widget.username.substring(0,4)}****${widget.username.substring(widget.username.lastIndexOf("@")-1)}"), textAlign: TextAlign.center,
-                                      style: TextStyle(fontWeight: FontWeight.w100, fontSize: 14, color: Colors.grey)),
-                                  SizedBox(height:20),
+                                      style: TextStyle(fontWeight: FontWeight.w100, fontSize: 13, color: Colors.grey)),
+                                  SizedBox(height:10),
                                   /* code error */
                                   showErrorMessage ?
                                   Container(
                                       child: Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             Icon(Icons.stop_circle_outlined, color: KColors.primaryColor),
-                                            SizedBox(width:10),
+                                            SizedBox(width:8),
                                             AnimatedDefaultTextStyle(
                                               duration: const Duration(milliseconds: 300),
                                               curve: Curves.bounceOut,
                                               style: errorAnimated ? TextStyle(
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 color: KColors.primaryColor
                                               ) : TextStyle(
                                                   fontSize: 0,
@@ -155,7 +155,6 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                               child: Text(
                                                 '${AppLocalizations.of(context).translate("verification_code_wrong")}',
                                                 textAlign: TextAlign.center,
-
                                               ),
                                             ),
                                             // Text("${AppLocalizations.of(context).translate("verification_code_wrong")}")
@@ -173,7 +172,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                                   decoration: new BoxDecoration(
                                                     border: new Border(bottom: BorderSide(color:Colors.black, width: 2)),
                                                   ),
-                                                  child: SizedBox(width: 40, height:40,child:Center(child:
+                                                  child: SizedBox(width: 30, height:30,child:Center(child:
                                                   Text(pwd.trim().length > index ? /*pwd[index]*/ "${pwd.substring(index,index+1)}" : "",
                                                       // TextField(decoration: new InputDecoration.collapsed(hintText: "*"),
                                                       style: TextStyle(fontSize: 30,color: Colors.black)))));
@@ -214,31 +213,31 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                           children: <TableRow>[
                             TableRow(
                               children: <TableCell>[
-                                TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.all(5))),
-                                TableCell(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");})),
-                                TableCell(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");})),
+                                TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.all(5))),
+                                TableCell(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");})),
+                                TableCell(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");})),
                               ],
                             ),
                             TableRow(
                                 children: <TableCell>[
-                                  TableCell(child: Container(child: RawMaterialButton(child:Text("4"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("4");}), padding: EdgeInsets.all(5))),
-                                  TableCell(child: RawMaterialButton(child:Text("5"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("5");})),
-                                  TableCell(child: RawMaterialButton(child:Text("6"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("6");})),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("4"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("4");}), padding: EdgeInsets.all(5))),
+                                  TableCell(child: RawMaterialButton(child:Text("5"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("5");})),
+                                  TableCell(child: RawMaterialButton(child:Text("6"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("6");})),
                                 ]
                             ),
 
                             TableRow(
                                 children: <TableCell>[
-                                  TableCell(child: Container(child: RawMaterialButton(child:Text("7"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("7");}), padding: EdgeInsets.all(5))),
-                                  TableCell(child: RawMaterialButton(child:Text("8"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("8");})),
-                                  TableCell(child: RawMaterialButton(child:Text("9"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("9");})),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("7"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("7");}), padding: EdgeInsets.all(5))),
+                                  TableCell(child: RawMaterialButton(child:Text("8"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("8");})),
+                                  TableCell(child: RawMaterialButton(child:Text("9"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("9");})),
                                 ]
                             ),
                             TableRow(
                                 children: <TableCell>[
                                   TableCell(child:Text("")),
-                                  TableCell(child: RawMaterialButton(child:Text("0"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("0");})),
-                                  TableCell(child: RawMaterialButton(child:Text("X"), padding: EdgeInsets.all(16.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_removeChar();})),
+                                  TableCell(child: RawMaterialButton(child:Text("0"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("0");})),
+                                  TableCell(child: RawMaterialButton(child:Text("X"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_removeChar();})),
                                 ]
                             ),
                           ],

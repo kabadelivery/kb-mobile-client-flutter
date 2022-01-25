@@ -32,7 +32,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS),
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
@@ -87,7 +87,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchMyAddresses");
     if (await Utils.hasNetwork()) {
 
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_ADRESSES),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
 */
@@ -152,9 +152,9 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS).toString(),
-        data:  Utils.isEmailValid(login) ?
-        json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
+          Uri.parse(Utils.isEmailValid(login) ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS : ServerRoutes.LINK_SEND_VERIFCATION_SMS).toString(),
+          data:  Utils.isEmailValid(login) ?
+          json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       );
 
       xrint(response.data.toString());
@@ -193,8 +193,8 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_CHECK_VERIFCATION_CODE).toString(),
-        data: json.encode({"code": code, "request_id": requestId})
+          Uri.parse(ServerRoutes.LINK_CHECK_VERIFCATION_CODE).toString(),
+          data: json.encode({"code": code, "request_id": requestId})
       );
 
       xrint(json.encode({"code": code, "request_id": requestId}));
@@ -233,8 +233,8 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
-        data: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0})
+          Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
+          data: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0})
       );
 
       xrint(response.data.toString());
@@ -274,7 +274,7 @@ class ClientPersonalApiProvider {
     }
   }*/
 
-  Future<String> loginAction({String login, String password, String app_version}) async {
+  Future<dynamic> loginAction({String login, String password, String app_version, bool shouldSendOtpCode}) async {
 
     xrint("entered loginAction");
     if (await Utils.hasNetwork()) {
@@ -330,12 +330,13 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString(),
-          data: json.encode({"username": login, "password":password, 'device':device }),
+        !shouldSendOtpCode ?  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString() :  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString(),
+        data: json.encode({"username": login, "password":password, 'device':device }),
       );
 
-      xrint(response.data);
-      return json.encode(response.data);
+      // xrint(response.data);
+      // return json.encode(response.data);
+      return response.data;
     } else {
       throw Exception(-2); // there is an error in your request
     }
@@ -351,7 +352,7 @@ class ClientPersonalApiProvider {
       if (customer.profile_picture != null)
         _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'whatsapp_number': customer.whatsapp_number, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
 
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS),
           body: _data,
           headers: Utils.getHeadersWithToken(customer?.token)).timeout(const Duration(seconds: 30));*/
@@ -493,7 +494,7 @@ class ClientPersonalApiProvider {
 
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ),
           body: json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
           headers: Utils.getHeadersWithToken(customer?.token)
@@ -513,7 +514,7 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ).toString(),
+        Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ).toString(),
         data:  json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
       );
 
@@ -583,7 +584,7 @@ class ClientPersonalApiProvider {
     xrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_USER_ACCOUNT),
           body: json.encode({"username": username}),
           headers: Utils.getHeadersWithToken(customer?.token)
@@ -687,7 +688,7 @@ class ClientPersonalApiProvider {
     xrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2),
           headers: Utils.getHeadersWithToken(customer?.token)
       )
@@ -732,7 +733,7 @@ class ClientPersonalApiProvider {
     xrint("entered recoverPasswordSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS),
           body:
           Utils.isEmailValid(login) ?
@@ -752,9 +753,9 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS).toString(),
-        data: Utils.isEmailValid(login) ?
-        json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
+          Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS).toString(),
+          data: Utils.isEmailValid(login) ?
+          json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
       );
 
 
@@ -775,7 +776,7 @@ class ClientPersonalApiProvider {
     xrint("entered checkRecoverPasswordRequestCodeAction");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE),
           body: json.encode({"code": code, "request_id": requestId}))
           .timeout(const Duration(seconds: 60));*/
@@ -813,7 +814,7 @@ class ClientPersonalApiProvider {
     xrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
 
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_PASSWORD_RESET),
           body: Utils.isEmailValid(login) ?
           json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
@@ -875,8 +876,8 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.GET_KABA_POINTS).toString(),
-        data: json.encode({})
+          Uri.parse(ServerRoutes.GET_KABA_POINTS).toString(),
+          data: json.encode({})
       );
 
       xrint(response.data.toString());
