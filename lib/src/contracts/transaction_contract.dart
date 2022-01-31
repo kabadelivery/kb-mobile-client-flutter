@@ -72,7 +72,9 @@ class TransactionPresenter implements TransactionContract {
     _transactionView.showBalanceLoading(true);
     try {
       String balance = await provider.checkBalance(customer);
+
       String kabaPoints = await provider.checkKabaPoints(customer);
+
       // also get the restaurant entity here.
       _transactionView.showBalance(balance);
       _transactionView.updateKabaPoints(kabaPoints);

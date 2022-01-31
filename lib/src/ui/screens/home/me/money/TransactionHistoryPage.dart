@@ -129,8 +129,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
           ));
 
     // send a first card_view that shows the solde, then below we add the transactions stuffs
-
-
     return  ListView.separated(
         separatorBuilder: (context, index) => Divider(
           color: Colors.grey.withAlpha(50),

@@ -9,6 +9,7 @@ import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
@@ -266,6 +267,7 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+//             home: TransactionHistoryPage(presenter: TransactionPresenter()),
           // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
             // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
