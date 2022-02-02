@@ -1,14 +1,18 @@
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/TransactionModel.dart';
+import 'package:KABA/src/models/MoneyTransactionModel.dart';
+import 'package:KABA/src/models/PointObjModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyNormalLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../StateContainer.dart';
 
@@ -30,101 +34,219 @@ class TransactionHistoryPage extends StatefulWidget {
 
 }
 
-class _TransactionHistoryPageState extends State<TransactionHistoryPage> implements TransactionView {
+class _TransactionHistoryPageState extends State<TransactionHistoryPage> with TransactionView, SingleTickerProviderStateMixin {
 
-  List<TransactionModel> data;
+  List<MoneyTransactionModel> moneyData;
+  PointObjModel pointData = null;
+
+
   String balance, kaba_points;
+
+  TabController _tabController;
+
+  var TABS_LENGTH = 2;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     widget.presenter.transactionView = this;
+    _tabController = TabController(vsync: this, length: TABS_LENGTH);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.fetchTransaction(customer);
+
+      // fetch transaction as the first page
+      widget.presenter.fetchMoneyTransaction(customer);
+      // only fetch point when we press on the other button
       widget.presenter.checkBalance(customer);
+
     });
+    _tabController.addListener(_handleTabSelection);
   }
 
-  bool hasSystemError = false;
-  bool isLoading = true;
-  bool isBalanceLoading = false;
-  bool hasNetworkError = false;
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      switch (_tabController.index) {
+        case 0:
+        /* we know that we have to init / load data from specific page */
+          break;
+        case 1:
+          if (pointData == null)
+            widget.presenter.fetchPointTransaction(widget.customer);
+          /* we know that we have to init / load data from specific page */
+          break;
+      }
+    }
+  }
 
+  bool isMoneyLoading = true;
+  bool isMoneyBalanceLoading = false;
+  bool hasMoneySystemError = false;
+  bool hasMoneyNetworkError = false;
+
+  bool isPointLoading = false;
+  bool hasPointSystemError = false;
+  bool hasPointNetworkError = false;
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.light,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('my_balance')}", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
-          actions: <Widget>[
-          ],
-        ),
-        body: Container(
-            child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-            _buildTransactionHistoryList())
-        )
-    );
+
+    return
+      DefaultTabController(
+          length: TABS_LENGTH,
+          child: Scaffold(
+              appBar: AppBar(
+                bottom: TabBar(
+                  controller: _tabController,
+                  indicatorColor: KColors.primaryColor,
+                  tabs: [
+                    Tab(child : Center(child:
+                    Row(mainAxisSize: MainAxisSize.min,children:
+                    [
+                      Text("${AppLocalizations.of(context)?.translate('balance')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+                      SizedBox(width:5),
+                      Icon( Icons.attach_money, color: Colors.black),
+                      SizedBox(width:5),
+                      isMoneyBalanceLoading || isMoneyLoading ? MyNormalLoadingProgressWidget(isMini:true) : Container()
+                    ]))),
+
+                    Tab(
+                        child: Center(child:
+                        Row(mainAxisSize: MainAxisSize.min,children:
+                        [
+                          Text("${AppLocalizations.of(context)?.translate('points')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
+                          SizedBox(width:5),
+                          Icon( Icons.control_point, color: Colors.black),
+                          SizedBox(width:5),
+                          isPointLoading ? MyNormalLoadingProgressWidget(isMini:true) : Container()
+                        ])))
+                  ],
+                ),
+                brightness: Brightness.light,
+                leading: IconButton(
+                    icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                backgroundColor: Colors.white,
+                title: Text("${AppLocalizations.of(context)?.translate('my_balance')}", style:TextStyle(color:KColors.primaryColor, fontSize: 16)),
+                actions: <Widget>[
+                ],
+              ),
+              body: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    Container(
+                        child: isMoneyBalanceLoading || isMoneyLoading ? Center(child:MyLoadingProgressWidget()) : (hasMoneyNetworkError ? _buildMoneyNetworkErrorPage() : hasMoneySystemError ? _buildMoneySysErrorPage():
+                        _buildMoneyTransactionHistoryList())
+                    ),
+                    Container(
+                        child: isPointLoading ? Center(child:MyLoadingProgressWidget()) : (hasPointNetworkError ? _buildPointNetworkErrorPage() : hasPointNetworkError ? _buildPointSysErrorPage():
+                        _buildPointTransactionHistoryList())
+                    ),
+                  ]
+              )
+          ));
   }
 
 
-  @override
-  void inflateTransaction(List<TransactionModel> transactions) {
 
-    showLoading(false);
+  @override
+  void inflatePointModelObj(PointObjModel pointModel) {
+
+    showPointloading(false);
 
     setState(() {
-      this.data = transactions.reversed.toList();
+      this.pointData = pointModel;
     });
   }
 
 
   @override
-  void networkError() {
-    showLoading(false);
+  void networkPointError() {
+    showPointloading(false);
     /* show a page of network error. */
     setState(() {
-      this.hasNetworkError = true;
+      this.hasPointNetworkError = true;
     });
   }
 
   @override
-  void showLoading(bool isLoading) {
+  void showPointloading(bool isLoading) {
     setState(() {
-      this.isLoading = isLoading;
+      this.isPointLoading = isLoading;
       if (isLoading == true) {
-        this.hasNetworkError = false;
-        this.hasSystemError = false;
+        this.hasPointNetworkError = false;
+        this.hasPointSystemError = false;
       }
     });
   }
 
   @override
-  void systemError() {
-    showLoading(false);
+  void systemPointError() {
+    showPointloading(false);
     /* show a page of network error. */
     setState(() {
-      this.hasSystemError = true;
+      this.hasPointSystemError = true;
     });
   }
 
-  _buildTransactionHistoryList() {
-    if (data == null || data?.length == 0)
+
+  @override
+  void inflateMoneyTransaction(List<MoneyTransactionModel> transactions) {
+
+    showMoneyLoading(false);
+
+    setState(() {
+      this.moneyData = transactions.reversed.toList();
+    });
+  }
+
+  @override
+  void networkMoneyError() {
+    showMoneyLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasMoneyNetworkError = true;
+    });
+  }
+
+  @override
+  void showMoneyLoading(bool isLoading) {
+    setState(() {
+      this.isMoneyLoading = isLoading;
+      if (isLoading == true) {
+        this.hasMoneyNetworkError = false;
+        this.hasMoneySystemError = false;
+      }
+    });
+  }
+
+  @override
+  void systemMoneyError() {
+    showMoneyLoading(false);
+    /* show a page of network error. */
+    setState(() {
+      this.hasMoneySystemError = true;
+    });
+  }
+
+
+  _buildPointTransactionHistoryList() {
+    if (pointData == null/* || pointData?.last_ten_transactions?.length == 0*/)
       return Center(
           child:Column(mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               IconButton(icon: Icon(Icons.monetization_on, color: Colors.grey)),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('sorry_empty_transactions')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context)?.translate('sorry_empty_transactions')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
             ],
           ));
 
@@ -133,55 +255,47 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
         separatorBuilder: (context, index) => Divider(
           color: Colors.grey.withAlpha(50),
         ),
-        itemCount: data?.length,
+        itemCount: pointData?.last_ten_transactions?.length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: <Widget>[
-
-             index == 0 ? Center(
-                child: Card(margin: EdgeInsets.only(top:15, bottom: 10),
-                  child: Container(
-                    padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
-                    width: MediaQuery.of(context).size.width*0.9,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                      Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontSize: 24)),
-                      Row(
-                        children: [
-                          Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                        Text("  ${AppLocalizations.of(context).translate('currency')}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 14))
-                        ],
-                      ),
-                    ]),
-                  ),
-                ),
-              ) : Container(),
-
               index == 0 ? Center(
                 child: Card(margin: EdgeInsets.only(top:10, bottom: 10),
-                  child: Container(
-                    padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
-                    width: MediaQuery.of(context).size.width*0.9,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                      Text("${AppLocalizations.of(context).translate('kaba_points')}", style: TextStyle(fontSize: 24)),
-                      Row(
-                        children: [
-                          Text("${kaba_points == null ? (StateContainer.of(context).kabaPoints == null || StateContainer.of(context).kabaPoints == null ? "--" : StateContainer.of(context).kabaPoints) : kaba_points}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                        ],
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
+                        width: MediaQuery.of(context).size.width*0.9,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
+                          Row(
+                            children: [
+                              Text("${pointData?.balance == null ? "---" : pointData?.balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                            ],
+                          ),
+                        ]),
                       ),
-                    ]),
+                      SizedBox(height: 10),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add_to_queue_sharp),
+                            SizedBox(width: 5),
+                            Text("Inneligilbe")
+                          ])
+                    ],
                   ),
                 ),
               ) : Container(),
 
               ListTile(
-                leading: data[index].type == -1 ? Icon(Icons.trending_down, color: Colors.red,) : (data[index].type == 1 ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue,)),
+                leading: pointData?.last_ten_transactions[index]?.type == "D" ? Icon(Icons.trending_down, color: Colors.red,) : (pointData?.last_ten_transactions[index].type == "C" ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue)),
                 title: Row(
                   children: <Widget>[
-                    Expanded(child: Text("${data[index].details}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                    Expanded(child: Text("${pointData?.last_ten_transactions[index]?.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                   ],
                 ),
-                subtitle: Text("${data[index].details}", style: TextStyle(fontSize: 12)),
-                trailing: Text("${(data[index].type == -1 ? "-" : "+")} ${data[index].value}", style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                // subtitle: Text("${pointData[index].details}", style: TextStyle(fontSize: 12)),
+                trailing: Text("${(pointData?.last_ten_transactions[index]?.type == "D" ? "-" : "+")} ${pointData?.last_ten_transactions[index]?.amount}", style: TextStyle(color: pointData?.last_ten_transactions[index]?.type == "D" ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
                 /*Row(
                     children: <Widget>[
                       Text(data[index].value, style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
@@ -190,20 +304,90 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
                   ),*/
               ),
               Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment:MainAxisAlignment.end, children: <Widget>[
-                Text(Utils.readTimestamp(data[index]?.created_at), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
-                SizedBox(width: 5), Icon(data[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                Text("${pointData?.last_ten_transactions[index]?.created_at}", style: TextStyle(color: Colors.grey, fontSize: 10, fontStyle: FontStyle.italic)),SizedBox(width: 10)
+                // SizedBox(width: 5), Icon(pointData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
               ]),
             ],
           );
         });
   }
 
-  _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
+  _buildMoneyTransactionHistoryList() {
+    if (moneyData == null || moneyData?.length == 0)
+      return Center(
+          child:Column(mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.monetization_on, color: Colors.grey)),
+              SizedBox(height: 5),
+              Text("${AppLocalizations.of(context)?.translate('sorry_empty_transactions')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            ],
+          ));
+
+    // send a first card_view that shows the solde, then below we add the transactions stuffs
+    return  ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.grey.withAlpha(50),
+        ),
+        itemCount: moneyData?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: <Widget>[
+              index == 0 ? Center(
+                child: Card(margin: EdgeInsets.only(top:15, bottom: 10),
+                  child: Container(
+                    padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
+                    width: MediaQuery.of(context).size.width*0.9,
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                      Text("${AppLocalizations.of(context)?.translate('balance')}", style: TextStyle(fontSize: 24)),
+                      Row(
+                        children: [
+                          Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                          Text("  ${AppLocalizations.of(context)?.translate('currency')}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 14))
+                        ],
+                      ),
+                    ]),
+                  ),
+                ),
+              ) : Container(),
+              ListTile(
+                leading: moneyData[index].type == -1 ? Icon(Icons.trending_down, color: Colors.red,) : (moneyData[index].type == 1 ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue,)),
+                title: Row(
+                  children: <Widget>[
+                    Expanded(child: Text("${moneyData[index].details}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                  ],
+                ),
+                subtitle: Text("${moneyData[index].details}", style: TextStyle(fontSize: 12)),
+                trailing: Text("${(moneyData[index].type == -1 ? "-" : "+")} ${moneyData[index].value}", style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                /*Row(
+                    children: <Widget>[
+                      Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                      SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                    ],
+                  ),*/
+              ),
+              Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment:MainAxisAlignment.end, children: <Widget>[
+                Text(Utils.readTimestamp(moneyData[index]?.created_at), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
+                SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+              ]),
+            ],
+          );
+        });
   }
 
-  _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchTransaction(widget.customer); });
+  _buildMoneySysErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('system_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer); });
+  }
+
+  _buildMoneyNetworkErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('network_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer); });
+  }
+
+  _buildPointSysErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('system_error')}",onClickAction: (){ widget.presenter.fetchPointTransaction(widget.customer); });
+  }
+
+  _buildPointNetworkErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('network_error')}",onClickAction: (){ widget.presenter.fetchPointTransaction(widget.customer); });
   }
 
   @override
@@ -227,15 +411,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> impleme
   @override
   void showBalanceLoading(bool isLoading) {
     setState(() {
-      isBalanceLoading = isLoading;
+      isMoneyBalanceLoading = isLoading;
     });
   }
 
-  @override
+/* @override
   void updateKabaPoints(String kabaPoints) {
     setState(() {
       StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
     });
-  }
+  }*/
 
 }

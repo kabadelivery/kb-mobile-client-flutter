@@ -409,5 +409,11 @@
   "address_last_update": "最后更新时间：",
   "gps_location_valid": "位置获取成功。请填写其他信息",
   "notice": "通知:",
-  "alert_message_received": "收到 !"
+  "alert_message_received": "收到 !",
+
+  "balance": "余额",
+  "points": "积分",
+
+  "debit_points_kaba": "KABA 积分借记",
+  "credit_points_kaba": "KABA Point 到账"
 }

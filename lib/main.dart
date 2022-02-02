@@ -266,8 +266,10 @@ class _MyAppState extends State<MyApp> {
                   fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-//             home: TransactionHistoryPage(presenter: TransactionPresenter()),
+//               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+
+            home: TransactionHistoryPage(presenter: TransactionPresenter()),
+
           // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
             // home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),

@@ -73,7 +73,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               CustomerUtils.clearCustomerInformations().whenComplete((){
                 StateContainer.of(context).updateLoggingState(state: 0);
                 StateContainer.of(context).updateBalance(balance: 0);
-                StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+                // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
                 StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
                 StateContainer.of(context).updateTabPosition(tabPosition: 0);
                 Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
@@ -435,7 +435,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
           .balance = 0;
       CustomerUtils.clearCustomerInformations().whenComplete(() {
         StateContainer.of(context).updateBalance(balance: 0);
-        StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+        // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
         StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
         StateContainer.of(context).updateTabPosition(tabPosition: 0);
 

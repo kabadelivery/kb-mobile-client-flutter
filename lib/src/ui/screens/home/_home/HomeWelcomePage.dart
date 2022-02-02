@@ -346,7 +346,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
-          StateContainer.of(context).updateKabaPoints(kabaPoints: "");
+          // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
           StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
@@ -1355,7 +1355,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void updateKabaPoints(String kabaPoints) {
-    StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
+    // StateContainer.of(context).updateKabaPoints(kabaPoints: kabaPoints);
   }
 
   _jumpToWhatsapp() async {

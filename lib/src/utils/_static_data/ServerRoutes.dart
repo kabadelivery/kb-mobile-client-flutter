@@ -207,6 +207,9 @@ class ServerRoutes {
   static const String LINK_GET_TRANSACTION_HISTORY = ServerConfig.PAY_SERVER_ADDRESS_SECURE +
       "/mobile/api/user/transaction/history";
 
+  static const String LINK_GET_POINT_TRANSACTION_HISTORY = ServerConfig.SERVER_ADDRESS+
+      "/mobile/api/user/kaba/point/get/v2";
+
   static const String LINK_GET_BALANCE =  ServerConfig.PAY_SERVER_ADDRESS_SECURE +
       "/mobile/api/user/transaction/balance/get";
 
@@ -258,7 +261,9 @@ class ServerRoutes {
 
   static const String  LINK_TOPUP_FEES_RATE = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get";
 
-  static const String  LINK_TOPUP_FEES_RATE_V2 = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get/v2";
+  // static const String  LINK_TOPUP_FEES_RATE_V2 = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get/v2";
+
+  static const String  LINK_TOPUP_FEES_RATE_V3 = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get/v3";
 
   static const String  LINK_CHECK_UNREAD_MESSAGES = ServerConfig.SERVER_ADDRESS_SECURE+"/mobile/api/user/new/message/check";
 

@@ -37,7 +37,7 @@ class StateContainerState extends State<StateContainer> {
   int tabPosition;
   int balance;
   int loggingState;
-  String kabaPoints;
+  // String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
   bool hasUnreadMessage;
@@ -154,17 +154,17 @@ class StateContainerState extends State<StateContainer> {
     );
   }
 
-  Future<void> updateKabaPoints({String kabaPoints}) async {
+/* Future<void> updateKabaPoints({String kabaPoints}) async {
 
     if (kabaPoints != null) {
       setState(() {
         this.kabaPoints = kabaPoints;
       });
-      /* save it to shared preferences */
+      *//* save it to shared preferences *//*
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('kabaPoints', kabaPoints);
     }
-  }
+  }*/
 
   Future<void> updateObserver({FirebaseAnalyticsObserver observer}) {
     if (observer != null) {

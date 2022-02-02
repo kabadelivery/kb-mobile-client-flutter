@@ -42,7 +42,8 @@ class ErrorPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(18.0),
                     ),
-                    padding: EdgeInsets.only(top: 10,bottom: 10), child:Text("${AppLocalizations.of(context).translate('try_again')}",
+                    padding: EdgeInsets.only(top: 10,bottom: 10),
+                    child:Text("${AppLocalizations.of(context)?.translate('try_again')}",
                     style: TextStyle(color: Colors.white)),
                     onPressed: onClickAction, color: KColors.primaryColor)
               ])

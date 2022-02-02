@@ -398,5 +398,10 @@
   "address_last_update": "Updated at :",
   "gps_location_valid": "Gps location was successfully set.\nPlease fill in the other information",
   "notice": "Notice:",
-  "alert_message_received": "Got it !"
+  "alert_message_received": "Got it !",
+  "balance": "Balance",
+  "points": "Points",
+
+  "debit_points_kaba": "KABA Point debit",
+  "credit_points_kaba": "KABA Point Credit"
 }

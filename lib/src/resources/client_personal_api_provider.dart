@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/PointObjModel.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
@@ -13,7 +14,7 @@ import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/TransactionModel.dart';
+import 'package:KABA/src/models/MoneyTransactionModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
@@ -392,12 +393,54 @@ class ClientPersonalApiProvider {
     }
   }
 
+/* get money transaction history */
+  Future<PointObjModel> fetchPointTransactionsHistory(CustomerModel customer) async {
 
+    xrint("entered fetchPointTransactionsHistory");
+    if (await Utils.hasNetwork()) {
 
-  /* all orders details */
-  Future<List<TransactionModel>> fetchTransactionsHistory(CustomerModel customer) async {
+      /*final response = await client
+          .post(Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY),
+          body: json.encode({}),
+          headers: Utils.getHeadersWithToken(customer?.token)
+      )
+          .timeout(const Duration(seconds: 60));
+      */
 
-    xrint("entered fetchLastTransactions");
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 60000
+      ;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_POINT_TRANSACTION_HISTORY).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        // int errorCode = mJsonDecode(response.data)["error"];
+          PointObjModel data = PointObjModel.fromMap(mJsonDecode(response.data));
+          return data;
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  /* get money transaction history */
+  Future<List<MoneyTransactionModel>> fetchMoneyTransactionsHistory(CustomerModel customer) async {
+
+    xrint("entered fetchMoneyTransactionsHistory");
     if (await Utils.hasNetwork()) {
 
       /*final response = await client
@@ -431,8 +474,8 @@ class ClientPersonalApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null || lo.isEmpty || lo.length == 0)
-            return List<TransactionModel>();
-          List<TransactionModel> transactionModel = lo?.map((command) => TransactionModel.fromJson(command))?.toList();
+            return List<MoneyTransactionModel>();
+          List<MoneyTransactionModel> transactionModel = lo?.map((command) => MoneyTransactionModel.fromJson(command))?.toList();
           return transactionModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -707,7 +750,7 @@ class ClientPersonalApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2).toString(),
+        Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V3).toString(),
       );
 
       xrint(response.data.toString());
