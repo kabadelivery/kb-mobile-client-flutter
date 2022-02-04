@@ -13,6 +13,7 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../../StateContainer.dart';
 
@@ -59,7 +60,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
       widget.presenter.fetchMoneyTransaction(customer);
       // only fetch point when we press on the other button
       widget.presenter.checkBalance(customer);
-
     });
     _tabController.addListener(_handleTabSelection);
   }
@@ -71,8 +71,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
         /* we know that we have to init / load data from specific page */
           break;
         case 1:
-          if (pointData == null)
+          if (pointData == null) {
             widget.presenter.fetchPointTransaction(widget.customer);
+          }
           /* we know that we have to init / load data from specific page */
           break;
       }
@@ -84,7 +85,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
   bool hasMoneySystemError = false;
   bool hasMoneyNetworkError = false;
 
-  bool isPointLoading = false;
+  bool isPointTopLoading = false;
+  bool isPointPageLoading = true; // to make sure when the tab is switched, the page is loading already
   bool hasPointSystemError = false;
   bool hasPointNetworkError = false;
 
@@ -125,7 +127,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                           SizedBox(width:5),
                           Icon( Icons.control_point, color: Colors.black),
                           SizedBox(width:5),
-                          isPointLoading ? MyNormalLoadingProgressWidget(isMini:true) : Container()
+                          isPointTopLoading ? MyNormalLoadingProgressWidget(isMini:true) : Container()
                         ])))
                   ],
                 ),
@@ -148,8 +150,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                         _buildMoneyTransactionHistoryList())
                     ),
                     Container(
-                        child: isPointLoading ? Center(child:MyLoadingProgressWidget()) : (hasPointNetworkError ? _buildPointNetworkErrorPage() : hasPointNetworkError ? _buildPointSysErrorPage():
-                        _buildPointTransactionHistoryList())
+                        child: isPointPageLoading ?
+                        Center(child:MyLoadingProgressWidget())
+                            : (
+                            hasPointNetworkError ? _buildPointNetworkErrorPage() :
+    (hasPointNetworkError ? _buildPointSysErrorPage():
+                        _buildPointTransactionHistoryList()))
                     ),
                   ]
               )
@@ -170,18 +176,23 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
 
 
   @override
-  void networkPointError() {
-    showPointloading(false);
+  void networkPointError({int delay = 0}) {
+    // showPointloading(false);
     /* show a page of network error. */
-    setState(() {
-      this.hasPointNetworkError = true;
+    Future.delayed(Duration(seconds: delay), (){
+      setState(() {
+        this.isPointPageLoading = false;
+        this.isPointTopLoading = false;
+        this.hasPointNetworkError = true;
+      });
     });
   }
 
   @override
   void showPointloading(bool isLoading) {
     setState(() {
-      this.isPointLoading = isLoading;
+      this.isPointPageLoading = isLoading;
+      this.isPointTopLoading = isLoading;
       if (isLoading == true) {
         this.hasPointNetworkError = false;
         this.hasPointSystemError = false;
@@ -264,7 +275,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
+                        padding: EdgeInsets.only(top:30,left:10, right:10),
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                           Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
@@ -275,13 +286,16 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                           ),
                         ]),
                       ),
+                      SizedBox(height: 20),
+                      RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.info_outline, color: Colors.grey),
+                              SizedBox(width: 5),
+                              Text("${AppLocalizations.of(context)?.translate('non_eligible')}", style: TextStyle( color: Colors.grey)),
+                            ]),
+                      ),
                       SizedBox(height: 10),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.add_to_queue_sharp),
-                            SizedBox(width: 5),
-                            Text("Inneligilbe")
-                          ])
                     ],
                   ),
                 ),
@@ -375,11 +389,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
   }
 
   _buildMoneySysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('system_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('system_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer);    widget.presenter.checkBalance(widget.customer); });
   }
 
   _buildMoneyNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('network_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer); });
+    return ErrorPage(message: "${AppLocalizations.of(context)?.translate('network_error')}",onClickAction: (){ widget.presenter.fetchMoneyTransaction(widget.customer);     widget.presenter.checkBalance(widget.customer); });
   }
 
   _buildPointSysErrorPage() {
@@ -414,6 +428,71 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
       isMoneyBalanceLoading = isLoading;
     });
   }
+
+  void mToast(String message) {
+    mDialog(message);
+  }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  void _showDialog(
+      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlineButton(
+                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes();
+                },
+              ),
+            ] : <Widget>[
+              OutlineButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
+    );
+  }
+
 
 /* @override
   void updateKabaPoints(String kabaPoints) {

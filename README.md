@@ -8,7 +8,8 @@ Kaba under Flutter framework
 - solving the nearby places removed issue 
 - solving other issues related to gps location picking and modification
 - solving issues to save otp messages money
-- working on load more feature 
+- worked on making lighter the amount of data that is sent to the restuarant list per call
+- worked on adding a view for customer activity POINTS and history
 
 
 #3.2.5: 24/01/2022

@@ -26,7 +26,7 @@ class TransactionView {
 
   void showPointloading(bool isLoading) {}
   void systemPointError () {}
-  void networkPointError () {}
+  void networkPointError ({int delay}) {}
   void updateKabaPoints(String kabaPoints) {}
   void inflatePointModelObj(PointObjModel data) {}
 }
@@ -136,7 +136,7 @@ class TransactionPresenter implements TransactionContract {
       if (_ == -2) {
         _transactionView.systemPointError();
       } else {
-        _transactionView.networkPointError();
+        _transactionView.networkPointError(delay: 1);
       }
     }
     isPointWorking = false;

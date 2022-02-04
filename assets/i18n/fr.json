@@ -420,5 +420,7 @@
   "points": "Points",
 
   "debit_points_kaba": "Débit de Point KABA",
-  "credit_points_kaba": "Crédit de Point KABA"
+  "credit_points_kaba": "Crédit de Point KABA",
+  "non_eligible": "Non-Eligible",
+  "non_eligible_reason": "Désolé, vous n'avez pas encore déverrouillé la fonction de réduction"
 }

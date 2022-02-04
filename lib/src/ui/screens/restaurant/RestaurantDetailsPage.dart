@@ -252,7 +252,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                               /* 4.0 - stars */
                               SizedBox(height:20),
 
-                              isLoading || commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildCommentNetworkErrorPage() : commentHasNetworkError ? _buildCommentSysErrorPage():
+                              commentIsLoading ? Center(child:CircularProgressIndicator()) : (commentHasSystemError ? _buildCommentNetworkErrorPage() : commentHasNetworkError ? _buildCommentSysErrorPage():
                               Column(children: <Widget>[
                                 _canComment == 1 ? Container(margin: EdgeInsets.only(left:20, right: 20),
                                     child: Text("${AppLocalizations.of(context).translate('review_us')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)): Container(),
@@ -269,7 +269,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
                                       ]),
                                     )
                                 ) : SizedBox(height:20),
-                                _buildCommentList(),
+
+                                isLoading ? Container() :  _buildCommentList(),
                               ])
                               ) ,
                               SizedBox(height:20),

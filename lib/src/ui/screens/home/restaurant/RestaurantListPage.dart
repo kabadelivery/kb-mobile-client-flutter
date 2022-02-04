@@ -297,7 +297,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                                   controller: _restaurantListScrollController,
                                   child: ListView.builder(
                                     controller: _restaurantListScrollController,
-                                    itemCount:  10, // data?.length != null ? data.length + 1 : 0,
+                                    itemCount:  data?.length != null ? data.length + 1 : 0,
                                     itemBuilder: (context, index) {
                                       if (index == data?.length)
                                         return Container(height:100);

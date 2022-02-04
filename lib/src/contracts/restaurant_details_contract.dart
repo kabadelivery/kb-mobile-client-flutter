@@ -112,7 +112,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
       } else {
         _restaurantDetailsView.canComment(0);
       }
-      _restaurantDetailsView.showCanCommentLoading(true);
+      _restaurantDetailsView.showCanCommentLoading(false);
     } catch (_) {
       /* RestaurantReview failure */
       xrint("error ${_}");

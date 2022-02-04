@@ -415,5 +415,9 @@
   "points": "积分",
 
   "debit_points_kaba": "KABA 积分借记",
-  "credit_points_kaba": "KABA Point 到账"
+  "credit_points_kaba": "KABA Point 到账",
+
+  "non_eligible": "不合格",
+  "non_eligible_reason": "抱歉您还没有解锁折扣功能"
+
 }

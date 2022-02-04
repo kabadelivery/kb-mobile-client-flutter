@@ -403,5 +403,7 @@
   "points": "Points",
 
   "debit_points_kaba": "KABA Point debit",
-  "credit_points_kaba": "KABA Point Credit"
+  "credit_points_kaba": "KABA Point Credit",
+  "non_eligible": "Non-Eligible",
+  "non_eligible_reason": "Sorry you have not yet unlock the discount feature"
 }

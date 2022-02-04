@@ -335,7 +335,7 @@ class ClientPersonalApiProvider {
         data: json.encode({"username": login, "password":password, 'device':device }),
       );
 
-      // xrint(response.data);
+      xrint(response.data);
       // return json.encode(response.data);
       return response.data;
     } else {
