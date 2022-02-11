@@ -4,8 +4,8 @@
 class PointObjModel {
 
   int balance;
-  bool can_use;
-  int can_be_used;
+  int can_use;
+  bool can_be_used;
   bool is_eligible;
   // reasons
   bool is_new_beneficiary;
@@ -14,38 +14,47 @@ class PointObjModel {
   int client_command_count;
   int client_ca_delivery;
   List<PointTransactionModel> last_ten_transactions;
+  
+  int eligible_order_count ; // 50
+  int monthly_limit_amount;
 
 //<editor-fold desc="Data Methods">
 
   PointObjModel({
-       this.balance,
+      this.balance,
       this.can_use,
-     this.can_be_used,
+      this.can_be_used,
       this.is_eligible,
       this.is_new_beneficiary,
       this.month_transactions_amount,
-      this.month_transactions_amount_plus_amount_to_debit,
-      this.client_command_count,
-      this.client_ca_delivery,
-      this.last_ten_transactions,
+     this.month_transactions_amount_plus_amount_to_debit,
+     this.client_command_count,
+     this.client_ca_delivery,
+     this.last_ten_transactions,
+     this.eligible_order_count,
+     this.monthly_limit_amount,
   });
 
-  @override
+// 30@override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PointObjModel &&
-          runtimeType == other.runtimeType &&
-          balance == other.balance &&
-          can_use == other.can_use &&
-          can_be_used == other.can_be_used &&
-          is_eligible == other.is_eligible &&
-          is_new_beneficiary == other.is_new_beneficiary &&
-          month_transactions_amount == other.month_transactions_amount &&
-          month_transactions_amount_plus_amount_to_debit ==
-              other.month_transactions_amount_plus_amount_to_debit &&
-          client_command_count == other.client_command_count &&
-          client_ca_delivery == other.client_ca_delivery &&
-          last_ten_transactions == other.last_ten_transactions);
+          (other is PointObjModel &&
+              runtimeType == other.runtimeType &&
+              balance == other.balance &&
+              can_use == other.can_use &&
+              can_be_used == other.can_be_used &&
+              is_eligible == other.is_eligible &&
+              is_new_beneficiary == other.is_new_beneficiary &&
+              month_transactions_amount == other.month_transactions_amount &&
+              month_transactions_amount_plus_amount_to_debit ==
+                  other.month_transactions_amount_plus_amount_to_debit &&
+              client_command_count == other.client_command_count &&
+              client_ca_delivery == other.client_ca_delivery &&
+              last_ten_transactions == other.last_ten_transactions &&
+              eligible_order_count == other.eligible_order_count &&
+              monthly_limit_amount == other.monthly_limit_amount
+          );
+
 
   @override
   int get hashCode =>
@@ -58,7 +67,10 @@ class PointObjModel {
       month_transactions_amount_plus_amount_to_debit.hashCode ^
       client_command_count.hashCode ^
       client_ca_delivery.hashCode ^
-      last_ten_transactions.hashCode;
+      last_ten_transactions.hashCode ^
+      eligible_order_count.hashCode ^
+      monthly_limit_amount.hashCode;
+
 
   @override
   String toString() {
@@ -73,13 +85,16 @@ class PointObjModel {
         ' client_command_count: $client_command_count,' +
         ' client_ca_delivery: $client_ca_delivery,' +
         ' last_ten_transactions: $last_ten_transactions,' +
+        ' eligible_order_count: $eligible_order_count,' +
+        ' monthly_limit_amount: $monthly_limit_amount,' +
         '}';
   }
 
+
   PointObjModel copyWith({
     int balance,
-    bool can_use,
-    int can_be_used,
+    int can_use,
+    bool can_be_used,
     bool is_eligible,
     bool is_new_beneficiary,
     int month_transactions_amount,
@@ -87,6 +102,8 @@ class PointObjModel {
     int client_command_count,
     int client_ca_delivery,
     List<PointTransactionModel> last_ten_transactions,
+    int eligible_order_count,
+    int monthly_limit_amount,
   }) {
     return PointObjModel(
       balance: balance ?? this.balance,
@@ -94,17 +111,19 @@ class PointObjModel {
       can_be_used: can_be_used ?? this.can_be_used,
       is_eligible: is_eligible ?? this.is_eligible,
       is_new_beneficiary: is_new_beneficiary ?? this.is_new_beneficiary,
-      month_transactions_amount:
-          month_transactions_amount ?? this.month_transactions_amount,
-      month_transactions_amount_plus_amount_to_debit:
-          month_transactions_amount_plus_amount_to_debit ??
-              this.month_transactions_amount_plus_amount_to_debit,
+      month_transactions_amount: month_transactions_amount ??
+          this.month_transactions_amount,
+      month_transactions_amount_plus_amount_to_debit: month_transactions_amount_plus_amount_to_debit ??
+          this.month_transactions_amount_plus_amount_to_debit,
       client_command_count: client_command_count ?? this.client_command_count,
       client_ca_delivery: client_ca_delivery ?? this.client_ca_delivery,
-      last_ten_transactions:
-          last_ten_transactions ?? this.last_ten_transactions,
+      last_ten_transactions: last_ten_transactions ??
+          this.last_ten_transactions,
+      eligible_order_count: eligible_order_count ?? this.eligible_order_count,
+      monthly_limit_amount: monthly_limit_amount ?? this.monthly_limit_amount,
     );
   }
+
 
   Map<String, dynamic> toMap() {
     return {
@@ -114,33 +133,40 @@ class PointObjModel {
       'is_eligible': this.is_eligible,
       'is_new_beneficiary': this.is_new_beneficiary,
       'month_transactions_amount': this.month_transactions_amount,
-      'month_transactions_amount_plus_amount_to_debit':
-          this.month_transactions_amount_plus_amount_to_debit,
+      'month_transactions_amount_plus_amount_to_debit': this
+          .month_transactions_amount_plus_amount_to_debit,
       'client_command_count': this.client_command_count,
       'client_ca_delivery': this.client_ca_delivery,
       'last_ten_transactions': this.last_ten_transactions,
+      'eligible_order_count': this.eligible_order_count,
+      'monthly_limit_amount': this.monthly_limit_amount,
     };
   }
 
   factory PointObjModel.fromMap(Map<String, dynamic> map) {
     return PointObjModel(
       balance: map['balance'] as int,
-      can_use: map['can_use'] as bool,
-      can_be_used: map['can_be_used'] as int,
+      can_use: map['can_use'] as int,
+      can_be_used: map['can_be_used'] as bool,
       is_eligible: map['is_eligible'] as bool,
       is_new_beneficiary: map['is_new_beneficiary'] as bool,
       month_transactions_amount: map['month_transactions_amount'] as int,
-      month_transactions_amount_plus_amount_to_debit:
-          map['month_transactions_amount_plus_amount_to_debit'] as int,
+      month_transactions_amount_plus_amount_to_debit: map['month_transactions_amount_plus_amount_to_debit'] as int,
       client_command_count: map['client_command_count'] as int,
       client_ca_delivery: map['client_ca_delivery'] as int,
       last_ten_transactions:
-      (map['last_ten_transactions'] as List ?? [])?.map((f) => PointTransactionModel.fromMap(f))?.toList()
-          // map['last_ten_transactions'] as List<PointTransactionModel>,
+      (map['last_ten_transactions'] as List ?? [])?.map((f) => PointTransactionModel.fromMap(f))?.toList(),
+      eligible_order_count: map['eligible_order_count'] as int,
+      monthly_limit_amount: map['monthly_limit_amount'] as int,
     );
   }
 
-//</editor-fold>
+  
+  //</editor-fold>
+
+//<editor-fold desc="Data Methods">
+ 
+          //  
 }
 
 

@@ -330,8 +330,10 @@ class ClientPersonalApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+
+      String link =  !shouldSendOtpCode ?  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString() :  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString();
       var response = await dio.post(
-        !shouldSendOtpCode ?  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString() :  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString(),
+        link,
         data: json.encode({"username": login, "password":password, 'device':device }),
       );
 
@@ -427,8 +429,8 @@ class ClientPersonalApiProvider {
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         // int errorCode = mJsonDecode(response.data)["error"];
-          PointObjModel data = PointObjModel.fromMap(mJsonDecode(response.data));
-          return data;
+        PointObjModel data = PointObjModel.fromMap(mJsonDecode(response.data));
+        return data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
@@ -474,8 +476,8 @@ class ClientPersonalApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null || lo.isEmpty || lo.length == 0)
-            return List<MoneyTransactionModel>();
-          List<MoneyTransactionModel> transactionModel = lo?.map((command) => MoneyTransactionModel.fromJson(command))?.toList();
+            return List<MoneyTransactionModel>.empty();
+          List<MoneyTransactionModel> transactionModel = lo?.map((command) => MoneyTransactionModel.fromMap(command))?.toList();
           return transactionModel;
         } else
           throw Exception(-1); // there is an error in your request

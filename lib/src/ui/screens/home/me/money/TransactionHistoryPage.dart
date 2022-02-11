@@ -1,3 +1,4 @@
+import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -5,6 +6,7 @@ import 'package:KABA/src/models/MoneyTransactionModel.dart';
 import 'package:KABA/src/models/PointObjModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyNormalLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -286,15 +288,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                           ),
                         ]),
                       ),
-                      SizedBox(height: 20),
-                      RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
+                      // SizedBox(height: 20),
+                     false ? RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
                         child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.info_outline, color: Colors.grey),
                               SizedBox(width: 5),
                               Text("${AppLocalizations.of(context)?.translate('non_eligible')}", style: TextStyle( color: Colors.grey)),
                             ]),
-                      ),
+                      ) : Container(),
                       SizedBox(height: 10),
                     ],
                   ),
@@ -363,21 +365,26 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                   ),
                 ),
               ) : Container(),
-              ListTile(
-                leading: moneyData[index].type == -1 ? Icon(Icons.trending_down, color: Colors.red,) : (moneyData[index].type == 1 ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue,)),
-                title: Row(
-                  children: <Widget>[
-                    Expanded(child: Text("${moneyData[index].details}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                  ],
-                ),
-                subtitle: Text("${moneyData[index].details}", style: TextStyle(fontSize: 12)),
-                trailing: Text("${(moneyData[index].type == -1 ? "-" : "+")} ${moneyData[index].value}", style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                /*Row(
+              InkWell(
+              onTap: () {
+                _onMoneyTransactionTap(moneyData[index]);
+              },
+                child: ListTile(
+                  leading: moneyData[index].type == -1 ? Icon(Icons.trending_down, color: Colors.red,) : (moneyData[index].type == 1 ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue,)),
+                  title: Row(
                     children: <Widget>[
-                      Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                      SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                      Expanded(child: Text("${moneyData[index].details}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                     ],
-                  ),*/
+                  ),
+                  subtitle: Text("${moneyData[index].details}", style: TextStyle(fontSize: 12)),
+                  trailing: Text("${(moneyData[index].type == -1 ? "-" : "+")} ${moneyData[index].value}", style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                  /*Row(
+                      children: <Widget>[
+                        Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                        SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                      ],
+                    ),*/
+                ),
               ),
               Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment:MainAxisAlignment.end, children: <Widget>[
                 Text(Utils.readTimestamp(moneyData[index]?.created_at), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
@@ -491,6 +498,23 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
         );
       },
     );
+  }
+
+  void _jumpToPage(BuildContext context, page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
+
+  void _onMoneyTransactionTap(MoneyTransactionModel moneyData) {
+    if (moneyData?.command_id != null && moneyData?.command_id > 1) {
+      // jump to order details page
+      _jumpToPage(context, OrderDetailsPage(
+          orderId: moneyData?.command_id, presenter: OrderDetailsPresenter()));
+    }
   }
 
 

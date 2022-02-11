@@ -213,24 +213,24 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                           children: <TableRow>[
                             TableRow(
                               children: <TableCell>[
-                                TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.all(5))),
-                                TableCell(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");})),
-                                TableCell(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");})),
+                                TableCell(child: Container(child: RawMaterialButton(child:Text("1"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("1");}), padding: EdgeInsets.only(bottom:5))),
+                                TableCell(child: Container(child: RawMaterialButton(child:Text("2"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("2");}), padding: EdgeInsets.only(bottom:5))),
+                                TableCell(child: Container(child: RawMaterialButton(child:Text("3"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("3");}), padding: EdgeInsets.only(bottom:5))),
                               ],
                             ),
                             TableRow(
                                 children: <TableCell>[
-                                  TableCell(child: Container(child: RawMaterialButton(child:Text("4"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("4");}), padding: EdgeInsets.all(5))),
-                                  TableCell(child: RawMaterialButton(child:Text("5"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("5");})),
-                                  TableCell(child: RawMaterialButton(child:Text("6"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("6");})),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("4"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("4");}), padding: EdgeInsets.only(bottom:5))),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("5"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("5");}), padding: EdgeInsets.only(bottom:5))),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("6"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("6");}), padding: EdgeInsets.only(bottom:5))),
                                 ]
                             ),
 
                             TableRow(
                                 children: <TableCell>[
-                                  TableCell(child: Container(child: RawMaterialButton(child:Text("7"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("7");}), padding: EdgeInsets.all(5))),
-                                  TableCell(child: RawMaterialButton(child:Text("8"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("8");})),
-                                  TableCell(child: RawMaterialButton(child:Text("9"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("9");})),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("7"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("7");}), padding: EdgeInsets.only(bottom:5))),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("8"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("8");}), padding: EdgeInsets.only(bottom:5))),
+                                  TableCell(child: Container(child: RawMaterialButton(child:Text("9"), padding: EdgeInsets.all(14.0), shape: CircleBorder(), fillColor:Colors.grey.shade50, onPressed: () {_passwordAppendChar("9");}), padding: EdgeInsets.only(bottom:5))),
                                 ]
                             ),
                             TableRow(

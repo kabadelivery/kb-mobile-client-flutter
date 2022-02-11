@@ -266,11 +266,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       }
       /* save it to the shared preferences */
       if (otp != null) {
-        CustomerUtils.saveOtpToSharedPreference(otp);
+        CustomerUtils.saveOtpToSharedPreference(customer,otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
       }
       else {
-        CustomerUtils.getLastOtp().then((mOtp) async {
+        CustomerUtils.getLastOtp(customer).then((mOtp) async {
           // this is the otp
           if ("no".compareTo(mOtp) == 0) {
             // login_failure
@@ -323,6 +323,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       // once we have the result we redirect
       String token = obj["data"]["payload"]["token"];
       CustomerUtils.persistTokenAndUserdata(token, json.encode(obj));
+
+      // remove all login informations
+      CustomerUtils.clearOtpLoginInfoFromSharedPreference(customer);
 
       if (widget.fromOrderingProcess) {
         // pop

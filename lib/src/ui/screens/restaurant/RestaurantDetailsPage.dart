@@ -82,7 +82,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         // fetch comments
         // we can accept to load the restaurant here if needed
         widget.presenter.checkCanComment(customer, widget?.restaurant);
-        widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
+        widget.presenter.fetchCommentList(widget?.customer, RestaurantModel(id:widget?.restaurantId));
         // fetch if the restaurant is open
       }
     });

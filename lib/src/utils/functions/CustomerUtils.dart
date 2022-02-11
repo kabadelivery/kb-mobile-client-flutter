@@ -120,20 +120,31 @@ class CustomerUtils {
     prefs.setString("_homepage", wp);
   }
 
-  static Future<void> saveOtpToSharedPreference(String otp) async {
+  static Future<void> saveOtpToSharedPreference(CustomerModel customer, String otp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("last_otp", otp);
-    prefs.setString("otp_saved_time", "${DateTime.now().millisecondsSinceEpoch~/1000}");
+    prefs.setString("${customer.username}_last_otp", otp);
+    prefs.setString("${customer.username}_otp_saved_time", "${DateTime.now().millisecondsSinceEpoch~/1000}");
   }
 
-  static Future<String> getLastValidOtp({MIN_LAPSED_SECONDS = 60*5}) async {
+  static Future<void> clearOtpLoginInfoFromSharedPreference(CustomerModel customer) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try{
+      prefs.remove("${customer?.username}_otp_saved_time");
+      prefs.remove("${customer?.username}_last_otp");
+    } catch(_){
+      xrint(_);
+    }
+  }
+
+
+  static Future<String> getLastValidOtp({CustomerModel customer, MIN_LAPSED_SECONDS = 60*5}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String otp_saved_time = prefs.getString("otp_saved_time");
+      String otp_saved_time = prefs.getString("${customer.username}_otp_saved_time");
       if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS > (DateTime
           .now()
           .millisecondsSinceEpoch / 1000)) {
-        return prefs.getString("last_otp");
+        return prefs.getString("${customer.username}_last_otp");
       } else {
         return "no";
       }
@@ -142,15 +153,14 @@ class CustomerUtils {
     }
   }
 
-  static Future<String> getLastOtp() async {
+  static Future<String> getLastOtp(CustomerModel customer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("last_otp")) {
-      return prefs.getString("last_otp");
+    if (prefs.containsKey("${customer.username}_last_otp")) {
+      return prefs.getString("${customer.username}_last_otp");
     } else {
       return "no";
     }
   }
-
 
   static Future<bool> isPusTokenUploaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -174,6 +184,7 @@ class CustomerUtils {
     }
     return false;
   }
+
 
 
 }

@@ -30,5 +30,5 @@ class ImageAssets {
 
 // image assets
  static final String address_location_pick_ok = "assets/images/png/location_check_ok.png";
-
+ static final String emergency_icon = "assets/images/png/alarm.png";
 }

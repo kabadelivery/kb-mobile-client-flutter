@@ -1151,62 +1151,67 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     isMessageSeenMessageAlert(data).then((value) {
       if (value == false && StateContainer.of(context).service_message["show"] == 1) {
-        showOverlayNotification(
-          /* info when needed*/
-          /// show must be 1
-            (context) {
-              return StateContainer
-                  .of(context)
-                  .service_message["show"] == 1 ?
-              Container(
-                color: Colors.yellow,
-                padding: EdgeInsets.only(left: 8, bottom: 5, right: 8, top:45),
-                child: Column(
-                  children: [
-                    // {"message": smessage, "date": message_date};
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Text("${AppLocalizations.of(context).translate(
-                          'notice')}", style: TextStyle(color: Colors.black,
-                          fontFamily: "Dosis-Bold",
-                          fontSize: 16))
-                    ]),
-                    Container(height: 3),
-                    Text("${StateContainer
-                        .of(context)
-                        .service_message["message"]}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black,
-                            fontFamily: "Dosis-Light",
-                            fontSize: 14)),
-                    Container(height: 5),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          saveMessageAsRead(data);
-                          setState(() {
-                            OverlaySupportEntry.of(context).dismiss(animate: true);
-                          });
-                        },
-                        child: Text("${AppLocalizations.of(context).translate(
-                            'alert_message_received')}", textAlign: TextAlign
-                            .center,
-                            style: TextStyle(color: Colors.white,
-                                fontFamily: "Dosis-Bold",
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                    ])
-                  ],
-                ),
-                alignment: Alignment.center,
-              ) : Container();
-            },
-            position: NotificationPosition.top,
-          duration: Duration.zero
-        );
+        // showOverlayfunctionwithmessage(data);
+        showDialogForEmergencyMessage("${StateContainer
+            .of(context)
+            .service_message["message"]}", data);
       }
     });
 
+  }
+
+  void showOverlayfunctionwithmessage(AlertMessageModel data) {
+     showOverlayNotification(
+        (context) {
+          return StateContainer
+              .of(context)
+              .service_message["show"] == 1 ?
+          Container(
+            color: KColors.mBlue,
+            padding: EdgeInsets.only(left: 8, bottom: 5, right: 8, top:45),
+            child: Column(
+              children: [
+                // {"message": smessage, "date": message_date};
+                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                  Text("${AppLocalizations.of(context).translate(
+                      'notice')}", style: TextStyle(color: Colors.white, decoration: TextDecoration.none,
+                      // fontFamily: "Dosis-Bold",
+                      fontSize: 16))
+                ]),
+                Container(height: 3),
+                Text("${StateContainer
+                    .of(context)
+                    .service_message["message"]}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white,decoration: TextDecoration.none,
+                        // fontFamily: "Dosis-Light",
+                        fontSize: 11)),
+                Container(height: 5),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      saveMessageAsRead(data);
+                      setState(() {
+                        OverlaySupportEntry.of(context).dismiss(animate: true);
+                      });
+                    },
+                    child: Text("${AppLocalizations.of(context).translate(
+                        'alert_message_received')}", textAlign: TextAlign
+                        .center,
+                        style: TextStyle(color: Colors.white,
+                            // fontFamily: "Dosis-Bold",
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ])
+              ],
+            ),
+            alignment: Alignment.center,
+          ) : Container();
+        },
+        position: NotificationPosition.top,
+      duration: Duration.zero
+    );
   }
 
   void inflateServiceMessage(AlertMessageModel data) {
@@ -1266,6 +1271,47 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         }
       }
     });
+  }
+
+  void showDialogForEmergencyMessage(String message, AlertMessageModel data) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+              content: Column(mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                        height: 100, width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(
+                                  ImageAssets.emergency_icon),
+                            )
+                        )
+                    ),
+                    SizedBox(height: 10),
+                    Text("$message", textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black, fontSize: 13)),
+                    SizedBox(height:5),
+                    Row(mainAxisAlignment: MainAxisAlignment.center,children:[
+                      OutlineButton(
+                        borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                        child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)), // update
+                        onPressed: () {
+                          saveMessageAsRead(data);
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ])
+                  ]
+              ),
+          );
+        });
+//  });
   }
 
 
