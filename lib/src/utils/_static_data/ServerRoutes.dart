@@ -99,7 +99,7 @@ class ServerRoutes {
   //     "/mobile/api/login_check";
 
   static const String LINK_USER_LOGIN_V2 =  ServerConfig.SERVER_ADDRESS_SECURE+
-      "/api/user/login";
+      "/api/user/login/v2";
 
   static const String LINK_USER_LOGIN_V3 =  ServerConfig.SERVER_ADDRESS_SECURE+
       "/api/user/otp-login";

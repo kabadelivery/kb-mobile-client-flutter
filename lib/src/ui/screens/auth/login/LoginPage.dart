@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       * 1. check last time sent message, if before 5 minutes, then dont send,
       * 2. otherwise send
       *  */
-        CustomerUtils.getLastValidOtp().then((otp) {
+        CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp) == 0) {
             this.widget.presenter.login(true, login, _mCode, widget.version);
           } else {
@@ -260,17 +260,18 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (!widget?.autoLogin) {
       /* retrieve the otp and save it for later use */
       try {
-        otp = "${obj["login_code"]}";
+        if (obj["login_code"] != null)
+          otp = "${obj["login_code"]}";
       } catch (_) {
         otp = null;
       }
       /* save it to the shared preferences */
       if (otp != null) {
-        CustomerUtils.saveOtpToSharedPreference(customer,otp);
+        CustomerUtils.saveOtpToSharedPreference(customer?.username,otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
       }
       else {
-        CustomerUtils.getLastOtp(customer).then((mOtp) async {
+        CustomerUtils.getLastOtp(customer?.username).then((mOtp) async {
           // this is the otp
           if ("no".compareTo(mOtp) == 0) {
             // login_failure
@@ -325,7 +326,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       CustomerUtils.persistTokenAndUserdata(token, json.encode(obj));
 
       // remove all login informations
-      CustomerUtils.clearOtpLoginInfoFromSharedPreference(customer);
+      CustomerUtils.clearOtpLoginInfoFromSharedPreference(customer?.username);
 
       if (widget.fromOrderingProcess) {
         // pop
