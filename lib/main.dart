@@ -269,7 +269,7 @@ class _MyAppState extends State<MyApp> {
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
             // home: TransactionHistoryPage(presenter: TransactionPresenter()),
           // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
-            // home: TestPage(),
+          //   home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),

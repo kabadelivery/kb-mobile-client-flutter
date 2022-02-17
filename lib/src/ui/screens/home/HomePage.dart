@@ -588,13 +588,17 @@ class _HomePageState extends State<HomePage> {
       // we have a gps location
       xrint("path is gps location -> ${link}");
       /*6.33:3.44*/
+      if (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).lastLocationPickingDate > 2000) {
       _checkIfLoggedInAndDoAction(() {
         StateContainer
             .of(context)
             .tabPosition = 3;
-        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
-            gps_location: "${mUri.path}".replaceAll(",", ":")));
+          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+              gps_location: "${mUri.path}".replaceAll(",", ":")));
+          StateContainer.of(context).lastLocationPickingDate = DateTime.now().millisecondsSinceEpoch;
+
       });
+      }
     } else {
       // we dont have  a gps location
       xrint("path is not gps location -> ${link}");

@@ -273,7 +273,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
           return Column(
             children: <Widget>[
               index == 0 ? Center(
-                child: Card(margin: EdgeInsets.only(top:10, bottom: 10),
+                child: Card(margin: EdgeInsets.only(top:10, bottom: 10, left:15,right:15),
                   child: Column(
                     children: [
                       Container(
@@ -289,6 +289,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                         ]),
                       ),
                       // SizedBox(height: 20),
+          RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('this_feature_is_building')}"),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+          children: [
+          Icon(Icons.info_outline, color: Colors.grey),
+          SizedBox(width: 5),
+          Text("${AppLocalizations.of(context)?.translate('your_points')}", style: TextStyle( color: Colors.grey)),
+          ])),
                      false ? RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
                         child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
                             children: [

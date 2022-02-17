@@ -238,13 +238,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             });
             break;
           case SplashPage.LOCATION_PICKED:
-            _checkIfLoggedInAndDoAction(() {
-              // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
-              _jumpToPage(context, MyAddressesPage(
-                  presenter: AddressPresenter(),
-                  gps_location: widget.argument.toString().replaceAll(
-                      ",", ":")));
-            });
+
+            if (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).lastLocationPickingDate > 2000) {
+              _checkIfLoggedInAndDoAction(() {
+                // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
+                _jumpToPage(context, MyAddressesPage(
+                    presenter: AddressPresenter(),
+                    gps_location: widget.argument.toString().replaceAll(
+                        ",", ":")));
+              });
+              StateContainer.of(context).lastLocationPickingDate = DateTime.now().millisecondsSinceEpoch;
+            }
             break;
         }
         widget.destination = null;

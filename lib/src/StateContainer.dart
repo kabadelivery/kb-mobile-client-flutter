@@ -47,6 +47,8 @@ class StateContainerState extends State<StateContainer> {
   FirebaseAnalyticsObserver observer;
   Map service_message = {"message": "", "show": 0};
 
+  int lastLocationPickingDate =0;
+
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
       setState(() {

@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:flare_flutter/base/animation/actor_animation.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -43,12 +44,24 @@ _playMusic();
  Future<void> _playMusic() async {
 
     // play music
-  /*  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-    audioPlayer.setVolume(1.0);
-    AudioPlayer.logEnabled = true;
-    audioPlayer.play(MusicData.command_success_hold_on);*/
+   // AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+   //  audioPlayer.setVolume(1.0);
+    // AudioPlayer.logEnabled = true;
 
-   // final player = AudioPlayer();
+   // audioPlayer.play("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3", isLocal: false);
+   // audioPlayer.play("assets/command_success_hold_on.mp3", isLocal: true);
+   // audioPlayer.play("/assets/command_success_hold_on.mp3", isLocal: true);
+   // audioPlayer.play("file://assets/command_success_hold_on.mp3", isLocal: true);
+   //
+   // audioPlayer.play("money_transfer_successfull.mp3", isLocal: true);
+   // audioPlayer.play("assets/money_transfer_successfull.mp3", isLocal: true);
+   // audioPlayer.play("/assets/money_transfer_successfull.mp3", isLocal: true);
+   // audioPlayer.play("file://assets/money_transfer_successfull.mp3", isLocal: true);
+
+    // audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);   /**/
+
+   final player = AudioPlayer();
+   player.play("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3");
    // player.setAudioSource(AudioSource.uri(Uri.parse(
    //     "${MusicData.command_success_hold_on}")));
    // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
@@ -56,7 +69,7 @@ _playMusic();
    // player.setAudioSource(AudioSource.uri(Uri.parse('asset:///${MusicData.c_command_success_hold_on}')),
    //      initialPosition: Duration.zero, preload: true);
    //
-   // player.play();
+
     if (await Vibration.hasVibrator ()
     ) {
       Vibration.vibrate(duration: 500);

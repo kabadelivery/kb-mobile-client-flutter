@@ -7,6 +7,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -301,7 +302,8 @@ class _TransferMoneyAmountConfirmationPageState extends State<TransferMoneyAmoun
   Future<void> _playMusicForSuccess() async {
     // play music
     // AudioPlayer audioPlayer = AudioPlayer();
-    // audioPlayer.play(MusicData.money_transfer_successfull);
+    final player = AudioPlayer();
+    player.play(MusicData.money_transfer_successfull);
     if (await Vibration.hasVibrator ()
     ) {
       Vibration.vibrate(duration: 500);

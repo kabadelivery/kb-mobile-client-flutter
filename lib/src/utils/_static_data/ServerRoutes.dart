@@ -131,7 +131,7 @@ class ServerRoutes {
   static const String LINK_MY_BASKET_DELETE = ServerConfig.SERVER_ADDRESS+
       "/mobile/api/basket/delete";
 
-  /* update user informations */
+  // /* update user informations */api/code/check
   static const String LINK_UPDATE_USER_INFORMATIONS = ServerConfig.SERVER_ADDRESS+
       "/mobile/api/user/change";
 

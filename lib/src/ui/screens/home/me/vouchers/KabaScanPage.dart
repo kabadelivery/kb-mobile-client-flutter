@@ -23,6 +23,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -349,6 +350,8 @@ class _KabaScanPageState extends State<KabaScanPage>  {
     // play music
     // AudioPlayer audioPlayer = AudioPlayer();
     // audioPlayer.play(MusicData.scan_catch, isLocal: true);
+    final player = AudioPlayer();
+    player.play(MusicData.scan_catch);
     if (await Vibration.hasVibrator ()) {
       Vibration.vibrate(duration: 100);
     }

@@ -7,6 +7,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,8 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
     // play music
     // AudioPlayer audioPlayer = AudioPlayer();
     // audioPlayer.play(MusicData.voucher_subscribe_success);
+    final player = AudioPlayer();
+    player.play(MusicData.voucher_subscribe_success);
     if (await Vibration.hasVibrator ()
     ) {
       Vibration.vibrate(duration: 500);
