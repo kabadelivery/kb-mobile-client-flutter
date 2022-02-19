@@ -173,6 +173,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     Timer.run(() {
 
+      if (!(DateTime
+          .now()
+          .millisecondsSinceEpoch - StateContainer
+          .of(context)
+          .lastTimeLinkMatchAction > 2000)) {
+        return;
+      }
+
+      StateContainer.of(context).lastTimeLinkMatchAction = DateTime.now().millisecondsSinceEpoch;
+
+
       if (widget?.destination != null) {
         switch(widget.destination) {
           case SplashPage.TRANSACTIONS:
@@ -239,16 +250,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             break;
           case SplashPage.LOCATION_PICKED:
 
-            if (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).lastLocationPickingDate > 2000) {
-              _checkIfLoggedInAndDoAction(() {
+   _checkIfLoggedInAndDoAction(() {
                 // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
                 _jumpToPage(context, MyAddressesPage(
                     presenter: AddressPresenter(),
                     gps_location: widget.argument.toString().replaceAll(
                         ",", ":")));
               });
-              StateContainer.of(context).lastLocationPickingDate = DateTime.now().millisecondsSinceEpoch;
-            }
+
             break;
         }
         widget.destination = null;

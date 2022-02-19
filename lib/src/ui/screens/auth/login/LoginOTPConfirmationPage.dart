@@ -92,6 +92,17 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    try {
+      mainTimer.cancel();
+    } catch(_) {
+      xrint(_);
+    }
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
   }

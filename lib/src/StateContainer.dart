@@ -48,6 +48,7 @@ class StateContainerState extends State<StateContainer> {
   Map service_message = {"message": "", "show": 0};
 
   int lastLocationPickingDate =0;
+  int lastTimeLinkMatchAction = 0;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
