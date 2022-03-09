@@ -55,6 +55,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
     super.initState();
     widget.presenter.transactionView = this;
     _tabController = TabController(vsync: this, length: TABS_LENGTH);
+  /*  _tabController.addListener(() {
+      _handleTabSelection();
+    });*/
+
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
 
@@ -145,6 +149,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                 ],
               ),
               body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
                     Container(
@@ -156,7 +161,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                         Center(child:MyLoadingProgressWidget())
                             : (
                             hasPointNetworkError ? _buildPointNetworkErrorPage() :
-    (hasPointNetworkError ? _buildPointSysErrorPage():
+                            (hasPointNetworkError ? _buildPointSysErrorPage():
                         _buildPointTransactionHistoryList()))
                     ),
                   ]

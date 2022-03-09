@@ -55,11 +55,11 @@ class ServerRoutes {
       "/mobile/api/createV2Adresses";
 
   /* search customer with no */
-  static const String LINK_SEARCH_CUSTOMER = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/searchAdresses";
+  // static const String LINK_SEARCH_CUSTOMER = ServerConfig.SERVER_ADDRESS+
+  //     "/mobile/api/searchAdresses";
 
-  static const String LINK_TRANSFER_ADDRESS = ServerConfig.SERVER_ADDRESS+
-      "/mobile/api/user/address/send";
+  // static const String LINK_TRANSFER_ADDRESS = ServerConfig.SERVER_ADDRESS+
+  //     "/mobile/api/user/address/send";
 
   /* delete address */
   static const String LINK_DELETE_ADRESS = ServerConfig.SERVER_ADDRESS+

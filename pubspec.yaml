@@ -92,6 +92,7 @@ dependencies:
   http: ^0.13.3
   dio: ^4.0.4
   overlay_support: ^1.2.1
+  flutter_switch: ^0.3.2
 #  huawei_push: ^5.3.0+304
 
 
@@ -160,6 +161,7 @@ flutter:
     - assets/images/png/smartphone_unlock.png
     - assets/images/png/location_check_ok.png
     - assets/images/png/alarm.png
+    - assets/images/png/demo.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

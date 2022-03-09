@@ -24,7 +24,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 class OrderApiProvider {
 
 
-  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher) async {
+  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoints) async {
 
     xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -34,7 +34,12 @@ class OrderApiProvider {
         food_quantity.add({'food_id': food_item.id, 'quantity' : quantity})
       });
 
-      var _data = json.encode({'food_command': food_quantity, 'restaurant_id': restaurant.id, 'shipping_address': address.id, "voucher_id": voucher?.id});
+      var _data = json.encode({'food_command': food_quantity,
+        'restaurant_id': restaurant.id,
+        'shipping_address': address.id,
+        "voucher_id": voucher?.id,
+      "use_kaba_point" : useKabaPoints
+      });
 
      xrint(_data.toString());
 
@@ -72,7 +77,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
+  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -124,7 +129,8 @@ class OrderApiProvider {
         'infos' : '$infos',
         'device': device, // device informations
         'push_token':'$token', // push token
-        "voucher_id": voucher?.id
+        "voucher_id": voucher?.id,
+        "use_kaba_point": useKabaPoint
       });
 
      xrint("000 _ "+_data.toString());

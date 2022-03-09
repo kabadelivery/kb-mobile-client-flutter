@@ -317,6 +317,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                       )
                 ),
               ),
+
             ),
           ],
         ),
@@ -442,7 +443,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title:  Text("${AppLocalizations.of(context).translate('info')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
+              title:  Text("${AppLocalizations.of(context).translate('request')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -460,7 +461,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                         )
                     ),
                     SizedBox(height:10),
-                    Text("${AppLocalizations.of(context).translate('location_explanation')}", textAlign: TextAlign.center)
+                    Text("${AppLocalizations.of(context).translate('location_explanation_pricing')}", textAlign: TextAlign.center)
                   ],
                 ),
               ),

@@ -343,7 +343,11 @@
   "your_kaba_points": "YOUR POINTS KABA",
 
   "lost_your_password" : "Recover Password ?",
-  "location_explanation" : "KABA needs your location when you use the Application to improve the precision of our deliveries ! Would you accept to give us the permission to access your location ?",
+
+  "location_explanation_pricing" : "Would you allow KABA to pick your current location for more accurate delivery fees?",
+
+  "location_explanation" : "Would you allow KABA to pick your current location for more accurate delivery fees?",
+  "request": "Request",
   "info": "Information",
 
   "pnumber_registration_code_too_long": "A Confirmation Code has been sent to your phone. Confirmation codes may take time due to your network. Please remain patient.",
@@ -408,5 +412,13 @@
   "non_eligible_reason": "Sorry you have not yet unlock the discount feature",
 
   "your_points": "Your Points",
-  "this_feature_is_building": "This feature is building and will be soon available"
+  "this_feature_is_building": "This feature is building and will be soon available",
+
+  "demo_account_alert": "Sorry, you cannot make an order using a demo account. Please, use another account to make your order.",
+
+  "sorry_email_account_no_pay_delivery" : "Sorry. Email accounts are not allowed to pay with cash at delivery ! To pay with cash at delivery, Please create an account with your phone number instead.",
+
+  "discount_point_available" : "Discount point available ",
+
+  "use_delivery_point": "Get discount of "
 }

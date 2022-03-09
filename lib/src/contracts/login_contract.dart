@@ -17,6 +17,7 @@ class LoginView {
   void networkError () {}
   void accountNoExist() {}
   void loginTimeOut() {}
+  void systemError() {}
 }
 
 
@@ -64,10 +65,10 @@ class LoginPresenter implements LoginContract {
         xrint(_);
         if ("${_.toString()}".contains("timed out")) {
           _loginView.loginTimeOut();
-        } else if ("${_.toString()}".contains("-2"))
+        } else if ("${_.toString()}".contains("-2")) {
+          _loginView.systemError();
+        } else
           _loginView.networkError();
-        else
-          _loginView.accountNoExist();
       }
     } catch(_) {
       /* login failure */

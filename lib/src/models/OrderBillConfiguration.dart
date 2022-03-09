@@ -1,45 +1,10 @@
+import 'package:KABA/src/models/KabaPointConfigurationModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 
 
 class OrderBillConfiguration {
-
-  /*
-  *      price_delivery = data.get("shipping_pricing").getAsString(); // normal shipping price
-                    promotion_shipping_pricing = data.get("promotion_shipping_pricing").getAsString(); // promotion shipping price
-                    promotion_pricing =  data.get("promotion_pricing").getAsString(); // promotion food pricing
-                    price_command = data.get("command_pricing").getAsString(); // normal food pricing
-                    remise = data.get("remise").getAsString(); //
-                    price_net_to_pay = data.get("total_pricing").getAsString(); // total pricing -
-                    // total normal pricing
-                    price_normal_to_pay = data.get("total_normal_pricing").getAsString(); // total pricing -
-                    solde = ""+data.get("account_balance").getAsInt(); // solde of client
-                    /* check the allowed transactions methods */
-                    try {
-                        out_of_range = data.get("out_of_range").getAsBoolean();
-                        is_postpayed_allowed = data.get("pay_at_delivery").getAsBoolean();
-                        is_prepayed_allowed = data.get("prepayed").getAsBoolean();
-                        /* check this according to my own trustful value and the total price to pay */
-                        trustful = data.get("trustful").getAsInt();
-//                        boolean trustful = data.get("trustful").getAsBoolean();
-                        mp = data.get("max_pay").getAsString();
-                        estimation_cooking_time = data.get("cooking_time").getAsInt();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-  *
-  * */
-
-// NORMAL
-
-//  String shipping_pricing;
-//  String promotion_shipping_pricing;
-//  String promotion_pricing; // promotion food pricing.
-//  String command_pricing; // command pricing
-//  String remise;
-//  String total_pricing; // total current pricing
-//  String total_normal_pricing; // total normal pricing to set difference between this and promotion time
 
   int shipping_pricing;
   int promotion_shipping_pricing;
@@ -51,7 +16,6 @@ class OrderBillConfiguration {
   int total_pricing; // total current pricing
   int total_normal_pricing; // total normal pricing to set difference between this and promotion time
 
-
   int account_balance;
   bool out_of_range = true;
   bool pay_at_delivery = false;
@@ -60,34 +24,21 @@ class OrderBillConfiguration {
   int max_pay;
   int cooking_time;
 
-//  int promotion_pricing;
-//  int command_pricing;
-//  int account_balance;
-//  String shipping_pricing;
-//  int total_pricing;
-//  String promotion_shipping_pricing;
-//  String remise;
-//  bool out_of_range;
-//  bool pay_at_delivery;
-//  bool prepayed;
-//  int trustful;
-//  String max_pay;
-//  int cooking_time;
-//  int distance;
-
-
   int can_preorder;
   String discount;
   int open_type = -1;
   String working_hour = "";
   String reason;
-List<DeliveryTimeFrameModel> deliveryFrames;
+  List<DeliveryTimeFrameModel> deliveryFrames;
 
   bool isBillBuilt = false;
   bool hasCheckedOpen = false;
 
   int total_preorder_pricing;
-  // get delivery frames
+
+  //
+  KabaPointConfigurationModel kaba_point;
+
 
 
   static OrderBillConfiguration fake() {
@@ -128,7 +79,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     this.total_pricing, this.total_normal_pricing, this.account_balance,
     this.out_of_range, this.pay_at_delivery, this.prepayed, this.trustful,
     this.max_pay, this.cooking_time, this.can_preorder, this.discount,
-    this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt});
+    this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt, this.kaba_point});
 
 
   OrderBillConfiguration.fromJson(Map<String, dynamic> json) {
@@ -145,6 +96,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     prepayed = json['prepayed'];
     trustful = json['trustful'];
     max_pay = json['max_pay'];
+    kaba_point = KabaPointConfigurationModel.fromMap(json["kaba_point"]);
     cooking_time = json['cooking_time'];
   }
 
@@ -163,6 +115,7 @@ List<DeliveryTimeFrameModel> deliveryFrames;
     "trustful" : trustful,
     "max_pay" : max_pay,
     "cooking_time" : cooking_time,
+    "kaba_point": kaba_point?.toMap()
   };
 
   @override

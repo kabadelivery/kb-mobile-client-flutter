@@ -193,8 +193,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     String login = _loginFieldController.text;
     /* check the fields */
 
-    /* phone number */
-
     if (Utils.isPhoneNumber_TGO(login)) {
       this.widget.presenter.sendVerificationCode(login);
       mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);

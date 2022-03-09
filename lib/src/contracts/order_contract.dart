@@ -9,6 +9,7 @@ import 'package:KABA/src/models/RestaurantFoodModel.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/xrint.dart';
 
@@ -16,10 +17,10 @@ class OrderConfirmationContract {
 
 //  void login (String password, String phoneCode){}
 //  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) {}
   void checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) {}
-  void computeBilling (RestaurantModel restaurant, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher){}
-  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher){}
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) {}
+  void computeBilling (RestaurantModel restaurant, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint){}
+  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint){}
   Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end){}
 }
 
@@ -37,6 +38,7 @@ class OrderConfirmationView {
   void showLoading(bool isLoading) {}
 
   void isPurchasing(bool isPurchasing) {}
+  void sorryDemoAccountAlert() {}
 }
 
 
@@ -55,12 +57,13 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
   @override
   Future computeBilling(RestaurantModel restaurantModel, CustomerModel customer, Map<RestaurantFoodModel, int> foods,
-      DeliveryAddressModel address, VoucherModel voucher) async {
+      DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint) async {
+
     if (isWorking)
       return;
     isWorking = true;
     try {
-      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address, voucher);
+      OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address, voucher, useKabaPoint);
       _orderConfirmationView.showLoading(false);
       _orderConfirmationView.inflateBillingConfiguration2(orderBillConfiguration);
       isWorking = false;
@@ -82,7 +85,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
 
   @override
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
+  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
@@ -103,14 +106,14 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher) async {
+  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
       _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher);
+      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */
@@ -126,6 +129,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
   }
 
   Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+
 
     if (isWorking)
       return;
@@ -178,8 +182,8 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       Iterable lo = json.decode(response)["data"]["preorder"]["hours"];
       List<DeliveryTimeFrameModel> deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
 
-  //    open_type = 0;
-  //    can_preorder = 0;
+      //    open_type = 0;
+      //    can_preorder = 0;
 
       configuration = OrderBillConfiguration(working_hour: working_hour, open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames, isBillBuilt: false);
       _orderConfirmationView.isRestaurantOpenConfigLoading(false);

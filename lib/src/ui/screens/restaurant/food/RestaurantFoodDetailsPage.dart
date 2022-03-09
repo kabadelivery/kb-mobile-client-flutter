@@ -209,11 +209,19 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                             )),
                                         Padding(
                                           padding: const EdgeInsets.only(left:15),
-                                          child: Row(children: <Widget>[
-                                            Text("${widget.food.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
-                                            Container(width: 5),
-                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor))
-                                          ]),
+                                          child: Column(
+                                            children: [
+                                              Row(mainAxisAlignment : MainAxisAlignment.end,
+                                                children: [
+                                                  Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor)),
+                                                ],
+                                              ),
+                                              SizedBox(height: 5),
+                                              Row(children: <Widget>[
+                                                Text("${widget.food.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
+                                                 ]),
+                                            ],
+                                          ),
                                         )
                                       ]
                                   )

@@ -346,7 +346,7 @@
   "lost_your_password" : "找回密码 ?",
   "location_explanation" : "本APP为了提高您的体验需要获取您的位置。您愿意允许这个权限吗？",
   "info": "通知",
-
+  "request": "请求",
 
 
   "pnumber_registration_code_too_long": "请在短信里查看您的验证码。如果延迟、请耐心等待",
@@ -421,6 +421,13 @@
   "non_eligible_reason": "抱歉您还没有解锁折扣功能",
 
   "your_points": "积分",
-  "this_feature_is_building": "此功能正在构建中，即将推出"
+  "this_feature_is_building": "此功能正在构建中，即将推出",
+
+  "demo_account_alert": "抱歉，无法使用测试张下单。请使用别的账号下订单。",
+
+  "sorry_email_account_no_pay_delivery": "抱歉。 电子邮件账户不允许货到付款！ 如果想要现金付款，请使用您的电话号码创建一个帐户再试试",
+
+  "discount_point_available" : "优惠扣点 ",
+  "use_delivery_point": "获取订单优惠 "
 
 }

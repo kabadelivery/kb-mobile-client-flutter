@@ -24,6 +24,9 @@ import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
+const String DEMO_ACCOUNT_USERNAME = "90000000";
+
 class LoginPage extends StatefulWidget {
 
   static var routeName = "/LoginPage";
@@ -53,6 +56,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   bool isConnecting = false;
 
   TextEditingController _loginFieldController = new TextEditingController();
+
+
 
   @override
   void didChangeDependencies() {
@@ -269,8 +274,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       if (otp != null) {
         CustomerUtils.saveOtpToSharedPreference(customer?.username,otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
-      }
-      else {
+      } else {
         CustomerUtils.getLastOtp(customer?.username).then((mOtp) async {
           // this is the otp
           if ("no".compareTo(mOtp) == 0) {
@@ -283,6 +287,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           }
         });
       }
+    } else {
+      // go directly
+      await nextStepWithOtpConfirmationPage(customer, "", obj);
     }
   }
 
@@ -294,6 +301,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     showLoading(false);
 
     Map results = Map();
+
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0)
+      widget.autoLogin = true;
 
     if (!widget.autoLogin) {
       /* we make sure the login is a success */
@@ -535,6 +545,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void loginTimeOut() {
     mToast("${AppLocalizations.of(context).translate('login_time_out')}");
+  }
+
+  @override
+  void systemError() {
+    mToast("${AppLocalizations.of(context).translate('system_error')}");
   }
 
 

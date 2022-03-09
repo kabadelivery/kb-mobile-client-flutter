@@ -350,7 +350,9 @@
 
   "lost_your_password" : "Récupérer mot de passe ?",
 
-  "location_explanation" : "Nous avons besoin de votre position pour améliorer la précision de nos livraisons. Voulez-vous nous autoriser à accéder à votre position ?",
+  "location_explanation_pricing" :  "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
+  "location_explanation" : "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
+  "request": "Requête",
   "info": "Information",
 
 
@@ -425,5 +427,13 @@
   "non_eligible_reason": "Désolé, vous n'avez pas encore déverrouillé la fonction de réduction",
 
   "your_points": "Vos Points",
-  "this_feature_is_building": "Cette fonctionnalité est en construction et sera bientôt disponible"
+  "this_feature_is_building": "Cette fonctionnalité est en construction et sera bientôt disponible",
+
+  "demo_account_alert": "Désolé, vous ne pouvez pas passer de commande avec un compte démo. Veuillez réessayer en créant un vrai compte.",
+
+  "sorry_email_account_no_pay_delivery" :  "Désolé. Les comptes Email ne sont pas autorisés à payer en espèces à la livraison ! Pour payer en espèces à la livraison, veuillez plutôt créer un compte avec votre numéro de téléphone.",
+
+  "discount_point_available" : "Points réduction disponible ",
+  "use_delivery_point": "Réduisez votre facture de "
+
 }
