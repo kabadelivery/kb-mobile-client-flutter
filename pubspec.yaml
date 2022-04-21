@@ -76,7 +76,6 @@ dependencies:
   #  pub_semver: ^1.4.4
 #  android_intent_plus: ^3.0.2
   intro_views_flutter: '^3.2.0'
-
   #  flutter_statusbar_manager: ^1.0.2
   #  flutter_inappwebview: ^2.1.0+1
   package_info: ^2.0.0

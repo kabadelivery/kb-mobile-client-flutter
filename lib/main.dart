@@ -50,7 +50,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 
-
 import 'src/StateContainer.dart';
 
 
@@ -58,7 +57,6 @@ import 'src/StateContainer.dart';
 Future<void> main() async {
 
   CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
-
 
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
@@ -96,7 +94,7 @@ Future<void> main() async {
   );*/
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
+      .then((_) async {
 
     await SentryFlutter.init(
           (options) {
