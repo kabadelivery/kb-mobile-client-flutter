@@ -286,7 +286,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     try {
       mainTimer.cancel();
     } catch(_) {
-//      mToast("Time cancel error");
       xrint(_);
     }
     super.dispose();
