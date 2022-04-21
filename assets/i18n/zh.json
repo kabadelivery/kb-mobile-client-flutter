@@ -428,6 +428,17 @@
   "sorry_email_account_no_pay_delivery": "抱歉。 电子邮件账户不允许货到付款！ 如果想要现金付款，请使用您的电话号码创建一个帐户再试试",
 
   "discount_point_available" : "优惠扣点 ",
-  "use_delivery_point": "获取订单优惠 "
+  "use_delivery_point": "获取订单优惠 ",
+
+
+  "use_of_kaba_points": "您的 KABA 积分可用于获得一些运费折扣。 在下面选中 > 是 < 以使用",
+
+
+  "use_of_kaba_points": "您的 KABA 积分可用于获得一些运费折扣。 在下面选中是以使用它",
+
+
+  "kaba_points_monthly_limit_reached" : "您已达到每月可使用的 KABA 积分上限",
+
+  "use_of_kaba_points_not_eligible" : "抱歉，您还没有资格使用 Ba 积分折扣功能"
 
 }

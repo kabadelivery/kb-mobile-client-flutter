@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/blocs/RestaurantBloc.dart';
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -35,7 +35,9 @@ class RestaurantListPage extends StatefulWidget {
 
   Position location;
 
-  RestaurantFoodProposalPresenter presenter;
+  RestaurantFoodProposalPresenter foodProposalPresenter;
+  RestaurantListPresenter restaurantListPresenter;
+
 
   PageStorageKey key;
 
@@ -43,13 +45,15 @@ class RestaurantListPage extends StatefulWidget {
 
   CustomerModel customer;
 
-  RestaurantListPage({this.key, this.context, this.location, this.presenter}) : super(key: key);
+  List<RestaurantModel> restaurantList;
+
+  RestaurantListPage({this.key, this.context, this.location, this.foodProposalPresenter, this.restaurantListPresenter}) : super(key: key);
 
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
 }
 
-class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticKeepAliveClientMixin<RestaurantListPage> implements RestaurantFoodProposalView  {
+class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticKeepAliveClientMixin<RestaurantListPage> implements RestaurantFoodProposalView, RestaurantListView  {
 
   var _filterEditController = TextEditingController();
 
@@ -75,20 +79,35 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   ScrollController _restaurantListScrollController = ScrollController();
   SharedPreferences prefs;
 
+
+  bool isLoading = true;
+  bool hasNetworkError = false;
+  bool hasSystemError = false;
+
+  String last_update_timeout;
+
+  int MAX_MINUTES_FOR_AUTO_RELOAD = 3;
+
   @override
   void initState() {
     super.initState();
 
 //    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
-    widget.presenter.restaurantFoodProposalView = this;
+    widget.foodProposalPresenter.restaurantFoodProposalView = this;
+    widget.restaurantListPresenter.restaurantListView = this;
+
     _filterEditController.addListener(_filterEditContent);
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
     });
 
+
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
+
+          // timeout stuff
+      last_update_timeout = getTimeOutLastTime();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool has_subscribed = false;
@@ -105,13 +124,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       }
 
       if (mounted) {
+        _getLastKnowLocation();
         if (StateContainer
             ?.of(context)
             ?.location == null) {
-          restaurantBloc.fetchRestaurantList(customer: widget.customer);
-          _getLastKnowLocation();
+          widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
         } else
-          restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
+          widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
       }
     });
   }
@@ -119,6 +138,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   @override
   void dispose() {
     // restaurantBloc.dispose();
+    mainTimer.cancel();
     _filterEditController.dispose();
     super.dispose();
   }
@@ -129,13 +149,27 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     return Scaffold(
         backgroundColor: Colors.white,
         body:  AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child:  Container(
+              child: isLoading ? Center(child:MyLoadingProgressWidget()) : (
+                  hasNetworkError ? _buildNetworkErrorPage() :
+                  hasSystemError ? _buildSysErrorPage():
+                  _buildRestaurantList(widget.restaurantList
+                  )
+              )
+          ),
+        ));
+
+    /* return Scaffold(
+        backgroundColor: Colors.white,
+        body:  AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
             child:  StreamBuilder(
                 stream: restaurantBloc.restaurantList,
                 builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
                   if (snapshot.hasData) {
                     return _buildRestaurantList(snapshot.data);
-                  } else if (snapshot.hasError) {
+                  } else if (pageError) {
                     return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
                       setState(() {
                         restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
@@ -143,15 +177,15 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                     });
                   }
                   return Center(child: Container(margin: EdgeInsets.only(top:20),child: MyLoadingProgressWidget()));
-                })));
+                })));*/
   }
-
 
   Map pageRestaurants = Map<int, dynamic>();
 
-
   _buildRestaurantList(List<RestaurantModel> d) {
 
+    if (d == null)
+      return;
     /* check if the previous had the distance */
     /* distance of restaurant - client */
     if (data?.length == null || data?.length == 0) {
@@ -195,7 +229,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                   child: TextField(controller: _filterEditController, onSubmitted: (val) {
                     if (searchTypePosition == 2) {
                       if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 3)
-                        widget.presenter.fetchRestaurantFoodProposalFromTag(
+                        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
                             _filterEditController.text);
                       else
                         mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
@@ -212,7 +246,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                   searchTypePosition == 2 ? IconButton(icon: Icon(Icons.search, color: KColors.primaryYellowColor), onPressed: () {
                     if (searchTypePosition == 2) {
                       if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 3)
-                        widget.presenter.fetchRestaurantFoodProposalFromTag(
+                        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
                             _filterEditController.text);
                       else
                         mDialog("${AppLocalizations.of(context).translate('search_too_short')}");
@@ -224,102 +258,106 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
           ),
         ),
       ),
-      body: Container(
-        // margin: EdgeInsets.only(bottom: 58),
-        color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            SizedBox(height:10),
-            Container(padding: EdgeInsets.only(left:20,right:20),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AnimatedContainer(
-                    decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
-                      border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
+      body:  AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Container(
+          // margin: EdgeInsets.only(bottom: 58),
+          color: Colors.white,
+          child: Column(
+            children: <Widget>[
+              SizedBox(height:10),
+              Container(padding: EdgeInsets.only(left:20,right:20),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AnimatedContainer(
+                      decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_unactive_button_color, borderRadius: BorderRadius.all(const  Radius.circular(40.0)),
+                        border: new Border.all(color: searchTypePosition == 2 ? this.filter_unactive_button_color : this.filter_unactive_button_color, width: 1),
+                      ),
+                      padding: EdgeInsets.all(5),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            InkWell(onTap: () => _choice(1),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_restaurant')}", style: TextStyle(fontSize: 10, color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)),  decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color,borderRadius: new BorderRadius.circular(30.0)))),
+                            SizedBox(width: 5),
+                            InkWell(onTap: () => _choice(2),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(fontSize: 10, color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),   decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color,borderRadius: new BorderRadius.circular(30.0)))),
+                          ]), duration: Duration(milliseconds: 3000),
                     ),
-                    padding: EdgeInsets.all(5),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          InkWell(onTap: () => _choice(1),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_restaurant')}", style: TextStyle(fontSize: 12, color: searchTypePosition == 1 ? this.filter_active_text_color:this.filter_unactive_text_color)),  decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_active_button_color :  this.filter_unactive_button_color,borderRadius: new BorderRadius.circular(30.0)))),
-                          SizedBox(width: 5),
-                          InkWell(onTap: () => _choice(2),child: Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('search_food')}", style: TextStyle(fontSize: 12, color: searchTypePosition == 1 ? this.filter_unactive_text_color : this.filter_active_text_color)),   decoration: BoxDecoration(color: searchTypePosition == 1 ? this.filter_unactive_button_color : this.filter_active_button_color,borderRadius: new BorderRadius.circular(30.0)))),
-                        ]), duration: Duration(milliseconds: 3000),
-                  ),
-                  searchTypePosition == 1 ? Container() :
-                  DropdownButton<String>(
-                    value: _filterDropdownValue,
-                    hint: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor)),
-                    /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                        child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
-                    */
-                    icon: Icon(FontAwesomeIcons.filter, color: KColors.primaryColor, size: 24,),
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: KColors.primaryColor),
-                    underline: Container(
+                    searchTypePosition == 1 ? Container(
+                      child:  showCountDownButton(),
+                    ) :
+                    DropdownButton<String>(
+                      value: _filterDropdownValue,
+                      hint: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor)),
+                      /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
+                          child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
+                      */
+                      icon: Icon(FontAwesomeIcons.filter, color: KColors.primaryColor, size: 24,),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: KColors.primaryColor),
+                      underline: Container(
 //                      height: 2,
 //                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        _filterDropdownValue = newValue;
-                      });
-                    },
-                    items: <String>['${AppLocalizations.of(context).translate('cheap_to_exp')}', '${AppLocalizations.of(context).translate('exp_to_cheap')}', '${AppLocalizations.of(context).translate('nearest')}', '${AppLocalizations.of(context).translate('farest')}']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height:15),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                    children: <Widget>[
-//                  SizedBox(height: 40)
-                    ]
-                      ..add(
-                        /* according to the search position, show a different page. */
-                          searchTypePosition == 1 ? (
-                              !_searchMode ?
-                              Container(color: Colors.white,
-                                height: MediaQuery.of(context).size.height,
-//                              padding: EdgeInsets.only(bottom:230),
-                                child: Scrollbar(
-                                  isAlwaysShown: true,
-                                  controller: _restaurantListScrollController,
-                                  child: ListView.builder(
-                                    controller: _restaurantListScrollController,
-                                    itemCount:  data?.length != null ? data.length + 1 : 0,
-                                    itemBuilder: (context, index) {
-                                      if (index == data?.length)
-                                        return Container(height:100);
-                                      return RestaurantListWidget(restaurantModel: data[index]);
-                                    },
-                                  ),
-                                ),
-                              )
-                                  : _showSearchPage()) :
-                          Container(margin: EdgeInsets.only(top:20),
-                              child: isSearchingMenus ? Center(child:MyLoadingProgressWidget()) :
-                              (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
-                              searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
-                              _buildSearchedFoodList())
-                          )
-
-                      )
+                      ),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          _filterDropdownValue = newValue;
+                        });
+                      },
+                      items: <String>['${AppLocalizations.of(context).translate('cheap_to_exp')}', '${AppLocalizations.of(context).translate('exp_to_cheap')}', '${AppLocalizations.of(context).translate('nearest')}', '${AppLocalizations.of(context).translate('farest')}']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )
+                  ],
                 ),
               ),
+              SizedBox(height:15),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                      children: <Widget>[
+//                  SizedBox(height: 40)
+                      ]
+                        ..add(
+                          /* according to the search position, show a different page. */
+                            searchTypePosition == 1 ? (
+                                !_searchMode ?
+                                Container(color: Colors.white,
+                                  height: MediaQuery.of(context).size.height,
+//                              padding: EdgeInsets.only(bottom:230),
+                                  child: Scrollbar(
+                                    isAlwaysShown: true,
+                                    controller: _restaurantListScrollController,
+                                    child: ListView.builder(
+                                      controller: _restaurantListScrollController,
+                                      itemCount:  data?.length != null ? data.length + 1 : 0,
+                                      itemBuilder: (context, index) {
+                                        if (index == data?.length)
+                                          return Container(height:100);
+                                        return RestaurantListWidget(restaurantModel: data[index]);
+                                      },
+                                    ),
+                                  ),
+                                )
+                                    : _showSearchPage()) :
+                            Container(margin: EdgeInsets.only(top:20),
+                                child: isSearchingMenus ? Center(child:MyLoadingProgressWidget()) :
+                                (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
+                                searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
+                                _buildSearchedFoodList())
+                            )
 
-            ),
-          ],
+                        )
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -443,7 +481,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title:  Text("${AppLocalizations.of(context).translate('request')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
+              title:  Text("${AppLocalizations.of(context).translate('request')}".toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -658,7 +697,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
                   if (position != null && mounted) {
                     StateContainer.of(context).updateLocation(location: position);
-                    restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
+                    // widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
                   }
                 });
           }
@@ -670,14 +709,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
-      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+      widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
     });
   }
 
   _buildSearchMenuSysErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(message:"${AppLocalizations.of(context).translate('system_error')}", onClickAction: (){
-      widget.presenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+      widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(_filterEditController.text);
     });
   }
 
@@ -883,19 +922,21 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     );
   }
 
+  List<RestaurantFoodModel> inflateFoodProposalWorker (List<RestaurantFoodModel> foods) {
+    for (var i = 0; i < foods?.length; i++) {
+      if (foods[i]?.restaurant_entity?.id != null &&  pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
+        // we get the restaurant and we switch it.
+        foods[i].restaurant_entity =  pageRestaurants[foods[i]?.restaurant_entity?.id];
+      }
+    }
+    return foods;
+  }
 
   @override
   void inflateFoodsProposal(List<RestaurantFoodModel> foods) {
     setState(() {
 
-      for (var i = 0; i < foods?.length; i++) {
-        if (foods[i]?.restaurant_entity?.id != null &&  pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
-          // we get the restaurant and we switch it.
-          foods[i].restaurant_entity =  pageRestaurants[foods[i]?.restaurant_entity?.id];
-        }
-      }
-
-      this.foodProposals = foods;
+      this.foodProposals = inflateFoodProposalWorker(foods);
     });
   }
 
@@ -980,7 +1021,114 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
+  @override
+  void inflateRestaurants(List<RestaurantModel> restaurants) {
+    setState(() {
+      widget.restaurantList = restaurants;
+      _setLastTimeRestaurantListRequestToNow();
+    });
+    restartTimer();
+  }
+
+  @override
+  void loadRestaurantListLoading(bool isLoading) {
+    setState(() {
+      this.isLoading = isLoading;
+      if (isLoading == true) {
+        this.hasNetworkError = false;
+        this.hasSystemError = false;
+      }
+    });
+  }
+
+  @override
+  void networkError() {
+    setState(() {
+      hasNetworkError = true;
+    });
+  }
+
+  @override
+  void systemError() {
+    setState(() {
+      hasSystemError = true;
+    });
+  }
+
+  _buildSysErrorPage() {
+    return ErrorPage(message:"${AppLocalizations.of(context).translate('system_error')}", onClickAction: (){
+      widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+    });
+  }
+
+  _buildNetworkErrorPage() {
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
+      widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+    });
+  }
+
+  showCountDownButton() {
+    return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
+      InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
+        child: Container(
+          width: 65,
+          height: 35,
+          decoration: BoxDecoration(
+            color: KColors.primaryColorSemiTransparentADDTOBASKETBUTTON,
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+          ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.refresh,
+                  color: KColors.primaryColor,size: 20),
+              // count down here
+              Text("${last_update_timeout}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12))
+            ],
+          ),
+        ),
+      ),
+      SizedBox(width: 10),
+    ]);
+  }
+
+  Timer mainTimer;
+
+  bool hasGps = false;
+
+  void restartTimer() {
+    if (mainTimer != null)
+      mainTimer.cancel();
+    mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        last_update_timeout = getTimeOutLastTime();
+      });
+      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_restaurant_list_timeout)~/1000;
+      // convert different in minute seconds
+      int min = diff~/60;
+      if (min >= MAX_MINUTES_FOR_AUTO_RELOAD || (hasGps == false && (StateContainer.of(context).location != null)))
+        widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location, true);
+
+      if (!hasGps)
+        hasGps = (StateContainer.of(context).location != null);
+    });
+  }
+
+  Future<int> _setLastTimeRestaurantListRequestToNow() async {
+    StateContainer.of(context).last_time_get_restaurant_list_timeout = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  getTimeOutLastTime() {
+    if (StateContainer.of(context).last_time_get_restaurant_list_timeout == 0){
+      return "";
+    } else {
+      // time different since last time update
+      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_restaurant_list_timeout)~/1000;
+      // convert different in minute seconds
+      int min = diff~/60;
+      int sec = diff%60;
+      return "${min < 10 ? "0": ""}${min}:${sec < 10 ? "0": ""}${sec}";
+    }
+  }
 }

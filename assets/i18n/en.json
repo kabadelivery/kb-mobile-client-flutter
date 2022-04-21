@@ -55,7 +55,7 @@
   "home_page_loading_error": "Sorry, there was a mistake loading landing page. Please check your network and try again.",
   "error_message": "The system is encoutering a problem. Please contact the customer care if it continues.",
   "new": "NEW",
-  "promo": "PROMO",
+  "promo": "DISCOUNT",
   "find_menu_or_restaurant": "Any restaurant? Menu ?",
   "no_order_today": "You have made no order yet today !",
   "system_error": "Sorry, system error. Wait a moment and try again",
@@ -420,5 +420,12 @@
 
   "discount_point_available" : "Discount point available ",
 
-  "use_delivery_point": "Get discount of "
+  "use_delivery_point": "Get discount of ",
+
+  "use_of_kaba_points": "Your KABA Points can be used to get some delivery fee discount. Check YES below to use it",
+
+  "kaba_points_monthly_limit_reached" : "You have reached the limit of KABA Points to use per month",
+
+  "use_of_kaba_points_not_eligible" : "Sorry, you are not yet eligible to use Kaba Points discounts feature"
+
 }

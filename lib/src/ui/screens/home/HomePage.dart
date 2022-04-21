@@ -13,6 +13,7 @@ import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
@@ -83,8 +84,6 @@ FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 class _HomePageState extends State<HomePage> {
 
-
-
   HomeWelcomePage homeWelcomePage;
   RestaurantListPage restaurantListPage;
   DailyOrdersPage dailyOrdersPage;
@@ -136,7 +135,7 @@ class _HomePageState extends State<HomePage> {
         destination: widget.destination,
         argument: widget.argument);
     restaurantListPage = RestaurantListPage(context: context,
-        key: restaurantKey, presenter: RestaurantFoodProposalPresenter());
+        key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);

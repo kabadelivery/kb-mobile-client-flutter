@@ -434,6 +434,15 @@
   "sorry_email_account_no_pay_delivery" :  "Désolé. Les comptes Email ne sont pas autorisés à payer en espèces à la livraison ! Pour payer en espèces à la livraison, veuillez plutôt créer un compte avec votre numéro de téléphone.",
 
   "discount_point_available" : "Points réduction disponible ",
-  "use_delivery_point": "Réduisez votre facture de "
+  "use_delivery_point": "Réduisez votre facture de ",
+
+  "use_of_kaba_points": "Réduisez vos frais de livraison grâce aux Points KABA. Sélectionner OUI pour les utiliser",
+
+
+  "use_of_kaba_points": "Vos points KABA peuvent être utilisés pour obtenir une remise sur les frais de livraison. Veuillez Cochez OUI ci-dessous pour l'utiliser",
+
+  "kaba_points_monthly_limit_reached" : "Vous avez atteint la limite de Points KABA à utiliser par mois",
+
+  "use_of_kaba_points_not_eligible" : "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA"
 
 }

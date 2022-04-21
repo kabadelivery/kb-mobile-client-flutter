@@ -18,10 +18,10 @@
   static const String APP_SERVer = "https://app.kaba-delivery.com";
  static const String APP_SERVER_HOST = "app.kaba-delivery.com";
 
-  // static String TOPIC = "kaba_flutter";
- // static String HMS_TOPIC = "kaba_flutter";
-static String TOPIC = "kaba_delivery_all";
- static String HMS_TOPIC = "kaba_delivery_all";
+  static String TOPIC = "kaba_flutter";
+ static String HMS_TOPIC = "kaba_flutter";
+// static String TOPIC = "kaba_delivery_all";
+//  static String HMS_TOPIC = "kaba_delivery_all";
 
   static String LOGIN_EXPIRATION = "_login_expiration_date";
 

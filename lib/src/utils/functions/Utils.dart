@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:intl/intl.dart';
 
 
@@ -37,7 +40,6 @@ class Utils {
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
-
 //    headers["Authorization"] = "Bearer "+token;
     return headers;
   }
@@ -329,6 +331,20 @@ class Utils {
   static bool isWebLink(String link) {
     bool _validURL = Uri.parse(link).isAbsolute;
     return _validURL;
+  }
+
+  static double locationDistance(Position position, RestaurantModel restaurant) {
+
+    double lat1 = position.latitude;
+    double long1 = position.longitude;
+
+    double lat2 = double.parse(restaurant.location.split(":")[0]);
+    double long2 = double.parse(restaurant.location.split(":")[1]);
+
+   double distance = Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
+   distance = distance/1000; // distance meter
+   return double.parse(distance.toStringAsPrecision(2));
+    // crop to 1 number after comma
   }
 
 }

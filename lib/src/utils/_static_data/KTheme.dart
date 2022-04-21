@@ -16,6 +16,7 @@ class KColors {
 
 //  00695c
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");
+  static final Color primaryColorSemiTransparentADDTOBASKETBUTTON = hexToColor("#ffd9e2");
 
   static MaterialColor colorCustom = MaterialColor(hexToInt("#cc1641"), color);
   static MaterialColor colorMainYellow = MaterialColor(hexToInt("#FFC102"), color);

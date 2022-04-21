@@ -16,6 +16,7 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -239,7 +240,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       *  */
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp) == 0) {
-            this.widget.presenter.login(true, login, _mCode, widget.version);
+
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || XRINT_DEBUG_VALUE == true) {
+              widget.autoLogin = true;
+              this.widget.presenter.login(false, login, _mCode, widget.version);
+            } else
+              this.widget.presenter.login(true, login, _mCode, widget.version);
+
+
           } else {
             this.widget.presenter.login(false, login, _mCode, widget.version);
           }
@@ -302,7 +310,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = Map();
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0)
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || XRINT_DEBUG_VALUE == true)
       widget.autoLogin = true;
 
     if (!widget.autoLogin) {

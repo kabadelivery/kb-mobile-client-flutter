@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
@@ -11,6 +14,9 @@ import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../xrint.dart';
 
 
 class DailyOrdersPage extends StatefulWidget {
@@ -28,6 +34,8 @@ class DailyOrdersPage extends StatefulWidget {
 
 class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrderView {
 
+  String last_update_timeout = "";
+
   @override
   void initState() {
     widget.presenter.dailyOrderView = this;
@@ -36,7 +44,17 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
       widget.presenter.loadDailyOrders(customer);
     });
     super.initState();
+    Future.delayed(Duration.zero,() async {
+      last_update_timeout = getTimeOutLastTime();
+    });
   }
+
+  @override
+  void dispose() {
+    mainTimer.cancel();
+    super.dispose();
+  }
+
 
   bool isLoading = true;
   bool hasNetworkError = false;
@@ -45,6 +63,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Colors.white,
         body:  AnnotatedRegion<SystemUiOverlayStyle>(
@@ -66,15 +85,19 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
             Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
               InkWell(onTap: ()=> widget.presenter.loadDailyOrders(widget.customer),
                 child: Container(
+                  width: 80,
+                  height: 40,
                   decoration: BoxDecoration(
-                    color: KColors.primaryColor,
+                    color: KColors.primaryColorSemiTransparentADDTOBASKETBUTTON,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
                   padding: EdgeInsets.only(right:10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      IconButton(icon: Icon(Icons.refresh, color: Colors.white,size: 20)),
-                      Text("${AppLocalizations.of(context).translate('refresh')}".toUpperCase(), style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 14))
+                       Icon(Icons.refresh, color: KColors.primaryColor,size: 25),
+                      SizedBox(width:5),
+                      // count down here
+                      Text("${last_update_timeout}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12))
                     ],
                   ),
                 ),
@@ -102,10 +125,14 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
   }
 
   @override
-  void inflateOrder(List<CommandModel> commands) {
+   void inflateOrder(List<CommandModel> commands) {
     setState(() {
       widget.orders = commands;
+      // keep now timestamp as last time update happened
+      _setLastTimeDailyOrderToNow();
     });
+    // start timer to decrement this value
+    restartTimer();
   }
 
 
@@ -142,4 +169,38 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.loadDailyOrders(widget.customer); });
   }
+
+
+
+  Future<int> _setLastTimeDailyOrderToNow() async {
+    StateContainer.of(context).last_time_get_daily_order = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  getTimeOutLastTime() {
+    if (StateContainer.of(context).last_time_get_daily_order == 0){
+      return "";
+    } else {
+      // time different since last time update
+      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_daily_order)~/1000;
+      // convert different in minute seconds
+      int min = diff~/60;
+      int sec = diff%60;
+      return "${min < 10 ? "0": ""}${min}:${sec < 10 ? "0": ""}${sec}";
+    }
+  }
+
+  Timer mainTimer;
+
+  void restartTimer() {
+    if (mainTimer != null)
+      mainTimer.cancel();
+    mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        last_update_timeout = getTimeOutLastTime();
+      });
+    });
+  }
+
+
+
 }

@@ -650,12 +650,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   : (
                   Column(children: <Widget>[
 
-
-                    _orderBillConfiguration?.kaba_point?.is_eligible == true && _orderBillConfiguration?.kaba_point?.can_be_used == true
-                        && _selectedVoucher == null
+                   /* _orderBillConfiguration?.kaba_point?.is_eligible == true && _orderBillConfiguration?.kaba_point?.can_be_used == true
+                        && */_selectedVoucher == null
                         ?
                     _buildPointDiscountOption() : Container(),
-
 
                     SizedBox(height: 30),
                     _buildBill(),
@@ -2213,7 +2211,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _buildPointDiscountOption() {
     if (_orderBillConfiguration == null ||
-        _orderBillConfiguration?.kaba_point == null) return Container();
+        _orderBillConfiguration?.kaba_point?.balance == null ||
+        _orderBillConfiguration?.kaba_point?.is_eligible == false
+    ) return Container();
 
     /* before we build the bill, we must know how much can you reduce your bill with*/
 
@@ -2221,6 +2221,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       color: Colors.white,
       child: Column(
         children: [
+          /* discount points available*/
           InkWell(
               splashColor: Colors.white,
               child: Container(
@@ -2258,7 +2259,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               onTap: () {
                 // _pickDeliveryAddress();
               }),
-          SizedBox(height:20),
+          SizedBox(height:10),
+          Container(
+            child: Text(
+                "${AppLocalizations.of(context).translate(
+                    _orderBillConfiguration.kaba_point.is_eligible ?
+                    (_orderBillConfiguration.kaba_point.can_be_used ? 'use_of_kaba_points'
+                        : 'kaba_points_monthly_limit_reached') : 'use_of_kaba_points_not_eligible'
+                )}",
+                textAlign: TextAlign.center,
+                style:
+                TextStyle(fontSize: 12, color: !_orderBillConfiguration.kaba_point.can_be_used &&
+                    _orderBillConfiguration.kaba_point.is_eligible
+                    ? CommandStateColor.delivered : Colors.grey )),
+            margin: EdgeInsets.only(left: 10, right: 10),
+          ),
+          SizedBox(height: 10),
+          // appears only if you are eligible
+          _orderBillConfiguration.kaba_point.is_eligible ?
+          ( _orderBillConfiguration.kaba_point.can_be_used ?
           InkWell(
               splashColor: Colors.white,
               child: Container(
@@ -2291,13 +2310,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                               disabled: isConnecting,
                               activeColor: KColors.primaryColor,
                               inactiveColor: Colors.grey,
-                              width: 65.0,
-                              height: 35.0,
-                              valueFontSize: 12.0,
-                              toggleSize: 25.0,
+                              width: 52.0,
+                              height: 28.0,
+                              valueFontSize: 9.0,
+                              toggleSize: 20.0,
                               value: _usePoint,
-                              borderRadius: 15.0,
-                              padding: 3.0,
+                              borderRadius: 12.0,
+                              padding: 2.5,
                               showOnOff: true,
                               activeText: "${AppLocalizations.of(context).translate('yes')}",
                               inactiveText: "${AppLocalizations.of(context).translate('no')}",
@@ -2336,7 +2355,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         ),
                       ),
                     ]),
-              )),
+              )) : Container()) : Container()
+          ,
         ],
       ),
     );

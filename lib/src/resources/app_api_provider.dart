@@ -65,52 +65,6 @@ class AppApiProvider {
     }
   }
 
-  Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel model, Position position) async {
-    xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
-    if (await Utils.hasNetwork()) {
-
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
-          body: position == null ? "" : json.encode(
-              {"location": "${position?.latitude}:${position?.longitude}"}),
-      );*/
-
-      var dio = Dio();
-      dio.options
-        ..connectTimeout = 30000
-      ;
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return validateSSL(cert, host, port);
-        };
-      };
-      var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2).toString(),
-        data: position == null ? "" : json.encode(
-            {"location": "${position?.latitude}:${position?.longitude}"}),
-      );
-
-      xrint(response.data);
-      if (response.statusCode == 200) {
-        int errorCode = mJsonDecode(response.data)["error"];
-        if (errorCode == 0) {
-          Iterable lo = mJsonDecode(response.data)["data"]["resto"];
-          List<RestaurantModel> resto = lo?.map((resto) =>
-              RestaurantModel.fromJson(resto))?.toList();
-          return resto;
-        }
-        else
-          throw Exception(-1); // there is an error in your request
-      } else {
-        throw Exception(response.statusCode); // you have no right to do this
-      }
-    } else {
-      throw Exception(-2); // you have no network
-    }
-  }
-
 
   /* send the location and get back the not far from */
   Future<DeliveryAddressModel> checkLocationDetails(CustomerModel customer, Position position) async {

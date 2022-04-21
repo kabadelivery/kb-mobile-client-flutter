@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StateContainer extends StatefulWidget {
 
   final Widget child;
+  int last_time_get_daily_order = 0;
+  int last_time_get_restaurant_list_timeout = 0;
   int tabPosition;
   int balance;
   int loggingState;
@@ -19,7 +21,7 @@ class StateContainer extends StatefulWidget {
   bool hasGotNewMessageOnce;
   Position position;
 
-  StateContainer({@required this.child, this.balance, this.loggingState, this.hasGotNewMessageOnce, this.kabaPoints, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false});
+  StateContainer({@required this.child, this.balance, this.loggingState, this.hasGotNewMessageOnce, this.kabaPoints, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false, this.last_time_get_daily_order});
 
   static BuildContext mContext;
 
@@ -34,6 +36,8 @@ class StateContainer extends StatefulWidget {
 
 class StateContainerState extends State<StateContainer> {
 
+  int last_time_get_daily_order = 0;
+  int last_time_get_restaurant_list_timeout = 0;
   int tabPosition;
   int balance;
   int loggingState;

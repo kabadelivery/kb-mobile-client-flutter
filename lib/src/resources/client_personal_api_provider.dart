@@ -331,7 +331,9 @@ class ClientPersonalApiProvider {
         };
       };
 
-      String link =  !shouldSendOtpCode ?  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString() :  Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString();
+      String link =  !shouldSendOtpCode ?
+      Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString() :
+      Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString();
       var response = await dio.post(
         link,
         data: json.encode({"username": login, "password":password, 'device':device }),

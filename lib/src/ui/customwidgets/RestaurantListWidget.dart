@@ -95,14 +95,14 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                           widget.restaurantModel?.delivery_pricing == "0" ? Container () :
                           Container(
                               padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryYellowColor),
-                              child:Row(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: widget.restaurantModel.is_promotion == 1 ? KColors.primaryColor : KColors.primaryYellowColor),
+                              child: Row(
                                 children: <Widget>[
-                                  Icon(Icons.directions_bike, color: Colors.black, size: 14),
+                                  widget.restaurantModel.is_promotion == 1 ? Container() : Icon(Icons.directions_bike, color: Colors.black, size: 14),
                                   SizedBox(width:5),
                                   Text(
-                                      "${widget.restaurantModel?.delivery_pricing=="0" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F"}",
-                                      style: TextStyle(color: Colors.black, fontSize: 12)
+                                      "${widget.restaurantModel.is_promotion == 1 ?  "${AppLocalizations.of(context).translate('promo')}" : (widget.restaurantModel?.delivery_pricing=="0" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F")}",
+                                      style: TextStyle(color: widget.restaurantModel.is_promotion == 1 ? Colors.white : Colors.black, fontSize: 12)
                                   ),
                                 ],
                               )),

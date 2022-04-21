@@ -27,14 +27,18 @@ class RestaurantModel {
   String delivery_pricing = "";
   int open_type;
   String discount;
+  String location;
 
+  // other
+  double distanceBetweenMeandRestaurant = 0;
 
   RestaurantModel({this.id, this.name, this.pic, this.contactId, this.email,
     this.distance, this.is_open, this.stars, this.votes, this.theme_pic,
     this.description, this.address, this.main_contact,
     this.working_hour, this.coming_soon,
     this.is_promotion,
-    this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food});
+    this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food,
+  this.location});
 
   RestaurantModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,6 +64,7 @@ class RestaurantModel {
     open_type = json['open_type'];
     delivery_pricing = "${json['delivery_pricing']}";
     max_food = json['max_food'];
+    location = json["location"];
   }
 
 
@@ -80,6 +85,7 @@ class RestaurantModel {
     "coming_soon" : coming_soon,
     "is_promotion" : is_promotion,
     "is_new" : is_new,
+    "location": location
   };
 
   @override

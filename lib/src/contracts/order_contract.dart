@@ -91,7 +91,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       return;
     isWorking = true;
     try {
-      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher);
+      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */

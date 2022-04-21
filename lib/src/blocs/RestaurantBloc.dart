@@ -32,7 +32,7 @@ class RestaurantBloc {
 
 
 
-  fetchRestaurantList({CustomerModel customer, Position position}) async {
+/*  fetchRestaurantList({CustomerModel customer, Position position}) async {
 
     try {
 //      if (_isDisposedForRestaurantList)
@@ -43,9 +43,9 @@ class RestaurantBloc {
     } catch (_) {
       _restaurantListFetcher.sink.addError(_);
     }
-  }
+  }*/
 
-  fetchFoodFromRestaurantByName(String desc) async {
+  /*fetchFoodFromRestaurantByName(String desc) async {
 
     try {
 //      if (_isDisposedForRestaurantList)
@@ -56,7 +56,7 @@ class RestaurantBloc {
     } catch (_) {
       _restaurantListFetcher.sink.addError(_.message);
     }
-  }
+  }*/
 
   fetchCommentList(RestaurantModel restaurantModel, UserTokenModel userToken) async {
     try {
