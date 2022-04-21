@@ -47,6 +47,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 
 
@@ -96,7 +97,16 @@ Future<void> main() async {
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
-    runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
+
+    await SentryFlutter.init(
+          (options) {
+        options.dsn = 'https://db3d3fa783f643539ad13a7e84437ad6@o1211273.ingest.sentry.io/6351988';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 1.0;
+      },
+      appRunner: () =>  runApp(StateContainer(child: MyApp(appLanguage: appLanguage))),
+    );
   });
 }
 
@@ -247,6 +257,7 @@ class _MyAppState extends State<MyApp> {
               ],
               navigatorObservers: [
                 FirebaseAnalyticsObserver(analytics: widget.analytics),
+                SentryNavigatorObserver(),
               ],
 
               localizationsDelegates: [
