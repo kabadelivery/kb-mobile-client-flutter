@@ -130,8 +130,11 @@ class _SplashPageState extends State<SplashPage> {
         }
       }*/
 
-      Navigator.of(context).pushReplacement(new MaterialPageRoute(
-          builder: (BuildContext context) => launchPage));
+      Navigator.of(context).pushReplacement(
+          new MaterialPageRoute(
+            settings: RouteSettings(name: HomePage.routeName),
+              builder: (BuildContext context) => launchPage)
+      );
     }
   }
 

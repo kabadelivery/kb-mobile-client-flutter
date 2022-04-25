@@ -125,13 +125,13 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                   )
                               ),
                               SizedBox(width: 10),
-                              Text("${command.restaurant_entity.name}", style: TextStyle(color: Colors.white, fontSize: 14), overflow: TextOverflow.ellipsis)
+                              Text("${_reducedRestaurantName(command.restaurant_entity.name)}", style: TextStyle(color: Colors.white, fontSize: 14), overflow: TextOverflow.ellipsis)
                             ]),
                             Container(padding: EdgeInsets.all(7), decoration: BoxDecoration(color: Colors.white.withAlpha(100),
 //                            border: new Border.all(color: Colors.white.withAlpha(100)),
                                 borderRadius: BorderRadius.all(Radius.circular(5))
                             ),
-                                child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)))
+                                child: Text(_getStateLabel(command), overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)))
                           ]))
                         ]..addAll(_orderFoodList(command?.food_list))
                           ..addAll(<Widget>[
@@ -256,6 +256,12 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
               return SlideTransition(position: tween.animate(curvedAnimation), child: child);
             }
         ));
+  }
+
+  _reducedRestaurantName(String name) {
+    if (name != null && name.length > 20)
+      return "${command.restaurant_entity.name}".substring(0,19)+"...";
+    return "${command.restaurant_entity.name}";
   }
 }
 

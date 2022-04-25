@@ -92,7 +92,7 @@ dependencies:
   dio: ^4.0.4
   overlay_support: ^1.2.1
   flutter_switch: ^0.3.2
-  sentry_flutter: ^6.5.0
+#  sentry_flutter: ^6.5.0
 #  huawei_push: ^5.3.0+304
 
 

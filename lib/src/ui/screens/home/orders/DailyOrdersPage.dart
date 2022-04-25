@@ -194,7 +194,19 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
   void restartTimer() {
     if (mainTimer != null)
       mainTimer.cancel();
+
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+
+      xrint("dailyorder this page is --> " + ModalRoute.of(context).settings.name);
+      xrint("dailyorder is_current is --> ${ModalRoute.of(context).isCurrent}");
+
+      if (!("/HomePage".compareTo(ModalRoute.of(context).settings.name) == 0 &&
+          ModalRoute.of(context).isCurrent)) {
+        // check if time is ok
+        xrint("dailyorder NO exec timer ");
+        return;
+      }
+      xrint("dailyorder exec timer ");
       setState(() {
         last_update_timeout = getTimeOutLastTime();
       });

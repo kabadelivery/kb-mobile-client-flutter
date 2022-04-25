@@ -257,6 +257,7 @@ class _KabaScanPageState extends State<KabaScanPage>  {
         case "restaurants":
           StateContainer.of(context).updateTabPosition(tabPosition: 1);
           Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+              settings: RouteSettings(name: HomePage.routeName),
               builder: (BuildContext context) => HomePage()), (r) => false);
           break;
         case "restaurant":

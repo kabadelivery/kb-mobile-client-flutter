@@ -61,12 +61,9 @@ class RestaurantListPresenter implements RestaurantListContract {
       restaurants = await compute(sortOutRestaurantList,
           {"restaurants": restaurants, "position": position});
 
-
       // order list
       // restaurants = restaurants..sort((restA, restB) => _getDifferenceMeandRestaurant());
       // compare distance between i and the restaurant
-
-
       _restaurantListView.inflateRestaurants(restaurants);
     } catch (_) {
       /* RestaurantList failure */
@@ -103,7 +100,6 @@ class RestaurantListPresenter implements RestaurantListContract {
 //   }
 //   isWorking = false;
 // }
-
 }
 
 FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String, Object> data) {
@@ -118,7 +114,11 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String, Object> data) 
       tmp[s].delivery_pricing = "~_~";
     }
     // do the sort_out using the distances as well
-   /* tmp =*/ tmp.sort((restA, restB) => (double.parse(restA.distance)*1000 - double.parse(restB.distance)*1000).toInt());
+   /* tmp =*/ tmp.sort((restA, restB) => (
+   restA.id == 79 || restA.id == 80 ? -10000 : // try to put these 2 restaurants above
+       double.parse(restA.distance)*1000 - double.parse(restB.distance)*1000
+    ).toInt()
+    );
   }
   return tmp;
 }

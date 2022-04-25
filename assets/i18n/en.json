@@ -188,7 +188,7 @@
   "delivery_amount": "Delivery price:",
   "net_price": "Net to Pay:",
   "discount": "Discount",
-  "cooking_time_estimation": "Cooking Time estimation: ",
+  "cooking_time_estimation": "Cooking: ",
   "additional_info": "Any special request about the order ?",
   "choose_delivery_address": "Choose delivery Address",
   "your_balance": "Your balance:",
@@ -426,6 +426,10 @@
 
   "kaba_points_monthly_limit_reached" : "You have reached the limit of KABA Points to use per month",
 
-  "use_of_kaba_points_not_eligible" : "Sorry, you are not yet eligible to use Kaba Points discounts feature"
+  "use_of_kaba_points_not_eligible" : "Sorry, you are not yet eligible to use Kaba Points discounts feature",
+
+  "min_short_on_average": "30 minutes on average",
+
+  "kaba_point_used_amount": "KABA points used :"
 
 }

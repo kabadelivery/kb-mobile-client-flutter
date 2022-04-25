@@ -210,7 +210,6 @@ class RestaurantApiProvider {
   }
 
 
-
   Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel model, Position position) async {
     xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {

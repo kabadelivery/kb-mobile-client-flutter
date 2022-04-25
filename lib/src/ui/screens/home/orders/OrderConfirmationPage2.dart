@@ -499,7 +499,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               Text(
                   "${AppLocalizations.of(context).translate('cooking_time_estimation')}",
                   style: TextStyle(fontSize: 16)),
-              Text("30 ${AppLocalizations.of(context).translate('min_short')}",
+              Text("${AppLocalizations.of(context).translate('min_short_on_average')}",
                   style: TextStyle(color: KColors.primaryColor, fontSize: 18))
             ]));
   }
@@ -1276,6 +1276,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     Navigator.pushAndRemoveUntil(
                         context,
                         new MaterialPageRoute(
+                            settings: RouteSettings(name: HomePage.routeName),
                             builder: (BuildContext context) =>
                                 HomePage()),
                             (r) => false);
@@ -2212,7 +2213,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   _buildPointDiscountOption() {
     if (_orderBillConfiguration == null ||
         _orderBillConfiguration?.kaba_point?.balance == null ||
-        _orderBillConfiguration?.kaba_point?.is_eligible == false
+        _orderBillConfiguration?.kaba_point?.is_eligible == false ||
+        _isPreorderSelected()
+    // or if preorder
     ) return Container();
 
     /* before we build the bill, we must know how much can you reduce your bill with*/

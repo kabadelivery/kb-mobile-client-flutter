@@ -189,7 +189,7 @@
   "delivery_amount": "Prix Livraison:",
   "net_price": "Total à Payer:",
   "discount": "Remise",
-  "cooking_time_estimation": "Estimation temps de cuisson: ",
+  "cooking_time_estimation": "Cuisson: ",
   "additional_info": "Avez vous des informations supplémentaires ?",
   "choose_delivery_address": "Choisir adresse de livraison",
   "your_balance": "Votre Solde:",
@@ -443,6 +443,11 @@
 
   "kaba_points_monthly_limit_reached" : "Vous avez atteint la limite de Points KABA à utiliser par mois",
 
-  "use_of_kaba_points_not_eligible" : "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA"
+  "use_of_kaba_points_not_eligible" : "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA",
+
+  "min_short_on_average": "30 minutes en moyenne",
+
+  "kaba_point_used_amount": "Points KABA utilisés :"
+
 
 }

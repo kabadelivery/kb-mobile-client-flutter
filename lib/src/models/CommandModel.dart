@@ -24,7 +24,7 @@ class CommandModel {
   String passphrase = "~";
   String infos;
   int reason;
-
+  int kaba_point_used_amount = 0;
 
   String remise;
 
@@ -66,7 +66,8 @@ class CommandModel {
     this.preorder_shipping_pricing, this.preorder_food_pricing,
     this.promotion_total_pricing, this.promotion_shipping_pricing,
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
-    this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity});
+    this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity,
+  this.kaba_point_used_amount});
 
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -83,6 +84,7 @@ class CommandModel {
     infos = json['infos'];
     rating = json["rating"];
     comment = json["comment"];
+    kaba_point_used_amount = json["kaba_point_used_amount"] as int;
 
     passphrase = json['passphrase'];
     reason = json['reason'];
@@ -152,7 +154,8 @@ class CommandModel {
     "reason" : reason,
     "infos" : infos,
     "rating" : rating,
-    "comment" : comment
+    "comment" : comment,
+    "kaba_point_used_amount": kaba_point_used_amount
   };
 
 

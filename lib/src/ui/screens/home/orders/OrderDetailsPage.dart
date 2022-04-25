@@ -274,6 +274,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
               _buildVoucher(),
               SizedBox(height: 10),
               /* bill */
+              widget?.command?.kaba_point_used_amount != null &&
+                  widget?.command?.kaba_point_used_amount > 0 ?
+              showKabaPointUsed() : Container(),
               _buildBill(),
             ]
             ))
@@ -618,6 +621,25 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
     if (widget.command.reason >= reasonsArray.length)
       return "${AppLocalizations.of(context).translate('reason_beyond_control')}";
     return "${AppLocalizations.of(context).translate('${reasonsArray[widget.command.reason-1 < 0 ? 0 : widget.command.reason-1]}')}";
+  }
+
+  showKabaPointUsed() {
+    // kaba_point_used_amount
+    return Container(child: RichText(
+        text: TextSpan(text:  "${AppLocalizations.of(context).translate("kaba_point_used_amount")}",
+            style: TextStyle(color: Colors.white, fontSize: 12),
+            children: <TextSpan>[
+              TextSpan(text: "${widget.command.kaba_point_used_amount}  ",
+                  style: TextStyle(color: Colors.white, fontSize: 16,
+                      fontWeight: FontWeight.bold))
+            ]
+        )),
+    padding: EdgeInsets.all(10),
+    margin: EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+      color: KColors.primaryColor
+    ));
   }
 
 }
