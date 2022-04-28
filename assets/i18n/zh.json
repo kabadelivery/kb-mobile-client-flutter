@@ -439,7 +439,8 @@
   "use_of_kaba_points_not_eligible" : "抱歉，您还没有资格使用 Ba 积分折扣功能",
   "min_short_on_average": "平均30分钟",
 
-  "kaba_point_used_amount": "KABA扣分用量 :"
+  "kaba_point_used_amount": "KABA扣分用量 :",
+  "kaba_point_description": "使用 KABA POINTS 可获得高达 XXX_XXX XF 的运费折扣"
 
 
 }

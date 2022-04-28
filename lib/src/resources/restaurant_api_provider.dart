@@ -210,7 +210,7 @@ class RestaurantApiProvider {
   }
 
 
-  Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel model, Position position) async {
+  Future<dynamic> fetchRestaurantList(CustomerModel model, Position position) async {
     xrint("entered fetchRestaurantList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {
 
@@ -244,14 +244,14 @@ class RestaurantApiProvider {
 
       xrint(response.data);
       if (response.statusCode == 200) {
-        int errorCode = mJsonDecode(response.data)["error"];
-        if (errorCode == 0) {
-          Iterable lo = mJsonDecode(response.data)["data"]["resto"];
+        // int errorCode = mJsonDecode(response.data)["error"];
+        dynamic data = mJsonDecode(response.data);
+        if (data["error"] == 0) {
+          // Iterable lo = mJsonDecode(response.data)["data"]["resto"];
+          // List<RestaurantModel> resto = lo?.map((resto) =>
+          //     RestaurantModel.fromJson(resto))?.toList();
 
-          List<RestaurantModel> resto = lo?.map((resto) =>
-              RestaurantModel.fromJson(resto))?.toList();
-
-          return resto;
+          return data["data"];
         }
         else
           throw Exception(-1); // there is an error in your request

@@ -354,7 +354,7 @@ class ClientPersonalApiProvider {
     xrint("entered updatePersonnalPage");
     if (await Utils.hasNetwork()) {
       var _data = json.encode({'nickname':customer.nickname, 'whatsapp_number': customer.whatsapp_number, 'district':customer.district, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday});
-      if (customer.profile_picture != null)
+      if (customer?.profile_picture != null && customer.profile_picture.length > 50)
         _data = json.encode({'nickname':customer.nickname,'district':customer.district, 'whatsapp_number': customer.whatsapp_number, 'job_title':customer.job_title, 'email': customer.email, 'gender':customer.gender, 'birthday':customer.birthday, 'profile_picture' : customer.profile_picture });
 
       /* final response = await client

@@ -101,7 +101,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                   widget.restaurantModel.is_promotion == 1 ? Container() : Icon(Icons.directions_bike, color: Colors.black, size: 14),
                                   SizedBox(width:5),
                                   Text(
-                                      "${widget.restaurantModel.is_promotion == 1 ?  "${AppLocalizations.of(context).translate('promo')}" : (widget.restaurantModel?.delivery_pricing=="0" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F")}",
+                                      "${widget.restaurantModel.is_promotion == 1 ?  "${AppLocalizations.of(context).translate('promo')}" : (widget.restaurantModel?.delivery_pricing=="~" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F")}",
                                       style: TextStyle(color: widget.restaurantModel.is_promotion == 1 ? Colors.white : Colors.black, fontSize: 12)
                                   ),
                                 ],

@@ -34,7 +34,9 @@ class DailyOrdersPage extends StatefulWidget {
 
 class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrderView {
 
-  String last_update_timeout = "";
+  // String last_update_timeout = "";
+
+  int MAX_MINUTES_FOR_AUTO_RELOAD = 5;
 
   @override
   void initState() {
@@ -45,7 +47,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
     });
     super.initState();
     Future.delayed(Duration.zero,() async {
-      last_update_timeout = getTimeOutLastTime();
+      // last_update_timeout = getTimeOutLastTime();
     });
   }
 
@@ -85,7 +87,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
             Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
               InkWell(onTap: ()=> widget.presenter.loadDailyOrders(widget.customer),
                 child: Container(
-                  width: 80,
+                  // width: 80,
                   height: 40,
                   decoration: BoxDecoration(
                     color: KColors.primaryColorSemiTransparentADDTOBASKETBUTTON,
@@ -97,7 +99,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
                        Icon(Icons.refresh, color: KColors.primaryColor,size: 25),
                       SizedBox(width:5),
                       // count down here
-                      Text("${last_update_timeout}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12))
+                      Text("${AppLocalizations.of(context).translate('refresh')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12))
                     ],
                   ),
                 ),
@@ -207,9 +209,18 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
         return;
       }
       xrint("dailyorder exec timer ");
-      setState(() {
-        last_update_timeout = getTimeOutLastTime();
-      });
+      // setState(() {
+      //   last_update_timeout = getTimeOutLastTime();
+      // });
+
+      int POTENTIAL_EXECUTION_TIME = 3;
+      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_daily_order)~/1000;
+      // convert different in minute seconds
+      int min = (diff+ POTENTIAL_EXECUTION_TIME)~/60;
+
+      if (min >= MAX_MINUTES_FOR_AUTO_RELOAD)
+        widget.presenter.loadDailyOrders(widget.customer);
+
     });
   }
 

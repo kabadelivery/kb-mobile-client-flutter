@@ -55,7 +55,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
     super.initState();
     widget.presenter.transactionView = this;
     _tabController = TabController(vsync: this, length: TABS_LENGTH);
-  /*  _tabController.addListener(() {
+    /*  _tabController.addListener(() {
       _handleTabSelection();
     });*/
 
@@ -162,7 +162,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                             : (
                             hasPointNetworkError ? _buildPointNetworkErrorPage() :
                             (hasPointNetworkError ? _buildPointSysErrorPage():
-                        _buildPointTransactionHistoryList()))
+                            _buildPointTransactionHistoryList()))
                     ),
                   ]
               )
@@ -273,7 +273,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
         separatorBuilder: (context, index) => Divider(
           color: Colors.grey.withAlpha(50),
         ),
-        itemCount: pointData?.last_ten_transactions?.length,
+        itemCount: pointData?.last_ten_transactions?.length == 0 ? 1 : pointData?.last_ten_transactions?.length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: <Widget>[
@@ -282,26 +282,34 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.only(top:30,left:10, right:10),
+                        padding: EdgeInsets.only(top:15,left:10, right:10, bottom: 10),
                         width: MediaQuery.of(context).size.width*0.9,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
-                          Row(
-                            children: [
-                              Text("${pointData?.balance == null ? "---" : pointData?.balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                            ],
-                          ),
-                        ]),
+                        child: Column(
+                          children: [
+                            SizedBox(height:5),
+                            Center(child:Text(pointData?.is_eligible ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}".replaceAll("XXX_XXX", "${pointData?.monthly_limit_amount}") :
+                            "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}", textAlign: TextAlign.center, style: TextStyle( color: Colors.grey, fontSize: 11))),
+                            SizedBox(height:5),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
+                              Row(
+                                children: [
+                                  Text("${pointData?.balance == null ? "---" : pointData?.balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                                ],
+                              ),
+                            ]),
+                          ],
+                        ),
                       ),
                       // SizedBox(height: 20),
-          RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('this_feature_is_building')}"),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-          children: [
-          Icon(Icons.info_outline, color: Colors.grey),
-          SizedBox(width: 5),
-          Text("${AppLocalizations.of(context)?.translate('your_points')}", style: TextStyle( color: Colors.grey)),
-          ])),
-                     false ? RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
+                      pointData?.is_eligible ? Container() : RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('kaba_point_description')}".replaceAll("XXX_XXX", "${pointData?.monthly_limit_amount}")),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.info_outline, color: Colors.grey),
+                                SizedBox(width: 5),
+                                Text("${AppLocalizations.of(context)?.translate('your_points')}", style: TextStyle( color: Colors.grey)),
+                              ])),
+                      false ? RawMaterialButton(onPressed: () => mToast("${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
                         child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.info_outline, color: Colors.grey),
@@ -315,26 +323,33 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                 ),
               ) : Container(),
 
-              ListTile(
-                leading: pointData?.last_ten_transactions[index]?.type == "D" ? Icon(Icons.trending_down, color: Colors.red,) : (pointData?.last_ten_transactions[index].type == "C" ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue)),
-                title: Row(
-                  children: <Widget>[
-                    Expanded(child: Text("${pointData?.last_ten_transactions[index]?.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                  ],
-                ),
-                // subtitle: Text("${pointData[index].details}", style: TextStyle(fontSize: 12)),
-                trailing: Text("${(pointData?.last_ten_transactions[index]?.type == "D" ? "-" : "+")} ${pointData?.last_ten_transactions[index]?.amount}", style: TextStyle(color: pointData?.last_ten_transactions[index]?.type == "D" ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                /*Row(
-                    children: <Widget>[
-                      Text(data[index].value, style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                      SizedBox(width: 5), Icon(data[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
-                    ],
-                  ),*/
-              ),
+              pointData?.last_ten_transactions?.length > 0 ?
+              Column(
+                children: [
+                  ListTile(
+                    leading: pointData?.last_ten_transactions[index]?.type == "D" ? Icon(Icons.trending_down, color: Colors.red,) : (pointData?.last_ten_transactions[index].type == "C" ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue)),
+                    title: Row(
+                      children: <Widget>[
+                        Expanded(child: Text("${pointData?.last_ten_transactions[index]?.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                      ],
+                    ),
+                    // subtitle: Text("${pointData[index].details}", style: TextStyle(fontSize: 12)),
+                    trailing: Text("${(pointData?.last_ten_transactions[index]?.type == "D" ? "-" : "+")} ${pointData?.last_ten_transactions[index]?.amount}", style: TextStyle(color: pointData?.last_ten_transactions[index]?.type == "D" ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                    /*Row(
+                        children: <Widget>[
+                          Text(data[index].value, style: TextStyle(color: data[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                          SizedBox(width: 5), Icon(data[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                        ],
+                      ),*/
+                  ),
               Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment:MainAxisAlignment.end, children: <Widget>[
                 Text("${pointData?.last_ten_transactions[index]?.created_at}", style: TextStyle(color: Colors.grey, fontSize: 10, fontStyle: FontStyle.italic)),SizedBox(width: 10)
                 // SizedBox(width: 5), Icon(pointData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
               ]),
+            ],
+          ) : Container(),
+
+
             ],
           );
         });
@@ -365,22 +380,26 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                   child: Container(
                     padding: EdgeInsets.only(top:30, bottom:30, left:10, right:10),
                     width: MediaQuery.of(context).size.width*0.9,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                      Text("${AppLocalizations.of(context)?.translate('balance')}", style: TextStyle(fontSize: 24)),
-                      Row(
-                        children: [
-                          Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                          Text("  ${AppLocalizations.of(context)?.translate('currency')}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 14))
-                        ],
-                      ),
-                    ]),
+                    child: Column(
+                      children: [
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Text("${AppLocalizations.of(context)?.translate('balance')}", style: TextStyle(fontSize: 24)),
+                          Row(
+                            children: [
+                              Text("${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                              Text("  ${AppLocalizations.of(context)?.translate('currency')}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 14))
+                            ],
+                          ),
+                        ]),
+                      ],
+                    ),
                   ),
                 ),
               ) : Container(),
               InkWell(
-              onTap: () {
-                _onMoneyTransactionTap(moneyData[index]);
-              },
+                onTap: () {
+                  _onMoneyTransactionTap(moneyData[index]);
+                },
                 child: ListTile(
                   leading: moneyData[index].type == -1 ? Icon(Icons.trending_down, color: Colors.red,) : (moneyData[index].type == 1 ? Icon(Icons.trending_up, color: Colors.green,) : Icon(Icons.trending_flat, color: Colors.blue,)),
                   title: Row(

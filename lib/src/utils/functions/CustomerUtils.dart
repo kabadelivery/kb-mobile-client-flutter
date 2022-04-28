@@ -36,6 +36,7 @@ class CustomerUtils {
       customer.created_at = obj["data"]["customer"]["created_at"];
       // created_at
     } catch (_) {
+      customer = null;
     }
     return customer;
   }

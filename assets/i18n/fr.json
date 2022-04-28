@@ -447,7 +447,10 @@
 
   "min_short_on_average": "30 minutes en moyenne",
 
-  "kaba_point_used_amount": "Points KABA utilisés :"
+  "kaba_point_used_amount": "Points KABA utilisés :",
+
+  "kaba_point_description": "Réduisez vos frais de livraison XXX_XXX FCFA par mois grâce aux KABA POINTS"
+
 
 
 }

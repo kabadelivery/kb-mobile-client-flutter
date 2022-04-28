@@ -430,6 +430,7 @@
 
   "min_short_on_average": "30 minutes on average",
 
-  "kaba_point_used_amount": "KABA points used :"
+  "kaba_point_used_amount": "KABA points used :",
+  "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS"
 
 }

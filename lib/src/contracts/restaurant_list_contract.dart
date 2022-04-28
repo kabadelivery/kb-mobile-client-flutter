@@ -52,14 +52,15 @@ class RestaurantListPresenter implements RestaurantListContract {
     if (!silently)
       _restaurantListView.loadRestaurantListLoading(true);
     try {
-      List<RestaurantModel> restaurants = await provider.fetchRestaurantList(
+     dynamic data = await provider.fetchRestaurantList(
           customer, position);
-      _restaurantListView.loadRestaurantListLoading(false);
 
 
       // "location": "6.196422: 1.201180",
-      restaurants = await compute(sortOutRestaurantList,
-          {"restaurants": restaurants, "position": position});
+     List<RestaurantModel> restaurants = await compute(sortOutRestaurantList,
+          {"data": data, "position": position, "is_email_account" : customer == null || customer?.username == null ? false : (customer.username.contains("@") ? true : false)});
+
+     _restaurantListView.loadRestaurantListLoading(false);
 
       // order list
       // restaurants = restaurants..sort((restA, restB) => _getDifferenceMeandRestaurant());
@@ -102,23 +103,79 @@ class RestaurantListPresenter implements RestaurantListContract {
 // }
 }
 
-FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String, Object> data) {
+FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) {
 
-  List<RestaurantModel> tmp = data["restaurants"];
-  Position tmpPosition = data["position"];
 
-  if (tmpPosition != null) {
-    for (int s = 0; s < tmp.length; s++) {
-      // restaurants[s].distanceBetweenMeandRestaurant = Utils.locationDistance(position, restaurants[s]);
-      tmp[s].distance = Utils.locationDistance(tmpPosition, tmp[s]).toString();
-      tmp[s].delivery_pricing = "~_~";
+
+  Iterable lo = data["data"]["resto"];
+
+  List<RestaurantModel> tmp = lo?.map((resto) =>
+      RestaurantModel.fromJson(resto))?.toList();
+
+  try {
+    bool is_email_account = data["is_email_account"];
+    Position tmpPosition = data["position"];
+
+    if (tmpPosition != null) {
+      Map<String, String> myBillingArray = Map();
+      // prepare billing array
+      List<dynamic> lBilling = data["data"]["billing"][is_email_account
+          ? "email"
+          : "phoneNumber"];
+      for (int s = 0; s < lBilling.length; s++) {
+        int from = int.parse(lBilling[s]["from"]);
+        int to = int.parse(lBilling[s]["to"]);
+        int value = int.parse(lBilling[s]["value"]);
+        // we take upper border
+        myBillingArray["${from}"] = "${value}";
+        if (to - from > 1) {
+          for (int i = from + 1; i < to; i++) {
+            myBillingArray["${i}"] = "${value}";
+          }
+        }
+      }
+
+      xrint(myBillingArray);
+
+      for (int s = 0; s < tmp.length; s++) {
+        // restaurants[s].distanceBetweenMeandRestaurant = Utils.locationDistance(position, restaurants[s]);
+        tmp[s].distance =
+            Utils.locationDistance(tmpPosition, tmp[s]).toString();
+        // according to the distance, we get the matching delivery fees
+        // i dont want to make another loop
+        tmp[s].delivery_pricing =
+            _getShippingPrice(tmp[s].distance, myBillingArray);
+      }
+
+      // do the sort_out using the distances as well
+      /* tmp =*/
+      tmp.sort((restA, restB) =>
+          (
+              restA.id == 79 || restA.id == 80
+                  ? 10000
+                  : // try to put these 2 restaurants above
+              double.parse(restA.distance) * 1000 -
+                  double.parse(restB.distance) * 1000
+          ).toInt()
+      );
     }
-    // do the sort_out using the distances as well
-   /* tmp =*/ tmp.sort((restA, restB) => (
-   restA.id == 79 || restA.id == 80 ? -10000 : // try to put these 2 restaurants above
-       double.parse(restA.distance)*1000 - double.parse(restB.distance)*1000
-    ).toInt()
-    );
+    return tmp;
+  } catch (_) {
+    xrint(_.toString());
+ return tmp;
   }
-  return tmp;
+}
+
+String _getShippingPrice(String distance, Map<String, String> myBillingArray) {
+  try {
+    int distanceInt = int.parse( !distance.contains(".") ? distance : distance.split(".")[0]);
+    if (myBillingArray["$distanceInt"] == null) {
+      return "~";
+    } else {
+      return myBillingArray["$distanceInt"];
+    }
+  } catch (_) {
+    xrint(_);
+    return "~";
+  }
 }

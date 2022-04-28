@@ -85,9 +85,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
-  String last_update_timeout;
+  // String last_update_timeout;
 
-  int MAX_MINUTES_FOR_AUTO_RELOAD = 1;
+  int MAX_MINUTES_FOR_AUTO_RELOAD = 5;
 
   @override
   void initState() {
@@ -103,12 +103,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       widget.customer = customer;
     });
 
-
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
-
           // timeout stuff
-      last_update_timeout = getTimeOutLastTime();
+      // last_update_timeout = getTimeOutLastTime();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool has_subscribed = false;
@@ -333,17 +331,28 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                                 Container(color: Colors.white,
                                   height: MediaQuery.of(context).size.height,
 //                              padding: EdgeInsets.only(bottom:230),
-                                  child: Scrollbar(
-                                    isAlwaysShown: true,
-                                    controller: _restaurantListScrollController,
-                                    child: ListView.builder(
+                                  child: RefreshIndicator(
+                                    onRefresh: () async {
+                                      if (StateContainer
+                                          ?.of(context)
+                                          ?.location == null) {
+                                        widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
+                                      } else
+                                        widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+                                    },
+                                    color: Colors.purple,
+                                    child: Scrollbar(
+                                      isAlwaysShown: true,
                                       controller: _restaurantListScrollController,
-                                      itemCount:  data?.length != null ? data.length + 1 : 0,
-                                      itemBuilder: (context, index) {
-                                        if (index == data?.length)
-                                          return Container(height:100);
-                                        return RestaurantListWidget(restaurantModel: data[index]);
-                                      },
+                                      child: ListView.builder(
+                                        controller: _restaurantListScrollController,
+                                        itemCount:  data?.length != null ? data.length + 1 : 0,
+                                        itemBuilder: (context, index) {
+                                          if (index == data?.length)
+                                            return Container(height:100);
+                                          return RestaurantListWidget(restaurantModel: data[index]);
+                                        },
+                                      ),
                                     ),
                                   ),
                                 )
@@ -1073,7 +1082,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   }
 
   showCountDownButton() {
-    return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
+    return Container();
+    // return nothing
+  /*  return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
       InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
         child: Container(
           width: 65,
@@ -1093,7 +1104,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         ),
       ),
       SizedBox(width: 10),
-    ]);
+    ]); */
   }
 
   Timer mainTimer;
@@ -1117,8 +1128,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       xrint("restaurantlist exec timer ");
 
       setState(() {
-        last_update_timeout = getTimeOutLastTime();
+        // last_update_timeout = getTimeOutLastTime(); // disabled
       });
+
       int POTENTIAL_EXECUTION_TIME = 3;
       int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_restaurant_list_timeout)~/1000;
       // convert different in minute seconds
