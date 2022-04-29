@@ -53,6 +53,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                       List<Widget>.generate(comment.stars.toInt(), (int index) {
                         return Icon(Icons.star, color: KColors.primaryYellowColor, size: 16);
                       })
+                          // ..add((comment.stars*10)%10 != 0 ? Icon(Icons.star, color: KColors.primaryYellowColor, size: 16) : Container())
                   )),
                 SizedBox(height: 5),
                 Row(

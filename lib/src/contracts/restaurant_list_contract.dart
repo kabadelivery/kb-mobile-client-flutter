@@ -152,7 +152,7 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
       tmp.sort((restA, restB) =>
           (
               restA.id == 79 || restA.id == 80
-                  ? 10000
+                  ? 10000000
                   : // try to put these 2 restaurants above
               double.parse(restA.distance) * 1000 -
                   double.parse(restB.distance) * 1000

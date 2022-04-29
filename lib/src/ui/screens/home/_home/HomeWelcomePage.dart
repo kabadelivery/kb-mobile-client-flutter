@@ -1407,8 +1407,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void showBalanceLoading(bool isLoading) {
+
     setState(() {
-      StateContainer.of(context).updateBalanceLoadingState(isBalanceLoading: isLoading);
+     try {
+       StateContainer.of(context).updateBalanceLoadingState(
+           isBalanceLoading: isLoading);
+     } catch (_){
+      xrint(_.toString());
+     }
     });
   }
 

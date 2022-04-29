@@ -88,7 +88,8 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                               child:Text(
                                   "${AppLocalizations.of(context).translate('coming_soon')}",
                                   style: TextStyle(color: Colors.white, fontSize: 12)
-                              )) : Container(),
+                              )) : Container()
+                        // getRating(widget.restaurantModel)
                         ]),
                         Row(children: <Widget>[
                           widget.restaurantModel?.distance == null ? Container() :
@@ -231,5 +232,16 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
             style: TextStyle(color: tagTextColor, fontSize: 12)
         )) : Container();
 
+  }
+
+  getRating(RestaurantModel restaurantModel) {
+
+   /* return Row(children: <Widget>[]
+      ..addAll(
+          List<Widget>.generate(restaurantModel.stars.toInt(), (int index) {
+            return Icon(Icons.star, color: KColors.primaryYellowColor, size: 14);
+          })
+            ..add((restaurantModel.stars*10)%10 != 0 ? Icon(Icons.star_half, color: KColors.primaryYellowColor, size: 14) : Container())
+      ));*/
   }
 }

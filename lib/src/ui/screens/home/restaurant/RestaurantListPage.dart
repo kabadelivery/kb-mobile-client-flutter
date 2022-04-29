@@ -708,8 +708,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                     return;
 
                   if (position != null && mounted) {
-                    StateContainer.of(context).updateLocation(location: position);
-                    // widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+                    try {
+                      StateContainer.of(context).updateLocation(
+                          location: position);
+                      // widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+                    }catch (_){
+                      xrint(_.toString());
+                    }
                   }
                 });
           }
