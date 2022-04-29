@@ -431,6 +431,21 @@
   "min_short_on_average": "30 minutes on average",
 
   "kaba_point_used_amount": "KABA points used :",
-  "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS"
+  "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS",
+  "month_remain_kaba_points": "Left for XXX_XXX",
+  "month_used_kaba_points": "Used in XXX_XXX",
+
+  "mois_1": "January",
+  "mois_2": "February",
+  "mois_3": "March",
+  "mois_4": "April",
+  "mois_5": "May",
+  "mois_6": "June",
+  "mois_7": "July",
+  "mois_8": "August",
+  "mois_9": "September",
+  "mois_10": "October",
+  "mois_11": "November",
+  "mois_12": "December"
 
 }

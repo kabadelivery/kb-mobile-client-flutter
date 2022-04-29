@@ -49,10 +49,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
 
   var TABS_LENGTH = 2;
 
+  String currentMonth ="";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     widget.presenter.transactionView = this;
     _tabController = TabController(vsync: this, length: TABS_LENGTH);
     /*  _tabController.addListener(() {
@@ -68,6 +71,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
       widget.presenter.checkBalance(customer);
     });
     _tabController.addListener(_handleTabSelection);
+
   }
 
   void _handleTabSelection() {
@@ -105,6 +109,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
   @override
   Widget build(BuildContext context) {
 
+    if (currentMonth == "") {
+      try {
+        xrint("current month ${DateTime.now().month}");
+        xrint("mois_${DateTime.now().month}");
+
+        currentMonth = "${AppLocalizations.of(context)?.translate("mois_${DateTime.now().month}")}";
+      } catch(_) {
+        xrint(_.toString());
+        currentMonth = "This month";
+      }
+    }
 
     return
       DefaultTabController(
@@ -290,14 +305,55 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                             Center(child:Text(pointData?.is_eligible ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}".replaceAll("XXX_XXX", "${pointData?.monthly_limit_amount}") :
                             "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}", textAlign: TextAlign.center, style: TextStyle( color: Colors.grey, fontSize: 11))),
                             SizedBox(height:5),
-                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                              Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
-                              Row(
-                                children: [
-                                  Text("${pointData?.balance == null ? "---" : pointData?.balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
-                                ],
-                              ),
-                            ]),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  children: [
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Text("${AppLocalizations.of(context)?.translate('kaba_points')}", style: TextStyle(fontSize: 24)),
+                                    ]),
+                                    SizedBox(height:5),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Text("${AppLocalizations.of(context)?.translate('month_used_kaba_points')}".replaceAll("XXX_XXX",
+                                          currentMonth), style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+
+                                    ]),
+                                    SizedBox(height:5),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Text("${AppLocalizations.of(context)?.translate('month_remain_kaba_points')}".replaceAll("XXX_XXX",
+                                          currentMonth), style: TextStyle(fontSize: 18, color: CommandStateColor.delivered)),
+                                    ])
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Row(
+                                        children: [
+                                          Text("${pointData?.balance == null ? "---" : pointData?.balance}", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
+                                        ],
+                                      ),
+                                    ]),
+                                    SizedBox(height:5),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Row(
+                                        children: [
+                                          Text("${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}", style: TextStyle(fontSize: 18, color: KColors.primaryColor)),
+                                        ],
+                                      ),
+                                    ]),
+                                    SizedBox(height:5),
+                                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                      Row(
+                                        children: [
+                                          Text("${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}", style: TextStyle(fontSize: 18, color: CommandStateColor.delivered)),
+                                        ],
+                                      ),
+                                    ])
+                                  ],
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -545,6 +601,21 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
       // jump to order details page
       _jumpToPage(context, OrderDetailsPage(
           orderId: moneyData?.command_id, presenter: OrderDetailsPresenter()));
+    }
+  }
+
+  _getRemainingPointToUse(PointObjModel pointData) {
+
+    try {
+      int diff = pointData?.monthly_limit_amount - pointData?.amount_already_used;
+      if (diff >= pointData?.balance) {
+        return balance;
+      } else {
+        return diff;
+      }
+    } catch(_){
+      xrint(_.toString());
+      return "---";
     }
   }
 

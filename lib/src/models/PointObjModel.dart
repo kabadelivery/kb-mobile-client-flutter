@@ -17,6 +17,7 @@ class PointObjModel {
   
   int eligible_order_count ; // 50
   int monthly_limit_amount;
+  int amount_already_used;
 
 //<editor-fold desc="Data Methods">
 
@@ -33,6 +34,7 @@ class PointObjModel {
      this.last_ten_transactions,
      this.eligible_order_count,
      this.monthly_limit_amount,
+    this.amount_already_used,
   });
 
 // 30@override
@@ -52,7 +54,8 @@ class PointObjModel {
               client_ca_delivery == other.client_ca_delivery &&
               last_ten_transactions == other.last_ten_transactions &&
               eligible_order_count == other.eligible_order_count &&
-              monthly_limit_amount == other.monthly_limit_amount
+              monthly_limit_amount == other.monthly_limit_amount &&
+                amount_already_used == other.amount_already_used
           );
 
 
@@ -69,6 +72,7 @@ class PointObjModel {
       client_ca_delivery.hashCode ^
       last_ten_transactions.hashCode ^
       eligible_order_count.hashCode ^
+        amount_already_used^
       monthly_limit_amount.hashCode;
 
 
@@ -87,6 +91,7 @@ class PointObjModel {
         ' last_ten_transactions: $last_ten_transactions,' +
         ' eligible_order_count: $eligible_order_count,' +
         ' monthly_limit_amount: $monthly_limit_amount,' +
+        ' amount_already_used: $amount_already_used,' +
         '}';
   }
 
@@ -104,8 +109,10 @@ class PointObjModel {
     List<PointTransactionModel> last_ten_transactions,
     int eligible_order_count,
     int monthly_limit_amount,
+    int amount_already_used
   }) {
     return PointObjModel(
+        amount_already_used : amount_already_used ?? this.amount_already_used,
       balance: balance ?? this.balance,
       can_use: can_use ?? this.can_use,
       can_be_used: can_be_used ?? this.can_be_used,
@@ -140,6 +147,7 @@ class PointObjModel {
       'last_ten_transactions': this.last_ten_transactions,
       'eligible_order_count': this.eligible_order_count,
       'monthly_limit_amount': this.monthly_limit_amount,
+      'amount_already_used': this.amount_already_used
     };
   }
 
@@ -147,6 +155,7 @@ class PointObjModel {
     return PointObjModel(
       balance: map['balance'] as int,
       can_use: map['can_use'] as int,
+      amount_already_used: map['amount_already_used'] as int,
       can_be_used: map['can_be_used'] as bool,
       is_eligible: map['is_eligible'] as bool,
       is_new_beneficiary: map['is_new_beneficiary'] as bool,

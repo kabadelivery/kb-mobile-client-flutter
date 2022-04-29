@@ -440,7 +440,22 @@
   "min_short_on_average": "平均30分钟",
 
   "kaba_point_used_amount": "KABA扣分用量 :",
-  "kaba_point_description": "使用 KABA POINTS 可获得高达 XXX_XXX XF 的运费折扣"
+  "kaba_point_description": "使用 KABA POINTS 可获得高达 XXX_XXX XF 的运费折扣",
 
+  "month_remain_kaba_points": "XXX_XXX待使用",
+  "month_used_kaba_points": "XXX_XXX已用量",
+
+  "mois_1": "一月份",
+  "mois_2": "二月份",
+  "mois_3": "三月份",
+  "mois_4": "四月份",
+  "mois_5": "五月份",
+  "mois_6": "六月份",
+  "mois_7": "七月份",
+  "mois_8": "八月份",
+  "mois_9": "九月份",
+  "mois_10": "十月份",
+  "mois_11": "十一月份",
+  "mois_12": "十二月份"
 
 }

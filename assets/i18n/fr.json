@@ -449,8 +449,22 @@
 
   "kaba_point_used_amount": "Points KABA utilisés :",
 
-  "kaba_point_description": "Réduisez vos frais de livraison XXX_XXX FCFA par mois grâce aux KABA POINTS"
+  "kaba_point_description": "Réduisez vos frais de livraison XXX_XXX FCFA par mois grâce aux KABA POINTS",
 
+  "month_remain_kaba_points": "Restant en XXX_XXX",
+  "month_used_kaba_points": "Dépensé en XXX_XXX",
 
+  "mois_1": "Janvier",
+  "mois_2": "Février",
+  "mois_3": "Mars",
+  "mois_4": "Avril",
+  "mois_5": "Mai",
+  "mois_6": "Juin",
+  "mois_7": "Juillet",
+  "mois_8": "Août",
+  "mois_9": "Septembre",
+  "mois_10": "Octobre",
+  "mois_11": "Novembre",
+  "mois_12": "Décembre"
 
 }
