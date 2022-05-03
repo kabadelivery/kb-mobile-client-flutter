@@ -925,6 +925,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     }
   }
 
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
   _getShinningImage(RestaurantModel restaurant) {
 
     //

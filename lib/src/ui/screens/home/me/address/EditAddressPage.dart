@@ -739,4 +739,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
     );
   }
 
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+
 }

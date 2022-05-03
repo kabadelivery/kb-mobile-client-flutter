@@ -108,7 +108,8 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                 ],
                               )),
                           SizedBox(width: 10),
-                          widget.restaurantModel?.distance == null ? Container() : Text("${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
+                          widget.restaurantModel?.distance == null ? Container() :
+                          Text("+-${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
                         ])
                       ],
                     ))

@@ -224,6 +224,14 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
     });
   }
 
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+
 
 
 }

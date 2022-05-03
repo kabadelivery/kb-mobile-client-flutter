@@ -68,8 +68,8 @@ class RestaurantListPresenter implements RestaurantListContract {
       _restaurantListView.inflateRestaurants(restaurants);
     } catch (_) {
       /* RestaurantList failure */
-      _restaurantListView.loadRestaurantListLoading(false);
       xrint("error ${_}");
+      _restaurantListView.loadRestaurantListLoading(false);
       if (_ == -2) {
         _restaurantListView.systemError();
       } else {
@@ -112,6 +112,9 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
   List<RestaurantModel> tmp = lo?.map((resto) =>
       RestaurantModel.fromJson(resto))?.toList();
 
+  // remove the 79 & 80
+  List<RestaurantModel> tf = List.empty(growable: true);
+
   try {
     bool is_email_account = data["is_email_account"];
     Position tmpPosition = data["position"];
@@ -137,6 +140,9 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
 
       xrint(myBillingArray);
 
+      int indexOf79 = -1;
+      int indexOf80 = -1;
+
       for (int s = 0; s < tmp.length; s++) {
         // restaurants[s].distanceBetweenMeandRestaurant = Utils.locationDistance(position, restaurants[s]);
         tmp[s].distance =
@@ -145,21 +151,47 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
         // i dont want to make another loop
         tmp[s].delivery_pricing =
             _getShippingPrice(tmp[s].distance, myBillingArray);
+
+        if (tmp[s].id == 79)
+        indexOf79 = s;
+        if (tmp[s].id == 80)
+          indexOf80 = s;
       }
 
+      // add elements
+      tf.add(tmp[indexOf79]);
+      tf.add(tmp[indexOf80]);
+      // remote from tmp
+      tmp.removeAt(indexOf80);
+      tmp.removeAt(indexOf79);
+
+      // if (tmp[s].id == 79 || tmp[s].id == 80) {
+      //   tf.add(tmp[s]);
+      //   tmp.removeAt(s);
+      // }
+
       // do the sort_out using the distances as well
+      tf.sort((restA, restB) =>
+          (
+              // try to put these 2 restaurants above
+              double.parse(restA.distance) * 1000 -
+                  double.parse(restB.distance) * 1000
+          ).toInt()
+      );
       /* tmp =*/
       tmp.sort((restA, restB) =>
           (
-              restA.id == 79 || restA.id == 80
-                  ? 10000000
-                  : // try to put these 2 restaurants above
+// try to put these 2 restaurants above
               double.parse(restA.distance) * 1000 -
                   double.parse(restB.distance) * 1000
           ).toInt()
       );
     }
-    return tmp;
+
+
+tf.addAll(tmp);
+return tf;
+
   } catch (_) {
     xrint(_.toString());
  return tmp;

@@ -51,7 +51,6 @@ class RestaurantListPage extends StatefulWidget {
 
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
-
 }
 
 class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticKeepAliveClientMixin<RestaurantListPage> implements RestaurantFoodProposalView, RestaurantListView  {
@@ -81,7 +80,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   SharedPreferences prefs;
 
 
-  bool isLoading = true;
+  bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
@@ -124,6 +123,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
       if (mounted) {
         _getLastKnowLocation();
+        // fetch only manually or when the content is empty
+        if (data != null && data.length > 0)
+          return; // no need to fetch automatically
+
         if (StateContainer
             ?.of(context)
             ?.location == null) {
@@ -141,7 +144,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     _filterEditController.dispose();
     super.dispose();
   }
-
 
 
   @override
@@ -306,7 +308,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                           _filterDropdownValue = newValue;
                         });
                       },
-                      items: <String>['${AppLocalizations.of(context).translate('cheap_to_exp')}', '${AppLocalizations.of(context).translate('exp_to_cheap')}', '${AppLocalizations.of(context).translate('nearest')}', '${AppLocalizations.of(context).translate('farest')}']
+                      items: <String>['${AppLocalizations.of(context).translate('cheap_to_exp')}',
+                        '${AppLocalizations.of(context).translate('exp_to_cheap')}',
+                        '${AppLocalizations.of(context).translate('nearest')}',
+                        '${AppLocalizations.of(context).translate('farest')}']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -323,48 +328,49 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                   child: Column(
                       children: <Widget>[
 //                  SizedBox(height: 40)
-                      ]
-                        ..add(
-                          /* according to the search position, show a different page. */
-                            searchTypePosition == 1 ? (
-                                !_searchMode ?
-                                Container(color: Colors.white,
-                                  height: MediaQuery.of(context).size.height,
-//                              padding: EdgeInsets.only(bottom:230),
-                                  child: RefreshIndicator(
-                                    onRefresh: () async {
-                                      if (StateContainer
-                                          ?.of(context)
-                                          ?.location == null) {
-                                        widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
-                                      } else
-                                        widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
-                                    },
-                                    color: Colors.purple,
-                                    child: Scrollbar(
-                                      isAlwaysShown: true,
-                                      controller: _restaurantListScrollController,
-                                      child: ListView.builder(
-                                        controller: _restaurantListScrollController,
-                                        itemCount:  data?.length != null ? data.length + 1 : 0,
-                                        itemBuilder: (context, index) {
-                                          if (index == data?.length)
-                                            return Container(height:100);
-                                          return RestaurantListWidget(restaurantModel: data[index]);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                    : _showSearchPage()) :
-                            Container(margin: EdgeInsets.only(top:20),
-                                child: isSearchingMenus ? Center(child:MyLoadingProgressWidget()) :
-                                (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
-                                searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
-                                _buildSearchedFoodList())
-                            )
 
+                        /* according to the search position, show a different page. */
+                        searchTypePosition == 1 ? (
+                            !_searchMode ?
+                            Container(color: Colors.white,
+                              height: MediaQuery.of(context).size.height,
+//                              padding: EdgeInsets.only(bottom:230),
+                              child: RefreshIndicator(
+                                onRefresh: () async {
+                                  if (StateContainer
+                                      ?.of(context)
+                                      ?.location == null) {
+                                    widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
+                                  } else
+                                    widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location);
+                                },
+                                color: Colors.purple,
+                                child: Scrollbar(
+                                  isAlwaysShown: true,
+                                  controller: _restaurantListScrollController,
+                                  child: ListView.builder(
+                                    controller: _restaurantListScrollController,
+                                    itemCount:  data?.length != null ? data.length + 1 : 0,
+                                    itemBuilder: (context, index) {
+                                      if (index == data?.length)
+                                        return Container(height:100);
+                                      return RestaurantListWidget(restaurantModel: data[index]);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            )
+                                : _showSearchPage()) :
+                        Container(margin: EdgeInsets.only(top:20),
+                            child: isSearchingMenus ? Center(child:MyLoadingProgressWidget()) :
+                            (searchMenuHasNetworkError ? _buildSearchMenuNetworkErrorPage() :
+                            searchMenuHasSystemError ? _buildSearchMenuSysErrorPage():
+                            _buildSearchedFoodList())
                         )
+
+                      ]
+
+
                   ),
                 ),
               ),
@@ -1061,6 +1067,13 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   }
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void networkError() {
     setState(() {
       hasNetworkError = true;
@@ -1120,27 +1133,17 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     if (mainTimer != null)
       mainTimer.cancel();
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-
-      xrint("restaurantlist this page is --> " + ModalRoute.of(context).settings.name);
-      xrint("restaurantlist is_current is --> ${ModalRoute.of(context).isCurrent}");
-
-      if (!("/HomePage".compareTo(ModalRoute.of(context).settings.name) == 0 &&
-          ModalRoute.of(context).isCurrent)) {
+      if (!("/HomePage".compareTo(ModalRoute.of(context)?.settings?.name) == 0 &&
+          ModalRoute.of(context)?.isCurrent)) {
         // check if time is ok
         xrint("restaurantlist NO exec timer ");
         return;
       }
       xrint("restaurantlist exec timer ");
-
-      setState(() {
-        // last_update_timeout = getTimeOutLastTime(); // disabled
-      });
-
       int POTENTIAL_EXECUTION_TIME = 3;
       int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_restaurant_list_timeout)~/1000;
       // convert different in minute seconds
       int min = (diff+ POTENTIAL_EXECUTION_TIME)~/60;
-
         if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
             (hasGps == false && (StateContainer
                 .of(context)
@@ -1149,7 +1152,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
               widget.customer, StateContainer
               .of(context)
               .location, true);
-
       if (!hasGps)
         hasGps = (StateContainer.of(context).location != null);
     });
