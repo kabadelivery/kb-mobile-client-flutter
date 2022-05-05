@@ -19,8 +19,8 @@ class RestaurantListContract {
 
 class RestaurantListView {
 
-  void systemError () {}
-  void networkError () {}
+  void systemError ([bool silently]) {}
+  void networkError ([bool silently]) {}
   void loadRestaurantListLoading(bool isLoading) {}
   void inflateRestaurants(List<RestaurantModel> restaurants) {}
 }
@@ -55,7 +55,6 @@ class RestaurantListPresenter implements RestaurantListContract {
      dynamic data = await provider.fetchRestaurantList(
           customer, position);
 
-
       // "location": "6.196422: 1.201180",
      List<RestaurantModel> restaurants = await compute(sortOutRestaurantList,
           {"data": data, "position": position, "is_email_account" : customer == null || customer?.username == null ? false : (customer.username.contains("@") ? true : false)});
@@ -70,10 +69,10 @@ class RestaurantListPresenter implements RestaurantListContract {
       /* RestaurantList failure */
       xrint("error ${_}");
       _restaurantListView.loadRestaurantListLoading(false);
-      if (_ == -2) {
-        _restaurantListView.systemError();
+      if (_.toString().contains("-2")) {
+        _restaurantListView.systemError(silently);
       } else {
-        _restaurantListView.networkError();
+        _restaurantListView.networkError(silently);
       }
     }
     isWorking = false;

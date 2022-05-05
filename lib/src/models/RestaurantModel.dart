@@ -15,7 +15,7 @@ class RestaurantModel {
   String email;
   String main_contact;
   String working_hour;
-  String distance;
+  String distance="";
   String menu_foods;
   int is_open;
   int coming_soon;

@@ -492,15 +492,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   _cookingTimeEstimation() {
     return Container(
         color: Colors.white,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
+        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right:10),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
                   "${AppLocalizations.of(context).translate('cooking_time_estimation')}",
                   style: TextStyle(fontSize: 16)),
+            SizedBox(width:15),
               Text("${AppLocalizations.of(context).translate('min_short_on_average')}",
-                  style: TextStyle(color: KColors.primaryColor, fontSize: 18))
+                  style: TextStyle(color: KColors.primaryColor, fontSize: 16))
             ]));
   }
 

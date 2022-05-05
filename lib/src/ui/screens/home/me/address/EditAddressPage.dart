@@ -150,12 +150,12 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           !_checkLocationLoading && address?.location != null ?
-                          Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)) :
+                          Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 15)) :
                           BouncingWidget(
                             duration: Duration(milliseconds: 400),
                             scaleFactor: 2,
                             onPressed: () => showPlacePicker(context),
-                            child: Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                            child: Text("${AppLocalizations.of(context).translate('choose_location')}", style: TextStyle(color: KColors.primaryColor, fontSize: 15)),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top:10, bottom:10),
@@ -182,7 +182,7 @@ class _EditAddressPageState extends State<EditAddressPage> implements EditAddres
                                     ),
                                   )
                                       : Container(),
-                                  SizedBox(width: 10),
+                                  SizedBox(width: 5),
                                   !_checkLocationLoading && address?.location != null ? Icon(Icons.chevron_right, color: KColors.primaryColor) :
                                   BouncingWidget(
                                     duration: Duration(milliseconds: 300),
