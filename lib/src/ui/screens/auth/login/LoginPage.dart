@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                             ],
                           ), onPressed: () {_launchConnexion();}),
                           SizedBox(width:20),
-                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage();}),
+                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage(null);}),
                         ]),
                     SizedBox(height: 30),
                     Center(
@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
   }
 
-  Future<void> _moveToRegisterPage() async {
+  Future<void> _moveToRegisterPage(String login) async {
 
     /*  Map results = await Navigator.push(
       context,
@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RegisterPage (presenter: RegisterPresenter()),
+            RegisterPage (presenter: RegisterPresenter(), login: login),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -192,7 +192,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void _moveToRecoverPasswordPage() {
-
 
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
@@ -247,7 +246,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             } else
               this.widget.presenter.login(true, login, _mCode, widget.version);
 
-
           } else {
             this.widget.presenter.login(false, login, _mCode, widget.version);
           }
@@ -258,7 +256,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   void loginFailure(String message) {
-
     mToast(message);
     showLoading(false);
   }
@@ -527,12 +524,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  void accountNoExist() {
+  void accountNoExist(String login) {
     _showDialog(
         icon: Icon(Icons.pan_tool, color: Colors.red),
         message: "${AppLocalizations.of(context).translate('sorry')}, ${_loginFieldController.text} ${AppLocalizations.of(context).translate('account_no_exists')} ?",
         isYesOrNo: true,
-        actionIfYes: () => _moveToRegisterPage()
+        actionIfYes: () => _moveToRegisterPage(login)
     );
   }
 

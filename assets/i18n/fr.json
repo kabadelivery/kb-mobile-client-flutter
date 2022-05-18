@@ -15,7 +15,7 @@
   "login_phonenumber_hint": "Veuillez entrer votre Numéro de Téléphone ou E-mail utilisé pour compte KABA",
   "connexion": "CONNEXION",
   "recover_password": "Récupérer mot de passe oublié",
-  "login_error": "Désolé, Echec de connexion",
+  "login_error": "Désolé, Identifiant erroné",
   "login_time_out": "Echec de connexion. Veuillez réessayer après un moment. Merci",
   "accept_terms_and_conditions": "Acceptez-vous les termes et conditions du Service KABA ?",
   "yes": "OUI",

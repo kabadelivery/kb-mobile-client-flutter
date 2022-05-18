@@ -96,20 +96,20 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                           widget.restaurantModel?.delivery_pricing == "0" ? Container () :
                           Container(
                               padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: widget.restaurantModel.is_promotion == 1 ? KColors.primaryColor : KColors.primaryYellowColor),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryYellowColor),
                               child: Row(
                                 children: <Widget>[
-                                  widget.restaurantModel.is_promotion == 1 ? Container() : Icon(Icons.directions_bike, color: Colors.black, size: 14),
+                                 Icon(Icons.directions_bike, color: Colors.black, size: 14),
                                   SizedBox(width:5),
                                   Text(
-                                      "${widget.restaurantModel.is_promotion == 1 ?  "${AppLocalizations.of(context).translate('promo')}" : (widget.restaurantModel?.delivery_pricing=="~" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F")}",
-                                      style: TextStyle(color: widget.restaurantModel.is_promotion == 1 ? Colors.white : Colors.black, fontSize: 12)
+                                      (widget.restaurantModel?.delivery_pricing=="~" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F"),
+                                      style: TextStyle(color: Colors.black, fontSize: 12)
                                   ),
                                 ],
                               )),
                           SizedBox(width: 10),
                           widget.restaurantModel?.distance == null ? Container() :
-                          Text("+-${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
+                          Text("~${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
                         ])
                       ],
                     ))

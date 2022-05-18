@@ -19,7 +19,9 @@ class RegisterPage extends StatefulWidget {
 
   final RegisterPresenter presenter;
 
-  RegisterPage({Key key, this.presenter, this.title}) : super(key: key);
+  final String login;
+
+  RegisterPage({Key key, this.presenter, this.title, this.login}) : super(key: key);
 
   final String title;
 
@@ -28,7 +30,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> implements RegisterView {
-
 
   int _registerModeRadioValue = 0;
 
@@ -91,6 +92,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
     _nicknameFieldHint = "${AppLocalizations.of(context).translate('nickname')}";
     _whatsappPhoneNumberHint = "${AppLocalizations.of(context).translate('whatsapp_number_hint')}";
+
+    if (widget.login != null && _loginFieldController != null) {
+      if (Utils.isEmailValid(widget.login)) {
+          _handleRadioValueChange(1);
+      } else {
+        _handleRadioValueChange(0);
+      }
+      _loginFieldController?.text = widget.login;
+    }
   }
 
   @override

@@ -2253,7 +2253,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           child: Row(mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                  child: Text("${_orderBillConfiguration?.kaba_point?.balance}", style: TextStyle(fontSize: 16, color: KColors.primaryColor))
+                                  child: Text("${_orderBillConfiguration?.kaba_point?.can_use_amount}", style: TextStyle(fontSize: 16, color: KColors.primaryColor))
                               ),
                               SizedBox(width:20),
                             ],

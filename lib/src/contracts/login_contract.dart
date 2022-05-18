@@ -15,7 +15,7 @@ class LoginView {
   void loginSuccess (var obj) {}
   void loginPasswordError () {}
   void networkError () {}
-  void accountNoExist() {}
+  void accountNoExist(String login) {}
   void loginTimeOut() {}
   void systemError() {}
 }
@@ -47,10 +47,10 @@ class LoginPresenter implements LoginContract {
       String jsonContent;
 
       try {
-        dynamic obj  = await provider.loginAction(app_version: app_version,
+        var obj  = await provider.loginAction(app_version: app_version,
             login: login, password: password, shouldSendOtpCode: shouldSendOtpCode);
         // xrint(jsonContent);
-        // var obj = json.decode(jsonContent);
+        // var obj = json.decode(data);
         int error = int.parse("${obj["error"]}");
         if (error == 0/* && token != null && token.length > 0*/) {
           /* login successful */
@@ -59,16 +59,16 @@ class LoginPresenter implements LoginContract {
           /* login failure */
           _loginView.loginPasswordError();
         } else if (error == -1) {
-          _loginView.accountNoExist();
+          _loginView.accountNoExist(login);
         }
       } catch(_) {
         xrint(_);
         if ("${_.toString()}".contains("timed out")) {
           _loginView.loginTimeOut();
         } else if ("${_.toString()}".contains("-2")) {
-          _loginView.systemError();
-        } else
           _loginView.networkError();
+        } else
+          _loginView.systemError();
       }
     } catch(_) {
       /* login failure */

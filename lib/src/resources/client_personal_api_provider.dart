@@ -339,9 +339,28 @@ class ClientPersonalApiProvider {
         data: json.encode({"username": login, "password":password, 'device':device }),
       );
 
+      // if var 2 -> return something different
+
       xrint(response.data);
-      // return json.encode(response.data);
-      return response.data;
+      var responseData = response.data;
+      try {
+        var data = json.decode(responseData);
+        int error = int.parse("${data["error"]}");
+        // xrint(error);
+        // everything is fine
+        return data;
+      } catch(_){
+        // if error, data is string
+        return {
+          "error": responseData["error"],
+          "code": responseData["code"],
+          "message": responseData["message"],
+          "data": responseData["data"],
+          "login_code": responseData["login_code"],
+          "request_id": responseData["request_id"],
+          "code_is_sent": responseData["code_is_sent"],
+        };
+      }
     } else {
       throw Exception(-2); // there is an error in your request
     }
