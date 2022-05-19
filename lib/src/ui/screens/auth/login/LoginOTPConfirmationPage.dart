@@ -74,7 +74,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   void initState() {
     super.initState();
 
-    // trigger counter
+    // trigger counter ,
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
         xrint("time has ellapsed;");
