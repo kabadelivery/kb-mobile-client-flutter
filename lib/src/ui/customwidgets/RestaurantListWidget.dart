@@ -182,13 +182,14 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                   )
               ),
               SizedBox(height: 10),
-              Text("${AppLocalizations.of(context).translate('coming_soon_dialog')}", textAlign: TextAlign.center,
+              Text("${AppLocalizations.of(context).translate('coming_soon_dialog')}",
+                  textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black, fontSize: 13))
             ]
         ),
         actions: <Widget>[
           //
-          OutlineButton(
+          OutlinedButton(
             child: new Text(
                 "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
             onPressed: () {

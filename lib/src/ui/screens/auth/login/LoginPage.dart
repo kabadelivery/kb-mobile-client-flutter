@@ -419,15 +419,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -436,7 +436,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -486,7 +486,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 ]
             ),
             actions: <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('yes')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () async {
@@ -498,7 +498,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   });
                 },
               ),
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('see')}", style: TextStyle(color: KColors.mBlue)),
                 onPressed: () {

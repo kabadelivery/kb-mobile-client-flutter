@@ -143,13 +143,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlineButton(
-                              borderSide: BorderSide(
-                                color: KColors.primaryColor, //Color of the border
-                                style: BorderStyle.solid, //Style of the border
-                                width: 0.8, //width of the border
-                              ),
-                              padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:Colors.white,child: Row(
+                          OutlinedButton(
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
+                              child: Row(
                             children: <Widget>[
                               Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context).translate('seconds')}" : "${AppLocalizations.of(context).translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
@@ -477,15 +473,15 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -494,7 +490,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               ),
             ] : <Widget>[
               //
-              OutlineButton(
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

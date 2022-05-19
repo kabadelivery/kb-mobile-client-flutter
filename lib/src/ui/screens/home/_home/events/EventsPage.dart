@@ -130,8 +130,8 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                           SizedBox(height:5),
                           Row(mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              OutlineButton(
-                                borderSide: BorderSide(color: Colors.black, width: 1),
+                              OutlinedButton(
+                                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.black, width: 1))),
                                 child: Row(
                                   children: <Widget>[
                                     /* circular progress */

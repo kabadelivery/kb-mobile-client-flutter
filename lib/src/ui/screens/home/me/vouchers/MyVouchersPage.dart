@@ -6,7 +6,7 @@ import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
+// import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -114,13 +114,9 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     });
   }
 
+  /*
   Future _jumpToAddNewVoucher_Scan() async {
 
-    /*  String promoCode = await FlutterBarcodeScanner.scanBarcode(
-        "#849384",
-        "取消",
-        false,
-        ScanMode.QR);*/
 
     if (!(await Permission.camera.request().isGranted)) {
       return;
@@ -154,6 +150,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 //      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
 //    }
   }
+*/
 
   bool _checkPromoCode(String promoCode) {
     if (promoCode?.length < 3 || promoCode?.length>15 || promoCode.contains(":") || promoCode.contains(".")) {
@@ -297,15 +294,15 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -314,7 +311,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

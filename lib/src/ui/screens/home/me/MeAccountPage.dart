@@ -25,7 +25,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
+// import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -78,11 +78,11 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"];
+    popupMenus = ["Add Voucher", /*"Scan QR",*/"Settings","Logout"];
     CustomerUtils.getCustomer().then((customer) async {
       widget.customer = customer;
       popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
-        "${AppLocalizations.of(context).translate('scan')}",
+        // "${AppLocalizations.of(context).translate('scan')}",
         "${AppLocalizations.of(context).translate('settings')}",
         "${AppLocalizations.of(context).translate('logout')}",];
     });
@@ -93,7 +93,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     super.didChangeDependencies();
     setState(() {
       popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
-        "${AppLocalizations.of(context).translate('scan')}",
+        // "${AppLocalizations.of(context).translate('scan')}",
         "${AppLocalizations.of(context).translate('settings')}",
         "${AppLocalizations.of(context).translate('logout')}",];
     });
@@ -132,12 +132,12 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         break;
       case 1:
       // scan
-        _jumpToScanPage();
-        break;
-      case 2:
+      //   _jumpToScanPage();
+      //   break;
+      // case :
         _jumpToPage(context, SettingsPage());
         break;
-      case 3:
+      case 2:
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
           StateContainer.of(context).updateLoggingState(state: 0);
@@ -600,7 +600,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       }
     }
   }
-
+/*
   Future<void> _jumpToScanPage() async {
 
     /* before we get here, we should ask some permission, the camera permission */
@@ -641,7 +641,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
     }
   }
-
+*/
   String _handleLinksImmediately(String data) {
     /* streams */
 
@@ -768,15 +768,15 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -785,7 +785,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -832,15 +832,15 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 ]
             ),
             actions: <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

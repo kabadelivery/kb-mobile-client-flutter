@@ -203,7 +203,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage> imp
                 ]
             ),actions: <Widget>[
           //
-          OutlineButton(
+          OutlinedButton(
             child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
             onPressed: () {
               Navigator.of(context).pop();

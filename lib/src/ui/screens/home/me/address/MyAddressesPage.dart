@@ -347,15 +347,15 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
             actions:
             isYesOrNo ? <Widget>[
               // usually buttons at the bottom of the dialog
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color:Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: (){
                   Navigator.of(context).pop();
@@ -364,7 +364,7 @@ class _MyAddressesPageState extends State<MyAddressesPage> implements AddressVie
               ),
             ] : <Widget>[
               //
-              OutlineButton(
+              OutlinedButton(
                 child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color:KColors.primaryColor)),
                 onPressed: () {
                   if (okBackToHome){

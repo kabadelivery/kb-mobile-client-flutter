@@ -1241,8 +1241,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('refuse')}",
                     style: TextStyle(color: Colors.grey)),
@@ -1250,9 +1250,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide:
-                BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}",
                     style: TextStyle(color: KColors.primaryColor)),
@@ -1264,7 +1263,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             ]
                 : <Widget>[
               //
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}",
                     style: TextStyle(color: KColors.primaryColor)),
@@ -1710,7 +1709,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ListTile(
                     contentPadding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
                     leading: Stack(
-                      overflow: Overflow.visible,
+                      // overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
 //                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
                       /* according to the position of the view, menu - food, we have a key that we store. */
@@ -1983,8 +1982,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   style: TextStyle(color: Colors.black, fontSize: 13))
             ]),
             actions: <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('refuse')}",
                     style: TextStyle(color: Colors.grey)),
@@ -1992,8 +1991,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}",
                     style: TextStyle(color: KColors.primaryColor)),

@@ -110,7 +110,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) async {
-          // timeout stuff
+      // timeout stuff
       // last_update_timeout = getTimeOutLastTime();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -159,7 +159,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                   ?.of(context)
                   ?.location);
             }
-            }
+          }
         }
       }
     });
@@ -260,7 +260,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                 },
                   child: TextField(controller: _filterEditController, onSubmitted: (val) {
                     if (searchTypePosition == 2) {
-                      if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 3)
+                      if (_filterEditController.text?.trim()?.length != null && _filterEditController.text?.trim()?.length >= 1)
                         widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
                             _filterEditController.text);
                       else
@@ -442,15 +442,15 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -459,7 +459,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -1101,17 +1101,17 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   void networkError([bool silently]) {
     // if (!silently && widget.restaurantList?.length != null && widget.restaurantList.length>0)
     if (!silently || widget?.restaurantList?.length == 0)
-    setState(() {
-      hasNetworkError = true;
-    });
+      setState(() {
+        hasNetworkError = true;
+      });
   }
 
   @override
   void systemError([bool silently]) {
     if (!silently || widget?.restaurantList?.length == 0)
       setState(() {
-      hasSystemError = true;
-    });
+        hasSystemError = true;
+      });
   }
 
   _buildSysErrorPage() {
@@ -1129,7 +1129,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
   showCountDownButton() {
     return Container();
     // return nothing
-  /*  return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
+    /*  return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
       InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
         child: Container(
           width: 65,
@@ -1181,14 +1181,14 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       // convert different in minute seconds
       int min = (diff+ POTENTIAL_EXECUTION_TIME)~/60;
 
-        if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
-            (widget.hasGps == false && (StateContainer
-                .of(context)
-                .location != null)))
-          widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer
+      if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
+          (widget.hasGps == false && (StateContainer
               .of(context)
-              .location, true);
+              .location != null)))
+        widget.restaurantListPresenter.fetchRestaurantList(
+            widget.customer, StateContainer
+            .of(context)
+            .location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);

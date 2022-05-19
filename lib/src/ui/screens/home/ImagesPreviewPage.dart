@@ -143,7 +143,10 @@ class _AdsPreviewPageState extends State<AdsPreviewPage> implements AdsViewerVie
             ),
             _getVoirMenuTextFromAd(widget.data[widget.position]) != "" ?
             Positioned(top: 0,right: 10,
-                child: OutlineButton(onPressed: () => _onAdsButtonPressed(widget.data[widget.position]), color: Colors.transparent, borderSide: BorderSide(color: Colors.white, width: 1),
+                child:  OutlinedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent),side: MaterialStateProperty.all(BorderSide(color: Colors.white, width: 1))),
+                    onPressed: () => _onAdsButtonPressed(widget.data[widget.position]),
+                   
                     child: Row(
                       children: <Widget>[
                         /* circular progress */

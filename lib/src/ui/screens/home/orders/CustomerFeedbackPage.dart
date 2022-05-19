@@ -274,7 +274,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                 ]
             ),
             actions: <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "OK", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

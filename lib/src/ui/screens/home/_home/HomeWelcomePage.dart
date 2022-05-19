@@ -31,7 +31,7 @@ import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
+//import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
@@ -93,9 +93,7 @@ class HomeWelcomePage extends StatefulWidget {
 
 class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelcomeView {
 
-
   List<String> popupMenus;
-
 
   List<String> _popupMenus () {
 
@@ -123,7 +121,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     /* if logged in .. we have settings and loggout */
 
-    popupMenus = ["Add Voucher", "Scan QR","Settings","Logout"]; // standard
+    popupMenus = ["Add Voucher", /*"Scan QR",*/"Settings","Logout"]; // standard
 
 
     this.widget.presenter.homeWelcomeView = this;
@@ -150,7 +148,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}","${AppLocalizations.of(context).translate('scan')}","${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}"/*,"${AppLocalizations.of(context).translate('scan')}"*/,"${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
     });
 
     WidgetsBinding.instance
@@ -346,14 +344,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       // scan
         _jumpToAddVoucherPage();
         break;
-      case 1:
+     /* case 1:
       // scan
-        _jumpToScanPage();
+        _jumpToScanPage();*/
         break;
-      case 2:
+      case 1:
         _jumpToPage(context, SettingsPage());
         break;
-      case 3:
+      case 2:
       /* logout */
         CustomerUtils.clearCustomerInformations().whenComplete((){
 
@@ -947,7 +945,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       }
     }
   }
-
+/*
   Future<void> _jumpToScanPage() async {
 
     /* before we get here, we should ask some permission, the camera permission */
@@ -991,7 +989,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
     }
   }
-
+*/
   String _handleLinksImmediately(String data) {
     /* streams */
 
@@ -1119,15 +1117,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -1136,7 +1134,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -1318,8 +1316,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                         style: TextStyle(color: Colors.black, fontSize: 13)),
                     SizedBox(height:5),
                     Row(mainAxisAlignment: MainAxisAlignment.center,children:[
-                      OutlineButton(
-                        borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                      OutlinedButton(
+                        style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                         child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)), // update
                         onPressed: () {
                           saveMessageAsRead(data);
@@ -1354,7 +1352,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               ),
               actions:
               force == 1 ? <Widget>[
-                OutlineButton(
+                OutlinedButton(
                   child: new Text(
                       "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
                   onPressed: () {
@@ -1363,15 +1361,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 ),
               ] :
               <Widget>[
-                OutlineButton(
-                  borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                OutlinedButton(
+                  style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                   child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)), // update
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
-                OutlineButton(
-                  borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+                OutlinedButton(
+                  style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                   child: new Text(
                       "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
                   onPressed: () {

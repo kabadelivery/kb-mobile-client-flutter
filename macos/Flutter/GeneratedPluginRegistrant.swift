@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import audioplayer
 import firebase_analytics
 import firebase_core
 import firebase_messaging
@@ -18,6 +19,7 @@ import sqflite
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  AudioplayerPlugin.register(with: registry.registrar(forPlugin: "AudioplayerPlugin"))
   FLTFirebaseAnalyticsPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseAnalyticsPlugin"))
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
   FLTFirebaseMessagingPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseMessagingPlugin"))

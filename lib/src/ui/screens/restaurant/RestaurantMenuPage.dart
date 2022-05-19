@@ -322,7 +322,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                   contentPadding: EdgeInsets.only(
                       top: 10, bottom: 10, left: 10),
                   leading: Stack(
-                    overflow: Overflow.visible,
+                    // overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
 //                        (k) => curr[k] == "${menuIndex}-${foodIndex}", orElse: () => null);
                     key: _keyBox["${menuIndex}-${foodIndex}"],
@@ -838,15 +838,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             ),
             actions:
             isYesOrNo ? <Widget>[
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: Colors.grey),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              OutlineButton(
-                borderSide: BorderSide(width: 1.0, color: KColors.primaryColor),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -855,7 +855,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                 },
               ),
             ] : <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

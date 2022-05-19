@@ -138,7 +138,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage> implements 
                 ]
             ),
             actions: <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: new Text(
                     "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {

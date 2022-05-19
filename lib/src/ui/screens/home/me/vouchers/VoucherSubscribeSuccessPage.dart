@@ -78,7 +78,8 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
                         child:Column(
                           children: <Widget>[
                             SizedBox(
-                              child: OutlineButton(borderSide: BorderSide(color: KColors.primaryColor),
+                              child:      OutlinedButton(
+                                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                                 child: new Text("${AppLocalizations.of(context).translate('ok')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
                                 onPressed: () {
                                   Navigator.of(context).pop();

@@ -106,7 +106,8 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                         child:Column(
                           children: <Widget>[
                             SizedBox(
-                              child: OutlineButton(borderSide: BorderSide(color: KColors.primaryYellowColor),
+                              child: OutlinedButton(
+                                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryYellowColor, width: 1))),
                                 child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryYellowColor)),
                                 onPressed: () {
                                   Navigator.of(context).pop();

@@ -20,7 +20,7 @@ import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.dart';
+// import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
@@ -152,7 +152,6 @@ class _MyAppState extends State<MyApp> {
     super.didChangeDependencies();
   }
 
-
   @override
   void dispose() {
     // logTextController.dispose();
@@ -160,13 +159,11 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-
   void clearLog() {
     setState(() {
       // logTextController.text = "";
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

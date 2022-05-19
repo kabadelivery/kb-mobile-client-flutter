@@ -84,15 +84,15 @@ class _Home2PageState extends State<Home2Page> {
           ),*/
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
-            title: Text('Restaurant'),
+            // title: Text('Restaurant'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
-            title: Text('Orders'),
+            // title: Text('Orders'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            title: Text('Account'),
+            // title: Text('Account'),
           ),
         ],
         currentIndex: _selectedIndex,
