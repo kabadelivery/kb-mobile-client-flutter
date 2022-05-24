@@ -57,8 +57,6 @@ dependencies:
   device_info: ^2.0.0
   audioplayer: 0.8.1
   audioplayer_web: 0.7.1
-  firebase_core: ^1.17.0 #^1.12.0
-  firebase_messaging: ^11.4.0 #^11.2.6
   flutter_local_notifications: ^9.1.0
   url_launcher: ^6.0.6
   flare_flutter: ^3.0.0
@@ -92,6 +90,8 @@ dependencies:
   dio: ^4.0.4
   overlay_support: ^1.2.1
   flutter_switch: ^0.3.2
+  firebase_messaging: ^11.4.0
+  firebase_core: ^1.17.0
 #  sentry_flutter: ^6.5.0
 #  huawei_push: ^5.3.0+304
 

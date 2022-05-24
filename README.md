@@ -3,9 +3,20 @@
 Kaba under Flutter framework
 
 
+#3.3.3: 20/05/2022
+- kaba point feature launched
+- make the restaurant distance listing on client side
+- update to flutter 3.0.0
+- optimized restaurant list page
+- added pull-refresh to restaurantlistpage
+- removed qr scan for vouchers because of package bug
+- solve issue with login errors 
+- restaurant reviews access requirement removed for non logged users
+
+
 #3.2.6: 24/01/2022
 
-- solving the nearby places removed issue 
+- solving the nearby places removed issue # google api cost reduced. we lost way too much money here
 - solving other issues related to gps location picking and modification
 - solving issues to save otp messages money
 - worked on making lighter the amount of data that is sent to the restuarant list per call
