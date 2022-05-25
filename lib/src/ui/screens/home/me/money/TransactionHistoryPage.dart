@@ -42,7 +42,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
   List<MoneyTransactionModel> moneyData;
   PointObjModel pointData = null;
 
-
   String balance, kaba_points;
 
   TabController _tabController;
@@ -609,7 +608,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
     try {
       int diff = pointData?.monthly_limit_amount - pointData?.amount_already_used;
       if (diff >= pointData?.balance) {
-        return balance;
+        return pointData?.balance;
       } else {
         return diff;
       }
