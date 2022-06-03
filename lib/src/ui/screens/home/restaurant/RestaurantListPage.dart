@@ -17,6 +17,7 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
 
   int MAX_MINUTES_FOR_AUTO_RELOAD = 5;
 
-
+  bool justInflatedFoodProposal = false;
 
   @override
   void initState() {
@@ -163,6 +164,18 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
         }
       }
     });
+
+
+    // firebase -- for restaurants
+    // closed for a specific reason !
+    // FirebaseDatabase database;
+    // database = FirebaseDatabase.instance;
+    // DatabaseReference ref = FirebaseDatabase.instance.ref("app-version");
+    // ref.onValue.listen((event) {
+    //   mDialog("${event.snapshot.value}");
+    // });
+
+    // for the version of kaba, we can put it once the app opens !
   }
 
   @override
@@ -796,11 +809,18 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
       }).toList()));*/
     var filteredResult =  _filteredFoodProposal(_filterDropdownValue, foodProposals);
 
-    firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
-
-    Future.delayed(Duration(milliseconds: 300), () {
-      Scrollable.ensureVisible(firstItemKey.currentContext);
-    });
+    if (justInflatedFoodProposal) {
+      firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
+      //
+      Future.delayed(Duration(milliseconds: 300), () {
+        // Scrollable.ensureVisible(firstItemKey.currentContext);
+          _searchListScrollController.animateTo(
+              _searchListScrollController.position.minScrollExtent,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.fastOutSlowIn);
+      });
+      justInflatedFoodProposal = false;
+    }
 
     return Container(color: Colors.white,
       height: MediaQuery.of(context).size.height,
@@ -984,6 +1004,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> with AutomaticK
     setState(() {
 
       this.foodProposals = inflateFoodProposalWorker(foods);
+      this.justInflatedFoodProposal = true;
     });
   }
 

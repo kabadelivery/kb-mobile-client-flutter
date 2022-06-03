@@ -181,7 +181,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
       StateContainer.of(context).lastTimeLinkMatchAction = DateTime.now().millisecondsSinceEpoch;
 
-
       if (widget?.destination != null) {
         switch(widget.destination) {
           case SplashPage.TRANSACTIONS:
@@ -261,6 +260,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         widget.destination = null;
       }
     });
+
   }
 
   @override
@@ -365,10 +365,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         });
         break;
     }
-  }
-
-  void _onItemTapped(int value) {
-    /* zwitch */
   }
 
   _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
@@ -1518,7 +1514,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     if (data?.uuid != null)
       prefs.setBool(data?.uuid, true);
   }
-
 }
 
 
