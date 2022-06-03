@@ -37,6 +37,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -75,21 +76,12 @@ Future<void> main() async {
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingOpenedAppHandler);
-
-  /* Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyCQP7mkpTjBTQEU5rflQrDESuOnKyIwVUY',
-      authDomain: 'kaba-tmye-2018.firebaseio.com',
-      databaseURL: 'https://kaba-tmye-2018.firebaseio.com',
-      projectId: 'kaba-tmye-2018',
-      storageBucket: 'kaba-tmye-2018.appspot.com',
-      messagingSenderId: '7649846363',
-      appId: '1:7649846363:android:102dc75b46bb9974',
-      measurementId: 'G-0N1G9FLDZE',
-    ),
-  );*/
+  // wanna listen to realtime database and make changes, preparing it for version 3.3.4
+  // DatabaseReference alertRef = FirebaseDatabase.instance.ref('mobile_app_alert');
+  // alertRef.onValue.listen((DatabaseEvent event) {
+  //   final data = event.snapshot.value;
+  //   xrint("${data}");
+  // });
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
