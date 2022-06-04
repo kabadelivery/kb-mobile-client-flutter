@@ -19,11 +19,7 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 //if (flutterVersionName == null) {
-<<<<<<< HEAD
     flutterVersionName = '3.3.5'
-=======
-    flutterVersionName = '3.3.4'
->>>>>>> 2463f2e87f421a49ccae70481370ec7f0753f40e
 //}
 
 apply plugin: 'com.android.application'
