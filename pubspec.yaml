@@ -57,7 +57,7 @@ dependencies:
   device_info: ^2.0.0
   audioplayer: 0.8.1
   audioplayer_web: 0.7.1
-  flutter_local_notifications: ^9.1.0
+  flutter_local_notifications: ^9.5.3+1
   url_launcher: ^6.0.6
   flare_flutter: ^3.0.0
   tinycolor: ^1.0.2
@@ -92,11 +92,7 @@ dependencies:
   flutter_switch: ^0.3.2
   firebase_messaging: ^11.4.0
   firebase_core: ^1.17.0
-<<<<<<< HEAD
-  firebase_database: ^9.0.15
-=======
-  firebase_database: ^9.0.14
->>>>>>> 2463f2e87f421a49ccae70481370ec7f0753f40e
+#  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0
 #  huawei_push: ^5.3.0+304
 
