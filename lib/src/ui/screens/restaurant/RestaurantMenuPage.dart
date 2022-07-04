@@ -141,15 +141,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(child: Row(children: <Widget>[
-        Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-        SizedBox(width: 10),
-        Expanded(
-          child: Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-              padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-              child: Text(widget?.restaurant == null ? "" : widget?.restaurant?.name, overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, color: Colors.white))),
-        )
+        // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+        // SizedBox(width: 10),
+        Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+            padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+            child: Text(widget?.restaurant == null ? "" : widget?.restaurant?.name, overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: Colors.white)))
       ])),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {

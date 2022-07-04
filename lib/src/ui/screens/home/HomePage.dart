@@ -23,6 +23,7 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/BuyPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -56,7 +57,6 @@ import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
 
 class HomePage extends StatefulWidget {
-
   static var routeName = "/HomePage";
 
   var argument;
@@ -65,7 +65,7 @@ class HomePage extends StatefulWidget {
 
   CustomerModel customer;
 
-  HomePage({Key key, this.destination, this.argument}) : super(key: key) ;
+  HomePage({Key key, this.destination, this.argument}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -75,15 +75,14 @@ class HomePage extends StatefulWidget {
   }
 }
 
-
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-
 class _HomePageState extends State<HomePage> {
-
   HomeWelcomePage homeWelcomePage;
-  RestaurantListPage restaurantListPage;
+
+  // RestaurantListPage restaurantListPage;
+  BuyPage buyPage;
   DailyOrdersPage dailyOrdersPage;
   MeAccountPage meAccountPage;
 
@@ -92,12 +91,12 @@ class _HomePageState extends State<HomePage> {
   final PageStorageBucket bucket = PageStorageBucket();
 
   final PageStorageKey homeKey = PageStorageKey("homeKey"),
-      restaurantKey = PageStorageKey("restaurantKey"),
+      // restaurantKey = PageStorageKey("restaurantKey"),
+      buyKey = PageStorageKey("buyKey"),
       orderKey = PageStorageKey("orderKey"),
       meKey = PageStorageKey("meKey");
 
   SharedPreferences prefs;
-
 
   Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
@@ -106,7 +105,8 @@ class _HomePageState extends State<HomePage> {
     int res = 0; // not logged in
     try {
       if (expDate != null) {
-        if (DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
+        if (DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
           prefs.remove("_customer");
           prefs.remove("_token");
@@ -116,31 +116,35 @@ class _HomePageState extends State<HomePage> {
         }
       }
     } catch (_) {
-      xrint ("error checklogin() ");
+      xrint("error checklogin() ");
       res = 0; // not logged in
     }
     return res;
   }
 
   // 0 not logged in
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
-
-    homeWelcomePage = HomeWelcomePage(key: homeKey,
+    homeWelcomePage = HomeWelcomePage(
+        key: homeKey,
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,
         argument: widget.argument);
-    restaurantListPage = RestaurantListPage(context: context,
-        key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
+    // restaurantListPage = RestaurantListPage(context: context,
+    //     key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
-    pages =
-    [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
+    pages = [
+      homeWelcomePage,
+      buyPage,
+      // restaurantListPage,
+      dailyOrdersPage,
+      meAccountPage
+    ];
     super.initState();
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -151,33 +155,36 @@ class _HomePageState extends State<HomePage> {
       SharedPreferences.getInstance().then((value) async {
         prefs = value;
 
-        String _has_seen_email_account_notification = prefs.getString("_has_seen_email_account_notification");
+        String _has_seen_email_account_notification =
+            prefs.getString("_has_seen_email_account_notification");
 
-        if (_has_seen_email_account_notification != "1" && Utils.isEmailValid(customer?.email))
+        if (_has_seen_email_account_notification != "1" &&
+            Utils.isEmailValid(customer?.email))
           showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("${AppLocalizations.of(context).translate(
-                    'welcome')}"),
+                title: Text(
+                    "${AppLocalizations.of(context).translate('welcome')}"),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
                       /* add an image*/
                       // location_permission
                       Container(
-                          height: 100, width: 100,
+                          height: 100,
+                          width: 100,
                           child: Image.asset(
                             ImageAssets.diaspora,
                             height: 100.0,
                             width: 100.0,
                             alignment: Alignment.center,
-                          )
-                      ),
+                          )),
                       SizedBox(height: 10),
-                      Text("${AppLocalizations.of(context).translate(
-                          "congrats_for_email_account")} 😊",style: TextStyle(fontSize: 14),
+                      Text(
+                          "${AppLocalizations.of(context).translate("congrats_for_email_account")} 😊",
+                          style: TextStyle(fontSize: 14),
                           textAlign: TextAlign.center)
                       /*      RichText(
                   text: TextSpan(
@@ -194,16 +201,16 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 )*/
-
                     ],
                   ),
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context).translate('ok')}"),
+                    child:
+                        Text("${AppLocalizations.of(context).translate('ok')}"),
                     onPressed: () {
-                      prefs.setString("_has_seen_email_account_notification", "1");
+                      prefs.setString(
+                          "_has_seen_email_account_notification", "1");
                       Navigator.of(context).pop();
                     },
                   ),
@@ -218,8 +225,8 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging = FirebaseMessaging.instance;
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid = new AndroidInitializationSettings(
-        'kaba_notification_default');
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('kaba_notification_default');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         requestBadgePermission: true,
@@ -230,30 +237,29 @@ class _HomePageState extends State<HomePage> {
     var initializationSettingsMacOs = MacOSInitializationSettings();
 
     var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
 
       if (message.notification != null) {
-        xrint('pnotif Message also contained a notification: ${message
-            .notification.toString()}');
+        xrint(
+            'pnotif Message also contained a notification: ${message.notification.toString()}');
 
-        NotificationItem notificationItem = _notificationFromMessage(message.data);
+        NotificationItem notificationItem =
+            _notificationFromMessage(message.data);
         iLaunchNotifications(notificationItem);
       }
-
     });
 
-    _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
+    _firebaseMessaging
+        .subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
       SharedPreferences prefs_ = await SharedPreferences.getInstance();
       prefs_.setBool('has_subscribed', true);
@@ -263,9 +269,7 @@ class _HomePageState extends State<HomePage> {
       // here we handle the signal
       initUniLinksStream();
     });
-
   }
-
 
   void mDialog(String message) {
     _showDialog(
@@ -276,86 +280,97 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]
-        );
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          svgIcons,
+                        )
+                      : icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 13))
+            ]),
+            actions: isYesOrNo
+                ? <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
+                : <Widget>[
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
-
-
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
 
     xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
     if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message
-          .data}');
-      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      xrint('p_notify Message also contained a notification: ${message.data}');
+      NotificationItem notificationItem =
+          _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
     }
   }
 
-
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     await Firebase.initializeApp();
 
     xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
     if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message
-          .data}');
-      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      xrint('p_notify Message also contained a notification: ${message.data}');
+      NotificationItem notificationItem =
+          _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
     }
   }
 
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) {
     xrint("onDidReceiveLocalNotification ${payload}");
     _handlePayLoad(payload);
   }
@@ -365,20 +380,19 @@ class _HomePageState extends State<HomePage> {
     _handlePayLoad(payload);
   }
 
-
   void _handlePayLoad(String payload) {
     NotificationFDestination notificationFDestination;
 
     try {
-      notificationFDestination = NotificationFDestination
-          .fromJson(json.decode(payload));
+      notificationFDestination =
+          NotificationFDestination.fromJson(json.decode(payload));
       xrint(notificationFDestination.toString());
     } catch (_) {
       xrint(_);
     }
 
     switch (notificationFDestination.type) {
-    /* go to the activity we are supposed to go to with only the id */
+      /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
         _jumpToFoodDetailsWithId(notificationFDestination.product_id);
         break;
@@ -410,27 +424,29 @@ class _HomePageState extends State<HomePage> {
         _jumpToServiceClient();
         break;
       case NotificationFDestination.IMPORTANT_INFORMATION:
-      /* important information */
+        /* important information */
         break;
     }
   }
 
-
   void _jumpToFoodDetailsWithId(int product_id) {
-
-    _jumpToPage(context, RestaurantMenuPage(foodId: product_id, presenter: MenuPresenter()));
+    _jumpToPage(context,
+        RestaurantMenuPage(foodId: product_id, presenter: MenuPresenter()));
     // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
   }
 
-
   void _jumpToOrderDetailsWithId(int product_id) {
-    _jumpToPage(context, OrderDetailsPage(orderId: product_id, presenter: OrderDetailsPresenter()));
+    _jumpToPage(
+        context,
+        OrderDetailsPage(
+            orderId: product_id, presenter: OrderDetailsPresenter()));
     // navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
     xrint("_jumpINGToTransactionHistory");
-    _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+    _jumpToPage(
+        context, TransactionHistoryPage(presenter: TransactionPresenter()));
     // navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
   }
 
@@ -441,17 +457,21 @@ class _HomePageState extends State<HomePage> {
   void _jumpToRestaurantDetailsPage(int product_id) {
     /* send a negative id when we want to show the food inside the menu */
 //    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
-    _jumpToPage(context, RestaurantDetailsPage(restaurantId: product_id,presenter: RestaurantDetailsPresenter()));
+    _jumpToPage(
+        context,
+        RestaurantDetailsPage(
+            restaurantId: product_id, presenter: RestaurantDetailsPresenter()));
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-
-    _jumpToPage(context, RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()));
+    _jumpToPage(context,
+        RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()));
     // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
   void _jumpToServiceClient() {
-    _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+    _jumpToPage(
+        context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
     // navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
@@ -459,7 +479,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     if (loginStuffChecked == 0) {
       /* check the login status */
       checkLogin().then((value) {
@@ -478,21 +497,20 @@ class _HomePageState extends State<HomePage> {
           } else {
             FirebaseMessaging.onBackgroundMessage(
                 _firebaseMessagingBackgroundHandler);
-            FirebaseMessaging.onMessageOpenedApp.listen(
-                _firebaseMessagingOpenedAppHandler);
+            FirebaseMessaging.onMessageOpenedApp
+                .listen(_firebaseMessagingOpenedAppHandler);
           }
         });
-      } catch(_) {
-        xrint("===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
+      } catch (_) {
+        xrint(
+            "===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
       }
       // }
 
-      loginStuffChecked  = 1;
+      loginStuffChecked = 1;
     }
     return Scaffold(
-      body: pages[StateContainer
-          .of(context)
-          .tabPosition],
+      body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -500,9 +518,10 @@ class _HomePageState extends State<HomePage> {
             label: ("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: (
-                '${AppLocalizations.of(context).translate('restaurant')}'),
+            // icon: Icon(Icons.restaurant),
+            // label: ('${AppLocalizations.of(context).translate('restaurant')}'),
+            icon: Icon(FontAwesomeIcons.shoppingCart),
+            label: ('${AppLocalizations.of(context).translate('buy')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
@@ -513,9 +532,7 @@ class _HomePageState extends State<HomePage> {
             label: ('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
-        currentIndex: StateContainer
-            .of(context)
-            .tabPosition,
+        currentIndex: StateContainer.of(context).tabPosition,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -526,45 +543,44 @@ class _HomePageState extends State<HomePage> {
 
   /* keep gps location inside STATE CONTAINER and use it even for the map. */
   _onItemTapped(int value) {
-
     /* first check if user is connected / logged in
     * - if yes, switch
     * - otherwise, no switch, send him to login page...
     *
     * */
-    var msg = ["please_login_before_going_forward_description_orders", "please_login_before_going_forward_description_account"];
+    var msg = [
+      "please_login_before_going_forward_description_orders",
+      "please_login_before_going_forward_description_account"
+    ];
     if (value == 2 || value == 3) {
-      if (StateContainer
-          .of(context)
-          .loggingState == 0) {
+      if (StateContainer.of(context).loggingState == 0) {
         // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate(
-                  'please_login_before_going_forward_title')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
                     /* add an image*/
                     // location_permission
                     Container(
-                        height: 100, width: 100,
+                        height: 100,
+                        width: 100,
                         decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: new AssetImage(
-                                  ImageAssets.login_description),
-                            )
-                        )
-                    ),
+                              image:
+                                  new AssetImage(ImageAssets.login_description),
+                            ))),
                     SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context).translate(
-                        msg[value%2])}",
+                    Text(
+                        "${AppLocalizations.of(context).translate(msg[value % 2])}",
                         textAlign: TextAlign.center)
                   ],
                 ),
@@ -619,8 +635,7 @@ class _HomePageState extends State<HomePage> {
     // Attach a listener to the stream
     _sub = getLinksStream().listen((String link) {
       // Parse the link and warn the user, if it is not correct
-      if (link == null)
-        return;
+      if (link == null) return;
       xrint("initialLinkStream ${link}");
       // send the links to home page to handle them instead
       _handleLinksImmediately(link);
@@ -633,15 +648,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleLinksImmediately(String link) {
-    if (!(DateTime
-        .now()
-        .millisecondsSinceEpoch - StateContainer
-        .of(context)
-        .lastTimeLinkMatchAction > 2000)) {
+    if (!(DateTime.now().millisecondsSinceEpoch -
+            StateContainer.of(context).lastTimeLinkMatchAction >
+        2000)) {
       return;
-  }
+    }
 
-    StateContainer.of(context).lastTimeLinkMatchAction = DateTime.now().millisecondsSinceEpoch;
+    StateContainer.of(context).lastTimeLinkMatchAction =
+        DateTime.now().millisecondsSinceEpoch;
 
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
@@ -652,20 +666,19 @@ class _HomePageState extends State<HomePage> {
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
-
-    if (link.substring(0,3).compareTo("geo") == 0 && CustomerUtils.isGpsLocation("${mUri.path}")) {
+    if (link.substring(0, 3).compareTo("geo") == 0 &&
+        CustomerUtils.isGpsLocation("${mUri.path}")) {
       // we have a gps location
       xrint("path is gps location -> ${link}");
       /*6.33:3.44*/
       _checkIfLoggedInAndDoAction(() {
-        StateContainer
-            .of(context)
-            .tabPosition = 3;
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
-              gps_location: "${mUri.path}".replaceAll(",", ":")));
-
+        StateContainer.of(context).tabPosition = 3;
+        _jumpToPage(
+            context,
+            MyAddressesPage(
+                presenter: AddressPresenter(),
+                gps_location: "${mUri.path}".replaceAll(",", ":")));
       });
-
     } else {
       // we dont have  a gps location
       xrint("path is not gps location -> ${link}");
@@ -682,8 +695,14 @@ class _HomePageState extends State<HomePage> {
               widget.destination = SplashPage.VOUCHER;
               /* convert from hexadecimal to decimal */
               widget.argument = "${pathSegments[1]}";
-              _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
-            }});
+              _jumpToPage(
+                  context,
+                  AddVouchersPage(
+                      presenter: AddVoucherPresenter(),
+                      qrCode: "${widget.argument}".toUpperCase(),
+                      customer: widget.customer));
+            }
+          });
           break;
         case "vouchers":
           _checkIfLoggedInAndDoAction(() {
@@ -698,17 +717,18 @@ class _HomePageState extends State<HomePage> {
             xrint("addresses page");
             widget.destination = SplashPage.ADDRESSES;
             /* convert from hexadecimal to decimal */
-            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+            _jumpToPage(
+                context, MyAddressesPage(presenter: AddressPresenter()));
           });
           break;
         case "transactions":
           _checkIfLoggedInAndDoAction(() {
-            _jumpToPage(
-                context, TransactionHistoryPage(presenter: TransactionPresenter()));
+            _jumpToPage(context,
+                TransactionHistoryPage(presenter: TransactionPresenter()));
           });
           break;
         case "restaurants":
-        //    widget.destination = SplashPage.RESTAURANT_LIST;
+          //    widget.destination = SplashPage.RESTAURANT_LIST;
           setState(() {
             StateContainer.of(context).updateTabPosition(tabPosition: 1);
           });
@@ -719,9 +739,11 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.RESTAURANT;
             /* convert from hexadecimal to decimal */
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantDetailsPage(
-                restaurant: RestaurantModel(id: widget.argument),
-                presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantDetailsPage(
+                    restaurant: RestaurantModel(id: widget.argument),
+                    presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
@@ -731,8 +753,11 @@ class _HomePageState extends State<HomePage> {
               xrint("order id -> ${pathSegments[1]}");
               widget.destination = SplashPage.ORDER;
               widget.argument = int.parse("${pathSegments[1]}");
-              _jumpToPage(context, OrderDetailsPage(
-                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             }
           });
           break;
@@ -741,8 +766,10 @@ class _HomePageState extends State<HomePage> {
             xrint("food id -> ${pathSegments[1]}");
             widget.destination = SplashPage.FOOD;
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                foodId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    foodId: widget.argument, presenter: MenuPresenter()));
           }
           break;
         case "menu":
@@ -751,8 +778,10 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.MENU;
             widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                menuId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    menuId: widget.argument, presenter: MenuPresenter()));
           }
           break;
         case "review-order":
@@ -761,8 +790,11 @@ class _HomePageState extends State<HomePage> {
               xrint("review-order id -> ${pathSegments[1]}");
               widget.destination = SplashPage.REVIEW_ORDER;
               widget.argument = int.parse("${pathSegments[1]}");
-              _jumpToPage(context, OrderDetailsPage(
-                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             }
           });
           break;
@@ -773,8 +805,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleLinks(String link) {
     // if you are logged in, we can just move to the activity.
-    if (link == null)
-      return;
+    if (link == null) return;
 
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
@@ -840,7 +871,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _jumpToPage(BuildContext context, page) {
-
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -849,37 +879,34 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkIfLoggedInAndDoAction(Function callback) {
-    if (StateContainer
-        .of(context)
-        .loggingState == 0) {
+    if (StateContainer.of(context).loggingState == 0) {
       // not logged in... show dialog and also go there
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate(
-                'please_login_before_going_forward_title')}"),
+            title: Text(
+                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   /* add an image*/
                   // location_permission
                   Container(
-                      height: 100, width: 100,
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: new AssetImage(
-                                ImageAssets.login_description),
-                          )
-                      )
-                  ),
+                            image:
+                                new AssetImage(ImageAssets.login_description),
+                          ))),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate(
-                      "please_login_before_going_forward_random")}",
+                  Text(
+                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -893,8 +920,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -912,18 +939,14 @@ class _HomePageState extends State<HomePage> {
       callback();
     }
   }
-
-
 }
-
-
 
 /*
 
 Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
   xrint("onBackgroundMessage: $message");
 */
-/* send json version of notification object. *//*
+/* send json version of notification object. */ /*
 
   if (Platform.isAndroid) {
     NotificationItem notificationItem = _notificationFromMessage(message);
@@ -937,14 +960,13 @@ Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
 */
 
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
-
-  xrint(" inside notificationFromMessage -- "+message_entry.toString());
+  xrint(" inside notificationFromMessage -- " + message_entry.toString());
 
   if (Platform.isIOS) {
 // Android-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 840 -- "+_data.toString());
+      xrint(" inside notificationFromMessage 840 -- " + _data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -952,8 +974,8 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
           priority: "${_data["notification"]["destination"]["priority"]}",
           destination: NotificationFDestination(
               type: _data["notification"]["destination"]["type"],
-              product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-      );
+              product_id: int.parse(
+                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
@@ -962,7 +984,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 // IOS-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 857 -- "+_data.toString());
+      xrint(" inside notificationFromMessage 857 -- " + _data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -970,8 +992,8 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
           priority: "${_data["notification"]["destination"]["priority"]}",
           destination: NotificationFDestination(
               type: _data["notification"]["destination"]["type"],
-              product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-      );
+              product_id: int.parse(
+                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
@@ -980,11 +1002,9 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   return null;
 }
 
-Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
-
+Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID,
-      AppConfig.CHANNEL_NAME,
+      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
       channelDescription: AppConfig.CHANNEL_DESCRIPTION,
       importance: Importance.max,
       priority: Priority.max,
@@ -993,27 +1013,26 @@ Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
 
-  return flutterLocalNotificationsPlugin.show(
-      notificationItem.hashCode, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString()
-  );
-
+  return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
+      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
+      payload: notificationItem?.destination?.toSpecialString());
 }
 
-
 class AppbarhintFieldWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      child:TextField(decoration: InputDecoration(border: OutlineInputBorder(), hintText:"Play basketball with us today", hintMaxLines: 1, hintStyle: TextStyle(color:Colors.white))),
+      child: TextField(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Play basketball with us today",
+              hintMaxLines: 1,
+              hintStyle: TextStyle(color: Colors.white))),
       color: Colors.transparent,
     );
   }
-
-
-
 }
