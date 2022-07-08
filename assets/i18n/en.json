@@ -154,7 +154,6 @@
   "ad_check_website": "CHECK WEBSITE",
   "ad_check_menu": "CHECK MENU",
   "ad_check_restaurant": "CHECK RESTAURANT",
-  "buy": "BUY",
   "note_reviews": "Notes and Reviews",
   "review_us": "Please review us",
   "votes": "Reviews",
@@ -181,7 +180,7 @@
   "coming_soon_dialog": "Hello, This restaurant will be soon available on the platform.\n Please remain patient.",
   "coming_soon": "Coming soon",
   "out_of_range": "Out of Range",
-  "km":"Km",
+  "km": "Km",
   "confirm_order": "Confirm Order",
   "processing_payment": "Hello, we are processing your payment. Please wait V(^_^)V",
   "order_amount": "Order Price:",
@@ -275,8 +274,6 @@
   "reload": "Reload",
   "my_vouchers": "My Vouchers",
   "sorry_no_coupon": "Sorry, you have no available voucher. \nPress (+) to Subscribe",
-
-
   "choose_coupon": "Choose a coupon",
   "add_coupon": "Add a Voucher",
   "PROMO_CODE": "CODE",
@@ -291,12 +288,11 @@
   "copied_c": "Copied to Clipboard",
   "voucher_for_spec_foods": "This voucher can only be used if your order includes these meals",
   "voucher_for_spec_foods_all": "This voucher can be used with all FOODS of this restaurant",
-
   "voucher_no_exist": "Sorry, this voucher code is wrong. Please check your CODE and try again !",
   "voucher_invalid_params": "Sorry, invalid parameters.",
   "voucher_no_self_subscribe": "Sorry, You can't self subscribe for this voucher.",
   "voucher_expired": "Sorry, This voucher has expired.",
-  "voucher_not_yet_available" : "Sorry, This voucher is not yet available",
+  "voucher_not_yet_available": "Sorry, This voucher is not yet available",
   "voucher_disabled": "Sorry, This voucher is disabled.",
   "voucher_already_subscribed": "Sorry, You have already subscribed to this voucher.",
   "voucher_max_count_reached": "Sorry, The maximum count of people that can subscribe to this voucher has been reached.",
@@ -304,100 +300,76 @@
   "qr_code_wrong": "Sorry, this QrCode seems not to be a Voucher",
   "please_search_food": "Please enter the food you want",
   "sorry_cant_find_food": "Sorry, we can't find the food or menu you've entered.",
-
   "search_restaurant": "RESTAURANTS",
-  "search_food" : "MENU",
+  "search_food": "MENU",
   "share_food_1": "Look, i've discovered this amazing menu on Kaba App ",
   "share_food_2": " , Check it out !",
   "coupon_use_before": "Must use before",
-
   "share": "Share",
-
   "filter": "filter",
-  "cheap_to_exp" : "Cheapest",
-  "exp_to_cheap" : "Costly",
+  "cheap_to_exp": "Cheapest",
+  "exp_to_cheap": "Costly",
   "nearest": "Closest",
   "farest": "Farthest",
-
   "add_voucher": "Voucher Code",
   "search_too_short": "Your menu must be more explicit",
-
   "exit": "ENTER VOUCHER CODE",
-  "sorry_version_not_allowed" : "Sorry, Your phone is unable to Scan Vouchers. Please enter the code instead.",
-
+  "sorry_version_not_allowed": "Sorry, Your phone is unable to Scan Vouchers. Please enter the code instead.",
   "update": "UPDATE APP",
-  "new_version_available":"New version available ! Please update your app to version ",
-
+  "new_version_available": "New version available ! Please update your app to version ",
   "disponible": "AVAILABLE",
-  "utilisation" : "USE",
-
+  "utilisation": "USE",
   "phone_number_field_": "Phone number",
-  "foods_" : "Foods",
-  "amount_to_top_up" : "Top Up Amount",
-
+  "foods_": "Foods",
+  "amount_to_top_up": "Top Up Amount",
   "register_code_error": "Register Code Error",
   "sorry_restaurant_close": "Sorry,the restaurant is closed right now.",
   "open_time": "Open Time: ",
   "try_preordering": "Please try Pre-Ordering.",
-
   "your_kaba_points": "YOUR POINTS KABA",
-
-  "lost_your_password" : "Recover Password ?",
-
-  "location_explanation_pricing" : "Would you allow KABA to pick your current location for more accurate delivery fees?",
-
-  "location_explanation" : "Would you allow KABA to pick your current location for more accurate delivery fees?",
+  "lost_your_password": "Recover Password ?",
+  "location_explanation_pricing": "Would you allow KABA to pick your current location for more accurate delivery fees?",
+  "location_explanation": "Would you allow KABA to pick your current location for more accurate delivery fees?",
   "request": "Request",
   "info": "Information",
-
   "pnumber_registration_code_too_long": "A Confirmation Code has been sent to your phone. Confirmation codes may take time due to your network. Please remain patient.",
-  "email_registration_code_too_long" : "The confirmation Code has been e-mailed to your address. Please, also check your spams if you can't find it the message in your mailbox.",
-
+  "email_registration_code_too_long": "The confirmation Code has been e-mailed to your address. Please, also check your spams if you can't find it the message in your mailbox.",
   "amount_to_topup": "Topup Amount (FCFA)",
   "top_up_fees_are": "Topup Fees: ",
   "total_amount": "Total amount",
-  "topup_phone_number" : "Phone number",
-
+  "topup_phone_number": "Phone number",
   "bank_card_top_up_min": "Bank card Top up amount must be at least",
-
-  "please_login_before_going_forward_title" : "Login",
-  "please_login_before_going_forward_description_orders" : "You must logging in order to see your recent orders",
-  "please_login_before_going_forward_description_account" : "You must logging in order to see account details",
-  "please_login_before_going_forward_description_place_order" : "You must logging in order to place an order",
-  "please_login_before_going_forward_description_comment" : "You must logging in order to place a review",
-  "please_login_before_going_forward_random" : "You must logging in order to access this content",
-
+  "please_login_before_going_forward_title": "Login",
+  "please_login_before_going_forward_description_orders": "You must logging in order to see your recent orders",
+  "please_login_before_going_forward_description_account": "You must logging in order to see account details",
+  "please_login_before_going_forward_description_place_order": "You must logging in order to place an order",
+  "please_login_before_going_forward_description_comment": "You must logging in order to place a review",
+  "please_login_before_going_forward_random": "You must logging in order to access this content",
   "login": "Login",
   "not_now": "Not now",
-  "no_past_order" : "Sorry you have no recent orders.",
-
+  "no_past_order": "Sorry you have no recent orders.",
   "i_have_an_inquiry": "Hello KABA ! I have an inquiry. Can you please help me?",
-
-  "whatsapp_number_hint" : "Whatsapp No",
-  "whatsapp_number_hint_ex" : "Whatsapp Number",
+  "whatsapp_number_hint": "Whatsapp No",
+  "whatsapp_number_hint_ex": "Whatsapp Number",
   "please_enter_whatsapp_no": "Please enter your whatsapp number",
   "congrats_for_email_account": "Hi! Welcome to KABA. We are delighted to have you among our diaspora users",
   "done_text": "DONE",
   "next_text": "NEXT",
-
-  "new_account_email_hint" : "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)",
-
+  "new_account_email_hint": "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)",
   "reason": "Reason",
   "menu_not_availabe": "Menu is not available",
   "restaurant_in_break": "Restaurant in break",
   "restaurant_closed": "Restaurant closed",
   "reason_beyond_control": "Your command has been rejected for reasons beyond our control.",
   "welcome": "Welcome",
-
   "permission_": "Permission",
-  "request_location_activation_permission" : "Please turn on your location for a better service experience",
-"request_location_permission" : "Please activate permission location for better service experience",
+  "request_location_activation_permission": "Please turn on your location for a better service experience",
+  "request_location_permission": "Please activate permission location for better service experience",
   "identity_verify_page": "Verify",
   "identity_verify_title": "Identity verification",
   "identity_check_email": "Please Check your email. We have sent you the code at ",
   "identity_check_pn": "Please Check your phone. We have sent you the code at ",
   "verification_code_wrong": "Wrong code. Try again",
-
   "gps_": "GPS",
   "address_last_update": "Updated at :",
   "gps_location_valid": "Gps location was successfully set.\nPlease fill in the other information",
@@ -405,36 +377,24 @@
   "alert_message_received": "Got it !",
   "balance": "Balance",
   "points": "Points",
-
   "debit_points_kaba": "KABA Point debit",
   "credit_points_kaba": "KABA Point Credit",
   "non_eligible": "Non-Eligible",
   "non_eligible_reason": "Sorry you have not yet unlock the discount feature",
-
   "your_points": "Your Points",
   "this_feature_is_building": "This feature is building and will be soon available",
-
   "demo_account_alert": "Sorry, you cannot make an order using a demo account. Please, use another account to make your order.",
-
-  "sorry_email_account_no_pay_delivery" : "Sorry. Email accounts are not allowed to pay with cash at delivery ! To pay with cash at delivery, Please create an account with your phone number instead.",
-
-  "discount_point_available" : "Discount point available ",
-
+  "sorry_email_account_no_pay_delivery": "Sorry. Email accounts are not allowed to pay with cash at delivery ! To pay with cash at delivery, Please create an account with your phone number instead.",
+  "discount_point_available": "Discount point available ",
   "use_delivery_point": "Get discount of ",
-
   "use_of_kaba_points": "Your KABA Points can be used to get some delivery fee discount. Check YES below to use it",
-
-  "kaba_points_monthly_limit_reached" : "You have reached the limit of KABA Points to use per month",
-
-  "use_of_kaba_points_not_eligible" : "Sorry, you are not yet eligible to use Kaba Points discounts feature",
-
+  "kaba_points_monthly_limit_reached": "You have reached the limit of KABA Points to use per month",
+  "use_of_kaba_points_not_eligible": "Sorry, you are not yet eligible to use Kaba Points discounts feature",
   "min_short_on_average": "30 minutes on average",
-
   "kaba_point_used_amount": "KABA points used :",
   "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS",
   "month_remain_kaba_points": "Left for XXX_XXX",
   "month_used_kaba_points": "Used in XXX_XXX",
-
   "mois_1": "January",
   "mois_2": "February",
   "mois_3": "March",
@@ -447,6 +407,16 @@
   "mois_10": "October",
   "mois_11": "November",
   "mois_12": "December",
-  "buy": "Buy"
+  "buy": "Buy",
+
+  "service_category_food": "Food",
+  "service_category_drinks": "Drinks",
+  "service_category_flower": "Flowers",
+  "service_category_groceries": "Groceries",
+  "service_category_movies": "Movies",
+  "service_category_package_delivery": "Package Delivery",
+  "service_category_shopping": "Shopping",
+  "service_category_ticket": "Ticket",
+  "service_category_unknown": "Unknown"
 
 }

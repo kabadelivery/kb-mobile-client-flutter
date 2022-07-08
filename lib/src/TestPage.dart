@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flare_flutter/base/animation/actor_animation.dart';
@@ -25,15 +26,7 @@ class _TestPageState extends State<TestPage> {
   Widget build(BuildContext context) {
 //    return Scaffold();
     return new Scaffold(
-        body: Center(
-          child: MaterialButton(
-              child: Text("ok"),
-              onPressed: () {
-_playMusic();
-              }
-          ),
-        )
-
+        body: Center(child: BuyCategoryWidget(null))
       //TrackingInput(),
     );
   }

@@ -154,7 +154,6 @@
   "ad_check_website": "查看网站",
   "ad_check_menu": "查看菜单",
   "ad_check_restaurant": "查看饭店",
-  "buy": "购买",
   "note_reviews": "注释和评价",
   "review_us": "请给我们评价",
   "votes": "评价",
@@ -457,6 +456,19 @@
   "mois_10": "十月份",
   "mois_11": "十一月份",
   "mois_12": "十二月份",
-  "buy": "购买"
+  "buy": "购买",
+
+
+  "service_category_food": "外卖",
+  "service_category_drinks": "饮料",
+  "service_category_flower": "鲜花",
+  "service_category_groceries": "食品",
+  "service_category_movies": "电影",
+  "service_category_package_delivery": "快递",
+  "service_category_shopping": "超市",
+  "service_category_ticket": "门票",
+
+  "service_category_unknown": "Unknown"
+
 
 }

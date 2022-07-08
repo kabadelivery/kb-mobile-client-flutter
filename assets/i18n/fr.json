@@ -155,7 +155,6 @@
   "ad_check_website": "VOIR WEBSITE",
   "ad_check_menu": "VOIR MENU",
   "ad_check_restaurant": "VOIR RESTAURANT",
-  "buy": "ACHETER",
   "note_reviews": "Notes et Commentaires",
   "review_us": "Donnez nous votre avis",
   "votes": "Avis",
@@ -466,6 +465,16 @@
   "mois_10": "Octobre",
   "mois_11": "Novembre",
   "mois_12": "Décembre",
-  "buy": "Acheter"
+  "buy": "Acheter",
+
+  "service_category_food": "Repas",
+  "service_category_drinks": "Boissons",
+  "service_category_flower": "Fleurs",
+  "service_category_groceries": "Epiceries",
+  "service_category_movies": "Cinema",
+  "service_category_package_delivery": "Livraison de Colis",
+  "service_category_shopping": "Shopping",
+  "service_category_ticket": "Ticket",
+  "service_category_unknown": "Unknown"
 
 }

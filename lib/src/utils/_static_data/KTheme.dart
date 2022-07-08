@@ -14,6 +14,8 @@ class KColors {
   static final Color mGreen = hexToColor("#00695c");
   static final Color mBlue = hexToColor("#1976D2");
 
+  static final Color  buy_category_button_bg = hexToColor("#f1f1f1");
+
 //  00695c
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");
   static final Color primaryColorSemiTransparentADDTOBASKETBUTTON = hexToColor("#ffd9e2");
@@ -35,6 +37,8 @@ class KColors {
     800: Color.fromRGBO(118, 15, 39, 1),
     900: Color.fromRGBO(118, 15, 39, 1),
   };
+
+
 
   /* buttons i use often */
 }

@@ -159,7 +159,7 @@ class ServerRoutes {
       "/api/code/request";
 
   static const String LINK_SEND_VERIFCATION_EMAIL_SMS = ServerConfig.SERVER_ADDRESS+
-      "/api/code/request";   //"/api/code/request/mail";
+      "/api/code/request";   //"/api/code/request/main";
 
   static const String LINK_SEND_RECOVER_VERIFCATION_SMS = ServerConfig.SERVER_ADDRESS+
       "/api/password/code/request";
@@ -276,5 +276,7 @@ class ServerRoutes {
   static const String LINK_CHECK_APP_VERSION = ServerConfig.SERVER_ADDRESS+"/api/ltsapp/get";
 
   static const String LINK_CHECK_SYS_MESSAGE = ServerConfig.SERVER_ADDRESS+"/api/alert-message/get";
+
+  static String LINK_GET_SERVICE_CATEGORIES = "";
 
 }

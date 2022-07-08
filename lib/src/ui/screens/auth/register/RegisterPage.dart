@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   int _registerModeRadioValue = 0;
 
   List<String> recoverModeHints = ["",""];
-  /*"Insert your E-mail address"*/
+  /*"Insert your E-main address"*/
 
   List<String> _loginFieldHint;
 
@@ -139,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              'E-mail',
+                              'E-main',
                               style: new TextStyle(fontSize: 16.0)),
                         ]) : Container(),
                     SizedBox(height: 10),

@@ -16,7 +16,7 @@ import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/BuyPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -254,7 +254,6 @@ class _MyAppState extends State<MyApp> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-
               debugShowCheckedModeBanner: false,
               navigatorKey: navigatorKey,
               onGenerateTitle: (BuildContext context) =>
@@ -265,7 +264,8 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-            // home: BuyPage(),
+//             home: ServiceMainPage(),
+              // home: BuyPage(),
               // home: TransactionHistoryPage(presenter: TransactionPresenter()),
           // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
           //   home: TestPage(),

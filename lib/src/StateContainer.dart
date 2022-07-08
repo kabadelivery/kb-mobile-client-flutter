@@ -38,7 +38,7 @@ class StateContainerState extends State<StateContainer> {
 
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
-  int tabPosition;
+  int tabPosition = 1;
   int balance;
   int loggingState;
   // String kabaPoints;

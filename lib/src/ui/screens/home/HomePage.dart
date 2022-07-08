@@ -15,6 +15,7 @@ import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
+import 'package:KABA/src/contracts/service_main_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -23,7 +24,7 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/RestaurantModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/BuyPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
   HomeWelcomePage homeWelcomePage;
 
   // RestaurantListPage restaurantListPage;
-  BuyPage buyPage;
+  ServiceMainPage serviceMainPage;
   DailyOrdersPage dailyOrdersPage;
   MeAccountPage meAccountPage;
 
@@ -92,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
   final PageStorageKey homeKey = PageStorageKey("homeKey"),
       // restaurantKey = PageStorageKey("restaurantKey"),
-      buyKey = PageStorageKey("buyKey"),
+      serviceMainKey = PageStorageKey("serviceMainKey"),
       orderKey = PageStorageKey("orderKey"),
       meKey = PageStorageKey("meKey");
 
@@ -135,12 +136,14 @@ class _HomePageState extends State<HomePage> {
         argument: widget.argument);
     // restaurantListPage = RestaurantListPage(context: context,
     //     key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
+    serviceMainPage = ServiceMainPage(
+        key: serviceMainKey /*, presenter: ServiceMainPresenter()*/);
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);
     pages = [
       homeWelcomePage,
-      buyPage,
+      serviceMainPage,
       // restaurantListPage,
       dailyOrdersPage,
       meAccountPage
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
 
-      /* if you are email... and you've been created in the last 2 minutes... congratualitions, you've created e-mail account. */
+      /* if you are email... and you've been created in the last 2 minutes... congratualitions, you've created e-main account. */
       /* make sure you show it once on a single device... */
 
       SharedPreferences.getInstance().then((value) async {
