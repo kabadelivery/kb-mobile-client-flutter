@@ -1,7 +1,5 @@
 
 import 'package:KABA/src/models/ServiceMainEntity.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/resources/service_main_provider.dart';
 import 'package:KABA/src/xrint.dart';
 
@@ -43,7 +41,7 @@ class ServiceMainPresenter implements ServiceMainContract {
     _serviceMainView.showLoading(true);
     try {
       // we can fetch with or without gps location, but ... that's for later
-      // RestaurantFoodModel foodModel = await provider.fetchServiceCategory();
+      // ShopProductModel foodModel = await provider.fetchServiceCategory();
       // also get the restaurant entity here.
       // _serviceMainView.inflateFood(foodModel);
     } catch (_) {

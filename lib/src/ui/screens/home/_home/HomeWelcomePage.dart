@@ -18,7 +18,7 @@ import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/AlertMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
@@ -197,7 +197,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             StateContainer.of(context).tabPosition = 1;
             break;
           case SplashPage.RESTAURANT:
-            _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
@@ -373,7 +373,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     });
   }
 
-  _mainRestaurantWidget({RestaurantModel restaurant}) {
+  _mainRestaurantWidget({ShopModel restaurant}) {
     return GestureDetector(
       onTap: ()=>{_jumpToRestaurantDetails(context, restaurant)},
       child: Container (
@@ -926,7 +926,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     }
   }
 
-  _getShinningImage(RestaurantModel restaurant) {
+  _getShinningImage(ShopModel restaurant) {
 
     //
     if (restaurant.is_new == 1){
@@ -1040,7 +1040,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context, RestaurantDetailsPage(
-                restaurant: RestaurantModel(id: arg),
+                restaurant: ShopModel(id: arg),
                 presenter: RestaurantDetailsPresenter()));
           }
           break;
@@ -1564,7 +1564,7 @@ Future<void> _playMusicForNewMessage() async {
   }*/
 }
 
-void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
+void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
 
   /* Navigator.push(
     context,

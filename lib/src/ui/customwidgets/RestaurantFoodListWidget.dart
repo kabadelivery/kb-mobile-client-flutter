@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -17,7 +17,7 @@ class RestaurantFoodListWidget extends StatefulWidget {
   // ignore: non_constant_identifier_names
   Offset basket_offset;
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   RestaurantFoodListWidget({this.text, this.basket_offset, this.food});
 
@@ -37,7 +37,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
 
   Offset basket_offset;
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   _RestaurantFoodListWidgetState({this.basket_offset, this.food});
 
@@ -142,7 +142,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
     return 0;
   }
 
-  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+  _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
    /* Navigator.push(
       context,
       MaterialPageRoute(

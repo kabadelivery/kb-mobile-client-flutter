@@ -333,7 +333,7 @@ class _SplashPageState extends State<SplashPage> {
           xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
-//          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+//          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
           navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;

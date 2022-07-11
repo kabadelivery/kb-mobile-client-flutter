@@ -1,7 +1,7 @@
 import 'package:KABA/src/models/KabaPointConfigurationModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
 
 class OrderBillConfiguration {

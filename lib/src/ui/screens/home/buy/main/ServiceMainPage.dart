@@ -3,6 +3,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,16 +67,15 @@ class ServiceMainPageState extends State<ServiceMainPage> {
             child: SafeArea(
               top: true,
               child: Container(
-                  child:
-                    Container(
-                child: isLoading
-                    ? Center(child: MyLoadingProgressWidget())
-                    : (hasNetworkError
-                        ? _buildNetworkErrorPage()
-                        : hasSystemError
-                            ? _buildSysErrorPage()
-                            : _buildServicePage())),
-                  ),
+                child: Container(
+                    child: isLoading
+                        ? Center(child: MyLoadingProgressWidget())
+                        : (hasNetworkError
+                            ? _buildNetworkErrorPage()
+                            : hasSystemError
+                                ? _buildSysErrorPage()
+                                : _buildServicePage())),
+              ),
             )));
   }
 
@@ -93,8 +93,11 @@ class ServiceMainPageState extends State<ServiceMainPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
-
+              InkWell(
+                  child: SearchStatelessWidget(
+                      title:
+                          "${AppLocalizations.of(context).translate("what_want_buy")}"),
+              onTap: (){_jumpToSearchPage(0);}),
               GridView(
                 physics: BouncingScrollPhysics(),
                 padding: const EdgeInsets.all(20),
@@ -102,7 +105,7 @@ class ServiceMainPageState extends State<ServiceMainPage> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   crossAxisCount: 2,
-                  childAspectRatio: 2,
+                  childAspectRatio: 2.7,
                 ),
                 shrinkWrap: true,
                 children: [
@@ -121,8 +124,9 @@ class ServiceMainPageState extends State<ServiceMainPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                            padding: EdgeInsets.only(left:30),
-                            child: Text("${AppLocalizations.of(context).translate('coming_soon')}")),
+                            padding: EdgeInsets.only(left: 30),
+                            child: Text(
+                                "${AppLocalizations.of(context).translate('coming_soon')}")),
                       ],
                     ),
                     GridView(
@@ -132,13 +136,16 @@ class ServiceMainPageState extends State<ServiceMainPage> {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                         crossAxisCount: 2,
-                        childAspectRatio: 2,
+                        childAspectRatio: 2.7,
                       ),
                       shrinkWrap: true,
                       children: [
-                        BuyCategoryWidget(coming_soon_services[0], available: false),
-                        BuyCategoryWidget(coming_soon_services[1], available: false),
-                        BuyCategoryWidget(coming_soon_services[2], available: false),
+                        BuyCategoryWidget(coming_soon_services[0],
+                            available: false),
+                        BuyCategoryWidget(coming_soon_services[1],
+                            available: false),
+                        BuyCategoryWidget(coming_soon_services[2],
+                            available: false),
                       ],
                     ),
                   ]),
@@ -163,5 +170,9 @@ class ServiceMainPageState extends State<ServiceMainPage> {
         ],
       ),*/
         );
+  }
+
+  void _jumpToSearchPage(int i) {
+
   }
 }

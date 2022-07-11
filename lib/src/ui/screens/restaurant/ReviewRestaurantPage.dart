@@ -1,7 +1,7 @@
 import 'package:KABA/src/contracts/restaurant_review_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class ReviewRestaurantPage extends StatefulWidget {
 
   RestaurantReviewPresenter presenter;
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   CustomerModel customer;
 

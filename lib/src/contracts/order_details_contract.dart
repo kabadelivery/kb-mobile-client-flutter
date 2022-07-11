@@ -6,8 +6,8 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
 

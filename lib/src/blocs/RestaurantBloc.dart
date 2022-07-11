@@ -3,8 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,14 +13,14 @@ class RestaurantBloc {
   final _repository = Repository();
 
   /* restaurant list fetcher */
-  final _restaurantListFetcher = PublishSubject<List<RestaurantModel>>();
+  final _restaurantListFetcher = PublishSubject<List<ShopModel>>();
 
   bool _isDisposedForRestaurantList = false;
   bool _isDisposedForRestaurantMenu = false;
   bool _isDisposedForComments = false;
 
 
-  Stream<List<RestaurantModel>> get restaurantList => _restaurantListFetcher.stream;
+  Stream<List<ShopModel>> get restaurantList => _restaurantListFetcher.stream;
 
   /* restaurant menu fetcher */
   final _restaurantMenuFetcher = PublishSubject<List<RestaurantSubMenuModel>>();
@@ -37,7 +37,7 @@ class RestaurantBloc {
     try {
 //      if (_isDisposedForRestaurantList)
 //        return;
-      List<RestaurantModel> restaurantList = await _repository.fetchRestaurantList(customer, position);
+      List<ShopModel> restaurantList = await _repository.fetchRestaurantList(customer, position);
       _restaurantListFetcher.sink.add(restaurantList);
 //      _isDisposedForRestaurantList = true;
     } catch (_) {
@@ -50,7 +50,7 @@ class RestaurantBloc {
     try {
 //      if (_isDisposedForRestaurantList)
 //        return;
-      List<RestaurantModel> restaurantList = await _repository.fetchFoodFromRestaurantByName(desc);
+      List<ShopModel> restaurantList = await _repository.fetchFoodFromRestaurantByName(desc);
       _restaurantListFetcher.sink.add(restaurantList);
 //      _isDisposedForRestaurantList = true;
     } catch (_) {
@@ -58,11 +58,11 @@ class RestaurantBloc {
     }
   }*/
 
-  fetchCommentList(RestaurantModel restaurantModel, UserTokenModel userToken) async {
+  fetchCommentList(ShopModel ShopModel, UserTokenModel userToken) async {
     try {
       if (_isDisposedForComments)
         return;
-      List<CommentModel> commentList = await _repository.fetchRestaurantComment(restaurantModel, userToken);
+      List<CommentModel> commentList = await _repository.fetchRestaurantComment(ShopModel, userToken);
       _commentListFetcher.sink.add(commentList);
       _isDisposedForComments = true;
     } catch (_) {
@@ -70,11 +70,11 @@ class RestaurantBloc {
     }
   }
 
-  fetchRestaurantMenuList(RestaurantModel restaurantModel) async {
+  fetchRestaurantMenuList(ShopModel ShopModel) async {
     try {
       if (_isDisposedForRestaurantMenu)
         return;
-      List<RestaurantSubMenuModel> restaurantMenu = await _repository.fetchRestaurantMenuList(restaurantModel);
+      List<RestaurantSubMenuModel> restaurantMenu = await _repository.fetchRestaurantMenuList(ShopModel);
       _restaurantMenuFetcher.sink.add(restaurantMenu);
       _isDisposedForRestaurantMenu = true;
     } catch (_) {

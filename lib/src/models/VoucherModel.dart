@@ -1,6 +1,6 @@
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:flutter/foundation.dart';
 
 import '../xrint.dart';
@@ -18,9 +18,9 @@ class VoucherModel {
   int state; //
   int type; // type,
   int category; // category, food, delivery, category
-  List<RestaurantFoodModel> products;
-//  RestaurantModel restaurant_entity;
-  List<RestaurantModel> restaurants;
+  List<ShopProductModel> products;
+//  ShopModel restaurant_entity;
+  List<ShopModel> restaurants;
   int use_count; // how much time can i use the voucher
   int already_used_count;
 
@@ -74,7 +74,7 @@ class VoucherModel {
     id = json['id'];
 
 //    if (json["restaurant_entity"] != null)
-//      restaurant_name = RestaurantModel.fromJson(json['restaurant_entity']).name;
+//      restaurant_name = ShopModel.fromJson(json['restaurant_entity']).name;
 
     trade_name = json['trade_name'];
     type = json['type'];
@@ -86,11 +86,11 @@ class VoucherModel {
     try {
       if (json['restaurants'] != null || json['restaurants'] != []) {
         l = json["restaurants"];
-        restaurants = l?.map((r) => RestaurantModel.fromJson(r))?.toList();
+        restaurants = l?.map((r) => ShopModel.fromJson(r))?.toList();
       }
       /*   if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
           json['restaurant_entity'] != [])
-      restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
+      restaurant_entity = ShopModel(id: json['restaurant_entity']['id'],
             name: json['restaurant_entity']['name']);*/
     } catch(_) {
       xrint(_);
@@ -105,7 +105,7 @@ class VoucherModel {
 
     if (json['products'] != null || json['products'] != []) {
       l = json["products"];
-      products = l?.map((r) => RestaurantFoodModel.fromJson(r))?.toList();
+      products = l?.map((r) => ShopProductModel.fromJson(r))?.toList();
     }
 
     end_date = json['end_date'];

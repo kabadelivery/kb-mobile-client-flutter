@@ -7,7 +7,10 @@ import 'dart:math';
 import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -16,14 +19,17 @@ import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
+
 // import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -55,7 +61,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-
   CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +78,8 @@ Future<void> main() async {
   );
 
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
@@ -86,7 +92,6 @@ Future<void> main() async {
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
-
     // await SentryFlutter.init(
     //       (options) {
     //     options.dsn = 'https://db3d3fa783f643539ad13a7e84437ad6@o1211273.ingest.sentry.io/6351988';
@@ -102,14 +107,13 @@ Future<void> main() async {
 }
 
 
-
-FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
 
 class MyApp extends StatefulWidget {
 
-      FirebaseAnalytics analytics;
-    FirebaseAnalyticsObserver observer;
+  FirebaseAnalytics analytics;
+  FirebaseAnalyticsObserver observer;
 
   var appLanguage;
 
@@ -127,7 +131,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
 
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<
+      NavigatorState>();
 
   @override
   void initState() {
@@ -160,7 +165,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     // StateContainer.of(context);
 
     // precache logo of the splashPage
@@ -175,7 +179,7 @@ class _MyAppState extends State<MyApp> {
                 Locale('en', 'US'),
                 Locale('fr', 'FR'),
                 Locale.fromSubtags(languageCode: 'zh')
-        /*      Locale("af"),
+                /*      Locale("af"),
                 Locale("am"),
                 Locale("ar"),
                 Locale("az"),
@@ -261,14 +265,21 @@ class _MyAppState extends State<MyApp> {
               "KABA",
               theme: ThemeData(primarySwatch: KColors.colorCustom,
                   fontFamily: 'GoogleSans'),
-//      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
+//      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-             home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-//             home: ServiceMainPage(),
+//              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+//             home: SearchProductPage(),
+            home: FlowerCatalogPage(
+              presenter: MenuPresenter(), menuId: 387
+            ),
+           /*   home: RestaurantListPage(
+                  context: context,
+                  foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                  restaurantListPresenter: RestaurantListPresenter()),*/
               // home: BuyPage(),
               // home: TransactionHistoryPage(presenter: TransactionPresenter()),
-          // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
-          //   home: TestPage(),
+              // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
+              //   home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
@@ -295,11 +306,13 @@ class _MyAppState extends State<MyApp> {
 
 
   void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
+    navigatorKey.currentState.pushNamed(
+        RestaurantMenuPage.routeName, arguments: -1 * product_id);
   }
 
   void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
+    navigatorKey.currentState.pushNamed(
+        OrderDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
@@ -312,11 +325,13 @@ class _MyAppState extends State<MyApp> {
 
   void _jumpToRestaurantDetailsPage(int product_id) {
     /* send a negative id when we want to show the food inside the menu */
-    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
+    navigatorKey.currentState.pushNamed(
+        RestaurantDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
+    navigatorKey.currentState.pushNamed(
+        RestaurantMenuPage.routeName, arguments: product_id);
   }
 
   void _jumpToServiceClient() {
@@ -325,7 +340,7 @@ class _MyAppState extends State<MyApp> {
 
 }
 
-class CustomIntentPage extends StatelessWidget{
+class CustomIntentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(child: Text("hard"), color: Colors.white);

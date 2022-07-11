@@ -22,7 +22,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -745,7 +745,7 @@ class _HomePageState extends State<HomePage> {
             _jumpToPage(
                 context,
                 RestaurantDetailsPage(
-                    restaurant: RestaurantModel(id: widget.argument),
+                    restaurant: ShopModel(id: widget.argument),
                     presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }

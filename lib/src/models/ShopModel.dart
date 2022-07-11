@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 
 
-class RestaurantModel {
+class ShopModel {
 
   String name;
   int id;
@@ -32,7 +32,7 @@ class RestaurantModel {
   // other
   double distanceBetweenMeandRestaurant = 0;
 
-  RestaurantModel({this.id, this.name, this.pic, this.contactId, this.email,
+  ShopModel({this.id, this.name, this.pic, this.contactId, this.email,
     this.distance, this.is_open, this.stars, this.votes, this.theme_pic,
     this.description, this.address, this.main_contact,
     this.working_hour, this.coming_soon,
@@ -40,7 +40,7 @@ class RestaurantModel {
     this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food,
   this.location});
 
-  RestaurantModel.fromJson(Map<String, dynamic> json) {
+  ShopModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     pic = json['pic'];

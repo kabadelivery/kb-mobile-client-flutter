@@ -1,8 +1,7 @@
-
 import 'dart:async';
 
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
@@ -10,25 +9,25 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
 class RestaurantListContract {
-
 //  void RestaurantList (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-//  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
-  void fetchRestaurantList(CustomerModel customer, Position position, [bool silently = false]) async {}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+//  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
+  void fetchRestaurantList(CustomerModel customer, Position position,
+      [bool silently = false]) async {}
 }
 
 class RestaurantListView {
+  void systemError([bool silently]) {}
 
-  void systemError ([bool silently]) {}
-  void networkError ([bool silently]) {}
+  void networkError([bool silently]) {}
+
   void loadRestaurantListLoading(bool isLoading) {}
-  void inflateRestaurants(List<RestaurantModel> restaurants) {}
-}
 
+  void inflateRestaurants(List<ShopModel> restaurants) {}
+}
 
 /* RestaurantList presenter */
 class RestaurantListPresenter implements RestaurantListContract {
-
   bool isWorking = false;
 
   RestaurantListView _restaurantListView;
@@ -46,20 +45,22 @@ class RestaurantListPresenter implements RestaurantListContract {
   @override
   Future<void> fetchRestaurantList(CustomerModel customer, Position position,
       [bool silently = false]) async {
-    if (isWorking)
-      return;
+    if (isWorking && position == null) return;
     isWorking = true;
-    if (!silently)
-      _restaurantListView.loadRestaurantListLoading(true);
+    if (!silently) _restaurantListView.loadRestaurantListLoading(true);
     try {
-     dynamic data = await provider.fetchRestaurantList(
-          customer, position);
+      dynamic data = await provider.fetchRestaurantList(customer, position);
 
       // "location": "6.196422: 1.201180",
-     List<RestaurantModel> restaurants = await compute(sortOutRestaurantList,
-          {"data": data, "position": position, "is_email_account" : customer == null || customer?.username == null ? false : (customer.username.contains("@") ? true : false)});
+      List<ShopModel> restaurants = await compute(sortOutRestaurantList, {
+        "data": data,
+        "position": position,
+        "is_email_account": customer == null || customer?.username == null
+            ? false
+            : (customer.username.contains("@") ? true : false)
+      });
 
-     _restaurantListView.loadRestaurantListLoading(false);
+      _restaurantListView.loadRestaurantListLoading(false);
 
       // order list
       // restaurants = restaurants..sort((restA, restB) => _getDifferenceMeandRestaurant());
@@ -85,7 +86,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 //   isWorking = true;
 //   _restaurantListView.searchMenuShowLoading(true);
 //   try {
-//     List<RestaurantFoodModel> foods = await provider.fetchRestaurantListFromTag(tag);
+//     List<ShopProductModel> foods = await provider.fetchRestaurantListFromTag(tag);
 //     _restaurantListView.searchMenuShowLoading(false);
 //     _restaurantListView.inflateFoodsProposal(foods);
 //   } catch (_) {
@@ -102,17 +103,13 @@ class RestaurantListPresenter implements RestaurantListContract {
 // }
 }
 
-FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) {
-
-
-
+FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
   Iterable lo = data["data"]["resto"];
 
-  List<RestaurantModel> tmp = lo?.map((resto) =>
-      RestaurantModel.fromJson(resto))?.toList();
+  List<ShopModel> tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
 
   // remove the 79 & 80
-  List<RestaurantModel> tf = List.empty(growable: true);
+  List<ShopModel> tf = List.empty(growable: true);
 
   try {
     bool is_email_account = data["is_email_account"];
@@ -121,9 +118,8 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
     if (tmpPosition != null) {
       Map<String, String> myBillingArray = Map();
       // prepare billing array
-      List<dynamic> lBilling = data["data"]["billing"][is_email_account
-          ? "email"
-          : "phoneNumber"];
+      List<dynamic> lBilling =
+          data["data"]["billing"][is_email_account ? "email" : "phoneNumber"];
       for (int s = 0; s < lBilling.length; s++) {
         int from = int.parse(lBilling[s]["from"]);
         int to = int.parse(lBilling[s]["to"]);
@@ -151,10 +147,8 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
         tmp[s].delivery_pricing =
             _getShippingPrice(tmp[s].distance, myBillingArray);
 
-        if (tmp[s].id == 79)
-        indexOf79 = s;
-        if (tmp[s].id == 80)
-          indexOf80 = s;
+        if (tmp[s].id == 79) indexOf79 = s;
+        if (tmp[s].id == 80) indexOf80 = s;
       }
 
       // add elements
@@ -170,36 +164,31 @@ FutureOr<List<RestaurantModel>> sortOutRestaurantList(Map<String,dynamic> data) 
       // }
 
       // do the sort_out using the distances as well
-      tf.sort((restA, restB) =>
-          (
+      tf.sort((restA, restB) => (
               // try to put these 2 restaurants above
               double.parse(restA.distance) * 1000 -
-                  double.parse(restB.distance) * 1000
-          ).toInt()
-      );
+                  double.parse(restB.distance) * 1000)
+          .toInt());
       /* tmp =*/
-      tmp.sort((restA, restB) =>
-          (
+      tmp.sort((restA, restB) => (
 // try to put these 2 restaurants above
               double.parse(restA.distance) * 1000 -
-                  double.parse(restB.distance) * 1000
-          ).toInt()
-      );
+                  double.parse(restB.distance) * 1000)
+          .toInt());
     }
 
-
-tf.addAll(tmp);
-return tf;
-
+    tf.addAll(tmp);
+    return tf;
   } catch (_) {
     xrint(_.toString());
- return tmp;
+    return tmp;
   }
 }
 
 String _getShippingPrice(String distance, Map<String, String> myBillingArray) {
   try {
-    int distanceInt = int.parse( !distance.contains(".") ? distance : distance.split(".")[0]);
+    int distanceInt =
+        int.parse(!distance.contains(".") ? distance : distance.split(".")[0]);
     if (myBillingArray["$distanceInt"] == null) {
       return "~";
     } else {

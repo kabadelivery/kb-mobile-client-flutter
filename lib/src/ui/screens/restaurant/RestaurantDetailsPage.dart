@@ -9,7 +9,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
@@ -31,7 +31,7 @@ class RestaurantDetailsPage extends StatefulWidget {
 
   static var routeName = "/RestaurantDetailsPage";
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   CustomerModel customer;
 
@@ -82,7 +82,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         // fetch comments
         // we can accept to load the restaurant here if needed
         widget.presenter.checkCanComment(customer, widget?.restaurant);
-        widget.presenter.fetchCommentList(widget?.customer, RestaurantModel(id:widget?.restaurantId));
+        widget.presenter.fetchCommentList(widget?.customer, ShopModel(id:widget?.restaurantId));
         // fetch if the restaurant is open
       }
     });
@@ -99,19 +99,19 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
       showLoading(true);
       // there must be a food id.
       if (widget.customer != null) {
-        widget.restaurant = RestaurantModel(id: widget.restaurantId);
+        widget.restaurant = ShopModel(id: widget.restaurantId);
         widget.presenter.fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
       }
       else {
         showLoading(true);
         /*Future.delayed(Duration(seconds: 1)).then((onValue) {
-          widget.restaurant = RestaurantModel(id: widget.restaurantId);
+          widget.restaurant = ShopModel(id: widget.restaurantId);
           widget.presenter.fetchRestaurantDetailsById(
               widget.customer, widget.restaurantId);
         });*/
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
-          widget.restaurant = RestaurantModel(id: widget.restaurantId);
+          widget.restaurant = ShopModel(id: widget.restaurantId);
           widget.presenter.fetchRestaurantDetailsById(
               widget.customer, widget.restaurantId);
         });
@@ -294,7 +294,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         ));
   }
 
-  void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantMenu (BuildContext context, ShopModel restaurantModel) {
 
     /*Navigator.push(
       context,
@@ -357,7 +357,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
   }
 
   @override
-  void inflateRestaurantDetails(RestaurantModel restaurant) {
+  void inflateRestaurantDetails(ShopModel restaurant) {
     showLoading(false);
     setState(() {
       widget.restaurant = restaurant;
@@ -471,7 +471,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
     );
   }
 
-  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+  _getRestaurantStateTag(ShopModel restaurantModel) {
 
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
@@ -520,7 +520,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> implement
         });
         if (widget?.restaurant?.id != null)
           widget.restaurantId = widget?.restaurant?.id;
-        widget.presenter.fetchCommentList(widget.customer, RestaurantModel(id:widget?.restaurantId));
+        widget.presenter.fetchCommentList(widget.customer, ShopModel(id:widget?.restaurantId));
       }
     }
   }

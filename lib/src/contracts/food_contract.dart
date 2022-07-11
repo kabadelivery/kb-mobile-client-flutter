@@ -1,5 +1,5 @@
 
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
 
@@ -12,7 +12,7 @@ class FoodView {
   void showLoading(bool isLoading) {}
   void systemError () {}
   void networkError () {}
-  void inflateFood(RestaurantFoodModel foods) {}
+  void inflateFood(ShopProductModel foods) {}
 }
 
 
@@ -40,7 +40,7 @@ class FoodPresenter implements FoodContract {
     isWorking = true;
     _foodView.showLoading(true);
     try {
-      RestaurantFoodModel foodModel = await provider.fetchFoodDetailsWithId(foodId);
+      ShopProductModel foodModel = await provider.fetchFoodDetailsWithId(foodId);
       // also get the restaurant entity here.
       _foodView.inflateFood(foodModel);
     } catch (_) {

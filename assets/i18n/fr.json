@@ -475,6 +475,9 @@
   "service_category_package_delivery": "Livraison de Colis",
   "service_category_shopping": "Shopping",
   "service_category_ticket": "Ticket",
-  "service_category_unknown": "Unknown"
+  "service_category_unknown": "Unknown",
+
+  "what_want_buy": "Que voulez vous acheter ?"
+
 
 }

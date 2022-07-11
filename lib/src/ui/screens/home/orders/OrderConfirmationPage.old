@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/MyAddressModel.old';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/PreOrderConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
@@ -11,7 +11,7 @@ class OrderConfirmationPage extends StatefulWidget {
 
   static var routeName = "/OrderConfirmationPage";
 
-  Map<RestaurantFoodModel, int> addons, foods;
+  Map<ShopProductModel, int> addons, foods;
 
   int totalPrice;
 
@@ -36,7 +36,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
   /* pricing configuration */
   OrderBillConfiguration orderBillConfiguration;
 
-  Map<RestaurantFoodModel, int> addons, foods;
+  Map<ShopProductModel, int> addons, foods;
 
   int totalPrice;
 

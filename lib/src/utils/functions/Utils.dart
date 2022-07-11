@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/xrint.dart';
@@ -333,7 +333,7 @@ class Utils {
     return _validURL;
   }
 
-  static double locationDistance(Position position, RestaurantModel restaurant) {
+  static double locationDistance(Position position, ShopModel restaurant) {
 
     double lat1 = position.latitude;
     double long1 = position.longitude;
@@ -343,8 +343,14 @@ class Utils {
 
    double distance = Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
    distance = 1.3/* error factor */ * distance/1000; // distance meter
-   return double.parse(distance.toStringAsPrecision(2));
+   return double.parse(distance.toStringAsPrecision(1));
     // crop to 1 number after comma
+  }
+
+  static String capitalize (String s){
+    if (s.length < 2)
+      return s;
+   return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   }
 
 }

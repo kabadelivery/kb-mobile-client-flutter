@@ -9,9 +9,9 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/BestSellerModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -55,7 +55,7 @@ class MenuApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
           List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -107,11 +107,11 @@ class MenuApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          RestaurantFoodModel food = RestaurantFoodModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
+          ShopProductModel food = ShopProductModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
 
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
           List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -166,7 +166,7 @@ class MenuApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
           List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -262,7 +262,7 @@ class MenuApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          RestaurantFoodModel restaurantFoodModel = RestaurantFoodModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
+          ShopProductModel restaurantFoodModel = ShopProductModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
           return restaurantFoodModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -308,7 +308,7 @@ class MenuApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(mJsonDecode(response.data)["data"]["restaurant"]);
+          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["restaurant"]);
           return restaurantModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -320,7 +320,7 @@ class MenuApiProvider {
     }
   }
 
-  reviewRestaurant(CustomerModel customer, RestaurantModel restaurant, int stars, String message) async {
+  reviewRestaurant(CustomerModel customer, ShopModel restaurant, int stars, String message) async {
 
     xrint("entered reviewRestaurant");
     if (await Utils.hasNetwork()) {
@@ -367,7 +367,7 @@ class MenuApiProvider {
     }
   }
 
-  checkCanComment(CustomerModel customer, RestaurantModel restaurant) async {
+  checkCanComment(CustomerModel customer, ShopModel restaurant) async {
 
     xrint("entered checkCanComment");
     if (await Utils.hasNetwork()) {

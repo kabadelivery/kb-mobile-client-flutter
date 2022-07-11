@@ -7,8 +7,8 @@ import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -20,14 +20,14 @@ class RestaurantMenuDetails extends StatefulWidget {
 
   static var routeName = "/RestaurantMenuDetails";
 
-  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
+  Map<ShopProductModel, int> food_selected, adds_on_selected;
 
   /* 1 - food, 2- addons, 3 - all */
   int type;
 
   int FOOD_MAX;
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   RestaurantMenuDetails({Key key, this.FOOD_MAX = 5, this.type, this.food_selected, this.adds_on_selected, this.restaurant}) : super(key: key);
 
@@ -37,7 +37,7 @@ class RestaurantMenuDetails extends StatefulWidget {
 
 class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
 
-  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
+  Map<ShopProductModel, int> food_selected, adds_on_selected;
 
   /* 1 - food, 2- addons, 3 - all */
   int type;
@@ -78,7 +78,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
 /* build bottom_sheet_items_widget */
-  Widget _buildBottomSheetFoodListWidget({RestaurantFoodModel food}) {
+  Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
     return Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -167,7 +167,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     );
   }
 
-  _decreaseQuantity(RestaurantFoodModel food) {
+  _decreaseQuantity(ShopProductModel food) {
 
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
@@ -195,7 +195,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     _updateCounts();
   }
 
-  _increaseQuantity(RestaurantFoodModel food) {
+  _increaseQuantity(ShopProductModel food) {
     if (_foodCount >= widget.FOOD_MAX) {
       showToast("${AppLocalizations.of(context).translate('max_reached')}");
       return;
@@ -225,8 +225,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   void _updateCounts() {
 
     int tp = 0;
-    int fc = 0; food_selected.forEach((RestaurantFoodModel food, int quantity) {fc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
-    int adc = 0; adds_on_selected.forEach((RestaurantFoodModel food, int quantity) {adc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
+    int fc = 0; food_selected.forEach((ShopProductModel food, int quantity) {fc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
+    int adc = 0; adds_on_selected.forEach((ShopProductModel food, int quantity) {adc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
     setState(() {
       _foodCount = fc;
 //      _addOnCount = adc;
@@ -238,15 +238,15 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     Toast.show(message, context, duration: Toast.LENGTH_LONG, gravity:  Toast.CENTER);
   }
 
-  void _removeFood(RestaurantFoodModel food) {
+  void _removeFood(ShopProductModel food) {
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
-        food_selected.removeWhere((RestaurantFoodModel mFood, int value){return (mFood==food);});
+        food_selected.removeWhere((ShopProductModel mFood, int value){return (mFood==food);});
       }
     } else {
       if (!food.is_addon) {
         if (adds_on_selected.containsKey(food)) {
-          adds_on_selected.removeWhere((RestaurantFoodModel mFood, int value){return (mFood==food);});
+          adds_on_selected.removeWhere((ShopProductModel mFood, int value){return (mFood==food);});
         }
       }
     }

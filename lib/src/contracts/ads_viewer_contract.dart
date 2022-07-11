@@ -2,8 +2,8 @@
 import 'dart:convert';
 
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -18,9 +18,9 @@ class AdsViewerContract {
 class AdsViewerView {
   void showLoading(bool isLoading) {}
 
-  void updateRestaurantForDetails(RestaurantModel restaurantModel) {}
-  void updateRestaurantForMenu(RestaurantModel restaurantModel) {}
-  void updateFood(RestaurantFoodModel foodModel) {}
+  void updateRestaurantForDetails(ShopModel ShopModel) {}
+  void updateRestaurantForMenu(ShopModel ShopModel) {}
+  void updateFood(ShopProductModel foodModel) {}
 
   void requestFailure (String message) {}
 }
@@ -52,12 +52,12 @@ class AdsViewerPresenter implements AdsViewerContract {
       return;
     isWorking = true;
     try {
-      RestaurantModel restaurantModel = await provider.loadRestaurantFromId(restaurantId/*, DESTINATION*/);
-      if (restaurantModel != null) {
+      ShopModel shopModel = await provider.loadRestaurantFromId(restaurantId/*, DESTINATION*/);
+      if (ShopModel != null) {
 //       if (DESTINATION == 1)
-        _adsViewerView.updateRestaurantForDetails(restaurantModel);
+        _adsViewerView.updateRestaurantForDetails(shopModel);
 //       else if (DESTINATION == 2) {
-//         _adsViewerView.updateRestaurantForMenu(restaurantModel);
+//         _adsViewerView.updateRestaurantForMenu(ShopModel);
 //       }
       }
     } catch(_) {
@@ -75,7 +75,7 @@ class AdsViewerPresenter implements AdsViewerContract {
       return;
     isWorking = true;
     try {
-      RestaurantFoodModel foodModel = await provider.loadFoodFromId(foodId);
+      ShopProductModel foodModel = await provider.loadFoodFromId(foodId);
       if (foodModel != null)
         _adsViewerView.updateFood(foodModel);
     } catch(_) {

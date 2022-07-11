@@ -417,6 +417,8 @@
   "service_category_package_delivery": "Package Delivery",
   "service_category_shopping": "Shopping",
   "service_category_ticket": "Ticket",
-  "service_category_unknown": "Unknown"
+  "service_category_unknown": "Unknown",
+
+  "what_want_buy": "What do you want to buy ?"
 
 }

@@ -46,7 +46,7 @@ class BuyCategoryWidget extends StatelessWidget {
                 color: KColors.buy_category_button_bg,
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Row(mainAxisSize: MainAxisSize.max, children: [
-              Container(width: 30, height: 30, child: getCategoryIcon()),
+              Container(width: 45, height: 45, child: getCategoryIcon()),
               SizedBox(width: 20),
               Flexible(
                   child: Text(getCategoryTitle(context),

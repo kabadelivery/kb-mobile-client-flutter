@@ -5,8 +5,8 @@ import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -27,13 +27,13 @@ class RestaurantFoodDetailsPage extends StatefulWidget {
 
   static var routeName = "/RestaurantFoodDetailsPage";
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   FoodPresenter presenter;
 
   int foodId;
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key) {
     this.restaurant = food?.restaurant_entity;
@@ -290,8 +290,8 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   void _continuePurchase() {
-    Map<RestaurantFoodModel, int> adds_on_selected = HashMap();
-    Map<RestaurantFoodModel, int> food_selected = HashMap();
+    Map<ShopProductModel, int> adds_on_selected = HashMap();
+    Map<ShopProductModel, int> food_selected = HashMap();
     int totalPrice = 0;
 
     /* init */
@@ -394,7 +394,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   @override
-  void inflateFood(RestaurantFoodModel food) {
+  void inflateFood(ShopProductModel food) {
     showLoading(false);
     setState(() {
       this.widget.food = food;

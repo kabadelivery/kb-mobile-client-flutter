@@ -1,7 +1,7 @@
 
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
@@ -10,7 +10,7 @@ import 'package:KABA/src/xrint.dart';
 class RestaurantDetailsContract {
 
   void fetchRestaurantDetailsById(CustomerModel customer, int restaurantId) {}
-  void checkCanComment(CustomerModel customer, RestaurantModel restaurant) {}
+  void checkCanComment(CustomerModel customer, ShopModel restaurant) {}
 }
 
 class RestaurantDetailsView {
@@ -18,7 +18,7 @@ class RestaurantDetailsView {
   void showLoading(bool isLoading) {}
   void systemError () {}
   void networkError () {}
-  void inflateRestaurantDetails(RestaurantModel restaurant) {}
+  void inflateRestaurantDetails(ShopModel restaurant) {}
   void inflateComments (List<CommentModel> comments, String stars, String votes){}
   void commentSystemErrorComment() {}
   void commentNetworkError() {}
@@ -54,7 +54,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     isFetchRestaurantDetailsWorking = true;
     _restaurantDetailsView.showLoading(true);
     try {
-      RestaurantModel restaurantModel = await provider.fetchRestaurantWithId(customer, restaurantDetailsId);
+      ShopModel restaurantModel = await provider.fetchRestaurantWithId(customer, restaurantDetailsId);
       // also get the restaurant entity here.
       if (restaurantModel != null)
         _restaurantDetailsView.inflateRestaurantDetails(restaurantModel);
@@ -72,7 +72,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     isFetchRestaurantDetailsWorking = false;
   }
 
-  Future<void> fetchCommentList(CustomerModel customer, RestaurantModel restaurant) async {
+  Future<void> fetchCommentList(CustomerModel customer, ShopModel restaurant) async {
 
     if (isCommentWorking)
       return;
@@ -100,7 +100,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
   }
 
   @override
-  Future<void> checkCanComment(CustomerModel customer, RestaurantModel restaurant) async {
+  Future<void> checkCanComment(CustomerModel customer, ShopModel restaurant) async {
     if (isWorking)
       return;
     isWorking = true;

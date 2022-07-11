@@ -14,7 +14,7 @@ import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
@@ -696,7 +696,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context, RestaurantDetailsPage(
-                restaurant: RestaurantModel(id: arg),
+                restaurant: ShopModel(id: arg),
                 presenter: RestaurantDetailsPresenter()));
           }
           break;

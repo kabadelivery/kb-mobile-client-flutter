@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:core';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/EvenementModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
 
 Iterable l;
@@ -19,7 +19,7 @@ class HomeScreenModel {
 
   int serial_home;
   String feed;
-  List<RestaurantModel> resto;
+  List<ShopModel> resto;
   List<AdModel> slider;
 //  List<AdModel> kaba_pub;
   List<GroupAdsModel> groupad;
@@ -43,7 +43,7 @@ class HomeScreenModel {
     /* manually get the json */
 
     l = json["resto"];
-    resto = l?.map((resto) => RestaurantModel.fromJson(resto))?.toList();
+    resto = l?.map((resto) => ShopModel.fromJson(resto))?.toList();
 
     l = json["slider"];
     slider = l?.map((slider_model) => AdModel.fromJson(slider_model))?.toList();

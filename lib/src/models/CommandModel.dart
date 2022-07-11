@@ -2,7 +2,7 @@ import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/KabaShippingMan.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/xrint.dart';
 
 import 'DeliveryTimeFrameModel.dart';
@@ -15,7 +15,7 @@ class CommandModel {
   int state;
   /* shipping address */
   DeliveryAddressModel shipping_address;
-  RestaurantModel restaurant_entity;
+  ShopModel restaurant_entity;
   List<OrderItemModel> food_list;
   String last_update;
   KabaShippingMan livreur;
@@ -98,7 +98,7 @@ class CommandModel {
     shipping_address = DeliveryAddressModel.fromJson(json['shipping_address']);
 
     if (json['restaurant_entity'] != null)
-      restaurant_entity = RestaurantModel.fromJson(json['restaurant_entity']);
+      restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
 
     l = json["food_list"];
     food_list = l?.map((f) => OrderItemModel.fromJson(f))?.toList();

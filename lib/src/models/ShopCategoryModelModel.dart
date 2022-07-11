@@ -1,5 +1,5 @@
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 
 
 class RestaurantSubMenuModel {
@@ -9,7 +9,7 @@ class RestaurantSubMenuModel {
    int restaurant_id;
    String description;
    int promotion = 0;
-   List<RestaurantFoodModel> foods;
+   List<ShopProductModel> foods;
 
    RestaurantSubMenuModel({this.id, this.name, this.restaurant_id, this.description, this.promotion,
       this.foods});
@@ -26,7 +26,7 @@ class RestaurantSubMenuModel {
       l = json["foods"];
 
 
-      foods = l?.map((food) => RestaurantFoodModel.fromJson(food))?.toList();
+      foods = l?.map((food) => ShopProductModel.fromJson(food))?.toList();
    }
 
    Map toJson () => {

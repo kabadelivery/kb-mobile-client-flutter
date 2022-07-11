@@ -468,7 +468,8 @@
   "service_category_shopping": "超市",
   "service_category_ticket": "门票",
 
-  "service_category_unknown": "Unknown"
+  "service_category_unknown": "无知",
+  "what_want_buy": "想购买什么呢 ?"
 
 
 }

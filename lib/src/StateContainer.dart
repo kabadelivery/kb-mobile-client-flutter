@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -6,9 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class StateContainer extends StatefulWidget {
-
   final Widget child;
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
@@ -21,12 +18,23 @@ class StateContainer extends StatefulWidget {
   bool hasGotNewMessageOnce;
   Position position;
 
-  StateContainer({@required this.child, this.balance, this.loggingState, this.hasGotNewMessageOnce, this.kabaPoints, this.hasUnreadMessage, this.tabPosition, this.position, this.isBalanceLoading = false, this.last_time_get_daily_order});
+  StateContainer(
+      {@required this.child,
+      this.balance,
+      this.loggingState,
+      this.hasGotNewMessageOnce,
+      this.kabaPoints,
+      this.hasUnreadMessage,
+      this.tabPosition,
+      this.position,
+      this.isBalanceLoading = false,
+      this.last_time_get_daily_order});
 
   static BuildContext mContext;
 
   static StateContainerState of(BuildContext context) {
-    final widget = context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
+    final widget =
+        context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
     return widget.data;
   }
 
@@ -35,23 +43,25 @@ class StateContainer extends StatefulWidget {
 }
 
 class StateContainerState extends State<StateContainer> {
-
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
   int tabPosition = 1;
   int balance;
   int loggingState;
+
   // String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
+
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;
+
   // firebase
   FirebaseAnalytics analytics;
   FirebaseAnalyticsObserver observer;
   Map service_message = {"message": "", "show": 0};
 
-  int lastLocationPickingDate =0;
+  int lastLocationPickingDate = 0;
   int lastTimeLinkMatchAction = 0;
 
   Future<void> updateBalance({balance}) async {
@@ -110,10 +120,10 @@ class StateContainerState extends State<StateContainer> {
 
   Future<void> updateHasGotNewMessage({hasGotNewMessage}) async {
     if (hasGotNewMessage == true) {
-        this.hasGotNewMessageOnce = true;
+      this.hasGotNewMessageOnce = true;
       /* save it to shared preferences */
     } else {
-        this.hasGotNewMessageOnce = false;
+      this.hasGotNewMessageOnce = false;
     }
   }
 
@@ -139,19 +149,16 @@ class StateContainerState extends State<StateContainer> {
     }
   }
 
-
   Future<void> retrieveBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     this.balance = prefs.getInt('balance');
-    if (this.tabPosition == null)
-      this.tabPosition = 0;
+    if (this.tabPosition == null) this.tabPosition = 0;
   }
 
   Future<void> retrieveUnreadMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     this.hasUnreadMessage == true && prefs.getBool('hasUnreadMessage');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +174,7 @@ class StateContainerState extends State<StateContainer> {
       setState(() {
         this.kabaPoints = kabaPoints;
       });
-      *//* save it to shared preferences *//*
+      */ /* save it to shared preferences */ /*
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('kabaPoints', kabaPoints);
     }
@@ -184,6 +191,7 @@ class StateContainerState extends State<StateContainer> {
 
 class InheritedStateContainer extends InheritedWidget {
   final StateContainerState data;
+
   InheritedStateContainer({
     Key key,
     @required this.data,

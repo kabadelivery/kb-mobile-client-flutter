@@ -9,8 +9,8 @@ import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/models/AdModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -292,7 +292,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   }
 
   @override
-  void updateFood(RestaurantFoodModel foodModel) {
+  void updateFood(ShopProductModel foodModel) {
     showLoading(false);
     // jump to restaurant
     Navigator.push(
@@ -304,7 +304,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   }
 
   @override
-  void updateRestaurantForDetails(RestaurantModel restaurantModel) {
+  void updateRestaurantForDetails(ShopModel restaurantModel) {
     showLoading(false);
     // jump to restaurant
     Navigator.push(
@@ -318,7 +318,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   }
 
   @override
-  void updateRestaurantForMenu(RestaurantModel restaurantModel) {
+  void updateRestaurantForMenu(ShopModel restaurantModel) {
     showLoading(false);
     // jump to restaurant
     Navigator.push(

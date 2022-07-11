@@ -9,9 +9,9 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -19,14 +19,14 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 class RestaurantApiProvider {
 
 
-  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(RestaurantModel restaurantModel) async {
+  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(ShopModel ShopModel) async {
 
     xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
       /*
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),
-        body: json.encode({'id': restaurantModel.id.toString()}),
+        body: json.encode({'id': ShopModel.id.toString()}),
 //          headers: Utils.getHeadersWithToken()
       )
           .timeout(const Duration(seconds: 30));*/
@@ -44,7 +44,7 @@ class RestaurantApiProvider {
         };
       };
       var response = await dio.post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
-          data:json.encode({'id': restaurantModel.id.toString()}));
+          data:json.encode({'id': ShopModel.id.toString()}));
 
      xrint(response.data.toString());
       if (response.statusCode == 200) {
@@ -64,7 +64,7 @@ class RestaurantApiProvider {
   }
 
   /// load restaurant from Id
-  Future<RestaurantModel> loadRestaurantFromId(int restaurantIdOrMenuId/*, int DESTINATION*/) async {
+  Future<ShopModel> loadRestaurantFromId(int restaurantIdOrMenuId/*, int DESTINATION*/) async {
 
 
     xrint("entered loadRestaurantFromId");
@@ -99,8 +99,8 @@ class RestaurantApiProvider {
         if (errorCode == 0) {
 //         xrint(mJsonDecode(response.body)["data"]);
 //         xrint(mJsonDecode(response.body)["data"][0]);
-          RestaurantModel restaurantModel = RestaurantModel.fromJson(mJsonDecode(response.data)["data"]["restaurant"]);
-          return restaurantModel;
+          ShopModel shopModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["restaurant"]);
+          return shopModel;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -113,7 +113,7 @@ class RestaurantApiProvider {
 
 
   /// load food from id
-  Future<RestaurantFoodModel> loadFoodFromId(int foodId) async {
+  Future<ShopProductModel> loadFoodFromId(int foodId) async {
 
     xrint("entered loadFoodFromId ${foodId} ");
     if (await Utils.hasNetwork()) {
@@ -143,7 +143,7 @@ class RestaurantApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          RestaurantFoodModel foodModel = RestaurantFoodModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
+          ShopProductModel foodModel = ShopProductModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
           return foodModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -182,7 +182,7 @@ class RestaurantApiProvider {
           data: json.encode({'tag': tag}),);
 
      xrint(response.data.toString());
-      List<RestaurantFoodModel> foods = [];
+      List<ShopProductModel> foods = [];
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
@@ -192,8 +192,8 @@ class RestaurantApiProvider {
           } else {
             // foods with restaurant inside.
             lo?.map((food_restaurant){
-              RestaurantFoodModel f = RestaurantFoodModel.fromJson(food_restaurant["food"]);
-              f.restaurant_entity = RestaurantModel.fromJson(food_restaurant["restaurant"]);
+              ShopProductModel f = ShopProductModel.fromJson(food_restaurant["food"]);
+              f.restaurant_entity = ShopModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);
             })?.toList();
             return foods;
@@ -248,8 +248,8 @@ class RestaurantApiProvider {
         dynamic data = mJsonDecode(response.data);
         if (data["error"] == 0) {
           // Iterable lo = mJsonDecode(response.data)["data"]["resto"];
-          // List<RestaurantModel> resto = lo?.map((resto) =>
-          //     RestaurantModel.fromJson(resto))?.toList();
+          // List<ShopModel> resto = lo?.map((resto) =>
+          //     ShopModel.fromJson(resto))?.toList();
 
           return data["data"];
         }

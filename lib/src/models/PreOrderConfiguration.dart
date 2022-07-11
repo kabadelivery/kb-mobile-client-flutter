@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
  
 class PreOrderConfiguration {

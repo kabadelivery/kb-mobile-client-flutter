@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
-class RestaurantFoodModel {
+class ShopProductModel {
 
     int id;
     String name;
@@ -18,9 +18,9 @@ class RestaurantFoodModel {
     int promotion;
     bool is_addon = false;
     /* restaurant entity */
-    RestaurantModel restaurant_entity;
+    ShopModel restaurant_entity;
 
-    RestaurantFoodModel({this.id, this.name, this.price, this.pic,
+    ShopProductModel({this.id, this.name, this.price, this.pic,
         this.promotion_price, this.menu_id, this.restaurant_id,
         this.description, this.food_details_pictures, this.is_favorite,
         this.stars, this.promotion, this.restaurant_entity});
@@ -43,7 +43,7 @@ class RestaurantFoodModel {
 //      "rating_percentage": 0
 //   },
 
-    RestaurantFoodModel.fromJson(Map<String, dynamic> json) {
+    ShopProductModel.fromJson(Map<String, dynamic> json) {
         id = json['id'];
         name = json['name'];
         pic = json['pic'];
@@ -66,7 +66,7 @@ class RestaurantFoodModel {
 
         try {
             restaurant_entity =
-                RestaurantModel.fromJson(json['restaurant_entity']);
+                ShopModel.fromJson(json['restaurant_entity']);
         } catch(_){
             debugPrint(_.toString());
         }
@@ -94,9 +94,9 @@ class RestaurantFoodModel {
         return toJson().toString();
     }
 
-    static RestaurantFoodModel randomFood() {
+    static ShopProductModel randomFood() {
 
-        RestaurantFoodModel food = RestaurantFoodModel();
+        ShopProductModel food = ShopProductModel();
 
         food.id = 999;
         food.name = "ATTIEKE + POULET + ALLOCO";

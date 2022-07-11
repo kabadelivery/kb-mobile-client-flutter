@@ -1,7 +1,7 @@
 
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
@@ -9,7 +9,7 @@ import 'package:KABA/src/xrint.dart';
 
 class RestaurantReviewContract {
 
-  void reviewRestaurant(CustomerModel customerModel, RestaurantModel restaurant, int stars, String message) {}
+  void reviewRestaurant(CustomerModel customerModel, ShopModel restaurant, int stars, String message) {}
 }
 
 class RestaurantReviewView {
@@ -39,7 +39,7 @@ class RestaurantReviewPresenter implements RestaurantReviewContract {
   }
 
   @override
-  Future reviewRestaurant(CustomerModel customerModel, RestaurantModel restaurant, int stars, String message) async {
+  Future reviewRestaurant(CustomerModel customerModel, ShopModel restaurant, int stars, String message) async {
     if (isWorking)
       return;
     isWorking = true;

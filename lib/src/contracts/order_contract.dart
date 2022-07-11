@@ -5,8 +5,8 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
@@ -16,12 +16,12 @@ import 'package:KABA/src/xrint.dart';
 class OrderConfirmationContract {
 
 //  void login (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-  void checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) {}
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) {}
-  void computeBilling (RestaurantModel restaurant, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint){}
-  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint){}
-  Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end){}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+  void checkOpeningStateOf(CustomerModel customer, ShopModel restaurant) {}
+  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) {}
+  void computeBilling (ShopModel restaurant, CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint){}
+  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint){}
+  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end){}
 }
 
 class OrderConfirmationView {
@@ -56,7 +56,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
   }
 
   @override
-  Future computeBilling(RestaurantModel restaurantModel, CustomerModel customer, Map<RestaurantFoodModel, int> foods,
+  Future computeBilling(ShopModel restaurantModel, CustomerModel customer, Map<ShopProductModel, int> foods,
       DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint) async {
 
     if (isWorking)
@@ -85,7 +85,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
 
   @override
-  Future<void> payAtDelivery(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
+  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
@@ -106,7 +106,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> payNow(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
+  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
@@ -128,7 +128,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> payPreorder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
 
 
     if (isWorking)
@@ -151,7 +151,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) async {
+  Future<void> checkOpeningStateOf(CustomerModel customer, ShopModel restaurant) async {
 
     if (isWorking)
       return;

@@ -6,7 +6,7 @@ import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
@@ -322,7 +322,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
         ));
   }
 
-/* _jumpToFoodDetails(RestaurantFoodModel food_entity) {
+/* _jumpToFoodDetails(ShopProductModel food_entity) {
     Navigator.push(
       context,
       MaterialPageRoute(

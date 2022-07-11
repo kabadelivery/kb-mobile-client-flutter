@@ -1,7 +1,7 @@
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -18,7 +18,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class FoodWithRestaurantDetailsWidget extends StatefulWidget {
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   GlobalKey key;
 
@@ -196,7 +196,7 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
     return 0;
   }
 
-  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+  _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
    /* Navigator.push(
       context,
       MaterialPageRoute(
@@ -224,7 +224,7 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
     );*/
   }
 
-  void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -233,7 +233,7 @@ class _FoodWithRestaurantDetailsWidgetState extends State<FoodWithRestaurantDeta
     );
   }
 
-  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+  _getRestaurantStateTag(ShopModel restaurantModel) {
 
     String tagText = "-- --";
     Color tagTextColor = Colors.white;

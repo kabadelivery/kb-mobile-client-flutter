@@ -1,5 +1,5 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -130,7 +130,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
 //                       /* start a mini food list .. */
 // //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
-//                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())
+//                       //  _miniFoodWidget(ShopProductModel.randomFood())
 //                     ]/*..add(InkWell(onTap: (){setState(() {
 //                       widget.food_see_more = true;
 //                     });},
@@ -230,7 +230,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
-  _miniFoodWidget(RestaurantFoodModel food) {
+  _miniFoodWidget(ShopProductModel food) {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -258,7 +258,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     );
   }
 
-  _miniFoodsText(List<RestaurantFoodModel> products) {
+  _miniFoodsText(List<ShopProductModel> products) {
 
     if (products?.length > 20 && widget.food_see_more == false) {
       return "${products?.length} ${AppLocalizations.of(context).translate('foods_')}\n\n> See More <";

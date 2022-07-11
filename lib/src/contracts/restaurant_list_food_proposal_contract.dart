@@ -1,6 +1,6 @@
 
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
@@ -8,8 +8,8 @@ import 'package:KABA/src/xrint.dart';
 class RestaurantFoodProposalContract {
 
 //  void RestaurantFoodProposal (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-//  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+//  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
   void fetchRestaurantFoodProposalFromTag(String tag) async {}
 }
 
@@ -17,7 +17,7 @@ class RestaurantFoodProposalView {
   void searchMenuShowLoading(bool isLoading) {}
   void searchMenuSystemError () {}
   void searchMenuNetworkError () {}
-  void inflateFoodsProposal(List<RestaurantFoodModel> foods) {}
+  void inflateFoodsProposal(List<ShopProductModel> foods) {}
 }
 
 
@@ -45,7 +45,7 @@ class RestaurantFoodProposalPresenter implements RestaurantFoodProposalContract 
     isWorking = true;
     _restaurantFoodProposalView.searchMenuShowLoading(true);
     try {
-      List<RestaurantFoodModel> foods = await provider.fetchRestaurantFoodProposalFromTag(tag);
+      List<ShopProductModel> foods = await provider.fetchRestaurantFoodProposalFromTag(tag);
       _restaurantFoodProposalView.searchMenuShowLoading(false);
       _restaurantFoodProposalView.inflateFoodsProposal(foods);
     } catch (_) {

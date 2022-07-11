@@ -13,7 +13,7 @@ import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/MoneyTransactionModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
@@ -29,7 +29,7 @@ class ClientPersonalApiProvider {
   /// COMMENTS
   ///
   /// Get restaurants comments list
-  fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) async {
+  fetchRestaurantComment(ShopModel restaurantModel, UserTokenModel userToken) async {
     xrint("entered fetchRestaurantComment");
     if (await Utils.hasNetwork()) {
 

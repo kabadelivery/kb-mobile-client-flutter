@@ -10,8 +10,8 @@ class DailyOrderContract {
 
   void loadDailyOrders(CustomerModel customerModel) {}
 //  void login (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-//  void checkOpeningStateOf(CustomerModel customer, RestaurantModel restaurant) {}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+//  void checkOpeningStateOf(CustomerModel customer, ShopModel restaurant) {}
 }
 
 class DailyOrderView {

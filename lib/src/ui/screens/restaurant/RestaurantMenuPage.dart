@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
@@ -25,7 +25,7 @@ class RestaurantMenuPage extends StatefulWidget {
 
   static var routeName = "/RestaurantMenuPage";
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   MenuPresenter presenter;
 
@@ -69,8 +69,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   AnimationController _controller;
 
   /* selected foods */
-  Map<RestaurantFoodModel, int> food_selected = Map();
-  Map<RestaurantFoodModel, int> adds_on_selected = Map();
+  Map<ShopProductModel, int> food_selected = Map();
+  Map<ShopProductModel, int> adds_on_selected = Map();
 
 //  List<Widget> _dynamicAnimatedFood;
 //  List<AnimationController> _animationController;
@@ -307,7 +307,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   /* build food list widget */
-  Widget _buildFoodListWidget({RestaurantFoodModel food, int foodIndex, int menuIndex}) {
+  Widget _buildFoodListWidget({ShopProductModel food, int foodIndex, int menuIndex}) {
     return InkWell(
       onTap: () => _jumpToFoodDetails(context, food),
       child: Card(
@@ -430,7 +430,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
 
-  Widget _buildFoodListWidget2({RestaurantFoodModel food, int foodIndex, int menuIndex, int highlightedFoodId}) {
+  Widget _buildFoodListWidget2({ShopProductModel food, int foodIndex, int menuIndex, int highlightedFoodId}) {
 
     /*return Expanded(
     child: InkWell(
@@ -565,7 +565,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     );
   }
 
-  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+  _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
 
     food.restaurant_entity = widget.restaurant;
     /*  Navigator.push(
@@ -590,7 +590,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   /* add food to chart */
-  _addFoodToChart(RestaurantFoodModel food, int foodIndex, int menuIndex) {
+  _addFoodToChart(ShopProductModel food, int foodIndex, int menuIndex) {
 
 //    Toast.show("ok ${food.toString()}", context);
 
@@ -618,11 +618,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
 
   void _updateCounts() {
     int fc = 0;
-    food_selected.forEach((RestaurantFoodModel food, int quantity) {
+    food_selected.forEach((ShopProductModel food, int quantity) {
       fc += quantity;
     });
     int adc = 0;
-    adds_on_selected.forEach((RestaurantFoodModel food, int quantity) {
+    adds_on_selected.forEach((ShopProductModel food, int quantity) {
       adc += quantity;
     });
     setState(() {
@@ -658,7 +658,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         message, context, duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
   }
 
-  int _getQuantity(RestaurantFoodModel food) {
+  int _getQuantity(ShopProductModel food) {
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
         return food_selected[food].toInt();
@@ -708,7 +708,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     _updateCounts();
   }
 
-  void _launchAddToBasketAnimation(Offset position, RestaurantFoodModel food) {
+  void _launchAddToBasketAnimation(Offset position, ShopProductModel food) {
 
     return;
   }
@@ -722,7 +722,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   @override
-  void inflateMenu(RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {
+  void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
       if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
         FOOD_MAX = int.parse(restaurant.max_food);
@@ -802,7 +802,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     widget.highlightedFoodId = foodId;
   }
 
-  _showDetails(RestaurantFoodModel food) {
+  _showDetails(ShopProductModel food) {
     mDialog(food?.description);
   }
 

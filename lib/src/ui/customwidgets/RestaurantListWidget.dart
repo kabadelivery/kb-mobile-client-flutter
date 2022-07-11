@@ -1,7 +1,7 @@
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 class RestaurantListWidget extends StatefulWidget {
 
-  RestaurantModel restaurantModel;
+  ShopModel restaurantModel;
 
   RestaurantListWidget({
     Key key,
@@ -49,7 +49,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils.inflateLink(widget.restaurantModel.pic))
+                                image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
                             )
                         )
                     ),
@@ -118,7 +118,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
           onTap: (){widget?.restaurantModel?.coming_soon==0?_jumpToRestaurantMenu(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
   }
 
-  void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
 
    /* Navigator.push(
       context,
@@ -141,7 +141,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
         ));
   }
 
-  void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantMenu (BuildContext context, ShopModel restaurantModel) {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
@@ -165,7 +165,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     );*/
   }
 
-  void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
+  void _comingSoon(BuildContext context, ShopModel restaurantModel) {
     /* show the coming soon dialog */
     showDialog(context: context, builder: (BuildContext context)=>AlertDialog(
         content: Column(mainAxisSize: MainAxisSize.min,
@@ -177,7 +177,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel.pic))
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel?.pic))
                       )
                   )
               ),
@@ -200,7 +200,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     ));
   }
 
-  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+  _getRestaurantStateTag(ShopModel restaurantModel) {
 
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
@@ -236,7 +236,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
 
   }
 
-  getRating(RestaurantModel restaurantModel) {
+  getRating(ShopModel restaurantModel) {
 
    /* return Row(children: <Widget>[]
       ..addAll(

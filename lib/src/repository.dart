@@ -5,8 +5,8 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
@@ -19,14 +19,14 @@ class Repository {
 
   final appApiProvider = AppApiProvider();
   Future<String> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
-  // Future<List<RestaurantModel>> fetchRestaurantList(CustomerModel customer, Position position) => appApiProvider.fetchRestaurantList(customer, position);
-  // Future<List<RestaurantModel>> fetchFoodFromRestaurantByName(String desc) => appApiProvider.fetchFoodFromRestaurantByName(desc);
+  // Future<List<ShopModel>> fetchRestaurantList(CustomerModel customer, Position position) => appApiProvider.fetchRestaurantList(customer, position);
+  // Future<List<ShopModel>> fetchFoodFromRestaurantByName(String desc) => appApiProvider.fetchFoodFromRestaurantByName(desc);
 //Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Position position) => appApiProvider.checkLocationDetails(userToken, position);
 
 
   /* client personal api provider */
   final clientApiProvider = ClientPersonalApiProvider();
-  Future<List<CommentModel>> fetchRestaurantComment(RestaurantModel restaurantModel, UserTokenModel userToken) => clientApiProvider.fetchRestaurantComment(restaurantModel, userToken);
+  Future<List<CommentModel>> fetchRestaurantComment(ShopModel restaurantModel, UserTokenModel userToken) => clientApiProvider.fetchRestaurantComment(restaurantModel, userToken);
   Future<List<DeliveryAddressModel>> fetchMyAddresses(UserTokenModel userToken) => clientApiProvider.fetchMyAddresses(userToken);
 //  Future<int> registerSendingCodeAction(String login) => clientApiProvider.registerSendingCodeAction(login);
 
@@ -34,7 +34,7 @@ class Repository {
 
   /* restaurant personal api provider */
   final restaurantApiProvider = RestaurantApiProvider();
-  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(RestaurantModel restaurantModel) => restaurantApiProvider.fetchRestaurantMenuList(restaurantModel);
+  Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(ShopModel restaurantModel) => restaurantApiProvider.fetchRestaurantMenuList(restaurantModel);
 
   /* command api provider */
   final commandApiProvider = CommandsApiProvider();

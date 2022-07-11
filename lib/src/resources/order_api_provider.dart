@@ -14,9 +14,9 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -24,7 +24,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 class OrderApiProvider {
 
 
-  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, RestaurantModel restaurant, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoints) async {
+  Future<OrderBillConfiguration> computeBillingAction (CustomerModel customer, ShopModel restaurant, Map<ShopProductModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoints) async {
 
     xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -77,7 +77,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
+  Future<int> launchOrder(bool isPayAtDelivery, CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -210,7 +210,7 @@ String content = response.data.toString();
     }
   }
 
-  Future<String> checkOpeningStateOfRestaurant(CustomerModel customer, RestaurantModel restaurant) async {
+  Future<String> checkOpeningStateOfRestaurant(CustomerModel customer, ShopModel restaurant) async {
 
     xrint("entered checkOpeningStateOfRestaurant");
     if (await Utils.hasNetwork()) {
@@ -292,7 +292,7 @@ String content = response.data.toString();
     }
   }
 
-  launchPreorderOrder(CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+  launchPreorderOrder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     var device;

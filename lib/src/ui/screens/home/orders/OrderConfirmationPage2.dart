@@ -12,8 +12,8 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
@@ -51,7 +51,7 @@ import 'package:vibration/vibration.dart';
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
 
-  Map<RestaurantFoodModel, int> addons, foods;
+  Map<ShopProductModel, int> addons, foods;
 
 //  int totalPrice;
 
@@ -61,7 +61,7 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
   int orderOrPreorderChoice = 0;
 
-  RestaurantModel restaurant;
+  ShopModel restaurant;
 
   int orderTimeRangeSelected = 0;
 
@@ -1698,7 +1698,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     return foodList;
   }
 
-  Widget _buildBasketItem(RestaurantFoodModel food, int quantity) {
+  Widget _buildBasketItem(ShopProductModel food, int quantity) {
     return Card(
         elevation: 2.0,
         margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
@@ -2192,7 +2192,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     }
   }
 
-  _getFoodsIdArray(Map<RestaurantFoodModel, int> foods) {
+  _getFoodsIdArray(Map<ShopProductModel, int> foods) {
     List<int> foodsId = List();
     foods.forEach((foodItem, quantity) => {foodsId.add(foodItem.id)});
     return foodsId;
