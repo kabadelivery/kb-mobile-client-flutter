@@ -368,30 +368,26 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
     // return Text("Kodjo");
 
-    return Container(margin: EdgeInsets.only(left:10,right:10),
-      child: Expanded(
-        child: GridView.builder(
-          itemCount: data[_menuChipCurrentIndex]?.foods?.length,
-          itemBuilder: (context, index) => FlowerWidgetItem(
+    return Expanded(
+      child: GridView.builder(
+        itemCount: data[_menuChipCurrentIndex]?.foods?.length,
+        itemBuilder: (context, index) => FlowerWidgetItem(
             dataKey: dataKey,
-              jumpToFoodDetails: _jumpToFoodDetails,
-              showDetails: _showDetails,
-              addFoodToChart: _addFoodToChart,
-              food: data[_menuChipCurrentIndex]?.foods[index],
-              foodIndex: index,
-              menuIndex: _menuChipCurrentIndex,
-              highlightedFoodId: widget.highlightedFoodId),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.70,
+            jumpToFoodDetails: _jumpToFoodDetails,
+            showDetails: _showDetails,
+            addFoodToChart: _addFoodToChart,
+            food: data[_menuChipCurrentIndex]?.foods[index],
+            foodIndex: index,
+            menuIndex: _menuChipCurrentIndex,
+            highlightedFoodId: widget.highlightedFoodId),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 0.70,
             crossAxisCount: 2,
             mainAxisSpacing: 10,
-            crossAxisSpacing: 10
-          ),
-        ),
+            crossAxisSpacing: 10),
       ),
     );
   }
-
 
   _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
     food.restaurant_entity = widget.restaurant;

@@ -51,13 +51,14 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                               /* contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
                                 leading: */
                               Container(
-                                  height: 60,
-                                  width: 60,
+                                  height: 50,
+                                  width: 50,
                                   decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),
+                                      border: new Border.all(color: KColors.primaryColor.withOpacity(0.7), width: 2),
+                                      /*borderRadius:
+                                          BorderRadius.all(Radius.circular(2)),*/
                                       // border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                                      shape: BoxShape.rectangle,
+                                      shape: BoxShape.circle,
                                       color: Colors.white,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
@@ -73,7 +74,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   children: <Widget>[
                                     Text("${widget?.restaurantModel?.name}",
                                         overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
+                                        maxLines: 1,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color: Colors.black,
@@ -82,7 +83,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     SizedBox(height: 5),
                                     Text("${widget?.restaurantModel?.address}",
                                         overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
+                                        maxLines: 1,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             fontSize: 13,

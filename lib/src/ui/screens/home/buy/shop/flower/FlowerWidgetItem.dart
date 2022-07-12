@@ -35,6 +35,8 @@ class FlowerWidgetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    return Text("${this.food.name}");
     return InkWell(
       onTap: () => jumpToFoodDetails(context, food),
       child: Container(

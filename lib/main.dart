@@ -57,7 +57,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:overlay_support/overlay_support.dart';
 // import 'package:sentry_flutter/sentry_flutter.dart';
 
-
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
@@ -79,7 +78,7 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
@@ -106,12 +105,10 @@ Future<void> main() async {
   });
 }
 
-
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 
 class MyApp extends StatefulWidget {
-
   FirebaseAnalytics analytics;
   FirebaseAnalyticsObserver observer;
 
@@ -124,15 +121,11 @@ class MyApp extends StatefulWidget {
 
   @override
   _MyAppState createState() => _MyAppState();
-
 }
 
-
 class _MyAppState extends State<MyApp> {
-
-
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<
-      NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -141,7 +134,6 @@ class _MyAppState extends State<MyApp> {
     // logTextController = new TextEditingController();
     // topicTextController = new TextEditingController();
     // initPlatformState();
-
   }
 
   @override
@@ -262,17 +254,15 @@ class _MyAppState extends State<MyApp> {
               navigatorKey: navigatorKey,
               onGenerateTitle: (BuildContext context) =>
 //          "${AppLocalizations.of(context).translate('app_title')}",
-              "KABA",
-              theme: ThemeData(primarySwatch: KColors.colorCustom,
-                  fontFamily: 'GoogleSans'),
+                  "KABA",
+              theme: ThemeData(
+                  primarySwatch: KColors.colorCustom, fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
 //              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
 //             home: SearchProductPage(),
-            home: FlowerCatalogPage(
-              presenter: MenuPresenter(), menuId: 387
-            ),
-           /*   home: RestaurantListPage(
+              home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 387),
+                 /*home: RestaurantListPage(
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),
                   restaurantListPresenter: RestaurantListPresenter()),*/
@@ -304,15 +294,14 @@ class _MyAppState extends State<MyApp> {
         }));
   }
 
-
   void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(
-        RestaurantMenuPage.routeName, arguments: -1 * product_id);
+    navigatorKey.currentState
+        .pushNamed(RestaurantMenuPage.routeName, arguments: -1 * product_id);
   }
 
   void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(
-        OrderDetailsPage.routeName, arguments: product_id);
+    navigatorKey.currentState
+        .pushNamed(OrderDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
@@ -325,19 +314,18 @@ class _MyAppState extends State<MyApp> {
 
   void _jumpToRestaurantDetailsPage(int product_id) {
     /* send a negative id when we want to show the food inside the menu */
-    navigatorKey.currentState.pushNamed(
-        RestaurantDetailsPage.routeName, arguments: product_id);
+    navigatorKey.currentState
+        .pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState.pushNamed(
-        RestaurantMenuPage.routeName, arguments: product_id);
+    navigatorKey.currentState
+        .pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
   void _jumpToServiceClient() {
     navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
-
 }
 
 class CustomIntentPage extends StatelessWidget {
@@ -346,5 +334,3 @@ class CustomIntentPage extends StatelessWidget {
     return Container(child: Text("hard"), color: Colors.white);
   }
 }
-
-
