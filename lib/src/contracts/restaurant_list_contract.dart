@@ -60,6 +60,8 @@ class RestaurantListPresenter implements RestaurantListContract {
             : (customer.username.contains("@") ? true : false)
       });
 
+      xrint(restaurants);
+
       _restaurantListView.loadRestaurantListLoading(false);
 
       // order list

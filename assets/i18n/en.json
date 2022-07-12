@@ -66,7 +66,7 @@
   "addresses": "ADDRESSES",
   "feeds": "FEEDS",
   "please_check_balance": "Please check your balance if you have successfully achieved topup",
-  "currency": "XOF",
+  "currency": "F",
   "input_password": "INPUT PASSWORD",
   "delete": "DELETE",
   "enter_password": "Please enter your personal Password",
@@ -419,6 +419,16 @@
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
 
-  "what_want_buy": "What do you want to buy ?"
+  "what_want_buy": "What do you want to buy ?",
+  "categories": "Categories",
+  "product_details": "Product details",
+  "product_description_section_title": "About",
+
+  "t_closed": "Closed",
+  "t_opened": "Opened",
+  "t_paused": "Paused",
+  "t_unavailable": "Unavailable"
+
+
 
 }

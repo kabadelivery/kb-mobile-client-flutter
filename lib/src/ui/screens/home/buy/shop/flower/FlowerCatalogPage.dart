@@ -9,6 +9,7 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerWidgetItem.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -103,13 +104,6 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
     widget.presenter.menuView = this;
 
     if (!widget.fromNotification) {
-//      if (widget.menuId == -1)
-//        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
-//      else {
-//        /* be able to fetch menu with food_id, and highlight the food with some interesting color. */
-//        widget.presenter.fetchMenuWithMenuId(widget.menuId);
-//      }
-
       if (widget.menuId != -1) {
         widget.presenter.fetchMenuWithMenuId(widget?.menuId);
       } else if (widget.foodId != -1) {
@@ -118,8 +112,6 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
         widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
       }
     }
-
-    // TODO when we open menu with a food id, or menu id, we should set it at the top, and maybe highlight the choosen item
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
@@ -182,6 +174,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
             BouncingWidget(
               duration: Duration(milliseconds: 500),
               scaleFactor: 3,
+              onPressed: () => _showMenuBottomSheet(ALL),
               child: IconButton(
                   key: _menuBasketKey,
                   icon: Icon(Icons.shopping_cart, color: Colors.white),
@@ -195,6 +188,8 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
     return Scaffold(
       appBar: appBar,
       body: Container(
+          color: Colors.grey.withAlpha(5),
+          padding: EdgeInsets.only(left: 10, right: 10),
           child: isLoading
               ? Center(child: MyLoadingProgressWidget())
               : (hasNetworkError
@@ -205,6 +200,20 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                           SingleChildScrollView(
                             child: Column(
                               children: <Widget>[
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "${AppLocalizations.of(context).translate('categories')}"
+                                            ?.toUpperCase(),
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
                                 SizedBox(height: 5),
                                 ChipList(
                                   style: TextStyle(fontSize: 12),
@@ -217,7 +226,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                   ],
                                   activeTextColorList: [Colors.white],
                                   inactiveTextColorList: [
-                                    Colors.black.withOpacity(0.7)
+                                    Colors.black.withOpacity(0.9)
                                   ],
                                   listOfChipIndicesCurrentlySeclected: [
                                     _menuChipCurrentIndex
@@ -345,9 +354,9 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 //      _openDrawer();
       _firstTime = false;
     }
-    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
+    // SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
           this?.data = data;
-        }));
+        // }));
 
     /*return SingleChildScrollView(
       child: Column(
@@ -381,7 +390,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
             menuIndex: _menuChipCurrentIndex,
             highlightedFoodId: widget.highlightedFoodId),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 0.70,
+            childAspectRatio: 0.65,
             crossAxisCount: 2,
             mainAxisSpacing: 10,
             crossAxisSpacing: 10),
@@ -400,7 +409,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            RestaurantFoodDetailsPage(food: food),
+            ShopFlowerDetailsPage(food: food),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -564,9 +573,9 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
     });
     showLoading(false);
     // two seconds after, we jump
-    Future.delayed(Duration(seconds: 1), () {
-      Scrollable.ensureVisible(dataKey.currentContext);
-    });
+    // Future.delayed(Duration(seconds: 1), () {
+    //   Scrollable.ensureVisible(dataKey.currentContext);
+    // });
   }
 
   @override

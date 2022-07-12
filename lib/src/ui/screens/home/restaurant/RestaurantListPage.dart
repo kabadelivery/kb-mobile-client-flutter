@@ -489,7 +489,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                               if (index == data?.length)
                                                 return Container(height: 100);
                                               return ShopListWidget(
-                                                  restaurantModel: data[index]);
+                                                  shopModel: data[index]);
                                             },
                                           ),
                                         ),
@@ -1114,7 +1114,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           controller: _restaurantListScrollController,
           itemCount: _filteredData(data).length,
           itemBuilder: (context, index) {
-            return ShopListWidget(restaurantModel: _filteredData(data)[index]);
+            return ShopListWidget(shopModel: _filteredData(data)[index]);
           },
         ),
       ),

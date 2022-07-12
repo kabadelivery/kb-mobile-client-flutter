@@ -67,7 +67,7 @@
   "addresses": "ADRESSES",
   "feeds": "NOUVELLES",
   "please_check_balance": "Veuillez s'il vous plait vérifier votre solde si vous avez finaliser votre rechargement",
-  "currency": "FCFA",
+  "currency": "F",
   "input_password": "ENTRER MOT DE PASSE",
   "delete": "SUPPRIMER",
   "enter_password": "Veuillez entrer votre Mot de Passe personnel",
@@ -179,7 +179,7 @@
   "a_review": "votre avis...",
   "please_review_restaurant": "Veuillez donner un avis sur le restaurant. Nous apprécions vraiment celà. \nMerci",
   "coming_soon_dialog": "Salut! Ce restaurant sera bientôt disponible sur la plateforme KABA.\n\nMerci de patienter",
-  "coming_soon": "Bientôt disponible",
+  "coming_soon": "À Venir",
   "out_of_range": "Hors zone",
   "km":"Km",
   "confirm_order": "Confirmer commande",
@@ -477,7 +477,16 @@
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
 
-  "what_want_buy": "Que voulez vous acheter ?"
+  "what_want_buy": "Que voulez vous acheter ?",
+  "categories": "Catégories",
 
+  "product_details": "Détails du produit",
+
+  "product_description_section_title": "À-propos",
+
+  "t_closed": "Fermé",
+  "t_opened": "Ouvert",
+  "t_paused": "En Pause",
+  "t_unavailable": "Indispo"
 
 }

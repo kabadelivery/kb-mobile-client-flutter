@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -12,13 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShopListWidget extends StatefulWidget {
-  ShopModel restaurantModel = ShopModel(
+  ShopModel shopModel = ShopModel(
       name: "Quartier des fleurs",
       address: "6381 Elgin St. Celina, Delaware 10299");
 
   ShopListWidget({
     Key key,
-    this.restaurantModel,
+    this.shopModel,
   }) : super(key: key);
 
   @override
@@ -31,20 +32,22 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     // TODO: implement build
     return (InkWell(
         child: Container(
-        /*  color: Colors.green,
+          margin: new EdgeInsets.symmetric(horizontal: 10.0),
+          /*  color: Colors.green,
           padding: const EdgeInsets.only(top: 30.0),*/
           child: Stack(
             children: [
               Container(
                   color: Colors.grey,
-                  margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                  margin: EdgeInsets.only(top: 20),
                   child: Container(
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(241, 241, 241, 1.0),
                       ),
                       child: Column(children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
+                          padding:
+                              EdgeInsets.only(top: 10, bottom: 10, left: 10),
                           child: Row(
                             children: [
                               // ListTile(
@@ -54,7 +57,10 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                      border: new Border.all(color: KColors.primaryColor.withOpacity(0.7), width: 2),
+                                      border: new Border.all(
+                                          color: KColors.primaryColor
+                                              .withOpacity(0.7),
+                                          width: 2),
                                       /*borderRadius:
                                           BorderRadius.all(Radius.circular(2)),*/
                                       // border: new Border.all(color: KColors.primaryYellowColor, width: 2),
@@ -64,7 +70,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                           fit: BoxFit.cover,
                                           image: CachedNetworkImageProvider(
                                               Utils.inflateLink(widget
-                                                  .restaurantModel?.pic))))),
+                                                  .shopModel?.pic))))),
                               /*title:*/
                               SizedBox(width: 15),
                               Expanded(
@@ -72,7 +78,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text("${widget?.restaurantModel?.name}",
+                                    Text(
+                                        "${Utils.capitalize(widget?.shopModel?.name)}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         textAlign: TextAlign.left,
@@ -81,23 +88,29 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500)),
                                     SizedBox(height: 5),
-                                    Text("${widget?.restaurantModel?.address}",
+                                    Text("${widget?.shopModel?.address}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
+                                          fontWeight: FontWeight.w200,
                                             fontSize: 13,
-                                            color: Colors.black.withAlpha(150))),
+                                            color:
+                                                Colors.black.withAlpha(150))),
                                     SizedBox(height: 5),
                                     /* kilometers and shipping fees */
                                     Row(children: <Widget>[
-                                      widget.restaurantModel?.distance == null
+                                      _getRestaurantStateTag(
+                                          widget?.shopModel),
+                                      SizedBox(width: 10),
+                                      widget.shopModel?.distance == null
                                           ? Container()
                                           : Container(
                                               padding: EdgeInsets.all(5),
                                               decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(5)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
                                                   color: Colors.white),
                                               child: Row(
                                                 children: [
@@ -105,11 +118,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                       FontAwesomeIcons
                                                           .locationArrow,
                                                       color: KColors.mGreen,
-                                                      size: 14),
+                                                      size: 10),
                                                   Text(
-                                                      "~${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}",
+                                                      " ${widget.shopModel?.distance}${AppLocalizations.of(context).translate('km')}",
                                                       style: TextStyle(
-                                                          color: Colors.black,
+                                                          color: Colors.grey,
                                                           fontWeight:
                                                               FontWeight.normal,
                                                           fontStyle:
@@ -119,9 +132,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                               ),
                                             ),
                                       SizedBox(width: 10),
-                                      widget.restaurantModel?.distance == null
+                                      widget.shopModel?.distance == null
                                           ? Container()
-                                          : widget.restaurantModel
+                                          : widget.shopModel
                                                       ?.delivery_pricing ==
                                                   "0"
                                               ? Container()
@@ -130,27 +143,29 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.all(
-                                                              Radius.circular(5)),
+                                                              Radius.circular(
+                                                                  10)),
                                                       color: Colors.white),
                                                   child: Row(
                                                     children: <Widget>[
                                                       Icon(
                                                           FontAwesomeIcons
-                                                              .moneyBill,
+                                                              .biking,
                                                           color: KColors
-                                                              .primaryYellowColor,
-                                                          size: 14),
+                                                              .primaryColor,
+                                                          size: 12),
                                                       SizedBox(width: 5),
                                                       Text(
-                                                          (widget.restaurantModel
+                                                          (widget.shopModel
                                                                       ?.delivery_pricing ==
                                                                   "~"
                                                               ? "${AppLocalizations.of(context).translate('out_of_range')}"
-                                                              : widget?.restaurantModel
+                                                              : widget?.shopModel
                                                                       ?.delivery_pricing +
                                                                   " F"),
                                                           style: TextStyle(
-                                                              color: Colors.grey,
+                                                              color:
+                                                                  Colors.grey,
                                                               fontSize: 12)),
                                                     ],
                                                   )),
@@ -165,57 +180,46 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                         SizedBox(width: 5),
                       ]))),
               Positioned(
-                  top: -15,
+                  top: 0,
                   right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: InkWell(onTap: ()=>_jumpToShopDetails(context, widget.shopModel),
+                    child: Container(
+                      child: Center(
+                          child:   Icon(
+                                Icons.other_houses_rounded,
+                                size: 20,
+                                color: KColors.primaryColor,
+                               )),
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: Colors.white, shape: BoxShape.circle),
                       padding: EdgeInsets.all(5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(children: [
-                            _getRestaurantStateTag(widget?.restaurantModel),
-                            SizedBox(width: 5),
-                            widget?.restaurantModel?.coming_soon == 1
-                                ? Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5)),
-                                    color: KColors.primaryColor),
-                                child: Text(
-                                    "${AppLocalizations.of(context).translate('coming_soon')}",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12)))
-                                : Container()
-                            // getRating(widget.restaurantModel)
-                          ]),
-                        ],
-                      ))),
+                    ),
+                  )),
             ],
           ),
         ),
         onTap: () {
-          widget?.restaurantModel?.coming_soon == 0
-              ? _jumpToRestaurantMenu(context, widget.restaurantModel)
-              : _comingSoon(context, widget.restaurantModel);
+          widget?.shopModel?.coming_soon == 0
+              ? _jumpToRestaurantMenu(context, widget.shopModel)
+              : _comingSoon(context, widget.shopModel);
         }));
   }
 
-  void _jumpToRestaurantDetails(
-      BuildContext context, ShopModel restaurantModel) {
+  void _jumpToShopDetails(
+      BuildContext context, ShopModel shopModel) {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+        builder: (context) => RestaurantDetailsPage(restaurant: shopModel, presenter: RestaurantDetailsPresenter()),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            RestaurantDetailsPage(
-                restaurant: restaurantModel,
+            ShopDetailsPage(
+                restaurant: shopModel,
                 presenter: RestaurantDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
@@ -229,11 +233,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
         }));
   }
 
-  void _jumpToRestaurantMenu(BuildContext context, ShopModel restaurantModel) {
+  void _jumpToRestaurantMenu(BuildContext context, ShopModel shopModel) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter()),
+                restaurant: shopModel, presenter: MenuPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -248,12 +252,12 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(restaurant: shopModel, presenter: MenuPresenter()),
       ),
     );*/
   }
 
-  void _comingSoon(BuildContext context, ShopModel restaurantModel) {
+  void _comingSoon(BuildContext context, ShopModel shopModel) {
     /* show the coming soon dialog */
     showDialog(
         context: context,
@@ -270,7 +274,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                           image: new DecorationImage(
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(restaurantModel?.pic))))),
+                                  Utils.inflateLink(shopModel?.pic))))),
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate('coming_soon_dialog')}",
@@ -290,51 +294,55 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                 ]));
   }
 
-  _getRestaurantStateTag(ShopModel restaurantModel) {
+  _getRestaurantStateTag(ShopModel shopModel) {
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
-    Color tagColor = KColors.primaryColor;
 
-    switch (restaurantModel?.open_type) {
+    switch (shopModel?.open_type) {
       case 0: // closed
-        tagText =
-            "${AppLocalizations.of(context).translate('r_closed_preorder')}";
-        tagColor = KColors.mBlue;
+        tagText = "${AppLocalizations.of(context).translate('t_closed')}";
+        tagTextColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('r_opened')}";
-        tagColor = CommandStateColor.delivered;
+        tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        tagTextColor = CommandStateColor.delivered;
         break;
       case 2: // paused
-        tagText =
-            "${AppLocalizations.of(context).translate('r_pause_preorder')}";
-        tagColor = KColors.mBlue;
+        tagText = "${AppLocalizations.of(context).translate('t_paused')}";
+        tagTextColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText =
-            "${AppLocalizations.of(context).translate('r_blocked_preorder')}";
-        tagColor = KColors.primaryColor;
+        tagText = "${AppLocalizations.of(context).translate('t_unavailable')}";
+        tagTextColor = KColors.mBlue;
         break;
     }
 
-    return restaurantModel?.coming_soon == 0
+    return shopModel?.coming_soon == 0
         ? Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                color: tagColor),
-            child: Text(tagText,
-                style: TextStyle(color: tagTextColor, fontSize: 12)))
-        : Container();
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Colors.white),
+            child: Text(tagText?.toUpperCase(),
+                style: TextStyle(color: tagTextColor, fontSize: 11)))
+        : Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Colors.white),
+            child: Text(
+                "${AppLocalizations.of(context).translate('coming_soon')}"
+                    ?.toUpperCase(),
+                style: TextStyle(color: Colors.grey, fontSize: 11)));
   }
 
-  getRating(ShopModel restaurantModel) {
+  getRating(ShopModel shopModel) {
     /* return Row(children: <Widget>[]
       ..addAll(
-          List<Widget>.generate(restaurantModel.stars.toInt(), (int index) {
+          List<Widget>.generate(shopModel.stars.toInt(), (int index) {
             return Icon(Icons.star, color: KColors.primaryYellowColor, size: 14);
           })
-            ..add((restaurantModel.stars*10)%10 != 0 ? Icon(Icons.star_half, color: KColors.primaryYellowColor, size: 14) : Container())
+            ..add((shopModel.stars*10)%10 != 0 ? Icon(Icons.star_half, color: KColors.primaryYellowColor, size: 14) : Container())
       ));*/
   }
 }

@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
+import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
@@ -21,6 +22,7 @@ import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -259,14 +261,14 @@ class _MyAppState extends State<MyApp> {
                   primarySwatch: KColors.colorCustom, fontFamily: 'GoogleSans'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+             home: SplashPage(analytics: widget.analytics, observer: widget.observer),
 //             home: SearchProductPage(),
-              home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 387),
+              // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
+                // home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 386,),
                  /*home: RestaurantListPage(
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),
                   restaurantListPresenter: RestaurantListPresenter()),*/
-              // home: BuyPage(),
               // home: TransactionHistoryPage(presenter: TransactionPresenter()),
               // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
               //   home: TestPage(),

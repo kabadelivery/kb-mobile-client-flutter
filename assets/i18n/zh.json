@@ -66,7 +66,7 @@
   "addresses": "地址",
   "feeds": "通知",
   "please_check_balance": "请检查交易记录以确认充值成功",
-  "currency": "西法",
+  "currency": "郎",
   "input_password": "输入密码",
   "delete": "删除",
   "enter_password": "请输入您的个人密码",
@@ -469,7 +469,17 @@
   "service_category_ticket": "门票",
 
   "service_category_unknown": "无知",
-  "what_want_buy": "想购买什么呢 ?"
+  "what_want_buy": "想购买什么呢 ?",
+  "categories": "分类",
+
+  "product_details": "产品详情",
+
+  "product_description_section_title": "关于",
+
+  "t_closed": "关门",
+  "t_opened": "开门",
+  "t_paused": "休息中",
+  "t_unavailable": "暂时关门"
 
 
 }
