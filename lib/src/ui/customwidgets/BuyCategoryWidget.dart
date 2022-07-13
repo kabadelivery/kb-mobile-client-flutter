@@ -43,7 +43,7 @@ class BuyCategoryWidget extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
             decoration: BoxDecoration(
-                color: KColors.buy_category_button_bg,
+                color: KColors.new_gray,
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Row(mainAxisSize: MainAxisSize.max, children: [
               Container(width: 45, height: 45, child: getCategoryIcon()),

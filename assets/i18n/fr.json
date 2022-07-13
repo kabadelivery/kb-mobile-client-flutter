@@ -487,6 +487,8 @@
   "t_closed": "Fermé",
   "t_opened": "Ouvert",
   "t_paused": "En Pause",
-  "t_unavailable": "Indispo"
+  "t_unavailable": "Indispo",
+  "search": "Recherche"
+
 
 }

@@ -13,9 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShopListWidget extends StatefulWidget {
-  ShopModel shopModel = ShopModel(
-      name: "Quartier des fleurs",
-      address: "6381 Elgin St. Celina, Delaware 10299");
+  ShopModel shopModel;
 
   ShopListWidget({
     Key key,
@@ -38,11 +36,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
           child: Stack(
             children: [
               Container(
-                  color: Colors.grey,
+                  // color: Colors.grey,
                   margin: EdgeInsets.only(top: 20),
                   child: Container(
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(241, 241, 241, 1.0),
+                        color: Color.fromRGBO(247, 247, 247, 1.0),
                       ),
                       child: Column(children: <Widget>[
                         Container(

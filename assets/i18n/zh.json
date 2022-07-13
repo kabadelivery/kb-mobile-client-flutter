@@ -479,7 +479,8 @@
   "t_closed": "关门",
   "t_opened": "开门",
   "t_paused": "休息中",
-  "t_unavailable": "暂时关门"
+  "t_unavailable": "暂时关门",
+  "search": "搜索"
 
 
 }

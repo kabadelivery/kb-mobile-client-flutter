@@ -427,7 +427,9 @@
   "t_closed": "Closed",
   "t_opened": "Opened",
   "t_paused": "Paused",
-  "t_unavailable": "Unavailable"
+  "t_unavailable": "Unavailable",
+
+  "search": "Search"
 
 
 

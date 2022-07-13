@@ -167,7 +167,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
           child: Stack(
             children: <Widget>[
               Container(
-                height: 2 * MediaQuery.of(context).size.width / 3,
+                height: 9 * MediaQuery.of(context).size.width / 16,
                 width:   MediaQuery.of(context).size.width,
                 color: Colors.redAccent,
                 child: CarouselSlider(
@@ -193,7 +193,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                     return Builder(
                       builder: (BuildContext context) {
                         return Container(
-                            height: 2 * MediaQuery.of(context).size.width / 3,
+                            height: 9 * MediaQuery.of(context).size.width / 16,
                             width:  MediaQuery.of(context).size.width,
                             child: CachedNetworkImage(
                                 imageUrl: Utils.inflateLink(pictureLink),
@@ -206,7 +206,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
               SingleChildScrollView(
                   child: Column(children: <Widget>[
                 SizedBox(
-                  height: 2 * MediaQuery.of(context).size.width / 3- 20,
+                  height: 9 * MediaQuery.of(context).size.width / 16- 20,
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
@@ -299,11 +299,14 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                   style: TextStyle(color: Colors.black))
                             ]),
                             SizedBox(height: 10),
-                            Text("${widget.food?.description?.trim()}",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: Colors.black.withAlpha(150),
-                                    fontSize: 14)),
+                            Row(mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("${widget.food?.description?.trim()}",
+                                    style: TextStyle(
+                                        color: Colors.black.withAlpha(150),
+                                        fontSize: 14)),
+                              ],
+                            ),
                             SizedBox(height: 20)
                           ])),
                     ],

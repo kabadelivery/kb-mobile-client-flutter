@@ -21,6 +21,7 @@ import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
@@ -258,13 +259,14 @@ class _MyAppState extends State<MyApp> {
 //          "${AppLocalizations.of(context).translate('app_title')}",
                   "KABA",
               theme: ThemeData(
-                  primarySwatch: KColors.colorCustom, fontFamily: 'GoogleSans'),
+                  primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-             home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+//              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
 //             home: SearchProductPage(),
+//             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
               // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
-                // home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 386,),
+              //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
                  /*home: RestaurantListPage(
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),

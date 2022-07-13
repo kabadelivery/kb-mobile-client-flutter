@@ -59,7 +59,7 @@ class ShopProductModel {
 
         l = json["food_details_pictures"];
         food_details_pictures = l?.map((pic_link) => "${pic_link}")?.toList();
-
+        // food_details_pictures = []..add(pic);
         is_favorite = json['is_favorite'];
         stars = json['stars'];
         promotion = json['promotion'];
