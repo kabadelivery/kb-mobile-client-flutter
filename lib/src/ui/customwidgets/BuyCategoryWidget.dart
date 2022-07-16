@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
@@ -10,11 +11,15 @@ import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 
 class BuyCategoryWidget extends StatelessWidget {
+
   ServiceMainEntity entity;
 
   bool available;
 
-  BuyCategoryWidget(ServiceMainEntity entity, {bool available = true}) {
+  bool isNew;
+
+  BuyCategoryWidget(ServiceMainEntity entity,
+      {this.available = true, this.isNew = false}) {
     this.entity = entity;
     this.available = available;
   }
@@ -30,29 +35,56 @@ class BuyCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Material(
-        child: InkWell(
-          onTap: () {
-            _jumpToPage(
-                context,
-                RestaurantListPage(
-                    context: context,
-                    foodProposalPresenter: RestaurantFoodProposalPresenter(),
-                    restaurantListPresenter: RestaurantListPresenter()));
-          },
-          child: Container(
-            padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
-            decoration: BoxDecoration(
-                color: KColors.new_gray,
-                borderRadius: BorderRadius.all(Radius.circular(5))),
-            child: Row(mainAxisSize: MainAxisSize.max, children: [
-              Container(width: 45, height: 45, child: getCategoryIcon()),
-              SizedBox(width: 20),
-              Flexible(
-                  child: Text(getCategoryTitle(context),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black)))
-            ]),
+      decoration: BoxDecoration(
+          color: KColors.buy_category_button_bg,
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      child: InkWell(
+        onTap: () {
+          _jumpToPage(
+              context,
+              ShopListPage(
+                  context: context,
+                  foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                  restaurantListPresenter: RestaurantListPresenter()));
+        },
+        child: Container(
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 2, top: 4, bottom: 4),
+                  child: Row(mainAxisSize: MainAxisSize.max, children: [
+                    Container(width: 45, height: 45, child: getCategoryIcon()),
+                    SizedBox(width: 15),
+                    Flexible(
+                        child: Text(getCategoryTitle(context),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black)))
+                  ]),
+                ),
+              ),
+              isNew
+                  ? RotatedBox(
+                      quarterTurns: -45,
+                      child: Container(
+                          padding: EdgeInsets.only(top: 2, bottom: 2),
+                          decoration: BoxDecoration(
+                              color: KColors.primaryYellowColor,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5))),
+                          child: Center(
+                            child: Text(
+                                "${AppLocalizations.of(context).translate('new')}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 8)),
+                          )),
+                    )
+                  : Container()
+            ],
           ),
         ),
       ),

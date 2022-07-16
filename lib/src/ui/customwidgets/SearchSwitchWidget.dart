@@ -10,7 +10,9 @@ class SearchSwitchWidget extends StatefulWidget {
   Function onSwitch;
   int selected_position;
 
-  SearchSwitchWidget(this.selected_position, this.onSwitch);
+  Function filterFunction;
+
+  SearchSwitchWidget(this.selected_position, this.onSwitch, this.filterFunction);
 
   @override
   _SearchSwitchWidgetState createState() {
@@ -140,9 +142,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
 //                      color: Colors.deepPurpleAccent,
                           ),
                       onChanged: (String newValue) {
-                        setState(() {
-                          _filterDropdownValue = newValue;
-                        });
+                       widget.filterFunction(newValue);
                       },
                       items: <String>[
                         '${AppLocalizations.of(context).translate('cheap_to_exp')}',

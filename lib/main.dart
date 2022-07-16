@@ -262,7 +262,7 @@ class _MyAppState extends State<MyApp> {
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-//              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+             home: SplashPage(analytics: widget.analytics, observer: widget.observer),
 //             home: SearchProductPage(),
 //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
               // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),

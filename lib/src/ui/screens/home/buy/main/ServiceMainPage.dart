@@ -1,9 +1,14 @@
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -61,6 +66,16 @@ class ServiceMainPageState extends State<ServiceMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: KColors.primaryColor,
+          title: Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(Utils.capitalize("${AppLocalizations.of(context).translate('buy')}"),
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
+            ],
+          ),
+        ),
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.dark,
@@ -173,6 +188,21 @@ class ServiceMainPageState extends State<ServiceMainPage> {
   }
 
   void _jumpToSearchPage(int i) {
-
+    _jumpToPage(
+        context,
+        ShopListPage(
+            context: context,
+            foodProposalPresenter: RestaurantFoodProposalPresenter(),
+            restaurantListPresenter: RestaurantListPresenter()));
   }
+
+
+  void _jumpToPage(BuildContext context, page) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => page,
+        ));
+  }
+
 }

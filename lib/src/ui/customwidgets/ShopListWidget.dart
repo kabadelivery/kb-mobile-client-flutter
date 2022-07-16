@@ -334,13 +334,5 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                 style: TextStyle(color: Colors.grey, fontSize: 11)));
   }
 
-  getRating(ShopModel shopModel) {
-    /* return Row(children: <Widget>[]
-      ..addAll(
-          List<Widget>.generate(shopModel.stars.toInt(), (int index) {
-            return Icon(Icons.star, color: KColors.primaryYellowColor, size: 14);
-          })
-            ..add((shopModel.stars*10)%10 != 0 ? Icon(Icons.star_half, color: KColors.primaryYellowColor, size: 14) : Container())
-      ));*/
-  }
+
 }

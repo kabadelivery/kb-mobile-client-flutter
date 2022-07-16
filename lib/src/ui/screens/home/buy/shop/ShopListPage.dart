@@ -7,7 +7,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/ui/customwidgets/FoodWithRestaurantDetailsWidget.dart';
+import 'package:KABA/src/ui/customwidgets/ProductWithShopDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchSwitchWidget.dart';
@@ -71,7 +71,7 @@ class _ShopListPageState extends State<ShopListPage>
 
   bool _searchMode = false;
 
-  int searchTypePosition = 1;
+  int searchTypePosition = 2;
 
   bool searchMenuHasSystemError = false, searchMenuHasNetworkError = false;
   bool isSearchingMenus = false;
@@ -80,7 +80,7 @@ class _ShopListPageState extends State<ShopListPage>
 
   String _filterDropdownValue;
 
-  GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
+  // GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
@@ -243,98 +243,119 @@ class _ShopListPageState extends State<ShopListPage>
       appBar: AppBar(
         brightness: Brightness.light,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
-          Navigator.pop(context);
-        }),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         backgroundColor: KColors.primaryColor,
-        title: Text("${AppLocalizations.of(context).translate('search')}", style: TextStyle(color: Colors.white)),
+        title: Text("${AppLocalizations.of(context).translate('search')}",
+            style: TextStyle(fontSize: 16, color: Colors.white)),
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Container(
-          // margin: EdgeInsets.only(bottom: 58),
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-//            border: new Border.all(color: Colors.white),
-                    color: KColors.primaryColor.withAlpha(30)),
-                padding: EdgeInsets.only(left: 8, right: 8),
-                margin: EdgeInsets.only(top: 12, bottom: 8, left: 20, right: 20),
-                child: Row(
-                  children: <Widget>[
+              Container(    margin: EdgeInsets.only(right: 20),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     Expanded(
-                      child: Focus(
-                        onFocusChange: (hasFocus) {
-                          if (hasFocus) {
-                            // do staff
-                            _searchMode = true;
-                          } else {
-                            // out search mode
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(topLeft:Radius.circular(5), bottomLeft: Radius.circular(5)),
+//            border: new Border.all(color: Colors.white),
+                            color: KColors.primaryColor.withAlpha(30)),
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        margin: EdgeInsets.only(
+                            top: 10, bottom: 8, left: 20),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Expanded(
+                              child: Focus(
+                                onFocusChange: (hasFocus) {
+                                  if (hasFocus) {
+                                    // do staff
+                                    _searchMode = true;
+                                  } else {
+                                    // out search mode
 //                    mToast("Out search mode");
-                            _searchMode = false;
-                          }
-                        },
-                        child: TextField(
-                            controller: _filterEditController,
-                            onSubmitted: (val) {
-                              if (searchTypePosition == 2) {
-                                if (_filterEditController.text?.trim()?.length !=
-                                    null &&
-                                    _filterEditController.text?.trim()?.length >= 1)
-                                  widget.foodProposalPresenter
-                                      .fetchRestaurantFoodProposalFromTag(
-                                      _filterEditController.text);
-                                else
-                                  mDialog(
-                                      "${AppLocalizations.of(context).translate('search_too_short')}");
-                              }
-                            },
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            textInputAction: TextInputAction.search,
-                            decoration: InputDecoration.collapsed(
-                                hintText:
-                                "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
-                                hintStyle:
-                                TextStyle(fontSize: 13, color: Colors.black.withAlpha(150))),
-                            enabled: true),
+                                    _searchMode = false;
+                                  }
+                                },
+                                child: TextField(
+                                    controller: _filterEditController,
+                                    onSubmitted: (val) {
+                                      if (searchTypePosition == 2) {
+                                        if (_filterEditController.text
+                                                    ?.trim()
+                                                    ?.length !=
+                                                null &&
+                                            _filterEditController.text
+                                                    ?.trim()
+                                                    ?.length >=
+                                                1)
+                                          widget.foodProposalPresenter
+                                              .fetchRestaurantFoodProposalFromTag(
+                                                  _filterEditController.text);
+                                        else
+                                          mDialog(
+                                              "${AppLocalizations.of(context).translate('search_too_short')}");
+                                      }
+                                    },
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 13),
+                                    textInputAction: TextInputAction.search,
+                                    decoration: InputDecoration.collapsed(
+                                        hintText:
+                                            "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                                        hintStyle: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.black.withAlpha(150))),
+                                    enabled: true),
+                              ),
+                            ),
+                            IconButton(
+                                icon: Icon(Icons.close, color: Colors.grey),
+                                onPressed: () {
+                                  _clearFocus();
+                                })
+                          ],
+                        ),
                       ),
                     ),
-                    Row(
-                      children: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.close, color: Colors.grey),
-                            onPressed: () {
-                              _clearFocus();
-                            }),
-                        searchTypePosition == 2
-                            ? IconButton(
-                            icon: Icon(Icons.search,
-                                color: KColors.primaryYellowColor),
-                            onPressed: () {
+                    searchTypePosition == 2
+                        ? InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.only(topRight:Radius.circular(5), bottomRight: Radius.circular(5)),
+                                  color: KColors.primaryColor),
+                             margin: EdgeInsets.only(top: 2),
+                              padding: EdgeInsets.only(top:9, bottom:9, right: 10, left: 10),
+                              child: Icon(Icons.search, color: Colors.white, size: 30),
+                            ),
+                            onTap: () {
                               if (searchTypePosition == 2) {
                                 if (_filterEditController.text?.trim()?.length !=
-                                    null &&
+                                        null &&
                                     _filterEditController.text?.trim()?.length >=
                                         3)
                                   widget.foodProposalPresenter
                                       .fetchRestaurantFoodProposalFromTag(
-                                      _filterEditController.text);
+                                          _filterEditController.text);
                                 else
                                   mDialog(
                                       "${AppLocalizations.of(context).translate('search_too_short')}");
                               }
                             })
-                            : Container(),
-                      ],
-                    )
+                        : Container()
                   ],
                 ),
               ),
               SizedBox(height: 10),
-             SearchSwitchWidget(searchTypePosition, _choice),
+              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction),
               SizedBox(height: 15),
               Expanded(
                 child: SingleChildScrollView(
@@ -388,7 +409,7 @@ class _ShopListPageState extends State<ShopListPage>
                                     )
                                   : _showSearchPage())
                               : Container(
-                                  margin: EdgeInsets.only(top: 20),
+                                  margin: EdgeInsets.only(top: 10),
                                   child: isSearchingMenus
                                       ? Center(child: MyLoadingProgressWidget())
                                       : (searchMenuHasNetworkError
@@ -839,21 +860,15 @@ class _ShopListPageState extends State<ShopListPage>
     /* generating food proposals lazily */
     /*  return Column(children: <Widget>[]
       ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {
-        return FoodWithRestaurantDetailsWidget(food: foodProposals[index]);
+        return ProductWithShopDetailsWidget(food: foodProposals[index]);
       }).toList()));*/
     var filteredResult =
         _filteredFoodProposal(_filterDropdownValue, foodProposals);
 
     if (justInflatedFoodProposal) {
-      firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
+      // firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
       //
-      Future.delayed(Duration(milliseconds: 300), () {
-        // Scrollable.ensureVisible(firstItemKey.currentContext);
-        _searchListScrollController.animateTo(
-            _searchListScrollController.position.minScrollExtent,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.fastOutSlowIn);
-      });
+      _scrollToTop();
       justInflatedFoodProposal = false;
     }
 
@@ -862,7 +877,7 @@ class _ShopListPageState extends State<ShopListPage>
       height: MediaQuery.of(context).size.height,
 //      padding: EdgeInsets.only(bottom:230),
       child: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: _searchListScrollController,
         child: ListView.builder(
           controller: _searchListScrollController,
@@ -870,8 +885,8 @@ class _ShopListPageState extends State<ShopListPage>
               filteredResult?.length != null ? filteredResult.length + 1 : 0,
           itemBuilder: (context, index) {
             if (index == filteredResult?.length) return Container(height: 300);
-            return FoodWithRestaurantDetailsWidget(
-                key: index == 0 ? firstItemKey : null,
+            return ProductWithShopDetailsWidget(
+                // key: index == 0 ? firstItemKey : null,
                 food: filteredResult[index]);
           },
         ),
@@ -1230,6 +1245,13 @@ class _ShopListPageState extends State<ShopListPage>
     });
   }
 
+  _filterFunction(String newValue) {
+    setState(() {
+      _filterDropdownValue = newValue;
+    });
+    _scrollToTop();
+  }
+
   Future<int> _setLastTimeRestaurantListRequestToNow() async {
     StateContainer.of(context).last_time_get_restaurant_list_timeout =
         DateTime.now().millisecondsSinceEpoch;
@@ -1249,5 +1271,15 @@ class _ShopListPageState extends State<ShopListPage>
       int sec = diff % 60;
       return "${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}";
     }
+  }
+
+  void _scrollToTop() {
+    Future.delayed(Duration(milliseconds: 300), () {
+      // Scrollable.ensureVisible(firstItemKey.currentContext);
+      _searchListScrollController.animateTo(
+          _searchListScrollController.position.minScrollExtent,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.fastOutSlowIn);
+    });
   }
 }
