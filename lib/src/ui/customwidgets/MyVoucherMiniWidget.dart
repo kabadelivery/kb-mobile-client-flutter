@@ -135,7 +135,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                   Row(mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
-                                      Text("${widget.voucher.trade_name}", style: TextStyle(color: restaurantNameColor, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+                                      Text("${widget.voucher.trade_name}", style: TextStyle(color: restaurantNameColor, fontSize: 15, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
                                     ],
                                   ),
                                   SizedBox(height: 10),
@@ -300,7 +300,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   _buildCFAPriceWidget() {
     return
       widget.voucher.category == 1 ?
-      Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: priceColor))
+      Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: priceColor))
           :
       Column(
       children: [

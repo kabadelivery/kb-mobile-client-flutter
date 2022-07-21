@@ -1,5 +1,7 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
+import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
@@ -9,8 +11,11 @@ import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/utils/plus_code/open_location_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:geolocator_platform_interface/src/models/position.dart';
 
 class ServiceMainPage extends StatefulWidget {
   static var routeName = "/ServiceMainPage";
@@ -31,8 +36,8 @@ class ServiceMainPage extends StatefulWidget {
 }
 
 /* we show categories */
-
-class ServiceMainPageState extends State<ServiceMainPage> {
+class ServiceMainPageState extends State<ServiceMainPage>
+    implements ServiceMainView {
   bool isLoading;
 
   bool hasNetworkError;
@@ -69,9 +74,12 @@ class ServiceMainPageState extends State<ServiceMainPage> {
         appBar: AppBar(
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          title: Row(mainAxisAlignment: MainAxisAlignment.center,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(Utils.capitalize("${AppLocalizations.of(context).translate('buy')}"),
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('buy')}"),
                   style: TextStyle(fontSize: 16, color: Colors.white)),
             ],
           ),
@@ -80,18 +88,17 @@ class ServiceMainPageState extends State<ServiceMainPage> {
         body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.dark,
             child: SafeArea(
-              top: true,
-              child: Container(
+                top: true,
                 child: Container(
-                    child: isLoading
-                        ? Center(child: MyLoadingProgressWidget())
-                        : (hasNetworkError
-                            ? _buildNetworkErrorPage()
-                            : hasSystemError
-                                ? _buildSysErrorPage()
-                                : _buildServicePage())),
-              ),
-            )));
+                  child: Container(
+                      child: isLoading
+                          ? Center(child: MyLoadingProgressWidget())
+                          : (hasNetworkError
+                              ? _buildNetworkErrorPage()
+                              : hasSystemError
+                                  ? _buildSysErrorPage()
+                                  : _buildServicePage())),
+                ))));
   }
 
   _buildSysErrorPage() {
@@ -108,11 +115,62 @@ class ServiceMainPageState extends State<ServiceMainPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              StateContainer?.of(context)?.location != null
+                  ? Center(
+                      child: InkWell(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                  child: Icon(Icons.location_on,
+                                      color: Colors.white, size: 20),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: KColors.mBlue),
+                                  padding: EdgeInsets.all(7)),
+                              Container(
+                                padding:
+                                    EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 10),
+                                decoration: BoxDecoration(
+                                    color: KColors.mBlue.withAlpha(30),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 10),
+                                    Text(
+                                        "${_locationToPlusCode(StateContainer.of(context).location)}",
+                                        style: TextStyle(color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14)),
+                                    SizedBox(width: 10),
+                                    Icon(
+                                      FontAwesome.copy,
+                                      size: 14,
+                                      color: KColors.primaryColor.withAlpha(150),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              // Text("${StateContainer.of(context).location.latitude}:${StateContainer.of(context).location.longitude}")
+                            ],
+                          ),
+                        ),
+                      onTap: ()=> {
+                          _pickMyAddress()
+                      },
+                      ),
+                    )
+                  : Container(),
               InkWell(
                   child: SearchStatelessWidget(
                       title:
                           "${AppLocalizations.of(context).translate("what_want_buy")}"),
-              onTap: (){_jumpToSearchPage(0);}),
+                  onTap: () {
+                    _jumpToSearchPage(0);
+                  }),
               GridView(
                 physics: BouncingScrollPhysics(),
                 padding: const EdgeInsets.all(20),
@@ -196,13 +254,32 @@ class ServiceMainPageState extends State<ServiceMainPage> {
             restaurantListPresenter: RestaurantListPresenter()));
   }
 
-
   void _jumpToPage(BuildContext context, page) {
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => page,
         ));
+  }
+
+  @override
+  void inflateServiceCategory(List<ServiceMainEntity> data) {}
+
+  @override
+  void networkError() {}
+
+  @override
+  void showLoading(bool isLoading) {}
+
+  @override
+  void systemError() {}
+
+  _locationToPlusCode(Position location) {
+    return encode(location.latitude, location.longitude);
+  }
+
+  _pickMyAddress() {
+    /* pick my location */
   }
 
 }

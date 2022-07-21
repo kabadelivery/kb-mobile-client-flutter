@@ -184,18 +184,18 @@
   "confirm_order": "Confirm Order",
   "processing_payment": "Hello, we are processing your payment. Please wait V(^_^)V",
   "order_amount": "Order Price:",
-  "delivery_amount": "Delivery price:",
-  "net_price": "Net to Pay:",
+  "delivery_amount": "Delivery price",
+  "net_price": "Net to Pay",
   "discount": "Discount",
-  "cooking_time_estimation": "Cooking: ",
+  "cooking_time_estimation": "Cooking ",
   "additional_info": "Any special request about the order ?",
   "choose_delivery_address": "Choose delivery Address",
-  "your_balance": "Your balance:",
+  "your_balance": "Your balance",
   "pay_at_delivery": "PAY AT DELIVERY",
   "cant_pay_at_delivery": "Sorry, this restaurant doesn't allow payment at delivery.",
   "pay_now": "PAY NOW",
   "cant_prepay_balance_insufficient": "You can't prepay because your balance is insufficient ",
-  "your_balance_is": "Your balance is : ",
+  "your_balance_is": "Your balance is ",
   "restaurant_no_allow_prepay": "You can't prepay because this restaurant doesn't allow prepay.",
   "balance_insufficient": "You can't prepay because your balance is insufficient",
   "cant_pay_at_delivery_max_pay_reached": "You can't pay at delivery because your order is more than the maximum pay at delivery amount",
@@ -390,7 +390,7 @@
   "use_of_kaba_points": "Your KABA Points can be used to get some delivery fee discount. Check YES below to use it",
   "kaba_points_monthly_limit_reached": "You have reached the limit of KABA Points to use per month",
   "use_of_kaba_points_not_eligible": "Sorry, you are not yet eligible to use Kaba Points discounts feature",
-  "min_short_on_average": "30 minutes on average",
+  "min_short_on_average": "30 min",
   "kaba_point_used_amount": "KABA points used :",
   "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS",
   "month_remain_kaba_points": "Left for XXX_XXX",
@@ -407,7 +407,7 @@
   "mois_10": "October",
   "mois_11": "November",
   "mois_12": "December",
-  "buy": "Buy",
+  "buy": "CHECKOUT",
 
   "service_category_food": "Food",
   "service_category_drinks": "Drinks",
@@ -429,7 +429,15 @@
   "t_paused": "Paused",
   "t_unavailable": "Unavailable",
 
-  "search": "Search"
+  "search": "Search",
+
+  "movie_details": "Details",
+
+  "see_more": "See more",
+  "my_basket": "My Basket",
+
+  "order_summary": "Order Summary",
+  "invoice_bill": "Invoice"
 
 
 

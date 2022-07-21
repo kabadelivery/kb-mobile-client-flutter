@@ -115,6 +115,13 @@ class CustomerUtils {
     return jsonHomePage;
   }
 
+  static getOldCategoryConfiguration() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String categoryConfig = prefs.getString("_category");
+    return categoryConfig;
+  }
+
   static saveWelcomePage(String wp) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

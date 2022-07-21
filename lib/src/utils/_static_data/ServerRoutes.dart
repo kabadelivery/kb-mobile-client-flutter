@@ -277,6 +277,6 @@ class ServerRoutes {
 
   static const String LINK_CHECK_SYS_MESSAGE = ServerConfig.SERVER_ADDRESS+"/api/alert-message/get";
 
-  static String LINK_GET_SERVICE_CATEGORIES = "";
+  static String LINK_GET_SERVICE_CATEGORIES = ServerConfig.SERVER_ADDRESS+"/api/services/categories";
 
 }

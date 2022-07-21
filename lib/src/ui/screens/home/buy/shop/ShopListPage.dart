@@ -239,6 +239,8 @@ class _ShopListPageState extends State<ShopListPage>
       pageRestaurants[restaurant.id] = restaurant;
     });
 
+    // category / 1001 / shop
+
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,

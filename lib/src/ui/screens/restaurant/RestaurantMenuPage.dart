@@ -212,7 +212,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                               top: 10, bottom: 10, left: 8, right: 8),
                                           child: Text(data[index]?.name?.toUpperCase(),
                                               style: TextStyle(fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                   color: Colors.white),
                                               textAlign: TextAlign.center)) :
                                       Container(
@@ -222,7 +222,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                               top: 10, bottom: 10, left: 8, right: 8),
                                           child: Text(data[index]?.name?.toUpperCase(),
                                               style: TextStyle(fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                   color: data[index]?.promotion == 0 ? Colors
                                                       .black : KColors.primaryColor),
                                               textAlign: TextAlign.center))),

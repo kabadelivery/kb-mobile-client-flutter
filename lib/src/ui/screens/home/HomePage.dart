@@ -37,6 +37,7 @@ import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
@@ -229,7 +230,7 @@ class _HomePageState extends State<HomePage> {
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('kaba_notification_default');
+        new AndroidInitializationSettings('app_icon');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         requestBadgePermission: true,
@@ -517,21 +518,25 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
+            activeIcon: SvgPicture.asset(VectorsData.home_selected),
             label: ("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             // icon: Icon(Icons.restaurant),
             // label: ('${AppLocalizations.of(context).translate('restaurant')}'),
-            icon: Icon(FontAwesomeIcons.shoppingCart),
+            icon: SvgPicture.asset(VectorsData.buy), // Icon(FontAwesomeIcons.shoppingCart),
+            activeIcon: SvgPicture.asset(VectorsData.buy_selected),
             label: ('${AppLocalizations.of(context).translate('buy')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
+            icon: SvgPicture.asset(VectorsData.orders), // Icon(Icons.view_list),
+            activeIcon: SvgPicture.asset(VectorsData.orders_selected),
             label: ('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
+            activeIcon: SvgPicture.asset(VectorsData.me_selected),
             label: ('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
@@ -1006,11 +1011,15 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 }
 
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
+
+  String groupKey = "tg.tmye.kaba.brave.one";
+
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
       channelDescription: AppConfig.CHANNEL_DESCRIPTION,
       importance: Importance.max,
       priority: Priority.max,
+      groupKey: groupKey,
       ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
@@ -1022,20 +1031,4 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
       notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
       payload: notificationItem?.destination?.toSpecialString());
-}
-
-class AppbarhintFieldWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
-      child: TextField(
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Play basketball with us today",
-              hintMaxLines: 1,
-              hintStyle: TextStyle(color: Colors.white))),
-      color: Colors.transparent,
-    );
-  }
 }

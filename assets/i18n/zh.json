@@ -183,19 +183,19 @@
   "km":"公里",
   "confirm_order": "确认订单",
   "processing_payment": "您好，我们正在处理您的付款。请耐心等待V (^_^) V",
-  "order_amount": "饭菜价:",
-  "delivery_amount": "运费:",
-  "net_price": "总价:",
+  "order_amount": "饭菜价",
+  "delivery_amount": "运费",
+  "net_price": "总价",
   "discount": "优惠",
-  "cooking_time_estimation": "烹饪时间: ",
+  "cooking_time_estimation": "烹饪时间 ",
   "additional_info": "关于订单的任何特殊要求吗？",
   "choose_delivery_address": "选择送货地址",
-  "your_balance": "您的余额：",
+  "your_balance": "您的余额",
   "pay_at_delivery": "上门付款",
   "cant_pay_at_delivery": "不好意、此饭店不允许上门到付款",
   "pay_now": "立即付款",
   "cant_prepay_balance_insufficient": "无法在线支付、余额不足",
-  "your_balance_is": "余额 : ",
+  "your_balance_is": "余额 ",
   "restaurant_no_allow_prepay": "这家餐厅不允许预付款、无法在线支付",
   "balance_insufficient": "无法在线支付、余额不足",
   "cant_pay_at_delivery_max_pay_reached": "无法上门支付、上门支付限额已超过了",
@@ -480,7 +480,13 @@
   "t_opened": "开门",
   "t_paused": "休息中",
   "t_unavailable": "暂时关门",
-  "search": "搜索"
+  "search": "搜索",
+
+  "movie_details": "详情",
+  "my_basket": "购物车",
+
+  "order_summary": "订单总结",
+  "invoice_bill": "结单"
 
 
 }

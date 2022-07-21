@@ -3,6 +3,7 @@ import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,12 +13,11 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:iphone_has_notch/iphone_has_notch.dart';
 import 'package:toast/toast.dart';
 
-
 class RestaurantMenuDetails extends StatefulWidget {
-
   static var routeName = "/RestaurantMenuDetails";
 
   Map<ShopProductModel, int> food_selected, adds_on_selected;
@@ -29,14 +29,21 @@ class RestaurantMenuDetails extends StatefulWidget {
 
   ShopModel restaurant;
 
-  RestaurantMenuDetails({Key key, this.FOOD_MAX = 5, this.type, this.food_selected, this.adds_on_selected, this.restaurant}) : super(key: key);
+  RestaurantMenuDetails(
+      {Key key,
+      this.FOOD_MAX = 5,
+      this.type,
+      this.food_selected,
+      this.adds_on_selected,
+      this.restaurant})
+      : super(key: key);
 
   @override
-  _RestaurantMenuDetailsState createState() => _RestaurantMenuDetailsState(type, food_selected, adds_on_selected);
+  _RestaurantMenuDetailsState createState() =>
+      _RestaurantMenuDetailsState(type, food_selected, adds_on_selected);
 }
 
 class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
-
   Map<ShopProductModel, int> food_selected, adds_on_selected;
 
   /* 1 - food, 2- addons, 3 - all */
@@ -47,7 +54,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
 //  , ADD_ON_COUNT = 10;
   int totalPrice = 0;
 
-  _RestaurantMenuDetailsState(this.type, this.food_selected, this.adds_on_selected);
+  _RestaurantMenuDetailsState(
+      this.type, this.food_selected, this.adds_on_selected);
 
   @override
   void initState() {
@@ -59,26 +67,30 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar (
+      appBar: AppBar(
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title: Container(decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(10))),
-            padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-            child: Row(mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text("${totalPrice}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20,color: Colors.white)),
-                SizedBox(width: 5),
-                Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,color: Colors.white)),
-              ],
-            )),
-        leading: IconButton(icon: Icon(Icons.close, color: Colors.black), onPressed: (){Navigator.pop(context);}),
+        backgroundColor: KColors.primaryColor,
+        title: Text("${AppLocalizations.of(context).translate('my_basket')}",
+            style: TextStyle(fontSize: 16)),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
       ),
-      body: Container(color: Colors.white, child: _showMenuBottomSheet(context, type), height: MediaQuery.of(context).size.height),
+      body: Stack(
+        children: [
+          Container(
+              color: Colors.white,
+              child: _showMenuBottomSheet(context, type),
+              height: MediaQuery.of(context).size.height),
+        ],
+      ),
     );
   }
 
 /* build bottom_sheet_items_widget */
-  Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
+/*  Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
     return Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -91,14 +103,14 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  /*prix*/
+                  */ /*prix*/ /*
                   Row(children: <Widget>[
                     Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
                     (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
                         : Container()),
                     Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                   ]),
-                  /* add buttons */
+                  */ /* add buttons */ /*
                   Row(
                       children: <Widget>[
                         IconButton(icon: Icon(Icons.remove_circle, color: Colors.black), onPressed: () => _decreaseQuantity(food)),
@@ -116,79 +128,270 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           ],
         )
     );
-  }
+  }  */
 
+  Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
+    return Container(
+        decoration: BoxDecoration(
+            color: KColors.new_gray,
+            borderRadius: BorderRadius.all(Radius.circular(3))),
+        padding: EdgeInsets.all(10),
+        margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+        child: Stack(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                              Utils.inflateLink(food?.pic)))),
+                ),
+                SizedBox(width: 10),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text("${Utils.capitalize(food?.name)}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500)),
+                  SizedBox(height: 2),
+                  Container(width: 1*MediaQuery.of(context).size.width/2,
+                    child: Text("${Utils.capitalize(food?.description)}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal)),
+                  ),
+                  SizedBox(height: 15),
+                  Container(
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          InkWell(
+                              child: Icon(Icons.remove_circle,
+                                  color: Colors.black, size: 20),
+                              onTap: () => _decreaseQuantity(food)),
+                          Container(
+                              margin: EdgeInsets.only(left: 5, right: 5),
+                              child: Text(
+                                  "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 15))),
+                          InkWell(
+                              child: Icon(Icons.add_circle,
+                                  size: 20, color: KColors.primaryColor),
+                              onTap: () => _increaseQuantity(food)),
+                        ]),
+                  ),
+                ])
+              ],
+            ),
+            Positioned(
+                right: 0,
+                top: 0,
+                child: InkWell(
+                    child: Container(
+                        child: Icon(Icons.delete_forever,
+                            size: 20, color: Colors.grey),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white),
+                        padding: EdgeInsets.all(8)),
+                    onTap: () {
+                      _removeFood(food);
+                    })),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: KColors.primaryColor.withAlpha(30),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                padding: EdgeInsets.all(5),
+                child: Row(children: <Widget>[
+                  SizedBox(width: 2),
+                  Text("${food?.price}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          decoration: food.promotion != 0 ?  TextDecoration.lineThrough : TextDecoration.none)),
+                  SizedBox(width: 2),
+                  (food.promotion != 0
+                      ? Text("${food?.promotion_price}",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: KColors.primaryColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.normal))
+                      : Container()),
+                  SizedBox(width: 3),
+                  Text("${AppLocalizations.of(context).translate('currency')}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontWeight: FontWeight.normal)),
+                ]),
+              ),
+            )
+          ],
+        ));
+  }
 
   /* we have different types: food, supplement, all */
   _showMenuBottomSheet(context, int type) {
-
     List<Widget> bottomSheetView = <Widget>[
       SizedBox(height: 10),
-      Center(child: Container(decoration: BoxDecoration(color: KColors.primaryYellowColor, borderRadius: BorderRadius.all(Radius.circular(10))), margin: EdgeInsets.only(top:10), padding: EdgeInsets.only(left:10, right: 10, top:5, bottom: 5),
-          child: Text("${AppLocalizations.of(context).translate('all')}".toUpperCase(), style: TextStyle(color:Colors.white),textAlign: TextAlign.center))),
+      false
+          ? Center(
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: KColors.primaryYellowColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  margin: EdgeInsets.only(top: 10),
+                  padding:
+                      EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('all')}"
+                          .toUpperCase(),
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center)))
+          : Container(),
       SizedBox(height: 10),
     ];
 
     if (type == 1 || type == 3) {
       /* generate the food views */
       if (food_selected != null && food_selected.length > 0)
-        bottomSheetView..addAll(
-            food_selected.keys.map((mfood) => _buildBottomSheetFoodListWidget(food: mfood)).toList()
-        );
+        bottomSheetView
+          ..addAll(food_selected.keys
+              .map((mfood) => _buildBottomSheetFoodListWidget(food: mfood))
+              .toList());
       bottomSheetView.add(SizedBox(height: 10));
     }
 
     if (type == 2 || type == 3) {
       /* generate the food views */
       if (adds_on_selected != null && adds_on_selected.length > 0)
-        bottomSheetView..addAll(
-            adds_on_selected.keys.map((mfood) => _buildBottomSheetFoodListWidget(food: mfood)).toList()
-        );
+        bottomSheetView
+          ..addAll(adds_on_selected.keys
+              .map((mfood) => _buildBottomSheetFoodListWidget(food: mfood))
+              .toList());
       bottomSheetView.add(SizedBox(height: 10));
     }
 
-    bottomSheetView.add(SizedBox(height:140));
+    bottomSheetView.add(SizedBox(height: 140));
 
     return Stack(
       children: <Widget>[
         Container(
+          height: MediaQuery.of(context).size.height,
           color: Colors.white,
           child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 0),
-              child: Wrap(children: bottomSheetView)
-          ),
+              child: Wrap(children: bottomSheetView)),
         ),
-        totalPrice > 0 ? Positioned(bottom: 0,child: Container(height: 100,width: MediaQuery.of(context).size.width,child:
-        RaisedButton(
-            child: Container(child:  Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color:Colors.white)),
-              padding: EdgeInsets.only(bottom: IphoneHasNotch.hasNotch ? 50 : 0),),
-            color: Colors.black, onPressed: () {_continuePurchase();}))) : Container(),
+        Positioned(
+          bottom: 10,
+          child: Container(
+            margin: EdgeInsets.only(left: 10,right: 10),
+            child: Row(
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${AppLocalizations.of(context).translate('total')}".toUpperCase(),
+                            style: TextStyle(color: Colors.grey)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text("${totalPrice}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontWeight: FontWeight.bold,
+                                    fontSize: 16, color: KColors.primaryColor)),
+                            SizedBox(width: 5),
+                            Text(
+                                "${AppLocalizations.of(context).translate('currency')}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 12, color: KColors.primaryColor)),
+                          ],
+                        ),
+                      ],
+                    )),
+                Container(
+                    height: 50,
+                    width: 0.9*MediaQuery.of(context).size.width / 2,
+                    padding: EdgeInsets.all(5),
+                    color: Colors.white,
+                    child: RaisedButton(
+                        child: Text(
+                            "${AppLocalizations.of(context).translate('buy')}"?.toUpperCase(),
+                            style: TextStyle(color: Colors.white)),
+                        color: KColors.primaryColor,
+                        onPressed: () {
+                          _continuePurchase();
+                        }))
+              ],
+            ),
+          ),
+        )
       ],
     );
   }
 
   _decreaseQuantity(ShopProductModel food) {
-
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
         if (food_selected[food].toInt() > 1)
-          food_selected.update(food, (int val) => food_selected[food].toInt()-1);
+          food_selected.update(
+              food, (int val) => food_selected[food].toInt() - 1);
         else {
           showToast("${AppLocalizations.of(context).translate('min_reached')}");
         }
       } else {
-        food_selected.putIfAbsent(food, ()=>1);
+        food_selected.putIfAbsent(food, () => 1);
       }
     } else {
       if (!food.is_addon) {
         if (adds_on_selected.containsKey(food)) {
           if (adds_on_selected[food].toInt() > 1)
-            adds_on_selected.update(food, (int val) => adds_on_selected[food].toInt()-1);
-          else{
-            showToast("${AppLocalizations.of(context).translate('min_reached')}");
+            adds_on_selected.update(
+                food, (int val) => adds_on_selected[food].toInt() - 1);
+          else {
+            showToast(
+                "${AppLocalizations.of(context).translate('min_reached')}");
           }
         } else {
-          adds_on_selected.putIfAbsent(food, ()=>1);
+          adds_on_selected.putIfAbsent(food, () => 1);
         }
       }
     }
@@ -223,10 +426,21 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   void _updateCounts() {
-
     int tp = 0;
-    int fc = 0; food_selected.forEach((ShopProductModel food, int quantity) {fc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
-    int adc = 0; adds_on_selected.forEach((ShopProductModel food, int quantity) {adc+=quantity;tp+=(int.parse(food.promotion==0?food.price:food.promotion_price)*quantity);});
+    int fc = 0;
+    food_selected.forEach((ShopProductModel food, int quantity) {
+      fc += quantity;
+      tp +=
+          (int.parse(food.promotion == 0 ? food.price : food.promotion_price) *
+              quantity);
+    });
+    int adc = 0;
+    adds_on_selected.forEach((ShopProductModel food, int quantity) {
+      adc += quantity;
+      tp +=
+          (int.parse(food.promotion == 0 ? food.price : food.promotion_price) *
+              quantity);
+    });
     setState(() {
       _foodCount = fc;
 //      _addOnCount = adc;
@@ -235,29 +449,30 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   void showToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG, gravity:  Toast.CENTER);
+    Toast.show(message, context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
   }
 
   void _removeFood(ShopProductModel food) {
     if (!food.is_addon) {
       if (food_selected.containsKey(food)) {
-        food_selected.removeWhere((ShopProductModel mFood, int value){return (mFood==food);});
+        food_selected.removeWhere((ShopProductModel mFood, int value) {
+          return (mFood == food);
+        });
       }
     } else {
       if (!food.is_addon) {
         if (adds_on_selected.containsKey(food)) {
-          adds_on_selected.removeWhere((ShopProductModel mFood, int value){return (mFood==food);});
+          adds_on_selected.removeWhere((ShopProductModel mFood, int value) {
+            return (mFood == food);
+          });
         }
       }
     }
     _updateCounts();
   }
 
-
-
-
   void _continuePurchase() {
-
     /* data */
     /*Navigator.push(
       context,
@@ -266,38 +481,34 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
       ),
     );*/
 
-
-    if (StateContainer
-        .of(context)
-        .loggingState == 0) {
+    if (StateContainer.of(context).loggingState == 0) {
       // not logged in... show dialog and also go there
-        showDialog<void>(
+      showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate(
-                'please_login_before_going_forward_title')}"),
+            title: Text(
+                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   /* add an image*/
                   // location_permission
                   Container(
-                      height: 100, width: 100,
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: new AssetImage(
-                                ImageAssets.login_description),
-                          )
-                      )
-                  ),
+                            image:
+                                new AssetImage(ImageAssets.login_description),
+                          ))),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate(
-                      "please_login_before_going_forward_description_place_order")}",
+                  Text(
+                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_place_order")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -311,37 +522,41 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
                   Navigator.of(context).pop();
 
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter(), fromOrderingProcess: true)));
+                      builder: (BuildContext context) => LoginPage(
+                          presenter: LoginPresenter(),
+                          fromOrderingProcess: true)));
                 },
               )
             ],
           );
         },
       );
-    }
-    else {
-      Navigator.of(context).push(
-          PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-              OrderConfirmationPage2(restaurant: widget.restaurant,presenter: OrderConfirmationPresenter(), foods: food_selected, addons: adds_on_selected),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                var begin = Offset(1.0, 0.0);
-                var end = Offset.zero;
-                var curve = Curves.ease;
-                var tween = Tween(begin:begin, end:end);
-                var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-                return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-              }
-          ));
+    } else {
+      Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              OrderConfirmationPage2(
+                  restaurant: widget.restaurant,
+                  presenter: OrderConfirmationPresenter(),
+                  foods: food_selected,
+                  addons: adds_on_selected),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+                CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
     }
   }
-
 }

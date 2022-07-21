@@ -184,19 +184,19 @@
   "km":"Km",
   "confirm_order": "Confirmer commande",
   "processing_payment": "Salut, nous traitons votre requête ! Merci de patienter V(^_^)V",
-  "order_amount": "Prix Repas:",
-  "delivery_amount": "Prix Livraison:",
-  "net_price": "Total à Payer:",
+  "order_amount": "Prix Repas",
+  "delivery_amount": "Prix Livraison",
+  "net_price": "Total à Payer",
   "discount": "Remise",
-  "cooking_time_estimation": "Cuisson: ",
+  "cooking_time_estimation": "Cuisson ",
   "additional_info": "Avez vous des informations supplémentaires ?",
   "choose_delivery_address": "Choisir adresse de livraison",
-  "your_balance": "Votre Solde:",
+  "your_balance": "Votre Solde",
   "pay_at_delivery": "PAYER À L'ARRIVÉE",
   "cant_pay_at_delivery": "Désolé, ce restaurant n'autorise pas le paiement à l'arrivée.",
   "pay_now": "PAYER MAINTENANT",
   "cant_prepay_balance_insufficient": "Impossible de prépayer car solde insuffisant",
-  "your_balance_is": "Votre Solde est : ",
+  "your_balance_is": "Votre Solde est ",
   "restaurant_no_allow_prepay": "Impossible de prépayer, ce restaurant n'autorise pas le PréPayement",
   "balance_insufficient": "Impossible de prépayer car solde insuffisant",
   "cant_pay_at_delivery_max_pay_reached":"Impossible de payer à la livraison car vous avez excéder le maximum pour payer à la livraison. Veuillez contacter le service client.",
@@ -444,7 +444,7 @@
 
   "use_of_kaba_points_not_eligible" : "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA",
 
-  "min_short_on_average": "30 minutes en moyenne",
+  "min_short_on_average": "30 min",
 
   "kaba_point_used_amount": "Points KABA utilisés :",
 
@@ -488,7 +488,14 @@
   "t_opened": "Ouvert",
   "t_paused": "En Pause",
   "t_unavailable": "Indispo",
-  "search": "Recherche"
+  "search": "Recherche",
+
+  "movie_details": "Détails",
+  "my_basket": "Mon Panier",
+
+  "order_summary": "Résumé Commande",
+
+  "invoice_bill": "Facture"
 
 
 }

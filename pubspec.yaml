@@ -145,6 +145,15 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    # bottom icons
+    - assets/images/vectors/bottom_icons/home.svg
+    - assets/images/vectors/bottom_icons/buy.svg
+    - assets/images/vectors/bottom_icons/orders.svg
+    - assets/images/vectors/bottom_icons/me.svg
+    - assets/images/vectors/bottom_icons/home_selected.svg
+    - assets/images/vectors/bottom_icons/buy_selected.svg
+    - assets/images/vectors/bottom_icons/orders_selected.svg
+    - assets/images/vectors/bottom_icons/me_selected.svg
     #lottie
     - assets/lottie/books.json
     - assets/lottie/drinks.json

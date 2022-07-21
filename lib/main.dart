@@ -6,9 +6,11 @@ import 'dart:math';
 
 import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/cinema_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/movie_contract.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
@@ -17,6 +19,7 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
@@ -24,6 +27,8 @@ import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieCatalogePage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -263,11 +268,13 @@ class _MyAppState extends State<MyApp> {
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+//             home: MovieCatalogePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
+//               home: MovieDetailsPage(presenter: MoviePresenter()),
 //             home: SearchProductPage(),
 //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
               // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
               //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
-                 /*home: RestaurantListPage(
+              /*home: RestaurantListPage(
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),
                   restaurantListPresenter: RestaurantListPresenter()),*/
