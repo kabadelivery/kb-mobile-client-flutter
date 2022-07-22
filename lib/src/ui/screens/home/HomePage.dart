@@ -7,15 +7,12 @@ import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
-import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
-import 'package:KABA/src/contracts/restaurant_list_contract.dart';
-import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
-import 'package:KABA/src/contracts/service_main_contract.dart';
+import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -28,10 +25,8 @@ import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -47,7 +42,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -138,7 +132,7 @@ class _HomePageState extends State<HomePage> {
     // restaurantListPage = RestaurantListPage(context: context,
     //     key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
     serviceMainPage = ServiceMainPage(
-        key: serviceMainKey /*, presenter: ServiceMainPresenter()*/);
+        key: serviceMainKey , presenter: ServiceMainPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeAccountPage(key: meKey);

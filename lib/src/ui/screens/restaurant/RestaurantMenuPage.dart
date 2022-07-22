@@ -537,10 +537,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                   children: <Widget>[
                                     InkWell(onTap:  () => _addFoodToChart(food, foodIndex, menuIndex),
                                       child: Card(color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
-                                          child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.only(left: 10, right: 10),
+                                          child: Row(children: <Widget>[Container(height: 40, padding: EdgeInsets.only(left: 10, right: 10),
                                               child: Row(
                                                 children: <Widget>[
-                                                  Icon(Icons.add_shopping_cart, color: KColors.primaryColor),
+                                                  Icon(Icons.add_shopping_cart, color: KColors.primaryColor, size: 20),
                                                   Text("${AppLocalizations.of(context).translate('basket')}", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
                                                 ],
                                               )),

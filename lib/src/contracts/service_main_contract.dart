@@ -4,7 +4,6 @@ import 'package:KABA/src/resources/service_main_provider.dart';
 import 'package:KABA/src/xrint.dart';
 
 class ServiceMainContract {
-
   void fetchCategories() {}
 }
 

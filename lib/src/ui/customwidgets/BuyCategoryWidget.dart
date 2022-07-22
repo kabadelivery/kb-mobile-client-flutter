@@ -18,18 +18,34 @@ class BuyCategoryWidget extends StatelessWidget {
 
   bool isNew;
 
+  Function mDialog;
+
   BuyCategoryWidget(ServiceMainEntity entity,
-      {this.available = true, this.isNew = false}) {
+      {this.available = true, this.isNew = false, this.mDialog}) {
     this.entity = entity;
     this.available = available;
   }
 
-  void _jumpToPage(BuildContext context, page) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => page,
-        ));
+  void _jumpToPage(BuildContext context) {
+    var page;
+
+    if (!available) {
+      // dialog, this service is coming soon
+      mDialog("${AppLocalizations.of(context).translate('coming_soon_dialog')}");
+    } else {
+
+      page = ShopListPage(
+          context: context,
+          type: entity?.key,
+          foodProposalPresenter: RestaurantFoodProposalPresenter(),
+          restaurantListPresenter: RestaurantListPresenter());
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => page,
+          ));
+    }
   }
 
   @override
@@ -41,11 +57,7 @@ class BuyCategoryWidget extends StatelessWidget {
       child: InkWell(
         onTap: () {
           _jumpToPage(
-              context,
-              ShopListPage(
-                  context: context,
-                  foodProposalPresenter: RestaurantFoodProposalPresenter(),
-                  restaurantListPresenter: RestaurantListPresenter()));
+              context);
         },
         child: Container(
           child: Row(
@@ -93,31 +105,31 @@ class BuyCategoryWidget extends StatelessWidget {
 
   String getCategoryTitle(BuildContext context) {
     String category_name_code = "";
-    switch (entity?.category_id) {
-      case 1001: // food
+    switch (entity?.key) {
+      case "food": // food
         category_name_code = "service_category_food";
         break;
-      case 1002: // drinks
-        category_name_code = "service_category_drinks";
-        break;
-      case 1003: // flowers
+    //   case "drink": // drinks
+    //     category_name_code = "service_category_drinks";
+    //     break;
+    case "flower": // flowers
         category_name_code = "service_category_flower";
         break;
-      case 1004: // groceries
-        category_name_code = "service_category_groceries";
-        break;
-      case 1005: // movies
-        category_name_code = "service_category_movies";
-        break;
-      case 1006: // package delivery
-        category_name_code = "service_category_package_delivery";
-        break;
-      case 1007: // shopping
+    //   case 1004: // groceries
+    //     category_name_code = "service_category_groceries";
+    //     break;
+    //   case 1005: // movies
+    //     category_name_code = "service_category_movies";
+    //     break;
+    //   case 1006: // package delivery
+    //     category_name_code = "service_category_package_delivery";
+    //     break;
+      case "shop": // shopping
         category_name_code = "service_category_shopping";
         break;
-      case 1008: // ticket
-        category_name_code = "service_category_ticket";
-        break;
+     //  case 1008: // ticket
+     //    category_name_code = "service_category_ticket";
+     // break;
     }
     // unknown
     if ("" == category_name_code) {
@@ -129,31 +141,31 @@ class BuyCategoryWidget extends StatelessWidget {
 
   getCategoryIcon() {
     String category_icon = "";
-    switch (entity?.category_id) {
-      case 1001: // food
+    switch (entity?.key) {
+      case "food": // food
         category_icon = LottieAssets.food;
         break;
-      case 1002: // drinks
-        category_icon = LottieAssets.drinks;
-        break;
-      case 1003: // flowers
+      // case 1002: // drinks
+      //   category_icon = LottieAssets.drinks;
+      //   break;
+      case "flower": // flowers
         category_icon = LottieAssets.flower;
         break;
-      case 1004: // groceries
-        category_icon = LottieAssets.groceries;
-        break;
-      case 1005: // movies
-        category_icon = LottieAssets.movie;
-        break;
-      case 1006: // package
-        category_icon = LottieAssets.package_delivery;
-        break;
-      case 1007: // shopping
+      // case 1004: // groceries
+      //   category_icon = LottieAssets.groceries;
+      //   break;
+      // case 1005: // movies
+      //   category_icon = LottieAssets.movie;
+      //   break;
+      // case 1006: // package
+      //   category_icon = LottieAssets.package_delivery;
+      //   break;
+      case "shop": // shopping
         category_icon = LottieAssets.shopping;
         break;
-      case 1008: // ticket
-        category_icon = LottieAssets.ticket;
-        break;
+      // case 1008: // ticket
+      //   category_icon = LottieAssets.ticket;
+      //   break;
     }
     if ("" == category_icon) {
       return Icon(Icons.not_interested);
@@ -161,4 +173,6 @@ class BuyCategoryWidget extends StatelessWidget {
 
     return Lottie.asset(category_icon, animate: available);
   }
+
+
 }

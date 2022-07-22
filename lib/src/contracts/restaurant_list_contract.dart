@@ -12,7 +12,7 @@ class RestaurantListContract {
 //  void RestaurantList (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
-  void fetchRestaurantList(CustomerModel customer, Position position,
+  void fetchRestaurantList(CustomerModel customer, String type, Position position,
       [bool silently = false]) async {}
 }
 
@@ -28,6 +28,7 @@ class RestaurantListView {
 
 /* RestaurantList presenter */
 class RestaurantListPresenter implements RestaurantListContract {
+
   bool isWorking = false;
 
   RestaurantListView _restaurantListView;
@@ -43,13 +44,13 @@ class RestaurantListPresenter implements RestaurantListContract {
   }
 
   @override
-  Future<void> fetchRestaurantList(CustomerModel customer, Position position,
+  Future<void> fetchRestaurantList(CustomerModel customer, String type, Position position,
       [bool silently = false]) async {
     if (isWorking && position == null) return;
     isWorking = true;
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
     try {
-      dynamic data = await provider.fetchRestaurantList(customer, position);
+      dynamic data = await provider.fetchRestaurantList(customer, type, position);
 
       // "location": "6.196422: 1.201180",
       List<ShopModel> restaurants = await compute(sortOutRestaurantList, {

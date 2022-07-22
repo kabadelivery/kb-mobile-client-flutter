@@ -557,10 +557,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             children: <Widget>[
               Text(
                   "${AppLocalizations.of(context).translate('cooking_time_estimation')}",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.grey)),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey)),
               Text(
                   "${AppLocalizations.of(context).translate('min_short_on_average')}",
-                  style: TextStyle(color: KColors.primaryColor, fontSize: 15, fontWeight: FontWeight.w500))
+                  style: TextStyle(
+                      color: KColors.primaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500))
             ]));
   }
 
@@ -599,7 +605,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   child: Row(children: [
                     Text(
                         "${AppLocalizations.of(context).translate('order_summary')}",
-                        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 15))
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13))
                   ]),
                 )
               ]..addAll(_buildFoodList())),
@@ -1659,7 +1668,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   _buildOrderPayAtArrivalButton() {
     return _orderBillConfiguration.pay_at_delivery == true
         ? Container(
-            color: KColors.primaryColor.withAlpha(30),
+            decoration: BoxDecoration(
+                color: KColors.primaryColor.withAlpha(30),
+                borderRadius: BorderRadius.all(Radius.circular(5))),
             margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
             child: InkWell(
               onTap: () => _payAtDelivery(false),

@@ -50,12 +50,15 @@ class ShopListPage extends StatefulWidget {
 
   int samePositionCount = 0;
 
+  String type;
+
   ShopListPage(
       {this.key,
       this.context,
       this.location,
       this.foodProposalPresenter,
-      this.restaurantListPresenter})
+      this.restaurantListPresenter,
+      this.type})
       : super(key: key);
 
   @override
@@ -71,7 +74,7 @@ class _ShopListPageState extends State<ShopListPage>
 
   bool _searchMode = false;
 
-  int searchTypePosition = 2;
+  int searchTypePosition = 1;
 
   bool searchMenuHasSystemError = false, searchMenuHasNetworkError = false;
   bool isSearchingMenus = false;
@@ -140,7 +143,7 @@ class _ShopListPageState extends State<ShopListPage>
           // } else
           xrint("init -- 1");
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer, widget.type, StateContainer.of(context).location);
         } else {
           if (widget.hasGps &&
               (widget.restaurantList != null &&
@@ -153,11 +156,11 @@ class _ShopListPageState extends State<ShopListPage>
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  .fetchRestaurantList(widget.customer, null);
+                  .fetchRestaurantList(widget.customer, widget.type, null);
             } else {
               xrint("init -- 4");
               widget.restaurantListPresenter.fetchRestaurantList(
-                  widget.customer, StateContainer?.of(context)?.location);
+                  widget.customer, widget.type, StateContainer?.of(context)?.location);
             }
           }
         }
@@ -259,18 +262,21 @@ class _ShopListPageState extends State<ShopListPage>
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              Container(    margin: EdgeInsets.only(right: 20),
-                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+              Container(
+                margin: EdgeInsets.only(right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(topLeft:Radius.circular(5), bottomLeft: Radius.circular(5)),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                bottomLeft: Radius.circular(5)),
 //            border: new Border.all(color: Colors.white),
                             color: KColors.primaryColor.withAlpha(30)),
                         padding: EdgeInsets.only(left: 8, right: 8),
-                        margin: EdgeInsets.only(
-                            top: 10, bottom: 8, left: 20),
+                        margin: EdgeInsets.only(top: 10, bottom: 8, left: 20),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
@@ -314,7 +320,8 @@ class _ShopListPageState extends State<ShopListPage>
                                             "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
                                         hintStyle: TextStyle(
                                             fontSize: 13,
-                                            color: Colors.black.withAlpha(150))),
+                                            color:
+                                                Colors.black.withAlpha(150))),
                                     enabled: true),
                               ),
                             ),
@@ -331,18 +338,25 @@ class _ShopListPageState extends State<ShopListPage>
                         ? InkWell(
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.only(topRight:Radius.circular(5), bottomRight: Radius.circular(5)),
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(5),
+                                      bottomRight: Radius.circular(5)),
                                   color: KColors.primaryColor),
-                             margin: EdgeInsets.only(top: 2),
-                              padding: EdgeInsets.only(top:9, bottom:9, right: 10, left: 10),
-                              child: Icon(Icons.search, color: Colors.white, size: 30),
+                              margin: EdgeInsets.only(top: 2),
+                              padding: EdgeInsets.only(
+                                  top: 9, bottom: 9, right: 10, left: 10),
+                              child: Icon(Icons.search,
+                                  color: Colors.white, size: 30),
                             ),
                             onTap: () {
                               if (searchTypePosition == 2) {
-                                if (_filterEditController.text?.trim()?.length !=
+                                if (_filterEditController.text
+                                            ?.trim()
+                                            ?.length !=
                                         null &&
-                                    _filterEditController.text?.trim()?.length >=
+                                    _filterEditController.text
+                                            ?.trim()
+                                            ?.length >=
                                         3)
                                   widget.foodProposalPresenter
                                       .fetchRestaurantFoodProposalFromTag(
@@ -380,11 +394,11 @@ class _ShopListPageState extends State<ShopListPage>
                                               null) {
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer, null);
+                                                    widget.customer, widget.type, null);
                                           } else
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer,
+                                                    widget.customer, widget.type,
                                                     StateContainer.of(context)
                                                         .location);
                                         },
@@ -804,7 +818,7 @@ class _ShopListPageState extends State<ShopListPage>
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
                   widget.restaurantListPresenter.fetchRestaurantList(
-                      widget.customer, StateContainer.of(context).location);
+                      widget.customer, widget.type, StateContainer.of(context).location);
                 }
               }
               if (widget.samePositionCount >= 3 || widget.hasGps)
@@ -1191,7 +1205,7 @@ class _ShopListPageState extends State<ShopListPage>
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer, widget.type, StateContainer.of(context).location);
         });
   }
 
@@ -1200,39 +1214,32 @@ class _ShopListPageState extends State<ShopListPage>
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer, widget.type, StateContainer.of(context).location);
         });
   }
 
   Timer mainTimer;
 
   void restartTimer() {
+
     if (mainTimer != null) mainTimer.cancel();
+
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      xrint("restaurantlist this page is --> " +
-          ModalRoute.of(context)?.settings?.name);
-      xrint(
-          "restaurantlist is_current is --> ${ModalRoute.of(context)?.isCurrent}");
 
       if (ModalRoute.of(context)?.settings?.name == null ||
           !("/HomePage".compareTo(ModalRoute.of(context)?.settings?.name) ==
                   0 &&
               ModalRoute.of(context).isCurrent)) {
         // check if time is ok
-        xrint("restaurantlist NO exec timer ");
         return;
       }
-      xrint("restaurantlist exec timer ");
-
-      setState(() {
-        // last_update_timeout = getTimeOutLastTime(); // disabled
-      });
 
       int POTENTIAL_EXECUTION_TIME = 3;
       int diff = (DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context)
                   .last_time_get_restaurant_list_timeout) ~/
           1000;
+
       // convert different in minute seconds
       int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
 
@@ -1240,7 +1247,7 @@ class _ShopListPageState extends State<ShopListPage>
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
         widget.restaurantListPresenter.fetchRestaurantList(
-            widget.customer, StateContainer.of(context).location, true);
+            widget.customer, widget.type, StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);

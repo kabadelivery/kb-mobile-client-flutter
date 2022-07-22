@@ -144,7 +144,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           // } else
           xrint("init -- 1");
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer,"food", StateContainer.of(context).location);
         } else {
           if (widget.hasGps &&
               (widget.restaurantList != null &&
@@ -157,11 +157,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  .fetchRestaurantList(widget.customer, null);
+                  .fetchRestaurantList(widget.customer,"food", null);
             } else {
               xrint("init -- 4");
               widget.restaurantListPresenter.fetchRestaurantList(
-                  widget.customer, StateContainer?.of(context)?.location);
+                  widget.customer, "food",StateContainer?.of(context)?.location);
             }
           }
         }
@@ -466,11 +466,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                               null) {
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer, null);
+                                                    widget.customer,"food", null);
                                           } else
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer,
+                                                    widget.customer,"food",
                                                     StateContainer.of(context)
                                                         .location);
                                         },
@@ -890,7 +890,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
                   widget.restaurantListPresenter.fetchRestaurantList(
-                      widget.customer, StateContainer.of(context).location);
+                      widget.customer, "food", StateContainer.of(context).location);
                 }
               }
               if (widget.samePositionCount >= 3 || widget.hasGps)
@@ -1283,7 +1283,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer, "food", StateContainer.of(context).location);
         });
   }
 
@@ -1292,7 +1292,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, StateContainer.of(context).location);
+              widget.customer,"food", StateContainer.of(context).location);
         });
   }
 
@@ -1358,7 +1358,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
         widget.restaurantListPresenter.fetchRestaurantList(
-            widget.customer, StateContainer.of(context).location, true);
+            widget.customer, "food",StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);

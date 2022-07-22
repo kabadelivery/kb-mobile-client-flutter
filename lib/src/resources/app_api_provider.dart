@@ -481,7 +481,7 @@ class AppApiProvider {
   }
 
   Future<List<ServiceMainEntity>> fetchServiceCategoryFromLocation(
-      String location) async {
+      Position location) async {
     xrint("entered fetchServiceCategoryFromLocation");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -503,7 +503,7 @@ class AppApiProvider {
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-        Iterable lo = mJsonDecode(response.data)["services"];
+        Iterable lo = mJsonDecode(response.data)["data"];
         List<ServiceMainEntity> categories = lo
             ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
             ?.toList();
