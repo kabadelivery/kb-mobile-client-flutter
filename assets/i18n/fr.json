@@ -78,7 +78,7 @@
   "version": "Version:",
   "edit_address": "EDITER ADRESSE",
   "location_name": "Nom de l'adresse (Ex: Maison, Bureau, Chez Paul, ect...)",
-  "phone_number": "Numéro de Téléphone à contacter à l'arrivée",
+  "phone_number": "Numéro de Téléphone ",
   "choose_location": "Choisissez votre position GPS",
   "not_far_from": "Non loin de (Ex: GTA, 2 Lions, ect...)",
   "address_details": "Plus de Détails sur l'adresse",
@@ -519,5 +519,8 @@
   "call_me_shipper": "Contacter Livreur",
 
   "today": "Aujourd'hui",
-  "yesterday": "Hier"
+  "yesterday": "Hier",
+
+  "available_balance": "Solde Disponible"
+
 }

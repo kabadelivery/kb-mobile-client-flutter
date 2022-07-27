@@ -82,9 +82,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(toolbarHeight: 45,
+        appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
+          actions: [],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

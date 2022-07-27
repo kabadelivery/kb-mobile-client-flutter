@@ -77,7 +77,7 @@
   "version": "Version:",
   "edit_address": "EDIT ADDRESS",
   "location_name": "Name of Location (For you)",
-  "phone_number": "Phone number to call at arrival",
+  "phone_number": "Phone number",
   "choose_location": "Choose GPS location",
   "not_far_from": "Popular Nearby Place",
   "address_details": "More Details",
@@ -460,6 +460,7 @@
   "call_me_shipper": "Call Shipper",
 
   "today": "Today",
-  "yesterday": "Yesterday"
+  "yesterday": "Yesterday",
 
+"available_balance": "Available balance"
 }

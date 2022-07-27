@@ -20,9 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../xrint.dart';
 
-
 class DailyOrdersPage extends StatefulWidget {
-
   CustomerModel customer;
   DailyOrderPresenter presenter;
 
@@ -34,8 +32,8 @@ class DailyOrdersPage extends StatefulWidget {
   _DailyOrdersPageState createState() => _DailyOrdersPageState();
 }
 
-class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrderView {
-
+class _DailyOrdersPageState extends State<DailyOrdersPage>
+    implements DailyOrderView {
   // String last_update_timeout = "";
 
   int MAX_MINUTES_FOR_AUTO_RELOAD = 5;
@@ -48,7 +46,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
       widget.presenter.loadDailyOrders(customer);
     });
     super.initState();
-    Future.delayed(Duration.zero,() async {
+    Future.delayed(Duration.zero, () async {
       // last_update_timeout = getTimeOutLastTime();
     });
   }
@@ -59,39 +57,42 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
     super.dispose();
   }
 
-
   bool isLoading = true;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(toolbarHeight: 45,
+        appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          actions: [
-
-          ],
+          actions: [],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                   Utils.capitalize(
                       "${AppLocalizations.of(context).translate('orders')}"),
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
             ],
           ),
         ),
-        body:  AnnotatedRegion<SystemUiOverlayStyle>(
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child:  Container(
-              child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-              _buildOrderList())
-          ),
+          child: Container(
+              child: isLoading
+                  ? Center(child: MyLoadingProgressWidget())
+                  : (hasNetworkError
+                      ? _buildNetworkErrorPage()
+                      : hasSystemError
+                          ? _buildSysErrorPage()
+                          : _buildOrderList())),
         ));
   }
 
@@ -101,8 +102,9 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
-              InkWell(onTap: ()=> widget.presenter.loadDailyOrders(widget.customer),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+              InkWell(
+                onTap: () => widget.presenter.loadDailyOrders(widget.customer),
                 child: Container(
                   // width: 80,
                   height: 40,
@@ -110,13 +112,22 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
                     color: KColors.primaryColor.withAlpha(30),
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
-                  padding: EdgeInsets.symmetric(vertical:10, horizontal: 10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                       Icon(Icons.refresh, color: KColors.primaryColor, size: 20),
-                      SizedBox(width:5),
+                      Icon(Icons.refresh,
+                          color: KColors.primaryColor, size: 20),
+                      SizedBox(width: 5),
                       // count down here
-                      Text(Utils.capitalize("${AppLocalizations.of(context).translate('refresh')}"), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.normal, fontSize: 13))
+                      Text(
+                          Utils.capitalize(
+                              "${AppLocalizations.of(context).translate('refresh')}"),
+                          style: TextStyle(
+                              color: KColors.primaryColor,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13))
                     ],
                   ),
                 ),
@@ -125,33 +136,44 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
             ]),
             SizedBox(height: 15),
           ]
-          ..add(
-            widget?.orders?.length > 0 ? Row(mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(child: Text("${AppLocalizations.of(context).translate('today')}", style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500)), margin: EdgeInsets.symmetric(horizontal: 10, vertical: 3)),
-              ],
-            ) : Container()
-          )
-            ..addAll(
-                List<Widget>.generate(widget?.orders?.length, (int index) {
-                  return MyNewOrderWidget(command: widget?.orders[index]);
-                })
-            ),
+            ..add(widget?.orders?.length > 0
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          child: Text(
+                              "${AppLocalizations.of(context).translate('today')}",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500)),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3)),
+                    ],
+                  )
+                : Container())
+            ..addAll(List<Widget>.generate(widget?.orders?.length, (int index) {
+              return MyNewOrderWidget(command: widget?.orders[index]);
+            })),
         ),
       );
     else
       return Center(
-          child:Column(mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
-              SizedBox(height: 5),
-              Center(child: Text("${AppLocalizations.of(context).translate('no_order_today')}", style: TextStyle(color: Colors.grey))),
-            ],
-          ));
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
+          SizedBox(height: 5),
+          Center(
+              child: Text(
+                  "${AppLocalizations.of(context).translate('no_order_today')}",
+                  style: TextStyle(color: Colors.grey))),
+        ],
+      ));
   }
 
   @override
-   void inflateOrder(List<CommandModel> commands) {
+  void inflateOrder(List<CommandModel> commands) {
     setState(() {
       widget.orders = commands;
       // keep now timestamp as last time update happened
@@ -161,14 +183,12 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
     restartTimer();
   }
 
-
   @override
   void networkError() {
     setState(() {
       hasNetworkError = true;
     });
   }
-
 
   @override
   void systemError() {
@@ -189,41 +209,49 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.loadDailyOrders(widget.customer); });
+    return ErrorPage(
+        message: "${AppLocalizations.of(context).translate('system_error')}",
+        onClickAction: () {
+          widget.presenter.loadDailyOrders(widget.customer);
+        });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.loadDailyOrders(widget.customer); });
+    return ErrorPage(
+        message: "${AppLocalizations.of(context).translate('network_error')}",
+        onClickAction: () {
+          widget.presenter.loadDailyOrders(widget.customer);
+        });
   }
 
-
-
   Future<int> _setLastTimeDailyOrderToNow() async {
-    StateContainer.of(context).last_time_get_daily_order = DateTime.now().millisecondsSinceEpoch;
+    StateContainer.of(context).last_time_get_daily_order =
+        DateTime.now().millisecondsSinceEpoch;
   }
 
   getTimeOutLastTime() {
-    if (StateContainer.of(context).last_time_get_daily_order == 0){
+    if (StateContainer.of(context).last_time_get_daily_order == 0) {
       return "";
     } else {
       // time different since last time update
-      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_daily_order)~/1000;
+      int diff = (DateTime.now().millisecondsSinceEpoch -
+              StateContainer.of(context).last_time_get_daily_order) ~/
+          1000;
       // convert different in minute seconds
-      int min = diff~/60;
-      int sec = diff%60;
-      return "${min < 10 ? "0": ""}${min}:${sec < 10 ? "0": ""}${sec}";
+      int min = diff ~/ 60;
+      int sec = diff % 60;
+      return "${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}";
     }
   }
 
   Timer mainTimer;
 
   void restartTimer() {
-    if (mainTimer != null)
-      mainTimer.cancel();
+    if (mainTimer != null) mainTimer.cancel();
 
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-
-      xrint("dailyorder this page is --> " + ModalRoute.of(context).settings.name);
+      xrint("dailyorder this page is --> " +
+          ModalRoute.of(context).settings.name);
       xrint("dailyorder is_current is --> ${ModalRoute.of(context).isCurrent}");
 
       if (!("/HomePage".compareTo(ModalRoute.of(context).settings.name) == 0 &&
@@ -238,24 +266,21 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
       // });
 
       int POTENTIAL_EXECUTION_TIME = 3;
-      int diff = (DateTime.now().millisecondsSinceEpoch - StateContainer.of(context).last_time_get_daily_order)~/1000;
+      int diff = (DateTime.now().millisecondsSinceEpoch -
+              StateContainer.of(context).last_time_get_daily_order) ~/
+          1000;
       // convert different in minute seconds
-      int min = (diff+ POTENTIAL_EXECUTION_TIME)~/60;
+      int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
 
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD)
         widget.presenter.loadDailyOrders(widget.customer);
-
     });
   }
 
   @override
   void setState(fn) {
-    if(mounted) {
+    if (mounted) {
       super.setState(fn);
     }
   }
-
-
-
-
 }

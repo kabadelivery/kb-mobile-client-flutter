@@ -1,3 +1,4 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
@@ -38,10 +39,12 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
 
     return Scaffold(
         appBar: AppBar(
+          actions: [],
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('last_orders')}", style:TextStyle(color:KColors.primaryColor)),
+          backgroundColor: KColors.primaryColor,
+          title: Text("${AppLocalizations.of(context).translate('last_orders')}", style:TextStyle(color:Colors.white)),
         ),
         backgroundColor: Colors.white,
         body:  StreamBuilder(

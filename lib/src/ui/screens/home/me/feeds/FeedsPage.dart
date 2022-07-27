@@ -1,5 +1,4 @@
-
-
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
@@ -26,10 +25,11 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 
 class FeedsPage extends StatefulWidget {
-
   static var routeName = "/FeedsPage";
 
   FeedPresenter presenter;
+
+  List<FeedModel> data;
 
   FeedsPage({Key key, this.title, this.presenter}) : super(key: key);
 
@@ -40,11 +40,8 @@ class FeedsPage extends StatefulWidget {
 }
 
 class _FeedsPageState extends State<FeedsPage> implements FeedView {
-
   /* week days names */
-  List<FeedModel> data;
   CustomerModel customer;
-
 
   @override
   void initState() {
@@ -64,17 +61,38 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('feeds')}", style:TextStyle(color:KColors.primaryColor)),
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          brightness: Brightness.light,
+          backgroundColor: KColors.primaryColor,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('feeds')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20,),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          actions: [Container(width: 40)]
       ),
       body: Container(
-          child: isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-          _buildFeedsList())
-      ),
+          child: isLoading
+              ? Center(child: MyLoadingProgressWidget())
+              : (hasNetworkError
+                  ? _buildNetworkErrorPage()
+                  : hasSystemError
+                      ? _buildSysErrorPage()
+                      : _buildFeedsList())),
     );
   }
 
@@ -82,7 +100,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   void inflateFeed(List<FeedModel> feeds) {
     showLoading(false);
     setState(() {
-      this.data = feeds;
+      widget.data = feeds;
     });
   }
 
@@ -116,49 +134,77 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchFeed(customer); });
+    return ErrorPage(
+        message: "${AppLocalizations.of(context).translate('system_error')}",
+        onClickAction: () {
+          widget.presenter.fetchFeed(customer);
+        });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchFeed(customer); });
+    return ErrorPage(
+        message: "${AppLocalizations.of(context).translate('network_error')}",
+        onClickAction: () {
+          widget.presenter.fetchFeed(customer);
+        });
   }
 
   _buildFeedsList() {
-    if (data == null) {
+    if (widget.data == null) {
       /* just show empty page. */
       return _buildSysErrorPage();
     }
     return Container(
-        margin: EdgeInsets.only(bottom:10, right:10, left:10),
-        child: ListView.builder(itemCount: data?.length,
+        margin: EdgeInsets.only(bottom: 10, right: 10, left: 10, top: 10),
+        child: ListView.builder(
+            itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
-              return Card(
-                  child: InkWell(
-                    onTap: ()=>_jumpToAdd(data[position].destination),
-                    child: Container(padding: EdgeInsets.all(5),
-                      child: Column(children: <Widget>[
-                        Row(children: <Widget>[Expanded(child: Text("${data[position]?.title?.toUpperCase()}", style: TextStyle(color: KColors.primaryColor, fontSize: 18, fontWeight: FontWeight.normal),))]),
-                        SizedBox(height: 5),
-                        Row(
-                          children: <Widget>[
-                            Expanded(child: Text("${data[position].content}", style: TextStyle(color: Colors.black))),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${data[position].created_at}", style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey),)])
-                      ]),
-                    ),
-                  )
+              return InkWell(
+                onTap: () => _jumpToAdd(widget.data[position].destination),
+                child: Container(decoration: BoxDecoration(color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child: Column(children: <Widget>[
+                Row(children: <Widget>[
+                  Expanded(
+                      child: Text(
+                   Utils.capitalize( "${widget.data[position]?.title}"),
+                    style: TextStyle(
+                        color: KColors.primaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ))
+                ]),
+                SizedBox(height: 5),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Text(Utils.capitalize("${widget.data[position].content}"),
+                            style: TextStyle(color: Colors.grey,fontSize: 12))),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        "${widget.data[position].created_at}",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey),
+                      )
+                    ])
+              ]),
+                ),
               );
             }));
   }
 
   _jumpToAdd(NotificationFDestination notificationFDestination) {
-
     xrint(notificationFDestination.toString());
 
     switch (notificationFDestination.type) {
-    /* go to the activity we are supposed to go to with only the id */
+      /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
         _jumpToFoodDetailsWithId(notificationFDestination.product_id);
         break;
@@ -200,18 +246,20 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            OrderDetailsPage(
+                orderId: orderId, presenter: OrderDetailsPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void _jumpToTransactionHistory() {
@@ -222,18 +270,19 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
             TransactionHistoryPage(presenter: TransactionPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void _jumpToArticleInterface(int product_id) {
@@ -241,22 +290,24 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   }
 
   void _jumpToRestaurantDetailsPage(int product_id) {
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RestaurantDetailsPage(restaurantId: product_id, presenter: RestaurantDetailsPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            RestaurantDetailsPage(
+                restaurantId: product_id,
+                presenter: RestaurantDetailsPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-
     /*Navigator.push(
       context,
       MaterialPageRoute(
@@ -264,40 +315,45 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
-  void _jumpToFoodDetailsWithId (int food_id){
-  /*  Navigator.push(
+  void _jumpToFoodDetailsWithId(int food_id) {
+    /*  Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            RestaurantMenuPage(
+                foodId: food_id,
+                highlightedFoodId: food_id,
+                presenter: MenuPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void _jumpToServiceClient() {
@@ -308,18 +364,19 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
             CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
 /* _jumpToFoodDetails(ShopProductModel food_entity) {

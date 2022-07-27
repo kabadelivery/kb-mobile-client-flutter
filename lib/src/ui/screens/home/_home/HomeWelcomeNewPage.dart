@@ -296,6 +296,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     /* init fetch data bloc */
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          brightness: Brightness.light,
           title: SizedBox(
               height: 70,
               child: GestureDetector(

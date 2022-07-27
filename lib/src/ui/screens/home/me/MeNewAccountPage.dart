@@ -23,6 +23,7 @@ import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.d
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
+import 'package:KABA/src/ui/screens/home/me/personnal/Personal3Page.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 
@@ -162,7 +163,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: 45,
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: Container(),
@@ -242,7 +243,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               GestureDetector(
                 onTap: () => _jumpToPage(
                     context,
-                    Personal2Page(
+                    Personal3Page(
                         customer: widget.customerData,
                         presenter: PersonnalPagePresenter())),
                 child: Row(

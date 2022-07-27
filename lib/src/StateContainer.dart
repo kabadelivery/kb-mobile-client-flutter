@@ -17,6 +17,8 @@ class StateContainer extends StatefulWidget {
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;
   Position position;
+  static const double ANDROID_APP_SIZE = 50;
+
 
   StateContainer(
       {@required this.child,
@@ -63,6 +65,7 @@ class StateContainerState extends State<StateContainer> {
 
   int lastLocationPickingDate = 0;
   int lastTimeLinkMatchAction = 0;
+
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {

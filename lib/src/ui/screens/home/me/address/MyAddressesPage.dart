@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -72,7 +73,8 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(toolbarHeight: 45,
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
@@ -103,37 +105,38 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       : hasSystemError
                           ? _buildSysErrorPage()
                           : _buildDeliveryAddressesList())),
-         false ? Positioned(
-            bottom: 20,
+        Positioned(
+            bottom: 0,
             right: 0,
             left: 0,
-            child: BouncingWidget(
-              duration: Duration(milliseconds: 400),
-              scaleFactor: 2,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RaisedButton(
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(Icons.add, color: KColors.primaryColor),
-                            SizedBox(width: 10),
-                            Text(
-                                "${AppLocalizations.of(context).translate('create_new_address')}",
-                                style: TextStyle(color: KColors.primaryColor))
-                          ],
+            child: Container(color: KColors.new_gray,
+              padding: EdgeInsets.only(top: 10, bottom: 30, left: 10, right: 10),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RaisedButton(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                          /*    Icon(Icons.add, color: Colors.white),
+                              SizedBox(width: 10),*/
+                              Text(
+                                  "${AppLocalizations.of(context).translate('create_new_address')}",
+                                  style: TextStyle(color: Colors.white,fontSize: 15))
+                            ],
+                          ),
                         ),
-                      ),
-                      color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
-                      onPressed: () => _createAddress()),
-                ],
+                        color: KColors.primaryColor,
+                        onPressed: () => _createAddress()),
+                  ],
+                ),
               ),
             ),
-          ): Container(),
+          ) ,
         ],
       ),
     );
@@ -228,6 +231,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: Colors.white),
                         padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(right: 10),
                         child: Icon(Icons.bookmark_border_outlined,
                             color: KColors.primaryYellowColor, size: 18),
                       )
@@ -236,7 +240,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             ),
           ],
         ),
-        Positioned(top: 0, right: 20,
+        Positioned(top: 0, right: 10,
             child: InkWell(onTap: ()=>_editAddress(address),
               child: Container(
           decoration:
