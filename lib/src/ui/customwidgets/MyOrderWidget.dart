@@ -233,7 +233,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   String _getLastModifiedDate(CommandModel command) {
-    return Utils.readTimestamp(int.parse(command?.last_update));
+    return Utils.readTimestamp(context, int.parse(command?.last_update));
   }
 
   _jumpToCommandDetails(CommandModel command) {

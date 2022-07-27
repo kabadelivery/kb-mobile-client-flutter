@@ -300,7 +300,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(int.parse(widget.command?.last_update));
+    return Utils.readTimestamp(context, int.parse(widget.command?.last_update));
   }
 
   _getProgressTimeLine(CommandModel command) {

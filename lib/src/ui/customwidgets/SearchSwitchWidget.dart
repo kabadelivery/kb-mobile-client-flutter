@@ -8,11 +8,13 @@ import 'package:tinycolor/tinycolor.dart';
 
 class SearchSwitchWidget extends StatefulWidget {
   Function onSwitch;
-  int selected_position;
-
+  int selectedPosition;
   Function filterFunction;
 
-  SearchSwitchWidget(this.selected_position, this.onSwitch, this.filterFunction);
+  String type;
+
+  SearchSwitchWidget(
+      this.selectedPosition, this.onSwitch, this.filterFunction, this.type);
 
   @override
   _SearchSwitchWidgetState createState() {
@@ -28,13 +30,76 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
 
   var _filterDropdownValue;
 
+  var _searchChoices = null;
+
   @override
   void initState() {
     super.initState();
+
   }
+
+
+
+  getCategoryTitle(BuildContext context) {
+    var tmp = [
+      AppLocalizations.of(context).translate('service_shop_type_name'),
+      AppLocalizations.of(context).translate('service_shop_type_product')
+    ];
+
+    switch (widget?.type) {
+      case "food": // food
+        tmp = [
+          AppLocalizations.of(context)
+              .translate('service_restaurant_type_name'),
+          AppLocalizations.of(context)
+              .translate('service_restaurant_type_product')
+        ];
+        break;
+      case "drink": // drinks
+        tmp = [
+          AppLocalizations.of(context).translate('service_drink_type_name'),
+          AppLocalizations.of(context).translate('service_drink_type_product')
+        ];
+        break;
+      case "flower": // flowers
+        tmp = [
+          AppLocalizations.of(context).translate('service_flower_type_name'),
+          AppLocalizations.of(context).translate('service_flower_type_product')
+        ];
+        break;
+      case "supermarket": // flowers
+        tmp = [
+          AppLocalizations.of(context).translate('service_flower_type_name'),
+          AppLocalizations.of(context).translate('service_flower_type_product')
+        ];
+        break;
+      //   case 1005: // movies
+      //     category_name_code = "service_category_movies";
+      //     break;
+      //   case 1006: // package delivery
+      //     category_name_code = "service_category_package_delivery";
+      //     break;
+      case "shop": // shopping
+        tmp = [
+          AppLocalizations.of(context).translate('service_shop_type_name'),
+          AppLocalizations.of(context).translate('service_shop_type_product')
+        ];
+        break;
+      //  case 1008: // ticket
+      //    category_name_code = "service_category_ticket";
+      // break;
+    }
+    return tmp;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+    if (_searchChoices == null)
+      _searchChoices = getCategoryTitle(context);
+
+
     return Container(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: Row(
@@ -61,16 +126,17 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                 child: Center(
                                   child: Text(
                                       Utils.capitalize(
-                                          "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                          // "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                     _searchChoices[0]),
                                       style: TextStyle(
                                           fontSize: 11,
-                                          color: widget.selected_position == 1
+                                          color: widget.selectedPosition == 1
                                               ? this.filter_active_text_color
                                               : this
                                                   .filter_unactive_text_color)),
                                 ),
                                 decoration: BoxDecoration(
-                                    color: widget.selected_position == 1
+                                    color: widget.selectedPosition == 1
                                         ? this.filter_active_button_color
                                         : this.filter_unactive_button_color,
                                     borderRadius:
@@ -86,15 +152,15 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                 child: Center(
                                   child: Text(
                                       Utils.capitalize(
-                                          "${AppLocalizations.of(context).translate('search_food')}"),
+                                          _searchChoices[1]),
                                       style: TextStyle(
                                           fontSize: 11,
-                                          color: widget.selected_position == 1
+                                          color: widget.selectedPosition == 1
                                               ? this.filter_unactive_text_color
                                               : this.filter_active_text_color)),
                                 ),
                                 decoration: BoxDecoration(
-                                    color: widget.selected_position == 1
+                                    color: widget.selectedPosition == 1
                                         ? this.filter_unactive_button_color
                                         : this.filter_active_button_color,
                                     borderRadius:
@@ -142,7 +208,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
 //                      color: Colors.deepPurpleAccent,
                           ),
                       onChanged: (String newValue) {
-                       widget.filterFunction(newValue);
+                        widget.filterFunction(newValue);
                       },
                       items: <String>[
                         '${AppLocalizations.of(context).translate('cheap_to_exp')}',

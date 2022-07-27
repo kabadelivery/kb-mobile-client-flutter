@@ -107,7 +107,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 }
 
 FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
-  Iterable lo = data["data"]["resto"];
+  Iterable lo = data["data"]/*["resto"]*/;
 
   List<ShopModel> tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
 

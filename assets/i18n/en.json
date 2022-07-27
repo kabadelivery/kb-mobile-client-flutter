@@ -419,6 +419,7 @@
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
 
+
   "what_want_buy": "What do you want to buy ?",
   "categories": "Categories",
   "product_details": "Product details",
@@ -437,8 +438,28 @@
   "my_basket": "My Basket",
 
   "order_summary": "Order Summary",
-  "invoice_bill": "Invoice"
+  "invoice_bill": "Invoice",
 
+  "service_restaurant_type_name": "Restaurant",
+  "service_drink_type_name": "Pub",
+  "service_cinema_type_name": "Cinema",
+  "service_flower_type_name": "Florist",
+  "service_shop_type_name": "Shop",
+  "service_supermarket_type_name": "Supermarket",
 
+  "service_restaurant_type_product": "Food",
+  "service_drink_type_product": "Drink",
+  "service_movie_type_product": "Movie",
+  "service_flower_type_product": "Flower",
+  "service_shop_type_product": "Item",
+  "service_supermarket_type_product": "Item",
+
+  "has_to_pay": "Amount to Pay",
+  "already_paid": "Total Paid",
+
+  "call_me_shipper": "Call Shipper",
+
+  "today": "Today",
+  "yesterday": "Yesterday"
 
 }

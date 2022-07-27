@@ -32,6 +32,7 @@ import 'package:toast/toast.dart';
 // import 'package:android_intent/android_intent.dart';
 
 class RestaurantListPage extends StatefulWidget {
+
   Position location;
 
   RestaurantFoodProposalPresenter foodProposalPresenter;

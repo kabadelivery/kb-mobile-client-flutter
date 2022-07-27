@@ -3,6 +3,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyNewOrderWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -70,7 +71,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
         ]
           ..addAll(
               List<Widget>.generate(data.length, (int index) {
-                return MyOrderWidget(command: data[index]);
+                return MyNewOrderWidget(command: data[index]);
               })
           ),
       );

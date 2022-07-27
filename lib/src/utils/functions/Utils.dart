@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -142,7 +143,7 @@ class Utils {
     return formattedDate;
   }
 
-  static String readTimestamp (int timestamp) {
+  static String readTimestamp (BuildContext context, int timestamp) {
 
 //      long unixSeconds = Long.parseLong(timeStamp);
     DateTime commandTime = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);;
@@ -161,9 +162,9 @@ class Utils {
       sdf = new DateFormat(pattern_today);
       formattedDate = sdf.format(commandTime);
       if (commandTime.day == currentTime.day) {
-        formattedDate = "TODAY" + " " + formattedDate;
+        formattedDate = "${AppLocalizations.of(context).translate('today')}" + " " + formattedDate;
       } else if (commandTime.day + 1 == currentTime.day) {
-        formattedDate = "Yesterday" + " " + formattedDate;
+        formattedDate = "${AppLocalizations.of(context).translate('yesterday')}" + " " + formattedDate;
       } else {
         sdf = DateFormat(pattern_not_today);
         formattedDate = sdf.format(commandTime);

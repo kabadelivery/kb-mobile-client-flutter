@@ -247,13 +247,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             break;
           case SplashPage.LOCATION_PICKED:
 
-   _checkIfLoggedInAndDoAction(() {
-                // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
-                _jumpToPage(context, MyAddressesPage(
-                    presenter: AddressPresenter(),
-                    gps_location: widget.argument.toString().replaceAll(
-                        ",", ":")));
-              });
+            _checkIfLoggedInAndDoAction(() {
+              // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
+              _jumpToPage(context, MyAddressesPage(
+                  presenter: AddressPresenter(),
+                  gps_location: widget.argument.toString().replaceAll(
+                      ",", ":")));
+            });
 
             break;
         }
@@ -282,20 +282,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //            ),
 //            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
 
-              child:GestureDetector(onTap: (){
-                setState(() {
-                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
-                });
-              },
-                child: Container(margin: EdgeInsets.only(bottom: 15, top: 20),
-                  decoration: BoxDecoration(
-                    border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
+            child:GestureDetector(onTap: (){
+              setState(() {
+                StateContainer.of(context).updateTabPosition(tabPosition: 1);
+              });
+            },
+              child: Container(margin: EdgeInsets.only(bottom: 15, top: 20),
+                decoration: BoxDecoration(
+                  border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
-                  ),
-                  child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
-//                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
                 ),
-              )),
+                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+//                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
+              ),
+            )),
           leading: IconButton(icon: SizedBox(
               height: 25,
               width: 25,
@@ -344,7 +344,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       // scan
         _jumpToAddVoucherPage();
         break;
-     /* case 1:
+        /* case 1:
       // scan
         _jumpToScanPage();*/
         break;
@@ -1175,8 +1175,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void showOverlayfunctionwithmessage(AlertMessageModel data) {
-     showOverlayNotification(
-        (context) {
+    showOverlayNotification(
+            (context) {
           return StateContainer
               .of(context)
               .service_message["show"] == 1 ?
@@ -1224,7 +1224,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           ) : Container();
         },
         position: NotificationPosition.top,
-      duration: Duration.zero
+        duration: Duration.zero
     );
   }
 
@@ -1293,36 +1293,36 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         context: context,
         builder: (_) {
           return AlertDialog(
-              content: Column(mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                        height: 100, width: 100,
-                        decoration: BoxDecoration(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                      height: 100, width: 100,
+                      decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: new AssetImage(
-                                  ImageAssets.emergency_icon),
-                            )
-                        )
-                    ),
-                    SizedBox(height: 10),
-                    Text("$message", textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black, fontSize: 13)),
-                    SizedBox(height:5),
-                    Row(mainAxisAlignment: MainAxisAlignment.center,children:[
-                      OutlinedButton(
-                        style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                        child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)), // update
-                        onPressed: () {
-                          saveMessageAsRead(data);
-                          Navigator.of(context).pop();
-                        },
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(
+                                ImageAssets.emergency_icon),
+                          )
                       )
-                    ])
-                  ]
-              ),
+                  ),
+                  SizedBox(height: 10),
+                  Text("$message", textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 13)),
+                  SizedBox(height:5),
+                  Row(mainAxisAlignment: MainAxisAlignment.center,children:[
+                    OutlinedButton(
+                      style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)), // update
+                      onPressed: () {
+                        saveMessageAsRead(data);
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ])
+                ]
+            ),
           );
         });
 //  });
@@ -1410,12 +1410,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void showBalanceLoading(bool isLoading) {
 
     setState(() {
-     try {
-       StateContainer.of(context).updateBalanceLoadingState(
-           isBalanceLoading: isLoading);
-     } catch (_){
-      xrint(_.toString());
-     }
+      try {
+        StateContainer.of(context).updateBalanceLoadingState(
+            isBalanceLoading: isLoading);
+      } catch (_){
+        xrint(_.toString());
+      }
     });
   }
 

@@ -4,7 +4,9 @@ import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyNewOrderWidget.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
@@ -68,6 +70,22 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
 
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(toolbarHeight: 45,
+          brightness: Brightness.light,
+          backgroundColor: KColors.primaryColor,
+          actions: [
+
+          ],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('orders')}"),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+            ],
+          ),
+        ),
         body:  AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child:  Container(
@@ -78,28 +96,27 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
   }
 
   _buildOrderList() {
-
     if (widget?.orders != null && widget?.orders?.length > 0)
       return SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 50),
+            SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
               InkWell(onTap: ()=> widget.presenter.loadDailyOrders(widget.customer),
                 child: Container(
                   // width: 80,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: KColors.primaryColorSemiTransparentADDTOBASKETBUTTON,
+                    color: KColors.primaryColor.withAlpha(30),
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
-                  padding: EdgeInsets.only(right:10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                  padding: EdgeInsets.symmetric(vertical:10, horizontal: 10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                       Icon(Icons.refresh, color: KColors.primaryColor,size: 25),
+                       Icon(Icons.refresh, color: KColors.primaryColor, size: 20),
                       SizedBox(width:5),
                       // count down here
-                      Text("${AppLocalizations.of(context).translate('refresh')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12))
+                      Text(Utils.capitalize("${AppLocalizations.of(context).translate('refresh')}"), style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.normal, fontSize: 13))
                     ],
                   ),
                 ),
@@ -108,9 +125,16 @@ class _DailyOrdersPageState extends State<DailyOrdersPage> implements DailyOrder
             ]),
             SizedBox(height: 15),
           ]
+          ..add(
+            widget?.orders?.length > 0 ? Row(mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(child: Text("${AppLocalizations.of(context).translate('today')}", style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500)), margin: EdgeInsets.symmetric(horizontal: 10, vertical: 3)),
+              ],
+            ) : Container()
+          )
             ..addAll(
                 List<Widget>.generate(widget?.orders?.length, (int index) {
-                  return MyOrderWidget(command: widget?.orders[index]);
+                  return MyNewOrderWidget(command: widget?.orders[index]);
                 })
             ),
         ),

@@ -42,9 +42,12 @@ class SearchProductPageState extends State<SearchProductPage> {
     hasNetworkError = false;
     isLoading = false;
     // according to the type, we have different names
+    _searchChoices = ["Shop", "Product"];
     switch (widget.searchType) {
       case 0:
         // all : shop , product
+        // _searchChoices = ["Shop", "Product"];
+        // "${AppLocalizations.of(context).translate("what_want_buy")}");
         break;
       case 1:
       // food: restaurant, food
@@ -54,18 +57,18 @@ class SearchProductPageState extends State<SearchProductPage> {
       // cinema: cinema, movie
       case 4:
       // flowers: shop,flowers
-      case 5:
-      // tickets: event, activity
-      case 6:
-      // groceries: shop, product
-      case 7:
-      // supermarket: shop, product
-      case 8:
+      // case 5:
+      // // tickets: event, activity
+      //
+      // case 6:
+      // // groceries: shop, product
+      // case 7:
+      // // supermarket: shop, product
+      // case 8:
       // library: library, books
       default:
       // gaz / package delivery
     }
-    _searchChoices = ["Shop", "Product"];
 
     // then according to product, we can have adapt-a_t_i_v_e design to show products.
   }

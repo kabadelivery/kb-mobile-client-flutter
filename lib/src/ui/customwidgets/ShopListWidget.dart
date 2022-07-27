@@ -3,6 +3,7 @@ import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -234,6 +235,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
   void _jumpToRestaurantMenu(BuildContext context, ShopModel shopModel) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
+        shopModel?.category_id == "flower" ? FlowerCatalogPage(restaurant: shopModel, presenter: MenuPresenter()) :
             RestaurantMenuPage(
                 restaurant: shopModel, presenter: MenuPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {

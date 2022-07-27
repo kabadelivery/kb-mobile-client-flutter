@@ -486,7 +486,30 @@
   "my_basket": "购物车",
 
   "order_summary": "订单总结",
-  "invoice_bill": "结单"
+  "invoice_bill": "结单",
 
+
+
+  "service_restaurant_type_name": "饭店",
+  "service_drink_type_name": "饮料店",
+  "service_cinema_type_name": "电影院",
+  "service_flower_type_name": "鲜花店",
+  "service_shop_type_name": "商店",
+  "service_supermarket_type_name": "超市",
+
+  "service_restaurant_type_product": "餐",
+  "service_drink_type_product": "饮料",
+  "service_movie_type_product": "电影",
+  "service_flower_type_product": "鲜花",
+  "service_shop_type_product": "商品",
+  "service_supermarket_type_product": "商品",
+
+
+  "has_to_pay": "到付",
+  "already_paid": "预付",
+
+  "call_me_shipper": "联系外送员",
+  "today": "今日",
+  "yesterday": "昨日 "
 
 }

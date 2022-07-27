@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/mainDebug.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
@@ -152,8 +153,8 @@ class RestaurantApiProvider {
     }
   }
 
-  fetchRestaurantFoodProposalFromTag(String tag) async {
-    xrint("entered fetchRestaurantFoodProposalFromTag ${tag}");
+  fetchRestaurantFoodProposalFromTag(String query) async {
+    xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
     if (await Utils.hasNetwork()) {
       /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG),
@@ -163,7 +164,7 @@ class RestaurantApiProvider {
 
       var dio = Dio();
       dio.options
-        // ..headers = Utils.getHeadersWithToken(customer?.token)
+      // ..headers = Utils.getHeadersWithToken(customer?.token)
         ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -174,7 +175,7 @@ class RestaurantApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG).toString(),
-        data: json.encode({'tag': tag}),
+        data: json.encode({'tag': query}),
       );
 
       xrint(response.data.toString());
@@ -189,7 +190,7 @@ class RestaurantApiProvider {
             // foods with restaurant inside.
             lo?.map((food_restaurant) {
               ShopProductModel f =
-                  ShopProductModel.fromJson(food_restaurant["food"]);
+              ShopProductModel.fromJson(food_restaurant["food"]);
               f.restaurant_entity =
                   ShopModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);
@@ -232,32 +233,34 @@ class RestaurantApiProvider {
       xrint({"location": "${position?.latitude}:${position?.longitude}"}
           .toString());
 
-      var response = await dio.post(
+      /*var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2).toString(),
         data: position == null ? "" : json.encode({}
             // {"location": "${position?.latitude}:${position?.longitude}"}
         ),
-      );
+      );*/
 
-      // Map<String, dynamic> params = Map();
-      // if (type != null) params.putIfAbsent("category", () => type);
-      // var response = await dio.get(
-      //     Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
-      //     queryParameters: params
-      //     /*data: position == null ? "" : json.encode({}
-      //         // {"location": "${position?.latitude}:${position?.longitude}"}
-      //     ),*/
-      //     );
+      Map<String, dynamic> params = Map();
+      if (type != null) params.putIfAbsent("category", () => type);
+      params.putIfAbsent("search_type", () => "shop");
+
+      var response = await dio.get(
+          Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
+          queryParameters: params
+           // data: position == null ? "" : json.encode({}
+              // {"location": "${position?.latitude}:${position?.longitude}"}
+          // ),
+          );
 
       xrint(response.data);
       if (response.statusCode == 200) {
         // int errorCode = mJsonDecode(response.data)["error"];
         dynamic data = mJsonDecode(response.data);
-        if (data["error"] == 0) {
+        // if (data["error"] == 0) {
 
           return data["data"];
-        } else
-          throw Exception(-1); // there is an error in your request
+        // } else
+        //   throw Exception(-1); // there is an error in your request
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }

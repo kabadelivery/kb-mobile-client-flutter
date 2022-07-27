@@ -473,7 +473,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> with Tr
                 ),
               ),
               Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment:MainAxisAlignment.end, children: <Widget>[
-                Text(Utils.readTimestamp(moneyData[index]?.created_at), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
+                Text(Utils.readTimestamp(context, moneyData[index]?.created_at), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
                 SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
               ]),
             ],

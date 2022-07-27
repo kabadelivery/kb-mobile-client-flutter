@@ -44,6 +44,8 @@ class ShopListPage extends StatefulWidget {
 
   BuildContext context;
 
+  String category_type;
+
   CustomerModel customer;
 
   List<ShopModel> restaurantList = null;
@@ -371,7 +373,7 @@ class _ShopListPageState extends State<ShopListPage>
                 ),
               ),
               SizedBox(height: 10),
-              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction),
+              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction, widget?.type),
               SizedBox(height: 15),
               Expanded(
                 child: SingleChildScrollView(

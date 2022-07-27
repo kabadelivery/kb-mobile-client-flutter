@@ -82,7 +82,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(toolbarHeight: 45,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           title: Row(
@@ -91,7 +91,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
               Text(
                   Utils.capitalize(
                       "${AppLocalizations.of(context).translate('buy')}"),
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
         ),
@@ -190,7 +190,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       title:
                           "${AppLocalizations.of(context).translate("what_want_buy")}"),
                   onTap: () {
-                    _jumpToSearchPage(0);
+                    _jumpToSearchPage("all");
                   }),
               GridView(
                 physics: BouncingScrollPhysics(),
@@ -263,11 +263,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         );
   }
 
-  void _jumpToSearchPage(int i) {
+  void _jumpToSearchPage(String type) {
     _jumpToPage(
         context,
         ShopListPage(
             context: context,
+            type: type,
             foodProposalPresenter: RestaurantFoodProposalPresenter(),
             restaurantListPresenter: RestaurantListPresenter()));
   }

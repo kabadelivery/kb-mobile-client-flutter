@@ -495,7 +495,29 @@
 
   "order_summary": "Résumé Commande",
 
-  "invoice_bill": "Facture"
+  "invoice_bill": "Facture",
 
 
+
+  "service_restaurant_type_name": "Restaurant",
+  "service_drink_type_name": "Cave",
+  "service_cinema_type_name": "Cinema",
+  "service_flower_type_name": "Fleuriste",
+  "service_shop_type_name": "Boutique",
+  "service_supermarket_type_name": "Supermarché",
+
+  "service_restaurant_type_product": "Repas",
+  "service_drink_type_product": "Boisson",
+  "service_movie_type_product": "Film",
+  "service_flower_type_product": "Fleur",
+  "service_shop_type_product": "Article",
+  "service_supermarket_type_product": "Article",
+
+  "has_to_pay": "Total à Payer",
+  "already_paid": "Total Prépayé",
+
+  "call_me_shipper": "Contacter Livreur",
+
+  "today": "Aujourd'hui",
+  "yesterday": "Hier"
 }

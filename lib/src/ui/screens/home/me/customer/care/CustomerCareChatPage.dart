@@ -140,7 +140,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                                       ),
                                       SizedBox(height: 10),
                                       Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                                        Expanded(child: Text("${Utils.readTimestamp(widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
+                                        Expanded(child: Text("${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
                                       ])
                                     ],
                                   ),

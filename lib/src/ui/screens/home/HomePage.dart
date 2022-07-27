@@ -22,6 +22,7 @@ import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
+import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -45,8 +46,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
-import '_home/HomeWelcomePage.dart';
-import 'me/MeAccountPage.dart';
+import '_home/HomeWelcomeNewPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
@@ -75,12 +75,12 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 class _HomePageState extends State<HomePage> {
-  HomeWelcomePage homeWelcomePage;
+  HomeWelcomeNewPage homeWelcomePage;
 
   // RestaurantListPage restaurantListPage;
   ServiceMainPage serviceMainPage;
   DailyOrdersPage dailyOrdersPage;
-  MeAccountPage meAccountPage;
+  MeNewAccountPage meAccountPage;
 
   List<StatefulWidget> pages;
 
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    homeWelcomePage = HomeWelcomePage(
+    homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
         key: serviceMainKey , presenter: ServiceMainPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
-    meAccountPage = MeAccountPage(key: meKey);
+    meAccountPage = MeNewAccountPage(key: meKey);
     pages = [
       homeWelcomePage,
       serviceMainPage,
@@ -509,29 +509,33 @@ class _HomePageState extends State<HomePage> {
     }
     return Scaffold(
       body: pages[StateContainer.of(context).tabPosition],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(selectedFontSize: 12.5, unselectedFontSize: 12,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
             activeIcon: SvgPicture.asset(VectorsData.home_selected),
-            label: ("${AppLocalizations.of(context).translate('home')}"),
+            label: Utils.capitalize("${AppLocalizations.of(context).translate('home')}"),
+            tooltip: Utils.capitalize("${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             // icon: Icon(Icons.restaurant),
             // label: ('${AppLocalizations.of(context).translate('restaurant')}'),
             icon: SvgPicture.asset(VectorsData.buy), // Icon(FontAwesomeIcons.shoppingCart),
             activeIcon: SvgPicture.asset(VectorsData.buy_selected),
-            label: ('${AppLocalizations.of(context).translate('buy')}'),
+            label: Utils.capitalize('${AppLocalizations.of(context).translate('buy')}'),
+            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('buy')}'),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.orders), // Icon(Icons.view_list),
             activeIcon: SvgPicture.asset(VectorsData.orders_selected),
-            label: ('${AppLocalizations.of(context).translate('orders')}'),
+            label: Utils.capitalize('${AppLocalizations.of(context).translate('orders')}'),
+            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
             activeIcon: SvgPicture.asset(VectorsData.me_selected),
-            label: ('${AppLocalizations.of(context).translate('account')}'),
+            label: Utils.capitalize('${AppLocalizations.of(context).translate('account')}'),
+            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
         currentIndex: StateContainer.of(context).tabPosition,

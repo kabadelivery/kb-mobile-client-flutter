@@ -30,31 +30,41 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
   Widget build(BuildContext context) {
     return
       (
-          Stack(
+          Column(mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Container(
+                    // decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight:Radius.circular(7), bottomRight:Radius.circular(7)), color: KColors.primaryColor),
+                    child:Text(
+                        widget.groupAd.title?.toUpperCase(),
+                        style: TextStyle(color: KColors.primaryColor, fontSize: 14)
+                    )),
                 Container(  margin: EdgeInsets.only(bottom: 20),
-                    color: Colors.grey.shade300.withAlpha(50),
-                    padding: EdgeInsets.only(top:30),
+                    color: Colors.white, //grey.shade300.withAlpha(50),
+                    padding: EdgeInsets.only(top:10),
                     child: Column(
                         children:<Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.width/3,
-                            child: Row(
-                              children: <Widget>[
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
+                              width: MediaQuery.of(context).size.width*0.9,
+                              height:  9 * MediaQuery.of(context).size.width*0.9 / 16,
+                              child: Row(
+                                children: <Widget>[
 //                                 2 views
-                                Expanded( // big add
-                                  flex: 2,
-                                  child: GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
-                                    child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                                  Expanded( // big add
+                                    // flex: 2,
+                                    child: GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
+                                      child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                                    ),
                                   ),
-                                ),
-                                Expanded( // small add
-                                    flex: 1,
-                                    child: GestureDetector(onTap:()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 1),
-                                        child:Container(
-                                          child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
-                                        ))),
-                              ],
+                /*                Expanded( // small add
+                                      flex: 1,
+                                      child: GestureDetector(onTap:()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 1),
+                                          child:Container(
+                                            child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
+                                          ))),*/
+                                ],
+                              ),
                             ),
                           ),
                           /* Container(
@@ -122,16 +132,6 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                         ])
                 ),
 //                 title
-                Positioned(
-                    top:15,
-                    child:
-                    Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight:Radius.circular(7), bottomRight:Radius.circular(7)), color: KColors.primaryColor),
-                        child:Text(
-                            widget.groupAd.title?.toUpperCase(),
-                            style: TextStyle(color: Colors.white, fontSize: 14)
-                        ))),
               ])
       );
   }
