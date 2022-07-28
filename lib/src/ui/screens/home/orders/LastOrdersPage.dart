@@ -9,6 +9,7 @@ import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 
 
@@ -37,15 +38,30 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        appBar: AppBar(
-          actions: [],
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
-          backgroundColor: KColors.primaryColor,
-          title: Text("${AppLocalizations.of(context).translate('last_orders')}", style:TextStyle(color:Colors.white)),
-        ),
+    return Scaffold( appBar: AppBar(
+      toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+      brightness: Brightness.light,
+      backgroundColor: KColors.primaryColor,
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      actions: [Container(width: 40)],
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+              Utils.capitalize(
+                  "${AppLocalizations.of(context).translate('last_orders')}"),
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
+        ],
+      ),
+    ),
+
         backgroundColor: Colors.white,
         body:  StreamBuilder(
             stream: userDataBloc.mLastOrders,

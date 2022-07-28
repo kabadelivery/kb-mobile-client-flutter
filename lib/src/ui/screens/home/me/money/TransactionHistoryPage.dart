@@ -593,7 +593,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               width: index == pointData?.last_ten_transactions?.length-1 ? 0 : 0.8, color: Colors.grey.withAlpha(35)),
                         ),
                       ),
-
                           child: Column(
                               children: [
                                 ListTile(

@@ -5,6 +5,7 @@ import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyNewOrderWidget.dart';
+import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +155,26 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                 : Container())
             ..addAll(List<Widget>.generate(widget?.orders?.length, (int index) {
               return MyNewOrderWidget(command: widget?.orders[index]);
-            })),
+            }))
+            ..add(GestureDetector(
+              onTap: () => _jumpToPage(context, LastOrdersPage()),
+              child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 30),
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.rotate_left, color: KColors.mBlue),
+                        SizedBox(width: 5),
+                        Text(
+                            "${AppLocalizations.of(context).translate('see_order_history')}",
+                            style:
+                                TextStyle(color: KColors.mBlue, fontSize: 13))
+                      ],
+                    ),
+                  )),
+            )),
         ),
       );
     else
@@ -275,6 +295,21 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD)
         widget.presenter.loadDailyOrders(widget.customer);
     });
+  }
+
+  void _jumpToPage(BuildContext context, page) {
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   @override

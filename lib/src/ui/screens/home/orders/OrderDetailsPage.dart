@@ -1,3 +1,4 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/order_feedback_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -84,9 +85,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: KColors.primaryColor,
-            title: Text("${AppLocalizations.of(context).translate('order_details')}",
-                style: TextStyle(fontSize: 20, color: Colors.white))),
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          brightness: Brightness.light,
+          backgroundColor: KColors.primaryColor,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          actions: [Container(width: 40)],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('order_details')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
+        ),
         body:
         isLoading ? Center(child:MyLoadingProgressWidget()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
         _inflateDetails())

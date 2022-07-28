@@ -521,6 +521,9 @@
   "today": "Aujourd'hui",
   "yesterday": "Hier",
 
-  "available_balance": "Solde Disponible"
+  "available_balance": "Solde Disponible",
+
+  "see_order_history": "Voir Historique Commandes"
+
 
 }

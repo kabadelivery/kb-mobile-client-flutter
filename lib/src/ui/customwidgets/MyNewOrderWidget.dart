@@ -4,6 +4,7 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -177,7 +178,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            command?.state > 1 && command?.state <=3  ? Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -188,7 +189,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                     style: TextStyle(
                                         fontSize: 12, color: Colors.white)),
                               ],
-                            ),
+                            ) : Container(height: 5),
                        /*shipping mode only*/    widget?.command?.state == 2 ? InkWell(
                                 child: Container(
                                     padding: EdgeInsets.symmetric(
@@ -304,7 +305,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            OrderDetailsPage(
+            OrderNewDetailsPage(
                 orderId: command?.id, presenter: OrderDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);

@@ -209,12 +209,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   }
 
   void _jumpToPage(BuildContext context, page) {
-    /*  Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => page,
-      ),
-    );*/
+
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => page,
