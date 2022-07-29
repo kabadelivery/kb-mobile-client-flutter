@@ -480,7 +480,7 @@ class AppApiProvider {
     }
   }
 
-  Future<List<ServiceMainEntity>> fetchServiceCategoryFromLocation(
+  Future<dynamic> fetchServiceCategoryFromLocation(
       Position location) async {
     xrint("entered fetchServiceCategoryFromLocation");
     if (await Utils.hasNetwork()) {
@@ -503,11 +503,7 @@ class AppApiProvider {
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-        Iterable lo = mJsonDecode(response.data)["data"];
-        List<ServiceMainEntity> categories = lo
-            ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
-            ?.toList();
-        return categories;
+      return json.encode(response.data);
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }

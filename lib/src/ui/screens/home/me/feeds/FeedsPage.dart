@@ -7,6 +7,7 @@ import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
@@ -292,7 +293,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
   void _jumpToRestaurantDetailsPage(int product_id) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            RestaurantDetailsPage(
+            ShopDetailsPage(
                 restaurantId: product_id,
                 presenter: RestaurantDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {

@@ -186,6 +186,7 @@ class _ProductWithShopDetailsWidgetState
                                                             color:
                                                                 KColors.mGreen,
                                                             size: 10),
+                                                        SizedBox(width: 10),
                                                         Text(
                                                             " ${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
                                                             style: TextStyle(
@@ -331,7 +332,7 @@ class _ProductWithShopDetailsWidgetState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(
+        builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
             presenter: RestaurantDetailsPresenter()),
       ),
@@ -396,7 +397,8 @@ class _ProductWithShopDetailsWidgetState
   void _jumpToShopDetails(BuildContext context, ShopModel shopModel) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            ShopDetailsPage(
+            ShopDetailsPage(  distance: shopModel?.distance,
+                shipping_price: shopModel?.delivery_pricing,
                 restaurant: shopModel, presenter: RestaurantDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);

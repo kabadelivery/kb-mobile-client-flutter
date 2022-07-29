@@ -1,5 +1,6 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,9 +16,12 @@ class ErrorPage extends StatelessWidget {
 
   String message;
 
+  double error_text_font_size;
+
   ErrorPage({
     Key key,
     this.type,
+    this.error_text_font_size = 14,
     this.onClickAction,
     this.message,
   }): super(key:key);
@@ -36,15 +40,15 @@ class ErrorPage extends StatelessWidget {
                 SizedBox(width: 40, height: 40,
                     child: IconButton(icon: Icon(Icons.error, color: KColors.primaryColor))),
                 SizedBox(height: 5),
-                Container(margin: EdgeInsets.only(left:10, right: 10),child: Text(message, textAlign: TextAlign.center)),
+                Container(margin: EdgeInsets.only(left:10, right: 10),child: Text(message, textAlign: TextAlign.center, style: TextStyle(fontSize:  error_text_font_size),)),
                 SizedBox(height:10),
                 MaterialButton(
                     shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
+                      borderRadius: new BorderRadius.circular(5),
                     ),
                     padding: EdgeInsets.only(top: 10,bottom: 10),
-                    child:Text("${AppLocalizations.of(context)?.translate('try_again')}",
-                    style: TextStyle(color: Colors.white)),
+                    child:Text(Utils.capitalize("${AppLocalizations.of(context)?.translate('try_again')}"),
+                    style: TextStyle(color: Colors.white, fontSize: 14)),
                     onPressed: onClickAction, color: KColors.primaryColor)
               ])
       ),

@@ -30,9 +30,9 @@ class ServiceMainPage extends StatefulWidget {
 
   CustomerModel customer;
 
-  List<ServiceMainEntity> available_services;
+  List<ServiceMainEntity> available_services = [];
 
-  List<ServiceMainEntity> coming_soon_services;
+  List<ServiceMainEntity> coming_soon_services = [];
 
   ServiceMainPage({Key key, this.presenter
       /*this.destination, this.argument*/
@@ -286,6 +286,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   void inflateServiceCategory(List<ServiceMainEntity> data) {
     setState(() {
+      widget.available_services = [];
+      widget.coming_soon_services = [];
       for (int i = 0; i < data?.length; i++) {
         if (data[i].is_active == 1) {
           widget.available_services.add(data[i]);
@@ -299,6 +301,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void networkError() {
+    if (widget?.available_services?.length == 0 && widget?.coming_soon_services?.length == 0)
     setState(() {
       hasNetworkError = true;
     });
@@ -315,7 +318,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void systemError() {
-    setState(() {
+    if (widget?.available_services?.length == 0 && widget?.coming_soon_services?.length == 0)
+      setState(() {
       hasSystemError = true;
     });
   }

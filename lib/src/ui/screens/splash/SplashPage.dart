@@ -6,6 +6,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
@@ -333,7 +334,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
+          navigatorKey.currentState.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "order":

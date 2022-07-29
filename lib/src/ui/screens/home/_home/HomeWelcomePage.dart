@@ -27,6 +27,7 @@ import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
@@ -34,7 +35,6 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 //import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -197,7 +197,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             StateContainer.of(context).tabPosition = 1;
             break;
           case SplashPage.RESTAURANT:
-            _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(context, ShopDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
@@ -1039,7 +1039,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             xrint("restaurant id -> ${pathSegments[1]}");
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantDetailsPage(
+            _jumpToPage(context, ShopDetailsPage(
                 restaurant: ShopModel(id: arg),
                 presenter: RestaurantDetailsPresenter()));
           }
@@ -1570,13 +1570,13 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     context,
     MaterialPageRoute(
       builder: (context) =>
-          RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
     ),
   );*/
 
   Navigator.of(context).push(
       PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-          RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;

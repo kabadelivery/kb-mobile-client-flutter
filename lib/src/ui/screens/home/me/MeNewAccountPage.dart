@@ -18,6 +18,7 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
@@ -58,6 +59,8 @@ class MeNewAccountPage extends StatefulWidget {
   CustomerModel customerData;
 
   CustomerModel customer;
+
+  static var routeName = "/MeNewAccountPage";
 
   MeNewAccountPage({Key key, this.title}) : super(key: key);
 
@@ -1246,7 +1249,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                RestaurantDetailsPage(
+                ShopDetailsPage(
                     restaurant: ShopModel(id: arg),
                     presenter: RestaurantDetailsPresenter()));
           }

@@ -66,7 +66,7 @@ class ShopModel {
     delivery_pricing = "${json['delivery_pricing']}";
     max_food = json['max_food'];
     location = json["location"];
-    category_id = json["category_id"];
+    category_id = "${json["category_id"]}";
   }
 
 

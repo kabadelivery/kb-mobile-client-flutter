@@ -22,6 +22,7 @@ import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -37,6 +38,8 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,6 +96,8 @@ class _HomePageState extends State<HomePage> {
       meKey = PageStorageKey("meKey");
 
   SharedPreferences prefs;
+
+  var subscription;
 
   Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
@@ -266,6 +271,23 @@ class _HomePageState extends State<HomePage> {
     Timer.run(() {
       // here we handle the signal
       initUniLinksStream();
+    });
+
+    // network
+
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult connectivityResult) {
+      // Got a new connectivity status!
+      if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+        ElegantNotification.success(
+            title:  Text("Online"),
+            description:  Text("Welcome back online")
+        ).show(context);
+      } else {
+        ElegantNotification.success(
+            title:  Text("Offline"),
+            description:  Text("Do something")
+        ).show(context);
+      }
     });
   }
 
@@ -457,7 +479,7 @@ class _HomePageState extends State<HomePage> {
 //    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
     _jumpToPage(
         context,
-        RestaurantDetailsPage(
+        ShopDetailsPage(
             restaurantId: product_id, presenter: RestaurantDetailsPresenter()));
   }
 
@@ -653,6 +675,13 @@ class _HomePageState extends State<HomePage> {
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    subscription.cancel();
+  }
+
   void _handleLinksImmediately(String link) {
     if (!(DateTime.now().millisecondsSinceEpoch -
             StateContainer.of(context).lastTimeLinkMatchAction >
@@ -747,7 +776,7 @@ class _HomePageState extends State<HomePage> {
             widget.argument = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                RestaurantDetailsPage(
+                ShopDetailsPage(
                     restaurant: ShopModel(id: widget.argument),
                     presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);

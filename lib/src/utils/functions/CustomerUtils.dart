@@ -12,11 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerUtils {
 
+ static String signature = XRINT_DEBUG_VALUE ? "debug": "prod";
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("_loginResponse", loginResponse);
+    prefs.setString("_loginResponse"+signature, loginResponse);
     /* no need to commit */
     /* expiration date in 3months */
     String expDate = "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
@@ -28,7 +29,7 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CustomerModel customer;
     try {
-      String jsonCustomer = prefs.getString("_loginResponse");
+      String jsonCustomer = prefs.getString("_loginResponse"+signature);
       var obj = json.decode(jsonCustomer);
       customer = CustomerModel.fromJson(obj["data"]["customer"]);
       String token = obj["data"]["payload"]["token"];
@@ -45,14 +46,14 @@ class CustomerUtils {
   static Future<CustomerModel> updateCustomerPersist (CustomerModel customer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String jsonCustomer = prefs.getString("_loginResponse");
+      String jsonCustomer = prefs.getString("_loginResponse"+signature);
       var obj = json.decode(jsonCustomer);
       String token = obj["data"]["payload"]["token"];
 //      customer = CustomerModel.fromJson(obj["data"]["customer"]);
       customer.token = token;
       obj['data']['customer'] = customer.toJson();
       String _sd = json.encode(obj);
-      prefs.setString("_loginResponse", _sd);
+      prefs.setString("_loginResponse"+signature, _sd);
     } catch (_) {
       xrint ("error updateCustomerPersist");
     }
@@ -63,13 +64,13 @@ class CustomerUtils {
   static Future<void> clearCustomerInformations () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.remove("_loginResponse");
+    prefs.remove("_loginResponse"+signature);
     prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
-    prefs.remove("_homepage");
+    prefs.remove("_homepage"+signature);
     prefs.remove("is_push_token_uploaed");
 
 // prefs.clear();
-    /*String jsonCustomer = prefs.getString("_loginResponse");
+    /*String jsonCustomer = prefs.getString("_loginResponse"+signature);
     var obj = json.decode(jsonCustomer);
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
     String token = obj["data"]["payload"]["token"];
@@ -79,7 +80,7 @@ class CustomerUtils {
 
   static Future<UserTokenModel> getUserToken () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonCustomer = prefs.getString("_loginResponse");
+    String jsonCustomer = prefs.getString("_loginResponse"+signature);
 
     String tok="";
 
@@ -98,7 +99,7 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String otp = ".";
     try {
-      String jsonCustomer = prefs.getString("_loginResponse");
+      String jsonCustomer = prefs.getString("_loginResponse"+signature);
       var obj = json.decode(jsonCustomer);
       otp = obj["login_code"];
       xrint("getLoginOtpCode :: otp = ${otp}");
@@ -108,37 +109,54 @@ class CustomerUtils {
     return otp;
   }
 
-  static getOldWelcomePage() async {
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonHomePage = prefs.getString("_homepage");
-    return jsonHomePage;
-  }
+static saveCategoryConfiguration(String ct) async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("_category"+signature, ct);
+}
 
   static getOldCategoryConfiguration() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String categoryConfig = prefs.getString("_category");
+    String categoryConfig = prefs.getString("_category"+signature);
     return categoryConfig;
   }
 
   static saveWelcomePage(String wp) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_homepage", wp);
+    prefs.setString("_homepage"+signature, wp);
   }
+
+  static getOldWelcomePage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonContent = prefs.getString("_homepage"+signature);
+    return jsonContent;
+  }
+
+
+  static saveBestSellerPage(String wp) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_b_seller"+signature, wp);
+  }
+
+  static getOldBestSellerPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonContent = prefs.getString("_b_seller"+signature);
+    return jsonContent;
+  }
+
 
   static Future<void> saveOtpToSharedPreference(String username, String otp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("${username}_last_otp", otp);
-    prefs.setString("${username}_otp_saved_time", "${DateTime.now().millisecondsSinceEpoch~/1000}");
+    prefs.setString("${username}_last_otp"+signature, otp);
+    prefs.setString("${username}_otp_saved_time"+signature, "${DateTime.now().millisecondsSinceEpoch~/1000}");
   }
 
   static Future<void> clearOtpLoginInfoFromSharedPreference(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try{
-      prefs.remove("${username}_otp_saved_time");
-      prefs.remove("${username}_last_otp");
+      prefs.remove("${username}_otp_saved_time"+signature);
+      prefs.remove("${username}_last_otp"+signature);
     } catch(_){
       xrint(_);
     }
@@ -148,11 +166,11 @@ class CustomerUtils {
   static Future<String> getLastValidOtp({String username, MIN_LAPSED_SECONDS = 60*5}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String otp_saved_time = prefs.getString("${username}_otp_saved_time");
+      String otp_saved_time = prefs.getString("${username}_otp_saved_time"+signature);
       if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS > (DateTime
           .now()
           .millisecondsSinceEpoch / 1000)) {
-        return prefs.getString("${username}_last_otp");
+        return prefs.getString("${username}_last_otp"+signature);
       } else {
         return "no";
       }
@@ -163,8 +181,8 @@ class CustomerUtils {
 
   static Future<String> getLastOtp(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("${username}_last_otp")) {
-      return prefs.getString("${username}_last_otp");
+    if (prefs.containsKey("${username}_last_otp"+signature)) {
+      return prefs.getString("${username}_last_otp"+signature);
     } else {
       return "no";
     }

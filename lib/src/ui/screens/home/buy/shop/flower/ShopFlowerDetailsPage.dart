@@ -64,10 +64,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
     super.didChangeDependencies();
     popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
     if (widget.food != null) {
-      expandedHeight = 2 * MediaQuery
-          .of(context)
-          .size
-          .width / 3 + 20;
+      expandedHeight = 2 * MediaQuery.of(context).size.width / 3 + 20;
       images = widget.food?.food_details_pictures;
       if (images == null) {
         images = [widget.food.pic];
@@ -89,7 +86,6 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
       widget.presenter.foodView = this;
       widget.presenter.fetchFoodById(widget.foodId);
     }
-
   }
 
   _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
@@ -168,7 +164,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
             children: <Widget>[
               Container(
                 height: 9 * MediaQuery.of(context).size.width / 16,
-                width:   MediaQuery.of(context).size.width,
+                width: MediaQuery.of(context).size.width,
                 color: Colors.redAccent,
                 child: CarouselSlider(
                   options: CarouselOptions(
@@ -194,7 +190,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                       builder: (BuildContext context) {
                         return Container(
                             height: 9 * MediaQuery.of(context).size.width / 16,
-                            width:  MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width,
                             child: CachedNetworkImage(
                                 imageUrl: Utils.inflateLink(pictureLink),
                                 fit: BoxFit.cover));
@@ -206,7 +202,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
               SingleChildScrollView(
                   child: Column(children: <Widget>[
                 SizedBox(
-                  height: 9 * MediaQuery.of(context).size.width / 16- 20,
+                  height: 9 * MediaQuery.of(context).size.width / 16 - 20,
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
@@ -299,7 +295,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                   style: TextStyle(color: Colors.black))
                             ]),
                             SizedBox(height: 10),
-                            Row(mainAxisAlignment: MainAxisAlignment.start,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text("${widget.food?.description?.trim()}",
                                     style: TextStyle(
@@ -344,19 +341,19 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 18)),
                               SizedBox(width: 15),
-                                  Container(
-                                    child: IconButton(
-                                        icon: Icon(Icons.add,
-                                            size: 15, color: KColors.primaryColor),
-                                        onPressed: () => _increaseQuantity()),
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: KColors.primaryColor.withAlpha(50)),
-                                  ),
+                              Container(
+                                child: IconButton(
+                                    icon: Icon(Icons.add,
+                                        size: 15, color: KColors.primaryColor),
+                                    onPressed: () => _increaseQuantity()),
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: KColors.primaryColor.withAlpha(50)),
+                              ),
                             ])),
-                        SizedBox(height:10),
+                        SizedBox(height: 10),
                         Text(
                             "${_getTotalPrice()}${AppLocalizations.of(context).translate('currency')}",
                             style: TextStyle(fontSize: 18, color: Colors.grey)),

@@ -2,6 +2,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -129,7 +130,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+            ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;

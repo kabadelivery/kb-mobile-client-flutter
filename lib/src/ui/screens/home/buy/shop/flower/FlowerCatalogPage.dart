@@ -8,9 +8,11 @@ import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -504,9 +506,9 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   }
 
   _showMenuBottomSheet(int type) async {
-    /* await Navigator.of(context).push(
+     await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            FlowerCatalogDetails(
+            RestaurantMenuDetails(
                 restaurant: widget.restaurant,
                 FOOD_MAX: FOOD_MAX,
                 type: type,
@@ -520,12 +522,12 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
               var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
               return SlideTransition(position: tween.animate(curvedAnimation), child: child);
             }
-        ));*/
+        ));
 
-    /*  await Navigator.push(
+  /* await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FlowerCatalogDetails(
+        builder: (context) => RestaurantMenuDetails(
             restaurant: widget.restaurant,
             FOOD_MAX: FOOD_MAX,
             type: type,

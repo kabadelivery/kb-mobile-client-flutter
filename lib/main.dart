@@ -24,6 +24,7 @@ import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
@@ -50,7 +51,9 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:country_code_picker/country_localizations.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -137,11 +140,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+
     super.initState();
-    // hms.Push.enableLogger();
-    // logTextController = new TextEditingController();
-    // topicTextController = new TextEditingController();
-    // initPlatformState();
+
   }
 
   @override
@@ -149,6 +150,8 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
+
+
 
   @override
   void dispose() {
@@ -305,38 +308,6 @@ class _MyAppState extends State<MyApp> {
         }));
   }
 
-  void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState
-        .pushNamed(RestaurantMenuPage.routeName, arguments: -1 * product_id);
-  }
-
-  void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState
-        .pushNamed(OrderDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToTransactionHistory() {
-    navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-  }
-
-  /* void _jumpToArticleInterface(int product_id) {
-    navigatorKey.currentState.pushNamed(WebViewPage.routeName, arguments: product_id);
-  }*/
-
-  void _jumpToRestaurantDetailsPage(int product_id) {
-    /* send a negative id when we want to show the food inside the menu */
-    navigatorKey.currentState
-        .pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState
-        .pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToServiceClient() {
-    navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
-  }
 }
 
 class CustomIntentPage extends StatelessWidget {

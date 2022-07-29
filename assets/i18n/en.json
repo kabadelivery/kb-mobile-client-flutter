@@ -464,5 +464,8 @@
 
 "available_balance": "Available balance",
 
-  "see_order_history": "See order history"
+  "see_order_history": "See order history",
+
+  "shop_details": "Details",
+  "see_all": "See all"
 }

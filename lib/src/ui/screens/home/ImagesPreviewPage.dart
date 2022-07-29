@@ -1,5 +1,6 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -310,7 +311,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(
+        builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
             presenter: RestaurantDetailsPresenter()),
       ),

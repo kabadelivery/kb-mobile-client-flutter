@@ -95,6 +95,8 @@ dependencies:
   loading_animation_widget: ^1.2.0+2
   lottie: ^1.3.0
   chip_list: ^2.2.3+7
+  elegant_notification: ^1.6.0
+  connectivity_plus: ^2.3.6
 
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0
@@ -155,7 +157,10 @@ flutter:
     - assets/images/vectors/bottom_icons/orders_selected.svg
     - assets/images/vectors/bottom_icons/me_selected.svg
     #lottie
+    - assets/lottie/new.json
+    - assets/lottie/best_sales.json
     - assets/lottie/books.json
+    - assets/lottie/fire.json
     - assets/lottie/drinks.json
     - assets/lottie/flower.json
     - assets/lottie/food.json

@@ -68,8 +68,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
                                           image: CachedNetworkImageProvider(
-                                              Utils.inflateLink(widget
-                                                  .shopModel?.pic))))),
+                                              Utils.inflateLink(
+                                                  widget.shopModel?.pic))))),
                               /*title:*/
                               SizedBox(width: 15),
                               Expanded(
@@ -92,15 +92,14 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                         maxLines: 1,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w200,
+                                            fontWeight: FontWeight.w200,
                                             fontSize: 13,
                                             color:
                                                 Colors.black.withAlpha(150))),
                                     SizedBox(height: 5),
                                     /* kilometers and shipping fees */
                                     Row(children: <Widget>[
-                                      _getRestaurantStateTag(
-                                          widget?.shopModel),
+                                      _getRestaurantStateTag(widget?.shopModel),
                                       SizedBox(width: 10),
                                       widget.shopModel?.distance == null
                                           ? Container()
@@ -181,14 +180,15 @@ class _ShopListWidgetState extends State<ShopListWidget> {
               Positioned(
                   top: 0,
                   right: 0,
-                  child: InkWell(onTap: ()=>_jumpToShopDetails(context, widget.shopModel),
+                  child: InkWell(
+                    onTap: () => _jumpToShopDetails(context, widget.shopModel),
                     child: Container(
                       child: Center(
-                          child:   Icon(
-                                Icons.other_houses_rounded,
-                                size: 20,
-                                color: KColors.primaryColor,
-                               )),
+                          child: Icon(
+                        Icons.other_houses_rounded,
+                        size: 20,
+                        color: KColors.primaryColor,
+                      )),
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
@@ -206,8 +206,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
         }));
   }
 
-  void _jumpToShopDetails(
-      BuildContext context, ShopModel shopModel) {
+  void _jumpToShopDetails(BuildContext context, ShopModel shopModel) {
     /* Navigator.push(
       context,
       MaterialPageRoute(
@@ -218,6 +217,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
+                distance: shopModel?.distance,
+                shipping_price: shopModel?.delivery_pricing,
                 restaurant: shopModel,
                 presenter: RestaurantDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -235,9 +236,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
   void _jumpToRestaurantMenu(BuildContext context, ShopModel shopModel) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-        shopModel?.category_id == "flower" ? FlowerCatalogPage(restaurant: shopModel, presenter: MenuPresenter()) :
-            RestaurantMenuPage(
-                restaurant: shopModel, presenter: MenuPresenter()),
+            shopModel?.category_id == "flower"
+                ? FlowerCatalogPage(
+                    restaurant: shopModel, presenter: MenuPresenter())
+                : RestaurantMenuPage(
+                    restaurant: shopModel, presenter: MenuPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -335,6 +338,4 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                     ?.toUpperCase(),
                 style: TextStyle(color: Colors.grey, fontSize: 11)));
   }
-
-
 }

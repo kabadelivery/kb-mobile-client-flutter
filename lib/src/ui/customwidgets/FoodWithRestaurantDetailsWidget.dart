@@ -3,6 +3,7 @@ import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -313,7 +314,7 @@ class _FoodWithRestaurantDetailsWidgetState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(
+        builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
             presenter: RestaurantDetailsPresenter()),
       ),

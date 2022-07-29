@@ -54,6 +54,8 @@ class ShopListPage extends StatefulWidget {
 
   String type;
 
+  static var routeName = "/ShopListPage";
+
   ShopListPage(
       {this.key,
       this.context,

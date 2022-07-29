@@ -185,7 +185,7 @@ class MenuApiProvider {
 
 
 
-  Future<List<BestSellerModel>> fetchBestSellerList() async {
+  Future<dynamic> fetchBestSellerList() async {
 
     xrint("entered fetchBestSellerList");
     if (await Utils.hasNetwork()) {
@@ -217,9 +217,7 @@ class MenuApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = mJsonDecode(response.data)["data"];
-          List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
-          return bestSellers;
+          return response.data.toString();
         } else
           throw Exception(-1); // there is an error in your request
       } else {

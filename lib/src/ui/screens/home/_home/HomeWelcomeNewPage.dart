@@ -19,6 +19,7 @@ import 'package:KABA/src/models/AlertMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/customwidgets/GroupAdsNewWidget.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
@@ -26,21 +27,21 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
-
-//import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -53,6 +54,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -82,6 +84,8 @@ class HomeWelcomeNewPage extends StatefulWidget {
 
   CustomerModel customer;
 
+  static var routeName = "/HomeWelcomeNewPage";
+
   HomeWelcomeNewPage(
       {Key key, this.title, this.presenter, this.destination, this.argument})
       : super(key: key);
@@ -95,6 +99,8 @@ class HomeWelcomeNewPage extends StatefulWidget {
 class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     implements HomeWelcomeView {
   List<String> popupMenus;
+
+  var _bestSellerMini = null;
 
   List<String> _popupMenus() {
     if (StateContainer.of(context).loggingState == 0) {
@@ -202,7 +208,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           case SplashPage.RESTAURANT:
             _jumpToPage(
                 context,
-                RestaurantDetailsPage(
+                ShopDetailsPage(
                     restaurant: ShopModel(id: widget.argument),
                     presenter: RestaurantDetailsPresenter()));
             break;
@@ -293,41 +299,26 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   Widget build(BuildContext context) {
+    if (_bestSellerMini == null)
+      _bestSellerMini = BestSellersMiniPage(presenter: BestSellerPresenter());
     /* init fetch data bloc */
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          title: SizedBox(
-              height: 70,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    StateContainer.of(context)
-                        .updateTabPosition(tabPosition: 1);
-                  });
-                },
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 15, top: 20),
-                  decoration: BoxDecoration(
-                    border: new Border(
-                        bottom: BorderSide(color: Colors.white, width: 1)),
-//                color: Colors.white.withAlpha(30)
-                  ),
-                  child: Container(
-                      child: TextField(
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                              hintText: widget.data?.feed == null
-                                  ? "KABA DELIVERY"
-                                  : widget.data?.feed,
-                              hintStyle: TextStyle(color: Colors.white)),
-                          style: TextStyle(
-                              fontSize: _textSizeWithText(widget.data?.feed)),
-                          enabled: false)),
-//                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
-                ),
-              )),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('home')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
           leading: IconButton(
               icon: SizedBox(
                   height: 25,
@@ -657,29 +648,76 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             )),
             /* all the restaurants button*/
             SizedBox(height: 10),
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                    "${AppLocalizations.of(context).translate('best_seller')}"
-                        .toUpperCase(),
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey))),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: 10),
+                Text(
+                  "${AppLocalizations.of(context).translate('best_seller')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+                SizedBox(width: 5),
+                SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: Lottie.asset(LottieAssets.best_sales, animate: true))
+              ],
+            ),
             SizedBox(height: 10),
+            Container(
+              child: _bestSellerMini,
+                height: 140,
+                color: KColors.new_gray,
+                width: MediaQuery.of(context).size.width),
+
             /* horizontal scrolling bar */
             data?.resto?.length > 6
-                ? Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [SizedBox(height: 10),
                       Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                              "${AppLocalizations.of(context).translate('new')}"
-                                  .toUpperCase(),
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey))),
+                        padding: EdgeInsets.only(right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: 10),
+                                Text(
+                                  "${AppLocalizations.of(context).translate('new')}"
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12),
+                                ),
+                                SizedBox(width: 5),
+                                SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: Lottie.asset(LottieAssets.new_,
+                                        animate: true))
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                _switchAllRestaurant();
+                              },
+                              child: Container(
+                                  child: Text(
+                                Utils.capitalize(
+                                    "${AppLocalizations.of(context).translate('see_all')} >"),
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal),
+                              )),
+                            )
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 10),
                       Container(
                         color: Colors.white,
@@ -698,13 +736,33 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     ],
                   )
                 : Container(),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             /* meilleures ventes, cinema, evenemnts, etc... */
             /* groups ads */
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: 10),
+                Text(
+                  "${AppLocalizations.of(context).translate('events')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+                SizedBox(width: 5),
+                SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: Lottie.asset(LottieAssets.fire, animate: true))
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
             Column(
                 children: <Widget>[]..addAll(
                       List<Widget>.generate(data.groupad.length, (int index) {
-                    return GroupAdsWidget(groupAd: data.groupad[index]);
+                    return GroupAdsNewWidget(groupAd: data.groupad[index]);
                   })))
           ]..add(InkWell(
                   onTap: () {
@@ -1031,7 +1089,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                RestaurantDetailsPage(
+                ShopDetailsPage(
                     restaurant: ShopModel(id: arg),
                     presenter: RestaurantDetailsPresenter()));
           }
@@ -1585,15 +1643,13 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     context,
     MaterialPageRoute(
       builder: (context) =>
-          RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
     ),
   );*/
 
   Navigator.of(context).push(PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          RestaurantDetailsPage(
-              restaurant: restaurantModel,
-              presenter: RestaurantDetailsPresenter()),
+      pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
+          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;

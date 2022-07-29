@@ -3,8 +3,18 @@ import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
@@ -43,6 +53,7 @@ var generalRoutes = {
   RecoverPasswordPage.routeName : (BuildContext context) => RecoverPasswordPage(),
   RetrievePasswordPage.routeName : (BuildContext context) => RetrievePasswordPage(),
   RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(presenter: RestaurantDetailsPresenter()),
+  ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
   BestSellersPage.routeName : (BuildContext context) => BestSellersPage(presenter: BestSellerPresenter()),
   RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(fromNotification: true, presenter: MenuPresenter()),
   MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(presenter: AddressPresenter()),
@@ -63,5 +74,13 @@ var generalRoutes = {
   CustomerCareChatPage.routeName : (BuildContext context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
 
 //  NotificationTestPage.routeName : (BuildContext context) => NotificationTestPage(),
+  ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
+  ShopListPage.routeName : (BuildContext context) => ShopListPage(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
+  ShopFlowerDetailsPage.routeName : (BuildContext context) => ShopFlowerDetailsPage(presenter: FoodPresenter(),),
+  OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter(),),
+  HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter(),),
+  MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
 
+  SearchProductPage.routeName : (BuildContext context) => SearchProductPage(),
+// buch of new pages to add
 };

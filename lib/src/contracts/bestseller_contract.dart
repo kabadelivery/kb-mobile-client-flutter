@@ -1,6 +1,8 @@
 
 import 'package:KABA/src/models/BestSellerModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 
 class BestSellerContract {
@@ -38,24 +40,51 @@ class BestSellerPresenter implements BestSellerContract {
 
   @override
   Future fetchBestSeller() async {
+
+    /* fetch the one store in the local file first */
+
     if (isWorking)
       return;
     isWorking = true;
-    _bestSellerView.showLoading(true);
-    try {
-      List<BestSellerModel> bsellers = await provider.fetchBestSellerList();
-      // also get the restaurant entity here.
-      _bestSellerView.inflateBestSeller(bsellers);
-    } catch (_) {
-      /* BestSeller failure */
-      xrint("error ${_}");
-      if (_ == -2) {
-        _bestSellerView.systemError();
-      } else {
-        _bestSellerView.networkError();
+
+
+    CustomerUtils.getOldBestSellerPage().then((pageJson) async {
+
+      _bestSellerView.showLoading(true);
+      try {
+        if (pageJson != null) {
+          Iterable lo = mJsonDecode(pageJson)["data"];
+          List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
+          /* send these to json */
+          _bestSellerView.inflateBestSeller(bestSellers);
+        } else {
+          _bestSellerView.showLoading(true);
+        }
+      } catch(_){
+        xrint(_);
       }
-      isWorking = false;
-    }
+
+      try {
+        String bsellers_json = await provider.fetchBestSellerList();
+       // save best seller json
+        // also get the restaurant entity here.
+        Iterable lo = mJsonDecode(bsellers_json)["data"];
+        List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
+        /* send these to json */
+        CustomerUtils.saveBestSellerPage(bsellers_json);
+        _bestSellerView.inflateBestSeller(bestSellers);
+        isWorking = false;
+      } catch (_) {
+        /* BestSeller failure */
+        xrint("error ${_}");
+        if (_ == -2) {
+          _bestSellerView.systemError();
+        } else {
+          _bestSellerView.networkError();
+        }
+        isWorking = false;
+      }
+    });
   }
 
 }

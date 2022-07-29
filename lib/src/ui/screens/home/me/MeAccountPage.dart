@@ -18,6 +18,7 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
@@ -695,7 +696,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             xrint("restaurant id -> ${pathSegments[1]}");
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantDetailsPage(
+            _jumpToPage(context, ShopDetailsPage(
                 restaurant: ShopModel(id: arg),
                 presenter: RestaurantDetailsPresenter()));
           }
