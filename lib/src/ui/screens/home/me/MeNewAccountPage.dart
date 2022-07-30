@@ -21,6 +21,7 @@ import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/personnal/Personal2Page.dart';
@@ -1124,7 +1125,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TopUpPage(presenter: TopUpPresenter()),
+        builder: (context) => TopNewUpPage(presenter: TopUpPresenter()),
       ),
     );
 

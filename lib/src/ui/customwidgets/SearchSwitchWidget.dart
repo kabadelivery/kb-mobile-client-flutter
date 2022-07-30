@@ -99,7 +99,6 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
     if (_searchChoices == null)
       _searchChoices = getCategoryTitle(context);
 
-
     return Container(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: Row(
@@ -112,62 +111,60 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                 color: filter_unactive_button_color,
                 borderRadius: BorderRadius.all(const Radius.circular(5.0)),
               ),
-              child: Expanded(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                            onTap: () => widget.onSwitch(1),
-                            child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Center(
-                                  child: Text(
-                                      Utils.capitalize(
-                                          // "${AppLocalizations.of(context).translate('search_restaurant')}"),
-                                     _searchChoices[0]),
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          color: widget.selectedPosition == 1
-                                              ? this.filter_active_text_color
-                                              : this
-                                                  .filter_unactive_text_color)),
-                                ),
-                                decoration: BoxDecoration(
-                                    color: widget.selectedPosition == 1
-                                        ? this.filter_active_button_color
-                                        : this.filter_unactive_button_color,
-                                    borderRadius:
-                                        new BorderRadius.circular(5.0)))),
-                      ),
-                      SizedBox(width: 5),
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                            onTap: () => widget.onSwitch(2),
-                            child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Center(
-                                  child: Text(
-                                      Utils.capitalize(
-                                          _searchChoices[1]),
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          color: widget.selectedPosition == 1
-                                              ? this.filter_unactive_text_color
-                                              : this.filter_active_text_color)),
-                                ),
-                                decoration: BoxDecoration(
-                                    color: widget.selectedPosition == 1
-                                        ? this.filter_unactive_button_color
-                                        : this.filter_active_button_color,
-                                    borderRadius:
-                                        new BorderRadius.circular(5.0)))),
-                      ),
-                    ]),
-              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                          onTap: () => widget.onSwitch(1),
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Center(
+                                child: Text(
+                                    Utils.capitalize(
+                                        // "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                   _searchChoices[0]),
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: widget.selectedPosition == 1
+                                            ? this.filter_active_text_color
+                                            : this
+                                                .filter_unactive_text_color)),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: widget.selectedPosition == 1
+                                      ? this.filter_active_button_color
+                                      : this.filter_unactive_button_color,
+                                  borderRadius:
+                                      new BorderRadius.circular(5.0)))),
+                    ),
+                    SizedBox(width: 5),
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                          onTap: () => widget.onSwitch(2),
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Center(
+                                child: Text(
+                                    Utils.capitalize(
+                                        _searchChoices[1]),
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: widget.selectedPosition == 1
+                                            ? this.filter_unactive_text_color
+                                            : this.filter_active_text_color)),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: widget.selectedPosition == 1
+                                      ? this.filter_unactive_button_color
+                                      : this.filter_active_button_color,
+                                  borderRadius:
+                                      new BorderRadius.circular(5.0)))),
+                    ),
+                  ]),
               duration: Duration(milliseconds: 3000),
             ),
           ),

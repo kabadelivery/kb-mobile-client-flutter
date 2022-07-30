@@ -877,11 +877,6 @@ class _ShopListPageState extends State<ShopListPage>
       ])));
     }
 
-    /* generating food proposals lazily */
-    /*  return Column(children: <Widget>[]
-      ..addAll(List<Widget>.generate(foodProposals?.length, (int index) {
-        return ProductWithShopDetailsWidget(food: foodProposals[index]);
-      }).toList()));*/
     var filteredResult =
         _filteredFoodProposal(_filterDropdownValue, foodProposals);
 

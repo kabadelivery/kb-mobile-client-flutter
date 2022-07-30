@@ -86,6 +86,8 @@ class HomeWelcomeNewPage extends StatefulWidget {
 
   static var routeName = "/HomeWelcomeNewPage";
 
+  BestSellersMiniPage bestSellerMini = null;
+
   HomeWelcomeNewPage(
       {Key key, this.title, this.presenter, this.destination, this.argument})
       : super(key: key);
@@ -99,8 +101,6 @@ class HomeWelcomeNewPage extends StatefulWidget {
 class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     implements HomeWelcomeView {
   List<String> popupMenus;
-
-  var _bestSellerMini = null;
 
   List<String> _popupMenus() {
     if (StateContainer.of(context).loggingState == 0) {
@@ -124,7 +124,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     super.initState();
 
     /* if logged in .. we have settings and loggout */
-
     popupMenus = [
       "Add Voucher",
       /*"Scan QR",*/ "Settings",
@@ -299,8 +298,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   Widget build(BuildContext context) {
-    if (_bestSellerMini == null)
-      _bestSellerMini = BestSellersMiniPage(presenter: BestSellerPresenter());
+    if (widget.bestSellerMini == null)
+      widget.bestSellerMini = BestSellersMiniPage(presenter: BestSellerPresenter());
     /* init fetch data bloc */
     return Scaffold(
         backgroundColor: Colors.white,
@@ -341,12 +340,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   icon: Image.asset(ImageAssets.whatsapp),
                   onPressed: () => _jumpToWhatsapp(),
                   // setup whatsapp button
-                  /*child: FlareActor(
+                  /* child: FlareActor(
                     FlareData.new_message,
                     alignment: Alignment.center,
                     animation: "normal",
                     fit: BoxFit.contain,
-                    isPaused : StateContainer.of(context).hasUnreadMessage != true*/
+                    isPaused : StateContainer.of(context).hasUnreadMessage != true */
                 ),
               ),
             ),
@@ -393,7 +392,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           StateContainer.of(context)
               .updateUnreadMessage(hasUnreadMessage: false);
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
-
           Navigator.pushNamedAndRemoveUntil(
               context, SplashPage.routeName, (r) => false);
         });
@@ -667,7 +665,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             ),
             SizedBox(height: 10),
             Container(
-              child: _bestSellerMini,
+                child: widget.bestSellerMini,
                 height: 140,
                 color: KColors.new_gray,
                 width: MediaQuery.of(context).size.width),
@@ -676,7 +674,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             data?.resto?.length > 6
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [SizedBox(height: 10),
+                    children: [
+                      SizedBox(height: 10),
                       Container(
                         padding: EdgeInsets.only(right: 10),
                         child: Row(
@@ -702,7 +701,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                               ],
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 _switchAllRestaurant();
                               },
                               child: Container(

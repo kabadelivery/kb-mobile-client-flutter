@@ -180,7 +180,7 @@
   "coming_soon_dialog": "你好！这家饭店即将商平台了。请关注",
   "coming_soon": "即将登场",
   "out_of_range": "超出范围",
-  "km":"公里",
+  "km": "公里",
   "confirm_order": "确认订单",
   "processing_payment": "您好，我们正在处理您的付款。请耐心等待V (^_^) V",
   "order_amount": "饭菜价",
@@ -222,7 +222,7 @@
   "confirm_preorder": "确认预购",
   "delivery_discount": "运费优惠",
   "preorder_desc": "购买并选择将来送货时间范围",
-  "pay_with_kaba_balance":"用快吧宝在线支付",
+  "pay_with_kaba_balance": "用快吧宝在线支付",
   "pay_with_cash_at_delivery": "上门用现金支付",
   "out_of_delivery_range": "抱歉、此送货地址已超出了此饭店的送货范围。请换地址或换店吧",
   "pay_at_arrival": "上门付款",
@@ -274,9 +274,6 @@
   "reload": "重试",
   "my_vouchers": "我的票圈",
   "sorry_no_coupon": "您暂时没有票圈。请添加(+)再使用！",
-
-
-
   "choose_coupon": "添加优惠卷",
   "add_coupon": "添加优惠卷",
   "PROMO_CODE": "优惠码",
@@ -291,12 +288,11 @@
   "copied_c": "复制到剪贴板",
   "voucher_for_spec_foods": "此优惠券仅在您的订单包括这些餐食时使用",
   "voucher_for_spec_foods_all": "此代金券可用于这家餐厅的所有食品",
-
   "voucher_no_exist": "抱歉优惠码有误、请检查再试试 !",
   "voucher_invalid_params": "抱歉，参数无效",
   "voucher_no_self_subscribe": "抱歉，您不能自行订阅此优惠券",
   "voucher_expired": "抱歉，优惠卷已过期",
-  "voucher_not_yet_available" : "抱歉、优惠卷还不可用。",
+  "voucher_not_yet_available": "抱歉、优惠卷还不可用。",
   "voucher_disabled": "抱歉，优惠卷已禁用",
   "voucher_already_subscribed": "抱歉，优惠卷已订阅！",
   "voucher_max_count_reached": "抱歉、订阅限量以达到",
@@ -304,146 +300,100 @@
   "qr_code_wrong": "抱歉、优惠卷有误",
   "please_search_food": "请输入您要的菜谱",
   "sorry_cant_find_food": "抱歉、此菜谱找不到",
-
   "search_restaurant": "饭店",
-  "search_food" : "菜单",
+  "search_food": "菜单",
   "share_food_1": "嗨，我在Kaba App上发现了这个惊人的菜单 ",
   "share_food_2": " , 查看一下 !",
   "coupon_use_before": "终止",
-
   "share": "分享",
-
   "filter": "筛选",
-  "cheap_to_exp" : "最便宜",
-  "exp_to_cheap" : "最贵",
+  "cheap_to_exp": "最便宜",
+  "exp_to_cheap": "最贵",
   "nearest": "最近",
   "farest": "最远",
-
   "add_voucher": "优惠码",
   "search_too_short": "搜索内容太短",
-
   "exit": "输入优惠代码",
-  "sorry_version_not_allowed" : "抱歉、无法扫描二维码。\n请输入代码",
-
+  "sorry_version_not_allowed": "抱歉、无法扫描二维码。\n请输入代码",
   "update": "更新",
   "new_version_available": "请更新应用 ",
-
   "disponible": "可用",
-  "utilisation" : "已用",
-
+  "utilisation": "已用",
   "phone_number_field_": "电话号码",
-  "foods_" : "饭菜",
-  "amount_to_top_up" : "余额",
-
+  "foods_": "饭菜",
+  "amount_to_top_up": "余额",
   "register_code_error": "验证码错误",
-
   "sorry_restaurant_close": "抱歉、此饭店暂时不营业",
   "open_time": "营业时间: ",
   "try_preordering": "请尝试预订购",
-
   "your_kaba_points": "KABA积分",
-  "lost_your_password" : "找回密码 ?",
-  "location_explanation" : "本APP为了提高您的体验需要获取您的位置。您愿意允许这个权限吗？",
+  "lost_your_password": "找回密码 ?",
+  "location_explanation": "本APP为了提高您的体验需要获取您的位置。您愿意允许这个权限吗？",
   "info": "通知",
   "request": "请求",
-
-
   "pnumber_registration_code_too_long": "请在短信里查看您的验证码。如果延迟、请耐心等待",
-  "email_registration_code_too_long" : "请邮箱里查看您的验证码。 如果找不到、请检查您的垃圾邮件中，验证码有可能在那里 ! :-) . ",
-
-
-
+  "email_registration_code_too_long": "请邮箱里查看您的验证码。 如果找不到、请检查您的垃圾邮件中，验证码有可能在那里 ! :-) . ",
   "amount_to_topup": "充值值 (FCFA)",
   "top_up_fees_are": "充值费用 : ",
   "total_amount": "充值总算",
-  "topup_phone_number" : "充值手机号码",
+  "topup_phone_number": "充值手机号码",
   "bank_card_top_up_min": "银行卡充值起价位 ",
-
-
-  "please_login_before_going_forward_title" : "登陆",
-  "please_login_before_going_forward_description_orders" : "为了查看您的订单、请登录",
-  "please_login_before_going_forward_description_account" : "为了查看您的账户信息、请登录",
-  "please_login_before_going_forward_description_place_order" : "为了点餐、请登录",
-  "please_login_before_going_forward_description_comment" : "为了评价饭店、请登录",
-  "please_login_before_going_forward_random" : "请登录 !",
-
+  "please_login_before_going_forward_title": "登陆",
+  "please_login_before_going_forward_description_orders": "为了查看您的订单、请登录",
+  "please_login_before_going_forward_description_account": "为了查看您的账户信息、请登录",
+  "please_login_before_going_forward_description_place_order": "为了点餐、请登录",
+  "please_login_before_going_forward_description_comment": "为了评价饭店、请登录",
+  "please_login_before_going_forward_random": "请登录 !",
   "login": "登陆",
   "not_now": "稍后",
-
-  "no_past_order" : "抱歉、您最近没有订单",
-
+  "no_past_order": "抱歉、您最近没有订单",
   "i_have_an_inquiry": "你好KABA。请问您能帮我送东西吗 ？",
-
-  "whatsapp_number_hint" : "Whatsapp手机号码",
-  "whatsapp_number_hint_ex" : "Whatsapp手机号码",
+  "whatsapp_number_hint": "Whatsapp手机号码",
+  "whatsapp_number_hint_ex": "Whatsapp手机号码",
   "please_enter_whatsapp_no": "请输入您的WhatsApp手机号码",
-
   "congrats_for_email_account": "你好！ 欢迎来到KABA。 我们很高兴有您成为我们的侨民用户",
-
   "done_text": "完成",
   "next_text": "下一个",
-
-  "new_account_email_hint" : "请输入您的邮箱地址。\n\n(电子邮件帐户仅适用于侨民)",
-
+  "new_account_email_hint": "请输入您的邮箱地址。\n\n(电子邮件帐户仅适用于侨民)",
   "reason": "原因",
   "menu_not_availabe": "您点的菜暂时没有",
   "restaurant_in_break": "饭店在休息中",
   "restaurant_closed": "饭店已关门",
   "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝",
-
   "welcome": "欢迎",
-
   "permission_": "权限",
-  "request_location_activation_permission" : "请开启您的位置以获得更好的服务体验",
-  "request_location_permission" : "请激活许可位置以获得更好的服务体验",
-
+  "request_location_activation_permission": "请开启您的位置以获得更好的服务体验",
+  "request_location_permission": "请激活许可位置以获得更好的服务体验",
   "identity_verify_page": "验证",
   "identity_verify_title": "身份认证",
-
   "identity_check_email": "我们向您的邮箱发验证码。请查收并输入输入 ",
   "identity_check_pn": "我们向您的手机发验证码。请查收并输入输入 ",
-
   "verification_code_wrong": "验证码有误。请重试一下",
   "gps_": "定位",
   "address_last_update": "最后更新时间：",
   "gps_location_valid": "位置获取成功。请填写其他信息",
   "notice": "通知:",
   "alert_message_received": "收到 !",
-
   "balance": "余额",
   "points": "积分",
-
   "debit_points_kaba": "KABA 积分借记",
   "credit_points_kaba": "KABA Point 到账",
-
   "non_eligible": "不合格",
   "non_eligible_reason": "抱歉您还没有解锁折扣功能",
-
   "your_points": "积分",
   "this_feature_is_building": "此功能正在构建中，即将推出",
-
   "demo_account_alert": "抱歉，无法使用测试张下单。请使用别的账号下订单。",
-
   "sorry_email_account_no_pay_delivery": "抱歉。 电子邮件账户不允许货到付款！ 如果想要现金付款，请使用您的电话号码创建一个帐户再试试",
-
-  "discount_point_available" : "优惠扣点 ",
+  "discount_point_available": "优惠扣点 ",
   "use_delivery_point": "获取订单优惠 ",
-
-
   "use_of_kaba_points": "您的 KABA 积分可用于获得一些运费折扣。 在下面选中 > 是 < 以使用",
-
-
-  "kaba_points_monthly_limit_reached" : "您已达到每月可使用的 KABA 积分上限",
-
-  "use_of_kaba_points_not_eligible" : "抱歉，您还没有资格使用 Ba 积分折扣功能",
+  "kaba_points_monthly_limit_reached": "您已达到每月可使用的 KABA 积分上限",
+  "use_of_kaba_points_not_eligible": "抱歉，您还没有资格使用 Ba 积分折扣功能",
   "min_short_on_average": "平均30分钟",
-
   "kaba_point_used_amount": "KABA扣分用量 :",
   "kaba_point_description": "使用 KABA POINTS 可获得高达 XXX_XXX XF 的运费折扣",
-
   "month_remain_kaba_points": "XXX_XXX待使用",
   "month_used_kaba_points": "XXX_XXX已用量",
-
   "mois_1": "一月份",
   "mois_2": "二月份",
   "mois_3": "三月份",
@@ -457,8 +407,6 @@
   "mois_11": "十一月份",
   "mois_12": "十二月份",
   "buy": "购买",
-
-
   "service_category_food": "外卖",
   "service_category_drinks": "饮料",
   "service_category_flower": "鲜花",
@@ -467,53 +415,52 @@
   "service_category_package_delivery": "快递",
   "service_category_shopping": "超市",
   "service_category_ticket": "门票",
-
   "service_category_unknown": "无知",
   "what_want_buy": "想购买什么呢 ?",
   "categories": "分类",
-
   "product_details": "产品详情",
-
   "product_description_section_title": "关于",
-
   "t_closed": "关门",
   "t_opened": "开门",
   "t_paused": "休息中",
   "t_unavailable": "暂时关门",
   "search": "搜索",
-
   "movie_details": "详情",
   "my_basket": "购物车",
-
   "order_summary": "订单总结",
   "invoice_bill": "结单",
-
-
-
   "service_restaurant_type_name": "饭店",
   "service_drink_type_name": "饮料店",
   "service_cinema_type_name": "电影院",
   "service_flower_type_name": "鲜花店",
   "service_shop_type_name": "商店",
   "service_supermarket_type_name": "超市",
-
   "service_restaurant_type_product": "餐",
   "service_drink_type_product": "饮料",
   "service_movie_type_product": "电影",
   "service_flower_type_product": "鲜花",
   "service_shop_type_product": "商品",
   "service_supermarket_type_product": "商品",
-
-
   "has_to_pay": "到付",
   "already_paid": "预付",
-
   "call_me_shipper": "联系外送员",
   "today": "今日",
   "yesterday": "昨日 ",
   "available_balance": "可用余额",
   "see_order_history": "查看订单记录",
   "shop_details": "详情",
-  "see_all": "更多"
+  "see_all": "更多",
+  "online_alert_title": "上线通知",
+  "online_alert_description": "欢迎回来在线。 我们想你了！",
+  "offline_alert_title": "下线通知",
+  "offline_alert_description": "你失去了互联网连接。 请连接！",
+
+  "mobile_money_top_up": "移动钱包充钱",
+  "bank_card_top_up": "银行卡充钱",
+
+  "choose_top_up_mode": "充值方式",
+
+  "choose_mobile_money_service": "请选择您的移动钱包"
+
 
 }

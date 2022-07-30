@@ -14,6 +14,7 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
@@ -82,5 +83,8 @@ var generalRoutes = {
   MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
 
   SearchProductPage.routeName : (BuildContext context) => SearchProductPage(),
-// buch of new pages to add
+  TopNewUpPage.routeName : (BuildContext context) => TopNewUpPage(presenter: TopUpPresenter()),
+
+
+
 };

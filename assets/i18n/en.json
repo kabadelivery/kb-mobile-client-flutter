@@ -408,7 +408,6 @@
   "mois_11": "November",
   "mois_12": "December",
   "buy": "CHECKOUT",
-
   "service_category_food": "Food",
   "service_category_drinks": "Drinks",
   "service_category_flower": "Flowers",
@@ -418,54 +417,48 @@
   "service_category_shopping": "Shopping",
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
-
-
   "what_want_buy": "What do you want to buy ?",
   "categories": "Categories",
   "product_details": "Product details",
   "product_description_section_title": "About",
-
   "t_closed": "Closed",
   "t_opened": "Opened",
   "t_paused": "Paused",
   "t_unavailable": "Unavailable",
-
   "search": "Search",
-
   "movie_details": "Details",
-
   "see_more": "See more",
   "my_basket": "My Basket",
-
   "order_summary": "Order Summary",
   "invoice_bill": "Invoice",
-
   "service_restaurant_type_name": "Restaurant",
   "service_drink_type_name": "Pub",
   "service_cinema_type_name": "Cinema",
   "service_flower_type_name": "Florist",
   "service_shop_type_name": "Shop",
   "service_supermarket_type_name": "Supermarket",
-
   "service_restaurant_type_product": "Food",
   "service_drink_type_product": "Drink",
   "service_movie_type_product": "Movie",
   "service_flower_type_product": "Flower",
   "service_shop_type_product": "Item",
   "service_supermarket_type_product": "Item",
-
   "has_to_pay": "Amount to Pay",
   "already_paid": "Total Paid",
-
   "call_me_shipper": "Call Shipper",
-
   "today": "Today",
   "yesterday": "Yesterday",
-
-"available_balance": "Available balance",
-
+  "available_balance": "Available balance",
   "see_order_history": "See order history",
-
   "shop_details": "Details",
-  "see_all": "See all"
+  "see_all": "See all",
+  "online_alert_title": "Online",
+  "online_alert_description": "Welcome back Online. We've missed you !",
+  "offline_alert_title": "Offline",
+  "offline_alert_description": "You have lost internet connexion. Please connect !",
+  "mobile_money_top_up": "Mobile money",
+  "bank_card_top_up": "Bank card",
+  "choose_top_up_mode": "Top up Mode",
+
+  "choose_mobile_money_service": "Choose mobile money service"
 }

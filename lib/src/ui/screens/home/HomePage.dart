@@ -40,6 +40,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -278,14 +279,16 @@ class _HomePageState extends State<HomePage> {
     subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult connectivityResult) {
       // Got a new connectivity status!
       if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-        ElegantNotification.success(
-            title:  Text("Online"),
-            description:  Text("Welcome back online")
-        ).show(context);
+        /*ElegantNotification.success(toastDuration: Duration(seconds: 10),
+            title:  Text("${AppLocalizations.of(context).translate('online_alert_title')}"),
+            notificationPosition: NotificationPosition.center,
+            description:  Text("${AppLocalizations.of(context).translate('online_alert_description')}")
+        ).show(context);*/
       } else {
-        ElegantNotification.success(
-            title:  Text("Offline"),
-            description:  Text("Do something")
+        ElegantNotification.error(toastDuration: Duration(seconds: 20),
+            title:  Text("${AppLocalizations.of(context).translate('offline_alert_title')}"),
+            notificationPosition: NotificationPosition.center,
+            description:  Text("${AppLocalizations.of(context).translate('offline_alert_description')}")
         ).show(context);
       }
     });

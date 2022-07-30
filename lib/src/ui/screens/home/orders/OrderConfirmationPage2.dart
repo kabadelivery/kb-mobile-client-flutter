@@ -22,6 +22,7 @@ import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
@@ -2037,7 +2038,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     // jump to topup page.
     var results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TopUpPage(presenter: TopUpPresenter()),
+            TopNewUpPage(presenter: TopUpPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

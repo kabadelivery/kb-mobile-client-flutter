@@ -1,3 +1,4 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -17,7 +18,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../../../StateContainer.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   static var routeName = "/TransactionHistoryPage";

@@ -382,9 +382,10 @@ class _ProductWithShopDetailsWidgetState
   }
 
   getRating(ShopModel shopModel) {
+    if (shopModel?.stars?.toInt() != null && shopModel?.stars?.toInt() > 0)
     return Row(
         children: <Widget>[]..addAll(
-              List<Widget>.generate(shopModel.stars.toInt(), (int index) {
+              List<Widget>.generate(shopModel?.stars?.toInt(), (int index) {
             return Icon(Icons.star,
                 color: KColors.primaryYellowColor, size: 20);
           })
@@ -392,6 +393,8 @@ class _ProductWithShopDetailsWidgetState
                     ? Icon(Icons.star_half,
                         color: KColors.primaryYellowColor, size: 20)
                     : Container())));
+    else
+     return Container();
   }
 
   void _jumpToShopDetails(BuildContext context, ShopModel shopModel) {

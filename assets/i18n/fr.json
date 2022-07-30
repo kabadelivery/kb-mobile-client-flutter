@@ -27,7 +27,7 @@
   "network_error": "Désolé, Echec de connexion. Veuillez vérifier votre connexion et réessayer",
   "refuse": "REFUSER",
   "accept": "ACCEPTER",
-  "new_account_phonenumber_hint":"Veuillez entrer votre Numéro de Téléphone.\n\n(Seuls les Numéros Togolais sont autorisés)",
+  "new_account_phonenumber_hint": "Veuillez entrer votre Numéro de Téléphone.\n\n(Seuls les Numéros Togolais sont autorisés)",
   "phone_number_hint": "90 XX XX XX",
   "nickname": "Pseudo",
   "register": "CRÉER COMPTE",
@@ -37,7 +37,6 @@
   "user_exists": "Ce compte existe déjà. Veuillez-vous connecter",
   "wrong_code": "Code erroné",
   "press_code_hint": "Veuillez cliquer sur le bouton CODE. \n\nVeuillez entrer le code qui vous sera envoyé par SMS ou MAIL dans le champ ci-dessous",
-
   "recover_password_hint": "Veuillez entrer votre Numéro de Téléphone ou E-mail utilisé pour créer le Compte KABA \n\n(Seuls les Numéros Togolais sont autorisés)",
   "insert_phone_number": "Veuillez entrer le numéro de Téléphone ou E-mail utilisé pour créer votre compte KABA",
   "password_updated_success": "Mot de Passe mis à jour avec succès",
@@ -181,7 +180,7 @@
   "coming_soon_dialog": "Salut! Cette enseigne sera bientôt disponible sur la plateforme KABA.\n\nMerci de patienter",
   "coming_soon": "À Venir",
   "out_of_range": "Hors zone",
-  "km":"Km",
+  "km": "Km",
   "confirm_order": "Confirmer commande",
   "processing_payment": "Salut, nous traitons votre requête ! Merci de patienter V(^_^)V",
   "order_amount": "Prix Repas",
@@ -199,11 +198,11 @@
   "your_balance_is": "Votre Solde est ",
   "restaurant_no_allow_prepay": "Impossible de prépayer, cette boutique n'autorise pas le PréPayement",
   "balance_insufficient": "Impossible de prépayer car solde insuffisant",
-  "cant_pay_at_delivery_max_pay_reached":"Impossible de payer à la livraison car vous avez excéder le maximum pour payer à la livraison. Veuillez contacter le service client.",
+  "cant_pay_at_delivery_max_pay_reached": "Impossible de payer à la livraison car vous avez excéder le maximum pour payer à la livraison. Veuillez contacter le service client.",
   "cant_pay_because_ongoing_order": "Vous ne pouvez pas payer parce que vous avez une autre Commande en cours. Veuillez SVP contacter le service client.\nMerci",
   "restaurant_no_allow_pay_at_delivery": "Désolé, Cette boutique n'autorise pas de paiement à l'arrivée",
   "sorry_ongoing_order": "Désolé, vous ne pouvez pas payer à l'arrivée avec un compte E-mail. Veuillez recharger votre compte et payer maintenant. Merci",
-  "prevent_pay_at_delivery":"En Choisissant ce mode de paiement, vous acceptez d'avoir la somme exacte à la livraison. Merci",
+  "prevent_pay_at_delivery": "En Choisissant ce mode de paiement, vous acceptez d'avoir la somme exacte à la livraison. Merci",
   "choose_delivery_frame": "Veuillez choisir une période de livraison",
   "food_will_be_delivered_on": "Votre repas vous sera livré",
   "between": "entre",
@@ -275,9 +274,6 @@
   "reload": "Recharger",
   "my_vouchers": "Mes Bons",
   "sorry_no_coupon": "Désolé, Vous ne possédez pas de bons. \nAppuyer sur (+) pour Souscrire un nouveau bon!",
-
-
-
   "choose_coupon": "Veuillez choisir un bon",
   "add_coupon": "Ajouter un bon",
   "PROMO_CODE": "CODE",
@@ -292,167 +288,114 @@
   "copied_c": "Copié dans le presse-papier",
   "voucher_for_spec_foods": "Ce bon peut uniquement être utilisé si vos produits concordent à ceux sélectionnés à la création du bon",
   "voucher_for_spec_foods_all": "Ce bon peut être utilisé avec tous les produits de cette boutique",
-
   "voucher_no_exist": "Désolé, ce code est erroné. Veuillez verifier votre CODE et Réessayez !",
   "voucher_invalid_params": "Désolé, Paramètres invalides",
   "voucher_no_self_subscribe": "Désolé, Vous ne pouvez pas autosouscrire à ce bon",
   "voucher_expired": "Désolé, ce bon a expiré",
-  "voucher_not_yet_available" : "Désolé, ce bon est indisponible",
+  "voucher_not_yet_available": "Désolé, ce bon est indisponible",
   "voucher_disabled": "Désolé, ce bon est désactivé",
-
   "voucher_already_subscribed": "Désolé, vous avez déjà souscrit à ce bon",
-
   "voucher_max_count_reached": "Désolé, nombre maximum de souscriptions atteint pour ce bon",
   "scan": "Scanner Code QR",
   "qr_code_wrong": "Désolé, Code QR invalide",
-
-
   "please_search_food": "Rechercher un repas",
   "sorry_cant_find_food": "Désolé, ce repas n'est pas encore disponible sur KABA",
-
   "search_restaurant": "BOUTIQUES",
-  "search_food" : "MENU",
+  "search_food": "MENU",
   "share_food_1": "J'ai découvert cet incroyable repas sur l'application KABA ! \n",
   "share_food_2": " , Découvrez le !",
   "coupon_use_before": "À utiliser avant",
   "share": "Partager",
-
   "filter": "Filtrer",
-  "cheap_to_exp" : "Bas Prix",
-  "exp_to_cheap" : "Cher",
+  "cheap_to_exp": "Bas Prix",
+  "exp_to_cheap": "Cher",
   "nearest": "Proche",
   "farest": "Loin",
-
   "add_voucher": "Code de Reduction",
   "search_too_short": "Veuillez être plus explicite !",
-
   "exit": "ENTRER LE CODE",
-  "sorry_version_not_allowed" : "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE",
-
+  "sorry_version_not_allowed": "Désolé, Impossible de scanner les BONS de réduction.Veuillez plûtot entrer le CODE",
   "update": "METTRE À JOUR",
   "new_version_available": "Nouvelle version de l'Application disponible ! Veuillez mettre à jour l'application à la version ",
-
   "disponible": "DISPONIBLE",
-  "utilisation" : "UTILISÉ",
-
+  "utilisation": "UTILISÉ",
   "phone_number_field_": "Numéro de Téléphone",
-
   "foods_": "Repas",
-  "amount_to_top_up" : "Amount à Recharger",
-
+  "amount_to_top_up": "Amount à Recharger",
   "register_code_error": "Code erroné",
   "sorry_restaurant_close": "Désolé, Cette boutique est actuellement fermé",
   "open_time": "Heure d'Ouverture: ",
   "try_preordering": "Veuillez précommander!",
-
   "your_kaba_points": "VOS POINTS KABA",
-
-  "lost_your_password" : "Récupérer mot de passe ?",
-
-  "location_explanation_pricing" :  "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
-  "location_explanation" : "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
+  "lost_your_password": "Récupérer mot de passe ?",
+  "location_explanation_pricing": "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
+  "location_explanation": "Aimeriez vous accorder l'accès à votre position actuelle pour des frais de livraison plus précis ?",
   "request": "Requête",
   "info": "Information",
-
-
   "pnumber_registration_code_too_long": "Un code de confirmation vous a été envoyé par SMS. Les codes de confirmation peuvent prendre du temps en fonction de votre réseau. Veuillez patienter svp.",
-  "email_registration_code_too_long" : "Un code de confirmation vous a été envoyé par mail. Prière de vérifier vos spams si vous ne le trouvez pas dans la boîte de réception. ",
-
-
+  "email_registration_code_too_long": "Un code de confirmation vous a été envoyé par mail. Prière de vérifier vos spams si vous ne le trouvez pas dans la boîte de réception. ",
   "amount_to_topup": "Montant à Recharger (FCFA)",
   "top_up_fees_are": "Frais de rechargement : ",
   "total_amount": "Montant Total",
-  "topup_phone_number" : "Numéro de Téléphone",
-
-
+  "topup_phone_number": "Numéro de Téléphone",
   "bank_card_top_up_min": "Les rechargements par carte bancaire ont un minimum de ",
-
-  "please_login_before_going_forward_title" : "Login",
-  "please_login_before_going_forward_description_orders" : "Vous devez vous connecter pour avoir accès à vos commandes récentes.",
-  "please_login_before_going_forward_description_account" : "Vous devez vous connecter pour avoir accès à votre compte KABA",
-  "please_login_before_going_forward_description_place_order" : "Vous devez vous connecter pour passer une commande",
-  "please_login_before_going_forward_description_comment" : "Vous devez vous connecter pour placer un commentaire",
-  "please_login_before_going_forward_random" : "Vous devez vous connecter pour accéder à cette page",
-
-
+  "please_login_before_going_forward_title": "Login",
+  "please_login_before_going_forward_description_orders": "Vous devez vous connecter pour avoir accès à vos commandes récentes.",
+  "please_login_before_going_forward_description_account": "Vous devez vous connecter pour avoir accès à votre compte KABA",
+  "please_login_before_going_forward_description_place_order": "Vous devez vous connecter pour passer une commande",
+  "please_login_before_going_forward_description_comment": "Vous devez vous connecter pour placer un commentaire",
+  "please_login_before_going_forward_random": "Vous devez vous connecter pour accéder à cette page",
   "login": "Connexion",
   "not_now": "Pas maintenant",
-
-  "no_past_order" : "Désolé vous n'avez pas de commandes récentes à afficher.",
-
+  "no_past_order": "Désolé vous n'avez pas de commandes récentes à afficher.",
   "i_have_an_inquiry": "Salut KABA ! Pourriez-vous m'aider s'il vous plait?",
-
-  "whatsapp_number_hint" : "No Whatsapp",
-  "whatsapp_number_hint_ex" : "Numéro Whatsapp",
+  "whatsapp_number_hint": "No Whatsapp",
+  "whatsapp_number_hint_ex": "Numéro Whatsapp",
   "please_enter_whatsapp_no": "Veuillez entrer votre numéro whatsapp s'il vous plait",
   "congrats_for_email_account": "Salut! Bienvenue sur KABA. Nous sommes ravis de vous compter parmi nos utilisateurs de la diaspora",
-
   "done_text": "TERMINER",
   "next_text": "SUIVANT",
-
-  "new_account_email_hint" : "Veuillez entrer votre adresse E-mail.\n\n(Les Comptes E-mail sont uniquement destinés à la diaspora)",
-
+  "new_account_email_hint": "Veuillez entrer votre adresse E-mail.\n\n(Les Comptes E-mail sont uniquement destinés à la diaspora)",
   "reason": "Motif",
   "menu_not_availabe": "Repas non disponible",
   "restaurant_in_break": "Boutique en pause",
   "restaurant_closed": "Boutique fermé",
   "reason_beyond_control": "Votre commande a été rejetée pour des raisons indépendantes de notre volonté",
   "welcome": "Bienvenue",
-
   "permission_": "Permission",
-  "request_location_activation_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison",
-  "request_location_permission" : "Veuillez activer votre localisation pour une meilleure expérience de livraison",
-
+  "request_location_activation_permission": "Veuillez activer votre localisation pour une meilleure expérience de livraison",
+  "request_location_permission": "Veuillez activer votre localisation pour une meilleure expérience de livraison",
   "identity_verify_page": "Verification",
   "identity_verify_title": "Identity verification",
-
   "identity_check_email": "Veuillez vérifer votre email. Nous vous avons envoyer un code à ",
   "identity_check_pn": "Veuillez vérifer votre téléphone. Nous vous avons envoyer un code au ",
-
   "verification_code_wrong": "Code erroné. Réeassayer !",
   "gps_": "GPS",
   "address_last_update": "Modifié le :",
   "gps_location_valid": "Position GPS recupérée avec succès.\nVeuillez remplir les autres informations.",
-
   "notice": "Notification:",
   "alert_message_received": "Bien reçu !",
-
   "balance": "Solde",
   "points": "Points",
-
   "debit_points_kaba": "Débit de Point KABA",
   "credit_points_kaba": "Crédit de Point KABA",
   "non_eligible": "Non-Eligible",
   "non_eligible_reason": "Désolé, vous n'avez pas encore déverrouillé la fonction de réduction",
-
   "your_points": "Vos Points",
   "this_feature_is_building": "Cette fonctionnalité est en construction et sera bientôt disponible",
-
   "demo_account_alert": "Désolé, vous ne pouvez pas passer de commande avec un compte démo. Veuillez réessayer en créant un vrai compte.",
-
-  "sorry_email_account_no_pay_delivery" :  "Désolé. Les comptes Email ne sont pas autorisés à payer en espèces à la livraison ! Pour payer en espèces à la livraison, veuillez plutôt créer un compte avec votre numéro de téléphone.",
-
-  "discount_point_available" : "Points réduction disponible ",
+  "sorry_email_account_no_pay_delivery": "Désolé. Les comptes Email ne sont pas autorisés à payer en espèces à la livraison ! Pour payer en espèces à la livraison, veuillez plutôt créer un compte avec votre numéro de téléphone.",
+  "discount_point_available": "Points réduction disponible ",
   "use_delivery_point": "Réduisez votre facture de ",
-
   "use_of_kaba_points": "Réduisez vos frais de livraison grâce aux Points KABA. Sélectionner OUI pour les utiliser",
-
-
   "use_of_kaba_points": "Vos points KABA peuvent être utilisés pour obtenir une remise sur les frais de livraison. Veuillez Cochez OUI ci-dessous pour l'utiliser",
-
-  "kaba_points_monthly_limit_reached" : "Vous avez atteint la limite de Points KABA à utiliser par mois",
-
-  "use_of_kaba_points_not_eligible" : "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA",
-
+  "kaba_points_monthly_limit_reached": "Vous avez atteint la limite de Points KABA à utiliser par mois",
+  "use_of_kaba_points_not_eligible": "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA",
   "min_short_on_average": "30 min",
-
   "kaba_point_used_amount": "Points KABA utilisés :",
-
   "kaba_point_description": "Réduisez vos frais de livraison XXX_XXX FCFA par mois grâce aux KABA POINTS",
-
   "month_remain_kaba_points": "Restant en XXX_XXX",
   "month_used_kaba_points": "Dépensé en XXX_XXX",
-
   "mois_1": "Janvier",
   "mois_2": "Février",
   "mois_3": "Mars",
@@ -466,7 +409,6 @@
   "mois_11": "Novembre",
   "mois_12": "Décembre",
   "buy": "Acheter",
-
   "service_category_food": "Repas",
   "service_category_drinks": "Boissons",
   "service_category_flower": "Fleurs",
@@ -476,56 +418,50 @@
   "service_category_shopping": "Shopping",
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
-
   "what_want_buy": "Que voulez vous acheter ?",
   "categories": "Catégories",
-
   "product_details": "Détails du produit",
-
   "product_description_section_title": "À-propos",
-
   "t_closed": "Fermé",
   "t_opened": "Ouvert",
   "t_paused": "En Pause",
   "t_unavailable": "Indispo",
   "search": "Recherche",
-
   "movie_details": "Détails",
   "my_basket": "Mon Panier",
-
   "order_summary": "Résumé Commande",
-
   "invoice_bill": "Facture",
-
-
-
   "service_restaurant_type_name": "Restaurant",
   "service_drink_type_name": "Cave",
   "service_cinema_type_name": "Cinema",
   "service_flower_type_name": "Fleuriste",
   "service_shop_type_name": "Boutique",
   "service_supermarket_type_name": "Supermarché",
-
   "service_restaurant_type_product": "Repas",
   "service_drink_type_product": "Boisson",
   "service_movie_type_product": "Film",
   "service_flower_type_product": "Fleur",
   "service_shop_type_product": "Article",
   "service_supermarket_type_product": "Article",
-
   "has_to_pay": "Total à Payer",
   "already_paid": "Total Prépayé",
-
   "call_me_shipper": "Contacter Livreur",
-
   "today": "Aujourd'hui",
   "yesterday": "Hier",
-
   "available_balance": "Solde Disponible",
-
   "see_order_history": "Voir Historique Commandes",
   "shop_details": "Details",
+  "see_all": "Voir tout",
+  "online_alert_title": "En Ligne",
+  "online_alert_description": "Bienvenue à nouveau en ligne. Vous nous avez manqué !",
+  "offline_alert_title": "Hors Ligne",
+  "offline_alert_description": "Vous avez perdu la connexion internet. Veuillez vous connecter s'il vous plaît !",
+  "mobile_money_top_up": "Mobile money",
+  "bank_card_top_up": "Carte Bancaire",
 
-  "see_all": "Voir tout"
+  "choose_top_up_mode": "Mode de rechargement",
+
+  "choose_mobile_money_service": "Choisissez votre Mobile Money"
+
 
 }
