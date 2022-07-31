@@ -153,6 +153,62 @@ class RestaurantApiProvider {
     }
   }
 
+  fetchRestaurantFoodProposal2FromTag(String query) async {
+    xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
+    if (await Utils.hasNetwork()) {
+      /*  final response = await client
+          .post(Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG),
+        body: json.encode({'tag': tag}),
+      )
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options
+      // ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 30000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG).toString(),
+        data: json.encode({'tag': query}),
+      );
+
+      xrint(response.data.toString());
+      List<ShopProductModel> foods = [];
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          Iterable lo = mJsonDecode(response.data)["data"];
+          if (lo == null) {
+            return [];
+          } else {
+            // foods with restaurant inside.
+            lo?.map((food_restaurant) {
+              ShopProductModel f =
+              ShopProductModel.fromJson(food_restaurant["food"]);
+              f.restaurant_entity =
+                  ShopModel.fromJson(food_restaurant["restaurant"]);
+              foods.add(f);
+            })?.toList();
+            return foods;
+          }
+        } else
+          return foods;
+//          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+
   fetchRestaurantFoodProposalFromTag(String query) async {
     xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
     if (await Utils.hasNetwork()) {

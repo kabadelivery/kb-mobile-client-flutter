@@ -247,18 +247,29 @@ class _ShopListPageState extends State<ShopListPage>
     });
 
     // category / 1001 / shop
-
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
+        backgroundColor: KColors.primaryColor,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
             onPressed: () {
               Navigator.pop(context);
             }),
-        backgroundColor: KColors.primaryColor,
-        title: Text("${AppLocalizations.of(context).translate('search')}",
-            style: TextStyle(fontSize: 16, color: Colors.white)),
+        actions: [Container(width: 40)],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('search')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,

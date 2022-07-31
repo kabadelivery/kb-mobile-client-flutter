@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -107,10 +108,27 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('register')}", style:TextStyle(color:KColors.primaryColor)),
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          backgroundColor: KColors.primaryColor,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          actions: [Container(width: 40)],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('register')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
         ),
         backgroundColor: Colors.white,
         body: Container(

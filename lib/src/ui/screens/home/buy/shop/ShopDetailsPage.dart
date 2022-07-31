@@ -140,7 +140,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
             ],
           ),
         ),
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Container(
@@ -379,11 +379,11 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                       ),
 
                                       // personnal
-
+                                      SizedBox(height: 20),
                                       commentIsLoading
                                           ? Center(
                                               child:
-                                                  CircularProgressIndicator())
+                                                  Container(width: 20,height: 20,child: CircularProgressIndicator()))
                                           : (commentHasSystemError
                                               ? _buildCommentNetworkErrorPage()
                                               : commentHasNetworkError
@@ -394,7 +394,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                           : _buildNewCommentList()
                                                     ])
                                           // personnal end
-                                          )
+                                          ), SizedBox(height: 20)
                                     ]),
                               )
                             ],

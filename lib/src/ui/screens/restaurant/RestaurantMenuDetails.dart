@@ -68,15 +68,27 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
-        title: Text("${AppLocalizations.of(context).translate('my_basket')}",
-            style: TextStyle(fontSize: 16)),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
             onPressed: () {
               Navigator.pop(context);
             }),
+        actions: [Container(width: 40)],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('my_basket')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
       ),
       body: Stack(
         children: [
@@ -165,7 +177,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                           fontSize: 14,
                           fontWeight: FontWeight.w500)),
                   SizedBox(height: 2),
-                  Container(width: 1*MediaQuery.of(context).size.width/2,
+                  Container(
+                    width: 1 * MediaQuery.of(context).size.width / 2,
                     child: Text("${Utils.capitalize(food?.description)}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
@@ -231,7 +244,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                           color: Colors.black,
                           fontSize: 15,
                           fontWeight: FontWeight.normal,
-                          decoration: food.promotion != 0 ?  TextDecoration.lineThrough : TextDecoration.none)),
+                          decoration: food.promotion != 0
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none)),
                   SizedBox(width: 2),
                   (food.promotion != 0
                       ? Text("${food?.promotion_price}",
@@ -315,7 +330,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         Positioned(
           bottom: 10,
           child: Container(
-            margin: EdgeInsets.only(left: 10,right: 10),
+            margin: EdgeInsets.only(left: 10, right: 10),
             child: Row(
               children: [
                 Container(
@@ -328,15 +343,19 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${AppLocalizations.of(context).translate('total')}".toUpperCase(),
+                        Text(
+                            "${AppLocalizations.of(context).translate('total')}"
+                                .toUpperCase(),
                             style: TextStyle(color: Colors.grey)),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text("${totalPrice}",
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold,
-                                    fontSize: 16, color: KColors.primaryColor)),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: KColors.primaryColor)),
                             SizedBox(width: 5),
                             Text(
                                 "${AppLocalizations.of(context).translate('currency')}",
@@ -347,19 +366,22 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         ),
                       ],
                     )),
-                Container(
-                    height: 50,
-                    width: 0.9*MediaQuery.of(context).size.width / 2,
-                    padding: EdgeInsets.all(5),
-                    color: Colors.white,
-                    child: RaisedButton(
-                        child: Text(
-                            "${AppLocalizations.of(context).translate('buy')}"?.toUpperCase(),
-                            style: TextStyle(color: Colors.white)),
-                        color: KColors.primaryColor,
-                        onPressed: () {
-                          _continuePurchase();
-                        }))
+                _foodCount == 0
+                    ? Container()
+                    : Container(
+                        height: 50,
+                        width: 0.9 * MediaQuery.of(context).size.width / 2,
+                        padding: EdgeInsets.all(5),
+                        color: Colors.white,
+                        child: RaisedButton(
+                            child: Text(
+                                "${AppLocalizations.of(context).translate('buy')}"
+                                    ?.toUpperCase(),
+                                style: TextStyle(color: Colors.white)),
+                            color: KColors.primaryColor,
+                            onPressed: () {
+                              _continuePurchase();
+                            }))
               ],
             ),
           ),

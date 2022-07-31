@@ -109,29 +109,32 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             bottom: 0,
             right: 0,
             left: 0,
-            child: Container(color: KColors.new_gray,
+            child: Container(
+              // color: KColors.new_gray,
               padding: EdgeInsets.only(top: 10, bottom: 30, left: 10, right: 10),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    RaisedButton(
+                    GestureDetector(
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.circular(5)),
+
+                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                           /*    Icon(Icons.add, color: Colors.white),
                               SizedBox(width: 10),*/
                               Text(
                                   "${AppLocalizations.of(context).translate('create_new_address')}",
-                                  style: TextStyle(color: Colors.white,fontSize: 15))
+                                  style: TextStyle(color: Colors.white,fontSize: 14))
                             ],
                           ),
                         ),
-                        color: KColors.primaryColor,
-                        onPressed: () => _createAddress()),
+                        onTap: () => _createAddress()),
                   ],
                 ),
               ),
