@@ -216,7 +216,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     child: TextField(
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            color: KColors.new_black, fontSize: 14),
                                         maxLines: 1,
                                         controller: _phoneNumberFieldController,
                                         enabled: false,
@@ -253,7 +253,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     child: TextField(
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            color: KColors.new_black, fontSize: 14),
                                         maxLines: 1,
                                         controller: _nickNameFieldController,
                                         enabled: true,
@@ -290,7 +290,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     child: TextField(
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            color: KColors.new_black, fontSize: 14),
                                         maxLines: 1,
                                         controller: _whatsappNoFieldController,
                                         enabled: true,
@@ -327,7 +327,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     child: TextField(
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            color: KColors.new_black, fontSize: 14),
                                         maxLines: 1,
                                         controller: _jobTitleFieldController,
                                         enabled: true,
@@ -359,7 +359,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     child: TextField(
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            color: KColors.new_black, fontSize: 14),
                                         maxLines: 1,
                                         controller: _districtFieldController,
                                         enabled: true,
@@ -412,7 +412,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     Text(
                                         "${AppLocalizations.of(context).translate('woman_gender')}",
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 12)),
+                                            color: KColors.new_black, fontSize: 12)),
                                   ],
                                 ),
                                 Row(
@@ -425,7 +425,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     Text(
                                         "${AppLocalizations.of(context).translate('man_gender')}",
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 12)),
+                                            color: KColors.new_black, fontSize: 12)),
                                   ],
                                 ),
                               ]),
@@ -633,7 +633,7 @@ class _Personal3PageState extends State<Personal3Page>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

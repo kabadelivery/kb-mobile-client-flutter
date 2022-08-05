@@ -190,7 +190,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                     Text(
                                         "${AppLocalizations.of(context).translate('opening_time')}",
                                         style: TextStyle(
-                                            color: Colors.black.withAlpha(150),
+                                            color: KColors.new_black.withAlpha(150),
                                             fontSize: 16)),
                                     isUpdatingRestaurantOpenType
                                         ? Container()
@@ -202,7 +202,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                                 Text(
                                                     "${widget?.restaurant?.working_hour}",
                                                     style: TextStyle(
-                                                        color: Colors.black,
+                                                        color: KColors.new_black,
                                                         fontSize: 16)),
                                               ])
                                   ],
@@ -281,7 +281,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                   Text(
                                     "${widget?.restaurant?.description}",
                                     style: TextStyle(
-                                        color: Colors.black, fontSize: 16),
+                                        color: KColors.new_black, fontSize: 16),
                                   ),
                                   SizedBox(height: 10),
                                   Container(
@@ -294,7 +294,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                               maxLines: 3,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: KColors.new_black,
                                                   fontSize: 16))),
                                     ]),
                                   ),
@@ -315,7 +315,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                             Text(
                                                 "${AppLocalizations.of(context).translate('note_reviews')}",
                                                 style: TextStyle(
-                                                    color: Colors.black,
+                                                    color: KColors.new_black,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18)),
                                           ],

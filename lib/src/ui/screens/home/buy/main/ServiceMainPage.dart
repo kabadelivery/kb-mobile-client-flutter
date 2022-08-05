@@ -52,8 +52,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   bool hasSystemError;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -74,7 +72,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.available_services?.length == 0 && widget.coming_soon_services?.length == 0)
+    if (widget.available_services?.length == 0 &&
+        widget.coming_soon_services?.length == 0)
       widget.presenter.fetchServiceCategoryFromLocation(
           StateContainer.of(context).location);
   }
@@ -93,7 +92,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
               Text(
                   Utils.capitalize(
                       "${AppLocalizations.of(context).translate('buy')}"),
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
             ],
           ),
         ),
@@ -147,26 +149,28 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
-                                  child: Icon(Icons.location_on,
-                                      color: Colors.white, size: 20),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: KColors.mBlue),
-                                  padding: EdgeInsets.all(7)),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: 10, bottom: 10, right: 10, left: 10),
+                                padding: EdgeInsets.only(right: 10),
                                 decoration: BoxDecoration(
                                     color: KColors.mBlue.withAlpha(30),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(5),
+                                        topRight: Radius.circular(5),
+                                        topLeft: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20))),
                                 child: Row(
                                   children: [
+                                    Container(
+                                        child: Icon(Icons.location_on,
+                                            color: Colors.white, size: 20),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: KColors.mBlue),
+                                        padding: EdgeInsets.all(9)),
                                     SizedBox(width: 10),
                                     Text(
                                         "${_locationToPlusCode(StateContainer.of(context).location)}",
                                         style: TextStyle(
-                                            color: Colors.black,
+                                            color: KColors.new_black,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14)),
                                     SizedBox(width: 10),
@@ -301,10 +305,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void networkError() {
-    if (widget?.available_services?.length == 0 && widget?.coming_soon_services?.length == 0)
-    setState(() {
-      hasNetworkError = true;
-    });
+    if (widget?.available_services?.length == 0 &&
+        widget?.coming_soon_services?.length == 0)
+      setState(() {
+        hasNetworkError = true;
+      });
   }
 
   @override
@@ -318,10 +323,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void systemError() {
-    if (widget?.available_services?.length == 0 && widget?.coming_soon_services?.length == 0)
+    if (widget?.available_services?.length == 0 &&
+        widget?.coming_soon_services?.length == 0)
       setState(() {
-      hasSystemError = true;
-    });
+        hasSystemError = true;
+      });
   }
 
   _locationToPlusCode(Position location) {
@@ -330,6 +336,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   _pickMyAddress() {
     /* pick my location */
+    /* or just copy my location */
   }
 
   void mDialog(String message) {
@@ -363,7 +370,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

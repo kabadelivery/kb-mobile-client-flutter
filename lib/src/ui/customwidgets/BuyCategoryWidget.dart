@@ -60,41 +60,48 @@ class BuyCategoryWidget extends StatelessWidget {
               context);
         },
         child: Container(
-          child: Row(
+          child: Stack(
             children: [
-              Expanded(
-                child: Container(
-                  padding:
-                      EdgeInsets.only(left: 8, right: 2, top: 4, bottom: 4),
-                  child: Row(mainAxisSize: MainAxisSize.max, children: [
-                    Container(width: 45, height: 45, child: getCategoryIcon()),
-                    SizedBox(width: 15),
-                    Flexible(
-                        child: Text(getCategoryTitle(context),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black)))
-                  ]),
-                ),
+              Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.only(left: 8, right: 2, top: 4, bottom: 4),
+                          child: Row(mainAxisSize: MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            Container(width: 40, height: 40, child: getCategoryIcon()),
+                            SizedBox(width: 10),
+                            Expanded(
+                                child: Text(getCategoryTitle(context),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)))
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
               ),
-              isNew
-                  ? RotatedBox(
-                      quarterTurns: -45,
-                      child: Container(
-                          padding: EdgeInsets.only(top: 2, bottom: 2),
-                          decoration: BoxDecoration(
-                              color: KColors.primaryYellowColor,
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5))),
-                          child: Center(
-                            child: Text(
-                                "${AppLocalizations.of(context).translate('new')}",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 8)),
-                          )),
-                    )
+         isNew
+                  ? Positioned(right: 0, top: 0,
+                    child: Container(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, right: 5, left: 5),
+                    decoration: BoxDecoration(
+                        color: KColors.primaryYellowColor,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            topRight: Radius.circular(5))),
+                    child: Text(
+                        // "${AppLocalizations.of(context).translate('new')}",
+                    "NEW",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10))),
+                  )
                   : Container()
             ],
           ),

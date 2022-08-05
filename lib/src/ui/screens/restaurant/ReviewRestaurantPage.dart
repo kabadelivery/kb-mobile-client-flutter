@@ -83,7 +83,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                     "${AppLocalizations.of(context).translate('review_us')}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.black,
+                        color: KColors.new_black,
                         fontSize: 14,
                         fontWeight: FontWeight.bold))),
             SizedBox(height: 10),
@@ -141,7 +141,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                 padding: EdgeInsets.all(10),
                 child: TextField(
                   controller: _reviewTextController,
-                  style: TextStyle(color: Colors.black, fontSize: 13),
+                  style: TextStyle(color: KColors.new_black, fontSize: 13),
                   maxLines: 5,
                   minLines: 4,
                   textAlign: TextAlign.left,
@@ -221,7 +221,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: <Widget>[
               OutlinedButton(

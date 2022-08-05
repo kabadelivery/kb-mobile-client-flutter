@@ -764,7 +764,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:
@@ -829,7 +829,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       )),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[

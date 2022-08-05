@@ -105,7 +105,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                                         ? /*pwd[index]*/ "*"
                                         : "",
                                     style: TextStyle(
-                                        fontSize: 30, color: Colors.black)))));
+                                        fontSize: 30, color: KColors.new_black)))));
                   }))),
             SizedBox(height: 30),
             /* add a table showing the numbers */

@@ -86,7 +86,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                             ),
                             SizedBox(height: 10),
 
-                            Text("${widget?.moneyReceiver?.username}", textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),),
+                            Text("${widget?.moneyReceiver?.username}", textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: KColors.new_black, fontWeight: FontWeight.bold),),
                             SizedBox(height:5),
                             Text("${Utils.hidePhoneNumber(widget?.moneyReceiver?.phone_number)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.normal),),
                           ]),

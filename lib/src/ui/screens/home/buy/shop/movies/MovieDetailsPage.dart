@@ -99,12 +99,12 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black)),
+                            color: KColors.new_black)),
                     SizedBox(height: 3),
                     Text("${widget?.movie?.movie_type}",
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
-                            color: Colors.black,
+                            color: KColors.new_black,
                             fontSize: 10)),
                     SizedBox(height: 5),
                     GestureDetector(

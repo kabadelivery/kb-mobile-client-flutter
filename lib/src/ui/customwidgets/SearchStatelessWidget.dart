@@ -61,13 +61,13 @@ class SearchStatelessWidget extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(color: KColors.new_black, fontSize: 14),
                         textInputAction: TextInputAction.search,
                         decoration: InputDecoration.collapsed(
                             hintText: title,
                             hintStyle: TextStyle(
-                                fontSize: 13,
-                                color: Colors.black.withAlpha(150))),
+                                fontSize: 14,
+                                color: KColors.new_black)),
                         enabled: false),
                   ),
                 ],
@@ -112,14 +112,14 @@ class SearchStatelessWidget extends StatelessWidget {
                   controller: _searchFieldController,
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.black.withAlpha(75)),
+                      hintStyle: TextStyle(color: KColors.new_black.withAlpha(75)),
                       hintText: "${title}"),
                 ))
               : Expanded(
                   child: Container(
                     margin: EdgeInsets.only(top: 15, bottom: 15),
                     child: Text("${title}",
-                        style: TextStyle(color: Colors.black.withAlpha(75))),
+                        style: TextStyle(color: KColors.new_black.withAlpha(75))),
                   ),
                 ),
         ]));

@@ -2,6 +2,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShopListWidget.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chip_list/chip_list.dart';
@@ -123,7 +124,7 @@ class SearchProductPageState extends State<SearchProductPage> {
               activeBgColorList: [Theme.of(context).primaryColor],
               inactiveBgColorList: [Colors.grey.withOpacity(0.4)],
               activeTextColorList: [Colors.white],
-              inactiveTextColorList: [Colors.black.withOpacity(0.5)],
+              inactiveTextColorList: [KColors.new_black.withOpacity(0.5)],
               listOfChipIndicesCurrentlySeclected: [_chipCurrentIndex],
               extraOnToggle: (val) {
                 _chipCurrentIndex = val;

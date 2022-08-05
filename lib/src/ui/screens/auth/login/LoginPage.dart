@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
-                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:Colors.black)),
+                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:KColors.new_black)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                     SizedBox(height: 30),
                     Row(
@@ -414,7 +414,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:
@@ -482,7 +482,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       )),
                   SizedBox(height: 10),
                   Text("${AppLocalizations.of(context).translate('accept_terms_and_conditions')}", textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[

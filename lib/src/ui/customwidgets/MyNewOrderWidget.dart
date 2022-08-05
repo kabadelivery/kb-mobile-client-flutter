@@ -137,7 +137,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                             width: 1*MediaQuery.of(context).size.width / 2,
                             child: Text("${command?.restaurant_entity?.name}",
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14),
                                 overflow: TextOverflow.ellipsis),
@@ -416,7 +416,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: food.promotion != 0
-                                            ? Colors.black
+                                            ? KColors.new_black
                                             : KColors.primaryYellowColor,
                                         fontSize: 20,
                                         fontWeight: FontWeight.normal,
@@ -456,7 +456,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
               text: new TextSpan(
                 text: 'X ',
                 style: new TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.black),
+                    fontWeight: FontWeight.bold, color: KColors.new_black),
                 children: <TextSpan>[
                   TextSpan(
                       text: " ${food.quantity} ",

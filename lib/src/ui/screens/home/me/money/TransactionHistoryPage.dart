@@ -52,7 +52,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
 
   Color filter_unactive_button_color = Color(0xFFF7F7F7),
       filter_active_button_color = KColors.primaryColor,
-      filter_unactive_text_color = Colors.black,
+      filter_unactive_text_color = KColors.new_black,
       filter_active_text_color = Colors.white;
 
   var _searchChoices = null;
@@ -1002,7 +1002,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                       fontSize: 24,
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      color: Colors.black)),
+                                                      color: KColors.new_black)),
                                               Text(
                                                   "  ${AppLocalizations.of(context)?.translate('currency')}",
                                                   style: TextStyle(
@@ -1204,7 +1204,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

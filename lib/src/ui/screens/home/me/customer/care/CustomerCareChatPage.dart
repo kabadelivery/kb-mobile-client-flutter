@@ -78,7 +78,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _buildSysErrorPage() {
-    return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
+    return Center(child: Container(color: KColors.new_black.withAlpha(200), width: MediaQuery.of(context).size.width,
       child: Column(mainAxisSize: MainAxisSize.min,
         children: <Widget>[
         SizedBox(height: 10),
@@ -87,7 +87,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
           ]),
           SizedBox(height: 10),
           RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
-              child: Text("Reload",style: TextStyle(color: Colors.black))),
+              child: Text("Reload",style: TextStyle(color: KColors.new_black))),
           SizedBox(height: 10),
         ],
       ),
@@ -95,7 +95,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _buildNetworkErrorPage() {
-    return Center(child: Container(color: Colors.black.withAlpha(200), width: MediaQuery.of(context).size.width,
+    return Center(child: Container(color: KColors.new_black.withAlpha(200), width: MediaQuery.of(context).size.width,
       child: Column(mainAxisSize: MainAxisSize.min,
         children: <Widget>[
         SizedBox(height: 10),
@@ -104,7 +104,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
           ]),
           SizedBox(height: 10),
           RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
-              child: Text("Reload",style: TextStyle(color: Colors.black))),
+              child: Text("Reload",style: TextStyle(color: KColors.new_black))),
           SizedBox(height: 10),
         ],
       ),
@@ -135,12 +135,12 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
                                     children: <Widget>[
                                       Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
                                         children: <Widget>[
-                                          Expanded(child: Text("${widget.messages[position]?.message}", textAlign: TextAlign.left,style: TextStyle(fontSize: 14, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
+                                          Expanded(child: Text("${widget.messages[position]?.message}", textAlign: TextAlign.left,style: TextStyle(fontSize: 14, color:  widget.messages[position]?.user_id == 0 ? KColors.new_black : Colors.white),)),
                                         ],
                                       ),
                                       SizedBox(height: 10),
                                       Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                                        Expanded(child: Text("${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? Colors.black : Colors.white),)),
+                                        Expanded(child: Text("${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? KColors.new_black : Colors.white),)),
                                       ])
                                     ],
                                   ),
@@ -209,7 +209,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
               child: SvgPicture.asset(VectorsData.customer_care)),
           SizedBox(height: 10),
           Text("${AppLocalizations.of(context).translate('any_feedback_right_here')}", textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 13))
+              style: TextStyle(color: KColors.new_black.withAlpha(150), fontSize: 13))
         ]
     ),);
   }

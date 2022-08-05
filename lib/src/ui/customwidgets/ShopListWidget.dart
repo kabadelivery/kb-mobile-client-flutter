@@ -83,7 +83,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                         maxLines: 1,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                            color: Colors.black,
+                                            color: KColors.new_black,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500)),
                                     SizedBox(height: 5),
@@ -95,7 +95,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                             fontWeight: FontWeight.w200,
                                             fontSize: 13,
                                             color:
-                                                Colors.black.withAlpha(150))),
+                                                KColors.new_black.withAlpha(150))),
                                     SizedBox(height: 5),
                                     /* kilometers and shipping fees */
                                     Row(children: <Widget>[
@@ -282,7 +282,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                   Text(
                       "${AppLocalizations.of(context).translate('coming_soon_dialog')}",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]),
                 actions: <Widget>[
                   //

@@ -120,7 +120,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                       child: Container(
                           child: Text("T-MONEY",
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 16)),
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: selectedPaymentMode == 0
@@ -134,7 +134,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                       child: Container(
                           child: Text("BANK CARD",
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 16)),
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: selectedPaymentMode == 1
@@ -148,7 +148,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                       child: Container(
                           child: Text("FLOOZ",
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 16)),
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: selectedPaymentMode == 2
@@ -513,7 +513,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

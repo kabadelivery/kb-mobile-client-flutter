@@ -204,14 +204,14 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                       text:
                           '${AppLocalizations.of(context).translate('latest_update')}: ',
                       style: new TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
+                          fontWeight: FontWeight.bold, color: KColors.new_black),
                       children: <TextSpan>[
                         TextSpan(
                             text: " ${_orderLastUpdate(widget.command)}",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.normal,
-                                color: Colors.black.withAlpha(200))),
+                                color: KColors.new_black.withAlpha(200))),
                       ],
                     ),
                   ),
@@ -307,7 +307,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     "${widget.command?.shipping_address?.phone_number}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: Colors.black, fontSize: 14)))),
+                                        color: KColors.new_black, fontSize: 14)))),
                       ],
                     ),
                   ),
@@ -343,7 +343,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     "${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED ? widget.command?.passphrase?.toUpperCase() : "---"}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: Colors.black, fontSize: 14)))),
+                                        color: KColors.new_black, fontSize: 14)))),
                       ],
                     ),
                   ),
@@ -384,7 +384,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                         "${widget?.command?.livreur?.name}",
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
-                                            color: Colors.black,
+                                            color: KColors.new_black,
                                             fontSize: 14))),
                                 SizedBox(width: 10),
                                 InkWell(
@@ -439,7 +439,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 Utils.capitalize(
                                     "${widget.command?.shipping_address?.near}"),
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 12)),
+                                    color: KColors.new_black, fontSize: 12)),
                           ),
                         ]),
                   ),
@@ -472,7 +472,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 Utils.capitalize(
                                     "${widget.command?.shipping_address?.description}"),
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 12)),
+                                    color: KColors.new_black, fontSize: 12)),
                           ),
                         ]),
                   ),
@@ -564,7 +564,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         maxLines: 3,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: KColors.new_black,
                             fontSize: 14,
                             fontWeight: FontWeight.w500)),
                     SizedBox(height: 5),
@@ -587,7 +587,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     decoration: food.promotion != 0
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal)),
                             SizedBox(width: 5),
@@ -608,7 +608,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontSize: 10,
                                     fontWeight: FontWeight.normal)),
                           ]),
@@ -618,7 +618,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         ),
                         Text(" X ${quantity}",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold))
                       ],
@@ -1023,7 +1023,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text("${AppLocalizations.of(context).translate('net_price')}",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black.withAlpha(200))),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: KColors.new_black.withAlpha(200))),
           Text(
               "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
               style: TextStyle(

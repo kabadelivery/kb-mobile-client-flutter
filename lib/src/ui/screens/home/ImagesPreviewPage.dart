@@ -1,6 +1,7 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -51,8 +52,8 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          brightness: Brightness.dark,
-          backgroundColor: Colors.transparent,
+          brightness: Brightness.dark,elevation: 0,
+          backgroundColor: KColors.new_black,
           leading: IconButton(
               icon: SizedBox(
                   height: 25,
@@ -63,7 +64,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                 Navigator.pop(context);
               }),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: KColors.new_black,
         body: Stack(
           children: <Widget>[
             Container(
@@ -90,7 +91,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                             builder: (BuildContext context) {
 //                                PinchZoom(
 //                                    image: Image.network('http://placerabbit.com/200/333'),
-//                                    zoomedBackgroundColor: Colors.black.withOpacity(0.5),
+//                                    zoomedBackgroundColor: KColors.new_black.withOpacity(0.5),
 //                                    resetDuration: const Duration(milliseconds: 100),
 //                                    maxScale: 2.5,
                               return PinchZoom(
@@ -110,7 +111,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
 //                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
 //                                    )
                                     ),
-                                // zoomedBackgroundColor: Colors.black,
+                                // zoomedBackgroundColor: KColors.new_black,
                                 resetDuration:
                                     const Duration(milliseconds: 100),
                                 maxScale: 2.5,

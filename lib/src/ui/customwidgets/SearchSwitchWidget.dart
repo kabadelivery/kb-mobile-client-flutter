@@ -25,7 +25,7 @@ class SearchSwitchWidget extends StatefulWidget {
 class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
   Color filter_unactive_button_color = Color(0xFFF7F7F7),
       filter_active_button_color = KColors.primaryColor,
-      filter_unactive_text_color = Colors.black,
+      filter_unactive_text_color = KColors.new_black,
       filter_active_text_color = Colors.white;
 
   var _filterDropdownValue;
@@ -100,12 +100,12 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
       _searchChoices = getCategoryTitle(context);
 
     return Container(
-      padding: EdgeInsets.only(left: 20, right: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 4,
+            flex: 5,
             child: AnimatedContainer(
               decoration: BoxDecoration(
                 color: filter_unactive_button_color,
@@ -119,15 +119,15 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                       flex: 1,
                       child: InkWell(
                           onTap: () => widget.onSwitch(1),
-                          child: Container(
-                              padding: EdgeInsets.all(10),
+                          child: Container(height: 36,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Center(
                                 child: Text(
                                     Utils.capitalize(
                                         // "${AppLocalizations.of(context).translate('search_restaurant')}"),
                                    _searchChoices[0]),
                                     style: TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 14, fontWeight: FontWeight.w400,
                                         color: widget.selectedPosition == 1
                                             ? this.filter_active_text_color
                                             : this
@@ -152,7 +152,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                     Utils.capitalize(
                                         _searchChoices[1]),
                                     style: TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 14, fontWeight: FontWeight.w400,
                                         color: widget.selectedPosition == 1
                                             ? this.filter_unactive_text_color
                                             : this.filter_active_text_color)),
@@ -168,61 +168,58 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
               duration: Duration(milliseconds: 3000),
             ),
           ),
-          SizedBox(width: 15),
-          Expanded(
-            flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
-                  decoration: BoxDecoration(
-                      // color: KColors.primaryColor.withAlpha(60),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Center(
-                    child: DropdownButton<String>(
-                      value: _filterDropdownValue,
-                      /*hint: Text(
-                          "${AppLocalizations.of(context).translate('filter')}"
-                              .toUpperCase(),
-                          style: TextStyle(
-                              fontSize: 14, color: KColors.primaryColor)),
-                      */
+          SizedBox(width: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
+                decoration: BoxDecoration(
+                    color: KColors.primaryColor.withAlpha(60),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                child: Center(
+                  child: DropdownButton<String>(
+                    value: _filterDropdownValue,
+                    /*hint: Text(
+                        "${AppLocalizations.of(context).translate('filter')}"
+                            .toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 14, color: KColors.primaryColor)),
+                    */
 
-                      /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                                    child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
-                                */
-                      icon: Icon(
-                        FontAwesomeIcons.filter,
-                        color: KColors.primaryColor,
-                        size: 16,
-                      ),
-                      iconSize: 16,
-                      elevation: 16,
-                      style: TextStyle(color: KColors.primaryColor),
-                      underline: Container(
+                    /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
+                                  child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
+                              */
+                    icon: Icon(
+                      FontAwesomeIcons.filter,
+                      color: KColors.primaryColor,
+                      size: 16,
+                    ),
+                    iconSize: 16,
+                    elevation: 16,
+                    style: TextStyle(color: KColors.primaryColor),
+                    underline: Container(
 //                      height: 2,
 //                      color: Colors.deepPurpleAccent,
-                          ),
-                      onChanged: (String newValue) {
-                        widget.filterFunction(newValue);
-                      },
-                      items: <String>[
-                        '${AppLocalizations.of(context).translate('cheap_to_exp')}',
-                        '${AppLocalizations.of(context).translate('exp_to_cheap')}',
-                        '${AppLocalizations.of(context).translate('nearest')}',
-                        '${AppLocalizations.of(context).translate('farest')}'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                    onChanged: (String newValue) {
+                      widget.filterFunction(newValue);
+                    },
+                    items: <String>[
+                      '${AppLocalizations.of(context).translate('cheap_to_exp')}',
+                      '${AppLocalizations.of(context).translate('exp_to_cheap')}',
+                      '${AppLocalizations.of(context).translate('nearest')}',
+                      '${AppLocalizations.of(context).translate('farest')}'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           )
         ],
       ),

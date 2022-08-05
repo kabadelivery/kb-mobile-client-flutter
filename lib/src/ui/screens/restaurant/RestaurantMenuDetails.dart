@@ -109,7 +109,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)),
             SizedBox(height: 5),
             Container(
               child: Row(
@@ -125,11 +125,11 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                   */ /* add buttons */ /*
                   Row(
                       children: <Widget>[
-                        IconButton(icon: Icon(Icons.remove_circle, color: Colors.black), onPressed: () => _decreaseQuantity(food)),
+                        IconButton(icon: Icon(Icons.remove_circle, color: KColors.new_black), onPressed: () => _decreaseQuantity(food)),
                         SizedBox(width: 2),
-                        Container(margin: EdgeInsets.only(top:0),child: Text("${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}", style: TextStyle(color: Colors.black, fontSize: 18))),
+                        Container(margin: EdgeInsets.only(top:0),child: Text("${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}", style: TextStyle(color: KColors.new_black, fontSize: 18))),
                         SizedBox(width: 2),
-                        IconButton(icon: Icon(Icons.add_circle, color: Colors.black), onPressed: () => _increaseQuantity(food)),
+                        IconButton(icon: Icon(Icons.add_circle, color: KColors.new_black), onPressed: () => _increaseQuantity(food)),
                         SizedBox(width: 10),
                         IconButton(icon:Icon(Icons.delete_forever, color: KColors.primaryColor,), onPressed: () {_removeFood(food);}),
                       ]
@@ -173,7 +173,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       maxLines: 1,
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.black,
+                          color: KColors.new_black,
                           fontSize: 14,
                           fontWeight: FontWeight.w500)),
                   SizedBox(height: 2),
@@ -196,14 +196,14 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         children: <Widget>[
                           InkWell(
                               child: Icon(Icons.remove_circle,
-                                  color: Colors.black, size: 20),
+                                  color: KColors.new_black, size: 20),
                               onTap: () => _decreaseQuantity(food)),
                           Container(
                               margin: EdgeInsets.only(left: 5, right: 5),
                               child: Text(
                                   "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 15))),
+                                      color: KColors.new_black, fontSize: 15))),
                           InkWell(
                               child: Icon(Icons.add_circle,
                                   size: 20, color: KColors.primaryColor),
@@ -241,7 +241,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.black,
+                          color: KColors.new_black,
                           fontSize: 15,
                           fontWeight: FontWeight.normal,
                           decoration: food.promotion != 0
@@ -264,7 +264,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.black,
+                          color: KColors.new_black,
                           fontSize: 10,
                           fontWeight: FontWeight.normal)),
                 ]),

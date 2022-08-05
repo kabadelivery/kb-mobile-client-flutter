@@ -228,7 +228,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                   ],
                                   activeTextColorList: [Colors.white],
                                   inactiveTextColorList: [
-                                    Colors.black.withOpacity(0.9)
+                                    KColors.new_black.withOpacity(0.9)
                                   ],
                                   listOfChipIndicesCurrentlySeclected: [
                                     _menuChipCurrentIndex
@@ -283,7 +283,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                                               bottom: 10,
                                                               left: 8,
                                                               right: 8),
-                                                      child: Text(data[index]?.name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[index]?.promotion == 0 ? Colors.black : KColors.primaryColor), textAlign: TextAlign.center))),
+                                                      child: Text(data[index]?.name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[index]?.promotion == 0 ? KColors.new_black : KColors.primaryColor), textAlign: TextAlign.center))),
                                         ),
                                       ),
                                     ],
@@ -675,7 +675,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

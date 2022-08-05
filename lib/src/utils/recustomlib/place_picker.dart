@@ -633,7 +633,7 @@ class SearchInputState extends State<SearchInput> {
           ),
           IconButton(icon: Icon(
             Icons.search,
-            color: Colors.black,
+            color: KColors.new_black,
           ), onPressed: (){onSearchInputChange();},
           ),
         ],
@@ -687,7 +687,7 @@ class SelectPlaceAction extends StatelessWidget {
                     Text(
                       "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: KColors.new_black,
                         fontSize: 15,
                       ),
                     ),
@@ -803,7 +803,7 @@ class RichSuggestion extends StatelessWidget {
     result.add(TextSpan(
       text: boldText,
       style: TextStyle(
-        color: Colors.black,
+        color: KColors.new_black,
         fontSize: 15,
       ),
     ));

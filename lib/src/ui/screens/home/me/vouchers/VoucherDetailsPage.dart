@@ -89,7 +89,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                             version: QrVersions.auto,
                             size: 160,
                             gapless: false,
-                            foregroundColor: Colors.black,
+                            foregroundColor: KColors.new_black,
                             embeddedImageStyle: QrEmbeddedImageStyle(
                               size: Size(35, 35),
                             ),
@@ -115,7 +115,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: KColors.new_black, fontWeight: FontWeight.bold, fontSize: 16)),
                   widget.voucher?.description == null ? Container() : Column(
                     children: <Widget>[
                       SizedBox(height: 10),
@@ -201,11 +201,11 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       Column(crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text("-${(widget.voucher.use_count-widget.voucher.already_used_count)*widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
-          Container(width:110, height: 2, color: Colors.black, margin: EdgeInsets.only(bottom:1),),
+          Container(width:110, height: 2, color: KColors.new_black, margin: EdgeInsets.only(bottom:1),),
           Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black)),
-              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.black)),
+              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: KColors.new_black)),
+              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: KColors.new_black)),
             ],
           ),
         ],
@@ -238,7 +238,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 13, fontWeight: FontWeight.w500)),
+            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

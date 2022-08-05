@@ -217,7 +217,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: KColors.new_black,
                                         fontWeight: FontWeight
                                             .bold)),
                               ),
@@ -238,7 +238,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                       .bold)) : Text(
                               "${data?.food_entity?.price}",
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: KColors.new_black,
                                   decoration:  TextDecoration.lineThrough,
                                   fontSize: 30,
                                   fontWeight: FontWeight

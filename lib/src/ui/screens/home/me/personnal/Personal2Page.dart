@@ -212,7 +212,7 @@ class _Personal2PageState extends State<Personal2Page>
                         color: Colors.white,
                         /* phone number must be confirmed by another interface before setting it up. */
                         child: TextField(
-                          style: TextStyle(color: Colors.black, fontSize: 14),
+                          style: TextStyle(color: KColors.new_black, fontSize: 14),
                             controller: _emailFieldController,
                             enabled: false,
                             decoration: InputDecoration(
@@ -304,7 +304,7 @@ class _Personal2PageState extends State<Personal2Page>
                           Text(
                               "${AppLocalizations.of(context).translate('woman_gender')}",
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 16)),
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
                           Radio(
                               value: 1,
                               groupValue: widget.customer.gender,
@@ -340,7 +340,7 @@ class _Personal2PageState extends State<Personal2Page>
                     children: <Widget>[
                       Text(
                           "${AppLocalizations.of(context).translate('birthday')}",
-                          style: TextStyle(color: Colors.black, fontSize: 16)),
+                          style: TextStyle(color: KColors.new_black, fontSize: 16)),
                       Container(width: 20),
                       Text("${widget.customer.birthday}",
                           style: TextStyle(color: KColors.primaryColor)),
@@ -390,7 +390,7 @@ class _Personal2PageState extends State<Personal2Page>
                         child: Text(
                             "${AppLocalizations.of(context).translate('cancel')}",
                             style:
-                                TextStyle(fontSize: 14, color: Colors.black)),
+                                TextStyle(fontSize: 14, color: KColors.new_black)),
                         onPressed: () {
                           _cancelAll();
                         }),
@@ -470,7 +470,7 @@ class _Personal2PageState extends State<Personal2Page>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

@@ -179,7 +179,7 @@ class _SplashPageState extends State<SplashPage> {
                   /* text */
                   SizedBox(height: 10),
                   Text("${AppLocalizations.of(context).translate('app_title')}",
-                      style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                      style: TextStyle(color:KColors.new_black, fontWeight: FontWeight.bold, fontSize: 18))
                 ]
             )),
       ),

@@ -53,7 +53,7 @@ class _MySoldePageState extends State<MySoldePage> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Text("---", style: TextStyle(color: Colors.black, fontSize: 14)),
+                            Text("---", style: TextStyle(color: KColors.new_black, fontSize: 14)),
                             SizedBox(width: 5),
                             IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: () {})
                           ])

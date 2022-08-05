@@ -207,7 +207,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                                 style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.black)),
+                                    color: KColors.new_black)),
                             SizedBox(height: 5),
                             Container(width: MediaQuery.of(context).size.width*0.65,
                               child: Text(Utils.capitalize(address?.description),
@@ -272,7 +272,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     child: Container(
                         child: Text("${address?.name?.toUpperCase()}",
                             style: TextStyle(
-                                color: Colors.black.withAlpha(180),
+                                color: KColors.new_black.withAlpha(180),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18)))),
                 IconButton(
@@ -304,7 +304,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 16,
-                            color: Colors.black)),
+                            color: KColors.new_black)),
                     SizedBox(width: 10),
                     Text("${address?.phone_number}",
                         style: TextStyle(
@@ -497,7 +497,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

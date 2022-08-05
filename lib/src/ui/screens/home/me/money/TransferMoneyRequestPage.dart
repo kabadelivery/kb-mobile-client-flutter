@@ -274,7 +274,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: <Widget>[
               //

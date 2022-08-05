@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 /*
-_shiningText({ textColorsMap : const [Colors.white, Colors.red], List<Color> bgColorsMap = const [Colors.red, Colors.black12], text="PROMO"}) {
+_shiningText({ textColorsMap : const [Colors.white, Colors.red], List<Color> bgColorsMap = const [Colors.red, KColors.new_black12], text="PROMO"}) {
 
   const timeout = const Duration(seconds: 3);
 
@@ -69,7 +69,7 @@ class _ShinningTextWidgetState extends State<ShinningTextWidget> {
   }
 
 //  final List<Color> textColorsMap = const [Colors.white, KColors.primaryColor];
-//  final List<Color> bgColorsMap = const [KColors.primaryColor, Colors.black12];
+//  final List<Color> bgColorsMap = const [KColors.primaryColor, KColors.new_black12];
 
   startTimeout([int milliseconds]) {
     return new Timer(Duration(milliseconds: milliseconds), handleTimeout);

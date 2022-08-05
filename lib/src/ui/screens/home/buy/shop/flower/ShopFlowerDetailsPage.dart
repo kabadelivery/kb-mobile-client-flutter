@@ -249,19 +249,19 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 16,
-                                        color: Colors.black.withAlpha(100))),
+                                        color: KColors.new_black.withAlpha(100))),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       widget.food.promotion == 0
                                           ? Text("${widget.food?.price}",
                                               style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: KColors.new_black,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold))
                                           : Text("${widget.food?.price}",
                                               style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: KColors.new_black,
                                                   decoration: TextDecoration
                                                       .lineThrough,
                                                   fontSize: 20,
@@ -283,7 +283,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                       Text(
                                           "${AppLocalizations.of(context).translate('currency')}",
                                           style: TextStyle(
-                                              color: Colors.black,
+                                              color: KColors.new_black,
                                               fontSize: 12))
                                     ]),
                               ],
@@ -292,7 +292,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                             Row(children: [
                               Text(
                                   "${AppLocalizations.of(context).translate('product_description_section_title')}",
-                                  style: TextStyle(color: Colors.black))
+                                  style: TextStyle(color: KColors.new_black))
                             ]),
                             SizedBox(height: 10),
                             Row(
@@ -300,7 +300,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                               children: [
                                 Text("${widget.food?.description?.trim()}",
                                     style: TextStyle(
-                                        color: Colors.black.withAlpha(150),
+                                        color: KColors.new_black.withAlpha(150),
                                         fontSize: 14)),
                               ],
                             ),
@@ -339,7 +339,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                               SizedBox(width: 15),
                               Text("${quantity}",
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 18)),
+                                      color: KColors.new_black, fontSize: 18)),
                               SizedBox(width: 15),
                               Container(
                                 child: IconButton(

@@ -92,7 +92,7 @@ class _FoodWithRestaurantDetailsWidgetState
                               maxLines: 3,
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: KColors.new_black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 5),
@@ -192,7 +192,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.black.withAlpha(150))),
+                                        color: KColors.new_black.withAlpha(150))),
                               ],
                             )),
                         Container(
@@ -243,13 +243,13 @@ class _FoodWithRestaurantDetailsWidgetState
                                           child: Row(
                                             children: <Widget>[
                                               Icon(Icons.directions_bike,
-                                                  color: Colors.black,
+                                                  color: KColors.new_black,
                                                   size: 14),
                                               SizedBox(width: 5),
                                               Text(
                                                   "${widget?.food?.restaurant_entity?.delivery_pricing == "0" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget?.food?.restaurant_entity?.delivery_pricing + " F"}",
                                                   style: TextStyle(
-                                                      color: Colors.black,
+                                                      color: KColors.new_black,
                                                       fontSize: 12)),
                                             ],
                                           )),
@@ -260,7 +260,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                       : Text(
                                           "${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
                                           style: TextStyle(
-                                              color: Colors.black,
+                                              color: KColors.new_black,
                                               fontWeight: FontWeight.normal,
                                               fontStyle: FontStyle.normal,
                                               fontSize: 12))

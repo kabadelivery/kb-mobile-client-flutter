@@ -131,7 +131,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                           Row(mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               OutlinedButton(
-                                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.black, width: 1))),
+                                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.new_black, width: 1))),
                                 child: Row(
                                   children: <Widget>[
                                     /* circular progress */
@@ -141,7 +141,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                                         SizedBox(width: 5),
                                       ],
                                     ) : Container(),
-                                    Text(data[position].category?.toUpperCase(), style: TextStyle(color: Colors.black)),
+                                    Text(data[position].category?.toUpperCase(), style: TextStyle(color: KColors.new_black)),
                                   ],
                                 ),
                               ),
@@ -156,7 +156,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
                                   maxLines: 50,
-                                  style: TextStyle(color: Colors.black))),
+                                  style: TextStyle(color: KColors.new_black))),
                         ],
                       ),
                     ),

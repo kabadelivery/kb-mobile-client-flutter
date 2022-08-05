@@ -98,7 +98,7 @@ class _ProductWithShopDetailsWidgetState
                                                 maxLines: 3,
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
-                                                    color: Colors.black,
+                                                    color: KColors.new_black,
                                                     fontSize: 14,
                                                     fontWeight:
                                                         FontWeight.w800)),
@@ -159,7 +159,7 @@ class _ProductWithShopDetailsWidgetState
                                               maxLines: 2,
                                               // textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: KColors.new_black,
                                                   fontSize: 14)),
                                           SizedBox(height: 5),
                                           Row(children: <Widget>[

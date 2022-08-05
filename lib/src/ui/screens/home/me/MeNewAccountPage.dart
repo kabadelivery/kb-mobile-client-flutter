@@ -274,7 +274,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               Text(
                                 widget.customerData.nickname,
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500),
                                 textAlign: TextAlign.left,
@@ -1329,7 +1329,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[
@@ -1397,7 +1397,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: <Widget>[
               OutlinedButton(

@@ -44,7 +44,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 SizedBox(height: 5),
                 Row(mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text("${Utils.readTimestamp(context, comment?.created_at)}", textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 12)),
+                    Text("${Utils.readTimestamp(context, comment?.created_at)}", textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black.withAlpha(150), fontSize: 12)),
                   ],
                 ),
                 SizedBox(height: 5),
@@ -58,7 +58,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 SizedBox(height: 5),
                 Row(
                   children: <Widget>[
-                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 15))),
+                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black.withAlpha(150), fontSize: 15))),
                   ],
                 )
               ]

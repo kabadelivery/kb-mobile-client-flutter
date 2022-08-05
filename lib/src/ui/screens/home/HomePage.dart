@@ -65,6 +65,8 @@ class HomePage extends StatefulWidget {
 
   CustomerModel customer;
 
+  bool is_offline = false;
+
   HomePage({Key key, this.destination, this.argument}) : super(key: key);
 
   @override
@@ -137,8 +139,8 @@ class _HomePageState extends State<HomePage> {
         argument: widget.argument);
     // restaurantListPage = RestaurantListPage(context: context,
     //     key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
-    serviceMainPage = ServiceMainPage(
-        key: serviceMainKey , presenter: ServiceMainPresenter());
+    serviceMainPage =
+        ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
     meAccountPage = MeNewAccountPage(key: meKey);
@@ -276,20 +278,29 @@ class _HomePageState extends State<HomePage> {
 
     // network
 
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult connectivityResult) {
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult connectivityResult) {
       // Got a new connectivity status!
-      if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        widget.is_offline = false;
         /*ElegantNotification.success(toastDuration: Duration(seconds: 10),
             title:  Text("${AppLocalizations.of(context).translate('online_alert_title')}"),
             notificationPosition: NotificationPosition.center,
             description:  Text("${AppLocalizations.of(context).translate('online_alert_description')}")
         ).show(context);*/
       } else {
-        ElegantNotification.error(toastDuration: Duration(seconds: 20),
-            title:  Text("${AppLocalizations.of(context).translate('offline_alert_title')}"),
-            notificationPosition: NotificationPosition.center,
-            description:  Text("${AppLocalizations.of(context).translate('offline_alert_description')}")
-        ).show(context);
+        if (!widget.is_offline)
+          ElegantNotification.error(
+                  toastDuration: Duration(seconds: 20),
+                  title: Text(
+                      "${AppLocalizations.of(context).translate('offline_alert_title')}"),
+                  notificationPosition: NotificationPosition.center,
+                  description: Text(
+                      "${AppLocalizations.of(context).translate('offline_alert_description')}"))
+              .show(context);
+        widget.is_offline = true;
       }
     });
   }
@@ -325,7 +336,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[
@@ -534,33 +545,45 @@ class _HomePageState extends State<HomePage> {
     }
     return Scaffold(
       body: pages[StateContainer.of(context).tabPosition],
-      bottomNavigationBar: BottomNavigationBar(selectedFontSize: 12.5, unselectedFontSize: 12,
+      bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12.5,
+        unselectedFontSize: 12,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
             activeIcon: SvgPicture.asset(VectorsData.home_selected),
-            label: Utils.capitalize("${AppLocalizations.of(context).translate('home')}"),
-            tooltip: Utils.capitalize("${AppLocalizations.of(context).translate('home')}"),
+            label: Utils.capitalize(
+                "${AppLocalizations.of(context).translate('home')}"),
+            tooltip: Utils.capitalize(
+                "${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
             // icon: Icon(Icons.restaurant),
             // label: ('${AppLocalizations.of(context).translate('restaurant')}'),
-            icon: SvgPicture.asset(VectorsData.buy), // Icon(FontAwesomeIcons.shoppingCart),
+            icon: SvgPicture.asset(VectorsData.buy),
+            // Icon(FontAwesomeIcons.shoppingCart),
             activeIcon: SvgPicture.asset(VectorsData.buy_selected),
-            label: Utils.capitalize('${AppLocalizations.of(context).translate('buy')}'),
-            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('buy')}'),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('buy')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('buy')}'),
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(VectorsData.orders), // Icon(Icons.view_list),
+            icon: SvgPicture.asset(VectorsData.orders),
+            // Icon(Icons.view_list),
             activeIcon: SvgPicture.asset(VectorsData.orders_selected),
-            label: Utils.capitalize('${AppLocalizations.of(context).translate('orders')}'),
-            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('orders')}'),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('orders')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
             activeIcon: SvgPicture.asset(VectorsData.me_selected),
-            label: Utils.capitalize('${AppLocalizations.of(context).translate('account')}'),
-            tooltip: Utils.capitalize('${AppLocalizations.of(context).translate('account')}'),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('account')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
         currentIndex: StateContainer.of(context).tabPosition,
@@ -1041,7 +1064,6 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 }
 
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
-
   String groupKey = "tg.tmye.kaba.brave.one";
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(

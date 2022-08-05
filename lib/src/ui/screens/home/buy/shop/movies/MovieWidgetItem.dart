@@ -61,12 +61,12 @@ class MovieWidgetItem extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black)),
+                                color: KColors.new_black)),
                         SizedBox(height: 3),
                         Text("${movie?.movie_type}",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 10)),
                         SizedBox(height: 5),
                         Text("${movie?.description}",

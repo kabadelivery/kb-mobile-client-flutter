@@ -56,7 +56,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
           _controller.complete(controller);
         },
       ),
-      floatingActionButton: Card(child: InkWell(child: IconButton(icon: Icon(Icons.my_location, color: Colors.black,), onPressed: () => _goToMe()))),
+      floatingActionButton: Card(child: InkWell(child: IconButton(icon: Icon(Icons.my_location, color: KColors.new_black,), onPressed: () => _goToMe()))),
     );
   }
 

@@ -350,7 +350,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.black,
+                          style: TextStyle(color: KColors.new_black,
                               fontSize: 14,
                               fontWeight: FontWeight.w500)),
                       SizedBox(height: 5),
@@ -488,7 +488,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w500)),
+                                        style: TextStyle(color: KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
                                   ),
                                 ],
                               ),
@@ -831,7 +831,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

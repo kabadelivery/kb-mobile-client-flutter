@@ -711,7 +711,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                         ),
                                         Column(
                                           children: <Widget>[
-                                            Text("BON PLANS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: Colors.black)),
+                                            Text("BON PLANS", style: TextStyle(fontWeight: FontWeight.bold, fontSize:16, color: KColors.new_black)),
                                             Container(
                                               padding: EdgeInsets.all(5),
                                               height:90, width: 120,
@@ -1108,7 +1108,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:
@@ -1309,7 +1309,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   ),
                   SizedBox(height: 10),
                   Text("$message", textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13)),
+                      style: TextStyle(color: KColors.new_black, fontSize: 13)),
                   SizedBox(height:5),
                   Row(mainAxisAlignment: MainAxisAlignment.center,children:[
                     OutlinedButton(
@@ -1343,7 +1343,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                         child: Icon(Icons.settings, size: 80, color: KColors.primaryColor)),
                     SizedBox(height: 10),
                     Text("$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ", textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black, fontSize: 13))
+                        style: TextStyle(color: KColors.new_black, fontSize: 13))
                   ]
               ),
               actions:

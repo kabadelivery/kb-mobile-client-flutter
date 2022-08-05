@@ -159,9 +159,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: RichText(
                     text: new TextSpan(
                       text: '${AppLocalizations.of(context).translate('latest_update')}: ',
-                      style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                      style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black),
                       children: <TextSpan>[
-                        TextSpan(text: " ${_orderLastUpdate(widget.command)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black.withAlpha(200))),
+                        TextSpan(text: " ${_orderLastUpdate(widget.command)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: KColors.new_black.withAlpha(200))),
                       ],
                     ),
                   ),
@@ -198,8 +198,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("${AppLocalizations.of(context).translate('your_contact')}:", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${widget.command?.shipping_address?.phone_number}", style: TextStyle(color: Colors.black, fontSize: 14))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('your_contact')}:", style: TextStyle(color: KColors.new_black, fontSize: 16))),
+                  Flexible (child: Text("${widget.command?.shipping_address?.phone_number}", style: TextStyle(color: KColors.new_black, fontSize: 14))),
                 ]),
               ),
               SizedBox(height: 10),
@@ -208,8 +208,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("${AppLocalizations.of(context).translate('command_key')}", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('command_key')}", style: TextStyle(color: KColors.new_black, fontSize: 16))),
+                  Flexible (child: Text("${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED  ?  widget.command?.passphrase?.toUpperCase() : "---"}", style: TextStyle(color: KColors.new_black, fontSize: 20, fontWeight: FontWeight.bold))),
                 ]),
               ),
             ]..addAll(widget?.command?.state > COMMAND_STATE.COOKING && widget?.command?.state < COMMAND_STATE.REJECTED ?
@@ -220,8 +220,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_name')}", style: TextStyle(color: Colors.black, fontSize: 16))),
-                  Flexible (child: Text("${widget?.command?.livreur?.name}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_name')}", style: TextStyle(color: KColors.new_black, fontSize: 16))),
+                  Flexible (child: Text("${widget?.command?.livreur?.name}", style: TextStyle(color: KColors.new_black, fontSize: 16, fontWeight: FontWeight.normal))),
                 ]),
               ),
               SizedBox(height: 10),
@@ -230,7 +230,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                 color: Colors.white,
                 padding: EdgeInsets.only(top:20, bottom:20, right:10, left: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
-                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_phone')}", style: TextStyle(color: Colors.black, fontSize: 16))),
+                  Flexible (child: Text("${AppLocalizations.of(context).translate('kaba_man_phone')}", style: TextStyle(color: KColors.new_black, fontSize: 16))),
                   MaterialButton(padding: EdgeInsets.only(top:10,bottom:10, right:10,left:10),color: KColors.primaryColor, splashColor: Colors.white, child: Row(
                     children: <Widget>[
                       Icon(Icons.phone, color: Colors.white),
@@ -254,9 +254,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('not_far_from')}", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700)),
+                        Text("${AppLocalizations.of(context).translate('not_far_from')}", style: TextStyle(color: KColors.new_black, fontSize: 16, fontWeight: FontWeight.w700)),
                         SizedBox(height: 10),
-                        Text("${widget.command?.shipping_address?.near}", style: TextStyle(color: Colors.black, fontSize: 14)),
+                        Text("${widget.command?.shipping_address?.near}", style: TextStyle(color: KColors.new_black, fontSize: 14)),
                       ]),
                 ),
               ),
@@ -270,9 +270,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('description')}", style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black, fontSize: 16)),
+                        Text("${AppLocalizations.of(context).translate('description')}", style: TextStyle(fontWeight: FontWeight.w700,color: KColors.new_black, fontSize: 16)),
                         SizedBox(height: 10),
-                        Text("${widget.command?.shipping_address?.description}", style: TextStyle(color: Colors.black, fontSize: 14)),
+                        Text("${widget.command?.shipping_address?.description}", style: TextStyle(color: KColors.new_black, fontSize: 14)),
                       ]),
                 ),
               ),
@@ -597,7 +597,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> implements OrderDet
             ]) : Container(),
 
             SizedBox(height: 10),
-            Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: Colors.black, height:1)),
+            Center(child: Container(width: MediaQuery.of(context).size.width - 10, color: KColors.new_black, height:1)),
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: <Widget>[
               Text("${AppLocalizations.of(context).translate('net_price')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),

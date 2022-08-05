@@ -120,7 +120,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                                   ],
                                   activeTextColorList: [Colors.white],
                                   inactiveTextColorList: [
-                                    Colors.black.withOpacity(0.7)
+                                    KColors.new_black.withOpacity(0.7)
                                   ],
                                   listOfChipIndicesCurrentlySeclected: [
                                     _menuChipCurrentIndex
@@ -256,7 +256,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

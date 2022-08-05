@@ -411,9 +411,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
       child: Center(
         child: Container(
-          padding: EdgeInsets.only(top: 20, right: 15, left: 15),
+          padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 20),
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
                     width: 55.0,
@@ -439,7 +439,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: KColors.new_black,
                             fontWeight: FontWeight.w500,
                             fontSize: 12),
                         textAlign: TextAlign.center)),
@@ -645,7 +645,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     ),
             )),
             /* all the restaurants button*/
-            SizedBox(height: 10),
+            SizedBox(height: 30),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -654,7 +654,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 Text(
                   "${AppLocalizations.of(context).translate('best_seller')}"
                       .toUpperCase(),
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
                 ),
                 SizedBox(width: 5),
                 SizedBox(
@@ -666,7 +666,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             SizedBox(height: 10),
             Container(
                 child: widget.bestSellerMini,
-                height: 140,
+                height: 110,
                 color: KColors.new_gray,
                 width: MediaQuery.of(context).size.width),
 
@@ -675,7 +675,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       Container(
                         padding: EdgeInsets.only(right: 10),
                         child: Row(
@@ -690,7 +690,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   "${AppLocalizations.of(context).translate('new')}"
                                       .toUpperCase(),
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
+                                      color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
                                 ),
                                 SizedBox(width: 5),
                                 SizedBox(
@@ -704,20 +704,19 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                               onTap: () {
                                 _switchAllRestaurant();
                               },
-                              child: Container(
+                              child: Container(margin: EdgeInsets.only(right: 10),
                                   child: Text(
                                 Utils.capitalize(
                                     "${AppLocalizations.of(context).translate('see_all')} >"),
                                 style: TextStyle(
                                     color: KColors.primaryColor,
                                     fontSize: 12,
-                                    fontWeight: FontWeight.normal),
+                                      fontWeight: FontWeight.w500),
                               )),
                             )
                           ],
                         ),
                       ),
-                      SizedBox(height: 10),
                       Container(
                         color: Colors.white,
                         height: 150,
@@ -735,7 +734,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     ],
                   )
                 : Container(),
-            SizedBox(height: 20),
+            // SizedBox(height: 20),
             /* meilleures ventes, cinema, evenemnts, etc... */
             /* groups ads */
             Row(
@@ -746,7 +745,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 Text(
                   "${AppLocalizations.of(context).translate('events')}"
                       .toUpperCase(),
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
                 ),
                 SizedBox(width: 5),
                 SizedBox(
@@ -755,9 +754,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     child: Lottie.asset(LottieAssets.fire, animate: true))
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+
             Column(
                 children: <Widget>[]..addAll(
                       List<Widget>.generate(data.groupad.length, (int index) {
@@ -1167,7 +1164,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[
@@ -1376,7 +1373,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               SizedBox(height: 10),
               Text("$message",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13)),
+                  style: TextStyle(color: KColors.new_black, fontSize: 13)),
               SizedBox(height: 5),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 OutlinedButton(
@@ -1416,7 +1413,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 Text(
                     "$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ",
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 13))
+                    style: TextStyle(color: KColors.new_black, fontSize: 13))
               ]),
               actions: force == 1
                   ? <Widget>[

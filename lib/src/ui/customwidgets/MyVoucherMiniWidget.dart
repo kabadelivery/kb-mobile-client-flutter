@@ -60,8 +60,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       case 1: // restaurant (yellow background)
         restaurantNameColor = textColorWhite;
         priceColor = textColorRed;
-        priceDetailsColor = Colors.black;
-        priceBarColor = Colors.black;
+        priceDetailsColor = KColors.new_black;
+        priceBarColor = KColors.new_black;
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
@@ -80,8 +80,8 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
       case 3: // both (white bg)
         restaurantNameColor = textColorBlack;
         priceColor = textColorYellow;
-        priceDetailsColor = Colors.black;
-        priceBarColor = Colors.black;
+        priceDetailsColor = KColors.new_black;
+        priceBarColor = KColors.new_black;
         voucherCodeColor = textColorRed;
         expiresDateColor = textColorBlack;
         typeIconColor = textColorBlack;
@@ -165,7 +165,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                           color: widget.voucher.type == 1 ? restaurantVoucherBg[0] : (widget.voucher.type == 2 ? deliveryVoucherBg[0] : bothVoucherBg[0]), //.withAlpha(100),
                           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                             Text("${AppLocalizations.of(context).translate('disponible')} (${widget.voucher.use_count-widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: voucherCodeColor)),
-                            Text("${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                            Text("${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black)),
                           ]),
                         )
                       ],
@@ -240,7 +240,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                         color: widget.voucher.type == 1 ? restaurantVoucherBg[0] : (widget.voucher.type == 2 ? deliveryVoucherBg[0] : bothVoucherBg[0]), //.withAlpha(100),
                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                           Text("${AppLocalizations.of(context).translate('disponible')} (${widget.voucher.use_count-widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: voucherCodeColor)),
-                          Text("${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                          Text("${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})", style: TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black)),
                         ]),
                       )
                     ],

@@ -71,7 +71,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
         title: Text("${AppLocalizations.of(context).translate('my_vouchers')}", style:TextStyle(color:KColors.primaryColor)),
         leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
         actions: <Widget>[
-          // IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: Colors.black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
+          // IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: KColors.new_black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
           IconButton(icon: Icon(Icons.add_box, color: KColors.primaryColor),onPressed: ()=>_jumpToAddNewVoucher_Code())
         ],
       ),
@@ -289,7 +289,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

@@ -63,7 +63,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
   Color filter_unactive_button_color = Color(0xFFF7F7F7),
       filter_active_button_color = KColors.primaryColor,
-      filter_unactive_text_color = Colors.black,
+      filter_unactive_text_color = KColors.new_black,
       filter_active_text_color = Colors.white;
 
   var _searchChoices = null;
@@ -428,7 +428,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                     "${widget?.fees}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
+                                        fontSize: 14, color: KColors.new_black),
                                   ),
                                   SizedBox(
                                     width: 10,
@@ -673,7 +673,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

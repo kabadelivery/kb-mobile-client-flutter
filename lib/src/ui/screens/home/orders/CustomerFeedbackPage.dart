@@ -162,7 +162,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                     SizedBox(height:20),
                     // text field
                     Container (margin: EdgeInsets.only(left:20, right:20, top:20),decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200), padding: EdgeInsets.all(10),
-                      child: TextField(controller: _feedbackTextController, style: TextStyle(color: Colors.black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
+                      child: TextField(controller: _feedbackTextController, style: TextStyle(color: KColors.new_black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
                         decoration: InputDecoration.collapsed(hintText: "Please give us a review..."),
                       ),
                     ),
@@ -270,7 +270,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
                       child: icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[

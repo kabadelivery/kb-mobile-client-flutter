@@ -247,7 +247,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                              color: KColors.new_black,
                               fontSize: 16))),
                   SizedBox(height: 5),
                   Container(
@@ -347,7 +347,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context).translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 14)),
                       ],
                     )
@@ -356,7 +356,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               Center(
                   child: Container(
                       width: MediaQuery.of(context).size.width - 10,
-                      color: Colors.black,
+                      color: KColors.new_black,
                       height: 1)),
               SizedBox(height: 10),
               Row(
@@ -511,7 +511,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               Center(
                   child: Container(
                       width: MediaQuery.of(context).size.width - 10,
-                      color: Colors.black,
+                      color: KColors.new_black,
                       height: 1)),
               SizedBox(height: 10),
               Row(
@@ -669,7 +669,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           controller: _addInfoController,
                           textAlign: TextAlign.start,
                           maxLines: 3,
-                          style: TextStyle(color: Colors.black, fontSize: 14),
+                          style: TextStyle(color: KColors.new_black, fontSize: 14),
                           decoration: InputDecoration(
                             labelText:
                                 "${AppLocalizations.of(context).translate('additional_info')}",
@@ -1319,7 +1319,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[
@@ -1467,7 +1467,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   /* void _showOrderFailureDialog() {
     _showDialog(
-      icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black),
+      icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black),
       message: "Sorry, there is a problem with your order. Please try again.",
       isYesOrNo: false,
     );
@@ -1562,7 +1562,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   style: TextStyle(
                                       color: widget.orderOrPreorderChoice == 1
                                           ? KColors.primaryColor
-                                          : Colors.black,
+                                          : KColors.new_black,
                                       fontSize:
                                           widget.orderOrPreorderChoice == 1
                                               ? 16
@@ -1595,7 +1595,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           "${AppLocalizations.of(context).translate('confirm_preorder')}",
                           style: TextStyle(
                               fontSize: 18,
-                              color: Colors.black,
+                              color: KColors.new_black,
                               fontWeight: FontWeight.bold)),
                     ],
                   ),
@@ -1827,7 +1827,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         maxLines: 3,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: KColors.new_black,
                             fontSize: 14,
                             fontWeight: FontWeight.w500)),
                     SizedBox(height: 5),
@@ -1850,7 +1850,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     decoration: food.promotion != 0
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal)),
                             SizedBox(width: 5),
@@ -1871,7 +1871,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: KColors.new_black,
                                     fontSize: 10,
                                     fontWeight: FontWeight.normal)),
                           ]),
@@ -1881,7 +1881,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         ),
                         Text(" X ${quantity}",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold))
                       ],
@@ -2078,7 +2078,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: <Widget>[
               OutlinedButton(
@@ -2353,7 +2353,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   "${AppLocalizations.of(context).translate('discount_point_available')}",
                                   style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.black,
+                                      color: KColors.new_black,
                                       fontWeight: FontWeight.bold)),
                             ],
                           ),
@@ -2414,7 +2414,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                         text:
                                             "${AppLocalizations.of(context).translate('use_delivery_point')}",
                                         style: TextStyle(
-                                            color: Colors.black,
+                                            color: KColors.new_black,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(

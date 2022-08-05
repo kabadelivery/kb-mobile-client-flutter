@@ -109,11 +109,11 @@ class _MyVoucherMaxiWidgetState extends State<MyVoucherMaxiWidget> {
               /* middle level*/
               Row(mainAxisAlignment:MainAxisAlignment.spaceBetween, children: <Widget>[
                 Text("PAQUES2019", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("-55%",style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.black.withAlpha(150))),
+                Text("-55%",style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: KColors.new_black.withAlpha(150))),
               ]),
               /* bottom level */
               Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,  children: <Widget>[
-              Row(children: <Widget>[/* icon */IconButton(icon: Icon(Icons.watch_later, color: Colors.black), onPressed: () {},), /*text */Text("2019/04/05")]),
+              Row(children: <Widget>[/* icon */IconButton(icon: Icon(Icons.watch_later, color: KColors.new_black), onPressed: () {},), /*text */Text("2019/04/05")]),
                 IconButton(icon: Icon(Icons.share, color: Colors.white), onPressed: () {},)
               ]),
             ]

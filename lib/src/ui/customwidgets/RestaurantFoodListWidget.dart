@@ -107,7 +107,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+                        Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)),
                         SizedBox(height: 5),
                         Row(
                           children: <Widget>[

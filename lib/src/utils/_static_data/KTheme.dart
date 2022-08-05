@@ -17,6 +17,8 @@ class KColors {
   static final Color  buy_category_button_bg = hexToColor("#f7f7f7");
 
   static final Color  new_gray = hexToColor("#f7f7f7");
+  static final Color  new_black = hexToColor("#1e1e1e");
+
 
 //  00695c
   static final Color primaryColorTransparentADDTOBASKETBUTTON = hexToColor("#FFF7F9");

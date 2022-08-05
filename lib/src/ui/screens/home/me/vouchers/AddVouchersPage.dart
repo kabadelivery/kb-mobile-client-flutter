@@ -68,7 +68,7 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
         child: Column(
             children: <Widget>[
               SizedBox(height: 20),
-              Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('insert_voucher_hint')}", style: TextStyle(fontSize: 14, color: Colors.black.withAlpha(150)), textAlign: TextAlign.center)),
+              Container(padding: EdgeInsets.all(10), child: Text("${AppLocalizations.of(context).translate('insert_voucher_hint')}", style: TextStyle(fontSize: 14, color: KColors.new_black.withAlpha(150)), textAlign: TextAlign.center)),
               /* input text */
               SizedBox(height:20),
               Container(
@@ -222,7 +222,7 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

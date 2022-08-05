@@ -125,7 +125,7 @@ class FlowerWidgetItem extends StatelessWidget {
                                 decoration: food.promotion != 0
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700)),
                         (food.promotion != 0
@@ -146,7 +146,7 @@ class FlowerWidgetItem extends StatelessWidget {
                             maxLines: 2,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: Colors.black,
+                                color: KColors.new_black,
                                 fontSize: 10,
                                 fontWeight: FontWeight.normal)),
                       ]),

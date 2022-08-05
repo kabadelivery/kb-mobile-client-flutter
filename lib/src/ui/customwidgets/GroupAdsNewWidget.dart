@@ -42,7 +42,8 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                   textAlign: TextAlign.end,
                 ),
               ],
-            ), SizedBox(height: 5),
+            ),
+            SizedBox(height: 5),
             Container(
                 child: Column(children: <Widget>[
                   GestureDetector(
@@ -68,8 +69,8 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
               child: Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.max,
             children: [
               Container(
-                  height: 40,
-                  width: 40,
+                  height: 50,
+                  width: 50,
                   decoration: BoxDecoration(
                       border: new Border.all(
                           color: KColors.primaryYellowColor, width: 2),
@@ -81,8 +82,8 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
               SizedBox(width: 10,),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text("${widget.groupAd?.big_pub?.name}", style: TextStyle(color: Colors.black, fontSize: 14)),
-                  SizedBox(height: 10,),
+                  Text("${widget.groupAd?.big_pub?.name}", style: TextStyle(color: KColors.new_black, fontSize: 14)),
+                  SizedBox(height: 5),
                   Text("${widget.groupAd?.big_pub?.description}", style: TextStyle(color: Colors.grey, fontSize: 12)),
                 ]),
               )

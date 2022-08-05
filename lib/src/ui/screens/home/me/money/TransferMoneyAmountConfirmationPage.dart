@@ -107,7 +107,7 @@ class _TransferMoneyAmountConfirmationPageState
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 17,
-                    color: Colors.black,
+                    color: KColors.new_black,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
@@ -255,7 +255,7 @@ class _TransferMoneyAmountConfirmationPageState
           message:
               "${AppLocalizations.of(context).translate('amount_greater_than_0')}",
           icon:
-              Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black));
+              Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
       return;
     }
 
@@ -295,14 +295,14 @@ class _TransferMoneyAmountConfirmationPageState
     _showDialog(
         message:
             "${AppLocalizations.of(context).translate('balance_not_sufficient')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black));
+        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
   @override
   void passwordWrong() {
     _showDialog(
         message: "${AppLocalizations.of(context).translate('password_wrong_')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black));
+        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
   @override
@@ -310,7 +310,7 @@ class _TransferMoneyAmountConfirmationPageState
     _showDialog(
         message:
             "${AppLocalizations.of(context).translate('transaction_error')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.black));
+        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
   @override
@@ -361,7 +361,7 @@ class _TransferMoneyAmountConfirmationPageState
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: <Widget>[
               //

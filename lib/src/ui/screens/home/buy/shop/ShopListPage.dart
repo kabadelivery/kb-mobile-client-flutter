@@ -278,7 +278,7 @@ class _ShopListPageState extends State<ShopListPage>
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.only(right: 20, top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -291,7 +291,7 @@ class _ShopListPageState extends State<ShopListPage>
 //            border: new Border.all(color: Colors.white),
                             color: KColors.primaryColor.withAlpha(30)),
                         padding: EdgeInsets.only(left: 8, right: 8),
-                        margin: EdgeInsets.only(top: 10, bottom: 8, left: 20),
+                        margin: EdgeInsets.only( left: 20),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
@@ -328,15 +328,15 @@ class _ShopListPageState extends State<ShopListPage>
                                       }
                                     },
                                     style: TextStyle(
-                                        color: Colors.black, fontSize: 13),
+                                        color: KColors.new_black, fontSize: 14),
                                     textInputAction: TextInputAction.search,
                                     decoration: InputDecoration.collapsed(
                                         hintText:
                                             "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
                                         hintStyle: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 14,
                                             color:
-                                                Colors.black.withAlpha(150))),
+                                                KColors.new_black.withAlpha(150))),
                                     enabled: true),
                               ),
                             ),
@@ -387,7 +387,7 @@ class _ShopListPageState extends State<ShopListPage>
               ),
               SizedBox(height: 10),
               SearchSwitchWidget(searchTypePosition, _choice, _filterFunction, widget?.type),
-              SizedBox(height: 15),
+              SizedBox(height: 10),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -494,7 +494,7 @@ class _ShopListPageState extends State<ShopListPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

@@ -151,7 +151,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                           children: <Widget>[
 
                                             widget.food.promotion==0 ?
-                                            Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: Colors.black, decoration:  TextDecoration.lineThrough, fontSize: 30, fontWeight: FontWeight.bold)),
+                                            Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: KColors.new_black, decoration:  TextDecoration.lineThrough, fontSize: 30, fontWeight: FontWeight.bold)),
 
                                             widget.food.promotion!=0 ? Row(children: <Widget>[
                                               SizedBox(width: 10),
@@ -163,7 +163,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
                                           ]),
                                       SizedBox(height: 10),
-                                      Text("${widget.food?.description}", textAlign: TextAlign.center, style: TextStyle(color: Colors.black.withAlpha(150), fontSize: 14)),
+                                      Text("${widget.food?.description}", textAlign: TextAlign.center, style: TextStyle(color: KColors.new_black.withAlpha(150), fontSize: 14)),
                                       SizedBox(height: 20)
                                     ]
                                 )),
@@ -245,11 +245,11 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                   Container(width: 10),
                   Container(child: Row(
                       children: <Widget>[
-                        IconButton(icon: Icon(Icons.remove_circle, color: Colors.black), onPressed: () => _decreaseQuantity()),
+                        IconButton(icon: Icon(Icons.remove_circle, color: KColors.new_black), onPressed: () => _decreaseQuantity()),
                         SizedBox(width: 10),
-                        Text("${quantity}", style: TextStyle(color: Colors.black, fontSize: 18)),
+                        Text("${quantity}", style: TextStyle(color: KColors.new_black, fontSize: 18)),
                         SizedBox(width: 10),
-                        IconButton(icon: Icon(Icons.add_circle, color: Colors.black), onPressed: () => _increaseQuantity())
+                        IconButton(icon: Icon(Icons.add_circle, color: KColors.new_black), onPressed: () => _increaseQuantity())
                       ]
                   )),
                   RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
