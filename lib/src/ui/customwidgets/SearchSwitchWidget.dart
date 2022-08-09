@@ -67,11 +67,11 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
           AppLocalizations.of(context).translate('service_flower_type_product')
         ];
         break;
-      case "supermarket": // flowers
+   /*   case "supermarket": // flowers
         tmp = [
           AppLocalizations.of(context).translate('service_flower_type_name'),
           AppLocalizations.of(context).translate('service_flower_type_product')
-        ];
+        ];*/
         break;
       //   case 1005: // movies
       //     category_name_code = "service_category_movies";
@@ -85,9 +85,18 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
           AppLocalizations.of(context).translate('service_shop_type_product')
         ];
         break;
-      //  case 1008: // ticket
-      //    category_name_code = "service_category_ticket";
-      // break;
+       case "ticket": // ticket
+         tmp = [
+           AppLocalizations.of(context).translate('service_ticket_type_name'),
+           AppLocalizations.of(context).translate('service_ticket_product_name')
+         ];
+         break;
+      case "grocery": // ticket
+        tmp = [
+          AppLocalizations.of(context).translate('service_grocery_type_name'),
+          AppLocalizations.of(context).translate('service_grocery_product_name')
+        ];
+      break;
     }
     return tmp;
   }
@@ -175,7 +184,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
               Container(
                 // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
                 decoration: BoxDecoration(
-                    color: KColors.primaryColor.withAlpha(60),
+
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Center(
                   child: DropdownButton<String>(

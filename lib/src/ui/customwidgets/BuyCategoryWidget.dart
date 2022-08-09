@@ -116,15 +116,15 @@ class BuyCategoryWidget extends StatelessWidget {
       case "food": // food
         category_name_code = "service_category_food";
         break;
-    //   case "drink": // drinks
-    //     category_name_code = "service_category_drinks";
-    //     break;
+      case "drink": // drinks
+        category_name_code = "service_category_drinks";
+        break;
     case "flower": // flowers
         category_name_code = "service_category_flower";
         break;
-    //   case 1004: // groceries
-    //     category_name_code = "service_category_groceries";
-    //     break;
+      case "grocery": // groceries
+        category_name_code = "service_category_groceries";
+        break;
     //   case 1005: // movies
     //     category_name_code = "service_category_movies";
     //     break;
@@ -134,9 +134,9 @@ class BuyCategoryWidget extends StatelessWidget {
       case "shop": // shopping
         category_name_code = "service_category_shopping";
         break;
-     //  case 1008: // ticket
-     //    category_name_code = "service_category_ticket";
-     // break;
+      case "ticket": // ticket
+        category_name_code = "service_category_ticket";
+     break;
     }
     // unknown
     if ("" == category_name_code) {
@@ -152,15 +152,15 @@ class BuyCategoryWidget extends StatelessWidget {
       case "food": // food
         category_icon = LottieAssets.food;
         break;
-      // case 1002: // drinks
-      //   category_icon = LottieAssets.drinks;
-      //   break;
+      case "drink": // drinks
+        category_icon = LottieAssets.drinks;
+        break;
       case "flower": // flowers
         category_icon = LottieAssets.flower;
         break;
-      // case 1004: // groceries
-      //   category_icon = LottieAssets.groceries;
-      //   break;
+      case "grocery": // groceries
+        category_icon = LottieAssets.groceries;
+        break;
       // case 1005: // movies
       //   category_icon = LottieAssets.movie;
       //   break;
@@ -170,9 +170,9 @@ class BuyCategoryWidget extends StatelessWidget {
       case "shop": // shopping
         category_icon = LottieAssets.shopping;
         break;
-      // case 1008: // ticket
-      //   category_icon = LottieAssets.ticket;
-      //   break;
+      case "ticket": // ticket
+        category_icon = LottieAssets.ticket;
+        break;
     }
     if ("" == category_icon) {
       return Icon(Icons.not_interested);

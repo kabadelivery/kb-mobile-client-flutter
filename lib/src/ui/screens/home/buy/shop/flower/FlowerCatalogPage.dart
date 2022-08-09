@@ -4,25 +4,21 @@ import 'dart:math';
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 
 class FlowerCatalogPage extends StatefulWidget {
@@ -198,7 +194,8 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                   ? _buildNetworkErrorPage()
                   : hasSystemError
                       ? _buildSysErrorPage()
-                      : Column(children: <Widget>[
+                      : Column(
+                          children: <Widget>[
                           SingleChildScrollView(
                             child: Column(
                               children: <Widget>[
@@ -208,11 +205,10 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('categories')}"
-                                            ?.toUpperCase(),
+                                        "${Utils.capitalize(AppLocalizations.of(context).translate('categories'))}",
                                         style: TextStyle(
                                             color: Colors.grey,
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w500)),
                                   ],
                                 ),
@@ -227,9 +223,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                     KColors.primaryColor.withOpacity(0.2)
                                   ],
                                   activeTextColorList: [Colors.white],
-                                  inactiveTextColorList: [
-                                    KColors.new_black.withOpacity(0.9)
-                                  ],
+                                  inactiveTextColorList: [KColors.primaryColor],
                                   listOfChipIndicesCurrentlySeclected: [
                                     _menuChipCurrentIndex
                                   ],
@@ -238,58 +232,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                     setState(() {});
                                   },
                                 ),
-                              ] /*..addAll(List.generate(data?.length, (index) {
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  this.currentIndex = index;
-                                                });
-                                              },
-                                              child: index == this.currentIndex
-                                                  ? Container(
-                                                      color: KColors
-                                                          .primaryColor,
-                                                      padding: EdgeInsets.only(
-                                                          top: 10,
-                                                          bottom: 10,
-                                                          left: 8,
-                                                          right: 8),
-                                                      child: Text(data[index]?.name?.toUpperCase(),
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .white),
-                                                          textAlign: TextAlign
-                                                              .center))
-                                                  : Container(
-                                                      color: data[index]?.promotion != 0
-                                                          ? KColors
-                                                              .primaryYellowColor
-                                                          : Colors
-                                                              .transparent,
-                                                      padding:
-                                                          EdgeInsets.only(
-                                                              top: 10,
-                                                              bottom: 10,
-                                                              left: 8,
-                                                              right: 8),
-                                                      child: Text(data[index]?.name?.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: data[index]?.promotion == 0 ? KColors.new_black : KColors.primaryColor), textAlign: TextAlign.center))),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }))*/
-                              ,
+                              ],
                             ),
                           ),
                           isLoading
@@ -333,7 +276,9 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                                       widget?.restaurant);
                                           })
                                       : _buildFlowerCatalog()),
-                        ]))),
+                        ]..add(SizedBox(
+                              height: 20,
+                            ))))),
     );
   }
 
@@ -357,8 +302,8 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
       _firstTime = false;
     }
     // SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
-          this?.data = data;
-        // }));
+    this?.data = data;
+    // }));
 
     /*return SingleChildScrollView(
       child: Column(
@@ -506,25 +451,26 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   }
 
   _showMenuBottomSheet(int type) async {
-     await Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+    await Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuDetails(
                 restaurant: widget.restaurant,
                 FOOD_MAX: FOOD_MAX,
                 type: type,
                 food_selected: food_selected,
                 adds_on_selected: adds_on_selected),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(0.0, 1.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
 
-  /* await Navigator.push(
+    /* await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuDetails(

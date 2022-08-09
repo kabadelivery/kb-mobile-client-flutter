@@ -60,9 +60,30 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white,
-      appBar: AppBar(brightness: Brightness.light,leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-          backgroundColor: Colors.white, title: Text("${AppLocalizations.of(context).translate('customer_care')}", style:TextStyle(color:KColors.primaryColor))),
-      body: Stack(
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        brightness: Brightness.light,
+        backgroundColor: KColors.primaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        actions: [Container(width: 40)],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('customer_care')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
+      ),
+        body: Stack(
         children: <Widget>[
           Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
               fit: BoxFit.cover,

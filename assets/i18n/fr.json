@@ -169,8 +169,8 @@
   "max_reached": "LIMITE MAXIMUM ATTEINTE",
   "menu": "MENU",
   "no_data": "Contenu Vide",
-  "add_to_chart": "Ajouter au Panier",
-  "add_to_basket": "Ajouter au Panier",
+  "add_to_chart": "Ajouter Panier",
+  "add_to_basket": "Ajouter Panier",
   "basket": "PANIER",
   "reviewing_success": "Nous vous remercions pour votre avis. Nous en tiendrons compte.",
   "send_review": "COMMENTER",
@@ -443,6 +443,7 @@
   "service_flower_type_product": "Fleur",
   "service_shop_type_product": "Article",
   "service_supermarket_type_product": "Article",
+
   "has_to_pay": "Total à Payer",
   "already_paid": "Total Prépayé",
   "call_me_shipper": "Contacter Livreur",
@@ -458,10 +459,14 @@
   "offline_alert_description": "Vous avez perdu la connexion internet. Veuillez vous connecter s'il vous plaît !",
   "mobile_money_top_up": "Mobile money",
   "bank_card_top_up": "Carte Bancaire",
-
   "choose_top_up_mode": "Mode de rechargement",
+  "choose_mobile_money_service": "Choisissez votre Mobile Money",
+  "service_ticket_type_name": "Evénement",
+  "service_ticket_product_name": "Ticket",
 
-  "choose_mobile_money_service": "Choisissez votre Mobile Money"
+  "service_grocery_type_name": "Épicerie",
+  "service_grocery_product_name": "Article",
 
+  "our_menu": "Notre menu"
 
 }

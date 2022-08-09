@@ -66,24 +66,30 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
-          backgroundColor: KColors.primaryColor,
-          actions: [],
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('orders')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        brightness: Brightness.light,
+        backgroundColor: KColors.primaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        actions: [Container(width: 40)],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('orders')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
         ),
+      ),
+
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Container(

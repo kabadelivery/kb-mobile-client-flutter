@@ -444,6 +444,24 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 ]))  : Container(),
         /* menu box */
 
+        InkWell(   onTap: () => _jumpToPage(
+            context,
+            CustomerCareChatPage(
+                presenter: CustomerCareChatPresenter())),
+          child: Container(width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.symmetric(vertical: 20),
+          padding: EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+          color: KColors.mBlue.withAlpha(15), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  Icon(FontAwesomeIcons.comments, color: KColors.mBlue, size: 20,), SizedBox(width: 20),
+                  Text("${AppLocalizations.of(context).translate('suggestions')}", style: TextStyle(color: KColors.mBlue, fontSize: 14, fontWeight: FontWeight.w500))
+                ]),
+                Icon(Icons.chevron_right, size: 30, color: KColors.mBlue)
+              ],
+            ),),
+        ),
+
         Container(
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(

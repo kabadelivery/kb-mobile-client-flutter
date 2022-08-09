@@ -460,7 +460,14 @@
 
   "choose_top_up_mode": "充值方式",
 
-  "choose_mobile_money_service": "请选择您的移动钱包"
+  "choose_mobile_money_service": "请选择您的移动钱包",
 
+  "service_ticket_type_name": "活动",
+  "service_ticket_product_name": "票",
+
+  "service_grocery_type_name": "超市",
+  "service_grocery_product_name": "产品",
+
+  "our_menu": "菜单"
 
 }
