@@ -467,6 +467,10 @@
   "service_grocery_type_name": "Épicerie",
   "service_grocery_product_name": "Article",
 
-  "our_menu": "Notre menu"
+  "our_menu": "Notre menu",
+
+  "please_select_main_location": "Choisir votre adresse actuelle",
+
+  "near_by": "À coté de "
 
 }

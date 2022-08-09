@@ -468,5 +468,9 @@
   "service_grocery_type_name": "Grocery Shop",
   "service_grocery_product_name": "Grocery",
 
-  "our_menu": "Our menu"
+  "our_menu": "Our menu",
+
+  "please_select_main_location": "Choose your current address",
+
+  "near_by": "Near by"
 }

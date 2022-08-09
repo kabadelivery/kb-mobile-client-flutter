@@ -1,14 +1,18 @@
 import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
+import 'package:KABA/src/ui/customwidgets/CurrentLocationTile.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -51,6 +55,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool hasNetworkError;
 
   bool hasSystemError;
+
+  DeliveryAddressModel _selectedAddress;
 
   @override
   void initState() {
@@ -140,57 +146,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              StateContainer?.of(context)?.location != null
-                  ? Center(
-                      child: InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(right: 10),
-                                decoration: BoxDecoration(
-                                    color: KColors.mBlue.withAlpha(30),
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(5),
-                                        topRight: Radius.circular(5),
-                                        topLeft: Radius.circular(20),
-                                        bottomLeft: Radius.circular(20))),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                        child: Icon(Icons.location_on,
-                                            color: Colors.white, size: 20),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: KColors.mBlue),
-                                        padding: EdgeInsets.all(9)),
-                                    SizedBox(width: 10),
-                                    Text(
-                                        "${_locationToPlusCode(StateContainer.of(context).location)}",
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14)),
-                                    SizedBox(width: 10),
-                                    Icon(
-                                      FontAwesome.copy,
-                                      size: 14,
-                                      color:
-                                          KColors.primaryColor.withAlpha(150),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              // Text("${StateContainer.of(context).location.latitude}:${StateContainer.of(context).location.longitude}")
-                            ],
-                          ),
-                        ),
-                        onTap: () => {_pickMyAddress()},
-                      ),
-                    )
-                  : Container(),
+          CurrentLocationTile(),
               InkWell(
                   child: SearchStatelessWidget(
                       title:
@@ -330,14 +286,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       });
   }
 
-  _locationToPlusCode(Position location) {
-    return encode(location.latitude, location.longitude);
-  }
-
-  _pickMyAddress() {
-    /* pick my location */
-    /* or just copy my location */
-  }
 
   void mDialog(String message) {
     _showDialog(

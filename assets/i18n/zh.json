@@ -468,6 +468,9 @@
   "service_grocery_type_name": "超市",
   "service_grocery_product_name": "产品",
 
-  "our_menu": "菜单"
+  "our_menu": "菜单",
+  "please_select_main_location": "请选择你现在的地址",
+
+  "near_by": "近于"
 
 }

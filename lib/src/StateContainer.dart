@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
@@ -54,6 +55,8 @@ class StateContainerState extends State<StateContainer> {
   // String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
+
+  DeliveryAddressModel selectedAddress;
 
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;

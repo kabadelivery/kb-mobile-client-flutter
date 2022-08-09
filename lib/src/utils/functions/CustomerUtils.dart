@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -68,6 +70,7 @@ class CustomerUtils {
     prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
     prefs.remove("_homepage"+signature);
     prefs.remove("is_push_token_uploaed");
+    prefs.remove("_selectedAddress"+signature);
 
 // prefs.clear();
     /*String jsonCustomer = prefs.getString("_loginResponse"+signature);
@@ -146,6 +149,18 @@ static saveCategoryConfiguration(String ct) async{
   }
 
 
+ static Future<void> saveAddressLocally(DeliveryAddressModel selectedAddress) async {
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   prefs.setString("_selectedAddress"+signature, selectedAddress?.toJson().toString());
+ }
+
+ static Future<DeliveryAddressModel> getSavedAddressLocally() async {
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+  String address = prefs.get("_selectedAddress"+signature);
+ return DeliveryAddressModel.fromJson(mJsonDecode(address));
+ }
+
+
   static Future<void> saveOtpToSharedPreference(String username, String otp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("${username}_last_otp"+signature, otp);
@@ -210,6 +225,10 @@ static saveCategoryConfiguration(String ct) async{
     }
     return false;
   }
+
+
+
+
 
 
 

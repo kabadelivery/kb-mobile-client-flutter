@@ -545,7 +545,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         ? CarouselSlider(
                             options: CarouselOptions(
                               onPageChanged: _carousselPageChanged,
-                              viewportFraction: 1.0,
+                              viewportFraction: 1,
                               autoPlay: data.slider.length > 1 ? true : false,
                               reverse: data.slider.length > 1 ? true : false,
                               enableInfiniteScroll:
@@ -590,28 +590,31 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                     fit: BoxFit.cover)),
                           )),
                 Positioned(
-                    bottom: 10,
-                    right: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 9.0),
-                      child: Row(
-                        children: <Widget>[]..addAll(List<Widget>.generate(
-                                  data.slider.length, (int index) {
-                            return Container(
-                                margin: EdgeInsets.only(right: 2.5, top: 2.5),
-                                height: 9,
-                                width: 9,
-                                decoration: new BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    border: new Border.all(color: Colors.white),
-                                    color: (index == _carousselPageIndex ||
-                                            index == data.slider.length)
-                                        ? Colors.white
-                                        : Colors.transparent));
-                          })
-                              /* add a list of rounded views */
-                              ),
+                    bottom: 0,
+                    child: Container(width: MediaQuery.of(context).size.width,
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Row(
+                            children: <Widget>[]..addAll(List<Widget>.generate(
+                                      data.slider.length, (int index) {
+                                return Container(
+                                    margin: EdgeInsets.only(right: 2.5, top: 2.5),
+                                    height: 7,
+                                    width: index == _carousselPageIndex ||
+                                        index == data.slider.length ? 18 : 7,
+                                    decoration: new BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(10)),
+                                        border: new Border.all(color: KColors.primaryColor),
+                                        color: (index == _carousselPageIndex ||
+                                                index == data.slider.length)
+                                            ? KColors.primaryColor
+                                            : Colors.transparent));
+                              })
+                                  /* add a list of rounded views */
+                                  ),
+                          ),
+                        ],
                       ),
                     )),
               ],

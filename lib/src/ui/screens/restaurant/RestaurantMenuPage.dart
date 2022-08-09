@@ -214,13 +214,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                  "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
-                      ?.toUpperCase(),
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500)),
+              Container(margin: EdgeInsets.only(top:10, right: 10, left: 10, bottom: 5),
+                child: Text(
+                    "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
+                        ?.toUpperCase(),
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500)),
+              ),
             ],
           ),
           SizedBox(height: 5,),
