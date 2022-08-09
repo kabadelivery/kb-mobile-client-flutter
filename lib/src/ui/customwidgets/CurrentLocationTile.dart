@@ -4,6 +4,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -11,6 +12,7 @@ import 'package:KABA/src/utils/plus_code/open_location_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentLocationTile extends StatefulWidget {
   CustomerModel customer;
@@ -34,6 +36,17 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
         CustomerUtils.getSavedAddressLocally().then((value) {
           setState(() {
             StateContainer.of(context).selectedAddress = value;
+            String latitude = StateContainer.of(context)
+                .selectedAddress
+                .location
+                .split(":")[0];
+            String longitude = StateContainer.of(context)
+                .selectedAddress
+                .location
+                .split(":")[1];
+            StateContainer.of(context).location = Position(
+                latitude: double.parse(latitude),
+                longitude: double.parse(longitude));
           });
         });
       }
@@ -186,6 +199,10 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
   }
 
   _pickMyAddress() async {
+    /* confirm that customer has authorized location permission before moving forward */
+
+    _confirmHasAddress(() async {
+
     /* jump and get it */
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -217,6 +234,251 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
       });
       CustomerUtils.saveAddressLocally(
           StateContainer.of(context).selectedAddress);
+    }
+    });
+  }
+
+  Future<void> _confirmHasAddress(Function continuePickingAddress) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+    /* no need to commit */
+    /* expiration date in 3months */
+
+    if (_has_accepted_gps != "ok") {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+                "${AppLocalizations.of(context).translate('request')}"
+                    .toUpperCase(),
+                style: TextStyle(color: KColors.primaryColor)),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  /* add an image*/
+                  // location_permission
+                  Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(ImageAssets.address),
+                          ))),
+                  SizedBox(height: 10),
+                  Text(
+                      "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                      textAlign: TextAlign.center)
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child:
+                    Text("${AppLocalizations.of(context).translate('refuse')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child:
+                    Text("${AppLocalizations.of(context).translate('accept')}"),
+                onPressed: () {
+                  /* */
+                  // SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setString("_has_accepted_gps", "ok");
+                  // call get location again...
+                  // _getLastKnowLocation();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      // permission has been accepted
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        /*  ---- */
+        // await Geolocator.openAppSettings();
+        /* ---- */
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context).translate('permission_')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('request_location_permission')}",
+                        textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () async {
+                    /* */
+                    await Geolocator.openAppSettings();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+        /* ---- */
+      } else if (permission == LocationPermission.denied) {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context).translate('permission_')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('request_location_permission')}",
+                        textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () async {
+                    /* */
+                    Geolocator.requestPermission();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+        /* ---- */
+      } else {
+        // location is enabled
+        bool isLocationServiceEnabled =
+            await Geolocator.isLocationServiceEnabled();
+        if (!isLocationServiceEnabled) {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context).translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(
+                                    ImageAssets.location_permission),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                          textAlign: TextAlign.center)
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.openLocationSettings();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else {
+        //  authorize
+          continuePickingAddress();
+        }
+      }
     }
   }
 }

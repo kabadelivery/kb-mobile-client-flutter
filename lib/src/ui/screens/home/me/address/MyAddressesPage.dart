@@ -33,6 +33,8 @@ class MyAddressesPage extends StatefulWidget {
 
   String gps_location = "";
 
+  List<int> favoriteAddress = [];
+
   MyAddressesPage(
       {Key key,
       this.presenter,
@@ -83,7 +85,10 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               Navigator.pop(context);
             }),
         actions: [
-          IconButton(onPressed: ()=> _createAddress(), icon: Icon(Icons.add_location_sharp, size: 20, color: Colors.white))
+          IconButton(
+              onPressed: () => _createAddress(),
+              icon:
+                  Icon(Icons.add_location_sharp, size: 20, color: Colors.white))
         ],
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +96,10 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             Text(
                 Utils.capitalize(
                     "${AppLocalizations.of(context).translate('my_addresses')}"),
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
           ],
         ),
       ),
@@ -105,13 +113,14 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       : hasSystemError
                           ? _buildSysErrorPage()
                           : _buildDeliveryAddressesList())),
-        Positioned(
+          Positioned(
             bottom: 0,
             right: 0,
             left: 0,
             child: Container(
               // color: KColors.new_gray,
-              padding: EdgeInsets.only(top: 10, bottom: 30, left: 10, right: 10),
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 30, left: 10, right: 10),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -119,18 +128,22 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                   children: <Widget>[
                     GestureDetector(
                         child: Container(
-                          decoration: BoxDecoration(color: KColors.primaryColor, borderRadius: BorderRadius.circular(5)),
-
-                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: KColors.primaryColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
-                          /*    Icon(Icons.add, color: Colors.white),
+                              /*    Icon(Icons.add, color: Colors.white),
                               SizedBox(width: 10),*/
                               Text(
                                   "${AppLocalizations.of(context).translate('create_new_address')}",
-                                  style: TextStyle(color: Colors.white,fontSize: 14))
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14))
                             ],
                           ),
                         ),
@@ -139,7 +152,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                 ),
               ),
             ),
-          ) ,
+          ),
         ],
       ),
     );
@@ -170,10 +183,14 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             */
       ]..addAll(List<Widget>.generate(widget.data?.length + 1, (int index) {
               if (index < widget.data?.length)
-               return index == 0 ? Column(
-                  children: [SizedBox(height: 10), buildAddressListWidgetNew(address: widget.data[index])],
-                ) :
-                 buildAddressListWidgetNew(address: widget.data[index]);
+                return index == 0
+                    ? Column(
+                        children: [
+                          SizedBox(height: 10),
+                          buildAddressListWidgetNew(address: widget.data[index])
+                        ],
+                      )
+                    : buildAddressListWidgetNew(address: widget.data[index]);
               else
                 return Container(height: 100);
             }))),
@@ -209,8 +226,10 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                                     fontWeight: FontWeight.w500,
                                     color: KColors.new_black)),
                             SizedBox(height: 5),
-                            Container(width: MediaQuery.of(context).size.width*0.65,
-                              child: Text(Utils.capitalize(address?.description),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.65,
+                              child: Text(
+                                  Utils.capitalize(address?.description),
                                   maxLines: 3,
                                   style: TextStyle(
                                       fontSize: 13,
@@ -230,28 +249,33 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                               )
                             ])
                           ]),
-                      Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.white),
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.bookmark_border_outlined,
-                            color: KColors.primaryYellowColor, size: 18),
+                      GestureDetector(
+                        onTap: () => _addToFavorite(address),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.bookmark_border_outlined,
+                              color: KColors.primaryYellowColor, size: 18),
+                        ),
                       )
                     ],
                   )),
             ),
           ],
         ),
-        Positioned(top: 0, right: 10,
-            child: InkWell(onTap: ()=>_editAddress(address),
+        Positioned(
+            top: 0,
+            right: 10,
+            child: InkWell(
+              onTap: () => _editAddress(address),
               child: Container(
-          decoration:
-                BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-          padding: EdgeInsets.all(10),
-          child:
-                Icon(Icons.edit, color: KColors.mBlue, size: 18),
-        ),
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.edit, color: KColors.mBlue, size: 18),
+              ),
             ))
       ],
     );
@@ -575,7 +599,19 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   }
 
   void _reorderWithFavorite(List<DeliveryAddressModel> deliveryAddresses) {
-
+    
     widget.data = deliveryAddresses;
+
+  }
+
+  _addToFavorite(DeliveryAddressModel address) async {
+    /* add to favorite */
+    /* save the id and locally in an array of favorite */
+    /* each time we load from server we order and then put the favorite on top of the world */
+    widget.favoriteAddress = await CustomerUtils.getFavoriteAddress();
+    CustomerUtils.saveFavoriteAddress(widget.favoriteAddress..add(address.id));
+    setState(() async {
+      widget.favoriteAddress = await CustomerUtils.getFavoriteAddress();
+    });
   }
 }

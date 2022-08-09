@@ -11,27 +11,25 @@ import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class CustomerUtils {
-
- static String signature = XRINT_DEBUG_VALUE ? "debug": "prod";
+  static String signature = XRINT_DEBUG_VALUE ? "debug" : "prod";
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("_loginResponse"+signature, loginResponse);
+    prefs.setString("_loginResponse" + signature, loginResponse);
     /* no need to commit */
     /* expiration date in 3months */
-    String expDate = "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
+    String expDate =
+        "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
     prefs.setString("${ServerConfig.LOGIN_EXPIRATION}", expDate);
   }
 
-
-  static Future<CustomerModel> getCustomer () async {
+  static Future<CustomerModel> getCustomer() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CustomerModel customer;
     try {
-      String jsonCustomer = prefs.getString("_loginResponse"+signature);
+      String jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer);
       customer = CustomerModel.fromJson(obj["data"]["customer"]);
       String token = obj["data"]["payload"]["token"];
@@ -44,33 +42,32 @@ class CustomerUtils {
     return customer;
   }
 
-
-  static Future<CustomerModel> updateCustomerPersist (CustomerModel customer) async {
+  static Future<CustomerModel> updateCustomerPersist(
+      CustomerModel customer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String jsonCustomer = prefs.getString("_loginResponse"+signature);
+      String jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer);
       String token = obj["data"]["payload"]["token"];
 //      customer = CustomerModel.fromJson(obj["data"]["customer"]);
       customer.token = token;
       obj['data']['customer'] = customer.toJson();
       String _sd = json.encode(obj);
-      prefs.setString("_loginResponse"+signature, _sd);
+      prefs.setString("_loginResponse" + signature, _sd);
     } catch (_) {
-      xrint ("error updateCustomerPersist");
+      xrint("error updateCustomerPersist");
     }
     return customer;
   }
 
-
-  static Future<void> clearCustomerInformations () async {
+  static Future<void> clearCustomerInformations() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.remove("_loginResponse"+signature);
+    prefs.remove("_loginResponse" + signature);
     prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
-    prefs.remove("_homepage"+signature);
+    prefs.remove("_homepage" + signature);
     prefs.remove("is_push_token_uploaed");
-    prefs.remove("_selectedAddress"+signature);
+    prefs.remove("_selectedAddress" + signature);
 
 // prefs.clear();
     /*String jsonCustomer = prefs.getString("_loginResponse"+signature);
@@ -81,11 +78,11 @@ class CustomerUtils {
     return customer;*/
   }
 
-  static Future<UserTokenModel> getUserToken () async {
+  static Future<UserTokenModel> getUserToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonCustomer = prefs.getString("_loginResponse"+signature);
+    String jsonCustomer = prefs.getString("_loginResponse" + signature);
 
-    String tok="";
+    String tok = "";
 
     try {
       var obj = json.decode(jsonCustomer);
@@ -98,11 +95,11 @@ class CustomerUtils {
     return token;
   }
 
-  static Future<String> getLoginOtpCode () async {
+  static Future<String> getLoginOtpCode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String otp = ".";
     try {
-      String jsonCustomer = prefs.getString("_loginResponse"+signature);
+      String jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer);
       otp = obj["login_code"];
       xrint("getLoginOtpCode :: otp = ${otp}");
@@ -112,92 +109,108 @@ class CustomerUtils {
     return otp;
   }
 
-static saveCategoryConfiguration(String ct) async{
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString("_category"+signature, ct);
-}
+  static saveCategoryConfiguration(String ct) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_category" + signature, ct);
+  }
 
   static getOldCategoryConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String categoryConfig = prefs.getString("_category"+signature);
+    String categoryConfig = prefs.getString("_category" + signature);
     return categoryConfig;
   }
 
   static saveWelcomePage(String wp) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_homepage"+signature, wp);
+    prefs.setString("_homepage" + signature, wp);
   }
 
   static getOldWelcomePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_homepage"+signature);
+    String jsonContent = prefs.getString("_homepage" + signature);
     return jsonContent;
   }
 
-
   static saveBestSellerPage(String wp) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_b_seller"+signature, wp);
+    prefs.setString("_b_seller" + signature, wp);
   }
 
   static getOldBestSellerPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_b_seller"+signature);
+    String jsonContent = prefs.getString("_b_seller" + signature);
     return jsonContent;
   }
 
-
- static Future<void> saveAddressLocally(DeliveryAddressModel selectedAddress) async {
-   SharedPreferences prefs = await SharedPreferences.getInstance();
-   prefs.setString("_selectedAddress"+signature, selectedAddress?.toJson().toString());
- }
-
- static Future<DeliveryAddressModel> getSavedAddressLocally() async {
-   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String address = prefs.get("_selectedAddress"+signature);
- return DeliveryAddressModel.fromJson(mJsonDecode(address));
- }
-
-
-  static Future<void> saveOtpToSharedPreference(String username, String otp) async {
+  static Future<void> saveFavoriteAddress(List<int> favorites) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("${username}_last_otp"+signature, otp);
-    prefs.setString("${username}_otp_saved_time"+signature, "${DateTime.now().millisecondsSinceEpoch~/1000}");
+    prefs.setString("_favorite_list" + signature, json.encode(favorites));
   }
 
-  static Future<void> clearOtpLoginInfoFromSharedPreference(String username) async {
+  static Future<List<int>> getFavoriteAddress() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    try{
-      prefs.remove("${username}_otp_saved_time"+signature);
-      prefs.remove("${username}_last_otp"+signature);
-    } catch(_){
+    try {
+      String favorite_list = prefs.get("_favorite_list" + signature);
+      return json.decode(favorite_list);
+    } catch(e){
+      return [];
+    }
+  }
+
+  static Future<void> saveAddressLocally(
+      DeliveryAddressModel selectedAddress) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(
+        "_selectedAddress" + signature, json.encode(selectedAddress.toJson()));
+  }
+
+  static Future<DeliveryAddressModel> getSavedAddressLocally() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String address = prefs.get("_selectedAddress" + signature);
+    return DeliveryAddressModel.fromJson(json.decode(address));
+  }
+
+  static Future<void> saveOtpToSharedPreference(
+      String username, String otp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("${username}_last_otp" + signature, otp);
+    prefs.setString("${username}_otp_saved_time" + signature,
+        "${DateTime.now().millisecondsSinceEpoch ~/ 1000}");
+  }
+
+  static Future<void> clearOtpLoginInfoFromSharedPreference(
+      String username) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      prefs.remove("${username}_otp_saved_time" + signature);
+      prefs.remove("${username}_last_otp" + signature);
+    } catch (_) {
       xrint(_);
     }
   }
 
-
-  static Future<String> getLastValidOtp({String username, MIN_LAPSED_SECONDS = 60*5}) async {
+  static Future<String> getLastValidOtp(
+      {String username, MIN_LAPSED_SECONDS = 60 * 5}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String otp_saved_time = prefs.getString("${username}_otp_saved_time"+signature);
-      if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS > (DateTime
-          .now()
-          .millisecondsSinceEpoch / 1000)) {
-        return prefs.getString("${username}_last_otp"+signature);
+      String otp_saved_time =
+          prefs.getString("${username}_otp_saved_time" + signature);
+      if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS >
+          (DateTime.now().millisecondsSinceEpoch / 1000)) {
+        return prefs.getString("${username}_last_otp" + signature);
       } else {
         return "no";
       }
-    } catch(_) {
+    } catch (_) {
       return "no";
     }
   }
 
   static Future<String> getLastOtp(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("${username}_last_otp"+signature)) {
-      return prefs.getString("${username}_last_otp"+signature);
+    if (prefs.containsKey("${username}_last_otp" + signature)) {
+      return prefs.getString("${username}_last_otp" + signature);
     } else {
       return "no";
     }
@@ -219,17 +232,12 @@ static saveCategoryConfiguration(String ct) async{
     * we confirm it's a gps location */
     List<String> latlong = gps_latlong.split(",").toList();
     if (latlong.length == 2 &&
-        double.parse(latlong[0]).isFinite && double.parse(latlong[0]).abs() <= 90
-        && double.parse(latlong[1]).isFinite && double.parse(latlong[1]).abs() <= 180){
+        double.parse(latlong[0]).isFinite &&
+        double.parse(latlong[0]).abs() <= 90 &&
+        double.parse(latlong[1]).isFinite &&
+        double.parse(latlong[1]).abs() <= 180) {
       return true;
     }
     return false;
   }
-
-
-
-
-
-
-
 }

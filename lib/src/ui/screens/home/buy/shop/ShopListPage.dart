@@ -136,7 +136,7 @@ class _ShopListPageState extends State<ShopListPage>
       }
 
       if (mounted) {
-        _getLastKnowLocation();
+        // _getLastKnowLocation();
 
         if (widget.hasGps == false &&
             StateContainer?.of(context)?.location != null) {
