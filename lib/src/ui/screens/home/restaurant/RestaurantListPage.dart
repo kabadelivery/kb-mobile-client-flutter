@@ -278,7 +278,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                   null &&
                               _filterEditController.text?.trim()?.length >= 1)
                             widget.foodProposalPresenter
-                                .fetchRestaurantFoodProposalFromTag(
+                                .fetchRestaurantFoodProposalFromTag("food",
                                     _filterEditController.text);
                           else
                             mDialog(
@@ -313,7 +313,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                   _filterEditController.text?.trim()?.length >=
                                       3)
                                 widget.foodProposalPresenter
-                                    .fetchRestaurantFoodProposalFromTag(
+                                    .fetchRestaurantFoodProposalFromTag("food",
                                         _filterEditController.text);
                               else
                                 mDialog(
@@ -909,7 +909,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+              .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
         });
   }
 
@@ -919,7 +919,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+              .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
         });
   }
 

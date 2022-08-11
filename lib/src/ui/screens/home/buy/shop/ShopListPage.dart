@@ -44,8 +44,6 @@ class ShopListPage extends StatefulWidget {
 
   BuildContext context;
 
-  String category_type;
-
   CustomerModel customer;
 
   List<ShopModel> restaurantList = null;
@@ -146,8 +144,8 @@ class _ShopListPageState extends State<ShopListPage>
           //   widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
           // } else
           xrint("init -- 1");
-          widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter.fetchRestaurantList(widget.customer,
+              widget.type, StateContainer.of(context).location);
         } else {
           if (widget.hasGps &&
               (widget.restaurantList != null &&
@@ -164,7 +162,9 @@ class _ShopListPageState extends State<ShopListPage>
             } else {
               xrint("init -- 4");
               widget.restaurantListPresenter.fetchRestaurantList(
-                  widget.customer, widget.type, StateContainer?.of(context)?.location);
+                  widget.customer,
+                  widget.type,
+                  StateContainer?.of(context)?.location);
             }
           }
         }
@@ -288,10 +288,9 @@ class _ShopListPageState extends State<ShopListPage>
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(5),
                                 bottomLeft: Radius.circular(5)),
-//            border: new Border.all(color: Colors.white),
                             color: KColors.primaryColor.withAlpha(30)),
                         padding: EdgeInsets.only(left: 8, right: 8),
-                        margin: EdgeInsets.only( left: 20),
+                        margin: EdgeInsets.only(left: 20),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
@@ -303,7 +302,6 @@ class _ShopListPageState extends State<ShopListPage>
                                     _searchMode = true;
                                   } else {
                                     // out search mode
-//                    mToast("Out search mode");
                                     _searchMode = false;
                                   }
                                 },
@@ -320,7 +318,7 @@ class _ShopListPageState extends State<ShopListPage>
                                                     ?.length >=
                                                 1)
                                           widget.foodProposalPresenter
-                                              .fetchRestaurantFoodProposalFromTag(
+                                              .fetchRestaurantFoodProposalFromTag(widget.type,
                                                   _filterEditController.text);
                                         else
                                           mDialog(
@@ -335,8 +333,8 @@ class _ShopListPageState extends State<ShopListPage>
                                             "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
                                         hintStyle: TextStyle(
                                             fontSize: 14,
-                                            color:
-                                                KColors.new_black.withAlpha(150))),
+                                            color: KColors.new_black
+                                                .withAlpha(150))),
                                     enabled: true),
                               ),
                             ),
@@ -349,44 +347,48 @@ class _ShopListPageState extends State<ShopListPage>
                         ),
                       ),
                     ),
-                    searchTypePosition == 2
-                        ? InkWell(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(5),
-                                      bottomRight: Radius.circular(5)),
-                                  color: KColors.primaryColor),
-                              margin: EdgeInsets.only(top: 2),
-                              padding: EdgeInsets.only(
-                                  top: 9, bottom: 9, right: 10, left: 10),
-                              child: Icon(Icons.search,
-                                  color: Colors.white, size: 30),
-                            ),
-                            onTap: () {
-                              if (searchTypePosition == 2) {
-                                if (_filterEditController.text
-                                            ?.trim()
-                                            ?.length !=
-                                        null &&
-                                    _filterEditController.text
-                                            ?.trim()
-                                            ?.length >=
-                                        3)
-                                  widget.foodProposalPresenter
-                                      .fetchRestaurantFoodProposalFromTag(
-                                          _filterEditController.text);
-                                else
-                                  mDialog(
-                                      "${AppLocalizations.of(context).translate('search_too_short')}");
-                              }
-                            })
-                        : Container()
+                    AnimatedSwitcher(
+                      duration: Duration(milliseconds: 400),
+                      child: searchTypePosition == 2
+                          ? InkWell(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(5),
+                                        bottomRight: Radius.circular(5)),
+                                    color: KColors.primaryColor),
+                                margin: EdgeInsets.only(top: 2),
+                                padding: EdgeInsets.only(
+                                    top: 9, bottom: 9, right: 10, left: 10),
+                                child: Icon(Icons.search,
+                                    color: Colors.white, size: 30),
+                              ),
+                              onTap: () {
+                                if (searchTypePosition == 2) {
+                                  if (_filterEditController.text
+                                              ?.trim()
+                                              ?.length !=
+                                          null &&
+                                      _filterEditController.text
+                                              ?.trim()
+                                              ?.length >=
+                                          3)
+                                    widget.foodProposalPresenter
+                                        .fetchRestaurantFoodProposalFromTag(widget.type,
+                                            _filterEditController.text);
+                                  else
+                                    mDialog(
+                                        "${AppLocalizations.of(context).translate('search_too_short')}");
+                                }
+                              })
+                          : Container(),
+                    )
                   ],
                 ),
               ),
               SizedBox(height: 10),
-              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction, widget?.type),
+              SearchSwitchWidget(
+                  searchTypePosition, _choice, _filterFunction, widget?.type),
               SizedBox(height: 10),
               Expanded(
                 child: SingleChildScrollView(
@@ -409,11 +411,14 @@ class _ShopListPageState extends State<ShopListPage>
                                               null) {
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer, widget.type, null);
+                                                    widget.customer,
+                                                    widget.type,
+                                                    null);
                                           } else
                                             widget.restaurantListPresenter
                                                 .fetchRestaurantList(
-                                                    widget.customer, widget.type,
+                                                    widget.customer,
+                                                    widget.type,
                                                     StateContainer.of(context)
                                                         .location);
                                         },
@@ -833,7 +838,9 @@ class _ShopListPageState extends State<ShopListPage>
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
                   widget.restaurantListPresenter.fetchRestaurantList(
-                      widget.customer, widget.type, StateContainer.of(context).location);
+                      widget.customer,
+                      widget.type,
+                      StateContainer.of(context).location);
                 }
               }
               if (widget.samePositionCount >= 3 || widget.hasGps)
@@ -851,7 +858,7 @@ class _ShopListPageState extends State<ShopListPage>
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+              .fetchRestaurantFoodProposalFromTag(widget.type,_filterEditController.text);
         });
   }
 
@@ -861,7 +868,7 @@ class _ShopListPageState extends State<ShopListPage>
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(_filterEditController.text);
+              .fetchRestaurantFoodProposalFromTag(widget.type,_filterEditController.text);
         });
   }
 
@@ -877,14 +884,14 @@ class _ShopListPageState extends State<ShopListPage>
       ])));
 
     if (foodProposals?.length == 0) {
-      return Container(
+      return Container(margin: EdgeInsets.all(20),
           child: Center(
-              child: Column(children: <Widget>[
+              child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
         SizedBox(height: 20),
         Icon(Icons.restaurant, color: Colors.grey),
         SizedBox(height: 10),
         Text(
-            "${AppLocalizations.of(context).translate('sorry_cant_find_food')}")
+            "${AppLocalizations.of(context).translate('sorry_cant_find_item')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))
       ])));
     }
 
@@ -1214,8 +1221,8 @@ class _ShopListPageState extends State<ShopListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter.fetchRestaurantList(widget.customer,
+              widget.type, StateContainer.of(context).location);
         });
   }
 
@@ -1223,19 +1230,17 @@ class _ShopListPageState extends State<ShopListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchRestaurantList(
-              widget.customer, widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter.fetchRestaurantList(widget.customer,
+              widget.type, StateContainer.of(context).location);
         });
   }
 
   Timer mainTimer;
 
   void restartTimer() {
-
     if (mainTimer != null) mainTimer.cancel();
 
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-
       if (ModalRoute.of(context)?.settings?.name == null ||
           !("/HomePage".compareTo(ModalRoute.of(context)?.settings?.name) ==
                   0 &&
@@ -1256,8 +1261,8 @@ class _ShopListPageState extends State<ShopListPage>
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
-        widget.restaurantListPresenter.fetchRestaurantList(
-            widget.customer, widget.type, StateContainer.of(context).location, true);
+        widget.restaurantListPresenter.fetchRestaurantList(widget.customer,
+            widget.type, StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);

@@ -153,7 +153,7 @@ class RestaurantApiProvider {
     }
   }
 
-  fetchRestaurantFoodProposal2FromTag(String query) async {
+  fetchRestaurantFoodProposal2FromTag(String category, String query) async {
     xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
     if (await Utils.hasNetwork()) {
       /*  final response = await client
@@ -164,7 +164,7 @@ class RestaurantApiProvider {
 
       var dio = Dio();
       dio.options
-      // ..headers = Utils.getHeadersWithToken(customer?.token)
+        // ..headers = Utils.getHeadersWithToken(customer?.token)
         ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -173,10 +173,24 @@ class RestaurantApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(
+      /*   var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_SEARCH_FOOD_BY_TAG).toString(),
         data: json.encode({'tag': query}),
-      );
+      );*/
+      // /api/v4/search?category=food&limit=1000&search_type=product&query=riz
+      Map<String, String> queryParams = {
+        "search_type": "product",
+        "category": "$category",
+        "limit": "1000",
+        "query": query
+      };
+
+      if ("all" == category) queryParams.remove("category");
+
+      var response = await dio.get(
+          Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
+          queryParameters: queryParams // json.encode({'tag': query}),
+          );
 
       xrint(response.data.toString());
       List<ShopProductModel> foods = [];
@@ -189,8 +203,10 @@ class RestaurantApiProvider {
           } else {
             // foods with restaurant inside.
             lo?.map((food_restaurant) {
+           /*   ShopProductModel f =
+                  ShopProductModel.fromJson(food_restaurant["food"]);*/
               ShopProductModel f =
-              ShopProductModel.fromJson(food_restaurant["food"]);
+                  ShopProductModel.fromJson(food_restaurant);
               f.restaurant_entity =
                   ShopModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);
@@ -208,8 +224,7 @@ class RestaurantApiProvider {
     }
   }
 
-
-  fetchRestaurantFoodProposalFromTag(String query) async {
+  fetchRestaurantFoodProposalFromTagOld(String query) async {
     xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
     if (await Utils.hasNetwork()) {
       /*  final response = await client
@@ -220,7 +235,7 @@ class RestaurantApiProvider {
 
       var dio = Dio();
       dio.options
-      // ..headers = Utils.getHeadersWithToken(customer?.token)
+        // ..headers = Utils.getHeadersWithToken(customer?.token)
         ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -246,7 +261,7 @@ class RestaurantApiProvider {
             // foods with restaurant inside.
             lo?.map((food_restaurant) {
               ShopProductModel f =
-              ShopProductModel.fromJson(food_restaurant["food"]);
+                  ShopProductModel.fromJson(food_restaurant["food"]);
               f.restaurant_entity =
                   ShopModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);
@@ -297,14 +312,16 @@ class RestaurantApiProvider {
       );*/
 
       Map<String, dynamic> params = Map();
-      if (type != null) params.putIfAbsent("category", () => type);
+      params.putIfAbsent("limit", () => 1000);
       params.putIfAbsent("search_type", () => "shop");
+      if (type != null && type != "all") params.putIfAbsent("category", () => type);
+
 
       var response = await dio.get(
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: params
-           // data: position == null ? "" : json.encode({}
-              // {"location": "${position?.latitude}:${position?.longitude}"}
+          // data: position == null ? "" : json.encode({}
+          // {"location": "${position?.latitude}:${position?.longitude}"}
           // ),
           );
 
@@ -314,7 +331,7 @@ class RestaurantApiProvider {
         dynamic data = mJsonDecode(response.data);
         // if (data["error"] == 0) {
 
-          return data["data"];
+        return data["data"];
         // } else
         //   throw Exception(-1); // there is an error in your request
       } else {

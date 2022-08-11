@@ -35,10 +35,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
   @override
   void initState() {
     super.initState();
-
   }
-
-
 
   getCategoryTitle(BuildContext context) {
     var tmp = [
@@ -67,7 +64,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
           AppLocalizations.of(context).translate('service_flower_type_product')
         ];
         break;
-   /*   case "supermarket": // flowers
+        /*   case "supermarket": // flowers
         tmp = [
           AppLocalizations.of(context).translate('service_flower_type_name'),
           AppLocalizations.of(context).translate('service_flower_type_product')
@@ -85,28 +82,25 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
           AppLocalizations.of(context).translate('service_shop_type_product')
         ];
         break;
-       case "ticket": // ticket
-         tmp = [
-           AppLocalizations.of(context).translate('service_ticket_type_name'),
-           AppLocalizations.of(context).translate('service_ticket_product_name')
-         ];
-         break;
+      case "ticket": // ticket
+        tmp = [
+          AppLocalizations.of(context).translate('service_ticket_type_name'),
+          AppLocalizations.of(context).translate('service_ticket_product_name')
+        ];
+        break;
       case "grocery": // ticket
         tmp = [
           AppLocalizations.of(context).translate('service_grocery_type_name'),
           AppLocalizations.of(context).translate('service_grocery_product_name')
         ];
-      break;
+        break;
     }
     return tmp;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    if (_searchChoices == null)
-      _searchChoices = getCategoryTitle(context);
+    if (_searchChoices == null) _searchChoices = getCategoryTitle(context);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -128,15 +122,16 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                       flex: 1,
                       child: InkWell(
                           onTap: () => widget.onSwitch(1),
-                          child: Container(height: 36,
+                          child: Container(
+                              height: 36,
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Center(
-                                child: Text(
-                                    Utils.capitalize(
+                                child: Text(Utils.capitalize(
                                         // "${AppLocalizations.of(context).translate('search_restaurant')}"),
-                                   _searchChoices[0]),
+                                        _searchChoices[0]),
                                     style: TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
                                         color: widget.selectedPosition == 1
                                             ? this.filter_active_text_color
                                             : this
@@ -158,10 +153,10 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                               padding: EdgeInsets.all(10),
                               child: Center(
                                 child: Text(
-                                    Utils.capitalize(
-                                        _searchChoices[1]),
+                                    Utils.capitalize(_searchChoices[1]),
                                     style: TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
                                         color: widget.selectedPosition == 1
                                             ? this.filter_unactive_text_color
                                             : this.filter_active_text_color)),
@@ -184,7 +179,6 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
               Container(
                 // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
                 decoration: BoxDecoration(
-
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Center(
                   child: DropdownButton<String>(

@@ -139,7 +139,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                           width: index ==
                                               widget.position ||
                                               index ==
-                                                  widget.data.length ? 18 : 9,
+                                                  widget.data.length ? 15 : 9,
                                           decoration: new BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10)),

@@ -6,6 +6,7 @@ import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_review_contract.dart';
+import 'package:KABA/src/contracts/shop_schedule_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CommentModel.dart';
@@ -16,6 +17,7 @@ import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantNewCommentWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopScheduleMiniPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/ReviewRestaurantPage.dart';
@@ -29,7 +31,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShopDetailsPage extends StatefulWidget {
-
   static var routeName = "/ShopDetailsPage";
 
   ShopModel restaurant;
@@ -46,7 +47,14 @@ class ShopDetailsPage extends StatefulWidget {
 
   String distance;
 
-  ShopDetailsPage({this.restaurant, this.restaurantId, this.presenter, this.distance, this.shipping_price}) {
+  var shopSchedule;
+
+  ShopDetailsPage(
+      {this.restaurant,
+      this.restaurantId,
+      this.presenter,
+      this.distance,
+      this.shipping_price}) {
 //    restaurantId = restaurant.id;
     if (restaurant != null && restaurant?.id != null) {
       this.restaurantId = restaurant?.id;
@@ -96,6 +104,17 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   @override
   Widget build(BuildContext context) {
+
+    if (widget.distance == null && widget?.restaurant?.location != null) {
+     widget.distance = Utils.locationDistance(StateContainer.of(context).location, widget?.restaurant).toString();
+    }
+
+    if (widget.shopSchedule == null) {
+      widget.shopSchedule = ShopScheduleMiniPage(
+          restaurant_id: widget.restaurantId,
+          presenter: ShopSchedulePresenter());
+    }
+
     final int args = ModalRoute.of(context).settings.arguments;
     if (args != null && args != 0) widget.restaurantId = args;
     if (widget.restaurant == null || widget.restaurant?.name == null) {
@@ -117,7 +136,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     }
 
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(elevation: 0,
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
@@ -206,9 +225,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                 Expanded(flex: 2, child: Container()),
                                 isUpdatingRestaurantOpenType
                                     ? SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: CircularProgressIndicator())
+                                        width: 40,
+                                        height: 40,
+                                        child: CircularProgressIndicator())
                                     : _getRestaurantStateTag(widget.restaurant)
                               ]),
                               SizedBox(
@@ -230,59 +249,101 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                 )
                               ]),
                               SizedBox(height: 10),
-                              widget?.distance == null ?    Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: KColors.new_gray),
-                                    child: Row(
+                             Row(
                                       children: [
-                                        Icon(FontAwesomeIcons.locationArrow,
-                                            color: KColors.mGreen, size: 10),
+                                        Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              color: KColors.new_gray),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                  FontAwesomeIcons
+                                                      .locationArrow,
+                                                  color: KColors.mGreen,
+                                                  size: 10),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                  "${widget.distance} ${AppLocalizations.of(context).translate('km')}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 12)),
+                                            ],
+                                          ),
+                                        ),
                                         SizedBox(width: 10),
-                                        Text(
-                                            "--- ${AppLocalizations.of(context).translate('km')}",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.normal,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 12)),
+                                      /*  Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              color: KColors.new_gray),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                  Icons
+                                                      .directions_bike_outlined,
+                                                  color: KColors.primaryColor,
+                                                  size: 10),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                  "--- ${AppLocalizations.of(context).translate('currency')}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 12)),
+                                            ],
+                                          ),
+                                        )*/
                                       ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: KColors.new_gray),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.directions_bike_outlined,
-                                            color: KColors.primaryColor,
-                                            size: 10),
-                                        SizedBox(width: 10),
-                                        Text(
-                                            "--- ${AppLocalizations.of(context).translate('currency')}",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.normal,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 12)),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ) : Container(),
+                                    )
+                                 ,
                               SizedBox(height: 10),
-                              Container(
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  color: KColors.new_gray),
+                              GestureDetector(onTap: ()=>_jumpToRestaurantMenu(context, widget.restaurant),
+                                child: Container(
+                                    child: Row(children: [
+                                      Expanded(
+                                          child: Container(padding: EdgeInsets.all(10),
+                                        child: widget.shopSchedule,
+                                      )),
+                                      Expanded(
+                                          child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("${AppLocalizations.of(context).translate('see_menu')} >",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: KColors
+                                                              .primaryColor)),
+                                                  SizedBox(height: 7),
+                                                  Text(
+                                                      "${widget.restaurant?.description}",
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.normal))
+                                                ],
+                                              ))),
+                                    ]),
+                                    /* height: 50,*/
+                                    width: MediaQuery.of(context).size.width,
+                                    color: KColors.new_gray),
+                              ),
                               SizedBox(height: 15),
                               Container(
                                 width: MediaQuery.of(context).size.width,
@@ -348,12 +409,13 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                       fontSize: 32,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: KColors.new_black)),
+                                                      color:
+                                                          KColors.new_black)),
                                             ),
                                           ),
                                           _canComment == 1
                                               ? InkWell(
-                                            onTap: () => _starPressed(3),
+                                                  onTap: () => _starPressed(3),
                                                   child: Container(
                                                     child: Text(
                                                         "${AppLocalizations.of(context).translate('review_us')}",
@@ -382,8 +444,11 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                       SizedBox(height: 20),
                                       commentIsLoading
                                           ? Center(
-                                              child:
-                                                  Container(width: 20,height: 20,child: CircularProgressIndicator()))
+                                              child: Container(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child:
+                                                      CircularProgressIndicator()))
                                           : (commentHasSystemError
                                               ? _buildCommentNetworkErrorPage()
                                               : commentHasNetworkError
@@ -394,7 +459,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                           : _buildNewCommentList()
                                                     ])
                                           // personnal end
-                                          ), SizedBox(height: 20)
+                                          ),
+                                      SizedBox(height: 20)
                                     ]),
                               )
                             ],
@@ -470,7 +536,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                     Text(
                                         "${AppLocalizations.of(context).translate('opening_time')}",
                                         style: TextStyle(
-                                            color: KColors.new_black.withAlpha(150),
+                                            color: KColors.new_black
+                                                .withAlpha(150),
                                             fontSize: 16)),
                                     isUpdatingRestaurantOpenType
                                         ? Container()
@@ -482,7 +549,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                 Text(
                                                     "${widget?.restaurant?.working_hour}",
                                                     style: TextStyle(
-                                                        color: KColors.new_black,
+                                                        color:
+                                                            KColors.new_black,
                                                         fontSize: 16)),
                                               ])
                                   ],
@@ -990,7 +1058,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 color: tagTextColor),
             child: Text(Utils.capitalize("${tagText}"),
-                style: TextStyle(color:  Colors.white, fontSize: 12)))
+                style: TextStyle(color: Colors.white, fontSize: 12)))
         : Container();
   }
 
@@ -1101,8 +1169,6 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     }
   }
 
-  
-  
   _seeProfilePicture(String imageLink) {
     List<AdModel> slider = [AdModel(pic: "${imageLink}")];
 

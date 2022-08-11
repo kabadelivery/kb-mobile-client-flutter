@@ -137,6 +137,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       }
 
       xrint(myBillingArray);
+      // we can store the billing array locally 
 
       int indexOf79 = -1;
       int indexOf80 = -1;

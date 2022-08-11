@@ -10,7 +10,7 @@ class RestaurantFoodProposalContract {
 //  void RestaurantFoodProposal (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
-  void fetchRestaurantFoodProposalFromTag(String tag) async {}
+  void fetchRestaurantFoodProposalFromTag(String query, String tag) async {}
 }
 
 class RestaurantFoodProposalView {
@@ -39,13 +39,13 @@ class RestaurantFoodProposalPresenter implements RestaurantFoodProposalContract 
   }
 
   @override
-  Future fetchRestaurantFoodProposalFromTag(String tag) async {
+  Future fetchRestaurantFoodProposalFromTag(String query, String tag) async {
     if (isWorking)
       return;
     isWorking = true;
     _restaurantFoodProposalView.searchMenuShowLoading(true);
     try {
-      List<ShopProductModel> foods = await provider.fetchRestaurantFoodProposalFromTag(tag);
+      List<ShopProductModel> foods = await provider.fetchRestaurantFoodProposal2FromTag(query, tag);
       _restaurantFoodProposalView.searchMenuShowLoading(false);
       _restaurantFoodProposalView.inflateFoodsProposal(foods);
     } catch (_) {

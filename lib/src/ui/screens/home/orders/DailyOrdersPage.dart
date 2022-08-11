@@ -193,7 +193,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
           Center(
               child: Text(
                   "${AppLocalizations.of(context).translate('no_order_today')}",
-                  style: TextStyle(color: Colors.grey))),
+                  style: TextStyle(color: Colors.grey, fontSize: 14))),
         ],
       ));
   }

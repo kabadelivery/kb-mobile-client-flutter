@@ -48,7 +48,7 @@ class StateContainer extends StatefulWidget {
 class StateContainerState extends State<StateContainer> {
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
-  int tabPosition = 1;
+  int tabPosition = 0;
   int balance;
   int loggingState;
 

@@ -17,6 +17,7 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
   String suburb;
   String near;
   String updated_at;
+  bool is_favorite = false;
 
 
   DeliveryAddressModel({this.id, this.name, this.location, this.phone_number,

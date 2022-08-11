@@ -142,6 +142,21 @@ class CustomerUtils {
     return jsonContent;
   }
 
+  /*  */
+
+  static saveShopSchedulePage(int restaurant_id,String wp) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_restaurant_schedule_${restaurant_id}_" + signature, wp);
+  }
+
+  /* old shop schedule page */
+  static getOldShopSchedulePage(int restaurant_id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonContent = prefs.getString("_restaurant_schedule_${restaurant_id}_" + signature);
+    return jsonContent;
+  }
+
+
   static Future<void> saveFavoriteAddress(List<int> favorites) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_favorite_list" + signature, json.encode(favorites));
@@ -152,9 +167,14 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String favorite_list = prefs.get("_favorite_list" + signature);
-      return json.decode(favorite_list);
+      List<dynamic> res = json.decode(favorite_list);
+      List<int> ress = [];
+      res.forEach((element) {
+        ress.add(element);
+      });
+      return ress;
     } catch(e){
-      return [];
+      return Future.value(List<int>.empty(growable: true));
     }
   }
 
@@ -240,4 +260,5 @@ class CustomerUtils {
     }
     return false;
   }
+
 }

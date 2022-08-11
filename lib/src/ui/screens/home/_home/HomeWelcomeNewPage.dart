@@ -601,10 +601,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                     margin: EdgeInsets.only(right: 2.5, top: 2.5),
                                     height: 7,
                                     width: index == _carousselPageIndex ||
-                                        index == data.slider.length ? 18 : 7,
+                                        index == data.slider.length ? 12 : 7,
                                     decoration: new BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.all(Radius.circular(10)),
+                                            BorderRadius.all(Radius.circular(5)),
                                         border: new Border.all(color: KColors.primaryColor),
                                         color: (index == _carousselPageIndex ||
                                                 index == data.slider.length)

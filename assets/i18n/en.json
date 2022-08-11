@@ -353,7 +353,7 @@
   "whatsapp_number_hint_ex": "Whatsapp Number",
   "please_enter_whatsapp_no": "Please enter your whatsapp number",
   "congrats_for_email_account": "Hi! Welcome to KABA. We are delighted to have you among our diaspora users",
-  "done_text": "DONE",
+  "done_text": "Get Started",
   "next_text": "NEXT",
   "new_account_email_hint": "Please enter your E-mail address.\n\n (E-mail accounts are only intended for the diaspora)",
   "reason": "Reason",
@@ -472,5 +472,8 @@
 
   "please_select_main_location": "Choose your current address",
 
-  "near_by": "Near by"
+  "near_by": "Near by",
+  "sorry_cant_find_item": "Sorry, Item not available on KABA yet",
+
+  "previous_text": "PREVIOUS"
 }

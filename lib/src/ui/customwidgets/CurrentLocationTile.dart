@@ -66,134 +66,136 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: StateContainer?.of(context)?.location != null ||
-              StateContainer.of(context).selectedAddress != null
-          ? Container(
-              margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              decoration: BoxDecoration(
-                  color: KColors.mBlue.withAlpha(10),
-                  borderRadius: BorderRadius.circular(5)),
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                          child: Icon(Icons.location_on,
-                              color: KColors.mBlue, size: 15),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: KColors.mBlue.withAlpha(30)),
-                          padding: EdgeInsets.all(5)),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * .6,
-                            child: Text(
-                                Utils.capitalize(
-                                    "${StateContainer.of(context).selectedAddress?.name}"),
-                                maxLines: 1,
+      child: AnimatedSwitcher(duration: Duration(milliseconds: 400),
+        child: StateContainer?.of(context)?.location != null ||
+                StateContainer.of(context).selectedAddress != null
+            ? Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    color: KColors.mBlue.withAlpha(10),
+                    borderRadius: BorderRadius.circular(5)),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                            child: Icon(Icons.location_on,
+                                color: KColors.mBlue, size: 15),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: KColors.mBlue.withAlpha(30)),
+                            padding: EdgeInsets.all(5)),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text(
+                                  Utils.capitalize(
+                                      "${StateContainer.of(context).selectedAddress?.name}"),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: KColors.new_black)),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: RichText(
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: KColors.new_black)),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * .6,
-                            child: RichText(
-                              maxLines: 2,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                text: Utils.capitalize(
-                                    "${AppLocalizations.of(context).translate('near_by')} - "),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey),
-                                children: [
-                                  TextSpan(
-                                      text: Utils.capitalize(
-                                          "${StateContainer.of(context).selectedAddress?.near}"),
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.grey))
-                                ],
+                                text: TextSpan(
+                                  text: Utils.capitalize(
+                                      "${AppLocalizations.of(context).translate('near_by')} - "),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                  children: [
+                                    TextSpan(
+                                        text: Utils.capitalize(
+                                            "${StateContainer.of(context).selectedAddress?.near}"),
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.grey))
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                              "${_locationToPlusCode(StateContainer.of(context).location)}",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                      child: Icon(FontAwesome.chevron_down,
-                          color: KColors.primaryColor, size: 10),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: KColors.primaryColor.withAlpha(30)),
-                      padding: EdgeInsets.all(5)),
-                ],
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                                "${_locationToPlusCode(StateContainer.of(context).location)}",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                        child: Icon(FontAwesome.chevron_down,
+                            color: KColors.primaryColor, size: 10),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: KColors.primaryColor.withAlpha(30)),
+                        padding: EdgeInsets.all(5)),
+                  ],
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    color: KColors.mBlue.withAlpha(10),
+                    borderRadius: BorderRadius.circular(5)),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                            child: Icon(Icons.location_on,
+                                color: KColors.mBlue, size: 15),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: KColors.mBlue.withAlpha(30)),
+                            padding: EdgeInsets.all(5)),
+                        SizedBox(width: 10),
+                        Text(
+                            Utils.capitalize(
+                                "${AppLocalizations.of(context).translate('please_select_main_location')}"),
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey)),
+                      ],
+                    ),
+                    Container(
+                        child: Icon(Icons.add,
+                            color: KColors.primaryColor, size: 15),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: KColors.primaryColor.withAlpha(30)),
+                        padding: EdgeInsets.all(5)),
+                  ],
+                ),
               ),
-            )
-          : Container(
-              margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              decoration: BoxDecoration(
-                  color: KColors.mBlue.withAlpha(10),
-                  borderRadius: BorderRadius.circular(5)),
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                          child: Icon(Icons.location_on,
-                              color: KColors.mBlue, size: 15),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: KColors.mBlue.withAlpha(30)),
-                          padding: EdgeInsets.all(5)),
-                      SizedBox(width: 10),
-                      Text(
-                          Utils.capitalize(
-                              "${AppLocalizations.of(context).translate('please_select_main_location')}"),
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey)),
-                    ],
-                  ),
-                  Container(
-                      child: Icon(Icons.add,
-                          color: KColors.primaryColor, size: 15),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: KColors.primaryColor.withAlpha(30)),
-                      padding: EdgeInsets.all(5)),
-                ],
-              ),
-            ),
+      ),
       onTap: () => {_pickMyAddress()},
     );
   }

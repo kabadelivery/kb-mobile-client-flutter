@@ -17,13 +17,9 @@ import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 
 class MenuApiProvider {
-
-
   Future<Map> fetchRestaurantMenuList(int restaurantId) async {
-
     xrint("entered fetchRestaurantMenuList");
     if (await Utils.hasNetwork()) {
-
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),
         body: json.encode({'id': restaurantId}),
@@ -34,8 +30,7 @@ class MenuApiProvider {
       var dio = Dio();
       dio.options
         // ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -44,18 +39,20 @@ class MenuApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
-          data: json.encode({'id': restaurantId}),
+        Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
+        data: json.encode({'id': restaurantId}),
       );
-
 
       xrint(response.data);
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
-          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          List<RestaurantSubMenuModel> restaurantSubModel = lo
+              ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
+              ?.toList();
+          ShopModel restaurantModel =
+              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -72,24 +69,17 @@ class MenuApiProvider {
     }
   }
 
-
   fetchRestaurantMenuListWithFoodId(int foodId) async {
-
     xrint("entered fetchRestaurantMenuListWithFoodId");
     if (await Utils.hasNetwork()) {
-
-
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
         body: json.encode({'food_id': foodId}),
       )
           .timeout(const Duration(seconds: 30));*/
 
-
       var dio = Dio();
-      dio.options
-        ..connectTimeout = 30000
-      ;
+      dio.options..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -99,19 +89,22 @@ class MenuApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
-        data:  json.encode({'food_id': foodId}),
+        data: json.encode({'food_id': foodId}),
       );
 
-
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          ShopProductModel food = ShopProductModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
+          ShopProductModel food = ShopProductModel.fromJson(
+              mJsonDecode(response.data)["data"]["food"]);
 
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((menu) => RestaurantSubMenuModel.fromJson(menu))?.toList();
-          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          List<RestaurantSubMenuModel> restaurantSubModel = lo
+              ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
+              ?.toList();
+          ShopModel restaurantModel =
+              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -129,14 +122,9 @@ class MenuApiProvider {
     }
   }
 
-
-
   Future<Map> fetchRestaurantMenuListWithMenuId(int menuId) async {
-
     xrint("entered fetchRestaurantMenuListWithMenuId");
     if (await Utils.hasNetwork()) {
-
-
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
         body: json.encode({'menu_id': menuId}),
@@ -144,9 +132,7 @@ class MenuApiProvider {
           .timeout(const Duration(seconds: 30));
       */
       var dio = Dio();
-      dio.options
-        ..connectTimeout = 30000
-      ;
+      dio.options..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -156,17 +142,19 @@ class MenuApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
-        data:  json.encode({'menu_id': menuId}),
+        data: json.encode({'menu_id': menuId}),
       );
 
-
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo?.map((comment) => RestaurantSubMenuModel.fromJson(comment))?.toList();
-          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          List<RestaurantSubMenuModel> restaurantSubModel = lo
+              ?.map((comment) => RestaurantSubMenuModel.fromJson(comment))
+              ?.toList();
+          ShopModel restaurantModel =
+              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -183,23 +171,55 @@ class MenuApiProvider {
     }
   }
 
-
-
-  Future<dynamic> fetchBestSellerList() async {
-
-    xrint("entered fetchBestSellerList");
+  fetchShopScheduleList(int restaurant_id) async {
+    xrint("entered fetchShopScheduleList");
     if (await Utils.hasNetwork()) {
-
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST),
         body: json.encode([]),
       )
           .timeout(const Duration(seconds: 30));*/
 
       var dio = Dio();
-      dio.options
-        ..connectTimeout = 30000
-      ;
+      dio.options..connectTimeout = 30000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_SHOP_SCHEDULE).toString(),
+        data: json.encode({'id': restaurant_id}),
+      );
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          return response.data.toString();
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<dynamic> fetchBestSellerList() async {
+    xrint("entered fetchBestSellerList");
+    if (await Utils.hasNetwork()) {
+      /*   final response = await client
+          .post(Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST),
+        body: json.encode([]),
+      )
+          .timeout(const Duration(seconds: 30));*/
+
+      var dio = Dio();
+      dio.options..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -209,11 +229,10 @@ class MenuApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST).toString(),
-        data:  json.encode({}),
+        data: json.encode({}),
       );
 
-
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
@@ -229,19 +248,16 @@ class MenuApiProvider {
   }
 
   fetchFoodDetailsWithId(int foodId) async {
-
     xrint("entered fetchFoodDetailsWithId");
     if (await Utils.hasNetwork()) {
-    /*  final response = await client
+      /*  final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE),
         body: json.encode({"food_id": foodId}),
       )
           .timeout(const Duration(seconds: 30));*/
 
       var dio = Dio();
-      dio.options
-        ..connectTimeout = 30000
-      ;
+      dio.options..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -250,17 +266,16 @@ class MenuApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE).toString(),
-        data:  json.encode({"food_id": foodId})
-      );
+          Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE).toString(),
+          data: json.encode({"food_id": foodId}));
 
-
-     xrint("fetchFoodDetailsWithId ${foodId}");
-     xrint(response.data.toString());
+      xrint("fetchFoodDetailsWithId ${foodId}");
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          ShopProductModel restaurantFoodModel = ShopProductModel.fromJson(mJsonDecode(response.data)["data"]["food"]);
+          ShopProductModel restaurantFoodModel = ShopProductModel.fromJson(
+              mJsonDecode(response.data)["data"]["food"]);
           return restaurantFoodModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -273,10 +288,9 @@ class MenuApiProvider {
   }
 
   fetchRestaurantWithId(CustomerModel customer, int restaurantDetailsId) async {
-
-    xrint("entered fetchRestaurantWithId with $restaurantDetailsId and ${customer?.toJson()?.toString()}");
+    xrint(
+        "entered fetchRestaurantWithId with $restaurantDetailsId and ${customer?.toJson()?.toString()}");
     if (await Utils.hasNetwork()) {
-
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS),
         body: json.encode({"id": restaurantDetailsId}),
@@ -288,8 +302,7 @@ class MenuApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -298,15 +311,16 @@ class MenuApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS).toString(),
-          data: json.encode({"id": restaurantDetailsId}),
+        Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS).toString(),
+        data: json.encode({"id": restaurantDetailsId}),
       );
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          ShopModel restaurantModel = ShopModel.fromJson(mJsonDecode(response.data)["data"]["restaurant"]);
+          ShopModel restaurantModel = ShopModel.fromJson(
+              mJsonDecode(response.data)["data"]["restaurant"]);
           return restaurantModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -318,11 +332,10 @@ class MenuApiProvider {
     }
   }
 
-  reviewRestaurant(CustomerModel customer, ShopModel restaurant, int stars, String message) async {
-
+  reviewRestaurant(CustomerModel customer, ShopModel restaurant, int stars,
+      String message) async {
     xrint("entered reviewRestaurant");
     if (await Utils.hasNetwork()) {
-
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_POST_COMMENT),
         body: json.encode({"restaurant_id": restaurant?.id, "stars": stars, "comment": message}),
@@ -334,8 +347,7 @@ class MenuApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -345,10 +357,12 @@ class MenuApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_POST_COMMENT).toString(),
-        data:  json.encode({"restaurant_id": restaurant?.id, "stars": stars, "comment": message}),
+        data: json.encode({
+          "restaurant_id": restaurant?.id,
+          "stars": stars,
+          "comment": message
+        }),
       );
-
-
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
@@ -366,10 +380,8 @@ class MenuApiProvider {
   }
 
   checkCanComment(CustomerModel customer, ShopModel restaurant) async {
-
     xrint("entered checkCanComment");
     if (await Utils.hasNetwork()) {
-
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_CHECK_CAN_COMMENT),
         body: json.encode({"restaurant_id": restaurant?.id}),
@@ -381,8 +393,7 @@ class MenuApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 30000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -395,10 +406,8 @@ class MenuApiProvider {
         data: json.encode({"restaurant_id": restaurant?.id}),
       );
 
-
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-
         // get restaurant entity here
 
         int can_comment = mJsonDecode(response.data)["data"]["can_comment"];
@@ -410,6 +419,4 @@ class MenuApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
-
 }

@@ -38,13 +38,14 @@ class RestaurantMenuPage extends StatefulWidget {
 
   int foodId;
 
-  RestaurantMenuPage({Key key,
-    this.presenter,
-    this.restaurant = null,
-    this.menuId = -1,
-    this.foodId = -1,
-    this.highlightedFoodId = -1,
-    this.fromNotification = false})
+  RestaurantMenuPage(
+      {Key key,
+      this.presenter,
+      this.restaurant = null,
+      this.menuId = -1,
+      this.foodId = -1,
+      this.highlightedFoodId = -1,
+      this.fromNotification = false})
       : super(key: key);
 
   @override
@@ -66,14 +67,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   List<RestaurantSubMenuModel> data;
   int currentIndex = 0;
 
-  int _foodCount = 0,
-      _addOnCount = 0;
-  int FOOD_MAX = 5,
-      ADD_ON_COUNT = 10;
+  int _foodCount = 0, _addOnCount = 0;
+  int FOOD_MAX = 5, ADD_ON_COUNT = 10;
 
-  int ALL = 3,
-      FOOD = 1,
-      ADDONS = 2;
+  int ALL = 3, FOOD = 1, ADDONS = 2;
 
   AnimationController _controller;
 
@@ -136,10 +133,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
     }
     if (widget.fromNotification) {
-      final int args = ModalRoute
-          .of(context)
-          .settings
-          .arguments;
+      final int args = ModalRoute.of(context).settings.arguments;
       if (args != null && args != 0) {
         if (args < 0) {
           widget.foodId = -1 * args;
@@ -159,20 +153,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                // SizedBox(width: 10),
-                Container(
-                  /*    decoration: BoxDecoration(
+            // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+            // SizedBox(width: 10),
+            Container(
+                /*    decoration: BoxDecoration(
                 color: Colors.white.withAlpha(100),
                 borderRadius: BorderRadius.all(Radius.circular(10))),*/
-                    padding:
+                padding:
                     EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                    child: Text(
-                        widget?.restaurant == null ? "" : widget?.restaurant
-                            ?.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12, color: Colors.white)))
-              ])),
+                child: Text(
+                    widget?.restaurant == null ? "" : widget?.restaurant?.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: Colors.white)))
+          ])),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -214,7 +207,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(margin: EdgeInsets.only(top:10, right: 10, left: 10, bottom: 5),
+              Container(
+                margin:
+                    EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 5),
                 child: Text(
                     "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
                         ?.toUpperCase(),
@@ -225,21 +220,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               ),
             ],
           ),
-          SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           CustomChipList(
-            firstLineCount:
-            _chipList?.length > MAX_CHIP_FOR_SCREEN && _chipList?.length <= MAX_CHIP_FOR_SCREEN*2 ? MAX_CHIP_FOR_SCREEN :
-            (_chipList?.length > MAX_CHIP_FOR_SCREEN*2 ? _chipList?.length~/2 + 1 : _chipList?.length),
+            firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
+                    _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
+                ? MAX_CHIP_FOR_SCREEN
+                : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
+                    ? _chipList?.length ~/ 2 + 1
+                    : _chipList?.length),
             mainAxisAlignment: MainAxisAlignment.start,
             style: TextStyle(fontSize: 12),
             listOfChipNames: _chipList,
-            activeBgColorList: [Theme
-                .of(context)
-                .primaryColor
-            ],
-            inactiveBgColorList: [
-              KColors.primaryColor.withOpacity(0.2)
-            ],
+            activeBgColorList: [Theme.of(context).primaryColor],
+            inactiveBgColorList: [KColors.primaryColor.withOpacity(0.2)],
             activeTextColorList: [Colors.white],
             inactiveTextColorList: [KColors.primaryColor],
             listOfChipIndicesCurrentlySeclected: [currentIndex],
@@ -255,59 +250,57 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                   child: isLoading
                       ? Center(child: MyLoadingProgressWidget())
                       : (hasNetworkError
-                      ? _buildNetworkErrorPage()
-                      : hasSystemError
-                      ? _buildSysErrorPage()
-                      : Column(children: <Widget>[
-                    isLoading
-                        ? Center(child: MyLoadingProgressWidget())
-                        : (hasNetworkError
-                        ? ErrorPage(
-                        message:
-                        "${AppLocalizations.of(context).translate(
-                            'network_error')}",
-                        onClickAction: () {
-                          if (!widget.fromNotification) {
-                            if (widget.menuId == -1)
-                              widget.presenter
-                                  .fetchMenuWithRestaurantId(
-                                  widget
-                                      .restaurant.id);
-                            else
-                              widget.presenter
-                                  .fetchMenuWithMenuId(
-                                  widget.menuId);
-                          } else
-                            restaurantBloc
-                                .fetchRestaurantMenuList(
-                                widget?.restaurant);
-                        })
-                        : hasSystemError
-                        ? ErrorPage(
-                        message:
-                        "${AppLocalizations.of(context).translate(
-                            'system_error')}",
-                        onClickAction: () {
-                          if (!widget
-                              .fromNotification) {
-                            if (widget.menuId == -1)
-                              widget.presenter
-                                  .fetchMenuWithRestaurantId(
-                                  widget
-                                      .restaurant
-                                      .id);
-                            else
-                              widget.presenter
-                                  .fetchMenuWithMenuId(
-                                  widget.menuId);
-                          } else
-                            restaurantBloc
-                                .fetchRestaurantMenuList(
-                                widget
-                                    ?.restaurant);
-                        })
-                        : _buildRestaurantMenu()),
-                  ]))),
+                          ? _buildNetworkErrorPage()
+                          : hasSystemError
+                              ? _buildSysErrorPage()
+                              : Column(children: <Widget>[
+                                  isLoading
+                                      ? Center(child: MyLoadingProgressWidget())
+                                      : (hasNetworkError
+                                          ? ErrorPage(
+                                              message:
+                                                  "${AppLocalizations.of(context).translate('network_error')}",
+                                              onClickAction: () {
+                                                if (!widget.fromNotification) {
+                                                  if (widget.menuId == -1)
+                                                    widget.presenter
+                                                        .fetchMenuWithRestaurantId(
+                                                            widget
+                                                                .restaurant.id);
+                                                  else
+                                                    widget.presenter
+                                                        .fetchMenuWithMenuId(
+                                                            widget.menuId);
+                                                } else
+                                                  restaurantBloc
+                                                      .fetchRestaurantMenuList(
+                                                          widget?.restaurant);
+                                              })
+                                          : hasSystemError
+                                              ? ErrorPage(
+                                                  message:
+                                                      "${AppLocalizations.of(context).translate('system_error')}",
+                                                  onClickAction: () {
+                                                    if (!widget
+                                                        .fromNotification) {
+                                                      if (widget.menuId == -1)
+                                                        widget.presenter
+                                                            .fetchMenuWithRestaurantId(
+                                                                widget
+                                                                    .restaurant
+                                                                    .id);
+                                                      else
+                                                        widget.presenter
+                                                            .fetchMenuWithMenuId(
+                                                                widget.menuId);
+                                                    } else
+                                                      restaurantBloc
+                                                          .fetchRestaurantMenuList(
+                                                              widget
+                                                                  ?.restaurant);
+                                                  })
+                                              : _buildRestaurantMenu()),
+                                ]))),
             ),
           ),
         ],
@@ -317,7 +310,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   _computeBasketOffset() {
     final RenderBox renderBox =
-    _menuBasketKey.currentContext.findRenderObject();
+        _menuBasketKey.currentContext.findRenderObject();
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
@@ -333,8 +326,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     if (_firstTime) {
       _firstTime = false;
     }
-    SchedulerBinding.instance.addPostFrameCallback((_) =>
-        setState(() {
+    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
           this?.data = data;
         }));
 
@@ -368,7 +360,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               children: <Widget>[
                 ListTile(
                   contentPadding:
-                  EdgeInsets.only(top: 10, bottom: 10, left: 10),
+                      EdgeInsets.only(top: 10, bottom: 10, left: 10),
                   leading: Stack(
                     // overflow: Overflow.visible,
 //                        _keyBox.keys.firstWhere(
@@ -425,18 +417,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             SizedBox(width: 5),
                             (food.promotion != 0
                                 ? Text("${food?.promotion_price}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: KColors.primaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.normal))
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: KColors.primaryColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.normal))
                                 : Container()),
                             SizedBox(width: 5),
                             Text(
-                                "${AppLocalizations.of(context).translate(
-                                    'currency')}",
+                                "${AppLocalizations.of(context).translate('currency')}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -455,8 +446,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                 InkWell(
                   onTap: () {
                     Toast.show(
-                        "${AppLocalizations.of(context).translate(
-                            'add_to_chart')}",
+                        "${AppLocalizations.of(context).translate('add_to_chart')}",
                         context);
                   }, // () => _addFoodToChart(food, foodIndex, menuIndex),
                   child: Row(
@@ -482,8 +472,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     child: Icon(Icons.add_shopping_cart,
                                         color: KColors.primaryColor)),
                                 Text(
-                                    "${AppLocalizations.of(context).translate(
-                                        'add_to_basket')}",
+                                    "${AppLocalizations.of(context).translate('add_to_basket')}",
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: KColors.primaryColor))
@@ -503,10 +492,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  Widget _buildFoodListWidget2({ShopProductModel food,
-    int foodIndex,
-    int menuIndex,
-    int highlightedFoodId}) {
+  Widget _buildFoodListWidget2(
+      {ShopProductModel food,
+      int foodIndex,
+      int menuIndex,
+      int highlightedFoodId}) {
     /*return Expanded(
     child: InkWell(
           onTap: ()=> _jumpToFoodDetails(context, food),
@@ -518,10 +508,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       child: Card(
           key: food?.id == highlightedFoodId ? dataKey : null,
           child: Container(
-            width: 7 * MediaQuery
-                .of(context)
-                .size
-                .width / 11,
+            width: 7 * MediaQuery.of(context).size.width / 11,
             padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
             color: food?.id == highlightedFoodId
                 ? Colors.yellow.withAlpha(50)
@@ -603,18 +590,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   SizedBox(width: 5),
                                   (food.promotion != 0
                                       ? Text("${food?.promotion_price}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.normal))
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: KColors.primaryColor,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.normal))
                                       : Container()),
                                   SizedBox(width: 5),
                                   Text(
-                                      "${AppLocalizations.of(context).translate(
-                                          'currency')}",
+                                      "${AppLocalizations.of(context).translate('currency')}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       textAlign: TextAlign.center,
@@ -634,9 +620,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     InkWell(
-                                      onTap: () =>
-                                          _addFoodToChart(
-                                              food, foodIndex, menuIndex),
+                                      onTap: () => _addFoodToChart(
+                                          food, foodIndex, menuIndex),
                                       child: Card(
                                           color: KColors
                                               .primaryColorTransparentADDTOBASKETBUTTON,
@@ -653,9 +638,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                             .primaryColor,
                                                         size: 20),
                                                     Text(
-                                                        "${AppLocalizations.of(
-                                                            context).translate(
-                                                            'basket')}",
+                                                        "${AppLocalizations.of(context).translate('basket')}",
                                                         style: TextStyle(
                                                             fontSize: 12,
                                                             color: KColors
@@ -681,18 +664,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  Widget _buildFoodListWidget3({ShopProductModel food,
-    int foodIndex,
-    int menuIndex,
-    int highlightedFoodId}) {
+  Widget _buildFoodListWidget3(
+      {ShopProductModel food,
+      int foodIndex,
+      int menuIndex,
+      int highlightedFoodId}) {
     return InkWell(
       onTap: () => _jumpToFoodDetails(context, food),
       child: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-          width: MediaQuery
-              .of(context)
-              .size
-              .width - 20,
+          width: MediaQuery.of(context).size.width - 20,
           margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
           key: food?.id == highlightedFoodId ? dataKey : null,
           child: Container(
@@ -705,58 +686,59 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               children: [
                 Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(10),
-                      height: 115,
-                      color: KColors.new_gray,
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: EdgeInsets.all(10),
+                  height: 115,
+                  color: food?.id == highlightedFoodId
+                      ? Colors.yellow.withAlpha(50)
+                      : KColors.new_gray,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${Utils.capitalize(food?.name?.trim())}",
+                            Text("${Utils.capitalize(food?.name?.trim())}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: KColors.new_black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500)),
+                            SizedBox(height: 5),
+                            Text(
+                                "${Utils.capitalize(food?.description?.trim())}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400)),
+                          ],
+                        ),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // added
+                              Row(children: <Widget>[
+                                Text("${food?.price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    textAlign: TextAlign.start,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: KColors.new_black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500)),
-                                SizedBox(height: 5),
-                                Text(
-                                    "${Utils.capitalize(
-                                        food?.description?.trim())}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        color: Colors.grey,
+                                        decoration: food.promotion != 0
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                        color: KColors.primaryColor,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                            Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                children: [
-                                  // added
-                                  Row(children: <Widget>[
-                                    Text("${food?.price}",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            decoration: food.promotion != 0
-                                                ? TextDecoration.lineThrough
-                                                : TextDecoration.none,
-                                            color: KColors.primaryColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600)),
-                                    SizedBox(width: 3),
-                                    (food.promotion != 0
-                                        ? Text("${food?.promotion_price}",
+                                        fontWeight: FontWeight.w600)),
+                                SizedBox(width: 3),
+                                (food.promotion != 0
+                                    ? Text("${food?.promotion_price}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
@@ -764,51 +746,45 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                             color: KColors.primaryColor,
                                             fontSize: 12,
                                             fontWeight: FontWeight.normal))
-                                        : Container()),
-                                    SizedBox(width: 2),
+                                    : Container()),
+                                SizedBox(width: 2),
+                                Text(
+                                    "${AppLocalizations.of(context).translate('currency')}",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: KColors.primaryColor,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600)),
+                              ]),
+
+                              GestureDetector(
+                                onTap: () =>
+                                    _addFoodToChart(food, foodIndex, menuIndex),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: KColors.primaryColor.withAlpha(30),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.only(
+                                      top: 5, bottom: 5, right: 8, left: 8),
+                                  child: Row(children: <Widget>[
                                     Text(
-                                        "${AppLocalizations.of(context)
-                                            .translate('currency')}",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
+                                        "${AppLocalizations.of(context).translate('add_to_basket')}",
                                         style: TextStyle(
-                                            color: KColors.primaryColor,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w600)),
+                                            fontSize: 12,
+                                            color: KColors.primaryColor)),
+                                    SizedBox(width: 5),
+                                    Icon(Icons.add_shopping_cart,
+                                        color: KColors.primaryColor, size: 12),
                                   ]),
+                                ),
+                              ),
 
-                                  GestureDetector(
-                                    onTap: () =>
-                                        _addFoodToChart(
-                                            food, foodIndex, menuIndex),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: KColors.primaryColor.withAlpha(
-                                              30),
-                                          borderRadius: BorderRadius.circular(
-                                              10)),
-                                      padding: EdgeInsets.only(
-                                          top: 5, bottom: 5, right: 8, left: 8),
-                                      child: Row(children: <Widget>[
-                                        Text(
-                                            "${AppLocalizations.of(context)
-                                                .translate('add_to_basket')}",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: KColors.primaryColor)),
-                                        SizedBox(width: 5),
-                                        Icon(Icons.add_shopping_cart,
-                                            color: KColors.primaryColor,
-                                            size: 12),
-                                      ]),
-                                    ),
-                                  ),
-
-                                  // not added
-                                ])
-                          ]),
-                    )),
+                              // not added
+                            ])
+                      ]),
+                )),
                 Container(
                   height: 115,
                   width: 115,
@@ -843,7 +819,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
@@ -901,9 +877,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         }
       });*/
 
-      await _controller
-          .forward(from: 0.0)
-          .orCancel;
+      await _controller.forward(from: 0.0).orCancel;
     } on TickerCanceled {}
   }
 
@@ -947,7 +921,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
@@ -1078,12 +1052,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  void _showDialog({String svgIcons,
-    Icon icon,
-    var message,
-    bool okBackToHome = false,
-    bool isYesOrNo = false,
-    Function actionIfYes}) {
+  void _showDialog(
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1094,8 +1069,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                    svgIcons,
-                  )
+                          svgIcons,
+                        )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -1104,40 +1079,40 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all(
-                        BorderSide(color: Colors.grey, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('refuse')}",
-                    style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all(BorderSide(
-                        color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}",
-                    style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ]
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
                 : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}",
-                    style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]);
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
@@ -1153,30 +1128,28 @@ class CustomAnimatedPosition extends AnimatedPositioned {
   int serial;
   var context;
 
-  CustomAnimatedPosition({this.context,
-    this.right,
-    this.bottom,
-    this.left,
-    this.top,
-    this.duration,
-    this.child})
+  CustomAnimatedPosition(
+      {this.context,
+      this.right,
+      this.bottom,
+      this.left,
+      this.top,
+      this.duration,
+      this.child})
       : super(
-      child: child,
-      right: right,
-      bottom: bottom,
-      left: left,
-      top: top,
-      duration: duration);
+            child: child,
+            right: right,
+            bottom: bottom,
+            left: left,
+            top: top,
+            duration: duration);
 
   bool isAdded = false;
 
   addToBasket() {
     isAdded = true;
     if (isAdded) {
-      this.left = MediaQuery
-          .of(context)
-          .size
-          .width - 100;
+      this.left = MediaQuery.of(context).size.width - 100;
       this.top = 40;
     }
   }

@@ -311,4 +311,7 @@ class ServerRoutes {
 
   static const String LINK_SHOP_LIST_V4 =
       ServerConfig.SERVER_ADDRESS + "/api/v4/search";
+
+  static String LINK_GET_SHOP_SCHEDULE =
+      ServerConfig.SERVER_ADDRESS + "/api/resto/schedule/get";
 }

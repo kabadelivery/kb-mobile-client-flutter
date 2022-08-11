@@ -35,6 +35,8 @@ class MyAddressesPage extends StatefulWidget {
 
   List<int> favoriteAddress = [];
 
+  List<DeliveryAddressModel> pureDeliveryAddresses = [];
+
   MyAddressesPage(
       {Key key,
       this.presenter,
@@ -60,6 +62,12 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       widget.presenter.loadAddressList(customer);
+      CustomerUtils.getFavoriteAddress().then((value) {
+        var favAddresses = value;
+        setState(() {
+          widget.favoriteAddress = favAddresses;
+        });
+      });
     });
     super.initState();
     if (widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
@@ -249,17 +257,21 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                               )
                             ])
                           ]),
-                      GestureDetector(
+                 !widget.pick ?    GestureDetector(
                         onTap: () => _addToFavorite(address),
                         child: Container(
                           decoration: BoxDecoration(
                               shape: BoxShape.circle, color: Colors.white),
                           padding: EdgeInsets.all(10),
                           margin: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.bookmark_border_outlined,
-                              color: KColors.primaryYellowColor, size: 18),
+                          child: Icon(
+                              address.is_favorite
+                                  ? Icons.bookmark
+                                  : Icons.bookmark_border_outlined,
+                              color: KColors.primaryYellowColor,
+                              size: 18),
                         ),
-                      )
+                      ) : Container()
                     ],
                   )),
             ),
@@ -440,9 +452,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   @override
   void inflateDeliveryAddress(List<DeliveryAddressModel> deliveryAddresses) {
     //
+    /* order with favorites at the top */
+    // _reorderWithFavorite(deliveryAddresses);
+    widget.pureDeliveryAddresses = deliveryAddresses;
     setState(() {
-      /* order with favorites at the top */
-      _reorderWithFavorite(deliveryAddresses);
+      _reorderWithFavorite(List.from(widget.pureDeliveryAddresses));
     });
   }
 
@@ -599,9 +613,26 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   }
 
   void _reorderWithFavorite(List<DeliveryAddressModel> deliveryAddresses) {
-    
-    widget.data = deliveryAddresses;
+    // reorder delivery addresses or data by making sure the favorites id are above
+    List<DeliveryAddressModel> top_data = [];
 
+    List<DeliveryAddressModel> coo = List.from(deliveryAddresses);
+
+    coo?.forEach((element) {
+      if (widget.favoriteAddress != null &&
+          widget.favoriteAddress.contains(element.id)) {
+        deliveryAddresses.remove(element);
+        var tmp = element;
+        tmp.is_favorite = true;
+        top_data.add(tmp);
+      } else {
+        element.is_favorite = false;
+      }
+    });
+
+    setState(() {
+      widget.data = top_data..addAll(deliveryAddresses);
+    });
   }
 
   _addToFavorite(DeliveryAddressModel address) async {
@@ -609,9 +640,21 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     /* save the id and locally in an array of favorite */
     /* each time we load from server we order and then put the favorite on top of the world */
     widget.favoriteAddress = await CustomerUtils.getFavoriteAddress();
-    CustomerUtils.saveFavoriteAddress(widget.favoriteAddress..add(address.id));
-    setState(() async {
-      widget.favoriteAddress = await CustomerUtils.getFavoriteAddress();
+
+    // if address is contained, delete it
+    if (widget.favoriteAddress.contains(address.id)) {
+      widget.favoriteAddress.remove(address.id);
+      await CustomerUtils.saveFavoriteAddress(widget.favoriteAddress);
+    } else {
+      await CustomerUtils.saveFavoriteAddress(
+          [address.id, ...widget.favoriteAddress]);
+    }
+
+    var favAddresses = await CustomerUtils.getFavoriteAddress();
+    widget.favoriteAddress = favAddresses;
+
+    setState(() {
+      _reorderWithFavorite(List.from(widget.pureDeliveryAddresses));
     });
   }
 }
