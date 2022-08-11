@@ -407,7 +407,7 @@
   "mois_10": "October",
   "mois_11": "November",
   "mois_12": "December",
-  "buy": "Shop now",
+  "buy": "Explore",
   "service_category_food": "Food",
   "service_category_drinks": "Drinks",
   "service_category_flower": "Flowers",
@@ -477,5 +477,7 @@
 
   "previous_text": "PREVIOUS",
 
-  "please_login_before_going_forward_description_pick_address": "You must logging in order to pick an address"
+  "please_login_before_going_forward_description_pick_address": "You must logging in order to pick an address",
+
+  "checkout": "Checkout"
 }
