@@ -474,6 +474,8 @@
   "near_by": "À coté de ",
   "sorry_cant_find_item": "Désolé cet article n'est actuellement pas disponible sur KABA",
 
-  "previous_text": "Précédent"
+  "previous_text": "Précédent",
+  "please_login_before_going_forward_description_pick_address": "Vous devez vous connecter pour sélectionner une adresse."
+
 
 }

@@ -105,7 +105,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
   @override
   Widget build(BuildContext context) {
 
-    if (widget.distance == null && widget?.restaurant?.location != null) {
+    if (widget.distance == null && widget?.restaurant?.location != null && StateContainer.of(context).location != null) {
      widget.distance = Utils.locationDistance(StateContainer.of(context).location, widget?.restaurant).toString();
     }
 
@@ -251,7 +251,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                               SizedBox(height: 10),
                              Row(
                                       children: [
-                                        Container(
+                                        widget.distance == null ? Container() :  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(

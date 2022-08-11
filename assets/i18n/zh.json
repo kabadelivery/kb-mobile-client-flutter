@@ -474,6 +474,8 @@
   "near_by": "近于",
   "sorry_cant_find_item": "抱歉、此产品在平台上不存在",
 
-  "previous_text": "上一个"
+  "previous_text": "上一个",
+  "please_login_before_going_forward_description_pick_address": "为了查看您的地址、请登录"
+
 
 }

@@ -475,5 +475,7 @@
   "near_by": "Near by",
   "sorry_cant_find_item": "Sorry, Item not available on KABA yet",
 
-  "previous_text": "PREVIOUS"
+  "previous_text": "PREVIOUS",
+
+  "please_login_before_going_forward_description_pick_address": "You must logging in order to pick an address"
 }
