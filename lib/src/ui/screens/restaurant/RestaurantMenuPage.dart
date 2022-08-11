@@ -9,6 +9,7 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/CustomChipList.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
@@ -209,7 +210,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             children: [
               Container(
                 margin:
-                    EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 5),
+                    EdgeInsets.only(top: 20, right: 10, left: 20 ),
                 child: Text(
                     "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
                         ?.toUpperCase(),
@@ -223,25 +224,27 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           SizedBox(
             height: 5,
           ),
-          CustomChipList(
-            firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
-                    _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
-                ? MAX_CHIP_FOR_SCREEN
-                : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
-                    ? _chipList?.length ~/ 2 + 1
-                    : _chipList?.length),
-            mainAxisAlignment: MainAxisAlignment.start,
-            style: TextStyle(fontSize: 12),
-            listOfChipNames: _chipList,
-            activeBgColorList: [Theme.of(context).primaryColor],
-            inactiveBgColorList: [KColors.primaryColor.withOpacity(0.2)],
-            activeTextColorList: [Colors.white],
-            inactiveTextColorList: [KColors.primaryColor],
-            listOfChipIndicesCurrentlySeclected: [currentIndex],
-            extraOnToggle: (val) {
-              this.currentIndex = val;
-              setState(() {});
-            },
+          Container(
+            child: CustomChipList(
+              firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
+                      _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
+                  ? MAX_CHIP_FOR_SCREEN
+                  : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
+                      ? _chipList?.length ~/ 2 + 1
+                      : _chipList?.length),
+              mainAxisAlignment: MainAxisAlignment.start,
+              style: TextStyle(fontSize: 12),
+              listOfChipNames: _chipList,
+              activeBgColorList: [Theme.of(context).primaryColor],
+              inactiveBgColorList: [KColors.primaryColor.withOpacity(0.1)],
+              activeTextColorList: [Colors.white],
+              inactiveTextColorList: [KColors.primaryColor],
+              listOfChipIndicesCurrentlySeclected: [currentIndex],
+              extraOnToggle: (val) {
+                this.currentIndex = val;
+                setState(() {});
+              },
+            ),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -672,7 +675,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     return InkWell(
       onTap: () => _jumpToFoodDetails(context, food),
       child: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           width: MediaQuery.of(context).size.width - 20,
           margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
           key: food?.id == highlightedFoodId ? dataKey : null,
@@ -685,12 +687,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                    child: Container(
+                    child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)), color: food?.id == highlightedFoodId
+                        ? Colors.yellow.withAlpha(50)
+                        : KColors.new_gray),
                   padding: EdgeInsets.all(10),
                   height: 115,
-                  color: food?.id == highlightedFoodId
-                      ? Colors.yellow.withAlpha(50)
-                      : KColors.new_gray,
+
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -785,15 +787,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ])
                       ]),
                 )),
-                Container(
-                  height: 115,
-                  width: 115,
-                  decoration: BoxDecoration(
-                      color: KColors.primaryYellowColor.withAlpha(30),
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
-                              Utils.inflateLink(food?.pic)))),
+                Container(color: KColors.primaryYellowColor.withAlpha(30),
+                  child: Container(
+                    height: 115,
+                    width: 115,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+
+                        image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: CachedNetworkImageProvider(
+                                Utils.inflateLink(food?.pic)))),
+                  ),
                 ),
               ],
             ),
@@ -812,7 +816,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            RestaurantFoodDetailsPage(food: food),
+            ShopFlowerDetailsPage(food: food),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

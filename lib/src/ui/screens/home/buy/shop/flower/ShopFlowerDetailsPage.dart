@@ -106,23 +106,37 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
     /* use silver-app-bar first */
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "${AppLocalizations.of(context).translate('product_details')}",
-            style: TextStyle(color: Colors.white, fontSize: 16)),
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        brightness: Brightness.light,
+        backgroundColor: KColors.primaryColor,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context)),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: menuChoiceAction,
-            itemBuilder: (BuildContext context) {
-              return popupMenus.map((String menuName) {
-                return PopupMenuItem<String>(
-                    value: menuName, child: Text(menuName));
-              }).toList();
-            },
-          )
-        ],
+      PopupMenuButton<String>(
+      onSelected: menuChoiceAction,
+        itemBuilder: (BuildContext context) {
+          return popupMenus.map((String menuName) {
+            return PopupMenuItem<String>(
+                value: menuName, child: Text(menuName));
+          }).toList();
+        },
+      )
+      ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('product_details')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -246,17 +260,17 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("${widget.food?.name?.toUpperCase()}",
-                                    textAlign: TextAlign.center,
+                                    textAlign: TextAlign.start,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        color: KColors.new_black.withAlpha(100))),
+                                        fontSize: 15,fontWeight: FontWeight.w600,
+                                        color: Colors.grey)),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       widget.food.promotion == 0
                                           ? Text("${widget.food?.price}",
                                               style: TextStyle(
-                                                  color: KColors.new_black,
+                                                  color: KColors.primaryColor,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold))
                                           : Text("${widget.food?.price}",
@@ -264,7 +278,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                                   color: KColors.new_black,
                                                   decoration: TextDecoration
                                                       .lineThrough,
-                                                  fontSize: 20,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold)),
                                       widget.food.promotion != 0
                                           ? Row(children: <Widget>[
@@ -273,7 +287,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                                   "${widget.food?.promotion_price}",
                                                   style: TextStyle(
                                                       color:
-                                                          KColors.primaryColor,
+                                                          KColors.primaryYellowColor,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -283,25 +297,27 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                       Text(
                                           "${AppLocalizations.of(context).translate('currency')}",
                                           style: TextStyle(
-                                              color: KColors.new_black,
+                                              color:  widget.food.promotion == 0 ? KColors.primaryColor : KColors.primaryYellowColor,
                                               fontSize: 12))
                                     ]),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             Row(children: [
                               Text(
                                   "${AppLocalizations.of(context).translate('product_description_section_title')}",
-                                  style: TextStyle(color: KColors.new_black))
+                                  style: TextStyle(color: KColors.new_black,  fontSize: 14, fontWeight: FontWeight.w600))
                             ]),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("${widget.food?.description?.trim()}",
-                                    style: TextStyle(
-                                        color: KColors.new_black.withAlpha(150),
-                                        fontSize: 14)),
+                                Expanded(
+                                  child: Text("${widget.food?.description?.trim()}",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12)),
+                                ),
                               ],
                             ),
                             SizedBox(height: 20)
@@ -339,7 +355,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                               SizedBox(width: 15),
                               Text("${quantity}",
                                   style: TextStyle(
-                                      color: KColors.new_black, fontSize: 18)),
+                                      color: KColors.new_black, fontSize: 20, fontWeight: FontWeight.bold)),
                               SizedBox(width: 15),
                               Container(
                                 child: IconButton(
@@ -356,23 +372,25 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                         SizedBox(height: 10),
                         Text(
                             "${_getTotalPrice()}${AppLocalizations.of(context).translate('currency')}",
-                            style: TextStyle(fontSize: 18, color: Colors.grey)),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey)),
                         SizedBox(height: 15),
-                        ElevatedButton(
-                            onPressed: () {
-                              _continuePurchase();
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                    "${AppLocalizations.of(context).translate('buy')}"
-                                        ?.toUpperCase(),
-                                    style: TextStyle(
-                                        color: KColors.white, fontSize: 13)),
-                              ],
-                            ))
+                        Container(margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                _continuePurchase();
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                      "${AppLocalizations.of(context).translate('buy')}"
+                                          ?.toUpperCase(),
+                                      style: TextStyle(
+                                          color: KColors.white, fontSize: 15)),
+                                ],
+                              )),
+                        )
                       ]),
                 ),
               )

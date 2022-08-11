@@ -18,7 +18,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 class TransactionHistoryPage extends StatefulWidget {
   static var routeName = "/TransactionHistoryPage";
 
@@ -141,8 +140,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
-              icon:
-                  Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
               onPressed: () {
                 Navigator.pop(context);
               }),
@@ -198,8 +196,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                           .filter_unactive_text_color)),
                                         ),
                                         decoration: BoxDecoration(
-                                            color: widget.selectedPosition ==
-                                                    1
+                                            color: widget.selectedPosition == 1
                                                 ? this
                                                     .filter_active_button_color
                                                 : this
@@ -230,8 +227,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                           .filter_active_text_color)),
                                         ),
                                         decoration: BoxDecoration(
-                                            color: widget.selectedPosition ==
-                                                    1
+                                            color: widget.selectedPosition == 1
                                                 ? this
                                                     .filter_unactive_button_color
                                                 : this
@@ -370,12 +366,26 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       ));
 
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+        margin: EdgeInsets.only(bottom: 20),
         child: Column(
             children: <Widget>[]..addAll(List.generate(
                   pointData?.last_ten_transactions?.length, (index) {
                 return Column(
                   children: <Widget>[
+                    index == 0 ? SizedBox(height: 15) : Container(),
+                    index == 0
+                        ? Center(
+                            child: Text(
+                                pointData?.is_eligible
+                                    ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
+                                        .replaceAll("XXX_XXX",
+                                            "${pointData?.monthly_limit_amount}")
+                                    : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 11)))
+                        : Container(),
+                    index == 0 ? SizedBox(height: 20) : Container(),
                     index == 0
                         ? Center(
                             child: Container(
@@ -384,27 +394,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 children: [
                                   Container(
                                     padding: EdgeInsets.only(
-                                        top: 15,
+                                        top: 20,
                                         left: 10,
                                         right: 10,
-                                        bottom: 10),
+                                        bottom: 15),
                                     width:
                                         MediaQuery.of(context).size.width * 0.9,
                                     child: Column(
                                       children: [
-                                        SizedBox(height: 5),
-                                        Center(
-                                            child: Text(
-                                                pointData?.is_eligible
-                                                    ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
-                                                        .replaceAll("XXX_XXX",
-                                                            "${pointData?.monthly_limit_amount}")
-                                                    : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 11))),
-                                        SizedBox(height: 15),
+
                                         Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
@@ -414,27 +412,28 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                   Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .spaceEvenly,
+                                                              .start,
                                                       children: [
                                                         Text(
                                                             "${AppLocalizations.of(context)?.translate('kaba_points')}",
                                                             style: TextStyle(
                                                                 fontSize: 11,
-                                                                color:
-                                                                    Colors.grey)),
+                                                                color: Colors
+                                                                    .grey)),
                                                       ]),
                                                   SizedBox(height: 5),
                                                   Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .spaceEvenly,
+                                                              .start,
                                                       children: [
                                                         Row(
                                                           children: [
                                                             Text(
                                                                 "${pointData?.balance == null ? "---" : pointData?.balance}",
                                                                 style: TextStyle(
-                                                                    fontSize: 24,
+                                                                    fontSize:
+                                                                        24,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -461,8 +460,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                                     currentMonth),
                                                             style: TextStyle(
                                                                 fontSize: 11,
-                                                                color:
-                                                                    Colors.grey)),
+                                                                color: Colors
+                                                                    .grey)),
                                                       ]),
                                                   SizedBox(height: 5),
                                                   Row(
@@ -475,7 +474,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                             Text(
                                                                 "${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}",
                                                                 style: TextStyle(
-                                                                    fontSize: 24,
+                                                                    fontSize:
+                                                                        24,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -492,32 +492,30 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 children: [
                                                   Row(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
+                                                          MainAxisAlignment.end,
                                                       children: [
                                                         Text(
                                                             "${AppLocalizations.of(context)?.translate('month_used_kaba_points')}"
                                                                 .replaceAll(
                                                                     "XXX_XXX",
                                                                     currentMonth),
-
                                                             style: TextStyle(
                                                                 fontSize: 11,
-                                                                color:
-                                                                    Colors.grey)),
+                                                                color: Colors
+                                                                    .grey)),
                                                       ]),
                                                   SizedBox(height: 5),
                                                   Row(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
+                                                          MainAxisAlignment.end,
                                                       children: [
                                                         Row(
                                                           children: [
                                                             Text(
                                                                 "${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}",
                                                                 style: TextStyle(
-                                                                    fontSize: 24,
+                                                                    fontSize:
+                                                                        24,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -531,6 +529,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                             ),
                                           ],
                                         ),
+
                                       ],
                                     ),
                                   ),
@@ -580,21 +579,29 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                             ),
                           )
                         : Container(),
-                    index == 0 ? SizedBox(height: 15): Container(),
+                    index == 0 ? SizedBox(height: 15) : Container(),
                     pointData?.last_ten_transactions?.length > 0
                         ? Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration( color: KColors.new_gray,
-                        border: Border(
-                          bottom: BorderSide(
-                              width: index == pointData?.last_ten_transactions?.length-1 ? 0 : 0.8, color: Colors.grey.withAlpha(35)),
-                        ),
-                      ),
-                          child: Column(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: KColors.new_gray,
+                              border: Border(
+                                bottom: BorderSide(
+                                    width: index ==
+                                            pointData?.last_ten_transactions
+                                                    ?.length -
+                                                1
+                                        ? 0
+                                        : 0.8,
+                                    color: Colors.grey.withAlpha(35)),
+                              ),
+                            ),
+                            child: Column(
                               children: [
                                 ListTile(
-                                  leading: pointData?.last_ten_transactions[index]
+                                  leading: pointData
+                                              ?.last_ten_transactions[index]
                                               ?.type ==
                                           "D"
                                       ? Icon(
@@ -623,32 +630,50 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     ],
                                   ),
                                   // subtitle: Text("${pointData[index].details}", style: TextStyle(fontSize: 12)),
-                                  trailing:
-                                  Container(
+                                  trailing: Container(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 5),
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: (  pointData?.last_ten_transactions[index]?.type == "D"
-                                            ? CommandStateColor.delivered
-                                            : KColors.primaryColor)
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: (pointData
+                                                        ?.last_ten_transactions[
+                                                            index]
+                                                        ?.type ==
+                                                    "D"
+                                                ? CommandStateColor.delivered
+                                                : KColors.primaryColor)
                                             .withAlpha(30)),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        SizedBox(width: 5),
                                         Icon(
-                                            pointData?.last_ten_transactions[index]?.type == "D"
+                                            pointData
+                                                        ?.last_ten_transactions[
+                                                            index]
+                                                        ?.type ==
+                                                    "D"
                                                 ? Icons.arrow_downward
                                                 : Icons.arrow_upward,
                                             size: 12,
-                                            color:   pointData?.last_ten_transactions[index]?.type == "D"
+                                            color: pointData
+                                                        ?.last_ten_transactions[
+                                                            index]
+                                                        ?.type ==
+                                                    "D"
                                                 ? CommandStateColor.delivered
                                                 : KColors.primaryColor),
                                         SizedBox(width: 5),
-                                        Text("${pointData?.last_ten_transactions[index]?.amount}",
+                                        Text(
+                                            "${pointData?.last_ten_transactions[index]?.amount}",
                                             style: TextStyle(
-                                                color:   pointData?.last_ten_transactions[index]?.type == "D"
-                                                    ? CommandStateColor.delivered
+                                                color: pointData
+                                                            ?.last_ten_transactions[
+                                                                index]
+                                                            ?.type ==
+                                                        "D"
+                                                    ? CommandStateColor
+                                                        .delivered
                                                     : KColors.primaryColor,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 12)),
@@ -656,11 +681,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         Text(
                                             "${AppLocalizations.of(context)?.translate('currency')}",
                                             style: TextStyle(
-                                                color:   pointData?.last_ten_transactions[index]?.type == "D"
-                                                    ? CommandStateColor.delivered
+                                                color: pointData
+                                                            ?.last_ten_transactions[
+                                                                index]
+                                                            ?.type ==
+                                                        "D"
+                                                    ? CommandStateColor
+                                                        .delivered
                                                     : KColors.primaryColor,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 12)),
+                                        SizedBox(width: 5),
                                       ],
                                     ),
                                   ),
@@ -678,15 +709,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       Text(
                                           "${pointData?.last_ten_transactions[index]?.created_at}",
                                           style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 10,
+                                            color: Colors.grey,
+                                            fontSize: 10,
                                           )),
                                       SizedBox(width: 10)
                                       // SizedBox(width: 5), Icon(pointData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
                                     ]),
                               ],
                             ),
-                        )
+                          )
                         : Container(),
                   ],
                 );
@@ -989,9 +1020,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                           Text(
                                               "${AppLocalizations.of(context)?.translate('available_balance')}",
                                               style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.grey)),
-                                          SizedBox(height: 5),
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.w400)),
+                                          SizedBox(height: 10),
                                           Row(
                                             children: [
                                               Text(
@@ -999,8 +1031,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                   style: TextStyle(
                                                       fontSize: 24,
                                                       fontWeight:
-                                                          FontWeight.w500,
-                                                      color: KColors.new_black)),
+                                                          FontWeight.bold,
+                                                      color:
+                                                          KColors.new_black)),
+                                              SizedBox(width: 5),
                                               Text(
                                                   "  ${AppLocalizations.of(context)?.translate('currency')}",
                                                   style: TextStyle(
@@ -1036,6 +1070,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
+                                            color: KColors.new_black,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14))),
                               ],
@@ -1047,7 +1082,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               padding: EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 5),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(20),
                                   color: (moneyData[index].type == -1
                                           ? CommandStateColor.delivered
                                           : KColors.primaryColor)
@@ -1055,6 +1090,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  SizedBox(width: 5,),
                                   Icon(
                                       moneyData[index].type == -1
                                           ? Icons.arrow_downward
@@ -1080,6 +1116,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                               : KColors.primaryColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12)),
+                                  SizedBox(width: 5),
                                 ],
                               ),
                             ),

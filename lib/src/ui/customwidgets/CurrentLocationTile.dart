@@ -108,7 +108,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                                       color: KColors.new_black)),
                             ),
                             SizedBox(
-                              height: 5,
+                              height: 2,
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
@@ -136,7 +136,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               ),
                             ),
                             SizedBox(
-                              height: 5,
+                              height: 1,
                             ),
                             Text(
                                 "${_locationToPlusCode(StateContainer.of(context).location)}",

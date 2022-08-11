@@ -1,5 +1,6 @@
 library chip_list;
 
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 
 typedef OnToggle = void Function(int index);
@@ -26,7 +27,7 @@ class CustomChipList extends StatefulWidget {
     this.style,
     this.inactiveBorderColorList = const [Colors.white],
     this.activeBorderColorList = const [Colors.white],
-    this.borderRadiiList = const [15],
+    this.borderRadiiList = const [20],
     this.supportsMultiSelect = false,
     this.extraOnToggle,
     this.shouldWrap = false,
@@ -428,118 +429,123 @@ class _CustomChipListState extends State<CustomChipList> {
       physics: widget.scrollPhysics ?? const ScrollPhysics(),
       child:
           /* list 1*/
-          Column(crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(
-              widget.firstLineCount == -1
-                  ? widget.listOfChipNames.length
-                  : widget.firstLineCount,
-              (index) => Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: widget.widgetSpacing,
-                ),
-                child: ChoiceChip(
-                  label: Text(
-                    widget.listOfChipNames[index],
-                    style: widget.style != null
-                        ? widget.style.copyWith(
-                            color: _textColorizer(index),
-                          )
-                        : const TextStyle().copyWith(
-                            color: _textColorizer(index),
-                          ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        widget.borderRadiiList.length == 1
-                            ? widget.borderRadiiList.first
-                            : widget.borderRadiiList[index]),
-                    side: BorderSide(
-                      color: _borderColorizer(index),
+            children: [
+           SizedBox(width: 10,),
+              Column(crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List.generate(
+                  widget.firstLineCount == -1
+                      ? widget.listOfChipNames.length
+                      : widget.firstLineCount,
+                  (index) => Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: widget.widgetSpacing,
+                    ),
+                    child: ChoiceChip(
+                      label: Text(
+                        Utils.capitalize(widget.listOfChipNames[index]?.trim()),
+                        style: widget.style != null
+                            ? widget.style.copyWith(
+                                color: _textColorizer(index),
+                              )
+                            : const TextStyle().copyWith(
+                                color: _textColorizer(index),
+                              ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            widget.borderRadiiList.length == 1
+                                ? widget.borderRadiiList.first
+                                : widget.borderRadiiList[index]),
+                        side: BorderSide(
+                          color: _borderColorizer(index),
+                        ),
+                      ),
+                      backgroundColor: widget.inactiveBgColorList.length == 1
+                          ? widget.inactiveBgColorList.first
+                          : widget.inactiveBgColorList[index],
+                      selected: _checkChipSelectionStatus(index),
+                      selectedColor: _tileColorizer(index),
+                      onSelected: (val) {
+                        // update other chips depending on value of [supportsMultiSelect]
+                        _handleOnSelected(index);
+
+                        if (widget.extraOnToggle != null) {
+                          widget.extraOnToggle(index);
+
+                          // prevents further execution,
+                          // thus ensuring setState is not called.
+                          return;
+                        }
+
+                        // update UI
+                        setState(() {});
+                      },
                     ),
                   ),
-                  backgroundColor: widget.inactiveBgColorList.length == 1
-                      ? widget.inactiveBgColorList.first
-                      : widget.inactiveBgColorList[index],
-                  selected: _checkChipSelectionStatus(index),
-                  selectedColor: _tileColorizer(index),
-                  onSelected: (val) {
-                    // update other chips depending on value of [supportsMultiSelect]
-                    _handleOnSelected(index);
-
-                    if (widget.extraOnToggle != null) {
-                      widget.extraOnToggle(index);
-
-                      // prevents further execution,
-                      // thus ensuring setState is not called.
-                      return;
-                    }
-
-                    // update UI
-                    setState(() {});
-                  },
                 ),
               ),
-            ),
-          ),
-          widget.firstLineCount == -1
-              ? Container()
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: List.generate(
-                    widget.listOfChipNames.length - widget.firstLineCount,
-                    (index) => Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: widget.widgetSpacing,
-                      ),
-                      child: ChoiceChip(
-                        label: Text(
-                          widget.listOfChipNames[widget.firstLineCount+index],
-                          style: widget.style != null
-                              ? widget.style.copyWith(
-                                  color: _textColorizer(widget.firstLineCount+index),
-                                )
-                              : const TextStyle().copyWith(
-                                  color: _textColorizer(widget.firstLineCount+index),
-                                ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              widget.borderRadiiList.length == 1
-                                  ? widget.borderRadiiList.first
-                                  : widget.borderRadiiList[widget.firstLineCount+index]),
-                          side: BorderSide(
-                            color: _borderColorizer(widget.firstLineCount+index),
+              widget.firstLineCount == -1
+                  ? Container()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: List.generate(
+                        widget.listOfChipNames.length - widget.firstLineCount,
+                        (index) => Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: widget.widgetSpacing,
+                          ),
+                          child: ChoiceChip(
+                            label: Text(
+                              Utils.capitalize(widget.listOfChipNames[widget.firstLineCount+index]?.trim()),
+                              style: widget.style != null
+                                  ? widget.style.copyWith(
+                                      color: _textColorizer(widget.firstLineCount+index),
+                                    )
+                                  : const TextStyle().copyWith(
+                                      color: _textColorizer(widget.firstLineCount+index),
+                                    ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  widget.borderRadiiList.length == 1
+                                      ? widget.borderRadiiList.first
+                                      : widget.borderRadiiList[widget.firstLineCount+index]),
+                              side: BorderSide(
+                                color: _borderColorizer(widget.firstLineCount+index),
+                              ),
+                            ),
+                            backgroundColor: widget.inactiveBgColorList.length == 1
+                                ? widget.inactiveBgColorList.first
+                                : widget.inactiveBgColorList[widget.firstLineCount+index],
+                            selected: _checkChipSelectionStatus(widget.firstLineCount+index),
+                            selectedColor: _tileColorizer(widget.firstLineCount+index),
+                            onSelected: (val) {
+                              // update other chips depending on value of [supportsMultiSelect]
+                              _handleOnSelected(widget.firstLineCount+index);
+
+                              if (widget.extraOnToggle != null) {
+                                widget.extraOnToggle(widget.firstLineCount+index);
+
+                                // prevents further execution,
+                                // thus ensuring setState is not called.
+                                return;
+                              }
+
+                              // update UI
+                              setState(() {});
+                            },
                           ),
                         ),
-                        backgroundColor: widget.inactiveBgColorList.length == 1
-                            ? widget.inactiveBgColorList.first
-                            : widget.inactiveBgColorList[widget.firstLineCount+index],
-                        selected: _checkChipSelectionStatus(widget.firstLineCount+index),
-                        selectedColor: _tileColorizer(widget.firstLineCount+index),
-                        onSelected: (val) {
-                          // update other chips depending on value of [supportsMultiSelect]
-                          _handleOnSelected(widget.firstLineCount+index);
-
-                          if (widget.extraOnToggle != null) {
-                            widget.extraOnToggle(widget.firstLineCount+index);
-
-                            // prevents further execution,
-                            // thus ensuring setState is not called.
-                            return;
-                          }
-
-                          // update UI
-                          setState(() {});
-                        },
                       ),
-                    ),
-                  ),
-                )
+                    )
         ],
       ),
+            ],
+          ),
       /* list 2 */
     );
   }

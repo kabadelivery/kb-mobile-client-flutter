@@ -49,7 +49,7 @@ class _SplashPageState extends State<PresentationPage> {
           builder: (context) => IntroViewsFlutter(
             [
               PageViewModel(
-                pageColor: Color(0xfcf9eb),
+                pageColor: Color.fromRGBO(253,216,54,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
@@ -59,7 +59,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('choice')}".toUpperCase(),
                 ),
                 titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
-                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.choice,
                   height: 285.0,
@@ -68,7 +68,7 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor: Color(0xeaf1fa),
+                pageColor: Color.fromRGBO(24,119,213,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
@@ -78,7 +78,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('payment')}".toUpperCase(),
                 ),
                 titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
-                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.payment,
                   height: 285.0,
@@ -87,7 +87,7 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor: Color(0xe7eeee),
+                pageColor: Color.fromRGBO(0,88,86,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
@@ -97,7 +97,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('address')}".toUpperCase(),
                 ),
                 titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
-                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.address,
                   height: 285.0,
@@ -106,7 +106,7 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor:  Color(0xe6dadc),
+                pageColor:  Color.fromRGBO(205,31,69,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
@@ -116,7 +116,7 @@ class _SplashPageState extends State<PresentationPage> {
                   "${AppLocalizations.of(context).translate('enjoy')}".toUpperCase(),
                 ),
                 titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
-                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.enjoy,
                   height: 285.0,

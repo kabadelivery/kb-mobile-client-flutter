@@ -263,7 +263,9 @@ class _ShopListPageState extends State<ShopListPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('search')}"),
+                    getCategoryTitle(context)[0]
+                  //    "${AppLocalizations.of(context).translate('search')}"
+                ),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -1306,4 +1308,66 @@ class _ShopListPageState extends State<ShopListPage>
           curve: Curves.fastOutSlowIn);
     });
   }
+
+  getCategoryTitle(BuildContext context) {
+    var tmp = [
+      AppLocalizations.of(context).translate('service_shop_type_name'),
+      AppLocalizations.of(context).translate('service_shop_type_product')
+    ];
+
+    switch (widget?.type) {
+      case "food": // food
+        tmp = [
+          AppLocalizations.of(context)
+              .translate('service_restaurant_type_name'),
+          AppLocalizations.of(context)
+              .translate('service_restaurant_type_product')
+        ];
+        break;
+      case "drink": // drinks
+        tmp = [
+          AppLocalizations.of(context).translate('service_drink_type_name'),
+          AppLocalizations.of(context).translate('service_drink_type_product')
+        ];
+        break;
+      case "flower": // flowers
+        tmp = [
+          AppLocalizations.of(context).translate('service_flower_type_name'),
+          AppLocalizations.of(context).translate('service_flower_type_product')
+        ];
+        break;
+        /*   case "supermarket": // flowers
+        tmp = [
+          AppLocalizations.of(context).translate('service_flower_type_name'),
+          AppLocalizations.of(context).translate('service_flower_type_product')
+        ];*/
+        break;
+    //   case 1005: // movies
+    //     category_name_code = "service_category_movies";
+    //     break;
+    //   case 1006: // package delivery
+    //     category_name_code = "service_category_package_delivery";
+    //     break;
+      case "shop": // shopping
+        tmp = [
+          AppLocalizations.of(context).translate('service_shop_type_name'),
+          AppLocalizations.of(context).translate('service_shop_type_product')
+        ];
+        break;
+      case "ticket": // ticket
+        tmp = [
+          AppLocalizations.of(context).translate('service_ticket_type_name'),
+          AppLocalizations.of(context).translate('service_ticket_product_name')
+        ];
+        break;
+      case "grocery": // ticket
+        tmp = [
+          AppLocalizations.of(context).translate('service_grocery_type_name'),
+          AppLocalizations.of(context).translate('service_grocery_product_name')
+        ];
+        break;
+    }
+    return tmp;
+  }
+
 }

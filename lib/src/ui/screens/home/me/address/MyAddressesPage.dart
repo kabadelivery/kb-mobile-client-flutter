@@ -217,7 +217,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: KColors.new_gray,
+                    color: address?.is_favorite ? Colors.yellow.withAlpha(50) : KColors.new_gray,
                   ),
                   margin: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),

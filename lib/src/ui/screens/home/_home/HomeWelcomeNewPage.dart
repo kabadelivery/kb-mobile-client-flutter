@@ -433,6 +433,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                 Utils.inflateLink(restaurant.pic))))),
                 SizedBox(height: 10),
                 Container(
+                  height: 35,
                     width: MediaQuery.of(context).size.width /
                         (isInHorizontalScrollviewMode ? 5 : 3),
                     child: Text(restaurant.name,
@@ -539,60 +540,62 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             /*top slide*/
             Stack(
               children: <Widget>[
-                ClipPath(
-                    clipper: KabaRoundTopClipper(),
-                    child: data.slider.length > 1
-                        ? CarouselSlider(
-                            options: CarouselOptions(
-                              onPageChanged: _carousselPageChanged,
-                              viewportFraction: 1,
-                              autoPlay: data.slider.length > 1 ? true : false,
-                              reverse: data.slider.length > 1 ? true : false,
-                              enableInfiniteScroll:
-                                  data.slider.length > 1 ? true : false,
-                              autoPlayInterval: Duration(seconds: 5),
-                              autoPlayAnimationDuration:
-                                  Duration(milliseconds: 150),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              height:
-                                  9 * MediaQuery.of(context).size.width / 16,
-                            ),
-                            items: data.slider.map((admodel) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return GestureDetector(
-                                    onTap: () => _jumpToAdsList(data.slider,
-                                        data.slider.indexOf(admodel)),
-                                    child: Container(
-                                        height: 9 *
-                                            MediaQuery.of(context).size.width /
-                                            16,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: CachedNetworkImage(
-                                            imageUrl:
-                                                Utils.inflateLink(admodel.pic),
-                                            fit: BoxFit.cover)),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : GestureDetector(
-                            onTap: () => _jumpToAdsList(data.slider, 0),
-                            child: Container(
+                Container(padding: EdgeInsets.only(bottom: 10),
+                  child: ClipPath(
+                      clipper: KabaRoundTopClipper(),
+                      child: data.slider.length > 1
+                          ? CarouselSlider(
+                              options: CarouselOptions(
+                                onPageChanged: _carousselPageChanged,
+                                viewportFraction: 1,
+                                autoPlay: data.slider.length > 1 ? true : false,
+                                reverse: data.slider.length > 1 ? true : false,
+                                enableInfiniteScroll:
+                                    data.slider.length > 1 ? true : false,
+                                autoPlayInterval: Duration(seconds: 5),
+                                autoPlayAnimationDuration:
+                                    Duration(milliseconds: 150),
+                                autoPlayCurve: Curves.fastOutSlowIn,
                                 height:
                                     9 * MediaQuery.of(context).size.width / 16,
-                                width: MediaQuery.of(context).size.width,
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        Utils.inflateLink(data.slider[0].pic),
-                                    fit: BoxFit.cover)),
-                          )),
+                              ),
+                              items: data.slider.map((admodel) {
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return GestureDetector(
+                                      onTap: () => _jumpToAdsList(data.slider,
+                                          data.slider.indexOf(admodel)),
+                                      child: Container(
+                                          height: 9 *
+                                              MediaQuery.of(context).size.width /
+                                              16,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: CachedNetworkImage(
+                                              imageUrl:
+                                                  Utils.inflateLink(admodel.pic),
+                                              fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }).toList(),
+                            )
+                          : GestureDetector(
+                              onTap: () => _jumpToAdsList(data.slider, 0),
+                              child: Container(
+                                  height:
+                                      9 * MediaQuery.of(context).size.width / 16,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: CachedNetworkImage(
+                                      imageUrl:
+                                          Utils.inflateLink(data.slider[0].pic),
+                                      fit: BoxFit.cover)),
+                            )),
+                ),
                 Positioned(
-                    bottom: 0,
+                    bottom: 3,
                     child: Container(width: MediaQuery.of(context).size.width,
-                      child: Row(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.max,
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
                             children: <Widget>[]..addAll(List<Widget>.generate(

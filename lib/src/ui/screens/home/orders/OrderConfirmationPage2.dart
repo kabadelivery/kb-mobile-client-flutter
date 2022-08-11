@@ -1933,6 +1933,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _orderBillConfiguration = configuration;
       _orderBillConfiguration.hasCheckedOpen = true;
     });
+   if (_orderBillConfiguration.open_type == 1) {
+     if (StateContainer.of(context).selectedAddress != null) {
+       _selectedAddress = StateContainer
+           .of(context)
+           .selectedAddress;
+      Future.delayed(new Duration(milliseconds: 300), () {
+        widget.presenter.computeBilling(widget.restaurant, widget.customer,
+            widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
+      });
+       Future.delayed(Duration(seconds: 1), () {
+         Scrollable.ensureVisible(poweredByKey.currentContext);
+       });
+       showLoading(true);
+//        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+       Future.delayed(Duration(milliseconds: 300), () {
+         Scrollable.ensureVisible(poweredByKey.currentContext);
+       });
+     }
+   }
   }
 
   @override

@@ -60,8 +60,8 @@ class _ShinningTextWidgetState extends State<ShinningTextWidget> {
     return
       (
           AnimatedContainer(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7)), color: widget.backgroundColor),
+              padding: EdgeInsets.only(left:10,right: 10, top: 5,bottom: 5),
+              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)), color: widget.backgroundColor),
               child:Text(
                   widget.text,
                   style: TextStyle(color: widget.textColor, fontSize: 10)

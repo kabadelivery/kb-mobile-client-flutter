@@ -53,11 +53,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                               /* contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
                                 leading: */
                               Container(
-                                  height: 50,
-                                  width: 50,
+                                  height: 60,
+                                  width: 60,
                                   decoration: BoxDecoration(
                                       border: new Border.all(
-                                          color: KColors.primaryColor
+                                          color: KColors.primaryYellowColor
                                               .withOpacity(0.7),
                                           width: 2),
                                       /*borderRadius:
@@ -94,9 +94,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w200,
                                             fontSize: 13,
-                                            color:
-                                                KColors.new_black.withAlpha(150))),
-                                    SizedBox(height: 5),
+                                            color: KColors.new_black
+                                                .withAlpha(150))),
+                                    SizedBox(height:10),
                                     /* kilometers and shipping fees */
                                     Row(children: <Widget>[
                                       _getRestaurantStateTag(widget?.shopModel),
@@ -237,7 +237,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             shopModel?.category_id == "flower"
-                ? FlowerCatalogPage(
+                ? RestaurantMenuPage(
                     restaurant: shopModel, presenter: MenuPresenter())
                 : RestaurantMenuPage(
                     restaurant: shopModel, presenter: MenuPresenter()),
@@ -322,20 +322,20 @@ class _ShopListWidgetState extends State<ShopListWidget> {
 
     return shopModel?.coming_soon == 0
         ? Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(tagText?.toUpperCase(),
-                style: TextStyle(color: tagTextColor, fontSize: 11)))
+                style: TextStyle(color: tagTextColor, fontSize: 12,fontWeight: FontWeight.w600)))
         : Container(
-            padding: EdgeInsets.all(5),
+            padding:  EdgeInsets.symmetric(horizontal: 8,vertical: 2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(
                 "${AppLocalizations.of(context).translate('coming_soon')}"
                     ?.toUpperCase(),
-                style: TextStyle(color: Colors.grey, fontSize: 11)));
+                style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w600)));
   }
 }

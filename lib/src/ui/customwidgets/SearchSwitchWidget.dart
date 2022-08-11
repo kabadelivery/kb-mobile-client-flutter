@@ -134,8 +134,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                         fontWeight: FontWeight.w400,
                                         color: widget.selectedPosition == 1
                                             ? this.filter_active_text_color
-                                            : this
-                                                .filter_unactive_text_color)),
+                                            : this.filter_unactive_text_color)),
                               ),
                               decoration: BoxDecoration(
                                   color: widget.selectedPosition == 1
@@ -152,8 +151,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                           child: Container(
                               padding: EdgeInsets.all(10),
                               child: Center(
-                                child: Text(
-                                    Utils.capitalize(_searchChoices[1]),
+                                child: Text(Utils.capitalize(_searchChoices[1]),
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
