@@ -285,6 +285,87 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       );
   }
 
+  _buildEligibleVoucher(List<VoucherModel> eligible_vouchers) {
+    if (eligible_vouchers == null)
+      return Container();
+    else
+      return Container(
+        color: KColors.new_gray,
+        margin: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+            children: List.generate(eligible_vouchers.length, (index) {
+          if (eligible_vouchers[index].id == _selectedVoucher?.id || eligible_vouchers[index].use_count-eligible_vouchers[index].already_used_count == 0)
+            return Container(
+               /* padding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                    top: index == 0 ? 10 : 0,
+                    bottom: index == eligible_vouchers.length - 1 ? 10 : 0)*/);
+          return Container(
+            padding: EdgeInsets.only(
+                right: 10,
+                left: 10,
+                top: index == 0 ? 10 : 5,
+                bottom: index == eligible_vouchers.length - 1 ? 10 : 5),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Container(
+                              child: Text(
+                                "${eligible_vouchers[index].value} ${eligible_vouchers[index].type == 1 ? "F" : "%"} OFF",
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              padding: EdgeInsets.only(
+                                  left: 10, right: 10, top: 5, bottom: 5),
+                              decoration: BoxDecoration(
+                                  color: KColors.primaryColor.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30))),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                              "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context).translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context).translate('voucher_type_delivery')}" : "${AppLocalizations.of(context).translate('voucher_type_all')}")}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: KColors.new_black))
+                        ]),
+                        SizedBox(height: 5),
+                        Text(eligible_vouchers[index].trade_name,
+                            style: TextStyle(color: Colors.grey, fontSize: 12))
+                      ]),
+                  GestureDetector(
+                    onTap: () {
+                      _selectVoucher(
+                          has_voucher: true, voucher: eligible_vouchers[index]);
+                    },
+                    child: Container(
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('voucher_use')}",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: KColors.primaryColor,
+                              fontWeight: FontWeight.w600)),
+                      padding: EdgeInsets.only(
+                          left: 10, right: 10, top: 5, bottom: 5),
+                      decoration: BoxDecoration(
+                          color: KColors.primaryColor.withAlpha(30),
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                  )
+                ]),
+          );
+        })),
+      );
+  }
+
   _buildBill() {
     if (_orderBillConfiguration == null) return Container();
     if (_isPreorderSelected()) {
@@ -669,7 +750,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           controller: _addInfoController,
                           textAlign: TextAlign.start,
                           maxLines: 3,
-                          style: TextStyle(color: KColors.new_black, fontSize: 14),
+                          style:
+                              TextStyle(color: KColors.new_black, fontSize: 14),
                           decoration: InputDecoration(
                             labelText:
                                 "${AppLocalizations.of(context).translate('additional_info')}",
@@ -1933,25 +2015,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _orderBillConfiguration = configuration;
       _orderBillConfiguration.hasCheckedOpen = true;
     });
-   if (_orderBillConfiguration.open_type == 1) {
-     if (StateContainer.of(context).selectedAddress != null) {
-       _selectedAddress = StateContainer
-           .of(context)
-           .selectedAddress;
-      Future.delayed(new Duration(milliseconds: 300), () {
-        widget.presenter.computeBilling(widget.restaurant, widget.customer,
-            widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
-      });
-       Future.delayed(Duration(seconds: 1), () {
-         Scrollable.ensureVisible(poweredByKey.currentContext);
-       });
-       showLoading(true);
+    if (_orderBillConfiguration.open_type == 1) {
+      if (StateContainer.of(context).selectedAddress != null) {
+        _selectedAddress = StateContainer.of(context).selectedAddress;
+        Future.delayed(new Duration(milliseconds: 300), () {
+          widget.presenter.computeBilling(widget.restaurant, widget.customer,
+              widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
+        });
+        Future.delayed(Duration(seconds: 1), () {
+          Scrollable.ensureVisible(poweredByKey.currentContext);
+        });
+        showLoading(true);
 //        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
-       Future.delayed(Duration(milliseconds: 300), () {
-         Scrollable.ensureVisible(poweredByKey.currentContext);
-       });
-     }
-   }
+        Future.delayed(Duration(milliseconds: 300), () {
+          Scrollable.ensureVisible(poweredByKey.currentContext);
+        });
+      }
+    }
   }
 
   @override
@@ -1975,6 +2055,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.total_pricing = configuration.total_pricing;
     _orderBillConfiguration.remise = configuration.remise;
     _orderBillConfiguration.kaba_point = configuration.kaba_point;
+    _orderBillConfiguration.eligible_vouchers = configuration.eligible_vouchers;
 
     _orderBillConfiguration
         .total_preorder_pricing = (configuration.command_pricing.toDouble() +
@@ -2153,7 +2234,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     );
   }
 
-  _selectVoucher() async {
+  _selectVoucher({bool has_voucher = false, VoucherModel voucher}) async {
     /* just like we pick and address, we pick a voucher. */
 
     /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
@@ -2164,22 +2245,27 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     * - result may be only vouchers,
     *
     * */
+    Map results;
+    if (!has_voucher) {
+      setState(() {
+        _selectedVoucher = null;
+      });
 
-    setState(() {
-      _selectedVoucher = null;
-    });
-
-    /* jump and get it */
-    Map results = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyVouchersPage(
-            pick: true,
-            presenter: VoucherPresenter(),
-            restaurantId: widget?.restaurant?.id,
-            foods: _getFoodsIdArray(widget.foods)),
-      ),
-    );
+      /* jump and get it */
+      results = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyVouchersPage(
+              pick: true,
+              presenter: VoucherPresenter(),
+              restaurantId: widget?.restaurant?.id,
+              foods: _getFoodsIdArray(widget.foods)),
+        ),
+      );
+    } else {
+      results = new Map();
+      results["voucher"] = voucher;
+    }
 
     if (results != null && results.containsKey('voucher')) {
       setState(() {
@@ -2261,57 +2347,64 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ])),
           ),
         ),
+        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
       ]);
     } else {
 //      _selectedVoucher
-      return Stack(
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.only(top: 10),
-              child: MyVoucherMiniWidget(
-                  voucher: _selectedVoucher, isForOrderConfirmation: true)),
-          Positioned(
-              right: 10,
-              top: 0,
-              child: Center(
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.blue,
-//                borderRadius: BorderRadius.all(Radius.circular(10))
-                  ),
+      return Column(
+        children: [
+          Stack(
+            children: <Widget>[
+              Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: MyVoucherMiniWidget(
+                      voucher: _selectedVoucher, isForOrderConfirmation: true)),
+              Positioned(
+                  right: 10,
+                  top: 0,
                   child: Center(
-                    child: IconButton(
-                        icon: Icon(Icons.delete_forever,
-                            color: Colors.white, size: 20),
-                        onPressed: () {
-                          setState(() {
-                            _selectedVoucher = null;
-                          });
-                          this.widget.presenter.orderConfirmationView = this;
-                          CustomerUtils.getCustomer().then((customer) {
-                            widget.customer = customer;
-                            // launch request for retrieving the delivery prices and so on.
-                            if (_selectedAddress != null) {
-                              widget.presenter.computeBilling(
-                                  widget.restaurant,
-                                  widget.customer,
-                                  widget.foods,
-                                  _selectedAddress,
-                                  _selectedVoucher,
-                                  _usePoint);
-                              showLoading(true);
-                              Future.delayed(Duration(seconds: 1), () {
-                                Scrollable.ensureVisible(
-                                    poweredByKey.currentContext);
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.blue,
+//                borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      child: Center(
+                        child: IconButton(
+                            icon: Icon(Icons.delete_forever,
+                                color: Colors.white, size: 20),
+                            onPressed: () {
+                              setState(() {
+                                _selectedVoucher = null;
                               });
-                            }
-                          });
-                        }),
-                  ),
-                ),
-              )),
+                              this.widget.presenter.orderConfirmationView =
+                                  this;
+                              CustomerUtils.getCustomer().then((customer) {
+                                widget.customer = customer;
+                                // launch request for retrieving the delivery prices and so on.
+                                if (_selectedAddress != null) {
+                                  widget.presenter.computeBilling(
+                                      widget.restaurant,
+                                      widget.customer,
+                                      widget.foods,
+                                      _selectedAddress,
+                                      _selectedVoucher,
+                                      _usePoint);
+                                  showLoading(true);
+                                  Future.delayed(Duration(seconds: 1), () {
+                                    Scrollable.ensureVisible(
+                                        poweredByKey.currentContext);
+                                  });
+                                }
+                              });
+                            }),
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
         ],
       );
     }

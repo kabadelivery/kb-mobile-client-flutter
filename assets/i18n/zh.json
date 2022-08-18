@@ -106,7 +106,7 @@
   "send_message_network_error": "发送消息网络错误！",
   "send_message_system_error": "发送消息系统错误！",
   "message_too_short": "对不起，此消息太短了。无法发送！",
-  "balance": "余额",
+  "balance": "金额",
   "kaba_points": "KABA积分",
   "why_top_up_fees": "其手续费便于在线交易系统维护",
   "operator": "网络提供商",
@@ -374,7 +374,6 @@
   "gps_location_valid": "位置获取成功。请填写其他信息",
   "notice": "通知:",
   "alert_message_received": "收到 !",
-  "balance": "余额",
   "points": "积分",
   "debit_points_kaba": "KABA 积分借记",
   "credit_points_kaba": "KABA Point 到账",
@@ -473,5 +472,9 @@
   "shipper": "外送员",
   "please_give_rating": "请提供评价",
   "anything_to_say_about_the_service": "请提供关于本订单的感悟、谢谢",
-  "submit": "提交"
+  "submit": "提交",
+  "voucher_type_shop": "产品优惠",
+  "voucher_type_delivery": "运费优惠",
+  "voucher_type_all": "总价优惠",
+  "voucher_use": "使用"
 }

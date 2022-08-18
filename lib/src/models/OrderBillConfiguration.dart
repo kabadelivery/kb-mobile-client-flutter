@@ -1,4 +1,6 @@
+import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/KabaPointConfigurationModel.dart';
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
@@ -39,7 +41,8 @@ class OrderBillConfiguration {
   //
   KabaPointConfigurationModel kaba_point;
 
-
+  // eligible voucher
+  List<VoucherModel> eligible_vouchers;
 
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration.none();
@@ -78,7 +81,7 @@ class OrderBillConfiguration {
     this.promotion_pricing, this.total_preorder_pricing, this.command_pricing, this.remise,
     this.total_pricing, this.total_normal_pricing, this.account_balance,
     this.out_of_range, this.pay_at_delivery, this.prepayed, this.trustful,
-    this.max_pay, this.cooking_time, this.can_preorder, this.discount,
+    this.max_pay, this.cooking_time, this.can_preorder, this.discount, this.eligible_vouchers,
     this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt, this.kaba_point});
 
 
@@ -98,6 +101,10 @@ class OrderBillConfiguration {
     max_pay = json['max_pay'];
     kaba_point = KabaPointConfigurationModel.fromMap(json["kaba_point"]);
     cooking_time = json['cooking_time'];
+
+    // eligible voucher
+      l = json["eligible_vouchers"];
+    eligible_vouchers = l?.map((voucher_model) => VoucherModel.fromJson(voucher_model))?.toList();
   }
 
   Map toJson () => {

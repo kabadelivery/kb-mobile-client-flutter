@@ -375,7 +375,6 @@
   "gps_location_valid": "Gps location was successfully set.\nPlease fill in the other information",
   "notice": "Notice:",
   "alert_message_received": "Got it !",
-  "balance": "Balance",
   "points": "Points",
   "debit_points_kaba": "KABA Point debit",
   "credit_points_kaba": "KABA Point Credit",
@@ -475,5 +474,9 @@
   "shipper": "Shipper",
   "please_give_rating": "Please give a rating",
   "anything_to_say_about_the_service": "Anything to say about the service ?",
-  "submit": "SUBMIT"
+  "submit": "SUBMIT",
+  "voucher_type_shop": "ARTICLES",
+  "voucher_type_delivery": "DELIVERY",
+  "voucher_type_all": "ALL",
+  "voucher_use": "USE"
 }

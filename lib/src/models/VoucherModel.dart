@@ -8,7 +8,7 @@ import '../xrint.dart';
 
 class VoucherModel {
 
-  var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
+  // var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
 
   int id;
   String restaurant_name;
@@ -16,7 +16,7 @@ class VoucherModel {
   String details;
   int value;
   int state; //
-  int type; // type,
+  int type; // type, % or F discount
   int category; // category, food, delivery, category
   List<ShopProductModel> products;
 //  ShopModel restaurant_entity;

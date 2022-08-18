@@ -1130,7 +1130,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_comment")}",
-                      textAlign: TextAlign.center)
+                      textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
                 ],
               ),
             ),
@@ -1165,7 +1165,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         _latentRate = rate;
       });
       // after two seconds, i jump to the review activity.
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds: 0), () {
         _reviewRestaurant();
       });
     }

@@ -475,5 +475,12 @@
   "shipper": "Livreur",
   "please_give_rating": "Veuillez donner un avis",
   "anything_to_say_about_the_service": "Aimerez vous commenter le service ?",
-  "submit": "Soumettre"
+  "submit": "Soumettre",
+
+
+  "voucher_type_shop": "ARTICLES",
+  "voucher_type_delivery": "LIVRAISON",
+  "voucher_type_all": "TOUT",
+  "voucher_use": "UTILISER"
+
 }

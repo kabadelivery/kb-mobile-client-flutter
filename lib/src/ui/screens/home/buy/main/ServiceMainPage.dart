@@ -82,6 +82,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
         widget.coming_soon_services?.length == 0)
       widget.presenter.fetchServiceCategoryFromLocation(
           StateContainer.of(context).location);
+    // fetch billing and update locally
+    widget.presenter.fetchBilling();
   }
 
   @override
@@ -146,7 +148,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-          CurrentLocationTile(),
+              CurrentLocationTile(),
               InkWell(
                   child: SearchStatelessWidget(
                       title:
@@ -286,7 +288,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       });
   }
 
-
   void mDialog(String message) {
     _showDialog(
       icon: Icon(Icons.info_outline, color: Colors.red),
@@ -318,7 +319,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 12))
             ]),
             actions: isYesOrNo
                 ? <Widget>[

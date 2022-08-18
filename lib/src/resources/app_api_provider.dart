@@ -480,8 +480,7 @@ class AppApiProvider {
     }
   }
 
-  Future<dynamic> fetchServiceCategoryFromLocation(
-      Position location) async {
+  Future<dynamic> fetchServiceCategoryFromLocation(Position location) async {
     xrint("entered fetchServiceCategoryFromLocation");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -503,7 +502,38 @@ class AppApiProvider {
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-      return json.encode(response.data);
+        return json.encode(response.data);
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  Future<String> fetchBilling() async {
+    xrint("entered fetchBilling");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        // ..headers = Utils.getHeadersWithToken(customer.token)
+        ..connectTimeout = 30000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_FETCH_BILLING).toString(),
+        data: json.encode({}),
+      );
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        return json.encode(response.data["data"]);
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }

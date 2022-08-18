@@ -33,7 +33,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
     super.initState();
 
     CustomerUtils.getCustomer().then((customer) {
-      if (customer != null) {
+      if (customer != null && customer?.id != null) {
         widget.customer = customer;
         CustomerUtils.getSavedAddressLocally().then((value) {
           setState(() {
@@ -68,11 +68,13 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: AnimatedSwitcher(duration: Duration(milliseconds: 400),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 400),
         child: StateContainer?.of(context)?.location != null ||
                 StateContainer.of(context).selectedAddress != null
             ? Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                margin:
+                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: KColors.mBlue.withAlpha(10),
@@ -159,7 +161,8 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                 ),
               )
             : Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                margin:
+                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: KColors.mBlue.withAlpha(10),
@@ -227,7 +230,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                           image: new DecorationImage(
                             fit: BoxFit.cover,
                             image:
-                            new AssetImage(ImageAssets.login_description),
+                                new AssetImage(ImageAssets.login_description),
                           ))),
                   SizedBox(height: 10),
                   Text(
@@ -245,8 +248,8 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -264,41 +267,39 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
       return;
     }
 
-
     _confirmHasAddress(() async {
+      /* jump and get it */
+      Map results = await Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              MyAddressesPage(pick: true, presenter: AddressPresenter()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+                CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
 
-    /* jump and get it */
-    Map results = await Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(pick: true, presenter: AddressPresenter()),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end);
-          var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(
-              position: tween.animate(curvedAnimation), child: child);
-        }));
-
-    if (results != null && results.containsKey('selection')) {
-      setState(() {
-        StateContainer.of(context).selectedAddress = results['selection'];
-        StateContainer.of(context).selectedAddress =
-            StateContainer.of(context).selectedAddress;
-        /* must save this location locally */
-        String latitude =
-            StateContainer.of(context).selectedAddress.location.split(":")[0];
-        String longitude =
-            StateContainer.of(context).selectedAddress.location.split(":")[1];
-        StateContainer.of(context).location = Position(
-            latitude: double.parse(latitude),
-            longitude: double.parse(longitude));
-      });
-      CustomerUtils.saveAddressLocally(
-          StateContainer.of(context).selectedAddress);
-    }
+      if (results != null && results.containsKey('selection')) {
+        setState(() {
+          StateContainer.of(context).selectedAddress = results['selection'];
+          StateContainer.of(context).selectedAddress =
+              StateContainer.of(context).selectedAddress;
+          /* must save this location locally */
+          String latitude =
+              StateContainer.of(context).selectedAddress.location.split(":")[0];
+          String longitude =
+              StateContainer.of(context).selectedAddress.location.split(":")[1];
+          StateContainer.of(context).location = Position(
+              latitude: double.parse(latitude),
+              longitude: double.parse(longitude));
+        });
+        CustomerUtils.saveAddressLocally(
+            StateContainer.of(context).selectedAddress);
+      }
     });
   }
 
@@ -337,7 +338,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
-                      textAlign: TextAlign.center)
+                      textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
                 ],
               ),
             ),
@@ -357,7 +358,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setString("_has_accepted_gps", "ok");
                   // call get location again...
-                  // _getLastKnowLocation();
+                  _confirmHasAddress(continuePickingAddress);
                   Navigator.of(context).pop();
                 },
               )
@@ -399,7 +400,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate('request_location_permission')}",
-                        textAlign: TextAlign.center)
+                        textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
                   ],
                 ),
               ),
@@ -453,7 +454,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate('request_location_permission')}",
-                        textAlign: TextAlign.center)
+                        textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
                   ],
                 ),
               ),
@@ -512,7 +513,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                       SizedBox(height: 10),
                       Text(
                           "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
-                          textAlign: TextAlign.center)
+                          textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
                     ],
                   ),
                 ),
@@ -539,7 +540,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
           );
           /* ---- */
         } else {
-        //  authorize
+          //  authorize
           continuePickingAddress();
         }
       }

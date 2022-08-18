@@ -7,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 
 class ServiceMainContract {
   void fetchServiceCategoryFromLocation(Position location) {}
+
+  void fetchBilling() {}
 }
 
 class ServiceMainView {
@@ -41,7 +43,6 @@ class ServiceMainPresenter implements ServiceMainContract {
 
     _serviceMainView.showLoading(true);
     CustomerUtils.getOldCategoryConfiguration().then((pageJson) async {
-
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
@@ -56,21 +57,24 @@ class ServiceMainPresenter implements ServiceMainContract {
         } else {
           _serviceMainView.showLoading(true);
         }
-      } catch(_){
+      } catch (_) {
         xrint(_);
         _serviceMainView.showLoading(true);
       }
 
       try {
-        String resJson = await provider.fetchServiceCategoryFromLocation(location);
+        String resJson =
+            await provider.fetchServiceCategoryFromLocation(location);
         Iterable lo = mJsonDecode(resJson)["data"];
         List<ServiceMainEntity> res = lo
             ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
             ?.toList();
+
         // also get the restaurant entity here.
         if (!(res?.length > 0)) {
           throw UnimplementedError();
         }
+
         CustomerUtils.saveCategoryConfiguration(resJson);
         _serviceMainView.inflateServiceCategory(res);
         _serviceMainView.showLoading(false);
@@ -89,4 +93,13 @@ class ServiceMainPresenter implements ServiceMainContract {
     });
   }
 
- }
+  @override
+  Future<void> fetchBilling() async {
+    try {
+      String billing = await provider.fetchBilling();
+      CustomerUtils.updateBillingLocally(billing);
+    } catch (_) {
+      xrint("error ${_}");
+    }
+  }
+}

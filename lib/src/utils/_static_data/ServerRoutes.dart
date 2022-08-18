@@ -314,4 +314,7 @@ class ServerRoutes {
 
   static String LINK_GET_SHOP_SCHEDULE =
       ServerConfig.SERVER_ADDRESS + "/api/resto/schedule/get";
+
+  static String LINK_FETCH_BILLING =
+      ServerConfig.SERVER_ADDRESS + "/api/billings";
 }
