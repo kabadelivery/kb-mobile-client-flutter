@@ -16,9 +16,7 @@ import 'package:toast/toast.dart';
 
 import '../../../../../../StateContainer.dart';
 
-
 class CustomerCareChatPage extends StatefulWidget {
-
   static var routeName = "/CustomerCareChatPage";
 
   CustomerCareChatPresenter presenter;
@@ -33,8 +31,8 @@ class CustomerCareChatPage extends StatefulWidget {
   _CustomerCareChatPageState createState() => _CustomerCareChatPageState();
 }
 
-class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements CustomerCareChatView {
-
+class _CustomerCareChatPageState extends State<CustomerCareChatPage>
+    implements CustomerCareChatView {
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
@@ -50,16 +48,22 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     // TODO: implement initState
     super.initState();
     widget.presenter.customerCareChatView = this;
-    CustomerUtils.getCustomer().then((customer){
+    CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       widget.presenter.fetchCustomerCareChat(widget.customer);
       StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
     });
   }
 
+  /*     Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
+              fit: BoxFit.cover,
+              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
+          ))),*/
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
@@ -83,32 +87,44 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
           ],
         ),
       ),
-        body: Stack(
-        children: <Widget>[
-          Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
-          ))),
-          Container(
-              child: isLoading ? Center(child:CircularProgressIndicator()) : (hasNetworkError ? _buildNetworkErrorPage() : hasSystemError ? _buildSysErrorPage():
-              _buildChatList())
-          ),
-        ],
-      ),
+      body: Container(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : (hasNetworkError
+                  ? _buildNetworkErrorPage()
+                  : hasSystemError
+                      ? _buildSysErrorPage()
+                      : _buildChatList())),
     );
   }
 
   _buildSysErrorPage() {
-    return Center(child: Container(color: KColors.new_black.withAlpha(200), width: MediaQuery.of(context).size.width,
-      child: Column(mainAxisSize: MainAxisSize.min,
+    return Center(
+        child: Container(
+      color: KColors.new_black.withAlpha(200),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-        SizedBox(height: 10),
-          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Expanded(child: Text("${AppLocalizations.of(context).translate('system_error')}",textAlign: TextAlign.center, style: TextStyle(color: Colors.white))), SizedBox(width: 10)
-          ]),
           SizedBox(height: 10),
-          RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
-              child: Text("Reload",style: TextStyle(color: KColors.new_black))),
+          Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('system_error')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white))),
+                SizedBox(width: 10)
+              ]),
+          SizedBox(height: 10),
+          RaisedButton(
+              onPressed: () =>
+                  widget.presenter.fetchCustomerCareChat(widget.customer),
+              color: Colors.white,
+              child:
+                  Text("Reload", style: TextStyle(color: KColors.new_black))),
           SizedBox(height: 10),
         ],
       ),
@@ -116,16 +132,32 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _buildNetworkErrorPage() {
-    return Center(child: Container(color: KColors.new_black.withAlpha(200), width: MediaQuery.of(context).size.width,
-      child: Column(mainAxisSize: MainAxisSize.min,
+    return Center(
+        child: Container(
+      color: KColors.new_black.withAlpha(200),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-        SizedBox(height: 10),
-          Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Expanded(child: Text("${AppLocalizations.of(context).translate('network_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))), SizedBox(width: 10)
-          ]),
           SizedBox(height: 10),
-          RaisedButton (onPressed: ()=>widget.presenter.fetchCustomerCareChat(widget.customer), color: Colors.white,
-              child: Text("Reload",style: TextStyle(color: KColors.new_black))),
+          Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('network_error')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white))),
+                SizedBox(width: 10)
+              ]),
+          SizedBox(height: 10),
+          RaisedButton(
+              onPressed: () =>
+                  widget.presenter.fetchCustomerCareChat(widget.customer),
+              color: Colors.white,
+              child:
+                  Text("Reload", style: TextStyle(color: KColors.new_black))),
           SizedBox(height: 10),
         ],
       ),
@@ -133,67 +165,167 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _buildChatList() {
-
     return Container(
       child: Stack(
         children: <Widget>[
-          Container(margin: EdgeInsets.only(bottom:110, right:10, left:10),
-            child: (widget.messages == null || widget.messages?.length == 0) ? _buildEmptyPage() :
-            ListView(children: <Widget>[]..addAll(
-                List.generate(widget.messages?.length,
-                        (int position) {
-                      return Column(
-                        children: <Widget>[
-                          SizedBox(height: 15),
-                          Row(mainAxisAlignment: widget.messages[position]?.user_id == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
-                            children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(bottom: 110, right: 10, left: 10),
+            child: (widget.messages == null || widget.messages?.length == 0)
+                ? _buildEmptyPage()
+                : ListView(
+                    children: <Widget>[]..addAll(List.generate(
+                          widget.messages?.length, (int position) {
+                        return Column(
+                          children: <Widget>[
+                            SizedBox(height: 15),
+                            Row(
+                              mainAxisAlignment:
+                                  widget.messages[position]?.user_id == 0
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
+                              children: <Widget>[
 //                              widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
-                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
-                              Expanded(flex:8,
-                                child: Container(decoration: BoxDecoration(color: widget.messages[position]?.user_id == 0 ?  Colors.white : KColors.primaryColor, borderRadius: BorderRadius.all(Radius.circular(5))),
-                                  padding: EdgeInsets.all(10),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Expanded(child: Text("${widget.messages[position]?.message}", textAlign: TextAlign.left,style: TextStyle(fontSize: 14, color:  widget.messages[position]?.user_id == 0 ? KColors.new_black : Colors.white),)),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                                        Expanded(child: Text("${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",  textAlign: TextAlign.right, style: TextStyle(fontSize: 11, color:  widget.messages[position]?.user_id == 0 ? KColors.new_black : Colors.white),)),
-                                      ])
-                                    ],
+                                widget.messages[position]?.user_id == 0
+                                    ? Expanded(flex: 0, child: Container())
+                                    : Expanded(flex: 2, child: Container()),
+                                Expanded(
+                                  flex: 8,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: widget.messages[position]
+                                                    ?.user_id ==
+                                                0
+                                            ? KColors.new_gray
+                                            : KColors.chat_transparent_blue,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Expanded(
+                                                child: Text(
+                                              "${widget.messages[position]?.message}",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      widget.messages[position]
+                                                                  ?.user_id ==
+                                                              0
+                                                          ? Colors.grey
+                                                          : Colors.grey),
+                                            )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: <Widget>[
+                                              Expanded(
+                                                  child: Text(
+                                                "${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: widget
+                                                                .messages[
+                                                                    position]
+                                                                ?.user_id ==
+                                                            0
+                                                        ? Colors.grey
+                                                        : Colors.grey),
+                                              )),
+                                            ])
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              widget.messages[position]?.user_id == 0 ?  Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
+                                widget.messages[position]?.user_id == 0
+                                    ? Expanded(flex: 2, child: Container())
+                                    : Expanded(flex: 0, child: Container()),
 //                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
-                            ],
-                          ),
-                        ],
-                      );
-                    })
-            ), controller: _scrollController, reverse: true),
+                              ],
+                            ),
+                          ],
+                        );
+                      })),
+                    controller: _scrollController,
+                    reverse: true),
           ),
           Positioned(
             bottom: 0,
             child: Padding(
-              padding: const EdgeInsets.only(left:4.0, right:4, bottom:20),
-              child: Row(mainAxisSize: MainAxisSize.max,
+              padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 20),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   SizedBox(width: 5),
                   Stack(
                     children: <Widget>[
-                      SizedBox(/*height: 50+50*(_messageController.text.length~/30)*1.5, */ width: MediaQuery.of(context).size.width-80,
-                        child: Container(padding: EdgeInsets.only(left:8, right:(8+20).toDouble(), top:8, bottom:16),child: TextField(controller: _messageController, maxLines: 6, minLines: 3,
-                            decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('insert_message')}")), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4))),),
+                      SizedBox(
+                        /*height: 50+50*(_messageController.text.length~/30)*1.5, */
+                        width: MediaQuery.of(context).size.width - 80,
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              left: 8,
+                              right: (8 + 20).toDouble(),
+                              top: 8,
+                              bottom: 16),
+                          child: TextField(
+                              controller: _messageController,
+                              maxLines: 6,
+                              minLines: 3,
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
+                                  color: KColors.new_black),
+                              decoration: InputDecoration.collapsed(
+                                  hintStyle: TextStyle(
+                                      fontSize: 12, color: Colors.grey),
+                                  hintText:
+                                      "${AppLocalizations.of(context).translate('insert_message')}")),
+                          decoration: BoxDecoration(
+                              color: KColors.new_gray,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4))),
+                        ),
                       ),
-                      Positioned(right:10,child: IconButton(icon: Icon(Icons.my_location, color: Colors.green), onPressed: ()=>_pickAddress()))
+                      Positioned(
+                          right: 10,
+                          child: IconButton(
+                              icon:
+                                  Icon(Icons.my_location, color: Colors.green),
+                              onPressed: () => _pickAddress()))
                     ],
                   ),
                   SizedBox(width: 5),
-                  FloatingActionButton(child: isSendingMessageLoading ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))) : Icon(Icons.send, color: Colors.white), onPressed: ()=> _sendMessage())
+                  GestureDetector(
+                    onTap: () => _sendMessage(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: KColors.primaryColor.withAlpha(60),
+                          shape: BoxShape.circle),
+                      padding: EdgeInsets.all(10),
+                      child: Center(
+                        child: isSendingMessageLoading
+                            ? SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        KColors.primaryColor)))
+                            : Icon(Icons.send, color: KColors.primaryColor),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -205,10 +337,9 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
 //  0.98x/90 = 6460
 
-
   @override
-  void inflateCustomerCareChat(List<CustomerCareChatMessageModel> customerCareChats) {
-
+  void inflateCustomerCareChat(
+      List<CustomerCareChatMessageModel> customerCareChats) {
     setState(() {
       widget.messages = customerCareChats.reversed.toList();
     });
@@ -219,20 +350,25 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
     });*/
   }
 
-
   _buildEmptyPage() {
-    return Center(child: Column(mainAxisSize: MainAxisSize.min,crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          /* icon */
-          SizedBox(
-              height: 80,
-              width: 80,
-              child: SvgPicture.asset(VectorsData.customer_care)),
-          SizedBox(height: 10),
-          Text("${AppLocalizations.of(context).translate('any_feedback_right_here')}", textAlign: TextAlign.center,
-              style: TextStyle(color: KColors.new_black.withAlpha(150), fontSize: 13))
-        ]
-    ),);
+    return Center(
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            /* icon */
+            SizedBox(
+                height: 80,
+                width: 80,
+                child: SvgPicture.asset(VectorsData.customer_care)),
+            SizedBox(height: 10),
+            Text(
+                "${AppLocalizations.of(context).translate('any_feedback_right_here')}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: KColors.new_black.withAlpha(150), fontSize: 13))
+          ]),
+    );
   }
 
   @override
@@ -266,16 +402,17 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
   @override
   void sendMessagenetworkError() {
-    mToast("${AppLocalizations.of(context).translate('send_message_network_error')}");
+    mToast(
+        "${AppLocalizations.of(context).translate('send_message_network_error')}");
   }
 
   @override
   void sendMessagesystemError() {
-    mToast("${AppLocalizations.of(context).translate('send_message_system_error')}");
+    mToast(
+        "${AppLocalizations.of(context).translate('send_message_system_error')}");
   }
 
   _sendMessage() {
-
     String message = _messageController.text;
     if (message.trim()?.length <= 5) {
       // show a dialog telling the guy that message is to short.
@@ -286,7 +423,6 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
   @override
   void sendMessageLoading(bool isSendingMessageLoading) {
-
     setState(() {
       this.isSendingMessageLoading = isSendingMessageLoading;
     });
@@ -294,13 +430,14 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
 
   @override
   void chatSuccessfullySent(String message) {
-
     _messageController.text = "";
 
-    CustomerCareChatMessageModel careChatMessageModel = CustomerCareChatMessageModel();
+    CustomerCareChatMessageModel careChatMessageModel =
+        CustomerCareChatMessageModel();
     careChatMessageModel.message = message;
     careChatMessageModel.user_id = widget.customer.id;
-    careChatMessageModel.created_at = (DateTime.now().millisecondsSinceEpoch.toInt()/1000).toInt();
+    careChatMessageModel.created_at =
+        (DateTime.now().millisecondsSinceEpoch.toInt() / 1000).toInt();
 
     setState(() {
       var tmp = widget.messages.reversed.toList();
@@ -316,34 +453,34 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage> implements 
   }
 
   _pickAddress() async {
-
     /* jump and get it */
-    Map results = await Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
+    Map results = await Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
             MyAddressesPage(pick: true, presenter: AddressPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
 
     if (results != null && results.containsKey('selection')) {
       DeliveryAddressModel _selectedAddress = results['selection'];
 
       String message = "DELIVERY ADDRESS - ${_selectedAddress.name}\n\n";
-      message+="Phone number: ${_selectedAddress.phone_number}\n";
-      message+="District: ${_selectedAddress.district}\n";
-      message+="Near by: ${_selectedAddress.near}\n";
-      message+="Description: ${_selectedAddress.description}\n";
+      message += "Phone number: ${_selectedAddress.phone_number}\n";
+      message += "District: ${_selectedAddress.district}\n";
+      message += "Near by: ${_selectedAddress.near}\n";
+      message += "Description: ${_selectedAddress.description}\n";
 //     message+="Suburb: ${_selectedAddress.suburb}\n";
-      message+="Gps location: https://www.google.com/maps/search/?api=1&query=${_selectedAddress.location.replaceAll(":", ",")}\n";
+      message +=
+          "Gps location: https://www.google.com/maps/search/?api=1&query=${_selectedAddress.location.replaceAll(":", ",")}\n";
 
       _messageController.text = message;
     }
   }
-
 }

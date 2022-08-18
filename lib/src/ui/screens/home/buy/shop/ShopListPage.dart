@@ -262,10 +262,9 @@ class _ShopListPageState extends State<ShopListPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-                Utils.capitalize(
-                    getCategoryTitle(context)[0]
-                  //    "${AppLocalizations.of(context).translate('search')}"
-                ),
+                Utils.capitalize(getCategoryTitle(context)[0]
+                    //    "${AppLocalizations.of(context).translate('search')}"
+                    ),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -320,7 +319,8 @@ class _ShopListPageState extends State<ShopListPage>
                                                     ?.length >=
                                                 1)
                                           widget.foodProposalPresenter
-                                              .fetchRestaurantFoodProposalFromTag(widget.type,
+                                              .fetchRestaurantFoodProposalFromTag(
+                                                  widget.type,
                                                   _filterEditController.text);
                                         else
                                           mDialog(
@@ -376,7 +376,8 @@ class _ShopListPageState extends State<ShopListPage>
                                               ?.length >=
                                           3)
                                     widget.foodProposalPresenter
-                                        .fetchRestaurantFoodProposalFromTag(widget.type,
+                                        .fetchRestaurantFoodProposalFromTag(
+                                            widget.type,
                                             _filterEditController.text);
                                   else
                                     mDialog(
@@ -859,8 +860,8 @@ class _ShopListPageState extends State<ShopListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
-          widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(widget.type,_filterEditController.text);
+          widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
+              widget.type, _filterEditController.text);
         });
   }
 
@@ -869,8 +870,8 @@ class _ShopListPageState extends State<ShopListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
-          widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag(widget.type,_filterEditController.text);
+          widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
+              widget.type, _filterEditController.text);
         });
   }
 
@@ -886,15 +887,20 @@ class _ShopListPageState extends State<ShopListPage>
       ])));
 
     if (foodProposals?.length == 0) {
-      return Container(margin: EdgeInsets.all(20),
+      return Container(
+          margin: EdgeInsets.all(20),
           child: Center(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
-        SizedBox(height: 20),
-        Icon(Icons.restaurant, color: Colors.grey),
-        SizedBox(height: 10),
-        Text(
-            "${AppLocalizations.of(context).translate('sorry_cant_find_item')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))
-      ])));
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                SizedBox(height: 20),
+                Icon(Icons.restaurant, color: Colors.grey),
+                SizedBox(height: 10),
+                Text(
+                    "${AppLocalizations.of(context).translate('sorry_cant_find_item')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12))
+              ])));
     }
 
     var filteredResult =
@@ -1342,12 +1348,12 @@ class _ShopListPageState extends State<ShopListPage>
           AppLocalizations.of(context).translate('service_flower_type_product')
         ];*/
         break;
-    //   case 1005: // movies
-    //     category_name_code = "service_category_movies";
-    //     break;
-    //   case 1006: // package delivery
-    //     category_name_code = "service_category_package_delivery";
-    //     break;
+      //   case 1005: // movies
+      //     category_name_code = "service_category_movies";
+      //     break;
+      //   case 1006: // package delivery
+      //     category_name_code = "service_category_package_delivery";
+      //     break;
       case "shop": // shopping
         tmp = [
           AppLocalizations.of(context).translate('service_shop_type_name'),
@@ -1369,5 +1375,6 @@ class _ShopListPageState extends State<ShopListPage>
     }
     return tmp;
   }
+
 
 }

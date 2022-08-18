@@ -15,6 +15,7 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantCommentWidget.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantNewCommentWidget.dart';
+import 'package:KABA/src/ui/customwidgets/ShippingFeeTag.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopScheduleMiniPage.dart';
@@ -278,6 +279,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           ),
                                         ),
                                         SizedBox(width: 10),
+                                        ShippingFeeTag(widget.distance, widget.customer)
                                       /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(

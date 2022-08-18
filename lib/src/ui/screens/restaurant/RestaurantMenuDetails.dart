@@ -373,15 +373,28 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         width: 0.9 * MediaQuery.of(context).size.width / 2,
                         padding: EdgeInsets.all(5),
                         color: Colors.white,
-                        child: RaisedButton(
-                            child: Text(
-                                "${AppLocalizations.of(context).translate('buy')}"
-                                    ?.toUpperCase(),
-                                style: TextStyle(color: Colors.white)),
-                            color: KColors.primaryColor,
-                            onPressed: () {
-                              _continuePurchase();
-                            }))
+                        child: Row(mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _continuePurchase();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                    left: 15, right: 15, top: 10, bottom: 10),
+                                decoration: BoxDecoration(
+                                    color: KColors.primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Text(
+                                    "${AppLocalizations.of(context).translate('buy')}"
+                                        ?.toUpperCase(),
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        ))
               ],
             ),
           ),

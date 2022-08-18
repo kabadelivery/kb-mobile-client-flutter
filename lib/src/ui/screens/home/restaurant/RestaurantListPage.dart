@@ -1386,4 +1386,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       return "${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}";
     }
   }
+
+  @override
+  void updateBillingState(data) {
+  }
 }

@@ -105,16 +105,16 @@ class _HomePageState extends State<HomePage> {
   Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String expDate = prefs.getString("_login_expiration_date");
+    String expDate = prefs.getString("_login_expiration_date"+CustomerUtils.signature);
     int res = 0; // not logged in
     try {
       if (expDate != null) {
         if (DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
-          prefs.remove("_customer");
-          prefs.remove("_token");
-          prefs.remove("_login_expiration_date");
+          prefs.remove("_customer"+CustomerUtils.signature);
+          prefs.remove("_token"+CustomerUtils.signature);
+          prefs.remove("_login_expiration_date"+CustomerUtils.signature);
         } else {
           res = 1; // is logged in
         }

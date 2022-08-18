@@ -83,7 +83,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                     color: Colors.white)),
           ],
         ),
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
         actions: <Widget>[
           // IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: KColors.new_black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
           IconButton(icon: Icon(Icons.add_box, color: Colors.white),onPressed: ()=>_jumpToAddNewVoucher_Code())

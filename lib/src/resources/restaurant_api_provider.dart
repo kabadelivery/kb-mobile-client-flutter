@@ -331,7 +331,7 @@ class RestaurantApiProvider {
         dynamic data = mJsonDecode(response.data);
         // if (data["error"] == 0) {
 
-        return data["data"];
+        return data;
         // } else
         //   throw Exception(-1); // there is an error in your request
       } else {

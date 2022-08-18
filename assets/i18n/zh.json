@@ -161,8 +161,8 @@
   "r_opened": "开业",
   "r_pause_preorder": "休息时间中 => 推荐预购",
   "r_blocked_preorder": "仅限预购",
-  "review": "评论",
-  "see_menu": "查看菜单",
+  "review": "评价",
+  "see_menu": "进去光临",
   "opening_time": "开放时间",
   "powered_by_kaba_tech": "由 >> Kaba 技术支持",
   "min_reached": "达到最低",
@@ -358,7 +358,7 @@
   "reason": "原因",
   "menu_not_availabe": "您点的菜暂时没有",
   "restaurant_in_break": "饭店在休息中",
-  "restaurant_closed": "饭店已关门",
+  "restaurant_closed": "门店不营业",
   "reason_beyond_control": "由于我们无法控制的原因，您的订单已被拒绝",
   "welcome": "欢迎",
   "permission_": "权限",
@@ -454,29 +454,24 @@
   "online_alert_description": "欢迎回来在线。 我们想你了！",
   "offline_alert_title": "下线通知",
   "offline_alert_description": "你失去了互联网连接。 请连接！",
-
   "mobile_money_top_up": "移动钱包充钱",
   "bank_card_top_up": "银行卡充钱",
-
   "choose_top_up_mode": "充值方式",
-
   "choose_mobile_money_service": "请选择您的移动钱包",
-
   "service_ticket_type_name": "活动",
   "service_ticket_product_name": "票",
-
   "service_grocery_type_name": "超市",
   "service_grocery_product_name": "产品",
-
   "our_menu": "菜单",
   "please_select_main_location": "请选择你现在的地址",
-
   "near_by": "近于",
   "sorry_cant_find_item": "抱歉、此产品在平台上不存在",
-
   "previous_text": "上一个",
   "please_login_before_going_forward_description_pick_address": "为了查看您的地址、请登录",
-
-  "checkout": "购买"
-
+  "checkout": "购买",
+  "note_and_review": "评价",
+  "shipper": "外送员",
+  "please_give_rating": "请提供评价",
+  "anything_to_say_about_the_service": "请提供关于本订单的感悟、谢谢",
+  "submit": "提交"
 }

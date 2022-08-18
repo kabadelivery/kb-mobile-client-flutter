@@ -234,7 +234,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     else
       return Container(
         color: KColors.new_gray,
-        margin: EdgeInsets.only(left: 25, right: 25),
+        margin: EdgeInsets.only(left: 20, right: 20),
         padding: EdgeInsets.all(10),
         child: Stack(
           children: [
@@ -248,7 +248,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: KColors.new_black,
-                              fontSize: 16))),
+                              fontSize: 14))),
                   SizedBox(height: 5),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.7,
@@ -681,7 +681,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     InkWell(
                         splashColor: Colors.white,
                         child: Container(
-                            margin: EdgeInsets.only(left: 15, right: 15),
+                            margin: EdgeInsets.only(left: 10, right: 10),
                             padding: EdgeInsets.only(top: 10, bottom: 10),
                             decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,

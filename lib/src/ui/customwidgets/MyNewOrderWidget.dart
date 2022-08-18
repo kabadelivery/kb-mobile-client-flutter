@@ -1,8 +1,10 @@
 import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/order_feedback_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -11,6 +13,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart' as to;
@@ -101,7 +104,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(opacity: command?.state > 3 ? .7: 1,
+    return Opacity(
+      opacity: command?.state > 3 ? .7 : 1,
       child: InkWell(
         onTap: () => _jumpToCommandDetails(command),
         child: Stack(
@@ -130,11 +134,13 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                       Utils.inflateLink(
                                           command.restaurant_entity.pic))))),
                       SizedBox(width: 10),
-                      Column(mainAxisAlignment: MainAxisAlignment.start,mainAxisSize: MainAxisSize.min,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 1*MediaQuery.of(context).size.width / 2,
+                            width: 1 * MediaQuery.of(context).size.width / 2,
                             child: Text("${command?.restaurant_entity?.name}",
                                 style: TextStyle(
                                     color: KColors.new_black,
@@ -147,8 +153,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               text: TextSpan(
                                   text:
                                       "${command?.is_payed_at_arrival ? AppLocalizations.of(context).translate('has_to_pay') : AppLocalizations.of(context).translate('already_paid')}  ",
-                                  style:
-                                      TextStyle(fontSize: 13, color: Colors.grey),
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey),
                                   children: [
                                 TextSpan(
                                     text:
@@ -178,42 +184,57 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            command?.state > 1 && command?.state <=3  ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.directions_bike,
-                                    color: Colors.white, size: 16),
-                                SizedBox(width: 5),
-                                Text("${widget?.command?.livreur?.name}",
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.white)),
-                              ],
-                            ) : Container(height: 5),
-                       /*shipping mode only*/    widget?.command?.state == 2 ? InkWell(
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 6, horizontal: 10),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white.withAlpha(50),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.call,
-                                            color: Colors.white, size: 16),
-                                        SizedBox(width: 5),
-                                        Text(
-                                            "${AppLocalizations.of(context).translate('call_me_shipper')}",
-                                            style: TextStyle(
+                            command?.state > 1 && command?.state <= 3
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.directions_bike,
+                                          color: Colors.white, size: 16),
+                                      SizedBox(width: 5),
+                                      Text("${widget?.command?.livreur?.name}",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white)),
+                                    ],
+                                  )
+                                : Container(height: 5),
+                            /*shipping mode only*/
+                            widget?.command?.state == 2 ||
+                                   ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget?.command?.rating < 1))
+                                ? InkWell(
+                                    child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white.withAlpha(50),
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                                widget?.command?.state == 2
+                                                    ? Icons.call
+                                                    : FontAwesomeIcons
+                                                        .solidStar,
                                                 color: Colors.white,
-                                                fontSize: 12)),
-                                      ],
-                                    )),
-                                onTap: () => _callShipper())
-                      : Container()
+                                                size: 16),
+                                            SizedBox(width: 5),
+                                            Text(
+                                                "${AppLocalizations.of(context).translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12)),
+                                          ],
+                                        )),
+                                    onTap: widget?.command?.state == 2
+                                        ? () => _callShipper()
+                                        : () => _reviewOrder())
+                                : Container()
                           ],
                         ),
                       )),
@@ -225,22 +246,30 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
             Positioned(
                 right: 20,
                 top: 15,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.end,children: [
-                  Container(
-                      child: Text("${Utils.capitalize(_getStateLabel(command))}",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: _getStateColor(command?.state))),
-                      decoration: BoxDecoration(
-                          color: _getStateColor(command?.state).withAlpha(30),
-                          borderRadius: BorderRadius.circular(5)),
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 6)),
-                  SizedBox(height: 5),
-                  Container(
-                    child: Text("${_getLastModifiedDate(command)}",maxLines: 1, overflow: TextOverflow.clip, textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 11)),
-                  )
-                ]))
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          child: Text(
+                              "${Utils.capitalize(_getStateLabel(command))}",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: _getStateColor(command?.state))),
+                          decoration: BoxDecoration(
+                              color:
+                                  _getStateColor(command?.state).withAlpha(30),
+                              borderRadius: BorderRadius.circular(5)),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 6)),
+                      SizedBox(height: 5),
+                      Container(
+                        child: Text("${_getLastModifiedDate(command)}",
+                            maxLines: 1,
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey, fontSize: 11)),
+                      )
+                    ]))
           ],
         ),
       ),
@@ -329,6 +358,25 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
       to.Toast.show("Call error", context);
     }
   }
+
+  _reviewOrder() async {
+    await Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            OrderFeedbackPage(
+                orderId: widget?.command?.id,
+                presenter: OrderFeedbackPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
+  }
+
 }
 
 class MiniVoucherClipper extends CustomClipper<Path> {

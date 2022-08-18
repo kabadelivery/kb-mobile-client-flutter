@@ -195,79 +195,145 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                 child: _getProgressTimeLine(widget?.command),
                 margin: EdgeInsets.only(top: 25, bottom: 20),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: RichText(
-                    text: new TextSpan(
-                      text:
-                          '${AppLocalizations.of(context).translate('latest_update')}: ',
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold, color: KColors.new_black),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: " ${_orderLastUpdate(widget.command)}",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                color: KColors.new_black.withAlpha(200))),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               (widget.command.state == 3 && widget.command.rating > 1
                   ? SizedBox(height: 10)
                   : Container()),
-              (widget.command.state == 3 && widget.command.rating > 1
-                  ? Container(
-                      padding: EdgeInsets.all(10),
-                      margin: EdgeInsets.only(
-                          left: 10, right: 10, top: 20, bottom: 10),
-                      decoration: BoxDecoration(
-                          color: KColors.primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: Container(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Center(
-                                  child: Text(
-                                      "${AppLocalizations.of(context).translate('rating')}"
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.white))),
-                              SizedBox(height: 5),
-                              Row(
-                                  mainAxisAlignment:
-                                      widget?.command?.comment == null
-                                          ? MainAxisAlignment.center
-                                          : MainAxisAlignment.start,
-                                  children: <Widget>[]
-                                    ..addAll(List<Widget>.generate(
-                                        widget?.command?.rating, (int index) {
-                                      return Icon(Icons.star,
-                                          color: KColors.primaryYellowColor,
-                                          size: 20);
-                                    }))),
-                              SizedBox(height: 5),
-                              Row(
+              (widget.command.state == 3)
+                  ? (widget.command.rating > 1
+                      ? Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.only(
+                              left: 10, right: 10, top: 10, bottom: 30),
+                          decoration: BoxDecoration(
+                              color: KColors.primaryYellowColor.withAlpha(30),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  Flexible(
-                                      child: Text(
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: List<Widget>.generate(5,
+                                                (int index) {
+                                              return Icon(
+                                                  index <
+                                                          widget
+                                                              ?.command?.rating
+                                                      ? FontAwesomeIcons
+                                                          .solidStar
+                                                      : FontAwesomeIcons.star,
+                                                  color: KColors
+                                                      .primaryYellowColor,
+                                                  size: 20);
+                                            })
+                                              ..addAll([
+                                                SizedBox(width: 10),
+                                                Text(
+                                                    "${widget?.command?.rating}",
+                                                    style: TextStyle(
+                                                        fontSize: 32,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ])),
+                                      ),
+                                      Text(
+                                          " ${_orderLastUpdate(widget.command)}",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.grey)),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                          child: RichText(
+                                              text: TextSpan(
+                                                  text: widget
+                                                      ?.customer?.nickname,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: KColors.new_black,
+                                                      fontSize: 12),
+                                                  children: [
+                                            TextSpan(
+                                                text:
+                                                    "  ${widget?.command?.comment == null ? "" : widget?.command?.comment} ",
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 12))
+                                          ])
+
+                                              /*  Text(
                                           "${widget?.command?.comment == null ? "" : widget?.command?.comment} ",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 17))),
-                                ],
-                              )
-                            ]),
-                      ))
-                  : Container()),
+                                              fontSize: 17))*/
+
+                                              )),
+                                    ],
+                                  )
+                                ]),
+                          ))
+                      : GestureDetector(
+                          onTap: () => _reviewOrder(),
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, top: 20, bottom: 20),
+                            decoration: BoxDecoration(
+                                color: KColors.primaryYellowColor.withAlpha(30),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Center(
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(FontAwesomeIcons.solidStar,
+                                            size: 20,
+                                            color: KColors.primaryYellowColor),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                            "${AppLocalizations.of(context).translate("review_us")}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color:
+                                                    KColors.primaryYellowColor))
+                                      ],
+                                    ),
+                                    Icon(Icons.chevron_right,
+                                        color: KColors.primaryYellowColor)
+                                  ]),
+                            ),
+                          ),
+                        ))
+                  : Container(),
               (widget.command.rating < 1 &&
                       Utils.within3days(widget.command?.last_update)
                   ? SizedBox(height: 10)
@@ -307,7 +373,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     "${widget.command?.shipping_address?.phone_number}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: KColors.new_black, fontSize: 14)))),
+                                        color: KColors.new_black,
+                                        fontSize: 14)))),
                       ],
                     ),
                   ),
@@ -343,7 +410,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     "${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED ? widget.command?.passphrase?.toUpperCase() : "---"}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: KColors.new_black, fontSize: 14)))),
+                                        color: KColors.new_black,
+                                        fontSize: 14)))),
                       ],
                     ),
                   ),
@@ -511,9 +579,9 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     child: Column(
                         children: List.generate(widget.command.food_list.length,
                             (int index) {
-                  return _buildBasketItem(widget.command.food_list[index],
-                      widget.command.food_list[index].quantity);
-                }))),
+                      return _buildBasketItem(widget.command.food_list[index],
+                          widget.command.food_list[index].quantity);
+                    }))),
                 SizedBox(height: 10),
                 /* if we have a voucher, we will show it */
                 _buildVoucher(),
@@ -529,7 +597,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   Widget _buildBasketItem(OrderItemModel food, int quantity) {
     return Container(
-        margin: EdgeInsets.only( top: 4, bottom: 4),
+        margin: EdgeInsets.only(top: 4, bottom: 4),
         child: InkWell(
             child: Container(
           child: Column(
@@ -794,43 +862,41 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
     setState(() {
       widget.command = command;
     });
+  }
 
-    // this will happen 2 seconds after
-    Future.delayed(Duration(seconds: 2), () async {
-      if (command.rating < 1 &&
-          Utils.within3days(command?.last_update) &&
-          command.state == 3 /*within 3 days, you can still do it.*/) {
-        // must review.
-        /* jump to review pager. */
-        Map results = await Navigator.of(context).push(PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                OrderFeedbackPage(
-                    orderId: widget?.command?.id,
-                    presenter: OrderFeedbackPresenter()),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin: begin, end: end);
-              var curvedAnimation =
-                  CurvedAnimation(parent: animation, curve: curve);
-              return SlideTransition(
-                  position: tween.animate(curvedAnimation), child: child);
-            }));
+  _reviewOrder() async {
+    if (widget.command.rating < 1 &&
+        Utils.within3days(widget.command?.last_update) &&
+        widget.command.state == 3 /*within 3 days, you can still do it.*/) {
+      // must review.
+      /* jump to review pager. */
+      Map results = await Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              OrderFeedbackPage(
+                  orderId: widget?.command?.id,
+                  presenter: OrderFeedbackPresenter()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+                CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
 
-        if (results != null && results.containsKey('ok')) {
-          bool feedBackOk = results['ok'];
-          if (feedBackOk) {
-            widget.presenter
-                .fetchOrderDetailsWithId(widget.customer, widget?.command?.id);
-          }
+      if (results != null && results.containsKey('ok')) {
+        bool feedBackOk = results['ok'];
+        if (feedBackOk) {
+          widget.presenter
+              .fetchOrderDetailsWithId(widget.customer, widget?.command?.id);
         }
-      } else {
-        // can't review or we don't have to review.
-//        Toast.show("cant post review", context);
       }
-    });
+    } else {
+      // can't review or we don't have to review.
+      Toast.show("cant post review", context);
+    }
   }
 
   @override
@@ -922,54 +988,49 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
     return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(color: KColors.new_gray,borderRadius: BorderRadius.circular(5)),
+      decoration: BoxDecoration(
+          color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
       child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-    (int.parse(widget.command?.remise) > 0
-        ? Container(
-            height: 40.0,
-            decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: new DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(Utils.inflateLink(
-                        "/web/assets/app_icons/promo_large.gif")))))
-        : Container()),
-    Container(),
-    /* content */
-    SizedBox(height: 10),
-    Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("${AppLocalizations.of(context).translate('order_amount')}",
-              style: TextStyle( fontSize: 14)),
-          /* check if there is promotion on Commande */
-          Row(
+        (int.parse(widget.command?.remise) > 0
+            ? Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                            "/web/assets/app_icons/promo_large.gif")))))
+            : Container()),
+        Container(),
+        /* content */
+        SizedBox(height: 10),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              Text("${AppLocalizations.of(context).translate('order_amount')}",
+                  style: TextStyle(fontSize: 14)),
+              /* check if there is promotion on Commande */
               Row(
-                // only show if there is promotion on food
                 children: <Widget>[
-                  Text("($priceNormalCommand)",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15)),
-                  SizedBox(width: 5),
+                  Row(
+                    // only show if there is promotion on food
+                    children: <Widget>[
+                      Text("($priceNormalCommand)",
+                          style: TextStyle(color: Colors.grey, fontSize: 15)),
+                      SizedBox(width: 5),
+                    ],
+                  ),
+                  Text("$priceActualCommand", style: TextStyle(fontSize: 15)),
                 ],
-              ),
-              Text("$priceActualCommand",
-                  style:
-                      TextStyle(  fontSize: 15)),
-            ],
-          )
-        ]),
-    SizedBox(height: 10),
-    Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-              "${AppLocalizations.of(context).translate('delivery_amount')}",
-              style: TextStyle(  fontSize: 15)),
+              )
+            ]),
+        SizedBox(height: 10),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
+            Widget>[
+          Text("${AppLocalizations.of(context).translate('delivery_amount')}",
+              style: TextStyle(fontSize: 15)),
           /* check if there is promotion on Livraison */
           Row(
             children: <Widget>[
@@ -979,69 +1040,68 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                       // only show if there is pre-order or promotion on the fees of delivery
                       children: <Widget>[
                         Text("($priceNormalDelivery)",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15)),
+                            style: TextStyle(color: Colors.grey, fontSize: 15)),
                         SizedBox(width: 5),
                       ],
                     )
                   : Container(),
-              Text("${priceActualDelivery}",
-                  style:
-                      TextStyle( fontSize: 15)),
+              Text("${priceActualDelivery}", style: TextStyle(fontSize: 15)),
             ],
           )
         ]),
-    SizedBox(height: 10),
-    int.parse(widget.command?.remise) > 0
-        ? Row(
+        SizedBox(height: 10),
+        int.parse(widget.command?.remise) > 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context).translate('discount')}:",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.grey)),
+                    /* check if there is remise */
+                    Text("-${widget.command?.remise}%",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: CommandStateColor.delivered)),
+                  ])
+            : Container(),
+
+        SizedBox(height: 10),
+        Center(
+            child: Container(
+                width: MediaQuery.of(context).size.width - 10,
+                color: Colors.grey.withAlpha(100),
+                height: 1)),
+        SizedBox(height: 10),
+        Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-                Text(
-                    "${AppLocalizations.of(context).translate('discount')}:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.grey)),
-                /* check if there is remise */
-                Text("-${widget.command?.remise}%",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: CommandStateColor.delivered)),
-              ])
-        : Container(),
-
-    SizedBox(height: 10),
-    Center(
-        child: Container(
-            width: MediaQuery.of(context).size.width - 10,
-            color: Colors.grey.withAlpha(100),
-            height: 1)),
-    SizedBox(height: 10),
-    Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("${AppLocalizations.of(context).translate('net_price')}",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: KColors.new_black.withAlpha(200))),
-          Text(
-              "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: KColors.primaryColor,
-                  fontSize: 18)),
-        ]),
-    SizedBox(height: 10),
-    (int.parse(widget.command?.remise) > 0
-        ? Container(
-            height: 40.0,
-            decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: new DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(Utils.inflateLink(
-                        "/web/assets/app_icons/promo_large.gif")))))
-        : Container()),
+              Text("${AppLocalizations.of(context).translate('net_price')}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: KColors.new_black.withAlpha(200))),
+              Text(
+                  "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: KColors.primaryColor,
+                      fontSize: 18)),
+            ]),
+        SizedBox(height: 10),
+        (int.parse(widget.command?.remise) > 0
+            ? Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                            "/web/assets/app_icons/promo_large.gif")))))
+            : Container()),
       ]),
     );
   }

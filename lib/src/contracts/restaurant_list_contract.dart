@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +14,8 @@ class RestaurantListContract {
 //  void RestaurantList (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
-  void fetchRestaurantList(CustomerModel customer, String type, Position position,
+  void fetchRestaurantList(
+      CustomerModel customer, String type, Position position,
       [bool silently = false]) async {}
 }
 
@@ -28,7 +31,6 @@ class RestaurantListView {
 
 /* RestaurantList presenter */
 class RestaurantListPresenter implements RestaurantListContract {
-
   bool isWorking = false;
 
   RestaurantListView _restaurantListView;
@@ -44,22 +46,31 @@ class RestaurantListPresenter implements RestaurantListContract {
   }
 
   @override
-  Future<void> fetchRestaurantList(CustomerModel customer, String type, Position position,
+  Future<void> fetchRestaurantList(
+      CustomerModel customer, String type, Position position,
       [bool silently = false]) async {
     if (isWorking && position == null) return;
     isWorking = true;
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
     try {
-      dynamic data = await provider.fetchRestaurantList(customer, type, position);
+      Map<String, dynamic> data =
+          await provider.fetchRestaurantList(customer, type, position);
+      List<ShopModel> restaurants = [];
 
-      // "location": "6.196422: 1.201180",
-      List<ShopModel> restaurants = await compute(sortOutRestaurantList, {
-        "data": data,
-        "position": position,
-        "is_email_account": customer == null || customer?.username == null
-            ? false
-            : (customer.username.contains("@") ? true : false)
-      });
+
+      if (data["data"]?.length > 0)
+        restaurants = await compute(sortOutRestaurantList, {
+          "data": data,
+          "position": position,
+          "is_email_account": customer == null || customer?.username == null
+              ? false
+              : (customer.username.contains("@") ? true : false)
+        });
+
+      // save billing locally so that the other stuffs can use it.
+      String billing = json.encode(data["billing"]);
+
+      CustomerUtils.updateBillingLocally(billing);
 
       xrint(restaurants);
 
@@ -81,33 +92,10 @@ class RestaurantListPresenter implements RestaurantListContract {
     }
     isWorking = false;
   }
-
-// @override
-// Future fetchRestaurantListFromTag(String tag) async {
-//   if (isWorking)
-//     return;
-//   isWorking = true;
-//   _restaurantListView.searchMenuShowLoading(true);
-//   try {
-//     List<ShopProductModel> foods = await provider.fetchRestaurantListFromTag(tag);
-//     _restaurantListView.searchMenuShowLoading(false);
-//     _restaurantListView.inflateFoodsProposal(foods);
-//   } catch (_) {
-//     /* RestaurantList failure */
-//     _restaurantListView.searchMenuShowLoading(false);
-//     xrint("error ${_}");
-//     if (_ == -2) {
-//       _restaurantListView.searchMenuSystemError();
-//     } else {
-//       _restaurantListView.searchMenuNetworkError();
-//     }
-//   }
-//   isWorking = false;
-// }
 }
 
 FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
-  Iterable lo = data["data"]/*["resto"]*/;
+  Iterable lo = data["data"]["data"] /*["resto"]*/;
 
   List<ShopModel> tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
 
@@ -137,7 +125,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       }
 
       xrint(myBillingArray);
-      // we can store the billing array locally 
+      // we can store the billing array locally
 
       int indexOf79 = -1;
       int indexOf80 = -1;
@@ -156,11 +144,11 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       }
 
       // add elements
-      tf.add(tmp[indexOf79]);
-      tf.add(tmp[indexOf80]);
+   /*   tf.add(tmp[indexOf79]);
+      tf.add(tmp[indexOf80]);*/
       // remote from tmp
-      tmp.removeAt(indexOf80);
-      tmp.removeAt(indexOf79);
+ /*     tmp.removeAt(indexOf80);
+      tmp.removeAt(indexOf79);*/
 
       // if (tmp[s].id == 79 || tmp[s].id == 80) {
       //   tf.add(tmp[s]);

@@ -1,9 +1,11 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherSubscribeSuccessPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -59,10 +61,27 @@ class _AddVouchersPageState extends State<AddVouchersPage> implements AddVoucher
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('subscribe')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        backgroundColor: KColors.primaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        actions: [Container(width: 40)],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('subscribe')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

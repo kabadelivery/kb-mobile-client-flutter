@@ -22,7 +22,8 @@ class CustomerUtils {
     /* expiration date in 3months */
     String expDate =
         "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
-    prefs.setString("${ServerConfig.LOGIN_EXPIRATION}", expDate);
+    prefs.setString(
+        "${ServerConfig.LOGIN_EXPIRATION}" + CustomerUtils.signature, expDate);
   }
 
   static Future<CustomerModel> getCustomer() async {
@@ -64,9 +65,9 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.remove("_loginResponse" + signature);
-    prefs.remove("${ServerConfig.LOGIN_EXPIRATION}");
-    prefs.remove("_homepage" + signature);
-    prefs.remove("is_push_token_uploaed");
+    prefs.remove("${ServerConfig.LOGIN_EXPIRATION}" + signature);
+    prefs.remove("_homepage_" + signature);
+    prefs.remove("is_push_token_uploaded");
     prefs.remove("_selectedAddress" + signature);
 
 // prefs.clear();
@@ -122,12 +123,12 @@ class CustomerUtils {
 
   static saveWelcomePage(String wp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_homepage" + signature, wp);
+    prefs.setString("_homepage_" + signature, wp);
   }
 
   static getOldWelcomePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_homepage" + signature);
+    String jsonContent = prefs.getString("_homepage_" + signature);
     return jsonContent;
   }
 
@@ -144,7 +145,7 @@ class CustomerUtils {
 
   /*  */
 
-  static saveShopSchedulePage(int restaurant_id,String wp) async {
+  static saveShopSchedulePage(int restaurant_id, String wp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_restaurant_schedule_${restaurant_id}_" + signature, wp);
   }
@@ -152,10 +153,10 @@ class CustomerUtils {
   /* old shop schedule page */
   static getOldShopSchedulePage(int restaurant_id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_restaurant_schedule_${restaurant_id}_" + signature);
+    String jsonContent =
+        prefs.getString("_restaurant_schedule_${restaurant_id}_" + signature);
     return jsonContent;
   }
-
 
   static Future<void> saveFavoriteAddress(List<int> favorites) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -163,7 +164,6 @@ class CustomerUtils {
   }
 
   static Future<List<int>> getFavoriteAddress() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String favorite_list = prefs.get("_favorite_list" + signature);
@@ -173,7 +173,7 @@ class CustomerUtils {
         ress.add(element);
       });
       return ress;
-    } catch(e){
+    } catch (e) {
       return Future.value(List<int>.empty(growable: true));
     }
   }
@@ -227,6 +227,11 @@ class CustomerUtils {
     }
   }
 
+  static Future<String> getLastStoredBilling() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("_billing" + signature);
+  }
+
   static Future<String> getLastOtp(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("${username}_last_otp" + signature)) {
@@ -261,4 +266,8 @@ class CustomerUtils {
     return false;
   }
 
+  static Future<void> updateBillingLocally(String billing) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_billing" + signature, billing);
+  }
 }

@@ -137,29 +137,33 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
     return Column(
         children: []..addAll(List.generate(widget.data?.length, (index) {
             ShopScheduleModel model = widget.data[index];
-            return Container(margin: EdgeInsets.only(bottom: 5),
+            return Container(
+                margin: EdgeInsets.only(bottom: 5),
                 child: Row(
-              children: [
-                Container(
-                    width: 30,
-                    child: Text("${_dayFromModel(model)}".toUpperCase(),
-                        style: TextStyle(
-                            color: dday == model.day
-                                ? KColors.primaryColor
-                                : Colors.grey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold))),
-                SizedBox(width: 10),
-                Container(
-                    child: Text("${model.start} - ${model.end}",
-                        style: TextStyle(
-                            color: dday == model.day
-                                ? KColors.primaryColor
-                                : Colors.grey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold)))
-              ],
-            ));
+                  children: [
+                    Container(
+                        width: 30,
+                        child: Text("${_dayFromModel(model)}".toUpperCase(),
+                            style: TextStyle(
+                                color: dday == model.day
+                                    ? KColors.primaryColor
+                                    : Colors.grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold))),
+                    SizedBox(width: 10),
+                    Container(
+                        child: Text(
+                            model.open == 1
+                                ? "${model.start} - ${model.end}"
+                                : "${AppLocalizations.of(context).translate('restaurant_closed')}",
+                            style: TextStyle(
+                                color: dday == model.day
+                                    ? KColors.primaryColor
+                                    : Colors.grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold)))
+                  ],
+                ));
           })));
   }
 

@@ -161,8 +161,8 @@
   "r_opened": "Ouvert",
   "r_pause_preorder": "En Pause => Précommandez",
   "r_blocked_preorder": "Précommande uniquement",
-  "review": "Avis",
-  "see_menu": "Consulter le Menu",
+  "review": "Votre Avis",
+  "see_menu": "Nous visiter !",
   "opening_time": "Heure d'Ouverture",
   "powered_by_kaba_tech": "Conçu par KABA Technologies",
   "min_reached": "LIMITE MINIMUM ATTEINTE",
@@ -443,7 +443,6 @@
   "service_flower_type_product": "Fleur",
   "service_shop_type_product": "Article",
   "service_supermarket_type_product": "Article",
-
   "has_to_pay": "Total à Payer",
   "already_paid": "Total Prépayé",
   "call_me_shipper": "Contacter Livreur",
@@ -463,20 +462,18 @@
   "choose_mobile_money_service": "Choisissez votre Mobile Money",
   "service_ticket_type_name": "Evénement",
   "service_ticket_product_name": "Ticket",
-
   "service_grocery_type_name": "Épicerie",
   "service_grocery_product_name": "Article",
-
   "our_menu": "Notre menu",
-
   "please_select_main_location": "Choisir votre adresse actuelle",
-
   "near_by": "À coté de ",
   "sorry_cant_find_item": "Désolé cet article n'est actuellement pas disponible sur KABA",
-
   "previous_text": "Précédent",
   "please_login_before_going_forward_description_pick_address": "Vous devez vous connecter pour sélectionner une adresse.",
-
-  "checkout": "Acheter"
-
+  "checkout": "Acheter",
+  "note_and_review": "Note & Avis",
+  "shipper": "Livreur",
+  "please_give_rating": "Veuillez donner un avis",
+  "anything_to_say_about_the_service": "Aimerez vous commenter le service ?",
+  "submit": "Soumettre"
 }

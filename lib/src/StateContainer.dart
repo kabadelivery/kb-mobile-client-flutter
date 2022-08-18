@@ -69,6 +69,8 @@ class StateContainerState extends State<StateContainer> {
   int lastLocationPickingDate = 0;
   int lastTimeLinkMatchAction = 0;
 
+  Map<String, String> myBillingArray = null;
+
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {

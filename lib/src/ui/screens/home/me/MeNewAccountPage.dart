@@ -149,16 +149,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
         break;
       case 2:
         /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete(() {
-          StateContainer.of(context).updateLoggingState(state: 0);
-          StateContainer.of(context).updateBalance(balance: 0);
-          // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-          StateContainer.of(context)
-              .updateUnreadMessage(hasUnreadMessage: false);
-          StateContainer.of(context).updateTabPosition(tabPosition: 0);
-          Navigator.pushNamedAndRemoveUntil(
-              context, SplashPage.routeName, (r) => false);
-        });
+       _logout();
         break;
     }
   }
@@ -362,11 +353,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                       child: Column(
                         children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
-                          Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.grey)),
+    Container(
+    height: 40,
+    width: 40,
+    child: Icon(FontAwesomeIcons.solidCreditCard, color: CommandStateColor.delivered,)),
                           SizedBox(height: 10),
                           Text(
                             "${AppLocalizations.of(context).translate('top_up')}",
@@ -583,6 +573,26 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             )
           ]),
         ),
+
+        SizedBox(height: 20),
+      GestureDetector(onTap: ()=> _logout(),
+        child: Container(width: MediaQuery.of(context).size.width,
+         margin: EdgeInsets.symmetric(horizontal: 20),
+         decoration: BoxDecoration(
+           color: KColors.primaryColor.withAlpha(60),
+           borderRadius: BorderRadius.circular(5)
+         ),
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Center(
+            child: Text(
+            Utils.capitalize(
+                "${AppLocalizations.of(context).translate('logout')}"),
+   style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.w500),
+        ),
+          ),),
+      ),
+        SizedBox(height: 20),
+
         Container(
           margin: EdgeInsets.only(top: 15, bottom: 25),
           child: Row(
@@ -816,9 +826,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 SizedBox(
                                     height: 40,
                                     width: 40,
-                                    child: SvgPicture.asset(
-                                      VectorsData.topup,
-                                    )),
+                                    child: Icon(FontAwesomeIcons.solidCreditCard, color: CommandStateColor.delivered,)),
                                 SizedBox(height: 5),
                                 Text(
                                   "${AppLocalizations.of(context).translate('top_up')}",
@@ -1492,5 +1500,20 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     return Utils.isPhoneNumber_TGO(widget.customerData.username)
         ? "XXXX${widget.customerData.username.substring(4)}"
         : "${widget.customerData.username.substring(0, 4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@") - 1)}";
+  }
+
+  void _logout() {
+    CustomerUtils.clearCustomerInformations().whenComplete(() {
+      StateContainer.of(context).updateLoggingState(state: 0);
+      StateContainer.of(context).updateBalance(balance: 0);
+      StateContainer.of(context).selectedAddress = null;
+      StateContainer.of(context).myBillingArray = null;
+      StateContainer.of(context).location = null;
+      StateContainer.of(context)
+          .updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+      Navigator.pushNamedAndRemoveUntil(
+          context, SplashPage.routeName, (r) => false);
+    });
   }
 }

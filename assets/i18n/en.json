@@ -56,7 +56,7 @@
   "error_message": "The system is encoutering a problem. Please contact the customer care if it continues.",
   "new": "NEW",
   "promo": "DISCOUNT",
-  "find_menu_or_restaurant": "Any Shop? Menu ?",
+  "find_menu_or_restaurant": "Any Shop? Article ?",
   "no_order_today": "You have made no order yet today !",
   "system_error": "Sorry, system error. Wait a moment and try again",
   "top_up": "Top up",
@@ -162,7 +162,7 @@
   "r_pause_preorder": "Breaktime => Preorder",
   "r_blocked_preorder": "Preorder only",
   "review": "Review",
-  "see_menu": "Check the Menu",
+  "see_menu": "Visit us",
   "opening_time": "Opening Time",
   "powered_by_kaba_tech": "Powered by KABA Technologies",
   "min_reached": "MIN REACHED",
@@ -459,25 +459,21 @@
   "mobile_money_top_up": "Mobile money",
   "bank_card_top_up": "Bank card",
   "choose_top_up_mode": "Top up Mode",
-
   "choose_mobile_money_service": "Choose mobile money service",
-
   "service_ticket_type_name": "Events",
   "service_ticket_product_name": "Tickets",
-
   "service_grocery_type_name": "Grocery Shop",
   "service_grocery_product_name": "Grocery",
-
   "our_menu": "Our menu",
-
   "please_select_main_location": "Choose your current address",
-
   "near_by": "Near by",
   "sorry_cant_find_item": "Sorry, Item not available on KABA yet",
-
   "previous_text": "PREVIOUS",
-
   "please_login_before_going_forward_description_pick_address": "You must logging in order to pick an address",
-
-  "checkout": "Checkout"
+  "checkout": "Checkout",
+  "note_and_review": "Review & Rating",
+  "shipper": "Shipper",
+  "please_give_rating": "Please give a rating",
+  "anything_to_say_about_the_service": "Anything to say about the service ?",
+  "submit": "SUBMIT"
 }

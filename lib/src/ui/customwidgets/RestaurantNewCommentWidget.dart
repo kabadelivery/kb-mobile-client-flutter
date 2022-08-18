@@ -42,11 +42,13 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Flexible(
-                        child: RichText(text: TextSpan(
+                        child:
+                        RichText(text: TextSpan(
                           text: comment.name_of_client.trim(), style: TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black, fontSize: 12)
                         , children: [
                           TextSpan(text:"  "+ comment.content.trim(),  style: TextStyle(color:Colors.grey,  fontWeight: FontWeight.normal, fontSize: 12))
-                        ])),
+                        ])
+                        ),
                       )
                     ],
                   ),
