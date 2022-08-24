@@ -66,7 +66,7 @@
   "addresses": "地址",
   "feeds": "通知",
   "please_check_balance": "请检查交易记录以确认充值成功",
-  "currency": "郎",
+  "currency": "法郎",
   "input_password": "输入密码",
   "delete": "删除",
   "enter_password": "请输入您的个人密码",
@@ -187,7 +187,7 @@
   "delivery_amount": "运费",
   "net_price": "总价",
   "discount": "优惠",
-  "cooking_time_estimation": "烹饪时间 ",
+  "cooking_time_estimation": "预计烹饪时间 ",
   "additional_info": "关于订单的任何特殊要求吗？",
   "choose_delivery_address": "选择送货地址",
   "your_balance": "您的余额",
@@ -298,7 +298,7 @@
   "voucher_max_count_reached": "抱歉、订阅限量以达到",
   "scan": "扫描二维码",
   "qr_code_wrong": "抱歉、优惠卷有误",
-  "please_search_food": "请输入您要的菜谱",
+  "please_search_food": "帮你搜索您心中的产品 !",
   "sorry_cant_find_food": "抱歉、此菜谱找不到",
   "search_restaurant": "饭店",
   "search_food": "菜单",
@@ -378,7 +378,7 @@
   "debit_points_kaba": "KABA 积分借记",
   "credit_points_kaba": "KABA Point 到账",
   "non_eligible": "不合格",
-  "non_eligible_reason": "抱歉您还没有解锁折扣功能",
+  "non_eligible_reason": "抱歉您还没有KABA积分优惠功能",
   "your_points": "积分",
   "this_feature_is_building": "此功能正在构建中，即将推出",
   "demo_account_alert": "抱歉，无法使用测试张下单。请使用别的账号下订单。",
@@ -405,7 +405,7 @@
   "mois_10": "十月份",
   "mois_11": "十一月份",
   "mois_12": "十二月份",
-  "buy": "探索",
+  "buy": "购买",
   "service_category_food": "外卖",
   "service_category_drinks": "饮料",
   "service_category_flower": "鲜花",
@@ -476,5 +476,9 @@
   "voucher_type_shop": "产品优惠",
   "voucher_type_delivery": "运费优惠",
   "voucher_type_all": "总价优惠",
-  "voucher_use": "使用"
+  "voucher_use": "使用",
+
+  "to_transfer": "转账",
+  "currency_short": "F"
+
 }

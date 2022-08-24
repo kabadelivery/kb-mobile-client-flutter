@@ -6,6 +6,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MovieDetailsPage extends StatefulWidget {
   MovieModel movie = MovieModel(
@@ -89,7 +90,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                     width: 3),
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         // Utils.inflateLink(movie?.pic)
                                         widget?.movie?.pic)))),
                       ),

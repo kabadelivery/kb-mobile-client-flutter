@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class GroupAdsNewWidget extends StatefulWidget {
   GroupAdsModel groupAd;
@@ -55,7 +56,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(
+                                image: OptimizedCacheImageProvider(
                                     Utils.inflateLink(
                                         widget.groupAd.big_pub.pic)))),
                         width: MediaQuery.of(context).size.width,
@@ -77,7 +78,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
+                          image: OptimizedCacheImageProvider(
                               Utils.inflateLink(widget?.groupAd?.small_pub?.pic))))),
               SizedBox(width: 10,),
               Expanded(

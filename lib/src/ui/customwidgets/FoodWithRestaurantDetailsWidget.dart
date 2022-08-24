@@ -16,6 +16,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class FoodWithRestaurantDetailsWidget extends StatefulWidget {
   ShopProductModel food;
@@ -68,7 +69,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(widget?.food?.pic)))),
                           ),
                           Container(
@@ -78,7 +79,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(widget?.food.pic)))),
                           )
                         ],
@@ -157,7 +158,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
+                                        image: OptimizedCacheImageProvider(
                                             Utils.inflateLink(widget?.food
                                                 ?.restaurant_entity?.pic))))),
                             trailing:

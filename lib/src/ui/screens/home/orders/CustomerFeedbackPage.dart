@@ -14,6 +14,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderFeedbackPage extends StatefulWidget {
   static var routeName = "/OrderFeedbackPage";
@@ -115,7 +116,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(
                                             "${widget?.command?.livreur?.pic}"))))),
 

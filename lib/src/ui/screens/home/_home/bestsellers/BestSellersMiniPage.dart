@@ -10,6 +10,8 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class BestSellersMiniPage extends StatefulWidget {
   static var routeName = "/BestSellersMiniPage";
@@ -124,8 +126,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
     }
     return Container(
         margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
-        child: ListView.builder(
-            reverse: true,
+        child: ListView.builder(addAutomaticKeepAlives: true,
             scrollDirection: Axis.horizontal,
             itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
@@ -160,18 +161,18 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
         child: InkWell(
             onTap: () => _jumpToFoodDetails(data?.food_entity),
             child: Container(
-              width: 200,
-              height: 64,
+              width: 250,
+              height: 84,
               margin: EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
-                color: KColors.new_gray,
+                  color: KColors.new_gray,
                   borderRadius: BorderRadius.circular(5)),
               padding: EdgeInsets.only(left: 10, right: 10),
               child: Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
                 // ranking id
                 Container(
                   height: 64,
-                  width: 50,
+                  width: 60,
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(3)),
@@ -180,12 +181,12 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                           width: 3),
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
+                          image: OptimizedCacheImageProvider(
                               Utils.inflateLink(data?.food_entity?.pic)))),
                 ),
                 Container(
                   height: 64,
-                  width: 120,
+                  width: 160,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,34 +230,29 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                                 ),
                                 child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       data?.food_entity?.promotion == 0
-                                          ? Text(
-                                              "${data?.food_entity?.price}",
+                                          ? Text("${data?.food_entity?.price}",
                                               style: TextStyle(
                                                   color: KColors.primaryColor,
                                                   fontSize: 15,
-                                                  fontWeight:
-                                                      FontWeight.w500))
-                                          : Text(
-                                              "${data?.food_entity?.price}",
+                                                  fontWeight: FontWeight.w500))
+                                          : Text("${data?.food_entity?.price}",
                                               style: TextStyle(
                                                   color: KColors.new_black,
                                                   decoration: TextDecoration
                                                       .lineThrough,
                                                   fontSize: 15,
-                                                  fontWeight:
-                                                      FontWeight.w500)),
+                                                  fontWeight: FontWeight.w500)),
                                       data?.food_entity?.promotion != 0
                                           ? Row(children: <Widget>[
                                               SizedBox(width: 10),
                                               Text(
                                                   "${data?.food_entity?.promotion_price}",
                                                   style: TextStyle(
-                                                      color: KColors
-                                                          .primaryColor,
+                                                      color:
+                                                          KColors.primaryColor,
                                                       fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -266,8 +262,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                                       Text(
                                           "${AppLocalizations.of(context).translate('currency')}",
                                           style: TextStyle(
-                                              color:
-                                                  KColors.primaryYellowColor,
+                                              color: KColors.primaryYellowColor,
                                               fontSize: 12))
                                     ]),
                               ),
@@ -282,17 +277,46 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Expanded(
-                                  child: Text(
-                                      Utils.capitalize(
-                                              "${data?.food_entity?.restaurant_entity?.name}")
-                                          .toUpperCase(),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: KColors.new_black,
-                                          fontWeight: FontWeight.w500))),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                        Utils.capitalize(
+                                                "${data?.food_entity?.restaurant_entity?.name}")
+                                    ,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: KColors.new_black,
+                                            fontWeight: FontWeight.w500)),
+                                  ),
+                                  Row(children: [
+                                    Icon(
+                                      FontAwesomeIcons.solidStar,
+                                      color: KColors.primaryYellowColor,
+                                      size: 12,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                        "${data?.food_entity?.restaurant_entity?.stars}"
+                                                    .length >
+                                                3
+                                            ? "${data?.food_entity?.restaurant_entity?.stars}"
+                                                .substring(0, 3)
+                                            : "${data?.food_entity?.restaurant_entity?.stars}",
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w500)),
+                                  ])
+                                ],
+                              )),
                             ],
                           ),
                         ),

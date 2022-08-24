@@ -6,6 +6,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class RestaurantNewCommentWidget extends StatelessWidget {
@@ -30,7 +31,7 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(Utils.inflateLink(comment.pic))
+                    image: OptimizedCacheImageProvider(Utils.inflateLink(comment.pic))
                 )
             ),
             height:50, width: 50,
@@ -59,7 +60,12 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                   Row(children: <Widget>[]
                     ..addAll(
                         List<Widget>.generate(comment.stars.toInt(), (int index) {
-                          return Icon(FontAwesomeIcons.solidStar, color: KColors.primaryYellowColor, size: 14);
+                          return Row(
+                            children: [
+                              Icon(FontAwesomeIcons.solidStar, color: KColors.primaryYellowColor, size: 14),
+                              SizedBox(width:2),
+                            ],
+                          );
                         })
                       // ..add((comment.stars*10)%10 != 0 ? Icon(Icons.star, color: KColors.primaryYellowColor, size: 16) : Container())
                     )),   Row(mainAxisAlignment: MainAxisAlignment.end,

@@ -86,7 +86,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
         .loggingState == 0 ||
         StateContainer
             .of(context)
-            .selectedAddress == null) return Container();
+            .selectedAddress == null || StateContainer.of(context).location == null) return Container();
 
     var shipping_price = _getShippingPrice(widget.distance, StateContainer
         .of(context)

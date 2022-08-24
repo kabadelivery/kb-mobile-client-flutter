@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopListWidget extends StatefulWidget {
   ShopModel shopModel;
@@ -57,9 +58,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   width: 60,
                                   decoration: BoxDecoration(
                                       border: new Border.all(
-                                          color: KColors.primaryYellowColor
-                                              .withOpacity(0.7),
-                                          width: 2),
+                                          color: KColors.primaryYellowColor,
+                                          width: 3),
                                       /*borderRadius:
                                           BorderRadius.all(Radius.circular(2)),*/
                                       // border: new Border.all(color: KColors.primaryYellowColor, width: 2),
@@ -67,7 +67,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                       color: Colors.white,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
+                                          image: OptimizedCacheImageProvider(
                                               Utils.inflateLink(
                                                   widget.shopModel?.pic))))),
                               /*title:*/
@@ -96,11 +96,11 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                             fontSize: 13,
                                             color: KColors.new_black
                                                 .withAlpha(150))),
-                                    SizedBox(height:10),
+                                    SizedBox(height: 10),
                                     /* kilometers and shipping fees */
                                     Row(children: <Widget>[
                                       _getRestaurantStateTag(widget?.shopModel),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 5),
                                       widget.shopModel?.distance == null
                                           ? Container()
                                           : Container(
@@ -122,14 +122,14 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontWeight:
-                                                              FontWeight.normal,
+                                                              FontWeight.w500,
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 12)),
                                                 ],
                                               ),
                                             ),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 5),
                                       widget.shopModel?.distance == null
                                           ? Container()
                                           : widget.shopModel
@@ -146,6 +146,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                       color: Colors.white),
                                                   child: Row(
                                                     children: <Widget>[
+                                                      SizedBox(
+                                                        width: 2,
+                                                      ),
                                                       Icon(
                                                           FontAwesomeIcons
                                                               .biking,
@@ -162,9 +165,13 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                                       ?.delivery_pricing +
                                                                   " F"),
                                                           style: TextStyle(
+                                                            fontWeight: FontWeight.w500,
                                                               color:
                                                                   Colors.grey,
                                                               fontSize: 12)),
+                                                      SizedBox(
+                                                        width: 2,
+                                                      ),
                                                     ],
                                                   )),
                                     ])
@@ -177,11 +184,13 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                         ),
                         SizedBox(width: 5),
                       ]))),
-              Positioned(
+              widget?.shopModel?.coming_soon == 0 ?  Positioned(
                   top: 0,
                   right: 0,
                   child: InkWell(
-                    onTap: () => _jumpToShopDetails(context, widget.shopModel),
+                    onTap: widget?.shopModel?.coming_soon == 0
+                        ? () => _jumpToShopDetails(context, widget.shopModel)
+                        : () => _comingSoon(context, widget.shopModel),
                     child: Container(
                       child: Center(
                           child: Icon(
@@ -195,7 +204,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                           color: Colors.white, shape: BoxShape.circle),
                       padding: EdgeInsets.all(5),
                     ),
-                  )),
+                  )) : Container(),
             ],
           ),
         ),
@@ -276,7 +285,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
+                              image: OptimizedCacheImageProvider(
                                   Utils.inflateLink(shopModel?.pic))))),
                   SizedBox(height: 10),
                   Text(
@@ -322,20 +331,26 @@ class _ShopListWidgetState extends State<ShopListWidget> {
 
     return shopModel?.coming_soon == 0
         ? Container(
-            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(tagText?.toUpperCase(),
-                style: TextStyle(color: tagTextColor, fontSize: 12,fontWeight: FontWeight.w600)))
+                style: TextStyle(
+                    color: tagTextColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600)))
         : Container(
-            padding:  EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(
                 "${AppLocalizations.of(context).translate('coming_soon')}"
                     ?.toUpperCase(),
-                style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w600)));
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600)));
   }
 }

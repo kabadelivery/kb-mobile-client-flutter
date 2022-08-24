@@ -931,7 +931,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         SizedBox(height: 20),
         Icon(Icons.restaurant, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('please_search_food')}")
+        Text("${AppLocalizations.of(context).translate('please_search_item')}")
       ])));
 
     if (foodProposals?.length == 0) {

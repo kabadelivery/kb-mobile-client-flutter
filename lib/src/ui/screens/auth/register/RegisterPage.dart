@@ -35,7 +35,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   int _registerModeRadioValue = 0;
 
   List<String> recoverModeHints = ["",""];
-  /*"Insert your E-main address"*/
+  /*"Insert your E-mail address"*/
 
   List<String> _loginFieldHint;
 
@@ -139,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 30),
-                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
+                    // Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     /* radiobutton - check who are you */
                     !isCodeSent ? Row(
@@ -150,15 +150,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              'Phone',
-                              style: new TextStyle(fontSize: 16.0)),
+                              "${AppLocalizations.of(context).translate('phone_number')}",
+                              style: new TextStyle(fontSize: 14.0)),
                           new Radio(
                             value: 1,
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              'E-main',
-                              style: new TextStyle(fontSize: 16.0)),
+                              "${AppLocalizations.of(context).translate('email')}",
+                              style: new TextStyle(fontSize: 14.0)),
                         ]) : Container(),
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),

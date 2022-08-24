@@ -6,6 +6,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MovieWidgetItem extends StatelessWidget {
   MovieModel movie = MovieModel(
@@ -40,7 +41,7 @@ class MovieWidgetItem extends StatelessWidget {
                       color: KColors.primaryYellowColor.withOpacity(0.3),
                       width: 3),
                   image: new DecorationImage(
-                      fit: BoxFit.cover, image: CachedNetworkImageProvider(
+                      fit: BoxFit.cover, image: OptimizedCacheImageProvider(
                           // Utils.inflateLink(movie?.pic)
                           movie?.pic))
               ),

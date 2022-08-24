@@ -70,9 +70,49 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
     return InkWell(
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 400),
-        child: StateContainer?.of(context)?.location != null ||
-                StateContainer.of(context).selectedAddress != null
+        child: StateContainer?.of(context)?.location == null ||
+                StateContainer.of(context).selectedAddress == null
             ? Container(
+                margin:
+                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    color: KColors.mBlue.withAlpha(10),
+                    borderRadius: BorderRadius.circular(5)),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                            child: Icon(Icons.location_on,
+                                color: KColors.mBlue, size: 15),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: KColors.mBlue.withAlpha(30)),
+                            padding: EdgeInsets.all(5)),
+                        SizedBox(width: 10),
+                        Text(
+                            Utils.capitalize(
+                                "${AppLocalizations.of(context).translate('please_select_main_location')}"),
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey)),
+                      ],
+                    ),
+                    Container(
+                        child: Icon(Icons.add,
+                            color: KColors.primaryColor, size: 15),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: KColors.primaryColor.withAlpha(30)),
+                        padding: EdgeInsets.all(5)),
+                  ],
+                ),
+              )
+            : Container(
                 margin:
                     EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -153,46 +193,6 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                     Container(
                         child: Icon(FontAwesome.chevron_down,
                             color: KColors.primaryColor, size: 10),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: KColors.primaryColor.withAlpha(30)),
-                        padding: EdgeInsets.all(5)),
-                  ],
-                ),
-              )
-            : Container(
-                margin:
-                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 15),
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                decoration: BoxDecoration(
-                    color: KColors.mBlue.withAlpha(10),
-                    borderRadius: BorderRadius.circular(5)),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                            child: Icon(Icons.location_on,
-                                color: KColors.mBlue, size: 15),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: KColors.mBlue.withAlpha(30)),
-                            padding: EdgeInsets.all(5)),
-                        SizedBox(width: 10),
-                        Text(
-                            Utils.capitalize(
-                                "${AppLocalizations.of(context).translate('please_select_main_location')}"),
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey)),
-                      ],
-                    ),
-                    Container(
-                        child: Icon(Icons.add,
-                            color: KColors.primaryColor, size: 15),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: KColors.primaryColor.withAlpha(30)),
@@ -337,8 +337,10 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
-                      textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
+                    "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
+                  )
                 ],
               ),
             ),
@@ -399,8 +401,10 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('request_location_permission')}",
-                        textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
+                      "${AppLocalizations.of(context).translate('request_location_permission')}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    )
                   ],
                 ),
               ),
@@ -453,8 +457,10 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('request_location_permission')}",
-                        textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
+                      "${AppLocalizations.of(context).translate('request_location_permission')}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    )
                   ],
                 ),
               ),
@@ -512,8 +518,10 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
-                          textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
+                        "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12),
+                      )
                     ],
                   ),
                 ),

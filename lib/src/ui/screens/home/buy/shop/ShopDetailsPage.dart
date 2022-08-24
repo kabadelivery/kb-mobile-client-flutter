@@ -30,6 +30,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopDetailsPage extends StatefulWidget {
   static var routeName = "/ShopDetailsPage";
@@ -105,9 +106,12 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-
-    if (widget.distance == null && widget?.restaurant?.location != null && StateContainer.of(context).location != null) {
-     widget.distance = Utils.locationDistance(StateContainer.of(context).location, widget?.restaurant).toString();
+    if (widget.distance == null &&
+        widget?.restaurant?.location != null &&
+        StateContainer.of(context).location != null) {
+      widget.distance = Utils.locationDistance(
+              StateContainer.of(context).location, widget?.restaurant)
+          .toString();
     }
 
     if (widget.shopSchedule == null) {
@@ -137,7 +141,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     }
 
     return Scaffold(
-        appBar: AppBar(elevation: 0,
+        appBar: AppBar(
+          elevation: 0,
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
@@ -187,7 +192,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 child: Container(
                     height: 9 * MediaQuery.of(context).size.width / 16,
                     width: MediaQuery.of(context).size.width,
-                    child: CachedNetworkImage(
+                    child: OptimizedCacheImage(
                         imageUrl:
                             Utils.inflateLink(widget.restaurant?.theme_pic),
                         fit: BoxFit.cover)),
@@ -250,9 +255,11 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                 )
                               ]),
                               SizedBox(height: 10),
-                             Row(
-                                      children: [
-                                        widget.distance == null ? Container() :  Container(
+                              Row(
+                                children: [
+                                  widget.distance == null
+                                      ? Container()
+                                      : Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(
@@ -278,9 +285,10 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                             ],
                                           ),
                                         ),
-                                        SizedBox(width: 10),
-                                        ShippingFeeTag(widget.distance, widget.customer)
-                                      /*  Container(
+                                  SizedBox(width: 10),
+                                  ShippingFeeTag(
+                                      widget.distance, widget.customer)
+                                  /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(
@@ -306,15 +314,17 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                             ],
                                           ),
                                         )*/
-                                      ],
-                                    )
-                                 ,
+                                ],
+                              ),
                               SizedBox(height: 10),
-                              GestureDetector(onTap: ()=>_jumpToRestaurantMenu(context, widget.restaurant),
+                              GestureDetector(
+                                onTap: () => _jumpToRestaurantMenu(
+                                    context, widget.restaurant),
                                 child: Container(
                                     child: Row(children: [
                                       Expanded(
-                                          child: Container(padding: EdgeInsets.all(10),
+                                          child: Container(
+                                        padding: EdgeInsets.all(10),
                                         child: widget.shopSchedule,
                                       )),
                                       Expanded(
@@ -324,7 +334,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text("${AppLocalizations.of(context).translate('see_menu')} >",
+                                                  Text(
+                                                      "${AppLocalizations.of(context).translate('see_menu')} >",
                                                       style: TextStyle(
                                                           fontSize: 12,
                                                           fontWeight:
@@ -337,8 +348,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.normal))
+                                                          fontWeight: FontWeight
+                                                              .normal))
                                                 ],
                                               ))),
                                     ]),
@@ -371,17 +382,39 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   MainAxisAlignment.start,
                                               children: <Widget>[
                                                 Row(
-                                                    children:
-                                                        List<Widget>.generate(
-                                                            widget.restaurant
-                                                                .stars
-                                                                .toInt(),
-                                                            (int index) {
-                                                  return Icon(
-                                                    FontAwesomeIcons.solidStar,
-                                                    color: KColors
-                                                        .primaryYellowColor,
-                                                    size: 20,
+                                                    children: List<
+                                                            Widget>.generate(
+                                                        widget.restaurant.stars
+                                                                .toInt() +
+                                                            (widget.restaurant
+                                                                            .stars -
+                                                                        widget
+                                                                            .restaurant
+                                                                            .stars
+                                                                            .toInt()
+                                                                            .toDouble() >
+                                                                    0.1
+                                                                ? 1
+                                                                : 0),
+                                                        (int index) {
+                                                  return Row(
+                                                    children: [
+                                                      Icon(
+                                                        index ==
+                                                                widget
+                                                                    .restaurant
+                                                                    .stars
+                                                                    .toInt()
+                                                            ? FontAwesomeIcons
+                                                                .solidStarHalf
+                                                            : FontAwesomeIcons
+                                                                .solidStar,
+                                                        color: KColors
+                                                            .primaryYellowColor,
+                                                        size: 20,
+                                                      ),
+                                                      SizedBox(width: 5)
+                                                    ],
                                                   );
                                                 })),
                                                 SizedBox(height: 5),
@@ -502,7 +535,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 )),
           ),
           background: Container(
-            child: CachedNetworkImage(
+            child: OptimizedCacheImage(
                 fit: BoxFit.cover,
                 imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
           )),
@@ -583,7 +616,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
+                                        image: OptimizedCacheImageProvider(
                                             Utils.inflateLink(
                                                 widget?.restaurant?.pic))))),
                           ),
@@ -1129,8 +1162,10 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_comment")}",
-                      textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)
+                    "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_comment")}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
+                  )
                 ],
               ),
             ),

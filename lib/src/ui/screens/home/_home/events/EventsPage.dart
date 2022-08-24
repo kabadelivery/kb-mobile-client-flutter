@@ -6,6 +6,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class EvenementPage extends StatefulWidget {
@@ -121,7 +122,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                           Flex(
                             direction: Axis.vertical,
                             children: <Widget>[
-                              CachedNetworkImage(
+                              OptimizedCacheImage(
                                   imageUrl: Utils.inflateLink(data[position].pic),
                                   fit: BoxFit.fill
                               )

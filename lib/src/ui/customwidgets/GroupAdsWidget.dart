@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class GroupAdsWidget extends StatefulWidget {
@@ -45,14 +46,14 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                 Expanded( // big add
                                   flex: 2,
                                   child: GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
-                                    child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                                    child: OptimizedCacheImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
                                   ),
                                 ),
                                 Expanded( // small add
                                     flex: 1,
                                     child: GestureDetector(onTap:()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 1),
                                         child:Container(
-                                          child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
+                                          child: OptimizedCacheImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
                                         ))),
                               ],
                             ),
@@ -82,7 +83,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                         shape: BoxShape.rectangle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://photosfine.files.wordpress.com/2012/04/white-background-fruit-and-vegetables-18.jpg")
+                                            image: OptimizedCacheImageProvider("https://photosfine.files.wordpress.com/2012/04/white-background-fruit-and-vegetables-18.jpg")
                                         )
                                     )
                                 ),
@@ -97,7 +98,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                         shape: BoxShape.rectangle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://www.netsolutions.com/insights/wp-content/uploads/2018/10/Zomato-online-food-delivery-app.jpg")
+                                            image: OptimizedCacheImageProvider("https://www.netsolutions.com/insights/wp-content/uploads/2018/10/Zomato-online-food-delivery-app.jpg")
                                         )
                                     )
                                 ),
@@ -112,7 +113,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                         shape: BoxShape.rectangle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://www.thesun.co.uk/wp-content/uploads/2019/10/VP-COMP-KFC-V2.jpg")
+                                            image: OptimizedCacheImageProvider("https://www.thesun.co.uk/wp-content/uploads/2019/10/VP-COMP-KFC-V2.jpg")
                                         )
                                     )
                                 ),

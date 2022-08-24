@@ -60,7 +60,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
-
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 // For Flutter applications, you'll most likely want to use
 // the url_launcher package.
 
@@ -388,7 +388,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
+                          image: OptimizedCacheImageProvider(Utils.inflateLink(restaurant.pic))
                       )
                   )
               ),
@@ -515,7 +515,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                   child: Container(
                                       height: 9*MediaQuery.of(context).size.width/16,
                                       width: MediaQuery.of(context).size.width,
-                                      child:CachedNetworkImage(
+                                      child:OptimizedCacheImage(
                                           imageUrl: Utils.inflateLink(admodel.pic),
                                           fit: BoxFit.cover
                                       )
@@ -530,7 +530,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                           child: Container(
                               height: 9*MediaQuery.of(context).size.width/16,
                               width: MediaQuery.of(context).size.width,
-                              child:CachedNetworkImage(
+                              child:OptimizedCacheImage(
                                   imageUrl: Utils.inflateLink(data.slider[0].pic),
                                   fit: BoxFit.cover
                               )
@@ -631,7 +631,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                     decoration: BoxDecoration(
                                         image: new DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
+                                            image: OptimizedCacheImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
                                         )
                                     ),
                                   ),
@@ -666,7 +666,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                                     Container(
                                                       padding: EdgeInsets.all(5),
                                                       height:90, width: 120,
-                                                      child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
+                                                      child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
                                                     ),
                                                   ],
                                                 )), onTap: _jumpToBestSeller),
@@ -678,7 +678,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                                 Container(
                                                   padding: EdgeInsets.all(5),
                                                   height:90, width: 120,
-                                                  child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
+                                                  child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
                                                 ),
                                               ],
                                             ),
@@ -705,7 +705,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             Container(
                                               padding: EdgeInsets.all(5),
                                               height:90, width: 120,
-                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
+                                              child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
                                             ),
                                           ],
                                         ),
@@ -715,7 +715,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             Container(
                                               padding: EdgeInsets.all(5),
                                               height:90, width: 120,
-                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
+                                              child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
                                             ),
                                           ],
                                         ),

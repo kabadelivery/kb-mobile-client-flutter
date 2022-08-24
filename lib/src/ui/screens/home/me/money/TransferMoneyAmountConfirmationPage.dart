@@ -15,6 +15,7 @@ import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
 import 'TransferMoneySuccessPage.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class TransferMoneyAmountConfirmationPage extends StatefulWidget {
   static var routeName = "/TransferMoneyAmountConfirmationPage";
@@ -97,7 +98,7 @@ class _TransferMoneyAmountConfirmationPageState
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(
+                          image: OptimizedCacheImageProvider(Utils.inflateLink(
                               widget?.moneyReceiver?.profile_picture))))),
               SizedBox(
                 height: 20,
@@ -199,7 +200,7 @@ class _TransferMoneyAmountConfirmationPageState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                            "${AppLocalizations.of(context).translate('pay')}"
+                            "${AppLocalizations.of(context).translate('to_transfer')}"
                                 .toUpperCase(),
                             textAlign: TextAlign.center,
                             style:

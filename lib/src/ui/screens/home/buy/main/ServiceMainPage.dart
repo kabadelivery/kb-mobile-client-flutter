@@ -93,6 +93,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
+          leading: Container(width: 40),
           actions: [Container(width: 40)],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,

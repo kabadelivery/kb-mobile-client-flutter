@@ -4,6 +4,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
@@ -57,7 +58,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
 
   /*     Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
               fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
+              image: OptimizedCacheImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
           ))),*/
 
   @override
@@ -89,7 +90,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
       ),
       body: Container(
           child: isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: MyLoadingProgressWidget())
               : (hasNetworkError
                   ? _buildNetworkErrorPage()
                   : hasSystemError

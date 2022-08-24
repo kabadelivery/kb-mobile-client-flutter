@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vibration/vibration.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class TransferMoneySuccessPage extends StatefulWidget {
@@ -80,7 +81,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                     shape: BoxShape.rectangle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.moneyReceiver?.profile_picture))
+                                        image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.moneyReceiver?.profile_picture))
                                     )
                                 )
                             ),

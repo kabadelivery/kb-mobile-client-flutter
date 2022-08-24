@@ -24,6 +24,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 import '../../../StateContainer.dart';
 
@@ -154,7 +155,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                 )),
           ),
           background: Container(
-            child: CachedNetworkImage(
+            child: OptimizedCacheImage(
                 fit: BoxFit.cover,
                 imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
           )),
@@ -234,7 +235,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
+                                        image: OptimizedCacheImageProvider(
                                             Utils.inflateLink(
                                                 widget?.restaurant?.pic))))),
                           ),

@@ -20,6 +20,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class AdsPreviewPage extends StatefulWidget {
   static var routeName = "/AdsPreviewPage";
@@ -99,7 +100,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                     // color: Colors.blueAccent,
 //                                    height: 9*MediaQuery.of(context).size.width/16,
 //                                       height: MediaQuery.of(context).size.width,
-                                    child: CachedNetworkImage(
+                                    child: OptimizedCacheImage(
                                   imageUrl: Utils.inflateLink(admodel.pic),
                                   fit: BoxFit.fitWidth,
                                   progressIndicatorBuilder:

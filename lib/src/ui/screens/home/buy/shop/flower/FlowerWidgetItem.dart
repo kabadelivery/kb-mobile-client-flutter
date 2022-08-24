@@ -5,6 +5,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class FlowerWidgetItem extends StatelessWidget {
   ShopProductModel food;
@@ -79,7 +80,7 @@ class FlowerWidgetItem extends StatelessWidget {
                             // shape: BoxShape.rectangle,
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: CachedNetworkImageProvider(
+                                image: OptimizedCacheImageProvider(
                                     Utils.inflateLink(food?.pic)))),
                       ),
                     ),

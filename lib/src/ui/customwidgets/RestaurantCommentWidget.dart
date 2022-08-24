@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class RestaurantCommentWidget extends StatelessWidget {
@@ -28,7 +29,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(Utils.inflateLink(comment.pic))
+                    image: OptimizedCacheImageProvider(Utils.inflateLink(comment.pic))
                 )
             ),
             height:40, width: 40,

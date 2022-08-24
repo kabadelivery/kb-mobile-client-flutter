@@ -17,6 +17,7 @@ import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.da
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ProductWithShopDetailsWidget extends StatefulWidget {
   ShopProductModel food;
@@ -70,7 +71,7 @@ class _ProductWithShopDetailsWidgetState
                                     width: 3),
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(widget?.food?.pic)))),
                           ),
                           SizedBox(width: 17),

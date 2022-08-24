@@ -8,6 +8,7 @@ import 'package:KABA/src/models/PointObjModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyNormalLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -351,15 +352,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   _buildPointTransactionHistoryList() {
-    if (pointData == null /* || pointData?.last_ten_transactions?.length == 0*/)
+    if (pointData == null || !pointData?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
       return Center(
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          IconButton(icon: Icon(Icons.monetization_on, color: Colors.grey)),
+          Icon(Icons.discount, color: Colors.grey),
           SizedBox(height: 5),
           Text(
-              "${AppLocalizations.of(context)?.translate('sorry_empty_transactions')}",
+              "${AppLocalizations.of(context)?.translate('non_eligible_reason')}",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey)),
         ],
@@ -638,7 +639,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         color: (pointData
                                                         ?.last_ten_transactions[
                                                             index]
-                                                        ?.type ==
+                                                        ?.type !=
                                                     "D"
                                                 ? CommandStateColor.delivered
                                                 : KColors.primaryColor)
@@ -651,15 +652,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                             pointData
                                                         ?.last_ten_transactions[
                                                             index]
-                                                        ?.type ==
+                                                        ?.type !=
                                                     "D"
-                                                ? Icons.arrow_downward
-                                                : Icons.arrow_upward,
+                                                ? Icons.arrow_upward
+                                                : Icons.arrow_downward,
                                             size: 12,
                                             color: pointData
                                                         ?.last_ten_transactions[
                                                             index]
-                                                        ?.type ==
+                                                        ?.type !=
                                                     "D"
                                                 ? CommandStateColor.delivered
                                                 : KColors.primaryColor),
@@ -670,7 +671,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 color: pointData
                                                             ?.last_ten_transactions[
                                                                 index]
-                                                            ?.type ==
+                                                            ?.type !=
                                                         "D"
                                                     ? CommandStateColor
                                                         .delivered
@@ -684,7 +685,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 color: pointData
                                                             ?.last_ten_transactions[
                                                                 index]
-                                                            ?.type ==
+                                                            ?.type !=
                                                         "D"
                                                     ? CommandStateColor
                                                         .delivered
@@ -998,17 +999,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
             children: <Widget>[]
               ..addAll(List.generate(moneyData?.length, (index) {
                 return Container(
-                  color: KColors.new_gray,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+
+                  margin: EdgeInsets.symmetric(vertical: 5),
                   child: Column(
                     children: <Widget>[
                       index == 0
                           ? Center(
-                              child: Container(
+                              child: Container( color: KColors.new_gray,
                                 margin: EdgeInsets.only(top: 15, bottom: 10),
-                                padding: EdgeInsets.only(
-                                    top: 30, bottom: 30, left: 10, right: 10),
-                                width: MediaQuery.of(context).size.width * 0.9,
+                                padding: EdgeInsets.only(top:15,bottom: 15,
+                                       left: 20, right: 20),
+                                width: MediaQuery.of(context).size.width ,
                                 child: Column(
                                   children: [
                                     Column(
@@ -1057,90 +1058,96 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               width: MediaQuery.of(context).size.width,
                               color: Colors.white)
                           : Container(),
-                      Container(
-                        child: InkWell(
-                          onTap: () {
-                            _onMoneyTransactionTap(moneyData[index]);
-                          },
-                          child: ListTile(
-                            title: Row(
+                      Container(padding: EdgeInsets.symmetric(vertical: 15), margin: EdgeInsets.symmetric(horizontal: 20),  decoration: BoxDecoration(color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _onMoneyTransactionTap(moneyData[index]);
+                              },
+                              child: ListTile(
+                                title: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Text("${moneyData[index].details}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: KColors.new_black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14))),
+                                  ],
+                                ),
+                                subtitle: Container(margin: EdgeInsets.only(top: 5),
+                                  child: Text("${moneyData[index].details}",
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.grey)),
+                                ),
+                                trailing: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: (moneyData[index].type != -1
+                                              ? CommandStateColor.delivered
+                                              : KColors.primaryColor)
+                                          .withAlpha(30)),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(width: 5,),
+                                      Icon(
+                                          moneyData[index].type != -1
+                                              ? Icons.arrow_upward
+                                              : Icons.arrow_downward,
+                                          size: 12,
+                                          color: moneyData[index].type != -1
+                                              ? CommandStateColor.delivered
+                                              : KColors.primaryColor),
+                                      SizedBox(width: 5),
+                                      Text("${moneyData[index].value}",
+                                          style: TextStyle(
+                                              color: moneyData[index].type != -1
+                                                  ? CommandStateColor.delivered
+                                                  : KColors.primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12)),
+                                      SizedBox(width: 5),
+                                      Text(
+                                          "${AppLocalizations.of(context)?.translate('currency')}",
+                                          style: TextStyle(
+                                              color: moneyData[index].type != -1
+                                                  ? CommandStateColor.delivered
+                                                  : KColors.primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12)),
+                                      SizedBox(width: 5),
+                                    ],
+                                  ),
+                                ),
+                                /*Row(
                               children: <Widget>[
-                                Expanded(
-                                    child: Text("${moneyData[index].details}",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14))),
+                                Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                                SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
                               ],
-                            ),
-                            subtitle: Text("${moneyData[index].details}",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
-                            trailing: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 5),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (moneyData[index].type == -1
-                                          ? CommandStateColor.delivered
-                                          : KColors.primaryColor)
-                                      .withAlpha(30)),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(width: 5,),
-                                  Icon(
-                                      moneyData[index].type == -1
-                                          ? Icons.arrow_downward
-                                          : Icons.arrow_upward,
-                                      size: 12,
-                                      color: moneyData[index].type == -1
-                                          ? CommandStateColor.delivered
-                                          : KColors.primaryColor),
-                                  SizedBox(width: 5),
-                                  Text("${moneyData[index].value}",
-                                      style: TextStyle(
-                                          color: moneyData[index].type == -1
-                                              ? CommandStateColor.delivered
-                                              : KColors.primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12)),
-                                  SizedBox(width: 5),
-                                  Text(
-                                      "${AppLocalizations.of(context)?.translate('currency')}",
-                                      style: TextStyle(
-                                          color: moneyData[index].type == -1
-                                              ? CommandStateColor.delivered
-                                              : KColors.primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12)),
-                                  SizedBox(width: 5),
-                                ],
+                            ),*/
                               ),
                             ),
-                            /*Row(
-                          children: <Widget>[
-                            Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                            SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                            Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                      Utils.readTimestamp(
+                                          context, moneyData[index]?.created_at),
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 12)),
+                                  SizedBox(width: 20)
+                                ]),
                           ],
-                        ),*/
-                          ),
                         ),
                       ),
-                      Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                                Utils.readTimestamp(
-                                    context, moneyData[index]?.created_at),
-                                style: TextStyle(
-                                    color: Colors.grey, fontSize: 12)),
-                            SizedBox(width: 10)
-                          ]),
-                      SizedBox(height: 8)
+                      index == moneyData?.length-1 ? SizedBox(height: 90) : Container()
                     ],
                   ),
                 );
@@ -1295,7 +1302,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       // jump to order details page
       _jumpToPage(
           context,
-          OrderDetailsPage(
+          OrderNewDetailsPage(
               orderId: moneyData?.command_id,
               presenter: OrderDetailsPresenter()));
     }

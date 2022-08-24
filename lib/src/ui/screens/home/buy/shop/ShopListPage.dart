@@ -359,7 +359,7 @@ class _ShopListPageState extends State<ShopListPage>
                                         topRight: Radius.circular(5),
                                         bottomRight: Radius.circular(5)),
                                     color: KColors.primaryColor),
-                                margin: EdgeInsets.only(top: 2),
+                                // margin: EdgeInsets.only(top: 2),
                                 padding: EdgeInsets.only(
                                     top: 9, bottom: 9, right: 10, left: 10),
                                 child: Icon(Icons.search,
@@ -438,7 +438,7 @@ class _ShopListPageState extends State<ShopListPage>
                                                 : 0,
                                             itemBuilder: (context, index) {
                                               if (index == data?.length)
-                                                return Container(height: 100);
+                                                return Container(height: 300, width: 100);
                                               return ShopListWidget(
                                                   shopModel: data[index]);
                                             },
@@ -881,9 +881,9 @@ class _ShopListPageState extends State<ShopListPage>
           child: Center(
               child: Column(children: <Widget>[
         SizedBox(height: 20),
-        Icon(Icons.restaurant, color: Colors.grey),
+        Icon(Icons.search, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('please_search_food')}")
+        Text("${AppLocalizations.of(context).translate('please_search_item')}")
       ])));
 
     if (foodProposals?.length == 0) {
@@ -894,7 +894,7 @@ class _ShopListPageState extends State<ShopListPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                 SizedBox(height: 20),
-                Icon(Icons.restaurant, color: Colors.grey),
+                Icon(Icons.search, color: Colors.grey),
                 SizedBox(height: 10),
                 Text(
                     "${AppLocalizations.of(context).translate('sorry_cant_find_item')}",
@@ -920,7 +920,7 @@ class _ShopListPageState extends State<ShopListPage>
       child: Scrollbar(
         thumbVisibility: true,
         controller: _searchListScrollController,
-        child: ListView.builder(
+        child: ListView.builder(addAutomaticKeepAlives: true,
           controller: _searchListScrollController,
           itemCount:
               filteredResult?.length != null ? filteredResult.length + 1 : 0,
@@ -1057,10 +1057,12 @@ class _ShopListPageState extends State<ShopListPage>
       child: Scrollbar(
         isAlwaysShown: true,
         controller: _restaurantListScrollController,
-        child: ListView.builder(
+        child: ListView.builder(addAutomaticKeepAlives: true,
           controller: _restaurantListScrollController,
-          itemCount: _filteredData(data).length,
+          itemCount: _filteredData(data).length + 1,
           itemBuilder: (context, index) {
+            if (index == _filteredData(data)?.length)
+              return Container(height: 300);
             return ShopListWidget(shopModel: _filteredData(data)[index]);
           },
         ),
@@ -1375,6 +1377,4 @@ class _ShopListPageState extends State<ShopListPage>
     }
     return tmp;
   }
-
-
 }

@@ -9,6 +9,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MyOrderWidget extends StatefulWidget {
 
@@ -120,7 +121,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
+                                          image: OptimizedCacheImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
                                       )
                                   )
                               ),
@@ -313,7 +314,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
+                          image: OptimizedCacheImageProvider(Utils.inflateLink(food.pic))
                       )
                   ),
                 ),

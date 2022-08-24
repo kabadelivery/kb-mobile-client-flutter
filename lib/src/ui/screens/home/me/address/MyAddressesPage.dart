@@ -113,7 +113,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
-          Container(
+          Container(height: MediaQuery.of(context).size.height,
               child: isLoading
                   ? Center(child: MyLoadingProgressWidget())
                   : (hasNetworkError

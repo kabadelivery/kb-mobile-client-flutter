@@ -10,6 +10,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class BestSellersPage extends StatefulWidget {
@@ -180,7 +181,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                     shape: BoxShape.circle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(
+                        image: OptimizedCacheImageProvider(
                             Utils.inflateLink(data?.food_entity?.pic))
                     )
                 ),

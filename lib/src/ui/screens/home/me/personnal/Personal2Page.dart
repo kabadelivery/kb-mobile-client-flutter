@@ -16,6 +16,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class Personal2Page extends StatefulWidget {
   static var routeName = "/Personal2Page";
@@ -154,7 +155,7 @@ class _Personal2PageState extends State<Personal2Page>
                             fit: BoxFit.cover,
                             image: (_image != null
                                 ? FileImage(_image)
-                                : CachedNetworkImageProvider(Utils.inflateLink(
+                                : OptimizedCacheImageProvider(Utils.inflateLink(
                                     widget.customer?.profile_picture)))))),
                 Positioned(
                     child: InkWell(

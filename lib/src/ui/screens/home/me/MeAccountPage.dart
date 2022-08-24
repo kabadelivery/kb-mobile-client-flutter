@@ -51,6 +51,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class MeAccountPage extends StatefulWidget {
@@ -257,7 +258,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+                                    image: OptimizedCacheImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
                                 )
                             )
                         ), onTap: ()=>

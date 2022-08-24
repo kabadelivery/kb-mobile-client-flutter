@@ -49,6 +49,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,7 +150,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
         break;
       case 2:
         /* logout */
-       _logout();
+        _logout();
         break;
     }
   }
@@ -161,7 +162,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          leading: Container(),
+          leading: Container(width: 40,),
           actions: [
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
@@ -204,8 +205,6 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   }
 
   void _jumpToPage(BuildContext context, page) {
-
-
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -225,18 +224,18 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     return SingleChildScrollView(
       child: Column(children: <Widget>[
         /* top-up & xof */
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () => _jumpToPage(
-                    context,
-                    Personal3Page(
-                        customer: widget.customerData,
-                        presenter: PersonnalPagePresenter())),
-                child: Row(
+        GestureDetector(
+          onTap: () => _jumpToPage(
+              context,
+              Personal3Page(
+                  customer: widget.customerData,
+                  presenter: PersonnalPagePresenter())),
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     GestureDetector(
@@ -250,7 +249,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               color: Colors.grey.withAlpha(100),
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(
+                                  image: OptimizedCacheImageProvider(
                                       Utils.inflateLink(widget
                                           .customerData.profile_picture))))),
                     ),
@@ -296,12 +295,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                             ]))
                   ],
                 ),
-              ),
-            ],
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-            color: KColors.new_gray,
+              ],
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: KColors.new_gray,
+            ),
           ),
         ),
         Container(
@@ -353,10 +352,13 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                       child: Column(
                         children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
-    Container(
-    height: 40,
-    width: 40,
-    child: Icon(FontAwesomeIcons.solidCreditCard, color: CommandStateColor.delivered,)),
+                          Container(
+                              height: 40,
+                              width: 40,
+                              child: Icon(
+                                FontAwesomeIcons.solidCreditCard,
+                                color: CommandStateColor.delivered,
+                              )),
                           SizedBox(height: 10),
                           Text(
                             "${AppLocalizations.of(context).translate('top_up')}",
@@ -399,59 +401,74 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               ],
             )),
         /* do you have  a suggestion ? */
-      false ?  Container(
-            padding: EdgeInsets.only(top: 20, bottom: 20),
-            color: Colors.grey.shade100,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  InkWell(
-                      onTap: () => _jumpToPage(
-                          context,
-                          CustomerCareChatPage(
-                              presenter: CustomerCareChatPresenter())),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: new BorderRadius.only(
-                                  topRight: const Radius.circular(20.0),
-                                  bottomRight: const Radius.circular(20.0))),
-                          padding: EdgeInsets.only(left: 10),
-                          child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                    "${AppLocalizations.of(context).translate('suggestions')}",
-                                    style: TextStyle(
-                                        color: KColors.primaryYellowColor)),
-                                IconButton(
-                                    onPressed: null,
-                                    icon: Icon(Icons.chevron_right,
-                                        color: KColors.primaryColor))
-                              ])))
-                ]))  : Container(),
+        false
+            ? Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                color: Colors.grey.shade100,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      InkWell(
+                          onTap: () => _jumpToPage(
+                              context,
+                              CustomerCareChatPage(
+                                  presenter: CustomerCareChatPresenter())),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.only(
+                                      topRight: const Radius.circular(20.0),
+                                      bottomRight:
+                                          const Radius.circular(20.0))),
+                              padding: EdgeInsets.only(left: 10),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                        "${AppLocalizations.of(context).translate('suggestions')}",
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor)),
+                                    IconButton(
+                                        onPressed: null,
+                                        icon: Icon(Icons.chevron_right,
+                                            color: KColors.primaryColor))
+                                  ])))
+                    ]))
+            : Container(),
         /* menu box */
 
-        InkWell(   onTap: () => _jumpToPage(
-            context,
-            CustomerCareChatPage(
-                presenter: CustomerCareChatPresenter())),
-          child: Container(width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(vertical: 20),
-          padding: EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-          color: KColors.mBlue.withAlpha(15), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        InkWell(
+          onTap: () => _jumpToPage(context,
+              CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(vertical: 20),
+            padding: EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+            color: KColors.mBlue.withAlpha(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(children: [
-                  Icon(FontAwesomeIcons.comments, color: KColors.mBlue, size: 20,), SizedBox(width: 20),
-                  Text("${AppLocalizations.of(context).translate('suggestions')}", style: TextStyle(color: KColors.mBlue, fontSize: 14, fontWeight: FontWeight.w500))
+                  Icon(
+                    FontAwesomeIcons.comments,
+                    color: KColors.mBlue,
+                    size: 20,
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                      "${AppLocalizations.of(context).translate('customer_care')}",
+                      style: TextStyle(
+                          color: KColors.mBlue,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500))
                 ]),
                 Icon(Icons.chevron_right, size: 30, color: KColors.mBlue)
               ],
-            ),),
+            ),
+          ),
         ),
-
         Container(
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
@@ -541,7 +558,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(mainAxisSize: MainAxisSize.max, children: [
-                  Icon(FontAwesomeIcons.percent, color: KColors.primaryYellowColor),
+                  Icon(FontAwesomeIcons.percent,
+                      color: KColors.primaryYellowColor),
                   SizedBox(
                     width: 10,
                   ),
@@ -573,37 +591,45 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             )
           ]),
         ),
-
         SizedBox(height: 20),
-      GestureDetector(onTap: ()=> _logout(),
-        child: Container(width: MediaQuery.of(context).size.width,
-         margin: EdgeInsets.symmetric(horizontal: 20),
-         decoration: BoxDecoration(
-           color: KColors.primaryColor.withAlpha(60),
-           borderRadius: BorderRadius.circular(5)
-         ),
-          padding: EdgeInsets.symmetric(vertical: 15),
-          child: Center(
-            child: Text(
-            Utils.capitalize(
-                "${AppLocalizations.of(context).translate('logout')}"),
-   style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.w500),
+        GestureDetector(
+          onTap: () => _logout(),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+                color: KColors.primaryColor.withAlpha(20),
+                borderRadius: BorderRadius.circular(5)),
+            padding: EdgeInsets.symmetric(vertical: 15),
+            child: Center(
+              child: Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('logout')}"),
+                style: TextStyle(
+                    color: KColors.primaryColor, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
         ),
-          ),),
-      ),
         SizedBox(height: 20),
-
-        Container(
-          margin: EdgeInsets.only(top: 15, bottom: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-//                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
-              Text(
-                "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              )
-            ],
+        InkWell(
+          onTap: () {
+            _jumpToInfoPage();
+          },
+          child: Container(
+            margin: EdgeInsets.only(top: 15, bottom: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.whatshot,
+                    size: 20, color: KColors.primaryColor),
+                SizedBox(height: 5),
+                Text(
+                  "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                )
+              ],
+            ),
           ),
         )
       ]),
@@ -679,7 +705,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(widget
                                             .customerData.profile_picture))))),
                         onTap: () => _seeProfilePicture()
@@ -826,7 +852,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 SizedBox(
                                     height: 40,
                                     width: 40,
-                                    child: Icon(FontAwesomeIcons.solidCreditCard, color: CommandStateColor.delivered,)),
+                                    child: Icon(
+                                      FontAwesomeIcons.solidCreditCard,
+                                      color: CommandStateColor.delivered,
+                                    )),
                                 SizedBox(height: 5),
                                 Text(
                                   "${AppLocalizations.of(context).translate('top_up')}",
@@ -1505,12 +1534,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   void _logout() {
     CustomerUtils.clearCustomerInformations().whenComplete(() {
       StateContainer.of(context).updateLoggingState(state: 0);
+      StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
       StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
       StateContainer.of(context).location = null;
-      StateContainer.of(context)
-          .updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
       Navigator.pushNamedAndRemoveUntil(
           context, SplashPage.routeName, (r) => false);

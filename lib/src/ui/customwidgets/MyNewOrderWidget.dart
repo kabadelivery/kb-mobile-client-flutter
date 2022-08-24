@@ -17,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart' as to;
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MyNewOrderWidget extends StatefulWidget {
   CommandModel command;
@@ -130,7 +131,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(
+                                  image: OptimizedCacheImageProvider(
                                       Utils.inflateLink(
                                           command.restaurant_entity.pic))))),
                       SizedBox(width: 10),
@@ -430,7 +431,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
+                          image: OptimizedCacheImageProvider(
                               Utils.inflateLink(food.pic)))),
                 ),
                 SizedBox(width: 10),

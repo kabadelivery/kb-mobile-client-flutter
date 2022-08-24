@@ -160,7 +160,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
           ),
           selectedPaymentMode != 1
               ? Column(children: [
-                  SizedBox(height: 15),
+                  SizedBox(height: 30),
                   /* phone number just in case we are working with moov*/
                   Container(
                     color: Colors.white,

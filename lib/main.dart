@@ -64,6 +64,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -73,7 +74,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-  CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
+  // OptimizedCacheImage. = CacheManagerLogLevel.none;
 
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();

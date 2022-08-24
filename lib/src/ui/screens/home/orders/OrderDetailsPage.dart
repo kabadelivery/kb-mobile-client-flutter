@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   static var routeName = "/OrderDetailsPage";
@@ -826,7 +827,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                        image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
         Container(),
@@ -934,7 +935,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                        image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
       ]),

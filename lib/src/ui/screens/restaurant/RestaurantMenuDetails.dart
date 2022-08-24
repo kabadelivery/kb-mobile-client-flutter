@@ -16,6 +16,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:iphone_has_notch/iphone_has_notch.dart';
 import 'package:toast/toast.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantMenuDetails extends StatefulWidget {
   static var routeName = "/RestaurantMenuDetails";
@@ -163,19 +164,21 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       shape: BoxShape.rectangle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
+                          image: OptimizedCacheImageProvider(
                               Utils.inflateLink(food?.pic)))),
                 ),
                 SizedBox(width: 10),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("${Utils.capitalize(food?.name)}",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: KColors.new_black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500)),
+                  Container(width: MediaQuery.of(context).size.width-160,
+                    child: Text("${Utils.capitalize(food?.name)}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: KColors.new_black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500)),
+                  ),
                   SizedBox(height: 2),
                   Container(
                     width: 1 * MediaQuery.of(context).size.width / 2,
@@ -195,18 +198,20 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           InkWell(
-                              child: Icon(Icons.remove_circle,
-                                  color: KColors.new_black, size: 20),
+                              child: Container(decoration: BoxDecoration(color: KColors.primaryColor.withAlpha(30), shape: BoxShape.circle), padding: EdgeInsets.all(5),
+                                child: Icon(Icons.remove,
+                                    color: KColors.primaryColor, size: 10),
+                              ),
                               onTap: () => _decreaseQuantity(food)),
                           Container(
                               margin: EdgeInsets.only(left: 5, right: 5),
                               child: Text(
                                   "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
                                   style: TextStyle(
-                                      color: KColors.new_black, fontSize: 15))),
+                                      color: KColors.new_black, fontWeight: FontWeight.w600, fontSize: 15))),
                           InkWell(
                               child: Icon(Icons.add_circle,
-                                  size: 20, color: KColors.primaryColor),
+                                  size: 23, color: KColors.primaryColor),
                               onTap: () => _increaseQuantity(food)),
                         ]),
                   ),
@@ -218,11 +223,11 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                 top: 0,
                 child: InkWell(
                     child: Container(
-                        child: Icon(Icons.delete_forever,
-                            size: 20, color: Colors.grey),
+                        child: Icon(FontAwesome.remove,
+                            size: 15, color: KColors.new_black),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: Colors.white),
-                        padding: EdgeInsets.all(8)),
+                        padding: EdgeInsets.all(5)),
                     onTap: () {
                       _removeFood(food);
                     })),
@@ -232,8 +237,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Container(
                 decoration: BoxDecoration(
                     color: KColors.primaryColor.withAlpha(30),
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                padding: EdgeInsets.all(5),
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                padding: EdgeInsets.only(top:5, bottom: 5, left: 10,right: 10),
                 child: Row(children: <Widget>[
                   SizedBox(width: 2),
                   Text("${food?.price}",
@@ -241,9 +246,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: KColors.new_black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
+                          color: KColors.primaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                           decoration: food.promotion != 0
                               ? TextDecoration.lineThrough
                               : TextDecoration.none)),
@@ -264,9 +269,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: KColors.new_black,
-                          fontSize: 10,
-                          fontWeight: FontWeight.normal)),
+                          color: KColors.primaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600)),
                 ]),
               ),
             )
@@ -328,73 +333,73 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
               child: Wrap(children: bottomSheetView)),
         ),
         Positioned(
-          bottom: 10,
-          child: Container(
+          bottom: 35,
+          child: Container(width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(left: 10, right: 10),
-            child: Row(
+            child: Row(mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "${AppLocalizations.of(context).translate('total')}"
-                                .toUpperCase(),
-                            style: TextStyle(color: Colors.grey)),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text("${totalPrice}",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: KColors.primaryColor)),
-                            SizedBox(width: 5),
-                            Text(
-                                "${AppLocalizations.of(context).translate('currency')}",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 12, color: KColors.primaryColor)),
-                          ],
-                        ),
-                      ],
-                    )),
-                _foodCount == 0
-                    ? Container()
-                    : Container(
-                        height: 50,
-                        width: 0.9 * MediaQuery.of(context).size.width / 2,
-                        padding: EdgeInsets.all(5),
-                        color: Colors.white,
-                        child: Row(mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                _continuePurchase();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, top: 10, bottom: 10),
-                                decoration: BoxDecoration(
-                                    color: KColors.primaryColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
+                Expanded(
+                  child: Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                              "${AppLocalizations.of(context).translate('total')}"
+                                  .toUpperCase(),
+                              style: TextStyle(color: Colors.grey)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text("${totalPrice}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: KColors.primaryColor)),
+                              SizedBox(width: 5),
+                              Text(
+                                  "${AppLocalizations.of(context).translate('currency')}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 12, color: KColors.primaryColor)),
+                            ],
+                          ),
+                        ],
+                      )),
+                ),
+                Expanded(
+                  child: _foodCount == 0
+                      ? Container()
+                      : Container(margin: EdgeInsets.only(right: 20),
+                          height: 50,
+                          // width: 0.9 * MediaQuery.of(context).size.width / 2,
+                          padding: EdgeInsets.all(5),
+                          color: Colors.white,
+                          child: GestureDetector(
+                            onTap: () {
+                              _continuePurchase();
+                            },
+                            child: Container(
+
+                              decoration: BoxDecoration(
+                                  color: KColors.primaryColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: Center(
                                 child: Text(
                                     "${AppLocalizations.of(context).translate('buy')}"
                                         ?.toUpperCase(),
                                     style: TextStyle(color: Colors.white)),
                               ),
                             ),
-                          ],
-                        ))
+                          )),
+                )
               ],
             ),
           ),

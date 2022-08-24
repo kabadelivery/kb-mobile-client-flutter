@@ -102,7 +102,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
   Widget build(BuildContext context) {
     if (_searchChoices == null) _searchChoices = getCategoryTitle(context);
 
-    return Container(
+    return widget?.type == "ticket" ? Container() : Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,29 +143,33 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                   borderRadius:
                                       new BorderRadius.circular(5.0)))),
                     ),
-                    SizedBox(width: 5),
+                   SizedBox(width: 5),
                     Expanded(
-                      flex: 1,
-                      child: InkWell(
-                          onTap: () => widget.onSwitch(2),
-                          child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Center(
-                                child: Text(Utils.capitalize(_searchChoices[1]),
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                            flex: 1,
+                            child: InkWell(
+                                onTap: () => widget.onSwitch(2),
+                                child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: Center(
+                                      child: Text(
+                                          Utils.capitalize(_searchChoices[1]),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: widget.selectedPosition ==
+                                                      1
+                                                  ? this
+                                                      .filter_unactive_text_color
+                                                  : this
+                                                      .filter_active_text_color)),
+                                    ),
+                                    decoration: BoxDecoration(
                                         color: widget.selectedPosition == 1
-                                            ? this.filter_unactive_text_color
-                                            : this.filter_active_text_color)),
-                              ),
-                              decoration: BoxDecoration(
-                                  color: widget.selectedPosition == 1
-                                      ? this.filter_unactive_button_color
-                                      : this.filter_active_button_color,
-                                  borderRadius:
-                                      new BorderRadius.circular(5.0)))),
-                    ),
+                                            ? this.filter_unactive_button_color
+                                            : this.filter_active_button_color,
+                                        borderRadius:
+                                            new BorderRadius.circular(5.0)))),
+                          ),
                   ]),
               duration: Duration(milliseconds: 3000),
             ),

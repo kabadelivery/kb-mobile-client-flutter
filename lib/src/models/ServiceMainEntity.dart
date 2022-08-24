@@ -8,6 +8,7 @@ class ServiceMainEntity {
   int position;
   int is_coming_soon;
   int is_active;
+  int is_new;
 
   ServiceMainEntity(
       {this.lottie_file_link,
@@ -15,6 +16,7 @@ class ServiceMainEntity {
       this.position,
       this.key,
       this.is_coming_soon,
+      this.is_new,
       this.is_active,
       this.category_id,
       this.name,
@@ -30,6 +32,7 @@ class ServiceMainEntity {
       "key": this.key,
       "position": this.position,
       "is_coming_soon": this.is_coming_soon,
+      "is_new": this.is_new,
       "is_active": this.is_active,
     };
   }
@@ -44,6 +47,7 @@ class ServiceMainEntity {
       key: json["key"],
       position: json["position"],
       is_coming_soon: json["is_coming_soon"],
+      is_new: json["is_new"],
       is_active: json["is_active"],
     );
   }

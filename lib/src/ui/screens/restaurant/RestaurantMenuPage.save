@@ -335,7 +335,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils
+                                image: OptimizedCacheImageProvider(Utils
                                     .inflateLink(food.pic))
                             )
                         ),
@@ -467,7 +467,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(Utils
+                                    image: OptimizedCacheImageProvider(Utils
                                         .inflateLink(food?.pic))
                                 )
                             ),

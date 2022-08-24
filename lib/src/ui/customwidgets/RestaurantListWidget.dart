@@ -10,6 +10,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantListWidget extends StatefulWidget {
 
@@ -50,7 +51,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
+                                image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
                             )
                         )
                     ),
@@ -178,7 +179,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel?.pic))
+                          image: OptimizedCacheImageProvider(Utils.inflateLink(restaurantModel?.pic))
                       )
                   )
               ),

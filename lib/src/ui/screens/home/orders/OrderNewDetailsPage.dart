@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderNewDetailsPage extends StatefulWidget {
   static var routeName = "/OrderNewDetailsPage";
@@ -618,7 +619,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
+                              image: OptimizedCacheImageProvider(
                                   Utils.inflateLink(food.pic)))),
                     ),
                   ],
@@ -849,7 +850,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
               maxLines: 1,
               overflow: TextOverflow.clip,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 11)),
+              style: TextStyle(color: Colors.grey, fontSize: 12)),
         ),
         SizedBox(height: 20),
       ],
@@ -1000,7 +1001,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                        image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
         Container(),
@@ -1099,7 +1100,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(Utils.inflateLink(
+                        image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
       ]),

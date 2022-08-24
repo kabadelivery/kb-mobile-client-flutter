@@ -64,6 +64,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 // For Flutter applications, you'll most likely want to use
 // the url_launcher package.
@@ -385,18 +386,24 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         break;
       case 2:
         /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete(() {
-          StateContainer.of(context).updateLoggingState(state: 0);
-          StateContainer.of(context).updateBalance(balance: 0);
-          // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-          StateContainer.of(context)
-              .updateUnreadMessage(hasUnreadMessage: false);
-          StateContainer.of(context).updateTabPosition(tabPosition: 0);
-          Navigator.pushNamedAndRemoveUntil(
-              context, SplashPage.routeName, (r) => false);
-        });
+      _logout();
         break;
     }
+  }
+
+  void _logout() {
+    CustomerUtils.clearCustomerInformations().whenComplete(() {
+      StateContainer.of(context).updateLoggingState(state: 0);
+      StateContainer.of(context).loggingState = 0;
+      StateContainer.of(context).updateBalance(balance: 0);
+      StateContainer.of(context).selectedAddress = null;
+      StateContainer.of(context).myBillingArray = null;
+      StateContainer.of(context).location = null;
+      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+      Navigator.pushNamedAndRemoveUntil(
+          context, SplashPage.routeName, (r) => false);
+    });
   }
 
   _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
@@ -429,7 +436,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             width: 2),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
+                            image: OptimizedCacheImageProvider(
                                 Utils.inflateLink(restaurant.pic))))),
                 SizedBox(height: 10),
                 Container(
@@ -535,7 +542,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: ListView(
+          child: ListView(addAutomaticKeepAlives: true,
               children: <Widget>[
             /*top slide*/
             Stack(
@@ -571,7 +578,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                               16,
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          child: CachedNetworkImage(
+                                          child: OptimizedCacheImage(
                                               imageUrl:
                                                   Utils.inflateLink(admodel.pic),
                                               fit: BoxFit.cover)),
@@ -586,7 +593,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   height:
                                       9 * MediaQuery.of(context).size.width / 16,
                                   width: MediaQuery.of(context).size.width,
-                                  child: CachedNetworkImage(
+                                  child: OptimizedCacheImage(
                                       imageUrl:
                                           Utils.inflateLink(data.slider[0].pic),
                                       fit: BoxFit.cover)),
@@ -706,7 +713,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                         animate: true))
                               ],
                             ),
-                            GestureDetector(
+                           false ? GestureDetector(
                               onTap: () {
                                 _switchAllRestaurant();
                               },
@@ -719,7 +726,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                     fontSize: 12,
                                       fontWeight: FontWeight.w500),
                               )),
-                            )
+                            ) : Container()
                           ],
                         ),
                       ),

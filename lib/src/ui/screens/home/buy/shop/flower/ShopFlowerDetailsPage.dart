@@ -20,6 +20,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:share/share.dart';
 
 class ShopFlowerDetailsPage extends StatefulWidget {
@@ -205,7 +206,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                         return Container(
                             height: 9 * MediaQuery.of(context).size.width / 16,
                             width: MediaQuery.of(context).size.width,
-                            child: CachedNetworkImage(
+                            child: OptimizedCacheImage(
                                 imageUrl: Utils.inflateLink(pictureLink),
                                 fit: BoxFit.cover));
                       },

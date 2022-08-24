@@ -23,6 +23,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
@@ -119,8 +120,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
       }
     }
-
-    // TODO when we open menu with a food id, or menu id, we should set it at the top, and maybe highlight the choosen item
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
@@ -380,7 +379,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(
+                                image: OptimizedCacheImageProvider(
                                     Utils.inflateLink(food.pic)))),
                       ),
                     ],
@@ -546,7 +545,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(
+                                    image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(food?.pic)))),
                           ),
                         ],
@@ -795,7 +794,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
+                            image: OptimizedCacheImageProvider(
                                 Utils.inflateLink(food?.pic)))),
                   ),
                 ),

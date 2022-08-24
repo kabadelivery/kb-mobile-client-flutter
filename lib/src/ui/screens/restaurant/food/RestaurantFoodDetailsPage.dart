@@ -21,6 +21,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share/share.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {
@@ -184,7 +185,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                                     shape: BoxShape.circle,
                                                     image: new DecorationImage(
                                                         fit: BoxFit.cover,
-                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.food?.pic))
+                                                        image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.food?.pic))
                                                     )
                                                 )
                                             ),
@@ -481,7 +482,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                           return Container(
                               height: 9*MediaQuery.of(context).size.width/16,
                               width: 9*MediaQuery.of(context).size.width,
-                              child:CachedNetworkImage(
+                              child:OptimizedCacheImage(
                                   imageUrl: Utils.inflateLink(pictureLink),
                                   fit: BoxFit.cover
                               )
