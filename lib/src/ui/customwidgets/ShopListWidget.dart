@@ -165,7 +165,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                                       ?.delivery_pricing +
                                                                   " F"),
                                                           style: TextStyle(
-                                                            fontWeight: FontWeight.w500,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
                                                               color:
                                                                   Colors.grey,
                                                               fontSize: 12)),
@@ -184,27 +186,30 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                         ),
                         SizedBox(width: 5),
                       ]))),
-              widget?.shopModel?.coming_soon == 0 ?  Positioned(
-                  top: 0,
-                  right: 0,
-                  child: InkWell(
-                    onTap: widget?.shopModel?.coming_soon == 0
-                        ? () => _jumpToShopDetails(context, widget.shopModel)
-                        : () => _comingSoon(context, widget.shopModel),
-                    child: Container(
-                      child: Center(
-                          child: Icon(
-                        Icons.other_houses_rounded,
-                        size: 20,
-                        color: KColors.primaryColor,
-                      )),
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                      padding: EdgeInsets.all(5),
-                    ),
-                  )) : Container(),
+              widget?.shopModel?.coming_soon == 0
+                  ? Positioned(
+                      top: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: widget?.shopModel?.coming_soon == 0
+                            ? () =>
+                                _jumpToShopDetails(context, widget.shopModel)
+                            : () => _comingSoon(context, widget.shopModel),
+                        child: Container(
+                          child: Center(
+                              child: Icon(
+                            Icons.other_houses_rounded,
+                            size: 20,
+                            color: KColors.primaryColor,
+                          )),
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          padding: EdgeInsets.all(5),
+                        ),
+                      ))
+                  : Container(),
             ],
           ),
         ),

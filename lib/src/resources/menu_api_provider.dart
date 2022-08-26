@@ -18,7 +18,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 
 class MenuApiProvider {
   Future<Map> fetchRestaurantMenuList(int restaurantId) async {
-    xrint("entered fetchRestaurantMenuList");
+    xrint("entered fetchRestaurantMenuList $restaurantId");
     if (await Utils.hasNetwork()) {
       /*final response = await client
           .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),

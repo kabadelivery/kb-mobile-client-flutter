@@ -958,6 +958,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   @override
   void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
+      if (restaurant.max_food == null)
+        restaurant.max_food = "5";
       if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
         FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
