@@ -867,7 +867,6 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   _reviewOrder() async {
     if (widget.command.rating < 1 &&
-        Utils.within3days(widget.command?.last_update) &&
         widget.command.state == 3 /*within 3 days, you can still do it.*/) {
       // must review.
       /* jump to review pager. */

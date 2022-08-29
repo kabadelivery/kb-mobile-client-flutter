@@ -99,6 +99,7 @@ dependencies:
   connectivity_plus: ^2.3.6
   smart_select: ^4.3.2
   optimized_cached_image: ^3.0.1
+  geocoding: ^2.0.5
 
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0

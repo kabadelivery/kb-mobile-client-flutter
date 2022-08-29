@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
-
 /// The result returned after completing location selection.
 class LocationResult {
   /// The human readable name of the location. This is primarily the
@@ -122,8 +121,7 @@ class PlacePickerState extends State<PlacePicker> {
   void onMapCreated(GoogleMapController controller) {
     this.mapController.complete(controller);
 
-    if (widget?.alreadyHasLocation == false)
-      moveToCurrentUserLocation();
+    if (widget?.alreadyHasLocation == false) moveToCurrentUserLocation();
 
 //    location.onLocationChanged().listen((LocationData cLoc) {
 //      moveToLocation(LatLng(cLoc.latitude, cLoc.longitude));
@@ -145,18 +143,20 @@ class PlacePickerState extends State<PlacePicker> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        titleSpacing: 0,
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
-          Navigator.pop(context);
-        }),
+            icon: Icon(Icons.arrow_back, color: KColors.new_black),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         key: this.appBarKey,
         title: SearchInput((it) {
           searchPlace(it);
         }),
-        centerTitle: true,
+        // centerTitle: true,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
@@ -178,7 +178,7 @@ class PlacePickerState extends State<PlacePicker> {
               markers: markers,
             ),
           ),
-         Container(
+          Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -235,7 +235,7 @@ class PlacePickerState extends State<PlacePicker> {
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-    this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext.findRenderObject();
 
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -251,9 +251,15 @@ class PlacePickerState extends State<PlacePicker> {
             color: Colors.white,
             child: Row(
               children: <Widget>[
+                Expanded(
+                  child: Text(
+                    "${AppLocalizations.of(context).translate('finding_place')}",
+                    style: TextStyle(fontSize: 14, color: KColors.primaryColor),
+                  ),
+                ),
                 SizedBox(
-                  height: 24,
-                  width: 24,
+                  height: 18,
+                  width: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
                   ),
@@ -261,14 +267,6 @@ class PlacePickerState extends State<PlacePicker> {
                 SizedBox(
                   width: 24,
                 ),
-                Expanded(
-                  child: Text(
-                    "Finding place...",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                )
               ],
             ),
           ),
@@ -343,7 +341,7 @@ class PlacePickerState extends State<PlacePicker> {
     http.get(Uri.parse(endpoint)).then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> location =
-        jsonDecode(response.body)['result']['geometry']['location'];
+            jsonDecode(response.body)['result']['geometry']['location'];
 
         LatLng latLng = LatLng(location['lat'], location['lng']);
 
@@ -360,7 +358,7 @@ class PlacePickerState extends State<PlacePicker> {
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-    this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext.findRenderObject();
 
     clearOverlay();
 
@@ -421,8 +419,8 @@ class PlacePickerState extends State<PlacePicker> {
   void reverseGeocodeLatLng(LatLng latLng) {
     http
         .get(Uri.parse("https://maps.googleapis.com/maps/api/geocode/json?" +
-        "latlng=${latLng.latitude},${latLng.longitude}&" +
-        "key=${widget.apiKey}"))
+            "latlng=${latLng.latitude},${latLng.longitude}&" +
+            "key=${widget.apiKey}"))
         .then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -466,7 +464,9 @@ class PlacePickerState extends State<PlacePicker> {
 
     // getNearbyPlaces(latLng);
   }
+
   LatLng target;
+
   void moveToCurrentUserLocation() {
     var location = Location();
     location.getLocation().then((locationData) {
@@ -533,7 +533,7 @@ class SearchInputState extends State<SearchInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.only(top:8, bottom:8, right:20),
       padding: EdgeInsets.symmetric(
         horizontal: 8,
       ),
@@ -542,7 +542,9 @@ class SearchInputState extends State<SearchInput> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                hintText: "${AppLocalizations.of(context).translate('search_place')}",
+                hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                hintText:
+                    "${AppLocalizations.of(context).translate('search_place')}",
                 border: InputBorder.none,
               ),
               controller: this.editController,
@@ -551,6 +553,10 @@ class SearchInputState extends State<SearchInput> {
                   this.hasSearchEntry = value.isNotEmpty;
                 });
               },
+              onSubmitted: (value) {
+                onSearchInputChange();
+              },
+              style: TextStyle(fontSize: 14),
             ),
           ),
           SizedBox(
@@ -558,31 +564,35 @@ class SearchInputState extends State<SearchInput> {
           ),
           this.hasSearchEntry
               ? GestureDetector(
-            child: Icon(
-              Icons.clear,
-              color: KColors.primaryColor,
-            ),
-            onTap: () {
-              this.editController.clear();
-              setState(() {
-                this.hasSearchEntry = false;
-              });
-            },
-          )
+                  child: Icon(
+                    Icons.clear,
+                    color: KColors.primaryColor,
+                  ),
+                  onTap: () {
+                    this.editController.clear();
+                    setState(() {
+                      this.hasSearchEntry = false;
+                    });
+                  },
+                )
               : SizedBox(),
           SizedBox(
             width: 8,
           ),
-          IconButton(icon: Icon(
-            Icons.search,
-            color: KColors.new_black,
-          ), onPressed: (){onSearchInputChange();},
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: KColors.new_black,
+            ),
+            onPressed: () {
+              onSearchInputChange();
+            },
           ),
         ],
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(5),
+        color: KColors.new_gray,
       ),
     );
   }
@@ -606,7 +616,7 @@ class SelectPlaceAction extends StatelessWidget {
           color: KColors.primaryYellowColor,
           padding: EdgeInsets.symmetric(
             horizontal: 24,
-            vertical: 16,
+            vertical: 24,
           ),
           child: Row(
             children: <Widget>[
@@ -614,23 +624,19 @@ class SelectPlaceAction extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    BouncingWidget(
-                      duration: Duration(milliseconds: 400),
-                      scaleFactor: 3,
-                      child:  Text(
-                        locationName,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                    Text(
+                      locationName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
-                    ),
+                    ), SizedBox(height: 5,),
                     Text(
                       "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(
                         color: KColors.new_black,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -639,7 +645,7 @@ class SelectPlaceAction extends StatelessWidget {
               BouncingWidget(
                 duration: Duration(milliseconds: 200),
                 scaleFactor: 3,
-                child:   Icon(
+                child: Icon(
                   Icons.arrow_forward,
                 ),
               ),
@@ -723,9 +729,14 @@ class RichSuggestion extends StatelessWidget {
 
   List<TextSpan> getStyledTexts(BuildContext context) {
     final List<TextSpan> result = [];
-
+    result.add(TextSpan(children: [
+      WidgetSpan(
+          child:
+              Icon(Icons.location_on, color: KColors.primaryColor, size: 20)),
+      TextSpan(text: "   ")
+    ]));
     String startText =
-    this.autoCompleteItem.text.substring(0, this.autoCompleteItem.offset);
+        this.autoCompleteItem.text.substring(0, this.autoCompleteItem.offset);
     if (startText.isNotEmpty) {
       result.add(
         TextSpan(
@@ -767,8 +778,6 @@ class RichSuggestion extends StatelessWidget {
     return result;
   }
 }
-
-
 
 /// A UUID generator.
 ///

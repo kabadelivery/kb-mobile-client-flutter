@@ -14,6 +14,8 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -113,7 +115,8 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
-          Container(height: MediaQuery.of(context).size.height,
+          Container(
+              height: MediaQuery.of(context).size.height,
               child: isLoading
                   ? Center(child: MyLoadingProgressWidget())
                   : (hasNetworkError
@@ -217,7 +220,9 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: address?.is_favorite ? Colors.yellow.withAlpha(50) : KColors.new_gray,
+                    color: address?.is_favorite
+                        ? Colors.yellow.withAlpha(50)
+                        : KColors.new_gray,
                   ),
                   margin: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
@@ -257,21 +262,24 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                               )
                             ])
                           ]),
-                 !widget.pick ?    GestureDetector(
-                        onTap: () => _addToFavorite(address),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.white),
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(right: 10),
-                          child: Icon(
-                              address.is_favorite
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_border_outlined,
-                              color: KColors.primaryYellowColor,
-                              size: 18),
-                        ),
-                      ) : Container()
+                      !widget.pick
+                          ? GestureDetector(
+                              onTap: () => _addToFavorite(address),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white),
+                                padding: EdgeInsets.all(10),
+                                margin: EdgeInsets.only(right: 10),
+                                child: Icon(
+                                    address.is_favorite
+                                        ? Icons.bookmark
+                                        : Icons.bookmark_border_outlined,
+                                    color: KColors.primaryYellowColor,
+                                    size: 18),
+                              ),
+                            )
+                          : Container()
                     ],
                   )),
             ),
@@ -646,8 +654,29 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       widget.favoriteAddress.remove(address.id);
       await CustomerUtils.saveFavoriteAddress(widget.favoriteAddress);
     } else {
-      await CustomerUtils.saveFavoriteAddress(
-          [address.id, ...widget.favoriteAddress]);
+      await CustomerUtils.saveFavoriteAddress([
+        address.id,
+        ...widget.favoriteAddress
+      ]); /* notification to show that notification has been pinned on top */
+  /*    ElegantNotification.info(
+              toastDuration: Duration(seconds: 5),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('address_pinned_successfully_short')}"),
+              notificationPosition: NotificationPosition.center,
+              description: Text(
+                  "${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"))
+          .show(context);*/
+      final snackBar = SnackBar(
+        content:   Text("${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"),
+        action: SnackBarAction(
+          label: "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+          onPressed: () {
+            // Some code to undo the change.
+            ScaffoldMessenger.of(context).clearSnackBars();
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 
     var favAddresses = await CustomerUtils.getFavoriteAddress();

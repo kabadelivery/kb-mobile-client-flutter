@@ -47,6 +47,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -65,7 +66,9 @@ class HomePage extends StatefulWidget {
 
   CustomerModel customer;
 
-  bool is_offline = false;
+  var samePositionCount = 0;
+
+  bool hasGps = false;
 
   HomePage({Key key, this.destination, this.argument}) : super(key: key);
 
@@ -102,19 +105,23 @@ class _HomePageState extends State<HomePage> {
 
   var subscription;
 
+  StreamSubscription<Position> positionStream;
+  Position tmpLocation;
+
   Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String expDate = prefs.getString("_login_expiration_date"+CustomerUtils.signature);
+    String expDate =
+        prefs.getString("_login_expiration_date" + CustomerUtils.signature);
     int res = 0; // not logged in
     try {
       if (expDate != null) {
         if (DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
-          prefs.remove("_customer"+CustomerUtils.signature);
-          prefs.remove("_token"+CustomerUtils.signature);
-          prefs.remove("_login_expiration_date"+CustomerUtils.signature);
+          prefs.remove("_customer" + CustomerUtils.signature);
+          prefs.remove("_token" + CustomerUtils.signature);
+          prefs.remove("_login_expiration_date" + CustomerUtils.signature);
         } else {
           res = 1; // is logged in
         }
@@ -276,31 +283,54 @@ class _HomePageState extends State<HomePage> {
       initUniLinksStream();
     });
 
-    // network
+    Connectivity().checkConnectivity().then((connectivityResult) {
+      if (!(connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi))
+        StateContainer.of(context).is_offline = true;
+      else
+        StateContainer.of(context).is_offline = false;
+    });
 
+    // network
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult connectivityResult) {
       // Got a new connectivity status!
       if (connectivityResult == ConnectivityResult.mobile ||
           connectivityResult == ConnectivityResult.wifi) {
-        widget.is_offline = false;
+        StateContainer.of(context).is_offline = false;
         /*ElegantNotification.success(toastDuration: Duration(seconds: 10),
             title:  Text("${AppLocalizations.of(context).translate('online_alert_title')}"),
             notificationPosition: NotificationPosition.center,
             description:  Text("${AppLocalizations.of(context).translate('online_alert_description')}")
         ).show(context);*/
       } else {
-        if (!widget.is_offline)
-          ElegantNotification.error(
-                  toastDuration: Duration(seconds: 20),
+        if (!StateContainer.of(context).is_offline) {
+          /*  ElegantNotification.error(
+                  toastDuration: Duration(seconds: 10),
                   title: Text(
                       "${AppLocalizations.of(context).translate('offline_alert_title')}"),
                   notificationPosition: NotificationPosition.center,
                   description: Text(
                       "${AppLocalizations.of(context).translate('offline_alert_description')}"))
-              .show(context);
-        widget.is_offline = true;
+              .show(context);*/
+
+          SnackBar snackBar = SnackBar(
+            content: Text(
+                "${AppLocalizations.of(context).translate('offline_alert_description')}"),
+            action: SnackBarAction(
+              label: "${AppLocalizations.of(context).translate('ok')}"
+                  .toUpperCase(),
+              onPressed: () {
+                // Some code to undo the change.
+                ScaffoldMessenger.of(context).clearSnackBars();
+              },
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        StateContainer.of(context).is_offline = true;
       }
     });
   }
@@ -513,6 +543,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _requestGpsPermissionAndLocation();
     if (loginStuffChecked == 0) {
       /* check the login status */
       checkLogin().then((value) {
@@ -635,7 +666,8 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate(msg[value % 2])}",
-                        textAlign: TextAlign.center)
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
                   ],
                 ),
               ),
@@ -968,7 +1000,8 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
-                      textAlign: TextAlign.center)
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14))
                 ],
               ),
             ),
@@ -1000,25 +1033,307 @@ class _HomePageState extends State<HomePage> {
       callback();
     }
   }
-}
 
-/*
+  Future _getLastKnowLocation() async {
+    /* show a dialog describing that we are going to need to use permissions
+    * //
+    * */
 
-Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
-  xrint("onBackgroundMessage: $message");
-*/
-/* send json version of notification object. */ /*
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
 
-  if (Platform.isAndroid) {
-    NotificationItem notificationItem = _notificationFromMessage(message);
-    return iLaunchNotifications(notificationItem);
-  } else {
-    NotificationItem notificationItem = _notificationFromMessage(message);
-    return iLaunchNotifications(notificationItem);
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
+
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context).translate('request')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    _getLastKnowLocation();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        // permission has been accepted
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          /*  ---- */
+          // await Geolocator.openAppSettings();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context).translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.openAppSettings();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else if (permission == LocationPermission.denied) {
+          /* ---- */
+          // Geolocator.requestPermission();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context).translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      Geolocator.requestPermission();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled =
+              await Geolocator.isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            /*  ---- */
+            // await Geolocator.openLocationSettings();
+            /* ---- */
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                      "${AppLocalizations.of(context).translate('permission_')}"
+                          .toUpperCase(),
+                      style: TextStyle(color: KColors.primaryColor)),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        /* add an image*/
+                        // location_permission
+                        Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: new AssetImage(
+                                      ImageAssets.location_permission),
+                                ))),
+                        SizedBox(height: 10),
+                        Text(
+                            "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14))
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('refuse')}"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('accept')}"),
+                      onPressed: () async {
+                        /* */
+                        await Geolocator.openLocationSettings();
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+            /* ---- */
+          } else {
+            positionStream =
+                Geolocator.getPositionStream().listen((Position position) {
+              /* compare current and old position */
+              if (position?.latitude != null &&
+                  tmpLocation?.latitude != null &&
+                  (position.latitude * 100).round() ==
+                      (tmpLocation.latitude * 100).round() &&
+                  (position.longitude * 100).round() ==
+                      (tmpLocation.longitude * 100).round()) {
+                widget.samePositionCount++;
+                // return;
+              } else {
+                widget.samePositionCount = 0;
+                tmpLocation = StateContainer.of(context).location;
+                if (position != null && mounted) {
+                  widget.hasGps = true;
+                  setState(() {
+                    StateContainer.of(context)
+                        .updateLocation(location: position);
+                  });
+                }
+              }
+              if (widget.samePositionCount >= 3 || widget.hasGps)
+                positionStream?.cancel();
+            });
+          }
+        }
+      }
+    });
   }
-  return Future.value(0);
+
+  void _requestGpsPermissionAndLocation() {
+    /* has been requested already, we shouldnt request a second time during this time */
+    //  explain to the user why we need it, and then pick it
+    if (!StateContainer.of(context).location_asked)
+      StateContainer.of(context).location_asked = true;
+    else
+      return;
+
+    if (mounted) {
+      _getLastKnowLocation();
+      if (widget.hasGps == false &&
+          StateContainer?.of(context)?.location != null) {
+        xrint("init -- 1");
+      } else {}
+    }
+  }
 }
-*/
 
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   xrint(" inside notificationFromMessage -- " + message_entry.toString());

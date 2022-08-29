@@ -9,6 +9,7 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantFoodListWidget extends StatefulWidget {
 

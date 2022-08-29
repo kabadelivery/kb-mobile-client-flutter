@@ -480,5 +480,9 @@
   "voucher_type_all": "ALL",
   "voucher_use": "USE",
   "to_transfer": "TRANSFER",
-  "currency_short": "F"
+  "currency_short": "F",
+  "address_pinned_successfully_short": "Address Pinned",
+  "address_pinned_successfully_long": "Address pinned successfully !",
+  "your_location": "Your location",
+  "finding_place": "Searching for location ..."
 }

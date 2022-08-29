@@ -21,9 +21,10 @@ class BuyCategoryWidget extends StatelessWidget {
   Function mDialog;
 
   BuyCategoryWidget(ServiceMainEntity entity,
-      {this.available = true, this.isNew = false, this.mDialog}) {
+      {this.available = true, this.mDialog}) {
     this.entity = entity;
     this.available = available;
+    this.isNew = (entity?.is_new == 1);
   }
 
   void _jumpToPage(BuildContext context) {
@@ -40,11 +41,19 @@ class BuyCategoryWidget extends StatelessWidget {
           foodProposalPresenter: RestaurantFoodProposalPresenter(),
           restaurantListPresenter: RestaurantListPresenter());
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => page,
-          ));
+      Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+          page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+            CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
     }
   }
 

@@ -14,14 +14,22 @@ import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/utils/plus_code/open_location_code.dart';
+import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
+    as Pp;
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/src/models/position.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as lo;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceMainPage extends StatefulWidget {
   static var routeName = "/ServiceMainPage";
@@ -37,6 +45,8 @@ class ServiceMainPage extends StatefulWidget {
   List<ServiceMainEntity> available_services = [];
 
   List<ServiceMainEntity> coming_soon_services = [];
+
+  Position initialLocation;
 
   ServiceMainPage({Key key, this.presenter
       /*this.destination, this.argument*/
@@ -57,6 +67,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool hasSystemError;
 
   DeliveryAddressModel _selectedAddress;
+
+  SharedPreferences prefs;
+
+  bool isPickLocation = false;
+
+  CurrentLocationTile _myCurrentTile;
 
   @override
   void initState() {
@@ -93,9 +109,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          leading: Container(width: 40),
-          actions: [Container(width: 40)],
-          title: Row(
+          leading: Container(width: 40),centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -149,7 +164,71 @@ class ServiceMainPageState extends State<ServiceMainPage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              CurrentLocationTile(),
+              GestureDetector(
+                onTap: () {
+                  showPlacePicker(context);
+                },
+                child: Stack(
+                  children: [
+                    StateContainer?.of(context)?.location == null
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                left: 20, right: 20, top: 20, bottom: 15),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            decoration: BoxDecoration(
+                                color: KColors.mBlue.withAlpha(10),
+                                borderRadius: BorderRadius.circular(5)),
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                        child: Icon(Icons.location_on,
+                                            color: KColors.mBlue, size: 15),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: KColors.mBlue.withAlpha(30)),
+                                        padding: EdgeInsets.all(5)),
+                                    SizedBox(width: 10),
+                                    Text(
+                                        Utils.capitalize(
+                                            "${AppLocalizations.of(context).translate('please_select_main_location')}"),
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey)),
+                                  ],
+                                ),
+                                Container(
+                                    child: Icon(Icons.add,
+                                        color: KColors.primaryColor, size: 15),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            KColors.primaryColor.withAlpha(30)),
+                                    padding: EdgeInsets.all(5)),
+                              ],
+                            ),
+                          )
+                        : getCurrentTile(),
+                    isPickLocation
+                        ? Positioned(
+                            top: 35,
+                            right: 70,
+                            child: SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  color: Colors.green,
+                                  strokeWidth: 2,
+                                )))
+                        : Container()
+                  ],
+                ),
+              ),
               InkWell(
                   child: SearchStatelessWidget(
                       title:
@@ -360,5 +439,164 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   ]);
       },
     );
+  }
+
+  void showPlacePicker(BuildContext context) async {
+    // confirm you want localisation here...
+
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
+
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
+
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("${AppLocalizations.of(context).translate('info')}"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: new AssetImage(
+                                  ImageAssets.location_permission),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('location_explanation')}",
+                        textAlign: TextAlign.center)
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    showPlacePicker(context);
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        /* get last know position */
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          await Geolocator.openAppSettings();
+        } else if (permission == LocationPermission.denied) {
+          Geolocator.requestPermission();
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled =
+              await Geolocator.isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            await Geolocator.openLocationSettings();
+          } else {
+            if (isPickLocation) {
+              xrint("already picking address, OUTTTTT");
+              return;
+            } else {
+              setState(() {
+                if (StateContainer.of(context).location != null)
+                  widget.initialLocation = StateContainer.of(context).location;
+                StateContainer.of(context).location = null;
+                StateContainer.of(context).placemark = null;
+                isPickLocation = true;
+              });
+
+              Stream<Position> positionStream = Geolocator.getPositionStream();
+              positionStream.first.then((position) {
+                xrint("position stream");
+
+                /*      positionStream = Geolocator.getPositionStream();
+                positionStream.first.then((position1) {
+                  // we do it twice to make sure we get a good location
+                  _jumpToPickAddressPage();
+                }).catchError((onError) {
+                  setState(() {
+                    isPickLocation = false;
+                  });
+                });*/
+                _jumpToPickAddressPage();
+              }).catchError((onError) {
+                setState(() {
+                  isPickLocation = false;
+                });
+              });
+            }
+          }
+        }
+      }
+    });
+  }
+
+  void _jumpToPickAddressPage() async {
+    lo.LocationData location = await lo.Location().getLocation();
+
+    // xrint(widget.gps_location);
+    if (StateContainer.of(context)?.location != null) {
+      xrint("moving to me");
+      Pp.PlacePickerState.initialTarget = LatLng(
+          StateContainer.of(context).location.latitude,
+          StateContainer.of(context).location.longitude);
+    }
+    xrint("i pick address");
+
+    /* get my position */
+    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
+            alreadyHasLocation: StateContainer.of(context)?.location != null)));
+    /* use this location to generate details about the place the user lives and so on. */
+
+    if (result?.longitude != null) {
+      setState(() {
+        _myCurrentTile = null;
+        StateContainer.of(context).placemark = null;
+        StateContainer.of(context).location =
+            Position(latitude: result.latitude, longitude: result.longitude);
+      });
+    } else {
+      if (widget.initialLocation != null) {
+        setState(() {
+          StateContainer.of(context).location = widget.initialLocation;
+          widget.initialLocation = null;
+        });
+      }
+    }
+    setState(() {
+      isPickLocation = false;
+    });
+  }
+
+  getCurrentTile() {
+    if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile();
+    return _myCurrentTile;
   }
 }

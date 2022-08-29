@@ -307,7 +307,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          title: Row(
+          title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -318,7 +318,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
             ],
-          ),
+          ),centerTitle: true,
           leading: IconButton(
               icon: SizedBox(
                   height: 25,
@@ -338,15 +338,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 width: 42,
                 height: 42,
                 child: IconButton(
-                  icon: Image.asset(ImageAssets.whatsapp),
+                  icon: Icon(Icons.phone, color: Colors.white), // Image.asset(ImageAssets.whatsapp),
                   onPressed: () => _jumpToWhatsapp(),
-                  // setup whatsapp button
-                  /* child: FlareActor(
-                    FlareData.new_message,
-                    alignment: Alignment.center,
-                    animation: "normal",
-                    fit: BoxFit.contain,
-                    isPaused : StateContainer.of(context).hasUnreadMessage != true */
                 ),
               ),
             ),
@@ -396,7 +389,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       StateContainer.of(context).updateLoggingState(state: 0);
       StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
-      StateContainer.of(context).selectedAddress = null;
+      // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
       StateContainer.of(context).location = null;
       StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
@@ -866,7 +859,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     // TODO: implement showErrorMessage
     //  hasSystemError = true;
     showLoading(false);
-    mToast("${AppLocalizations.of(context).translate('error_message')}");
+    // mToast("${AppLocalizations.of(context).translate('error_message')}");
   }
 
   @override

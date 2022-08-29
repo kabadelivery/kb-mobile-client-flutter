@@ -74,9 +74,8 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
             onPressed: () {
               Navigator.pop(context);
-            }),
-        actions: [Container(width: 40)],
-        title: Row(
+            }), centerTitle: true,
+        title: Row(mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

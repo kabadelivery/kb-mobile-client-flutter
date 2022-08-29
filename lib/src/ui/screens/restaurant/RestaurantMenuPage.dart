@@ -224,13 +224,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             height: 5,
           ),
           Container(
-            child: CustomChipList(
-              firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
+            child: ChipList(
+           /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
                       _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
                   ? MAX_CHIP_FOR_SCREEN
                   : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
                       ? _chipList?.length ~/ 2 + 1
-                      : _chipList?.length),
+                      : _chipList?.length),*/
               mainAxisAlignment: MainAxisAlignment.start,
               style: TextStyle(fontSize: 12),
               listOfChipNames: _chipList,

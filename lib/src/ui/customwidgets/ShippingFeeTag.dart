@@ -81,12 +81,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
 
   @override
   Widget build(BuildContext context) {
-    if (StateContainer
-        .of(context)
-        .loggingState == 0 ||
-        StateContainer
-            .of(context)
-            .selectedAddress == null || StateContainer.of(context).location == null) return Container();
+    if (StateContainer.of(context).location == null) return Container();
 
     var shipping_price = _getShippingPrice(widget.distance, StateContainer
         .of(context)

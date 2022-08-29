@@ -133,7 +133,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       for (int s = 0; s < tmp.length; s++) {
         // restaurants[s].distanceBetweenMeandRestaurant = Utils.locationDistance(position, restaurants[s]);
         tmp[s].distance =
-            Utils.locationDistance(tmpPosition, tmp[s]).toString();
+            Utils.locationDistance(tmpPosition, tmp[s]) > 100 ? "> 100" : Utils.locationDistance(tmpPosition, tmp[s])?.toString();
         // according to the distance, we get the matching delivery fees
         // i dont want to make another loop
         tmp[s].delivery_pricing =

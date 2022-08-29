@@ -477,8 +477,12 @@
   "voucher_type_delivery": "运费优惠",
   "voucher_type_all": "总价优惠",
   "voucher_use": "使用",
-
   "to_transfer": "转账",
-  "currency_short": "F"
+  "currency_short": "F",
+  "address_pinned_successfully_short": "地址收藏",
+  "address_pinned_successfully_long": "外送地址收藏成功 !",
+
+  "your_location": "您的位置",
+  "finding_place": "正在寻找位置 ..."
 
 }

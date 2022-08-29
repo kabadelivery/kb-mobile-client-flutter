@@ -162,7 +162,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          leading: Container(width: 40,),
+           centerTitle: true,
           actions: [
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
@@ -174,7 +174,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               },
             )
           ],
-          title: Row(
+          title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -250,8 +250,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: OptimizedCacheImageProvider(
-                                      Utils.inflateLink(widget
-                                          .customerData.profile_picture))))),
+                                      Utils.inflateLink(
+                                          widget.customerData.profile_picture),
+                                      cacheKey: widget
+                                          .customerData?.profile_picture)))),
                     ),
                     SizedBox(width: 20),
                     Container(
@@ -621,8 +623,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(Icons.whatshot,
-                    size: 20, color: KColors.primaryColor),
+                Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
                 SizedBox(height: 5),
                 Text(
                   "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
@@ -1536,7 +1537,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       StateContainer.of(context).updateLoggingState(state: 0);
       StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
-      StateContainer.of(context).selectedAddress = null;
+      // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
       StateContainer.of(context).location = null;
       StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);

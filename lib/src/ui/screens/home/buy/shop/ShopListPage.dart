@@ -195,6 +195,30 @@ class _ShopListPageState extends State<ShopListPage>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          brightness: Brightness.light,
+          backgroundColor: KColors.primaryColor,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              }),centerTitle: true,
+
+          title: Row(mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(getCategoryTitle(context)[0]
+                      //    "${AppLocalizations.of(context).translate('search')}"
+                      ),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
+        ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Container(
@@ -240,226 +264,201 @@ class _ShopListPageState extends State<ShopListPage>
         this.data = d;
       }
     }
-
+this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
+    
     // filter restaurant into a map
     d.forEach((restaurant) {
       pageRestaurants[restaurant.id] = restaurant;
     });
 
     // category / 1001 / shop
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
-        backgroundColor: KColors.primaryColor,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        actions: [Container(width: 40)],
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-                Utils.capitalize(getCategoryTitle(context)[0]
-                    //    "${AppLocalizations.of(context).translate('search')}"
-                    ),
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ],
-        ),
-      ),
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 20, top: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                bottomLeft: Radius.circular(5)),
-                            color: KColors.primaryColor.withAlpha(30)),
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        margin: EdgeInsets.only(left: 20),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Expanded(
-                              child: Focus(
-                                onFocusChange: (hasFocus) {
-                                  if (hasFocus) {
-                                    // do staff
-                                    _searchMode = true;
-                                  } else {
-                                    // out search mode
-                                    _searchMode = false;
-                                  }
-                                },
-                                child: TextField(
-                                    controller: _filterEditController,
-                                    onSubmitted: (val) {
-                                      if (searchTypePosition == 2) {
-                                        if (_filterEditController.text
-                                                    ?.trim()
-                                                    ?.length !=
-                                                null &&
-                                            _filterEditController.text
-                                                    ?.trim()
-                                                    ?.length >=
-                                                1)
-                                          widget.foodProposalPresenter
-                                              .fetchRestaurantFoodProposalFromTag(
-                                                  widget.type,
-                                                  _filterEditController.text);
-                                        else
-                                          mDialog(
-                                              "${AppLocalizations.of(context).translate('search_too_short')}");
-                                      }
-                                    },
-                                    style: TextStyle(
-                                        color: KColors.new_black, fontSize: 14),
-                                    textInputAction: TextInputAction.search,
-                                    decoration: InputDecoration.collapsed(
-                                        hintText:
-                                            "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
-                                        hintStyle: TextStyle(
-                                            fontSize: 14,
-                                            color: KColors.new_black
-                                                .withAlpha(150))),
-                                    enabled: true),
-                              ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: 20, top: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              bottomLeft: Radius.circular(5)),
+                          color: KColors.primaryColor.withAlpha(30)),
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      margin: EdgeInsets.only(left: 20),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Expanded(
+                            child: Focus(
+                              onFocusChange: (hasFocus) {
+                                if (hasFocus) {
+                                  // do staff
+                                  _searchMode = true;
+                                } else {
+                                  // out search mode
+                                  _searchMode = false;
+                                }
+                              },
+                              child: TextField(
+                                  controller: _filterEditController,
+                                  onSubmitted: (val) {
+                                    if (searchTypePosition == 2) {
+                                      if (_filterEditController.text
+                                                  ?.trim()
+                                                  ?.length !=
+                                              null &&
+                                          _filterEditController.text
+                                                  ?.trim()
+                                                  ?.length >=
+                                              1)
+                                        widget.foodProposalPresenter
+                                            .fetchRestaurantFoodProposalFromTag(
+                                                widget.type,
+                                                _filterEditController.text);
+                                      else
+                                        mDialog(
+                                            "${AppLocalizations.of(context).translate('search_too_short')}");
+                                    }
+                                  },
+                                  style: TextStyle(
+                                      color: KColors.new_black, fontSize: 14),
+                                  textInputAction: TextInputAction.search,
+                                  decoration: InputDecoration.collapsed(
+                                      hintText:
+                                          "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                                      hintStyle: TextStyle(
+                                          fontSize: 14,
+                                          color: KColors.new_black
+                                              .withAlpha(150))),
+                                  enabled: true),
                             ),
-                            IconButton(
-                                icon: Icon(Icons.close, color: Colors.grey),
-                                onPressed: () {
-                                  _clearFocus();
-                                })
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                              icon: Icon(Icons.close, color: Colors.grey),
+                              onPressed: () {
+                                _clearFocus();
+                              })
+                        ],
                       ),
                     ),
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 400),
-                      child: searchTypePosition == 2
-                          ? InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(5),
-                                        bottomRight: Radius.circular(5)),
-                                    color: KColors.primaryColor),
-                                // margin: EdgeInsets.only(top: 2),
-                                padding: EdgeInsets.only(
-                                    top: 9, bottom: 9, right: 10, left: 10),
-                                child: Icon(Icons.search,
-                                    color: Colors.white, size: 30),
-                              ),
-                              onTap: () {
-                                if (searchTypePosition == 2) {
-                                  if (_filterEditController.text
-                                              ?.trim()
-                                              ?.length !=
-                                          null &&
-                                      _filterEditController.text
-                                              ?.trim()
-                                              ?.length >=
-                                          3)
-                                    widget.foodProposalPresenter
-                                        .fetchRestaurantFoodProposalFromTag(
-                                            widget.type,
-                                            _filterEditController.text);
-                                  else
-                                    mDialog(
-                                        "${AppLocalizations.of(context).translate('search_too_short')}");
-                                }
-                              })
-                          : Container(),
-                    )
-                  ],
-                ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 400),
+                    child: searchTypePosition == 2
+                        ? InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(5),
+                                      bottomRight: Radius.circular(5)),
+                                  color: KColors.primaryColor),
+                              // margin: EdgeInsets.only(top: 2),
+                              padding: EdgeInsets.only(
+                                  top: 9, bottom: 9, right: 10, left: 10),
+                              child: Icon(Icons.search,
+                                  color: Colors.white, size: 30),
+                            ),
+                            onTap: () {
+                              if (searchTypePosition == 2) {
+                                if (_filterEditController.text
+                                            ?.trim()
+                                            ?.length !=
+                                        null &&
+                                    _filterEditController.text
+                                            ?.trim()
+                                            ?.length >=
+                                        3)
+                                  widget.foodProposalPresenter
+                                      .fetchRestaurantFoodProposalFromTag(
+                                          widget.type,
+                                          _filterEditController.text);
+                                else
+                                  mDialog(
+                                      "${AppLocalizations.of(context).translate('search_too_short')}");
+                              }
+                            })
+                        : Container(),
+                  )
+                ],
               ),
-              SizedBox(height: 10),
-              SearchSwitchWidget(
-                  searchTypePosition, _choice, _filterFunction, widget?.type),
-              SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                      children: <Widget>[
+            ),
+            SizedBox(height: 10),
+            SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
+                _scrollToTopFunction, widget?.type),
+            SizedBox(height: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                    children: <Widget>[
 //                  SizedBox(height: 40)
-                  ]..add(
-                          /* according to the search position, show a different page. */
-                          searchTypePosition == 1
-                              ? (!_searchMode
-                                  ? Container(
-                                      color: Colors.white,
-                                      height:
-                                          MediaQuery.of(context).size.height,
+                ]..add(
+                        /* according to the search position, show a different page. */
+                        searchTypePosition == 1
+                            ? (!_searchMode
+                                ? Container(
+                                    color: Colors.white,
+                                    height: MediaQuery.of(context).size.height,
 //                              padding: EdgeInsets.only(bottom:230),
-                                      child: RefreshIndicator(
-                                        onRefresh: () async {
-                                          if (StateContainer?.of(context)
-                                                  ?.location ==
-                                              null) {
-                                            widget.restaurantListPresenter
-                                                .fetchRestaurantList(
-                                                    widget.customer,
-                                                    widget.type,
-                                                    null);
-                                          } else
-                                            widget.restaurantListPresenter
-                                                .fetchRestaurantList(
-                                                    widget.customer,
-                                                    widget.type,
-                                                    StateContainer.of(context)
-                                                        .location);
-                                        },
-                                        color: Colors.purple,
-                                        child: Scrollbar(
-                                          isAlwaysShown: true,
+                                    child: RefreshIndicator(
+                                      onRefresh: () async {
+                                        if (StateContainer?.of(context)
+                                                ?.location ==
+                                            null) {
+                                          widget.restaurantListPresenter
+                                              .fetchRestaurantList(
+                                                  widget.customer,
+                                                  widget.type,
+                                                  null);
+                                        } else
+                                          widget.restaurantListPresenter
+                                              .fetchRestaurantList(
+                                                  widget.customer,
+                                                  widget.type,
+                                                  StateContainer.of(context)
+                                                      .location);
+                                      },
+                                      color: Colors.purple,
+                                      child: Scrollbar(
+                                        isAlwaysShown: true,
+                                        controller:
+                                            _restaurantListScrollController,
+                                        child: ListView.builder(
                                           controller:
                                               _restaurantListScrollController,
-                                          child: ListView.builder(
-                                            controller:
-                                                _restaurantListScrollController,
-                                            itemCount: data?.length != null
-                                                ? data.length + 1
-                                                : 0,
-                                            itemBuilder: (context, index) {
-                                              if (index == data?.length)
-                                                return Container(height: 300, width: 100);
-                                              return ShopListWidget(
-                                                  shopModel: data[index]);
-                                            },
-                                          ),
+                                          itemCount: data?.length != null
+                                              ? data.length + 1
+                                              : 0,
+                                          itemBuilder: (context, index) {
+                                            if (index == data?.length)
+                                              return Container(
+                                                  height: 300, width: 100);
+                                            return ShopListWidget(
+                                                shopModel: data[index]);
+                                          },
                                         ),
                                       ),
-                                    )
-                                  : _showSearchPage())
-                              : Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  child: isSearchingMenus
-                                      ? Center(child: MyLoadingProgressWidget())
-                                      : (searchMenuHasNetworkError
-                                          ? _buildSearchMenuNetworkErrorPage()
-                                          : searchMenuHasSystemError
-                                              ? _buildSearchMenuSysErrorPage()
-                                              : _buildSearchedFoodList())))),
-                ),
+                                    ),
+                                  )
+                                : _showSearchPage())
+                            : Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: isSearchingMenus
+                                    ? Center(child: MyLoadingProgressWidget())
+                                    : (searchMenuHasNetworkError
+                                        ? _buildSearchMenuNetworkErrorPage()
+                                        : searchMenuHasSystemError
+                                            ? _buildSearchMenuSysErrorPage()
+                                            : _buildSearchedFoodList())))),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -920,7 +919,8 @@ class _ShopListPageState extends State<ShopListPage>
       child: Scrollbar(
         thumbVisibility: true,
         controller: _searchListScrollController,
-        child: ListView.builder(addAutomaticKeepAlives: true,
+        child: ListView.builder(
+          addAutomaticKeepAlives: true,
           controller: _searchListScrollController,
           itemCount:
               filteredResult?.length != null ? filteredResult.length + 1 : 0,
@@ -1057,7 +1057,8 @@ class _ShopListPageState extends State<ShopListPage>
       child: Scrollbar(
         isAlwaysShown: true,
         controller: _restaurantListScrollController,
-        child: ListView.builder(addAutomaticKeepAlives: true,
+        child: ListView.builder(
+          addAutomaticKeepAlives: true,
           controller: _restaurantListScrollController,
           itemCount: _filteredData(data).length + 1,
           itemBuilder: (context, index) {
@@ -1284,6 +1285,13 @@ class _ShopListPageState extends State<ShopListPage>
       _filterDropdownValue = newValue;
     });
     _scrollToTop();
+  }
+
+  _scrollToTopFunction() {
+    _restaurantListScrollController.animateTo(
+        _restaurantListScrollController.position.minScrollExtent,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.fastOutSlowIn);
   }
 
   Future<int> _setLastTimeRestaurantListRequestToNow() async {

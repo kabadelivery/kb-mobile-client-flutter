@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,15 +49,16 @@ class StateContainer extends StatefulWidget {
 class StateContainerState extends State<StateContainer> {
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
-  int tabPosition = 1;
+  int tabPosition = 0;
   int balance;
   int loggingState;
 
   // String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
+  Placemark placemark;
 
-  DeliveryAddressModel selectedAddress;
+  // DeliveryAddressModel selectedAddress;
 
   bool hasUnreadMessage;
   bool hasGotNewMessageOnce;
@@ -71,6 +73,9 @@ class StateContainerState extends State<StateContainer> {
 
   Map<String, String> myBillingArray = null;
 
+  bool is_offline = false;
+
+  bool location_asked = false;
 
   Future<void> updateBalance({balance}) async {
     if (balance != null) {
