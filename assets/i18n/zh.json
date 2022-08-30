@@ -481,8 +481,10 @@
   "currency_short": "F",
   "address_pinned_successfully_short": "地址收藏",
   "address_pinned_successfully_long": "外送地址收藏成功 !",
-
   "your_location": "您的位置",
-  "finding_place": "正在寻找位置 ..."
+  "finding_place": "正在寻找位置 ...",
+  "no_content_to_show": "抱歉、本分类暂时无内容。",
 
+  "whatsapp": "Whatsapp",
+  "phone_call": "电话"
 }

@@ -76,8 +76,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-        actions: [Container(width: 40)],
-        title: Row(
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

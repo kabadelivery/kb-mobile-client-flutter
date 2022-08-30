@@ -34,7 +34,7 @@ class ServiceMainApiProvider {
 
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

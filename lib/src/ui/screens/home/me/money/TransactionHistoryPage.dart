@@ -145,7 +145,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Row(
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -154,7 +155,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                   style: TextStyle(color: Colors.white, fontSize: 15)),
             ],
           ),
-          actions: <Widget>[SizedBox(width: 40)],
+
         ),
         body: SingleChildScrollView(
           child: Column(

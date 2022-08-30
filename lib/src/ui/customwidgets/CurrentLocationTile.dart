@@ -152,9 +152,9 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               } else if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 children = <Widget>[
-                                  LoadingAnimationWidget.waveDots(
+                                  LoadingAnimationWidget.prograssiveDots(
                                     color: KColors.mBlue,
-                                    size: 15,
+                                    size: 18,
                                   ),
                                 ];
                               } else {

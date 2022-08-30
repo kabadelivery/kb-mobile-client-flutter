@@ -355,5 +355,9 @@ class Utils {
    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   }
 
+  static String replaceNewLineBy(String text, String placebo) {
+    return text.replaceAll("\n", placebo);
+  }
+
 }
 

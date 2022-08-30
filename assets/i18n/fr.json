@@ -484,8 +484,9 @@
   "currency_short": "F",
   "address_pinned_successfully_short": "Adresse epinglée",
   "address_pinned_successfully_long": "Adresse epinglée avec succès !",
-
   "your_location": "Votre position",
-  "finding_place": "Recherche en cours ..."
-
+  "finding_place": "Recherche en cours ...",
+  "no_content_to_show": "Désolé, cette catégorie est actuellement vide.",
+  "whatsapp": "Whatsapp",
+  "phone_call": "Téléphone"
 }

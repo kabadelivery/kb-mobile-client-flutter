@@ -126,8 +126,9 @@ class _EditAddressPageState extends State<EditAddressPage>
             onPressed: () {
               Navigator.pop(context);
             }),
-        actions: [Container(width: 40)],
+        centerTitle: true,
         title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -357,113 +358,115 @@ class _EditAddressPageState extends State<EditAddressPage>
 
   void showPlacePicker(BuildContext context) async {
     // confirm you want localisation here...
-
-    SharedPreferences.getInstance().then((value) async {
-      prefs = value;
-
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
-      /* no need to commit */
-      /* expiration date in 3months */
-
-      if (_has_accepted_gps != "ok") {
-        return showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('info')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    // location_permission
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
+    if (StateContainer.of(context).location != null)
+      _jumpToPickAddressPage();
+    else
+      SharedPreferences.getInstance().then((value) async {
+        prefs = value;
+        String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+        /* no need to commit */
+        /* expiration date in 3months */
+        if (_has_accepted_gps != "ok") {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title:
+                    Text("${AppLocalizations.of(context).translate('info')}"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: new AssetImage(
-                                  ImageAssets.location_permission),
-                            ))),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context).translate('location_explanation')}",
-                        textAlign: TextAlign.center)
-                  ],
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new AssetImage(
+                                    ImageAssets.location_permission),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('location_explanation')}",
+                          textAlign: TextAlign.center)
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
-                  onPressed: () {
-                    /* */
-                    // SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setString("_has_accepted_gps", "ok");
-                    // call get location again...
-                    showPlacePicker(context);
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          },
-        );
-      } else {
-        /* get last know position */
-        LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.deniedForever) {
-          await Geolocator.openAppSettings();
-        } else if (permission == LocationPermission.denied) {
-          Geolocator.requestPermission();
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () {
+                      /* */
+                      // SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString("_has_accepted_gps", "ok");
+                      // call get location again...
+                      showPlacePicker(context);
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
         } else {
-          // location is enabled
-          bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
-          if (!isLocationServiceEnabled) {
-            await Geolocator.openLocationSettings();
+          /* get last know position */
+          LocationPermission permission = await Geolocator.checkPermission();
+          if (permission == LocationPermission.deniedForever) {
+            await Geolocator.openAppSettings();
+          } else if (permission == LocationPermission.denied) {
+            Geolocator.requestPermission();
           } else {
-            if (isPickLocation) {
-              xrint("already picking address, OUTTTTT");
-              return;
+            // location is enabled
+            bool isLocationServiceEnabled =
+                await Geolocator.isLocationServiceEnabled();
+            if (!isLocationServiceEnabled) {
+              await Geolocator.openLocationSettings();
             } else {
-              setState(() {
-                isPickLocation = true;
-              });
+              if (isPickLocation) {
+                xrint("already picking address, OUTTTTT");
+                return;
+              } else {
+                setState(() {
+                  isPickLocation = true;
+                });
 
-              Stream<Position> positionStream = Geolocator.getPositionStream();
-              positionStream.first.then((position) {
-                xrint("position stream");
-                /* do it recursevely until two positions are identical*/
-                positionStream = Geolocator.getPositionStream();
-                positionStream.first.then((position1) {
-                  // we do it twice to make sure we get a good location
-                  _jumpToPickAddressPage();
+                Stream<Position> positionStream =
+                    Geolocator.getPositionStream();
+                positionStream.first.then((position) {
+                  xrint("position stream");
+                  /* do it recursevely until two positions are identical*/
+                  positionStream = Geolocator.getPositionStream();
+                  positionStream.first.then((position1) {
+                    // we do it twice to make sure we get a good location
+                    _jumpToPickAddressPage();
+                  }).catchError((onError) {
+                    setState(() {
+                      isPickLocation = false;
+                    });
+                  });
                 }).catchError((onError) {
                   setState(() {
                     isPickLocation = false;
                   });
                 });
-              }).catchError((onError) {
-                setState(() {
-                  isPickLocation = false;
-                });
-              });
+              }
             }
           }
         }
-      }
-    });
+      });
   }
 
   bool isPickLocation = false;

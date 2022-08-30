@@ -42,7 +42,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(userToken?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -95,7 +95,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(userToken.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -143,7 +143,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -184,7 +184,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -224,7 +224,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -321,7 +321,7 @@ class ClientPersonalApiProvider {
       */
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -384,7 +384,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -570,7 +570,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -615,7 +615,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -661,7 +661,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -712,7 +712,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -763,7 +763,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -809,7 +809,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -932,7 +932,7 @@ class ClientPersonalApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

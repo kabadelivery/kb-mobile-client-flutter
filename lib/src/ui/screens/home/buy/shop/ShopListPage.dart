@@ -19,6 +19,7 @@ import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -203,9 +204,10 @@ class _ShopListPageState extends State<ShopListPage>
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
               onPressed: () {
                 Navigator.pop(context);
-              }),centerTitle: true,
-
-          title: Row(mainAxisSize: MainAxisSize.min,
+              }),
+          centerTitle: true,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -264,8 +266,7 @@ class _ShopListPageState extends State<ShopListPage>
         this.data = d;
       }
     }
-this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
-    
+
     // filter restaurant into a map
     d.forEach((restaurant) {
       pageRestaurants[restaurant.id] = restaurant;
@@ -309,23 +310,13 @@ this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
                               child: TextField(
                                   controller: _filterEditController,
                                   onSubmitted: (val) {
-                                    if (searchTypePosition == 2) {
-                                      if (_filterEditController.text
-                                                  ?.trim()
-                                                  ?.length !=
-                                              null &&
-                                          _filterEditController.text
-                                                  ?.trim()
-                                                  ?.length >=
-                                              1)
-                                        widget.foodProposalPresenter
-                                            .fetchRestaurantFoodProposalFromTag(
-                                                widget.type,
-                                                _filterEditController.text);
-                                      else
-                                        mDialog(
-                                            "${AppLocalizations.of(context).translate('search_too_short')}");
-                                    }
+                                    _searchFoodProposal(pressButton: true);
+                                  },
+                                  onChanged: (val) {
+                                    EasyDebounce.debounce(
+                                        'search-input-debouncer',
+                                        Duration(milliseconds: 500),
+                                        () => {_searchFoodProposal()});
                                   },
                                   style: TextStyle(
                                       color: KColors.new_black, fontSize: 14),
@@ -406,45 +397,60 @@ this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
                                     color: Colors.white,
                                     height: MediaQuery.of(context).size.height,
 //                              padding: EdgeInsets.only(bottom:230),
-                                    child: RefreshIndicator(
-                                      onRefresh: () async {
-                                        if (StateContainer?.of(context)
-                                                ?.location ==
-                                            null) {
-                                          widget.restaurantListPresenter
-                                              .fetchRestaurantList(
-                                                  widget.customer,
-                                                  widget.type,
-                                                  null);
-                                        } else
-                                          widget.restaurantListPresenter
-                                              .fetchRestaurantList(
-                                                  widget.customer,
-                                                  widget.type,
-                                                  StateContainer.of(context)
-                                                      .location);
-                                      },
-                                      color: Colors.purple,
-                                      child: Scrollbar(
-                                        isAlwaysShown: true,
-                                        controller:
-                                            _restaurantListScrollController,
-                                        child: ListView.builder(
-                                          controller:
-                                              _restaurantListScrollController,
-                                          itemCount: data?.length != null
-                                              ? data.length + 1
-                                              : 0,
-                                          itemBuilder: (context, index) {
-                                            if (index == data?.length)
-                                              return Container(
-                                                  height: 300, width: 100);
-                                            return ShopListWidget(
-                                                shopModel: data[index]);
-                                          },
-                                        ),
-                                      ),
-                                    ),
+                                    child: data?.length == null ||
+                                            data?.length == 0
+                                        ? Container(
+                                            child: Center(
+                                                child:
+                                                    Column(children: <Widget>[
+                                            SizedBox(height: 20),
+                                            Icon(Icons.shopping_cart_sharp,
+                                                color: Colors.grey),
+                                            SizedBox(height: 10),
+                                            Text(
+                                                "${AppLocalizations.of(context).translate('no_content_to_show')}")
+                                          ])))
+                                        : RefreshIndicator(
+                                            onRefresh: () async {
+                                              if (StateContainer?.of(context)
+                                                      ?.location ==
+                                                  null) {
+                                                widget.restaurantListPresenter
+                                                    .fetchRestaurantList(
+                                                        widget.customer,
+                                                        widget.type,
+                                                        null);
+                                              } else
+                                                widget.restaurantListPresenter
+                                                    .fetchRestaurantList(
+                                                        widget.customer,
+                                                        widget.type,
+                                                        StateContainer.of(
+                                                                context)
+                                                            .location);
+                                            },
+                                            color: Colors.purple,
+                                            child: Scrollbar(
+                                              isAlwaysShown: true,
+                                              controller:
+                                                  _restaurantListScrollController,
+                                              child: ListView.builder(
+                                                controller:
+                                                    _restaurantListScrollController,
+                                                itemCount: data?.length != null
+                                                    ? data.length + 1
+                                                    : 0,
+                                                itemBuilder: (context, index) {
+                                                  if (index == data?.length)
+                                                    return Container(
+                                                        height: 300,
+                                                        width: 100);
+                                                  return ShopListWidget(
+                                                      shopModel: data[index]);
+                                                },
+                                              ),
+                                            ),
+                                          ),
                                   )
                                 : _showSearchPage())
                             : Container(
@@ -1044,12 +1050,16 @@ this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
   }
 
   _showSearchPage() {
-    /* show first few restaurants with a show more button, */
-    /*  return <Widget>[]
-      ..addAll(List<Widget>.generate(_filteredData(data).length, (int index) {
-        return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
-      }).toList())*/
-    ;
+    if (_filteredData(data)?.length == 0)
+      return Container(
+          child: Center(
+              child: Column(children: <Widget>[
+        SizedBox(height: 20),
+        Icon(Icons.shopping_cart_sharp, color: Colors.grey),
+        SizedBox(height: 10),
+        Text("${AppLocalizations.of(context).translate('no_content_to_show')}")
+      ])));
+
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height,
@@ -1384,5 +1394,19 @@ this.data = this.data.sublist(0,this.data?.length > 10 ? 10: this.data?.length);
         break;
     }
     return tmp;
+  }
+
+  void _searchFoodProposal({bool pressButton = false}) {
+    if (searchTypePosition == 2) {
+      if (_filterEditController.text?.trim()?.length != null &&
+          _filterEditController.text?.trim()?.length >= 2)
+        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
+            widget.type, _filterEditController.text);
+      else {
+        if (pressButton)
+          mDialog(
+              "${AppLocalizations.of(context).translate('search_too_short')}");
+      }
+    }
   }
 }

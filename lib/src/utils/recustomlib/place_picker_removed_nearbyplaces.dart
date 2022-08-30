@@ -5,6 +5,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -281,16 +282,24 @@ class PlacePickerState extends State<PlacePicker> {
 
   /// Fetches the place autocomplete list with the query [place].
   void autoCompleteSearch(String place) {
+    /* if it is a gps location or a plus code, we use it else way */
     place = place.replaceAll(" ", "+");
     var endpoint =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
             "key=${widget.apiKey}&" +
             "input={$place}&sessiontoken=${this.sessionToken}";
 
-    if (this.locationResult != null) {
+    /*if (this.locationResult != null) {
       endpoint += "&location=${this.locationResult.latLng.latitude}," +
           "${this.locationResult.latLng.longitude}";
+    }*/
+    if (initialTarget != null) {
+      endpoint += "&location=${initialTarget.latitude}," +
+          "${initialTarget.longitude}";
+      // endpoint += "&locationbias=circle:100000@${initialTarget.latitude},${initialTarget.longitude}";
+    endpoint+="&locationbias=circle:150000@6.221316,1.188478";
     }
+
     http.get(Uri.parse(endpoint)).then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
@@ -533,7 +542,7 @@ class SearchInputState extends State<SearchInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top:8, bottom:8, right:20),
+      margin: EdgeInsets.only(top: 8, bottom: 8, right: 20),
       padding: EdgeInsets.symmetric(
         horizontal: 8,
       ),
@@ -552,10 +561,10 @@ class SearchInputState extends State<SearchInput> {
                 setState(() {
                   this.hasSearchEntry = value.isNotEmpty;
                 });
+                EasyDebounce.debounce('search-input-debouncer',
+                    Duration(milliseconds: 500), () => onSearchInputChange());
               },
-              onSubmitted: (value) {
-                onSearchInputChange();
-              },
+              onSubmitted: (value) {},
               style: TextStyle(fontSize: 14),
             ),
           ),
@@ -579,15 +588,17 @@ class SearchInputState extends State<SearchInput> {
           SizedBox(
             width: 8,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: KColors.new_black,
-            ),
-            onPressed: () {
-              onSearchInputChange();
-            },
-          ),
+          true
+              ? Container()
+              : IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    color: KColors.new_black,
+                  ),
+                  onPressed: () {
+                    onSearchInputChange();
+                  },
+                ),
         ],
       ),
       decoration: BoxDecoration(
@@ -631,7 +642,10 @@ class SelectPlaceAction extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
-                    ), SizedBox(height: 5,),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text(
                       "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(

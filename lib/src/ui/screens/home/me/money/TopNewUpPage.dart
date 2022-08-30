@@ -119,8 +119,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-        actions: [Container(width: 40)],
-        title: Row(
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -133,215 +133,168 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(children: <Widget>[
-              SizedBox(height: 15),
-              /* define mobile money and visa-card */
-              Container(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: AnimatedContainer(
-                        decoration: BoxDecoration(
-                          color: filter_unactive_button_color,
-                          borderRadius:
-                              BorderRadius.all(const Radius.circular(5.0)),
-                        ),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: InkWell(
-                                    onTap: () => _onSwitch(1),
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Center(
-                                          child: Text(Utils.capitalize(
-                                                  // "${AppLocalizations.of(context).translate('search_restaurant')}"),
-                                                  _searchChoices[0]),
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: widget
-                                                              .selectedPosition ==
-                                                          1
-                                                      ? this
-                                                          .filter_active_text_color
-                                                      : this
-                                                          .filter_unactive_text_color)),
-                                        ),
-                                        decoration: BoxDecoration(
-                                            color: widget.selectedPosition == 1
-                                                ? this.filter_active_button_color
-                                                : this
-                                                    .filter_unactive_button_color,
-                                            borderRadius:
-                                                new BorderRadius.circular(5.0)))),
-                              ),
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: InkWell(
-                                    onTap: () => _onSwitch(2),
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Center(
-                                          child: Text(
-                                              Utils.capitalize(_searchChoices[1]),
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: widget
-                                                              .selectedPosition ==
-                                                          1
-                                                      ? this
-                                                          .filter_unactive_text_color
-                                                      : this
-                                                          .filter_active_text_color)),
-                                        ),
-                                        decoration: BoxDecoration(
-                                            color: widget.selectedPosition == 1
-                                                ? this
-                                                    .filter_unactive_button_color
-                                                : this.filter_active_button_color,
-                                            borderRadius:
-                                                new BorderRadius.circular(5.0)))),
-                              ),
-                            ]),
-                        duration: Duration(milliseconds: 3000),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30),
-              widget.selectedPosition == 1
-                  ? Container(
-                      decoration: BoxDecoration(
-                          color: KColors.new_gray,
-                          borderRadius: BorderRadius.circular(5)),
-                      margin:
-                          EdgeInsets.only( right: 10, left: 10),
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                      child:
-                          // usage example
-                          DropdownButton<String>(
-                        isExpanded: true,
-                        value: dropdownValue,
-                        underline: Container(),
-                        icon: const Icon(FontAwesomeIcons.chevronDown,
-                            size: 15, color: KColors.primaryColor),
-                        elevation: 16,
-                        style: const TextStyle(
-                            color: KColors.primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
-                        hint: Text(
-                            "${AppLocalizations.of(context).translate('choose_mobile_money_service')}",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14)),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            dropdownValue = newValue;
-                          });
-                        },
-                        items: <String>[
-                          'Tmoney',
-                          'Flooz',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ))
-                  : Container(),
-
-              widget.selectedPosition == 1
-                  ? Column(children: [
-                      SizedBox(height: 30),
-                      /* phone number just in case we are working with moov*/
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                  text: TextSpan(
-                                      text:
-                                          "${AppLocalizations.of(context).translate('topup_phone_number')}",
-                                      children: [
-                                        TextSpan(
-                                            text: " *",
-                                            style: TextStyle(
-                                                color: KColors.primaryColor))
-                                      ],
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.grey))),
-                              SizedBox(height: 5),
-                              Container(
-                                padding: EdgeInsets.only(left: 5, right: 5),
-                                decoration: BoxDecoration(
-                                    color: KColors.new_gray,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                child: TextField(
-                                    controller: _phoneNumberFieldController,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(fontSize: 20),
-                                    decoration: InputDecoration(
-                                        fillColor: Colors.yellow,
-                                        border: InputBorder.none,
-                                        hintMaxLines: 5,
-                                        hintStyle: TextStyle(fontSize: 13)),
-                                    keyboardType: TextInputType.phone),
-                              )
-                            ]),
-                      ),
-                    ])
-                  : Container(),
-              Column(children: [
+      body: Container(height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(children: <Widget>[
                 SizedBox(height: 15),
-                /* amount you wanna get paid */
+                /* define mobile money and visa-card */
                 Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                            text: TextSpan(
-                                text:
-                                    "${AppLocalizations.of(context).translate('amount_to_topup')}",
-                                children: [
-                                  TextSpan(
-                                      text: " *",
-                                      style: TextStyle(color: KColors.primaryColor))
-                                ],
-                                style:
-                                    TextStyle(fontSize: 12, color: Colors.grey))),
-                        SizedBox(height: 5),
-                        Container(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: AnimatedContainer(
+                          decoration: BoxDecoration(
+                            color: filter_unactive_button_color,
+                            borderRadius:
+                                BorderRadius.all(const Radius.circular(5.0)),
+                          ),
                           child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: InkWell(
+                                      onTap: () => _onSwitch(1),
+                                      child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Center(
+                                            child: Text(Utils.capitalize(
+                                                    // "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                                    _searchChoices[0]),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: widget
+                                                                .selectedPosition ==
+                                                            1
+                                                        ? this
+                                                            .filter_active_text_color
+                                                        : this
+                                                            .filter_unactive_text_color)),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: widget.selectedPosition == 1
+                                                  ? this.filter_active_button_color
+                                                  : this
+                                                      .filter_unactive_button_color,
+                                              borderRadius:
+                                                  new BorderRadius.circular(5.0)))),
+                                ),
+                                SizedBox(width: 5),
+                                Expanded(
+                                  child: InkWell(
+                                      onTap: () => _onSwitch(2),
+                                      child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Center(
+                                            child: Text(
+                                                Utils.capitalize(_searchChoices[1]),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: widget
+                                                                .selectedPosition ==
+                                                            1
+                                                        ? this
+                                                            .filter_unactive_text_color
+                                                        : this
+                                                            .filter_active_text_color)),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: widget.selectedPosition == 1
+                                                  ? this
+                                                      .filter_unactive_button_color
+                                                  : this.filter_active_button_color,
+                                              borderRadius:
+                                                  new BorderRadius.circular(5.0)))),
+                                ),
+                              ]),
+                          duration: Duration(milliseconds: 3000),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30),
+                widget.selectedPosition == 1
+                    ? Container(
+                        decoration: BoxDecoration(
+                            color: KColors.new_gray,
+                            borderRadius: BorderRadius.circular(5)),
+                        margin:
+                            EdgeInsets.only( right: 10, left: 10),
+                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child:
+                            // usage example
+                            DropdownButton<String>(
+                          isExpanded: true,
+                          value: dropdownValue,
+                          underline: Container(),
+                          icon: const Icon(FontAwesomeIcons.chevronDown,
+                              size: 15, color: KColors.primaryColor),
+                          elevation: 16,
+                          style: const TextStyle(
+                              color: KColors.primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                          hint: Text(
+                              "${AppLocalizations.of(context).translate('choose_mobile_money_service')}",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 14)),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              dropdownValue = newValue;
+                            });
+                          },
+                          items: <String>[
+                            'Tmoney',
+                            'Flooz',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ))
+                    : Container(),
+
+                widget.selectedPosition == 1
+                    ? Column(children: [
+                        SizedBox(height: 30),
+                        /* phone number just in case we are working with moov*/
+                        Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                    text: TextSpan(
+                                        text:
+                                            "${AppLocalizations.of(context).translate('topup_phone_number')}",
+                                        children: [
+                                          TextSpan(
+                                              text: " *",
+                                              style: TextStyle(
+                                                  color: KColors.primaryColor))
+                                        ],
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey))),
+                                SizedBox(height: 5),
+                                Container(
                                   padding: EdgeInsets.only(left: 5, right: 5),
                                   decoration: BoxDecoration(
                                       color: KColors.new_gray,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          bottomLeft: Radius.circular(8))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8))),
                                   child: TextField(
-                                      controller: _amountFieldController,
+                                      controller: _phoneNumberFieldController,
                                       textAlign: TextAlign.right,
                                       style: TextStyle(fontSize: 20),
                                       decoration: InputDecoration(
@@ -349,199 +302,248 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                           border: InputBorder.none,
                                           hintMaxLines: 5,
                                           hintStyle: TextStyle(fontSize: 13)),
-                                      keyboardType: TextInputType.number),
+                                      keyboardType: TextInputType.phone),
+                                )
+                              ]),
+                        ),
+                      ])
+                    : Container(),
+                Column(children: [
+                  SizedBox(height: 15),
+                  /* amount you wanna get paid */
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  text:
+                                      "${AppLocalizations.of(context).translate('amount_to_topup')}",
+                                  children: [
+                                    TextSpan(
+                                        text: " *",
+                                        style: TextStyle(color: KColors.primaryColor))
+                                  ],
+                                  style:
+                                      TextStyle(fontSize: 12, color: Colors.grey))),
+                          SizedBox(height: 5),
+                          Container(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 5, right: 5),
+                                    decoration: BoxDecoration(
+                                        color: KColors.new_gray,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(8),
+                                            bottomLeft: Radius.circular(8))),
+                                    child: TextField(
+                                        controller: _amountFieldController,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(fontSize: 20),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.yellow,
+                                            border: InputBorder.none,
+                                            hintMaxLines: 5,
+                                            hintStyle: TextStyle(fontSize: 13)),
+                                        keyboardType: TextInputType.number),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 20),
-                                  child: Text(
-                                      "${AppLocalizations.of(context).translate('currency')}",
-                                      style:
-                                          TextStyle(color: KColors.primaryColor)),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(8),
-                                          bottomRight: Radius.circular(8)),
-                                      color: KColors.primaryColor.withAlpha(30)))
-                            ],
-                          ),
-                        )
-                      ]),
-                ),
-              ]),
-              SizedBox(height: 10),
-              isGetFeesLoading
-                  ? SizedBox(
-                      child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(KColors.mGreen)),
-                      height: 15,
-                      width: 15)
-                  : Container(),
-              SizedBox(height: 5),
-
-              /* please be patient ... */
-
-              Column(children: [
+                                Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20),
+                                    child: Text(
+                                        "${AppLocalizations.of(context).translate('currency')}",
+                                        style:
+                                            TextStyle(color: KColors.primaryColor)),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(8),
+                                            bottomRight: Radius.circular(8)),
+                                        color: KColors.primaryColor.withAlpha(30)))
+                              ],
+                            ),
+                          )
+                        ]),
+                  ),
+                ]),
                 SizedBox(height: 10),
-                /* amount you wanna get paid */
-                Container(
-                  color: KColors.new_gray,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                                flex: 3,
-                                child: RichText(
-                                  text: TextSpan(
-                                      text:
-                                          "${AppLocalizations.of(context).translate('fees')} ",
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 14),
+                isGetFeesLoading
+                    ? SizedBox(
+                        child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(KColors.mGreen)),
+                        height: 15,
+                        width: 15)
+                    : Container(),
+                SizedBox(height: 5),
+
+                /* please be patient ... */
+
+                Column(children: [
+                  SizedBox(height: 10),
+                  /* amount you wanna get paid */
+                  Container(
+                    color: KColors.new_gray,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                  flex: 3,
+                                  child: RichText(
+                                    text: TextSpan(
+                                        text:
+                                            "${AppLocalizations.of(context).translate('fees')} ",
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        children: [
+                                          isGetFeesLoading
+                                              ? TextSpan(
+                                                  text: "---",
+                                                  style: TextStyle(
+                                                      color: KColors.mGreen,
+                                                      fontWeight: FontWeight.bold))
+                                              : TextSpan(
+                                                  text: "(${_getFees()}%)",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: KColors.primaryColor,
+                                                      fontWeight: FontWeight.normal))
+                                        ]),
+                                  )),
+                              Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 5, right: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        isGetFeesLoading
-                                            ? TextSpan(
-                                                text: "---",
-                                                style: TextStyle(
-                                                    color: KColors.mGreen,
-                                                    fontWeight: FontWeight.bold))
-                                            : TextSpan(
-                                                text: "(${_getFees()}%)",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: KColors.primaryColor,
-                                                    fontWeight: FontWeight.normal))
-                                      ]),
-                                )),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "${widget?.fees}",
+                                        Text(
+                                          "${widget?.fees}",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                              fontSize: 14, color: KColors.new_black),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                            "${AppLocalizations.of(context).translate('currency')}",
+                                            style: TextStyle(
+                                                color: KColors.primaryColor,
+                                                fontSize: 14))
+                                      ],
+                                    ),
+                                  ))
+                            ]),
+                        SizedBox(height: 10),
+                        SizedBox(height: 10),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                      "${AppLocalizations.of(context).translate('total_amount')}",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 14))),
+                              Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 5, right: 5),
+                                    child: TextField(
+                                        controller: _totalAmountFieldController,
+                                        enabled: false,
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
-                                            fontSize: 14, color: KColors.new_black),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                          "${AppLocalizations.of(context).translate('currency')}",
-                                          style: TextStyle(
-                                              color: KColors.primaryColor,
-                                              fontSize: 14))
-                                    ],
-                                  ),
-                                ))
-                          ]),
-                      SizedBox(height: 10),
-                      SizedBox(height: 10),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                                flex: 3,
-                                child: Text(
-                                    "${AppLocalizations.of(context).translate('total_amount')}",
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 14))),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  child: TextField(
-                                      controller: _totalAmountFieldController,
-                                      enabled: false,
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: KColors.primaryColor),
-                                      decoration: InputDecoration(
-                                          fillColor: Colors.yellow,
-                                          border: InputBorder.none,
-                                          hintMaxLines: 5,
-                                          hintStyle: TextStyle(fontSize: 13)),
-                                      keyboardType: TextInputType.number),
-                                ))
-                          ]),
-                    ],
-                  ),
-                ),
-              ]),
-
-             false ? Center(
-                  child: Text(
-                "${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €",
-                style: TextStyle(color: KColors.mBlue, fontSize: 14),
-              )) : Container(),
-
-              SizedBox(height: 50)
-            ]),
-          ),
-          Positioned(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              decoration: BoxDecoration(
-                  color: KColors.primaryColor,
-                  borderRadius: BorderRadius.circular(5)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      iLaunchTransaction();
-                    },
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Text(
-                              "${AppLocalizations.of(context).translate('top_up')}"
-                                  .toUpperCase(),
-                              style:
-                              TextStyle(fontSize: 14, color: Colors.white)),
-                          SizedBox(width: 10),
-                          Text(
-                              "${_totalAmountFieldController.text} ${_totalAmountFieldController.text.trim() == "" ? "" : AppLocalizations.of(context).translate('currency')}",
-                              style:
-                              TextStyle(color: Colors.white, fontSize: 20)),
-                          SizedBox(width: 8),
-                          isLaunching
-                              ? Row(
-                            children: <Widget>[
-                              SizedBox(width: 10),
-                              SizedBox(
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<Color>(
-                                          Colors.white)),
-                                  height: 15,
-                                  width: 15),
-                            ],
-                          )
-                              : Container(),
-                        ],
-                      ),
+                                            fontSize: 20,
+                                            color: KColors.primaryColor),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.yellow,
+                                            border: InputBorder.none,
+                                            hintMaxLines: 5,
+                                            hintStyle: TextStyle(fontSize: 13)),
+                                        keyboardType: TextInputType.number),
+                                  ))
+                            ]),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ]),
+
+               false ? Center(
+                    child: Text(
+                  "${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €",
+                  style: TextStyle(color: KColors.mBlue, fontSize: 14),
+                )) : Container(),
+
+                SizedBox(height: 50)
+              ]),
             ),
-         bottom: 0, left: 0,
-          ),
-        ],
+            Positioned(
+              child: Container(width: MediaQuery.of(context).size.width,
+                child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      decoration: BoxDecoration(
+                          color: KColors.primaryColor,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: GestureDetector(
+                        onTap: () {
+                          iLaunchTransaction();
+                        },
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                  "${AppLocalizations.of(context).translate('top_up')}"
+                                      .toUpperCase(),
+                                  style:
+                                  TextStyle(fontSize: 14, color: Colors.white)),
+                              SizedBox(width: 10),
+                              Text(
+                                  "${_totalAmountFieldController.text} ${_totalAmountFieldController.text.trim() == "" ? "" : AppLocalizations.of(context).translate('currency')}",
+                                  style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
+                              SizedBox(width: 8),
+                              isLaunching
+                                  ? Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                      child: CircularProgressIndicator(
+                                          valueColor:
+                                          AlwaysStoppedAnimation<Color>(
+                                              Colors.white)),
+                                      height: 15,
+                                      width: 15),
+                                ],
+                              )
+                                  : Container(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+           bottom: 0, left: 0,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -87,7 +87,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasSystemError = false;
     hasNetworkError = false;
     isLoading = false;
-
     // launch service
   }
 
@@ -109,8 +108,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          leading: Container(width: 40),centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          centerTitle: true,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(

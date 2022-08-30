@@ -67,7 +67,8 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-          title: Row(
+        centerTitle: true,
+        title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -84,7 +85,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          actions: [Container(width: 40)]
+
       ),
       body: Container(
           child: isLoading

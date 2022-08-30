@@ -11,7 +11,7 @@ description: Kaba under Flutter framework
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.4.0
+version: 3.4.1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -41,7 +41,7 @@ dependencies:
   flutter_inner_drawer: ^1.0.0+1
   rxdart: ^0.27.0
   toast: ^0.1.5
-  google_maps_flutter: ^2.1.1
+  google_maps_flutter: ^2.1.12
   geolocator: ^8.0.1
   permission_handler: ^8.3.0
   place_picker: ^0.9.18
@@ -100,6 +100,8 @@ dependencies:
   smart_select: ^4.3.2
   optimized_cached_image: ^3.0.1
   geocoding: ^2.0.5
+  easy_debounce: ^2.0.2+1
+  modal_bottom_sheet: ^2.1.0
 
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0

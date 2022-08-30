@@ -97,8 +97,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
               onPressed: () {
                 Navigator.pop(context);
               }),
-          actions: [Container(width: 40)],
-          title: Row(
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(

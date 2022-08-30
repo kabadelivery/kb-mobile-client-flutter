@@ -710,7 +710,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     fontWeight: FontWeight.w500)),
                             SizedBox(height: 5),
                             Text(
-                                "${Utils.capitalize(food?.description?.trim())}",
+                                "${Utils.capitalize(Utils.replaceNewLineBy(food?.description?.trim(), " / "))}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 textAlign: TextAlign.start,

@@ -70,11 +70,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-            onPressed: () {
-              Navigator.pop(context);
-            }), centerTitle: true,
+         centerTitle: true,
         title: Row(mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

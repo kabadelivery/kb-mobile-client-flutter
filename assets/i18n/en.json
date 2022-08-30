@@ -484,5 +484,8 @@
   "address_pinned_successfully_short": "Address Pinned",
   "address_pinned_successfully_long": "Address pinned successfully !",
   "your_location": "Your location",
-  "finding_place": "Searching for location ..."
+  "finding_place": "Searching for location ...",
+  "no_content_to_show": "Sorry, this category is currently empty.",
+  "whatsapp": "Whatsapp",
+  "phone_call": "Phone call"
 }

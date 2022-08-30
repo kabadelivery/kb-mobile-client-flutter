@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 
-class BuyCategoryWidget extends StatelessWidget {
+class BuyCategoryWidget extends StatefulWidget {
 
   ServiceMainEntity entity;
 
@@ -27,17 +27,22 @@ class BuyCategoryWidget extends StatelessWidget {
     this.isNew = (entity?.is_new == 1);
   }
 
+  @override
+  State<BuyCategoryWidget> createState() => _BuyCategoryWidgetState();
+}
+
+class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
   void _jumpToPage(BuildContext context) {
     var page;
 
-    if (!available) {
+    if (!widget.available) {
       // dialog, this service is coming soon
-      mDialog("${AppLocalizations.of(context).translate('coming_soon_dialog')}");
+      widget.mDialog("${AppLocalizations.of(context).translate('coming_soon_dialog')}");
     } else {
 
       page = ShopListPage(
           context: context,
-          type: entity?.key,
+          type: widget.entity?.key,
           foodProposalPresenter: RestaurantFoodProposalPresenter(),
           restaurantListPresenter: RestaurantListPresenter());
 
@@ -94,7 +99,7 @@ class BuyCategoryWidget extends StatelessWidget {
 
                 ],
               ),
-         isNew
+         widget.isNew
                   ? Positioned(right: 0, top: 0,
                     child: Container(
                     padding: EdgeInsets.only(top: 2, bottom: 2, right: 5, left: 5),
@@ -121,7 +126,7 @@ class BuyCategoryWidget extends StatelessWidget {
 
   String getCategoryTitle(BuildContext context) {
     String category_name_code = "";
-    switch (entity?.key) {
+    switch (widget.entity?.key) {
       case "food": // food
         category_name_code = "service_category_food";
         break;
@@ -157,7 +162,7 @@ class BuyCategoryWidget extends StatelessWidget {
 
   getCategoryIcon() {
     String category_icon = "";
-    switch (entity?.key) {
+    switch (widget.entity?.key) {
       case "food": // food
         category_icon = LottieAssets.food;
         break;
@@ -187,8 +192,6 @@ class BuyCategoryWidget extends StatelessWidget {
       return Icon(Icons.not_interested);
     }
 
-    return Lottie.asset(category_icon, animate: available);
+    return Lottie.asset(category_icon, animate: widget.available);
   }
-
-
 }

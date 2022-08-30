@@ -51,14 +51,14 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
+        centerTitle: true,
         leading: IconButton(
             icon: Icon(Icons.close, color: Colors.white, size: 20),
             onPressed: () {
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-        actions: [Container(width: 40)],
-        title: Row(
+        title: Row(mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

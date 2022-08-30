@@ -55,6 +55,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -300,14 +301,16 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   @override
   Widget build(BuildContext context) {
     if (widget.bestSellerMini == null)
-      widget.bestSellerMini = BestSellersMiniPage(presenter: BestSellerPresenter());
+      widget.bestSellerMini =
+          BestSellersMiniPage(presenter: BestSellerPresenter());
     /* init fetch data bloc */
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -318,7 +321,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
             ],
-          ),centerTitle: true,
+          ),
+          centerTitle: true,
           leading: IconButton(
               icon: SizedBox(
                   height: 25,
@@ -333,13 +337,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
             InkWell(
-              onTap: () => _jumpToWhatsapp(),
+              onTap: () => _showBottomContactSheet(),
               child: Container(
                 width: 42,
                 height: 42,
                 child: IconButton(
-                  icon: Icon(Icons.phone, color: Colors.white), // Image.asset(ImageAssets.whatsapp),
-                  onPressed: () => _jumpToWhatsapp(),
+                  icon: Icon(Icons.phone, color: Colors.white),
+                  // Image.asset(ImageAssets.whatsapp),
+                  onPressed: () => _showBottomContactSheet(),
                 ),
               ),
             ),
@@ -379,7 +384,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         break;
       case 2:
         /* logout */
-      _logout();
+        _logout();
         break;
     }
   }
@@ -433,7 +438,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                 Utils.inflateLink(restaurant.pic))))),
                 SizedBox(height: 10),
                 Container(
-                  height: 35,
+                    height: 35,
                     width: MediaQuery.of(context).size.width /
                         (isInHorizontalScrollviewMode ? 5 : 3),
                     child: Text(restaurant.name,
@@ -535,238 +540,271 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: ListView(addAutomaticKeepAlives: true,
+          child: ListView(
+              addAutomaticKeepAlives: true,
               children: <Widget>[
-            /*top slide*/
-            Stack(
-              children: <Widget>[
-                Container(padding: EdgeInsets.only(bottom: 10),
-                  child: ClipPath(
-                      clipper: KabaRoundTopClipper(),
-                      child: data.slider.length > 1
-                          ? CarouselSlider(
-                              options: CarouselOptions(
-                                onPageChanged: _carousselPageChanged,
-                                viewportFraction: 1,
-                                autoPlay: data.slider.length > 1 ? true : false,
-                                reverse: data.slider.length > 1 ? true : false,
-                                enableInfiniteScroll:
-                                    data.slider.length > 1 ? true : false,
-                                autoPlayInterval: Duration(seconds: 5),
-                                autoPlayAnimationDuration:
-                                    Duration(milliseconds: 150),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                height:
-                                    9 * MediaQuery.of(context).size.width / 16,
-                              ),
-                              items: data.slider.map((admodel) {
-                                return Builder(
-                                  builder: (BuildContext context) {
-                                    return GestureDetector(
-                                      onTap: () => _jumpToAdsList(data.slider,
-                                          data.slider.indexOf(admodel)),
-                                      child: Container(
-                                          height: 9 *
-                                              MediaQuery.of(context).size.width /
-                                              16,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: OptimizedCacheImage(
-                                              imageUrl:
-                                                  Utils.inflateLink(admodel.pic),
-                                              fit: BoxFit.cover)),
-                                    );
-                                  },
-                                );
-                              }).toList(),
-                            )
-                          : GestureDetector(
-                              onTap: () => _jumpToAdsList(data.slider, 0),
-                              child: Container(
-                                  height:
-                                      9 * MediaQuery.of(context).size.width / 16,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: OptimizedCacheImage(
-                                      imageUrl:
-                                          Utils.inflateLink(data.slider[0].pic),
-                                      fit: BoxFit.cover)),
-                            )),
-                ),
-                Positioned(
-                    bottom: 3,
-                    child: Container(width: MediaQuery.of(context).size.width,
-                      child: Row(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: <Widget>[]..addAll(List<Widget>.generate(
-                                      data.slider.length, (int index) {
-                                return Container(
-                                    margin: EdgeInsets.only(right: 2.5, top: 2.5),
-                                    height: 7,
-                                    width: index == _carousselPageIndex ||
-                                        index == data.slider.length ? 12 : 7,
-                                    decoration: new BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(5)),
-                                        border: new Border.all(color: KColors.primaryColor),
-                                        color: (index == _carousselPageIndex ||
-                                                index == data.slider.length)
-                                            ? KColors.primaryColor
-                                            : Colors.transparent));
-                              })
-                                  /* add a list of rounded views */
+                /*top slide*/
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: ClipPath(
+                          clipper: KabaRoundTopClipper(),
+                          child: data.slider.length > 1
+                              ? CarouselSlider(
+                                  options: CarouselOptions(
+                                    onPageChanged: _carousselPageChanged,
+                                    viewportFraction: 1,
+                                    autoPlay:
+                                        data.slider.length > 1 ? true : false,
+                                    reverse:
+                                        data.slider.length > 1 ? true : false,
+                                    enableInfiniteScroll:
+                                        data.slider.length > 1 ? true : false,
+                                    autoPlayInterval: Duration(seconds: 5),
+                                    autoPlayAnimationDuration:
+                                        Duration(milliseconds: 150),
+                                    autoPlayCurve: Curves.fastOutSlowIn,
+                                    height: 9 *
+                                        MediaQuery.of(context).size.width /
+                                        16,
                                   ),
+                                  items: data.slider.map((admodel) {
+                                    return Builder(
+                                      builder: (BuildContext context) {
+                                        return GestureDetector(
+                                          onTap: () => _jumpToAdsList(
+                                              data.slider,
+                                              data.slider.indexOf(admodel)),
+                                          child: Container(
+                                              height: 9 *
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  16,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: OptimizedCacheImage(
+                                                  imageUrl: Utils.inflateLink(
+                                                      admodel.pic),
+                                                  fit: BoxFit.cover)),
+                                        );
+                                      },
+                                    );
+                                  }).toList(),
+                                )
+                              : GestureDetector(
+                                  onTap: () => _jumpToAdsList(data.slider, 0),
+                                  child: Container(
+                                      height: 9 *
+                                          MediaQuery.of(context).size.width /
+                                          16,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: OptimizedCacheImage(
+                                          imageUrl: Utils.inflateLink(
+                                              data.slider[0].pic),
+                                          fit: BoxFit.cover)),
+                                )),
+                    ),
+                    Positioned(
+                        bottom: 3,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                children: <Widget>[]..addAll(
+                                      List<Widget>.generate(data.slider.length,
+                                          (int index) {
+                                    return Container(
+                                        margin: EdgeInsets.only(
+                                            right: 2.5, top: 2.5),
+                                        height: 7,
+                                        width: index == _carousselPageIndex ||
+                                                index == data.slider.length
+                                            ? 12
+                                            : 7,
+                                        decoration: new BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            border: new Border.all(
+                                                color: KColors.primaryColor),
+                                            color: (index ==
+                                                        _carousselPageIndex ||
+                                                    index == data.slider.length)
+                                                ? KColors.primaryColor
+                                                : Colors.transparent));
+                                  })
+                                      /* add a list of rounded views */
+                                      ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-            /* top restaurants */
-            SizedBox(
-                child: Table(
-              children: <TableRow>[]..addAll(
-                    // ignore: null_aware_before_operator
-                    List<TableRow>.generate(
-                        _getRestaurantRowCount(data.resto.length),
-                        (int rowIndex) {
-                  return TableRow(
-                      children: <TableCell>[]..addAll(
-                            /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
+                        )),
+                  ],
+                ),
+                /* top restaurants */
+                SizedBox(
+                    child: Table(
+                  children: <TableRow>[]..addAll(
+                        // ignore: null_aware_before_operator
+                        List<TableRow>.generate(
+                            _getRestaurantRowCount(data.resto.length),
+                            (int rowIndex) {
+                      return TableRow(
+                          children: <TableCell>[]..addAll(
+                                /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
                                     return
                                       TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
                                   })*/
-                            List<TableCell>.generate(3, (int cell_index) {
-                          if (data.resto.length > rowIndex * 3 + cell_index) {
-                            return TableCell(
-                                child: _mainRestaurantWidget(
-                                    restaurant:
-                                        data.resto[rowIndex * 3 + cell_index]));
-                          } else {
-                            return TableCell(child: Container());
-                          }
-                        })));
-                })
-                    /* add a list of rounded views */
+                                List<TableCell>.generate(3, (int cell_index) {
+                              if (data.resto.length >
+                                  rowIndex * 3 + cell_index) {
+                                return TableCell(
+                                    child: _mainRestaurantWidget(
+                                        restaurant: data
+                                            .resto[rowIndex * 3 + cell_index]));
+                              } else {
+                                return TableCell(child: Container());
+                              }
+                            })));
+                    })
+                        /* add a list of rounded views */
+                        ),
+                )),
+                /* all the restaurants button*/
+                SizedBox(height: 30),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 10),
+                    Text(
+                      "${AppLocalizations.of(context).translate('best_seller')}"
+                          .toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
                     ),
-            )),
-            /* all the restaurants button*/
-            SizedBox(height: 30),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 10),
-                Text(
-                  "${AppLocalizations.of(context).translate('best_seller')}"
-                      .toUpperCase(),
-                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
+                    SizedBox(width: 5),
+                    SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Lottie.asset(LottieAssets.best_sales,
+                            animate: true))
+                  ],
                 ),
-                SizedBox(width: 5),
-                SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: Lottie.asset(LottieAssets.best_sales, animate: true))
-              ],
-            ),
-            SizedBox(height: 10),
-            Container(
-                child: widget.bestSellerMini,
-                height: 110,
-                color: KColors.new_gray,
-                width: MediaQuery.of(context).size.width),
+                SizedBox(height: 10),
+                Container(
+                    child: widget.bestSellerMini,
+                    height: 110,
+                    color: KColors.new_gray,
+                    width: MediaQuery.of(context).size.width),
 
-            /* horizontal scrolling bar */
-            data?.resto?.length > 6
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      Container(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                /* horizontal scrolling bar */
+                data?.resto?.length > 6
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 20),
+                          Container(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(width: 10),
-                                Text(
-                                  "${AppLocalizations.of(context).translate('new')}"
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 10),
+                                    Text(
+                                      "${AppLocalizations.of(context).translate('new')}"
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(width: 5),
+                                    SizedBox(
+                                        height: 30,
+                                        width: 30,
+                                        child: Lottie.asset(LottieAssets.new_,
+                                            animate: true))
+                                  ],
                                 ),
-                                SizedBox(width: 5),
-                                SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: Lottie.asset(LottieAssets.new_,
-                                        animate: true))
+                                false
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          _switchAllRestaurant();
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            child: Text(
+                                              Utils.capitalize(
+                                                  "${AppLocalizations.of(context).translate('see_all')} >"),
+                                              style: TextStyle(
+                                                  color: KColors.primaryColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500),
+                                            )),
+                                      )
+                                    : Container()
                               ],
                             ),
-                           false ? GestureDetector(
-                              onTap: () {
-                                _switchAllRestaurant();
-                              },
-                              child: Container(margin: EdgeInsets.only(right: 10),
-                                  child: Text(
-                                Utils.capitalize(
-                                    "${AppLocalizations.of(context).translate('see_all')} >"),
-                                style: TextStyle(
-                                    color: KColors.primaryColor,
-                                    fontSize: 12,
-                                      fontWeight: FontWeight.w500),
-                              )),
-                            ) : Container()
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        height: 150,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children:
-                              List.generate(data?.resto?.length - 6, (index) {
-                            return _mainRestaurantWidget(
-                                restaurant: data.resto[6 + index],
-                                isInHorizontalScrollviewMode: true);
-                          }),
-                        ),
-                      ),
-                    ],
-                  )
-                : Container(),
-            // SizedBox(height: 20),
-            /* meilleures ventes, cinema, evenemnts, etc... */
-            /* groups ads */
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 10),
-                Text(
-                  "${AppLocalizations.of(context).translate('events')}"
-                      .toUpperCase(),
-                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: List.generate(data?.resto?.length - 6,
+                                  (index) {
+                                return _mainRestaurantWidget(
+                                    restaurant: data.resto[6 + index],
+                                    isInHorizontalScrollviewMode: true);
+                              }),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+                // SizedBox(height: 20),
+                /* meilleures ventes, cinema, evenemnts, etc... */
+                /* groups ads */
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 10),
+                    Text(
+                      "${AppLocalizations.of(context).translate('events')}"
+                          .toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(width: 5),
+                    SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Lottie.asset(LottieAssets.fire, animate: true))
+                  ],
                 ),
-                SizedBox(width: 5),
-                SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: Lottie.asset(LottieAssets.fire, animate: true))
-              ],
-            ),
 
-            Column(
-                children: <Widget>[]..addAll(
-                      List<Widget>.generate(data.groupad.length, (int index) {
-                    return GroupAdsNewWidget(groupAd: data.groupad[index]);
-                  })))
-          ]..add(InkWell(
+                Column(
+                    children: <Widget>[]..addAll(List<Widget>.generate(
+                          data.groupad.length, (int index) {
+                        return GroupAdsNewWidget(groupAd: data.groupad[index]);
+                      })))
+              ]..add(InkWell(
                   onTap: () {
                     _jumpToInfoPage();
                   },
@@ -1589,6 +1627,64 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   Future<void> saveMessageAsRead(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (data?.uuid != null) prefs.setBool(data?.uuid, true);
+  }
+
+  _showBottomContactSheet() {
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      expand: false,
+      context: context,
+      builder: (context) => Container(
+          width: 335,
+          height: 105,
+          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () => {_callCustomerCare()},
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context).translate('phone_call')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
+              ),
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: KColors.new_gray,
+                  height: 1),
+              InkWell(
+                onTap: () => {_jumpToWhatsapp()},
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context).translate('whatsapp')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
+              ),
+            ],
+          )),
+    );
   }
 }
 
