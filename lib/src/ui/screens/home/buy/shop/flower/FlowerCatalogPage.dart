@@ -424,10 +424,10 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
       await _controller.forward(from: 0.0).orCancel;
     } on TickerCanceled {}
   }
-
+/*
   void showSnack(String message) {
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
+  }*/
 
   void showToast(String message) {
     Toast.show(message, context,
