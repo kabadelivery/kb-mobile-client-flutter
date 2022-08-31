@@ -488,5 +488,11 @@
   "finding_place": "Recherche en cours ...",
   "no_content_to_show": "Désolé, cette catégorie est actuellement vide.",
   "whatsapp": "Whatsapp",
-  "phone_call": "Téléphone"
+  "phone_call": "Téléphone",
+
+  "t_closed_shop_long": "Cher client, yyy est actuellement fermé.\nVeuillez revenir plutard (xxx)",
+  "t_paused_shop_long": "Cher client, yyy est actuellement en pause.\nVeuillez revenir plutard ",
+  "t_opened_shop_long": "Ouvert",
+  "t_unavailable_shop_long": "Cher client, yyy est actuellement indisponible sur Kaba pour raison indépendante de notre volonté.\nVeuillez les contacter."
+
 }

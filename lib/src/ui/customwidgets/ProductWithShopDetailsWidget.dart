@@ -2,20 +2,13 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopCategoryModelModel.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
@@ -74,7 +67,7 @@ class _ProductWithShopDetailsWidgetState
                                     image: OptimizedCacheImageProvider(
                                         Utils.inflateLink(widget?.food?.pic)))),
                           ),
-                          SizedBox(width: 17),
+                          SizedBox(width: 18),
                           Container(
                             height: 115,
                             child: Column(
@@ -96,14 +89,15 @@ class _ProductWithShopDetailsWidgetState
                                               child: Text(
                                                   Utils.capitalize(
                                                       "${widget?.food?.name}"),
-                                                  maxLines: 1,
+                                                  maxLines: 1,overflow: TextOverflow.ellipsis,
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                       color: KColors.new_black,
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600)),
-                                            ),
+                                           width: MediaQuery.of(context).size.width-200, ),
+                                           SizedBox(height: 5,),
                                             Row(children: <Widget>[
                                               Text(
                                                   "${widget?.food?.price}",
@@ -142,7 +136,7 @@ class _ProductWithShopDetailsWidgetState
                                                             .primaryYellowColor,
                                                         fontSize: 14,
                                                         fontWeight:
-                                                            FontWeight.normal,
+                                                            FontWeight.w600,
                                                       ))
                                                   : Container()),
                                               Text(
@@ -154,7 +148,7 @@ class _ProductWithShopDetailsWidgetState
                                                       color: KColors.primaryColor,
                                                       fontSize: 10,
                                                       fontWeight:
-                                                          FontWeight.normal)),
+                                                          FontWeight.w600)),
                                             ]),
                                           ],
                                         ),
@@ -171,14 +165,14 @@ class _ProductWithShopDetailsWidgetState
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   // textAlign: TextAlign.left,
-                                                  style: TextStyle(
+                                                  style: TextStyle(fontWeight: FontWeight.w500,
                                                       color: KColors.new_black,
                                                       fontSize: 14)),
                                               SizedBox(height: 5),
                                               Row(children: <Widget>[
                                                 _getRestaurantStateTag(widget
                                                     ?.food?.restaurant_entity),
-                                                SizedBox(width: 10),
+                                                SizedBox(width: 5),
                                                 widget?.food?.restaurant_entity
                                                             ?.distance ==
                                                         null
@@ -199,15 +193,15 @@ class _ProductWithShopDetailsWidgetState
                                                                 color:
                                                                     KColors.mGreen,
                                                                 size: 10),
-                                                            SizedBox(width: 10),
+                                                            SizedBox(width: 5),
                                                             Text(
-                                                                " ${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
+                                                                "${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
                                                                 style: TextStyle(
                                                                     color:
                                                                         Colors.grey,
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .normal,
+                                                                            .w500,
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -215,7 +209,7 @@ class _ProductWithShopDetailsWidgetState
                                                           ],
                                                         ),
                                                       ),
-                                                SizedBox(width: 10),
+                                                SizedBox(width: 5),
                                                 widget?.food?.restaurant_entity
                                                             ?.distance ==
                                                         null
@@ -258,7 +252,7 @@ class _ProductWithShopDetailsWidgetState
                                                                             " F"),
                                                                     style: TextStyle(
                                                                         color: Colors
-                                                                            .grey,
+                                                                            .grey,fontWeight: FontWeight.w500,
                                                                         fontSize:
                                                                             12)),
                                                               ],
@@ -384,7 +378,7 @@ class _ProductWithShopDetailsWidgetState
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(tagText?.toUpperCase(),
-                style: TextStyle(color: tagTextColor, fontSize: 12)))
+                style: TextStyle(color: tagTextColor, fontWeight: FontWeight.w600, fontSize: 12)))
         : Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
@@ -393,7 +387,7 @@ class _ProductWithShopDetailsWidgetState
             child: Text(
                 "${AppLocalizations.of(context).translate('coming_soon')}"
                     ?.toUpperCase(),
-                style: TextStyle(color: Colors.grey, fontSize: 11)));
+                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 11)));
   }
 
   getRating(ShopModel shopModel) {
@@ -402,11 +396,11 @@ class _ProductWithShopDetailsWidgetState
           children: <Widget>[]..addAll(
                 List<Widget>.generate(shopModel?.stars?.toInt(), (int index) {
               return Icon(FontAwesomeIcons.solidStar,
-                  color: KColors.primaryYellowColor, size: 16);
+                  color: KColors.primaryYellowColor, size: 15);
             })
                   ..add((shopModel.stars * 10) % 10 != 0
                       ? Icon(FontAwesomeIcons.solidStarHalf,
-                          color: KColors.primaryYellowColor, size: 16)
+                          color: KColors.primaryYellowColor, size: 15)
                       : Container())));
     else
       return Container();

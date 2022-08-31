@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
@@ -28,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import '../../../StateContainer.dart';
@@ -84,9 +86,6 @@ class _SplashPageState extends State<SplashPage> {
     // Exit full screen
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
-
-
-
 
   Future handleTimeout() async {
 
@@ -179,7 +178,32 @@ class _SplashPageState extends State<SplashPage> {
                   /* text */
                   SizedBox(height: 10),
                   Text("${AppLocalizations.of(context).translate('app_title')}",
-                      style: TextStyle(color:KColors.new_black, fontWeight: FontWeight.bold, fontSize: 18))
+                      style: TextStyle(color:KColors.new_black, fontWeight: FontWeight.bold, fontSize: 18)),
+
+              /* hide lottie stuffs */
+                  Visibility(
+                    visible: false,
+                    maintainSize: false,
+                    maintainState: true,
+                    maintainAnimation: false,
+                    maintainInteractivity: false,
+                    child: Row(
+                      children: [
+                        Lottie.asset("assets/lottie/books.json"),
+                        Lottie.asset("assets/lottie/drinks.json"),
+                        Lottie.asset("assets/lottie/flower.json"),
+                        Lottie.asset("assets/lottie/food.json"),
+                        Lottie.asset("assets/lottie/groceries.json"),
+                        Lottie.asset("assets/lottie/movie.json"),
+                        Lottie.asset("assets/lottie/package_delivery.json"),
+                        Lottie.asset("assets/lottie/shopping.json"),
+                        Lottie.asset("assets/lottie/ticket.json"),
+                        Lottie.asset("assets/lottie/fire.json"),
+                        Lottie.asset("assets/lottie/best_sales.json"),
+                        Lottie.asset("assets/lottie/new.json"),
+                      ],
+                    ),
+                  ),
                 ]
             )),
       ),
@@ -501,5 +525,7 @@ class _SplashPageState extends State<SplashPage> {
         ));
 
   }
-
 }
+
+
+/* lottie stuffs */

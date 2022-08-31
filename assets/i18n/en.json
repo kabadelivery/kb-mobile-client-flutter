@@ -487,5 +487,10 @@
   "finding_place": "Searching for location ...",
   "no_content_to_show": "Sorry, this category is currently empty.",
   "whatsapp": "Whatsapp",
-  "phone_call": "Phone call"
+  "phone_call": "Phone call",
+
+  "t_closed_shop_long": "Dear customer, yyy is currently Closed.\nPlease come back later (xxx)",
+  "t_paused_shop_long": "Dear customer, yyy is currently into break time.\nPlease come back later",
+  "t_opened_shop_long": "Opened",
+  "t_unavailable_shop_long": "Dear customer, yyy is unfortunately currently unavailable on Kaba.\nPlease contact them directly"
 }

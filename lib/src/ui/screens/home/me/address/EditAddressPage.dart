@@ -434,6 +434,7 @@ class _EditAddressPageState extends State<EditAddressPage>
             bool isLocationServiceEnabled =
                 await Geolocator.isLocationServiceEnabled();
             if (!isLocationServiceEnabled) {
+              /* dialog to activate gps location */
               await Geolocator.openLocationSettings();
             } else {
               if (isPickLocation) {
@@ -443,12 +444,14 @@ class _EditAddressPageState extends State<EditAddressPage>
                 setState(() {
                   isPickLocation = true;
                 });
+                await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+                _jumpToPickAddressPage();
 
-                Stream<Position> positionStream =
+          /*      Stream<Position> positionStream =
                     Geolocator.getPositionStream();
                 positionStream.first.then((position) {
                   xrint("position stream");
-                  /* do it recursevely until two positions are identical*/
+                  *//* do it recursevely until two positions are identical*//*
                   positionStream = Geolocator.getPositionStream();
                   positionStream.first.then((position1) {
                     // we do it twice to make sure we get a good location
@@ -462,7 +465,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                   setState(() {
                     isPickLocation = false;
                   });
-                });
+                });*/
               }
             }
           }

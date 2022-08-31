@@ -1134,8 +1134,16 @@ class _ShopListPageState extends State<ShopListPage>
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
-        fd.sort(
-            (fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
+        /*fd.sort(
+            (fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));*/
+        fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
+          try {
+            return int.parse(fd1.price).compareTo(int.parse(fd2.price));
+          } catch (e) {
+            print(fd1.toString() + fd2.toString());
+            return 0;
+          }
+        });
       } catch (_) {
         xrint("error here - cheap_to_exp");
       }
@@ -1147,8 +1155,14 @@ class _ShopListPageState extends State<ShopListPage>
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
-        fd.sort(
-            (fd1, fd2) => int.parse(fd2.price).compareTo(int.parse(fd1.price)));
+        fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
+          try {
+            return int.parse(fd2.price).compareTo(int.parse(fd1.price));
+          } catch (e) {
+            print(fd1.toString() + fd2.toString());
+            return 0;
+          }
+        });
       } catch (_) {
         xrint("error here - exp_to_cheap");
       }
@@ -1163,9 +1177,20 @@ class _ShopListPageState extends State<ShopListPage>
           fd.length > 0 &&
           fd[0]?.restaurant_entity?.delivery_pricing != null)
         try {
-          fd.sort((fd1, fd2) =>
+          /*   fd.sort((fd1, fd2) =>
               int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(
-                  int.parse(fd1.restaurant_entity?.delivery_pricing)));
+                  int.parse(fd1.restaurant_entity?.delivery_pricing)));*/
+
+          fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
+            try {
+              return int.parse(fd2.restaurant_entity?.delivery_pricing)
+                  .compareTo(
+                      int.parse(fd1.restaurant_entity?.delivery_pricing));
+            } catch (e) {
+              print(fd1.toString() + fd2.toString());
+              return 0;
+            }
+          });
         } catch (_) {
           xrint("error here - farest");
         }
@@ -1180,12 +1205,20 @@ class _ShopListPageState extends State<ShopListPage>
           fd.length > 0 &&
           fd[0]?.restaurant_entity?.delivery_pricing != null)
         try {
-          fd.sort((fd1, fd2) =>
-              int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(
-                  int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+          fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
+            try {
+              return int.parse(fd1.restaurant_entity?.delivery_pricing)
+                  .compareTo(
+                      int.parse(fd2.restaurant_entity?.delivery_pricing));
+            } catch (e) {
+              print(fd1.toString() + fd2.toString());
+              return 0;
+            }
+          });
         } catch (_) {
           xrint("error here - nearest");
         }
+
       return fd;
     }
 

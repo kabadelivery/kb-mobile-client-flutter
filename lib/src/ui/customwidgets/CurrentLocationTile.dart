@@ -62,7 +62,6 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                     StateContainer.of(context).location.latitude,
                     StateContainer.of(context).location.longitude);
                 // add local identifier
-
                 if (placemarks?.length > 0) {
                   int s = 0;
                   try {
@@ -152,10 +151,26 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               } else if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 children = <Widget>[
-                                  LoadingAnimationWidget.prograssiveDots(
+                                 /* LoadingAnimationWidget.prograssiveDots(
                                     color: KColors.mBlue,
                                     size: 18,
-                                  ),
+                                  ),*/
+                                  Row(
+                                    children: [
+                                      Text(
+                                          "${encode(StateContainer.of(context).location.latitude,
+                                              StateContainer.of(context).location.longitude)}",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 12)), SizedBox(width: 5,),
+                                      LoadingAnimationWidget.prograssiveDots(
+                                        color: KColors.mBlue,
+                                        size: 18,
+                                      )
+                                    ],
+                                  )
                                 ];
                               } else {
                                 children = <Widget>[

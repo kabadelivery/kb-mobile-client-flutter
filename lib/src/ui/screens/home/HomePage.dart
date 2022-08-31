@@ -333,6 +333,16 @@ class _HomePageState extends State<HomePage> {
         StateContainer.of(context).is_offline = true;
       }
     });
+
+    //   get saved locally address
+    /* then everytime the app restarts, we retrieve it. */
+    CustomerUtils.getSavedAddressLocally().then((Position position) {
+      if (position != null && position?.longitude != null) {
+        setState(() {
+          StateContainer.of(context).location = position;
+        });
+      }
+    });
   }
 
   void mDialog(String message) {

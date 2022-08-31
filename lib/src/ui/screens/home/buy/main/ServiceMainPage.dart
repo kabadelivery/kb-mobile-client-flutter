@@ -17,6 +17,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
     as Pp;
@@ -88,15 +89,22 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasNetworkError = false;
     isLoading = false;
     // launch service
+
+    // check if we have permissions but no gps location
+    // if we it's the case, show dialog
+
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.available_services?.length == 0 &&
-        widget.coming_soon_services?.length == 0)
+        widget.coming_soon_services?.length == 0) {
       widget.presenter.fetchServiceCategoryFromLocation(
-          StateContainer.of(context).location);
+          StateContainer
+              .of(context)
+              .location);
+    }
     // fetch billing and update locally
     widget.presenter.fetchBilling();
   }
@@ -339,6 +347,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     });
+    Future.delayed(new Duration(seconds: 1), (){
+      if (StateContainer.of(context).location == null) {
+        _requestGpsLocationDialog();
+      }
+    });
   }
 
   @override
@@ -531,11 +544,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 isPickLocation = true;
               });
 
-              Stream<Position> positionStream = Geolocator.getPositionStream();
+              await Geolocator.getCurrentPosition(
+                  desiredAccuracy: LocationAccuracy.high);
+              _jumpToPickAddressPage();
+              /* Stream<Position> positionStream = Geolocator.getPositionStream();
               positionStream.first.then((position) {
                 xrint("position stream");
-
-                /*      positionStream = Geolocator.getPositionStream();
+                positionStream = Geolocator.getPositionStream();
                 positionStream.first.then((position1) {
                   // we do it twice to make sure we get a good location
                   _jumpToPickAddressPage();
@@ -543,13 +558,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   setState(() {
                     isPickLocation = false;
                   });
-                });*/
-                _jumpToPickAddressPage();
+                });
+                // _jumpToPickAddressPage();
               }).catchError((onError) {
                 setState(() {
                   isPickLocation = false;
                 });
-              });
+              });*/
             }
           }
         }
@@ -590,6 +605,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
         });
       }
     }
+
+    /* location is saved locally */
+    CustomerUtils.saveAddressLocally(StateContainer.of(context).location);
+
     setState(() {
       isPickLocation = false;
     });
@@ -598,5 +617,57 @@ class ServiceMainPageState extends State<ServiceMainPage>
   getCurrentTile() {
     if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile();
     return _myCurrentTile;
+  }
+
+  void _requestGpsLocationDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              "${AppLocalizations.of(context).translate('request')}"
+                  .toUpperCase(),
+              style: TextStyle(color: KColors.primaryColor)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: new AssetImage(ImageAssets.address),
+                        ))),
+                SizedBox(height: 10),
+                Text(
+                    "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14))
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child:
+                  Text("${AppLocalizations.of(context).translate('refuse')}"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child:
+                  Text("${AppLocalizations.of(context).translate('accept')}"),
+              onPressed: () {
+                showPlacePicker(context);
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 }

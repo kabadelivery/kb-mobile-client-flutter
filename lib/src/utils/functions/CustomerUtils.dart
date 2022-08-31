@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -179,16 +180,20 @@ class CustomerUtils {
   }
 
   static Future<void> saveAddressLocally(
-      DeliveryAddressModel selectedAddress) async {
+      Position selectedAddress) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(
         "_selectedAddress" + signature, json.encode(selectedAddress.toJson()));
   }
 
-  static Future<DeliveryAddressModel> getSavedAddressLocally() async {
+  static Future<Position> getSavedAddressLocally() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String address = prefs.get("_selectedAddress" + signature);
-    return DeliveryAddressModel.fromJson(json.decode(address));
+    try {
+      String address = prefs.get("_selectedAddress" + signature);var res = Position.fromMap(json.decode(address));
+      return res;
+    } catch(e){
+      return null;
+    }
   }
 
   static Future<void> saveOtpToSharedPreference(

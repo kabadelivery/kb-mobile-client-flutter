@@ -7,6 +7,7 @@ import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 
@@ -193,5 +194,49 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     }
 
     return Lottie.asset(category_icon, animate: widget.available);
+    // return MyLottie(path: category_icon);
   }
 }
+
+
+class MyLottie extends StatefulWidget {
+
+  String path;
+
+    MyLottie({Key key, this.path}) : super(key: key);
+
+  @override
+  State<MyLottie> createState() => _MyLottieState();
+}
+
+class _MyLottieState extends State<MyLottie> {
+      Future<LottieComposition> _composition;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _composition = _loadComposition();
+  }
+
+  Future<LottieComposition> _loadComposition() async {
+    var assetData = await rootBundle.load('${widget.path}');
+    return await LottieComposition.fromByteData(assetData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<LottieComposition>(
+      future: _composition,
+      builder: (context, snapshot) {
+        var composition = snapshot.data;
+        if (composition != null) {
+          return Lottie(composition: composition);
+        } else {
+          return const Center(child: CircularProgressIndicator(color: Colors.blue,));
+        }
+      },
+    );
+  }
+}
+

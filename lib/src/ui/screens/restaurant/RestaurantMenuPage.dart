@@ -979,7 +979,67 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     Future.delayed(Duration(seconds: 1), () {
       Scrollable.ensureVisible(dataKey.currentContext);
     });
+
+    String dialogText = "";
+    // "working_hour": "07:30-13:00",
+    switch (restaurant?.open_type) {
+      case 0: // closed
+        dialogText = "${AppLocalizations.of(context).translate('t_closed_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+
+        break;
+      case 1: // open
+        // tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        break;
+      case 2: // paused
+        dialogText = "${AppLocalizations.of(context).translate('t_paused_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+        break;
+      case 3: // blocked
+        dialogText = "${AppLocalizations.of(context).translate('t_unavailable_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+        break;
+    }
+    if (dialogText != "") {
+      _comingSoon(context, restaurant, dialogText);
+    }
   }
+
+
+  void _comingSoon(BuildContext context, ShopModel shopModel, String message) {
+    /* show the coming soon dialog */
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+            content:
+            Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                      border: new Border.all(
+                          color: KColors.primaryYellowColor, width: 2),
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: OptimizedCacheImageProvider(
+                              Utils.inflateLink(shopModel?.pic))))),
+              SizedBox(height: 10),
+              Text(
+                  "${message}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
+            actions: <Widget>[
+              //
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]));
+  }
+
 
   @override
   void networkError() {
