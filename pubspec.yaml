@@ -97,7 +97,6 @@ dependencies:
   chip_list: ^2.2.3+7
   elegant_notification: ^1.6.0
   connectivity_plus: ^2.3.6
-  smart_select: ^4.3.2
   optimized_cached_image: ^3.0.1
   geocoding: ^2.0.5
   easy_debounce: ^2.0.2+1

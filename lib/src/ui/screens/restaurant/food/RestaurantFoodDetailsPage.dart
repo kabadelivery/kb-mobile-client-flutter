@@ -7,6 +7,7 @@ import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -253,7 +254,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                         IconButton(icon: Icon(Icons.add_circle, color: KColors.new_black), onPressed: () => _increaseQuantity())
                       ]
                   )),
-                  RaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
+                  MRaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
                     children: <Widget>[
                       Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color: KColors.primaryColor)),
                       IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),

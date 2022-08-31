@@ -5,6 +5,7 @@ import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -307,11 +308,11 @@ class _EditAddressPageState extends State<EditAddressPage>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              RaisedButton(
+              MRaisedButton(
                   padding:
                       EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(5.0)),
+            /*      shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(5.0)),*/
                   child: Row(
                     children: <Widget>[
                       Text(

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child:RaisedButton(
+    return Scaffold(body: Center(child:MRaisedButton(
 
     child: Text("Test notif", style: TextStyle(color: Colors.red)),
     onPressed: ()=>sendAndRetrieveMessage(),

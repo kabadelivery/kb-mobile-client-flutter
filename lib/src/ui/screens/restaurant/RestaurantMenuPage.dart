@@ -884,10 +884,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     } on TickerCanceled {}
   }
 
-  void showSnack(String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
-
   void showToast(String message) {
     Toast.show(message, context,
         duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);

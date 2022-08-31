@@ -4,6 +4,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -120,7 +121,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 SizedBox(width: 10)
               ]),
           SizedBox(height: 10),
-          RaisedButton(
+          MRaisedButton(
               onPressed: () =>
                   widget.presenter.fetchCustomerCareChat(widget.customer),
               color: Colors.white,
@@ -153,7 +154,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 SizedBox(width: 10)
               ]),
           SizedBox(height: 10),
-          RaisedButton(
+          MRaisedButton(
               onPressed: () =>
                   widget.presenter.fetchCustomerCareChat(widget.customer),
               color: Colors.white,

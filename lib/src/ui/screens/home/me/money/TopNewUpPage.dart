@@ -11,7 +11,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
-import 'package:smart_select/smart_select.dart';
 
 class TopNewUpPage extends StatefulWidget {
   static var routeName = "/TopNewUpPage";
@@ -75,7 +74,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     super.initState();
     widget.presenter.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
-    _totalAmountFieldController = new TextEditingController();
+    _totalAmountFieldController = new TextEditingController(text: "0");
     _amountFieldController = new TextEditingController();
     _feesFieldController = new TextEditingController();
 

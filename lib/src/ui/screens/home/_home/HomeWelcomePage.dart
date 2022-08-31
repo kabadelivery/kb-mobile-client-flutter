@@ -20,6 +20,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
@@ -767,11 +768,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 SizedBox(height: 5),
                 Container(margin: EdgeInsets.only(left:20,right:20),child: Text("${AppLocalizations.of(context).translate('home_page_loading_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
                 SizedBox(height: 5),
-                RaisedButton(
-                    shape: RoundedRectangleBorder(
+                MRaisedButton(
+                   /* shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(18.0),
-//                    side: BorderSide(color: Colors.red)
-                    ),
+                    ),*/
                     color: Colors.yellow,child: Text("${AppLocalizations.of(context).translate('try_again')}"), onPressed: () {widget.presenter.fetchHomePage();})
               ],
             ),

@@ -1,12 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/PreOrderConfiguration.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/models/AdModel.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class CustomSwitchPage extends StatefulWidget {
@@ -66,9 +61,9 @@ class _CustomSwitchPageState extends State<CustomSwitchPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            RaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text(this.button_1_name, style: TextStyle(color: position == 1 ? this.active_text_color:this.unactive_text_color)), color: position == 1 ? this.active_button_color :  this.unactive_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+            MRaisedButton(elevation: 0.0, onPressed: () => _choice(1), child: Text(this.button_1_name, style: TextStyle(color: position == 1 ? this.active_text_color:this.unactive_text_color)), color: position == 1 ? this.active_button_color :  this.unactive_button_color, borderRadius: new BorderRadius.circular(30.0)),
             SizedBox(width: 10),
-            RaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text(this.button_2_name, style: TextStyle(color: position == 1 ? this.unactive_text_color : this.active_text_color)),  color: position == 1 ? this.unactive_button_color : this.active_button_color, shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))),
+            MRaisedButton(elevation: 0.0,onPressed: () => _choice(2), child: Text(this.button_2_name, style: TextStyle(color: position == 1 ? this.unactive_text_color : this.active_text_color)),  color: position == 1 ? this.unactive_button_color : this.active_button_color, borderRadius: new BorderRadius.circular(30.0)),
           ]), duration: Duration(milliseconds: 700),
     );
   }
