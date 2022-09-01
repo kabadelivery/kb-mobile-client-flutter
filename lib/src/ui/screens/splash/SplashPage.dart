@@ -9,6 +9,7 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
@@ -46,6 +47,7 @@ class SplashPage extends StatefulWidget { // translated
       FOOD = "FOOD",
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
+  CUSTOM_CARE = "CUSTOM-CARE",
       RESTAURANT_LIST = "RESTAURANT-LIST",
       ADDRESSES = "ADDRESSES",
       LOCATION_PICKED = "LOCATION_PICKED";
@@ -397,6 +399,10 @@ class _SplashPageState extends State<SplashPage> {
           navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
+      case "customer-care-message":
+        widget.destination = SplashPage.CUSTOM_CARE;
+        navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
+        break;
     }
   }
 }
@@ -505,6 +511,9 @@ class _SplashPageState extends State<SplashPage> {
             widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
           }
+          break;
+        case "customer-care-message":
+          widget.destination = SplashPage.CUSTOM_CARE;
           break;
       }
     }

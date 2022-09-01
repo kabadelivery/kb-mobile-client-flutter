@@ -53,7 +53,15 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       widget.presenter.fetchCustomerCareChat(widget.customer);
-      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    setState(() {
+      StateContainer.of(context).hasUnreadMessage = false;
     });
   }
 
@@ -75,8 +83,9 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
             onPressed: () {
               Navigator.pop(context);
             }),
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

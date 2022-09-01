@@ -409,6 +409,7 @@
   "mois_11": "Novembre",
   "mois_12": "Décembre",
   "buy": "Acheter",
+  "service_category_book": "Livres",
   "service_category_food": "Repas",
   "service_category_drinks": "Boissons",
   "service_category_flower": "Fleurs",
@@ -418,6 +419,8 @@
   "service_category_shopping": "Shopping",
   "service_category_ticket": "Ticket",
   "service_category_unknown": "Unknown",
+  "service_book_type_name": "Bibliothèque",
+  "service_book_type_product": "Livre",
   "what_want_buy": "Que voulez vous acheter ?",
   "categories": "Catégories",
   "product_details": "Détails du produit",
@@ -493,6 +496,10 @@
   "t_closed_shop_long": "Cher client, yyy est actuellement fermé.\nVeuillez revenir plutard (xxx)",
   "t_paused_shop_long": "Cher client, yyy est actuellement en pause.\nVeuillez revenir plutard ",
   "t_opened_shop_long": "Ouvert",
-  "t_unavailable_shop_long": "Cher client, yyy est actuellement indisponible sur Kaba pour raison indépendante de notre volonté.\nVeuillez les contacter."
+  "t_unavailable_shop_long": "Cher client, yyy est actuellement indisponible sur Kaba pour raison indépendante de notre volonté.\nVeuillez les contacter.",
+
+  "service_drugstore_type_name": "Pharmacies",
+  "service_drugstore_type_product": "Produit",
+  "service_category_drugstore": "Pharmacies"
 
 }

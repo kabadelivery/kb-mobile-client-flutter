@@ -145,7 +145,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-          StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+          // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+          StateContainer.of(context).hasUnreadMessage = false;
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
           Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
         });

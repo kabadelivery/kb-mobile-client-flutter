@@ -173,6 +173,7 @@ flutter:
     - assets/lottie/package_delivery.json
     - assets/lottie/shopping.json
     - assets/lottie/ticket.json
+    - assets/lottie/drugstore.json
     # localization
     - assets/i18n/fr.json
     - assets/i18n/en.json

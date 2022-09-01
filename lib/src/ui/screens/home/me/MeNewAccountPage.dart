@@ -162,7 +162,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
-           centerTitle: true,
+          centerTitle: true,
           actions: [
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
@@ -174,7 +174,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               },
             )
           ],
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -466,7 +467,22 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           fontSize: 14,
                           fontWeight: FontWeight.w500))
                 ]),
-                Icon(Icons.chevron_right, size: 30, color: KColors.mBlue)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    StateContainer.of(context).hasUnreadMessage
+                        ? Container(padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                            child: Text("01",
+                                style: TextStyle(
+                                    color: KColors.mBlue,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500)))
+                        : Container(),
+                    Icon(Icons.chevron_right, size: 30, color: KColors.mBlue),
+                  ],
+                )
               ],
             ),
           ),
@@ -1540,7 +1556,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
       StateContainer.of(context).location = null;
-      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).hasUnreadMessage = false;
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
       Navigator.pushNamedAndRemoveUntil(
           context, SplashPage.routeName, (r) => false);

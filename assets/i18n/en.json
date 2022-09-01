@@ -411,6 +411,7 @@
   "service_category_drinks": "Drinks",
   "service_category_flower": "Flowers",
   "service_category_groceries": "Groceries",
+  "service_category_book": "Books",
   "service_category_movies": "Movies",
   "service_category_package_delivery": "Package Delivery",
   "service_category_shopping": "Shopping",
@@ -436,6 +437,8 @@
   "service_flower_type_name": "Florist",
   "service_shop_type_name": "Shop",
   "service_supermarket_type_name": "Supermarket",
+  "service_book_type_name": "Bookstore",
+  "service_book_type_product": "Book",
   "service_restaurant_type_product": "Food",
   "service_drink_type_product": "Drink",
   "service_movie_type_product": "Movie",
@@ -492,5 +495,10 @@
   "t_closed_shop_long": "Dear customer, yyy is currently Closed.\nPlease come back later (xxx)",
   "t_paused_shop_long": "Dear customer, yyy is currently into break time.\nPlease come back later",
   "t_opened_shop_long": "Opened",
-  "t_unavailable_shop_long": "Dear customer, yyy is unfortunately currently unavailable on Kaba.\nPlease contact them directly"
+  "t_unavailable_shop_long": "Dear customer, yyy is unfortunately currently unavailable on Kaba.\nPlease contact them directly",
+
+
+  "service_drugstore_type_name": "Drugstore",
+  "service_drugstore_type_product": "Product",
+  "service_category_drugstore": "Drugstore"
 }

@@ -77,15 +77,53 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(
-                                        "${Utils.capitalize(widget?.shopModel?.name)}",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                              "${Utils.capitalize(widget?.shopModel?.name)}",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: KColors.new_black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500)),
+                                        ),
+                                        widget?.shopModel?.stars != null && widget?.shopModel?.stars > 1 ?
+                                        Row(mainAxisSize: MainAxisSize.min,children: [
+                                          SizedBox(width: 5),
+                                          Container(decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(20), borderRadius: BorderRadius.circular(20)),
+                                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.solidStar,
+                                                  color: KColors.primaryYellowColor,
+                                                  size: 12,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                    "${widget?.shopModel?.stars}"
+                                                        .length >
+                                                        3
+                                                        ? "${widget?.shopModel?.stars}"
+                                                        .substring(0, 3)
+                                                        : "${widget?.shopModel?.stars}",
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.start,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.grey,
+                                                        fontWeight: FontWeight.w500)),  ],
+                                            ),
+                                          ),
+
+                                      SizedBox(width: 60)
+                                        ]) :        SizedBox(width: 60),
+                                      ],
+                                    ),
                                     SizedBox(height: 5),
                                     Text("${widget?.shopModel?.address}",
                                         overflow: TextOverflow.ellipsis,

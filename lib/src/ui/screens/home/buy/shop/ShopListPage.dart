@@ -1413,6 +1413,18 @@ class _ShopListPageState extends State<ShopListPage>
           AppLocalizations.of(context).translate('service_shop_type_product')
         ];
         break;
+        case "drugstore": // shopping
+        tmp = [
+          AppLocalizations.of(context).translate('service_drugstore_type_name'),
+          AppLocalizations.of(context).translate('service_drugstore_type_product')
+        ];
+        break;
+      case "book": // shopping
+        tmp = [
+          AppLocalizations.of(context).translate('service_book_type_name'),
+          AppLocalizations.of(context).translate('service_book_type_product')
+        ];
+        break;
       case "ticket": // ticket
         tmp = [
           AppLocalizations.of(context).translate('service_ticket_type_name'),
@@ -1423,6 +1435,12 @@ class _ShopListPageState extends State<ShopListPage>
         tmp = [
           AppLocalizations.of(context).translate('service_grocery_type_name'),
           AppLocalizations.of(context).translate('service_grocery_product_name')
+        ];
+        break;
+      case "drugstore": // ticket
+        tmp = [
+          AppLocalizations.of(context).translate('service_drugstore_type_name'),
+          AppLocalizations.of(context).translate('service_drugstore_product_name')
         ];
         break;
     }

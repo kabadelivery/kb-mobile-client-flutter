@@ -208,8 +208,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                margin:
-                    EdgeInsets.only(top: 20, right: 10, left: 20 ),
+                margin: EdgeInsets.only(top: 20, right: 10, left: 20),
                 child: Text(
                     "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
                         ?.toUpperCase(),
@@ -225,7 +224,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           ),
           Container(
             child: ChipList(
-           /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
+              /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
                       _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
                   ? MAX_CHIP_FOR_SCREEN
                   : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
@@ -242,11 +241,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               extraOnToggle: (val) {
                 this.currentIndex = val;
                 setState(() {});
+                /* scroll to top */
               },
             ),
           ),
           Expanded(
             child: SingleChildScrollView(
+              key: PageStorageKey<String>("menu_id_${currentIndex}"),
               child: Container(
                   margin: EdgeInsets.only(top: 10),
                   child: isLoading
@@ -686,12 +687,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                    child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)), color: food?.id == highlightedFoodId
-                        ? Colors.yellow.withAlpha(50)
-                        : KColors.new_gray),
+                    child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8)),
+                      color: food?.id == highlightedFoodId
+                          ? Colors.yellow.withAlpha(50)
+                          : KColors.new_gray),
                   padding: EdgeInsets.all(10),
                   height: 115,
-
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -786,12 +791,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ])
                       ]),
                 )),
-                Container(color: KColors.primaryYellowColor.withAlpha(30),
+                Container(
+                  color: KColors.primaryYellowColor.withAlpha(30),
                   child: Container(
                     height: 115,
                     width: 115,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
-
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8)),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: OptimizedCacheImageProvider(
@@ -954,8 +962,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   @override
   void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
-      if (restaurant.max_food == null)
-        restaurant.max_food = "5";
+      if (restaurant.max_food == null) restaurant.max_food = "5";
       if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
         FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
@@ -984,17 +991,26 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     // "working_hour": "07:30-13:00",
     switch (restaurant?.open_type) {
       case 0: // closed
-        dialogText = "${AppLocalizations.of(context).translate('t_closed_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+        dialogText =
+            "${AppLocalizations.of(context).translate('t_closed_shop_long')}"
+                ?.replaceAll("xxx", restaurant?.working_hour)
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
 
         break;
       case 1: // open
         // tagText = "${AppLocalizations.of(context).translate('t_opened')}";
         break;
       case 2: // paused
-        dialogText = "${AppLocalizations.of(context).translate('t_paused_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+        dialogText =
+            "${AppLocalizations.of(context).translate('t_paused_shop_long')}"
+                ?.replaceAll("xxx", restaurant?.working_hour)
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
         break;
       case 3: // blocked
-        dialogText = "${AppLocalizations.of(context).translate('t_unavailable_shop_long')}"?.replaceAll("xxx", restaurant?.working_hour)?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+        dialogText =
+            "${AppLocalizations.of(context).translate('t_unavailable_shop_long')}"
+                ?.replaceAll("xxx", restaurant?.working_hour)
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
         break;
     }
     if (dialogText != "") {
@@ -1002,44 +1018,41 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     }
   }
 
-
   void _comingSoon(BuildContext context, ShopModel shopModel, String message) {
     /* show the coming soon dialog */
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-            content:
-            Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                      border: new Border.all(
-                          color: KColors.primaryYellowColor, width: 2),
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(
-                              Utils.inflateLink(shopModel?.pic))))),
-              SizedBox(height: 10),
-              Text(
-                  "${message}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.new_black, fontSize: 13))
-            ]),
-            actions: <Widget>[
-              //
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}",
-                    style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]));
+                content:
+                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                          border: new Border.all(
+                              color: KColors.primaryYellowColor, width: 2),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: OptimizedCacheImageProvider(
+                                  Utils.inflateLink(shopModel?.pic))))),
+                  SizedBox(height: 10),
+                  Text("${message}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
+                ]),
+                actions: <Widget>[
+                  //
+                  OutlinedButton(
+                    child: new Text(
+                        "${AppLocalizations.of(context).translate('ok')}",
+                        style: TextStyle(color: KColors.primaryColor)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ]));
   }
-
 
   @override
   void networkError() {

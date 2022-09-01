@@ -414,6 +414,7 @@
   "service_category_package_delivery": "快递",
   "service_category_shopping": "超市",
   "service_category_ticket": "门票",
+  "service_category_book": "书店",
   "service_category_unknown": "无知",
   "what_want_buy": "想购买什么呢 ?",
   "categories": "分类",
@@ -434,11 +435,14 @@
   "service_flower_type_name": "鲜花店",
   "service_shop_type_name": "商店",
   "service_supermarket_type_name": "超市",
+  "service_book_type_name": "书店",
+  "service_book_type_product": "书本",
   "service_restaurant_type_product": "餐",
   "service_drink_type_product": "饮料",
   "service_movie_type_product": "电影",
   "service_flower_type_product": "鲜花",
   "service_shop_type_product": "商品",
+
   "service_supermarket_type_product": "商品",
   "has_to_pay": "到付",
   "already_paid": "预付",
@@ -491,6 +495,10 @@
   "t_closed_shop_long":  "尊敬的客户，yyy目前已暂时关门\n请稍后再来(xxx)",
   "t_paused_shop_long": "尊敬的客户，yyy目前处于休息状态\n请稍后再回来",
   "t_opened_shop_long": "营业中",
-  "t_unavailable_shop_long": "尊敬的客户，由于我们无法控制的原因，目前无法在 Kaba 上光临 yyy。请有需要联系卖家。"
+  "t_unavailable_shop_long": "尊敬的客户，由于我们无法控制的原因，目前无法在 Kaba 上光临 yyy。请有需要联系卖家。",
+
+  "service_drugstore_type_name": "药房",
+  "service_drugstore_type_product": "商品",
+  "service_category_drugstore": "药房"
 
 }

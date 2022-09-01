@@ -60,8 +60,7 @@ class StateContainerState extends State<StateContainer> {
 
   // DeliveryAddressModel selectedAddress;
 
-  bool hasUnreadMessage;
-  bool hasGotNewMessageOnce;
+  bool hasUnreadMessage = false;
 
   // firebase
   FirebaseAnalytics analytics;
@@ -113,32 +112,26 @@ class StateContainerState extends State<StateContainer> {
     }
   }
 
-  Future<void> updateUnreadMessage({hasUnreadMessage}) async {
-    if (hasUnreadMessage != null) {
-      setState(() {
-        this.hasUnreadMessage = hasUnreadMessage;
-      });
-      /* save it to shared preferences */
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('hasUnreadMessage', hasUnreadMessage);
-    } else {
-      setState(() {
-        this.hasUnreadMessage = false;
-      });
-      /* save it to shared preferences */
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('hasUnreadMessage', false);
-    }
-  }
+/*  Future<void> updateUnreadMessage({hasUnreadMessage}) async {
+    this.hasUnreadMessage = hasUnreadMessage;
+    // if (hasUnreadMessage != null) {
+    //   setState(() {
+    //     this.hasUnreadMessage = hasUnreadMessage;
+    //   });
+    //   /* save it to shared preferences */
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setBool('hasUnreadMessage', hasUnreadMessage);
+    // } else {
+    //   setState(() {
+    //     this.hasUnreadMessage = false;
+    //   });
+    //   /* save it to shared preferences */
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setBool('hasUnreadMessage', false);
+    // }
+  }*/
 
-  Future<void> updateHasGotNewMessage({hasGotNewMessage}) async {
-    if (hasGotNewMessage == true) {
-      this.hasGotNewMessageOnce = true;
-      /* save it to shared preferences */
-    } else {
-      this.hasGotNewMessageOnce = false;
-    }
-  }
+
 
   Future<void> updateLocation({location}) async {
     if (location != null) {
@@ -212,7 +205,7 @@ class InheritedStateContainer extends InheritedWidget {
   }) : super(key: key, child: child) {
     data.retrieveBalance();
     data.retrieveUnreadMessage();
-    data.hasGotNewMessageOnce = false;
+   /* data.hasUnreadMessage = false;*/
   }
 
   @override

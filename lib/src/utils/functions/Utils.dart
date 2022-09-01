@@ -344,7 +344,7 @@ class Utils {
     double long2 = double.parse(restaurant.location.split(":")[1]);
 
    double distance = Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
-   distance = 1.3/* error factor */ * distance/1000; // distance meter
+   distance = 1.15/* error factor */ * distance/1000; // distance meter
    return double.parse(distance.toStringAsPrecision(1));
     // crop to 1 number after comma
   }

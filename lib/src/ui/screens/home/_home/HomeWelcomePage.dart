@@ -359,7 +359,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-          StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+        /*  StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
+          StateContainer.of(context).hasUnreadMessage = false;
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
           Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
@@ -904,18 +905,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     if (hasNewMessage){
 
       // check inside the sharedprefs
-      if (!StateContainer.of(context).hasGotNewMessageOnce) {
-        StateContainer.of(context).updateHasGotNewMessage(hasGotNewMessage: true);
+      if (StateContainer.of(context).hasUnreadMessage) {
+        // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: hasNewMessage);
+        StateContainer.of(context).hasUnreadMessage = hasNewMessage;
         _playMusicForNewMessage();
       }
       setState(() {
-        StateContainer.of(context).updateUnreadMessage(
+       /* StateContainer.of(context).updateUnreadMessage(
             hasUnreadMessage: hasNewMessage);
-      });
+    */    StateContainer.of(context).hasUnreadMessage = hasNewMessage;  });
     } else {
       setState(() {
-        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-      });
+    /*    StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
+        StateContainer.of(context).hasUnreadMessage = false;   });
     }
   }
 

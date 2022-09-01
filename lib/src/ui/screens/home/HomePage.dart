@@ -314,7 +314,6 @@ class _HomePageState extends State<HomePage> {
                   description: Text(
                       "${AppLocalizations.of(context).translate('offline_alert_description')}"))
               .show(context);*/
-
           SnackBar snackBar = SnackBar(
             content: Text(
                 "${AppLocalizations.of(context).translate('offline_alert_description')}"),
@@ -901,6 +900,12 @@ class _HomePageState extends State<HomePage> {
             }
           });
           break;
+        case "customer-care-message":
+          _checkIfLoggedInAndDoAction(() {
+            _jumpToPage(context,
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+          });
+          break;
       }
       pathSegments[0] = null;
     }
@@ -969,6 +974,9 @@ class _HomePageState extends State<HomePage> {
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
         }
+        break;
+      case "customer-care-message":
+        widget.destination = SplashPage.CUSTOM_CARE;
         break;
     }
   }

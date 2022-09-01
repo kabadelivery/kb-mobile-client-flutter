@@ -66,6 +66,12 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
           AppLocalizations.of(context).translate('service_flower_type_product')
         ];
         break;
+      case "book": // flowers
+        tmp = [
+          AppLocalizations.of(context).translate('service_book_type_name'),
+          AppLocalizations.of(context).translate('service_book_type_product')
+        ];
+        break;
         /*   case "supermarket": // flowers
         tmp = [
           AppLocalizations.of(context).translate('service_flower_type_name'),

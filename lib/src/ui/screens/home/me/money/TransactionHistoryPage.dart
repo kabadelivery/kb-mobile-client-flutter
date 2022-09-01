@@ -353,6 +353,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   _buildPointTransactionHistoryList() {
+
     if (pointData == null || !pointData?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
       return Center(
           child: Column(

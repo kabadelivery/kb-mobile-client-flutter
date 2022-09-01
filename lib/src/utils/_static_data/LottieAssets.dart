@@ -11,4 +11,5 @@ class LottieAssets {
   static final String fire = "assets/lottie/fire.json";
   static final String best_sales = "assets/lottie/best_sales.json";
   static final String new_ = "assets/lottie/new.json";
+  static final String drugstore = "assets/lottie/drugstore.json";
 }

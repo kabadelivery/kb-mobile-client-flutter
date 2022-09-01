@@ -140,6 +140,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
       case "grocery": // groceries
         category_name_code = "service_category_groceries";
         break;
+      case "book": // groceries
+        category_name_code = "service_category_book";
+        break;
     //   case 1005: // movies
     //     category_name_code = "service_category_movies";
     //     break;
@@ -148,6 +151,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     //     break;
       case "shop": // shopping
         category_name_code = "service_category_shopping";
+        break;
+      case "drugstore": // shopping
+        category_name_code = "service_category_drugstore";
         break;
       case "ticket": // ticket
         category_name_code = "service_category_ticket";
@@ -176,6 +182,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
       case "grocery": // groceries
         category_icon = LottieAssets.groceries;
         break;
+      case "book":
+        category_icon = LottieAssets.books;
+        break;
       // case 1005: // movies
       //   category_icon = LottieAssets.movie;
       //   break;
@@ -187,6 +196,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         break;
       case "ticket": // ticket
         category_icon = LottieAssets.ticket;
+        break;
+        case "drugstore": // ticket
+        category_icon = LottieAssets.drugstore;
         break;
     }
     if ("" == category_icon) {

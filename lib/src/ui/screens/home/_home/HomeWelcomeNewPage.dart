@@ -5,6 +5,7 @@ import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
+import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/evenement_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
@@ -32,6 +33,7 @@ import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersMiniPage.d
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
@@ -284,7 +286,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       gps_location:
                           widget.argument.toString().replaceAll(",", ":")));
             });
-
+            break;
+          case SplashPage.CUSTOM_CARE:
+            _checkIfLoggedInAndDoAction(() {
+              // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
+              _jumpToPage(context,
+                  CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+            });
             break;
         }
         widget.destination = null;
@@ -398,7 +406,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
       StateContainer.of(context).location = null;
-      StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).hasUnreadMessage = false;
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
       Navigator.pushNamedAndRemoveUntil(
           context, SplashPage.routeName, (r) => false);
@@ -542,6 +551,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
           child: ListView(
+              key: PageStorageKey<String>("home_welcome_new"),
               addAutomaticKeepAlives: true,
               children: <Widget>[
                 /*top slide*/
@@ -852,6 +862,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                               /*shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(18.0),
                               ),*/
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
                               color: Colors.yellow,
                               child: Text(
                                   "${AppLocalizations.of(context).translate('try_again')}"),
@@ -978,7 +990,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   void hasUnreadMessages(bool hasNewMessage) {
-    if (hasNewMessage) {
+    /* if (hasNewMessage) {
       // check inside the sharedprefs
       if (!StateContainer.of(context).hasGotNewMessageOnce) {
         StateContainer.of(context)
@@ -993,7 +1005,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       setState(() {
         StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
       });
-    }
+    }*/
+    setState(() {
+      /*StateContainer.of(context)
+          .updateUnreadMessage(hasUnreadMessage: hasNewMessage);*/
+      StateContainer.of(context).hasUnreadMessage = hasNewMessage;
+    });
   }
 
   @override
@@ -1169,6 +1186,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 OrderDetailsPage(
                     orderId: arg, presenter: OrderDetailsPresenter()));
           }
+          break;
+        case "customer-care-message":
+          _checkIfLoggedInAndDoAction(() {
+            _jumpToPage(context,
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+          });
           break;
         default:
           return data;
@@ -1678,7 +1701,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                 fontSize: 14,
                                 color: KColors.new_black,
                                 fontWeight: FontWeight.w500)),
-                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        Container(
+                            width: 20,
+                            height: 20,
+                            child: Image.asset(ImageAssets.whatsapp)),
                       ]),
                 ),
               ),
