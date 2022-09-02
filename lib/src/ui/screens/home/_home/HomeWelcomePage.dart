@@ -255,7 +255,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                   gps_location: widget.argument.toString().replaceAll(
                       ",", ":")));
             });
-
             break;
         }
         widget.destination = null;
@@ -988,103 +987,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     }
   }
 */
-  String _handleLinksImmediately(String data) {
-    /* streams */
-
-    // if you are logged in, we can just move to the activity.
-    Uri mUri = Uri.parse(data);
-
-    List<String> pathSegments = mUri.pathSegments.toList();
-    var arg = null;
-
-    if ("${mUri.host}" != ServerConfig.APP_SERVER_HOST || pathSegments.length == 0
-        || mUri.scheme != "https") {
-      return data;
-    }
-
-    if (pathSegments.length > 0) {
-      switch (pathSegments[0]) {
-        case "voucher":
-          if (pathSegments.length > 1) {
-            xrint("voucher id homepage -> ${pathSegments[1]}");
-            // widget.destination = SplashPage.VOUCHER;
-            /* convert from hexadecimal to decimal */
-            arg = "${pathSegments[1]}";
-            _jumpToPage(context, AddVouchersPage(
-                presenter: AddVoucherPresenter(),
-                qrCode: "${arg}".toUpperCase(),
-                customer: widget.customer));
-          }
-          break;
-        case "vouchers":
-          xrint("vouchers page");
-          /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
-          break;
-        case "addresses":
-          xrint("addresses page");
-          /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
-          break;
-        case "transactions":
-          _jumpToPage(
-              context,
-              TransactionHistoryPage(presenter: TransactionPresenter()));
-          break;
-        case "restaurants":
-          StateContainer.of(context).updateTabPosition(tabPosition: 1);
-          Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-              builder: (BuildContext context) => HomePage()), (r) => false);
-          break;
-        case "restaurant":
-          if (pathSegments.length > 1) {
-            xrint("restaurant id -> ${pathSegments[1]}");
-            /* convert from hexadecimal to decimal */
-            arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, ShopDetailsPage(
-                restaurant: ShopModel(id: arg),
-                presenter: RestaurantDetailsPresenter()));
-          }
-          break;
-        case "order":
-          if (pathSegments.length > 1) {
-            xrint("order id -> ${pathSegments[1]}");
-            arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
-                orderId: arg, presenter: OrderDetailsPresenter()));
-          }
-          break;
-        case "food":
-          if (pathSegments.length > 1) {
-            xrint("food id -> ${pathSegments[1]}");
-            arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                foodId: arg, presenter: MenuPresenter()));
-          }
-          break;
-        case "menu":
-          if (pathSegments.length > 1) {
-            xrint("menu id -> ${pathSegments[1]}");
-            arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                menuId: arg, presenter: MenuPresenter()));
-          }
-          break;
-        case "review-order":
-          if (pathSegments.length > 1) {
-            xrint("review-order id -> ${pathSegments[1]}");
-            arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
-                orderId: arg, presenter: OrderDetailsPresenter()));
-          }
-          break;
-        default:
-          return data;
-      }
-      return null;
-    }
-  }
-
 
   void mDialog(String message) {
     _showDialog(
