@@ -38,7 +38,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -244,7 +244,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
                   context,
-                  OrderDetailsPage(
+                  OrderNewDetailsPage(
                       orderId: widget.argument,
                       presenter: OrderDetailsPresenter()));
             });
@@ -271,7 +271,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
                   context,
-                  OrderDetailsPage(
+                  OrderNewDetailsPage(
                       orderId: widget.argument,
                       presenter: OrderDetailsPresenter()));
             });
@@ -1157,7 +1157,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                OrderDetailsPage(
+                OrderNewDetailsPage(
                     orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
@@ -1183,7 +1183,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                OrderDetailsPage(
+                OrderNewDetailsPage(
                     orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;

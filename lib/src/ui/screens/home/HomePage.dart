@@ -26,7 +26,8 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -342,6 +343,10 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+
+    // check update
+
+
   }
 
   void mDialog(String message) {
@@ -511,9 +516,9 @@ class _HomePageState extends State<HomePage> {
   void _jumpToOrderDetailsWithId(int product_id) {
     _jumpToPage(
         context,
-        OrderDetailsPage(
+        OrderNewDetailsPage(
             orderId: product_id, presenter: OrderDetailsPresenter()));
-    // navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
+    // navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
@@ -857,7 +862,7 @@ class _HomePageState extends State<HomePage> {
               widget.argument = int.parse("${pathSegments[1]}");
               _jumpToPage(
                   context,
-                  OrderDetailsPage(
+                  OrderNewDetailsPage(
                       orderId: widget.argument,
                       presenter: OrderDetailsPresenter()));
             }
@@ -894,7 +899,7 @@ class _HomePageState extends State<HomePage> {
               widget.argument = int.parse("${pathSegments[1]}");
               _jumpToPage(
                   context,
-                  OrderDetailsPage(
+                  OrderNewDetailsPage(
                       orderId: widget.argument,
                       presenter: OrderDetailsPresenter()));
             }

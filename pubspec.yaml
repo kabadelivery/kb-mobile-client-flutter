@@ -101,6 +101,7 @@ dependencies:
   geocoding: ^2.0.5
   easy_debounce: ^2.0.2+1
   modal_bottom_sheet: ^2.1.0
+#  in_app_update: ^3.0.0
 
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0

@@ -30,6 +30,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -707,7 +708,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           if (pathSegments.length > 1) {
             xrint("order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
+            _jumpToPage(context, OrderNewDetailsPage(
                 orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
@@ -731,7 +732,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           if (pathSegments.length > 1) {
             xrint("review-order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
+            _jumpToPage(context, OrderNewDetailsPage(
                 orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;

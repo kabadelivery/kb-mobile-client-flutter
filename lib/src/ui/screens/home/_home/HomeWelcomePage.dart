@@ -36,6 +36,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 //import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -224,7 +225,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             break;
           case SplashPage.ORDER:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(context, OrderDetailsPage(orderId: widget.argument,
+              _jumpToPage(context, OrderNewDetailsPage(orderId: widget.argument,
                   presenter: OrderDetailsPresenter()));
             });
             break;
@@ -242,7 +243,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             break;
           case SplashPage.REVIEW_ORDER:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(context, OrderDetailsPage(orderId: widget.argument,
+              _jumpToPage(context, OrderNewDetailsPage(orderId: widget.argument,
                   presenter: OrderDetailsPresenter()));
             });
             break;

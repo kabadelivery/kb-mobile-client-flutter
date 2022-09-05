@@ -14,6 +14,7 @@ import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
@@ -369,7 +370,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "food":
@@ -396,7 +397,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "customer-care-message":

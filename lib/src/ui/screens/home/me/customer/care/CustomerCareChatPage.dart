@@ -186,87 +186,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 : ListView(
                     children: <Widget>[]..addAll(List.generate(
                           widget.messages?.length, (int position) {
-                        return Column(
-                          children: <Widget>[
-                            SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment:
-                                  widget.messages[position]?.user_id == 0
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                              children: <Widget>[
-//                              widget.messages[position]?.user_id == 0 ? Expanded(flex:2, child: Container()) : Expanded(flex:0, child: Container()),
-                                widget.messages[position]?.user_id == 0
-                                    ? Expanded(flex: 0, child: Container())
-                                    : Expanded(flex: 2, child: Container()),
-                                Expanded(
-                                  flex: 8,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: widget.messages[position]
-                                                    ?.user_id ==
-                                                0
-                                            ? KColors.new_gray
-                                            : KColors.chat_transparent_blue,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5))),
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Expanded(
-                                                child: Text(
-                                              "${widget.messages[position]?.message}",
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      widget.messages[position]
-                                                                  ?.user_id ==
-                                                              0
-                                                          ? Colors.grey
-                                                          : Colors.grey),
-                                            )),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              Expanded(
-                                                  child: Text(
-                                                "${Utils.readTimestamp(context, widget.messages[position]?.created_at)}",
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    fontSize: 11,
-                                                    color: widget
-                                                                .messages[
-                                                                    position]
-                                                                ?.user_id ==
-                                                            0
-                                                        ? Colors.grey
-                                                        : Colors.grey),
-                                              )),
-                                            ])
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                widget.messages[position]?.user_id == 0
-                                    ? Expanded(flex: 2, child: Container())
-                                    : Expanded(flex: 0, child: Container()),
-//                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
-                              ],
-                            ),
-                          ],
-                        );
+                        return ChatBubbleWidget(message:widget.messages[position]);
                       })),
                     controller: _scrollController,
                     reverse: true),
@@ -495,3 +415,96 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
     }
   }
 }
+
+
+class ChatBubbleWidget extends StatelessWidget {
+
+  CustomerCareChatMessageModel message;
+
+  ChatBubbleWidget({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+   //  check if message is message contains a string that matches a regex
+   return Column(
+      children: <Widget>[
+        SizedBox(height: 15),
+        Row(
+          mainAxisAlignment:
+          message?.user_id == 0
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          children: <Widget>[
+        message?.user_id == 0
+                ? Expanded(flex: 0, child: Container())
+                : Expanded(flex: 2, child: Container()),
+            Expanded(
+              flex: 8,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: message
+                        ?.user_id ==
+                        0
+                        ? KColors.new_gray
+                        : KColors.chat_transparent_blue,
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(5))),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment:
+                      MainAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                            child: Text(
+                              "${ message?.message}",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color:
+                                  message?.user_id ==
+                                      0
+                                      ? Colors.grey
+                                      : Colors.grey),
+                            )),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment:
+                        MainAxisAlignment.end,
+                        children: <Widget>[
+                          Expanded(
+                              child: Text(
+                                "${Utils.readTimestamp(context,  message?.created_at)}",
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color:  message
+                                        ?.user_id ==
+                                        0
+                                        ? Colors.grey
+                                        : Colors.grey),
+                              )),
+                        ])
+                  ],
+                ),
+              ),
+            ),
+            message?.user_id == 0
+                ? Expanded(flex: 2, child: Container())
+                : Expanded(flex: 0, child: Container()),
+//                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
+          ],
+        ),
+      ],
+    );
+  }
+
+}
+

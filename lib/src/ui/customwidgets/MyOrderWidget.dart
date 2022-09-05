@@ -4,6 +4,7 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -247,7 +248,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
+            OrderNewDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;

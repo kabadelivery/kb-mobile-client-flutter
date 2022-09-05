@@ -33,6 +33,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -1333,7 +1334,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                OrderDetailsPage(
+                OrderNewDetailsPage(
                     orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
@@ -1359,7 +1360,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(
                 context,
-                OrderDetailsPage(
+                OrderNewDetailsPage(
                     orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;

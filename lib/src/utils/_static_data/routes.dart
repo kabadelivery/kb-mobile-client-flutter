@@ -7,6 +7,7 @@ import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/ui/customwidgets/RestaurantNewCommentWidget.dart';
 import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
@@ -68,7 +69,7 @@ var generalRoutes = {
   TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(presenter: TransactionPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
-  OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
+  // OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
   TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   InfoPage.routeName : (BuildContext context) => InfoPage(),
@@ -84,7 +85,9 @@ var generalRoutes = {
 
   SearchProductPage.routeName : (BuildContext context) => SearchProductPage(),
   TopNewUpPage.routeName : (BuildContext context) => TopNewUpPage(presenter: TopUpPresenter()),
-
+  MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
+  OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter()),
+  HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter()),
 
 
 };

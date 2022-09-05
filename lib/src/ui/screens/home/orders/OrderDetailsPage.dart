@@ -19,12 +19,12 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
-class OrderDetailsPage extends StatefulWidget {
+class OrderDetailsPageOld extends StatefulWidget {
   static var routeName = "/OrderDetailsPage";
 
   OrderDetailsPresenter presenter;
 
-  OrderDetailsPage({Key key, this.orderId, this.presenter}) : super(key: key);
+  OrderDetailsPageOld({Key key, this.orderId, this.presenter}) : super(key: key);
 
   int orderId;
   CustomerModel customer;
@@ -34,7 +34,7 @@ class OrderDetailsPage extends StatefulWidget {
   _OrderDetailsPageState createState() => _OrderDetailsPageState();
 }
 
-class _OrderDetailsPageState extends State<OrderDetailsPage>
+class _OrderDetailsPageState extends State<OrderDetailsPageOld>
     implements OrderDetailsView {
   bool isLoading = false;
   bool hasNetworkError = false;
