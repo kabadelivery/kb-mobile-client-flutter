@@ -499,6 +499,8 @@
 
   "service_drugstore_type_name": "药房",
   "service_drugstore_type_product": "商品",
-  "service_category_drugstore": "药房"
+  "service_category_drugstore": "药房",
+  "expires_at": "到期于"
+
 
 }

@@ -500,6 +500,7 @@
 
   "service_drugstore_type_name": "Pharmacies",
   "service_drugstore_type_product": "Produit",
-  "service_category_drugstore": "Pharmacies"
+  "service_category_drugstore": "Pharmacies",
+  "expires_at": "EXPIRE LE"
 
 }

@@ -1,9 +1,11 @@
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/chat_voucher_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/ui/customwidgets/ChatVoucherWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
@@ -186,7 +188,8 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 : ListView(
                     children: <Widget>[]..addAll(List.generate(
                           widget.messages?.length, (int position) {
-                        return ChatBubbleWidget(message:widget.messages[position]);
+                        return ChatBubbleWidget(customer: widget.customer,
+                            message: widget.messages[position]);
                       })),
                     controller: _scrollController,
                     reverse: true),
@@ -416,84 +419,85 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
   }
 }
 
-
 class ChatBubbleWidget extends StatelessWidget {
-
   CustomerCareChatMessageModel message;
+  bool hasVoucherOffer = false;
 
-  ChatBubbleWidget({Key key, this.message}) : super(key: key);
+  CustomerModel customer;
+
+  ChatBubbleWidget({Key key, this.message, this.customer}) {
+    hasVoucherOffer = _checkHasVoucherOffer(message);
+  }
 
   @override
   Widget build(BuildContext context) {
-
-   //  check if message is message contains a string that matches a regex
-   return Column(
+    //  check if message is message contains a string that matches a regex
+    return Column(
       children: <Widget>[
         SizedBox(height: 15),
         Row(
-          mainAxisAlignment:
-          message?.user_id == 0
+          mainAxisAlignment: message?.user_id == 0
               ? MainAxisAlignment.end
               : MainAxisAlignment.start,
           children: <Widget>[
-        message?.user_id == 0
+            message?.user_id == 0
                 ? Expanded(flex: 0, child: Container())
                 : Expanded(flex: 2, child: Container()),
             Expanded(
               flex: 8,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: message
-                        ?.user_id ==
-                        0
-                        ? KColors.new_gray
-                        : KColors.chat_transparent_blue,
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(5))),
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment:
-                      MainAxisAlignment.start,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: message?.user_id == 0
+                            ? KColors.new_gray
+                            : KColors.chat_transparent_blue,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
                       children: <Widget>[
-                        Expanded(
-                            child: Text(
-                              "${ message?.message}",
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                                child: Text(
+                              "${message?.message}",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                  message?.user_id ==
-                                      0
-                                      ? Colors.grey
-                                      : Colors.grey),
+                                  color: message?.user_id == 0
+                                      ? Colors.black
+                                      : Colors.black),
                             )),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment:
-                        MainAxisAlignment.end,
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(
-                                "${Utils.readTimestamp(context,  message?.created_at)}",
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(
+                                "${Utils.readTimestamp(context, message?.created_at)}",
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 11,
-                                    color:  message
-                                        ?.user_id ==
-                                        0
+                                    color: message?.user_id == 0
                                         ? Colors.grey
                                         : Colors.grey),
                               )),
-                        ])
-                  ],
-                ),
+                            ])
+                      ],
+                    ),
+                  ),
+                  hasVoucherOffer
+                      ? ChatVoucherWidget(presenter: ChatVoucherPresenter(),
+                    customer:  customer,
+                      voucher_link: extractVoucherFromMessage(message))
+                      : Container()
+                ],
               ),
             ),
             message?.user_id == 0
@@ -502,9 +506,22 @@ class ChatBubbleWidget extends StatelessWidget {
 //                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
           ],
         ),
+
       ],
     );
   }
 
-}
+  bool _checkHasVoucherOffer(CustomerCareChatMessageModel chatMessage) {
+    return extractVoucherFromMessage(chatMessage) == null ? false : true;
+  }
 
+  String extractVoucherFromMessage(CustomerCareChatMessageModel chatMessage) {
+    final message = '${chatMessage?.message}';
+    final subscriptionLink = RegExp(r'https://\S+/\S+').firstMatch(message);
+    if (subscriptionLink != null) {
+      return subscriptionLink.group(0);
+    } else {
+      return null;
+    }
+  }
+}

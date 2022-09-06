@@ -994,7 +994,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         dialogText =
             "${AppLocalizations.of(context).translate('t_closed_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("(-)", ".");
 
         break;
       case 1: // open
@@ -1004,13 +1005,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         dialogText =
             "${AppLocalizations.of(context).translate('t_paused_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("(-)", ".");
         break;
       case 3: // blocked
         dialogText =
             "${AppLocalizations.of(context).translate('t_unavailable_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name));
+                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("(-)", ".");
         break;
     }
     if (dialogText != "") {

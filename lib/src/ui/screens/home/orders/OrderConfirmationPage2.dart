@@ -145,6 +145,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   Navigator.pop(context);
                 }),
             backgroundColor: KColors.primaryYellowColor,
+            centerTitle: true,
             title: Text(
                 "${AppLocalizations.of(context).translate('confirm_order')}",
                 style: TextStyle(fontSize: 16))),
