@@ -2,8 +2,7 @@ import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
-import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +40,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
       widget.mDialog("${AppLocalizations.of(context).translate('coming_soon_dialog')}");
     } else {
 
-      page = ShopListPage(
+      page = ShopListPageRefined(
           context: context,
           type: widget.entity?.key,
           foodProposalPresenter: RestaurantFoodProposalPresenter(),

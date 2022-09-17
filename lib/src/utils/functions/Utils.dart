@@ -65,9 +65,9 @@ class Utils {
   static inflateLink(String link) {
     if (link != null) {
       String slash = (link.length > 0 && link.indexOf("/") == 0) ? "" : "/";
-      return ServerConfig.UNSECURE_SERVER_ADDRESS + slash +link;
+      return ServerConfig.IMAGE_BUCKET_BASE_LINK + slash +link;
     } else
-      return ServerConfig.UNSECURE_SERVER_ADDRESS+"/default_pic/kaba_red_rectangle.png";
+      return ServerConfig.IMAGE_BUCKET_BASE_LINK+"/default_pic/kaba_red_rectangle.png";
   }
 
   static Future hasNetwork() async {
@@ -143,6 +143,21 @@ class Utils {
     formattedDate = sdf.format(commandTime);
     return formattedDate;
   }
+
+  static getExpiryDay(String timestamp) {
+    if (timestamp == null)
+      return "";
+
+    DateTime commandTime = new DateTime
+        .fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);;
+    String pattern_not_today = "dd";
+    DateFormat sdf = DateFormat();
+    String formattedDate = "";
+    sdf = DateFormat(pattern_not_today);
+    formattedDate = sdf.format(commandTime);
+    return formattedDate;
+  }
+
 
   static String readTimestamp (BuildContext context, int timestamp) {
 
@@ -309,7 +324,6 @@ class Utils {
     int orderLastUpdate = int.parse(last_update);
     return orderLastUpdate > (DateTime.now().millisecondsSinceEpoch/1000 - 3*3600*24);
   }
-
 
   // function to generate a random string of length n
   static String getAlphaNumericString({int n=9})

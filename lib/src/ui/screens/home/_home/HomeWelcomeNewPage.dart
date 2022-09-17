@@ -157,13 +157,16 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     // your account
 
     CustomerUtils.getCustomer().then((customer) {
-      widget.customer = customer;
-      this.widget.presenter.checkUnreadMessages(customer);
-      popupMenus = [
-        "${AppLocalizations.of(context).translate('add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
-        "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",
-      ];
+      if (customer != null ) {
+        widget.customer = customer;
+        this.widget.presenter.checkUnreadMessages(customer);
+        popupMenus = [
+          "${AppLocalizations.of(context).translate(
+              'add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
+          "${AppLocalizations.of(context).translate('settings')}",
+          "${AppLocalizations.of(context).translate('logout')}",
+        ];
+      }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -451,7 +454,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     height: 35,
                     width: MediaQuery.of(context).size.width /
                         (isInHorizontalScrollviewMode ? 5 : 3),
-                    child: Text(restaurant.name,
+                    child: Text(restaurant?.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -990,27 +993,36 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   void hasUnreadMessages(bool hasNewMessage) {
-    /* if (hasNewMessage) {
-      // check inside the sharedprefs
-      if (!StateContainer.of(context).hasGotNewMessageOnce) {
-        StateContainer.of(context)
-            .updateHasGotNewMessage(hasGotNewMessage: true);
-        _playMusicForNewMessage();
-      }
+
+    if (StateContainer.of(context).loggingState == 0)
+      return;
+
       setState(() {
-        StateContainer.of(context)
-            .updateUnreadMessage(hasUnreadMessage: hasNewMessage);
+        StateContainer.of(context).hasUnreadMessage = hasNewMessage;
       });
-    } else {
-      setState(() {
-        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-      });
-    }*/
-    setState(() {
-      /*StateContainer.of(context)
-          .updateUnreadMessage(hasUnreadMessage: hasNewMessage);*/
-      StateContainer.of(context).hasUnreadMessage = hasNewMessage;
-    });
+      // alert new message
+if (hasNewMessage) {
+  SnackBar snackBar = SnackBar(
+    backgroundColor: KColors.primaryColor,
+    duration: Duration(seconds: 10),
+    content: Text(
+      "${AppLocalizations.of(context).translate('you_have_unread_message')}",
+      style: TextStyle(color: Colors.white),
+    ),
+    action: SnackBarAction(
+      label:
+      "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+      textColor: Colors.white,
+      onPressed: () {
+        // Some code to undo the change.
+        ScaffoldMessenger.of(context).clearSnackBars();
+        _jumpToPage(context,
+            CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+      },
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
   }
 
   @override

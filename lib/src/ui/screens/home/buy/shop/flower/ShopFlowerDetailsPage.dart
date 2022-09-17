@@ -257,14 +257,17 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                            Row(
+                                SizedBox(height: 10,),
+                            Row(crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${widget.food?.name?.toUpperCase()}",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontSize: 15,fontWeight: FontWeight.w600,
-                                        color: Colors.grey)),
+                                Expanded(
+                                  child: Text("${widget.food?.name?.toUpperCase()}",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontSize: 15,fontWeight: FontWeight.w600,
+                                          color: Colors.grey)),
+                                ),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[

@@ -146,7 +146,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                 Navigator.pop(context);
               }),
           centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -155,7 +156,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                   style: TextStyle(color: Colors.white, fontSize: 15)),
             ],
           ),
-
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -353,8 +353,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   _buildPointTransactionHistoryList() {
-
-    if (pointData == null || !pointData?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
+    if (pointData == null ||
+        !pointData
+            ?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
       return Center(
           child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -378,6 +379,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                     index == 0 ? SizedBox(height: 15) : Container(),
                     index == 0
                         ? Center(
+                            child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
                                 pointData?.is_eligible
                                     ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
@@ -386,7 +389,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.grey, fontSize: 11)))
+                                    color: Colors.grey, fontSize: 11)),
+                          ))
                         : Container(),
                     index == 0 ? SizedBox(height: 20) : Container(),
                     index == 0
@@ -405,7 +409,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         MediaQuery.of(context).size.width * 0.9,
                                     child: Column(
                                       children: [
-
                                         Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
@@ -418,7 +421,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                               .start,
                                                       children: [
                                                         Text(
-                                                            "${AppLocalizations.of(context)?.translate('kaba_points')}",
+                                                            "${AppLocalizations.of(context)?.translate('kaba_points')}\n",
+                                                            textAlign: TextAlign.center,
                                                             style: TextStyle(
                                                                 fontSize: 11,
                                                                 color: Colors
@@ -532,7 +536,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                             ),
                                           ],
                                         ),
-
                                       ],
                                     ),
                                   ),
@@ -1001,17 +1004,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
             children: <Widget>[]
               ..addAll(List.generate(moneyData?.length, (index) {
                 return Container(
-
                   margin: EdgeInsets.symmetric(vertical: 5),
                   child: Column(
                     children: <Widget>[
                       index == 0
                           ? Center(
-                              child: Container( color: KColors.new_gray,
+                              child: Container(
+                                color: KColors.new_gray,
                                 margin: EdgeInsets.only(top: 15, bottom: 10),
-                                padding: EdgeInsets.only(top:15,bottom: 15,
-                                       left: 20, right: 20),
-                                width: MediaQuery.of(context).size.width ,
+                                padding: EdgeInsets.only(
+                                    top: 15, bottom: 15, left: 20, right: 20),
+                                width: MediaQuery.of(context).size.width,
                                 child: Column(
                                   children: [
                                     Column(
@@ -1060,7 +1063,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               width: MediaQuery.of(context).size.width,
                               color: Colors.white)
                           : Container(),
-                      Container(padding: EdgeInsets.symmetric(vertical: 15), margin: EdgeInsets.symmetric(horizontal: 20),  decoration: BoxDecoration(color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                            color: KColors.new_gray,
+                            borderRadius: BorderRadius.circular(5)),
                         child: Column(
                           children: [
                             InkWell(
@@ -1071,7 +1079,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 title: Row(
                                   children: <Widget>[
                                     Expanded(
-                                        child: Text("${moneyData[index].details}",
+                                        child: Text(
+                                            "${moneyData[index].details}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -1080,7 +1089,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 fontSize: 14))),
                                   ],
                                 ),
-                                subtitle: Container(margin: EdgeInsets.only(top: 5),
+                                subtitle: Container(
+                                  margin: EdgeInsets.only(top: 5),
                                   child: Text("${moneyData[index].details}",
                                       style: TextStyle(
                                           fontSize: 12, color: Colors.grey)),
@@ -1097,7 +1107,18 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      SizedBox(width: 5,),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      moneyData[index].payAtDelivery == true
+                                          ? Container(width: 0, height: 0,) : Icon(
+                                              Icons.monetization_on,
+                                              color: moneyData[index].type != -1
+                                                  ? CommandStateColor.delivered
+                                                  : KColors.primaryColor,
+                                              size: 15,
+                                            )
+                                      ,
                                       Icon(
                                           moneyData[index].type != -1
                                               ? Icons.arrow_upward
@@ -1140,8 +1161,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                      Utils.readTimestamp(
-                                          context, moneyData[index]?.created_at),
+                                      Utils.readTimestamp(context,
+                                          moneyData[index]?.created_at),
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 12)),
                                   SizedBox(width: 20)
@@ -1149,7 +1170,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           ],
                         ),
                       ),
-                      index == moneyData?.length-1 ? SizedBox(height: 90) : Container()
+                      index == moneyData?.length - 1
+                          ? SizedBox(height: 90)
+                          : Container()
                     ],
                   ),
                 );

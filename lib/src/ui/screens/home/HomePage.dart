@@ -49,6 +49,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -120,9 +121,48 @@ class _HomePageState extends State<HomePage> {
         if (DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
-          prefs.remove("_customer" + CustomerUtils.signature);
-          prefs.remove("_token" + CustomerUtils.signature);
-          prefs.remove("_login_expiration_date" + CustomerUtils.signature);
+          _logout();
+          // show logout dialog that tells you to re-login
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    SizedBox(height: 80, width: 80, child: Icon(Icons.account_circle, color: KColors.primaryColor,)),
+                    SizedBox(height: 10),
+                    Text(  "${AppLocalizations.of(context).translate('login_expired_please_login')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: KColors.new_black, fontSize: 13))
+                  ]),
+                  actions: <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _jumpToPage(
+                            context,
+                            launchPage);
+                      },
+                    ),
+                  ]);
+            },
+          );
         } else {
           res = 1; // is logged in
         }
@@ -132,6 +172,23 @@ class _HomePageState extends State<HomePage> {
       res = 0; // not logged in
     }
     return res;
+  }
+
+
+  void _logout() {
+    CustomerUtils.clearCustomerInformations().whenComplete(() {
+      StateContainer.of(context).updateLoggingState(state: 0);
+      StateContainer.of(context).loggingState = 0;
+      StateContainer.of(context).updateBalance(balance: 0);
+      // StateContainer.of(context).selectedAddress = null;
+      StateContainer.of(context).myBillingArray = null;
+      StateContainer.of(context).location = null;
+      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).hasUnreadMessage = false;
+      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+      Navigator.pushNamedAndRemoveUntil(
+          context, SplashPage.routeName, (r) => false);
+    });
   }
 
   // 0 not logged in
@@ -327,7 +384,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           );
-
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
         StateContainer.of(context).is_offline = true;
@@ -345,8 +401,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     // check update
-
-
   }
 
   void mDialog(String message) {

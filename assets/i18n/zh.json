@@ -442,7 +442,6 @@
   "service_movie_type_product": "电影",
   "service_flower_type_product": "鲜花",
   "service_shop_type_product": "商品",
-
   "service_supermarket_type_product": "商品",
   "has_to_pay": "到付",
   "already_paid": "预付",
@@ -487,20 +486,20 @@
   "address_pinned_successfully_long": "外送地址收藏成功 !",
   "your_location": "您的位置",
   "finding_place": "正在寻找位置 ...",
-  "no_content_to_show": "抱歉、本分类暂时无内容。",
-
+  "no_content_to_show": "抱歉、无内容可见。",
   "whatsapp": "Whatsapp",
   "phone_call": "电话",
-
-  "t_closed_shop_long":  "尊敬的客户，yyy目前已暂时关门\n请稍后再来(xxx)",
+  "t_closed_shop_long": "尊敬的客户，yyy目前已暂时关门\n请稍后再来(xxx)",
   "t_paused_shop_long": "尊敬的客户，yyy目前处于休息状态\n请稍后再回来",
   "t_opened_shop_long": "营业中",
   "t_unavailable_shop_long": "尊敬的客户，由于我们无法控制的原因，目前无法在 Kaba 上光临 yyy。请有需要联系卖家。",
-
   "service_drugstore_type_name": "药房",
   "service_drugstore_type_product": "商品",
   "service_category_drugstore": "药房",
-  "expires_at": "到期于"
-
-
+  "expires_at": "到期于",
+  "you_have_unread_message": "您收到来自客户服务的新消息。请查看!",
+  "login_expired_please_login": "抱歉，您的帐户登录已过期。 请重新登录",
+  "the_end": "- 结束 -",
+  "payed": "已支付",
+  "only_2_weeks_history": "只限于两周订单历史"
 }

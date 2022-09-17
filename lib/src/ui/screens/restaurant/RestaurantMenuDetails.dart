@@ -2,6 +2,7 @@ import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
@@ -144,139 +145,142 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }  */
 
   Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
-    return Container(
-        decoration: BoxDecoration(
-            color: KColors.new_gray,
-            borderRadius: BorderRadius.all(Radius.circular(3))),
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-        child: Stack(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: 70,
-                  width: 70,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      shape: BoxShape.rectangle,
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(
-                              Utils.inflateLink(food?.pic)))),
-                ),
-                SizedBox(width: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(width: MediaQuery.of(context).size.width-160,
-                    child: Text("${Utils.capitalize(food?.name)}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: KColors.new_black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                  SizedBox(height: 2),
+    return GestureDetector(
+      onTap: () => _jumpToFoodDetails(context, food),
+      child: Container(
+          decoration: BoxDecoration(
+              color: KColors.new_gray,
+              borderRadius: BorderRadius.all(Radius.circular(3))),
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+          child: Stack(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
                   Container(
-                    width: 1 * MediaQuery.of(context).size.width / 2,
-                    child: Text("${Utils.capitalize(food?.description)}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal)),
+                    height: 70,
+                    width: 70,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        shape: BoxShape.rectangle,
+                        image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: OptimizedCacheImageProvider(
+                                Utils.inflateLink(food?.pic)))),
                   ),
-                  SizedBox(height: 15),
-                  Container(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          InkWell(
-                              child: Container(decoration: BoxDecoration(color: KColors.primaryColor.withAlpha(30), shape: BoxShape.circle), padding: EdgeInsets.all(5),
-                                child: Icon(Icons.remove,
-                                    color: KColors.primaryColor, size: 10),
-                              ),
-                              onTap: () => _decreaseQuantity(food)),
-                          Container(
-                              margin: EdgeInsets.only(left: 5, right: 5),
-                              child: Text(
-                                  "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
-                                  style: TextStyle(
-                                      color: KColors.new_black, fontWeight: FontWeight.w600, fontSize: 15))),
-                          InkWell(
-                              child: Icon(Icons.add_circle,
-                                  size: 23, color: KColors.primaryColor),
-                              onTap: () => _increaseQuantity(food)),
-                        ]),
-                  ),
-                ])
-              ],
-            ),
-            Positioned(
-                right: 0,
-                top: 0,
-                child: InkWell(
-                    child: Container(
-                        child: Icon(FontAwesome.remove,
-                            size: 15, color: KColors.new_black),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.white),
-                        padding: EdgeInsets.all(5)),
-                    onTap: () {
-                      _removeFood(food);
-                    })),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: KColors.primaryColor.withAlpha(30),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                padding: EdgeInsets.only(top:5, bottom: 5, left: 10,right: 10),
-                child: Row(children: <Widget>[
-                  SizedBox(width: 2),
-                  Text("${food?.price}",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: KColors.primaryColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          decoration: food.promotion != 0
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none)),
-                  SizedBox(width: 2),
-                  (food.promotion != 0
-                      ? Text("${food?.promotion_price}",
+                  SizedBox(width: 10),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Container(width: MediaQuery.of(context).size.width-160,
+                      child: Text("${Utils.capitalize(food?.name)}",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.start,
                           style: TextStyle(
-                              color: KColors.primaryColor,
-                              fontSize: 15,
-                              fontWeight: FontWeight.normal))
-                      : Container()),
-                  SizedBox(width: 3),
-                  Text("${AppLocalizations.of(context).translate('currency')}",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: KColors.primaryColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600)),
-                ]),
+                              color: KColors.new_black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500)),
+                    ),
+                    SizedBox(height: 2),
+                    Container(
+                      width: 1 * MediaQuery.of(context).size.width / 2,
+                      child: Text("${Utils.capitalize(food?.description)}",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal)),
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            InkWell(
+                                child: Container(decoration: BoxDecoration(color: KColors.primaryColor.withAlpha(30), shape: BoxShape.circle), padding: EdgeInsets.all(5),
+                                  child: Icon(Icons.remove,
+                                      color: KColors.primaryColor, size: 10),
+                                ),
+                                onTap: () => _decreaseQuantity(food)),
+                            Container(
+                                margin: EdgeInsets.only(left: 5, right: 5),
+                                child: Text(
+                                    "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
+                                    style: TextStyle(
+                                        color: KColors.new_black, fontWeight: FontWeight.w600, fontSize: 15))),
+                            InkWell(
+                                child: Icon(Icons.add_circle,
+                                    size: 23, color: KColors.primaryColor),
+                                onTap: () => _increaseQuantity(food)),
+                          ]),
+                    ),
+                  ])
+                ],
               ),
-            )
-          ],
-        ));
+              Positioned(
+                  right: 0,
+                  top: 0,
+                  child: InkWell(
+                      child: Container(
+                          child: Icon(FontAwesome.remove,
+                              size: 15, color: KColors.new_black),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          padding: EdgeInsets.all(5)),
+                      onTap: () {
+                        _removeFood(food);
+                      })),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: KColors.primaryColor.withAlpha(30),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  padding: EdgeInsets.only(top:5, bottom: 5, left: 10,right: 10),
+                  child: Row(children: <Widget>[
+                    SizedBox(width: 2),
+                    Text("${food?.price}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: KColors.primaryColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            decoration: food.promotion != 0
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none)),
+                    SizedBox(width: 2),
+                    (food.promotion != 0
+                        ? Text("${food?.promotion_price}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: KColors.primaryColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal))
+                        : Container()),
+                    SizedBox(width: 3),
+                    Text("${AppLocalizations.of(context).translate('currency')}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: KColors.primaryColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600)),
+                  ]),
+                ),
+              )
+            ],
+          )),
+    );
   }
 
   /* we have different types: food, supplement, all */
@@ -599,4 +603,22 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           }));
     }
   }
+
+  _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
+    food.restaurant_entity = widget.restaurant;
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ShopFlowerDetailsPage(food: food),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+          CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
+  }
+
 }

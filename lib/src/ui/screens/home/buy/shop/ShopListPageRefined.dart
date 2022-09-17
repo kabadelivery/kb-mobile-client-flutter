@@ -30,7 +30,7 @@ import 'package:toast/toast.dart';
 
 // import 'package:android_intent/android_intent.dart';
 
-class ShopListPage extends StatefulWidget {
+class ShopListPageRefined extends StatefulWidget {
   Position location;
 
   RestaurantFoodProposalPresenter foodProposalPresenter;
@@ -51,9 +51,11 @@ class ShopListPage extends StatefulWidget {
 
   String type;
 
-  static var routeName = "/ShopListPage";
+  static var routeName = "/ShopListPageRefined";
 
-  ShopListPage(
+  List<ShopModel> finalRestaurantList;
+
+  ShopListPageRefined(
       {this.key,
       this.context,
       this.location,
@@ -63,17 +65,17 @@ class ShopListPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ShopListPageState createState() => _ShopListPageState();
+  _ShopListPageRefinedState createState() => _ShopListPageRefinedState();
 }
 
-class _ShopListPageState extends State<ShopListPage>
-    with AutomaticKeepAliveClientMixin<ShopListPage>
+class _ShopListPageRefinedState extends State<ShopListPageRefined>
+    with AutomaticKeepAliveClientMixin<ShopListPageRefined>
     implements RestaurantFoodProposalView, RestaurantListView {
   var _filterEditController = TextEditingController();
 
-  List<ShopModel> data;
+  // List<ShopModel> data;
+  List<ShopModel> visibleItems;
 
-  List<ShopModel> visibleItems = [];
 
   bool _searchMode = false;
 
@@ -102,19 +104,25 @@ class _ShopListPageState extends State<ShopListPage>
 
   bool justInflatedFoodProposal = false;
 
-  int PAGE_SIZE = 10;
-
   bool _isBottomLoading = false;
+
+  int PAGE_SIZE = 20;
+
+  String searchKey = "";
+  String previousSearchKey = "";
 
   @override
   void initState() {
     _restaurantListScrollController.addListener(_onScroll);
-
     super.initState();
 
 //    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
     widget.foodProposalPresenter.restaurantFoodProposalView = this;
     widget.restaurantListPresenter.restaurantListView = this;
+
+    _filterEditController.addListener(_filterEditContent);
+
+    _focus.addListener(_onFocusChange);
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -140,6 +148,7 @@ class _ShopListPageState extends State<ShopListPage>
 
       if (mounted) {
         // _getLastKnowLocation();
+
         if (widget.hasGps == false &&
             StateContainer?.of(context)?.location != null) {
           // if (StateContainer
@@ -165,33 +174,23 @@ class _ShopListPageState extends State<ShopListPage>
                   .fetchShopList(widget.customer, widget.type, null);
             } else {
               xrint("init -- 4");
-              widget.restaurantListPresenter.fetchShopList(
-                  widget.customer,
-                  widget.type,
-                  StateContainer?.of(context)?.location);
+              widget.restaurantListPresenter.fetchShopList(widget.customer,
+                  widget.type, StateContainer?.of(context)?.location);
             }
           }
         }
       }
     });
-
-    // firebase -- for restaurants
-    // closed for a specific reason !
-    // FirebaseDatabase database;
-    // database = FirebaseDatabase.instance;
-    // DatabaseReference ref = FirebaseDatabase.instance.ref("app-version");
-    // ref.onValue.listen((event) {
-    //   mDialog("${event.snapshot.value}");
-    // });
-
-    // for the version of kaba, we can put it once the app opens !
   }
+
+  FocusNode _focus = FocusNode();
 
   @override
   void dispose() {
     // restaurantBloc.dispose();
     mainTimer.cancel();
     _filterEditController.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -200,28 +199,160 @@ class _ShopListPageState extends State<ShopListPage>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          titleSpacing: 0,
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
               onPressed: () {
-                Navigator.pop(context);
+                if (_searchMode) {
+                  setState(() {
+                    _searchMode = false;
+                  });
+                } else
+                  Navigator.pop(context);
               }),
           centerTitle: true,
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(getCategoryTitle(context)[0]
-                      //    "${AppLocalizations.of(context).translate('search')}"
-                      ),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
+          actions: [
+            _searchMode || isLoading
+                ? Container(
+                    width: 60,
+                  )
+                : IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _searchMode = true;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.white,
+                    ))
+          ],
+          title: AnimatedSwitcher(duration: Duration(milliseconds: 300),
+            layoutBuilder: (currentChild, _) => currentChild,
+            transitionBuilder: (child, animation) {
+              return SlideTransition(
+                position: Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
+                    .animate(animation),
+                child: child,
+              );
+            },
+            child: _searchMode
+                ? Container(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 35,
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white.withAlpha(100)),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Focus(
+                                    onFocusChange: (hasFocus) {
+                                      if (hasFocus) {
+                                        // do staff
+                                        _searchMode = true;
+                                      } else {
+                                        // out search mode
+                                        _searchMode = false;
+                                      }
+                                    },
+                                    child:  TextField(
+                                        controller: _filterEditController,
+                                        onSubmitted: (val) {
+                                          _searchAction(pressButton: true);
+                                          xrint("on submitted");
+                                        },
+                                        onChanged: (val) {
+                                          xrint("on onChanged");
+                                          xrint("${val.toString()}");
+                                          EasyDebounce.debounce(
+                                              'search-input-debouncer',
+                                              Duration(milliseconds: 700),
+                                              () => {_searchAction()});
+                                        },
+                                        style: TextStyle(
+                                            color: KColors.new_black,
+                                            fontSize: 14),
+                                        textInputAction: TextInputAction.search,
+                                        decoration: InputDecoration.collapsed(
+                                            hintText:
+                                                "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                                            hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                color: KColors.new_black
+                                                    .withAlpha(150))),
+                                        enabled: true),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _clearFocus();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        left: 5, right: 5, bottom: 3, top: 3),
+                                    child: Center(
+                                      child: Icon(Icons.close,
+                                          size: 20, color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        /*  AnimatedSwitcher(
+                          duration: Duration(milliseconds: 400),
+                          child: searchTypePosition == 2
+                              ? InkWell(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(5),
+                                            bottomRight: Radius.circular(5)),
+                                        color: KColors.primaryColor),
+                                    // margin: EdgeInsets.only(top: 2),
+                                    padding: EdgeInsets.only(
+                                        top: 9, bottom: 9, right: 10, left: 10),
+                                    child: Icon(Icons.search,
+                                        color: Colors.white, size: 30),
+                                  ),
+                                  onTap: () {
+                                    onSearchButtonTap();
+                                  })
+                              : Container(),
+                        )*/
+                      ],
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          Utils.capitalize(getCategoryTitle(context)[0]
+                              //    "${AppLocalizations.of(context).translate('search')}"
+                              ),
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
+                    ],
+                  ),
           ),
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -262,13 +393,13 @@ class _ShopListPageState extends State<ShopListPage>
     if (d == null) return;
     /* check if the previous had the distance */
     /* distance of restaurant - client */
-    if (data?.length == null || data?.length == 0) {
+/*    if (data?.length == null || data?.length == 0) {
       this.data = d;
     } else {
       if (data[0]?.distance == null || data[0]?.distance == "") {
         this.data = d;
       }
-    }
+    }*/
 
     // filter restaurant into a map
     d.forEach((restaurant) {
@@ -282,107 +413,6 @@ class _ShopListPageState extends State<ShopListPage>
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: 20, top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5),
-                              bottomLeft: Radius.circular(5)),
-                          color: KColors.primaryColor.withAlpha(30)),
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      margin: EdgeInsets.only(left: 20),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Expanded(
-                            child: Focus(
-                              onFocusChange: (hasFocus) {
-                                if (hasFocus) {
-                                  // do staff
-                                  _searchMode = true;
-                                } else {
-                                  // out search mode
-                                  _searchMode = false;
-                                }
-                              },
-                              child: TextField(
-                                  controller: _filterEditController,
-                                  onSubmitted: (val) {
-                                    _searchFoodProposal(pressButton: true);
-                                  },
-                                  onChanged: (val) {
-                                    EasyDebounce.debounce(
-                                        'search-input-debouncer',
-                                        Duration(milliseconds: 500),
-                                        () => {_searchFoodProposal()});
-                                  },
-                                  style: TextStyle(
-                                      color: KColors.new_black, fontSize: 14),
-                                  textInputAction: TextInputAction.search,
-                                  decoration: InputDecoration.collapsed(
-                                      hintText:
-                                          "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
-                                      hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          color: KColors.new_black
-                                              .withAlpha(150))),
-                                  enabled: true),
-                            ),
-                          ),
-                          IconButton(
-                              icon: Icon(Icons.close, color: Colors.grey),
-                              onPressed: () {
-                                _clearFocus();
-                              })
-                        ],
-                      ),
-                    ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 400),
-                    child: searchTypePosition == 2
-                        ? InkWell(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(5),
-                                      bottomRight: Radius.circular(5)),
-                                  color: KColors.primaryColor),
-                              // margin: EdgeInsets.only(top: 2),
-                              padding: EdgeInsets.only(
-                                  top: 9, bottom: 9, right: 10, left: 10),
-                              child: Icon(Icons.search,
-                                  color: Colors.white, size: 30),
-                            ),
-                            onTap: () {
-                              if (searchTypePosition == 2) {
-                                if (_filterEditController.text
-                                            ?.trim()
-                                            ?.length !=
-                                        null &&
-                                    _filterEditController.text
-                                            ?.trim()
-                                            ?.length >=
-                                        3)
-                                  widget.foodProposalPresenter
-                                      .fetchRestaurantFoodProposalFromTag(
-                                          widget.type,
-                                          _filterEditController.text);
-                                else
-                                  mDialog(
-                                      "${AppLocalizations.of(context).translate('search_too_short')}");
-                              }
-                            })
-                        : Container(),
-                  )
-                ],
-              ),
-            ),
             SizedBox(height: 10),
             SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
                 _scrollToTopFunction, widget?.type),
@@ -398,10 +428,10 @@ class _ShopListPageState extends State<ShopListPage>
                             ? (!_searchMode
                                 ? Container(
                                     color: Colors.white,
-                                    height: MediaQuery.of(context).size.height,
+                                    height: MediaQuery.of(context).size.height-150,
 //                              padding: EdgeInsets.only(bottom:230),
-                                    child: data?.length == null ||
-                                            data?.length == 0
+                                    child: widget.restaurantList?.length == null ||
+                                        widget.restaurantList?.length == 0
                                         ? Container(
                                             child: Center(
                                                 child:
@@ -437,26 +467,12 @@ class _ShopListPageState extends State<ShopListPage>
                                               isAlwaysShown: true,
                                               controller:
                                                   _restaurantListScrollController,
-                                              /*  child: ListView.builder(
-                                                controller:
-                                                    _restaurantListScrollController,
-                                                itemCount: data?.length != null
-                                                    ? data.length + 1
-                                                    : 0,
-                                                itemBuilder: (context, index) {
-                                                  if (index == data?.length)
-                                                    return Container(
-                                                        height: 300,
-                                                        width: 100);
-                                                  return ShopListWidget(
-                                                      shopModel: data[index]);
-                                                },
-                                              ),*/
                                               child: ListView.builder(
                                                 controller:
                                                     _restaurantListScrollController,
-                                                itemCount:
-                                                    visibleItems.length + 1,
+                                                itemCount: visibleItems?.length != null
+                                                    ? visibleItems.length + 1
+                                                    : 0,
                                                 itemBuilder:
                                                     (context, position) {
                                                   if (position ==
@@ -464,28 +480,28 @@ class _ShopListPageState extends State<ShopListPage>
                                                     if (hasMoreData()) {
                                                       return Container(
                                                           width: MediaQuery.of(
-                                                                  context)
+                                                              context)
                                                               .size
                                                               .width,
                                                           height: 100,
                                                           child: Center(
                                                               child:
-                                                                  CircularProgressIndicator()));
+                                                              CircularProgressIndicator()));
                                                     } else {
                                                       return Container(
                                                           width: MediaQuery.of(
-                                                                  context)
+                                                              context)
                                                               .size
                                                               .width,
                                                           height: 100,
                                                           child: Center(
                                                               child: Text(
-                                                                  "-- The end ---")));
+                                                                  "${AppLocalizations.of(context).translate("the_end")}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: KColors.new_black),)));
                                                     }
                                                   } else {
                                                     return ShopListWidget(
                                                         shopModel: visibleItems[
-                                                            position]);
+                                                        position]);
                                                   }
                                                 },
                                               ),
@@ -508,6 +524,18 @@ class _ShopListPageState extends State<ShopListPage>
         ),
       ),
     );
+  }
+
+  void onSearchButtonTap() {
+    if (searchTypePosition == 2) {
+      if (_filterEditController.text?.trim()?.length != null &&
+          _filterEditController.text?.trim()?.length >= 3)
+        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
+            widget.type, _filterEditController.text);
+      else
+        mDialog(
+            "${AppLocalizations.of(context).translate('search_too_short')}");
+    }
   }
 
   _choice(int selected) {
@@ -885,10 +913,8 @@ class _ShopListPageState extends State<ShopListPage>
                 if (position != null && mounted) {
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
-                  widget.restaurantListPresenter.fetchShopList(
-                      widget.customer,
-                      widget.type,
-                      StateContainer.of(context).location);
+                  widget.restaurantListPresenter.fetchShopList(widget.customer,
+                      widget.type, StateContainer.of(context).location);
                 }
               }
               if (widget.samePositionCount >= 3 || widget.hasGps)
@@ -960,7 +986,7 @@ class _ShopListPageState extends State<ShopListPage>
 
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(context).size.height-150,
 //      padding: EdgeInsets.only(bottom:230),
       child: Scrollbar(
         thumbVisibility: true,
@@ -981,48 +1007,14 @@ class _ShopListPageState extends State<ShopListPage>
     );
   }
 
-  List<ShopModel> _onScroll() {
-    if (_restaurantListScrollController.offset >=
-            _restaurantListScrollController.position.maxScrollExtent &&
-        !_restaurantListScrollController.position.outOfRange) {
-      if (hasMoreData()) {
-        setState(() {
-          _isBottomLoading = true;
-        });
-        loadMore();
-      } else {
-        setState(() {
-          _isBottomLoading = false;
-        });
-      }
-    }
+  List<ShopModel> _filterEditContent() {
+    // check if has focus
+    setState(() {});
+    /* launching request to look for food, but at the same moment, we need to cancel previous links. */
   }
 
-  loadMore() async {
-    await new Future.delayed(new Duration(seconds: 2));
-    if (data?.length == null) {
-      // empty list
-    } else {
-      if (visibleItems?.length == data?.length) {
-        // end of the list
-      } else {
-        // append
-        setState(() {
-          visibleItems.addAll(data.sublist(
-              visibleItems.length,
-              visibleItems.length + PAGE_SIZE >= data.length
-                  ? data.length
-                  : visibleItems.length + PAGE_SIZE));
-        });
-        PAGE_SIZE += 10;
-      }
-    }
-    setState(() {
-      _isBottomLoading = false;
-    });
-  }
-
-  _filteredData(List<ShopModel> data) {
+  remove_filteredData(List<ShopModel> data) {
+    /* we just filter based on the string that is entered */
     String content = _filterEditController.text;
     List<ShopModel> d = List();
 
@@ -1117,8 +1109,13 @@ class _ShopListPageState extends State<ShopListPage>
     return sentence1;
   }
 
-  void _clearFocus() {
+  void _clearFocus({bool close=false}) {
+    setState(() {
+      _filterEditController.text = "";
+      _searchMode = close;
+    });
     _filterEditController.clear();
+  _searchAction();
   }
 
   void mToast(String message) {
@@ -1126,7 +1123,7 @@ class _ShopListPageState extends State<ShopListPage>
   }
 
   _showSearchPage() {
-    if (_filteredData(data)?.length == 0)
+    if (visibleItems?.length == 0)
       return Container(
           child: Center(
               child: Column(children: <Widget>[
@@ -1138,20 +1135,58 @@ class _ShopListPageState extends State<ShopListPage>
 
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(context).size.height-150,
+      // padding: EdgeInsets.only(bottom: 230),
       child: Scrollbar(
         isAlwaysShown: true,
         controller: _restaurantListScrollController,
         child: ListView.builder(
-          addAutomaticKeepAlives: true,
-          controller: _restaurantListScrollController,
-          itemCount: _filteredData(data).length + 1,
-          itemBuilder: (context, index) {
-            if (index == _filteredData(data)?.length)
-              return Container(height: 300);
-            return ShopListWidget(shopModel: _filteredData(data)[index]);
+          controller:
+          _restaurantListScrollController,
+          itemCount: visibleItems?.length != null
+              ? visibleItems.length + 1
+              : 0,
+          itemBuilder:
+              (context, position) {
+            if (position ==
+                visibleItems?.length) {
+              if (hasMoreData()) {
+                return Container(
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width,
+                    height: 100,
+                    child: Center(
+                        child:
+                        CircularProgressIndicator()));
+              } else {
+                return Container(
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width,
+                    height: 100,
+                    child: Center(
+                        child: Text(
+                          "${AppLocalizations.of(context).translate("the_end")}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: KColors.new_black),)));
+              }
+            } else {
+              return ShopListWidget(
+                  shopModel: visibleItems[
+                  position]);
+            }
           },
         ),
+   /*     child: ListView.builder(
+          addAutomaticKeepAlives: true,
+          controller: _restaurantListScrollController,
+          itemCount: visibleItems.length + 1,
+          itemBuilder: (context, index) {
+            if (index == visibleItems?.length) return Container(height: 300);
+            return ShopListWidget(shopModel: visibleItems[index]);
+          },
+        ),*/
       ),
     );
   }
@@ -1305,9 +1340,15 @@ class _ShopListPageState extends State<ShopListPage>
 
   @override
   void inflateRestaurants(List<ShopModel> restaurants) {
+    PAGE_SIZE = 20;
     setState(() {
+      widget.finalRestaurantList = restaurants;
       widget.restaurantList = restaurants;
       _setLastTimeRestaurantListRequestToNow();
+      visibleItems =
+      (widget?.restaurantList?.length != null && widget?.restaurantList?.length > PAGE_SIZE
+          ? widget.restaurantList.sublist(0, PAGE_SIZE)
+          : widget.restaurantList);
     });
     restartTimer();
   }
@@ -1524,7 +1565,7 @@ class _ShopListPageState extends State<ShopListPage>
     return tmp;
   }
 
-  void _searchFoodProposal({bool pressButton = false}) {
+  void _searchAction({bool pressButton = false}) {
     if (searchTypePosition == 2) {
       if (_filterEditController.text?.trim()?.length != null &&
           _filterEditController.text?.trim()?.length >= 2)
@@ -1535,14 +1576,87 @@ class _ShopListPageState extends State<ShopListPage>
           mDialog(
               "${AppLocalizations.of(context).translate('search_too_short')}");
       }
+    } else {
+      // send the filter request to
+      if (previousSearchKey == _filterEditController.text)
+        return;
+        searchKey = _filterEditController.text?.trim();
+      widget.restaurantListPresenter
+          .filterShopList(widget.finalRestaurantList, searchKey);
+    }
+  }
+
+  // huile, tourteau, lait de soja
+  // rendre la zone dynamique / appirter des industries qui poront absober
+  // pour eviter l'exportation de matière brute
+  // zone industrielle estm la plus sure en electricite en afrique
+  // electricitee dediee/ pas droit à l'erreur
+  // 180.000 tonnes actuelles
+  // 160.000 tonnes de cajou
+  // 70.000 tonnes soja / an
+
+  void _onFocusChange() {
+    xrint("Focus: ${_focus.hasFocus.toString()}");
+  }
+
+  @override
+  void inflateFilteredRestaurants(List<ShopModel> shops, String sKey) {
+    PAGE_SIZE = 20;
+    previousSearchKey = sKey;
+    setState(() {
+      widget.restaurantList = shops;
+      visibleItems =
+      (widget?.restaurantList?.length != null && widget.restaurantList?.length > PAGE_SIZE
+          ? widget.restaurantList.sublist(0, PAGE_SIZE)
+          : widget.restaurantList);
+    });
+  }
+
+    _onScroll() {
+    if (_restaurantListScrollController.offset >=
+        _restaurantListScrollController.position.maxScrollExtent &&
+        !_restaurantListScrollController.position.outOfRange) {
+      if (hasMoreData()) {
+        setState(() {
+          _isBottomLoading = true;
+        });
+        loadMore();
+      } else {
+        setState(() {
+          _isBottomLoading = false;
+        });
+      }
     }
   }
 
   bool hasMoreData() {
-    return visibleItems?.length < data?.length && data?.length != null;
+    return visibleItems?.length < widget?.restaurantList?.length &&
+        widget?.restaurantList?.length != null;
   }
 
-  @override
-  void inflateFilteredRestaurants(List<ShopModel> shops, String sKey) {}
+  loadMore() async {
+    await new Future.delayed(new Duration(seconds: 2));
+    if (widget?.restaurantList?.length == null) {
+      // empty list
+    } else {
+      if (visibleItems?.length == widget?.restaurantList?.length) {
+        // end of the list
+      } else {
+        // append
+        setState(() {
+          visibleItems.addAll(widget.restaurantList.sublist(
+              visibleItems.length,
+              visibleItems.length + PAGE_SIZE >= widget.restaurantList.length
+                  ? widget.restaurantList.length
+                  : visibleItems.length + PAGE_SIZE));
+        });
+        PAGE_SIZE+=10;
+      }
+    }
+    setState(() {
+      _isBottomLoading = false;
+    });
+  }
+
 
 }

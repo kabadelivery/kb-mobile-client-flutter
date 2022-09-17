@@ -27,11 +27,14 @@ import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopScheduleMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieCatalogePage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/shop_refined/ShopProductResultList.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/shop_refined/ShopSimpleList.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -146,12 +149,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
-
 
   @override
   void dispose() {
@@ -270,13 +271,14 @@ class _MyAppState extends State<MyApp> {
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
 //      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-
-
-             home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-             // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
-
-
-
+            /*  home: ShopSimpleList(
+                  type: "shop",
+                  restaurantListPresenter: RestaurantListPresenter()),*/
+              // home: TestPage(),
+              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+              /* home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                restaurantListPresenter: RestaurantListPresenter(), type: "food"),*/
+              // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
 //             home: MovieCatalogePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
 //               home: MovieDetailsPage(presenter: MoviePresenter()),
 //             home: SearchProductPage(),
@@ -313,7 +315,6 @@ class _MyAppState extends State<MyApp> {
           );
         }));
   }
-
 }
 
 class CustomIntentPage extends StatelessWidget {

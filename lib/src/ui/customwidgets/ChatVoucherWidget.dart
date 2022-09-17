@@ -5,10 +5,12 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatVoucherWidget extends StatefulWidget {
+
   String voucher_link;
 
   VoucherModel voucher;
@@ -37,6 +39,7 @@ class ChatVoucherWidget extends StatefulWidget {
 
 class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
     implements ChatVoucherView {
+
   bool isLoading = true;
   bool hasError = false;
 
@@ -94,22 +97,27 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                         style: TextStyle(
                             fontSize: 12,
                             color: KColors.primaryColor,
-                            fontWeight: FontWeight.normal),
+                            fontWeight: FontWeight.w500),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    Text(
-                      "${widget?.voucher?.type == 1 ? "${AppLocalizations.of(context).translate('voucher_type_shop')}" : (widget?.voucher?.type == 2 ? "${AppLocalizations.of(context).translate('voucher_type_delivery')}" : "${AppLocalizations.of(context).translate('voucher_type_all')}")}",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                    Row(mainAxisSize: MainAxisSize.max,mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 10),
+                        Text(
+                          "${widget?.voucher?.type == 1 ? "${AppLocalizations.of(context).translate('voucher_type_shop')}" : (widget?.voucher?.type == 2 ? "${AppLocalizations.of(context).translate('voucher_type_delivery')}" : "${AppLocalizations.of(context).translate('voucher_type_all')}")}",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                     Text(
-                      "${widget.voucher?.value}",
+                      "${Utils.getExpiryDay(widget?.voucher?.end_date)}",
                       style: TextStyle(
                           fontSize: 22,
                           color: KColors.primaryYellowColor,
@@ -127,8 +135,8 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white,
-                            fontWeight: FontWeight.bold)),
-                    Text("${AppLocalizations.of(context).translate("expires_at")}\n${widget?.voucher?.end_date}",
+                            fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 10,
@@ -142,7 +150,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
           SizedBox(
             height: 5,
           ),
-          widget.voucher == null
+          widget.voucher != null
               ? InkWell(
                   onTap: () {
                     _subscribeToVoucher();
@@ -159,7 +167,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: KColors.primaryColor.withAlpha(20)),
+                        color: KColors.primaryColor.withAlpha(30)),
                   ))
               : Container()
         ],
@@ -194,7 +202,11 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
 
   @override
   void inflateVoucher(VoucherModel voucher) {
-    widget.voucher = voucher;
+    setState(() {
+      isLoading = false;
+      hasError = false;
+      widget.voucher = voucher;
+    });
   }
 
   @override
@@ -208,7 +220,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
   @override
   void showLoading(bool isLoading) {
     setState(() {
-      isLoading = true;
+      isLoading = isLoading;
       hasError = false;
     });
   }

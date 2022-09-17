@@ -152,7 +152,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 Navigator.pop(context);
               }),
           centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -321,7 +322,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                 onTap: () => _jumpToRestaurantMenu(
                                     context, widget.restaurant),
                                 child: Container(
-                                    child: Row(children: [
+                                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,children: [
                                       Expanded(
                                           child: Container(
                                         padding: EdgeInsets.all(10),
@@ -330,19 +331,30 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                       Expanded(
                                           child: Container(
                                               padding: EdgeInsets.all(10),
-                                              child: Column(
+                                              child: Column(mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                      "${AppLocalizations.of(context).translate('see_menu')} >",
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: KColors
-                                                              .primaryColor)),
                                                   SizedBox(height: 7),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                        color: KColors
+                                                            .primaryColor
+                                                            .withAlpha(30),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                    padding: EdgeInsets.all(10),
+                                                    child: Text(
+                                                        "${AppLocalizations.of(context).translate('see_menu')} >",
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: KColors
+                                                                .primaryColor)),
+                                                  ),
+                                                  SizedBox(height: 10),
                                                   Text(
                                                       "${widget.restaurant?.description}",
                                                       style: TextStyle(
@@ -375,67 +387,69 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                       Row(
                                         children: [
                                           /* stars */
-                                          Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Row(
-                                                    children: List<
-                                                            Widget>.generate(
-                                                        widget.restaurant.stars
-                                                                .toInt() +
-                                                            (widget.restaurant
-                                                                            .stars -
-                                                                        widget
-                                                                            .restaurant
-                                                                            .stars
-                                                                            .toInt()
-                                                                            .toDouble() >
-                                                                    0.1
-                                                                ? 1
-                                                                : 0),
-                                                        (int index) {
-                                                  return Row(
-                                                    children: [
-                                                      Icon(
-                                                        index ==
-                                                                widget
-                                                                    .restaurant
-                                                                    .stars
-                                                                    .toInt()
-                                                            ? FontAwesomeIcons
-                                                                .solidStarHalf
-                                                            : FontAwesomeIcons
-                                                                .solidStar,
-                                                        color: KColors
-                                                            .primaryYellowColor,
-                                                        size: 20,
-                                                      ),
-                                                      SizedBox(width: 5)
-                                                    ],
-                                                  );
-                                                })),
-                                                SizedBox(height: 5),
-                                                RichText(
-                                                    text: TextSpan(
-                                                        text:
-                                                            " ${widget.restaurant.votes} ",
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: KColors
-                                                                .primaryColor),
-                                                        children: [
-                                                      TextSpan(
+                                          Expanded(
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Row(
+                                                      children: List<
+                                                              Widget>.generate(
+                                                          widget.restaurant.stars
+                                                                  .toInt() +
+                                                              (widget.restaurant
+                                                                              .stars -
+                                                                          widget
+                                                                              .restaurant
+                                                                              .stars
+                                                                              .toInt()
+                                                                              .toDouble() >
+                                                                      0.1
+                                                                  ? 1
+                                                                  : 0),
+                                                          (int index) {
+                                                    return Row(
+                                                      children: [
+                                                        Icon(
+                                                          index ==
+                                                                  widget
+                                                                      .restaurant
+                                                                      .stars
+                                                                      .toInt()
+                                                              ? FontAwesomeIcons
+                                                                  .solidStarHalf
+                                                              : FontAwesomeIcons
+                                                                  .solidStar,
+                                                          color: KColors
+                                                              .primaryYellowColor,
+                                                          size: 16,
+                                                        ),
+                                                        SizedBox(width: 5)
+                                                      ],
+                                                    );
+                                                  })),
+                                                  SizedBox(height: 5),
+                                                  RichText(
+                                                      text: TextSpan(
                                                           text:
-                                                              "${AppLocalizations.of(context).translate('votes')}",
+                                                              " ${widget.restaurant.votes} ",
                                                           style: TextStyle(
                                                               fontSize: 12,
-                                                              color:
-                                                                  Colors.grey))
-                                                    ])),
-                                              ]),
+                                                              color: KColors
+                                                                  .primaryColor),
+                                                          children: [
+                                                        TextSpan(
+                                                            text:
+                                                                "${AppLocalizations.of(context).translate('votes')}",
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color:
+                                                                    Colors.grey))
+                                                      ])),
+                                                ]),
+                                          ),
                                           Expanded(
                                             child: Center(
                                               child: Text(
@@ -455,6 +469,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                     child: Text(
                                                         "${AppLocalizations.of(context).translate('review_us')}",
                                                         style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                             color: KColors
                                                                 .primaryColor,
                                                             fontSize: 12)),
@@ -645,7 +661,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                               "${AppLocalizations.of(context).translate('see_menu')}"
                                                   .toUpperCase(),
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
                                                   color: KColors.primaryColor))
                                         ]),
                                         Icon(Icons.chevron_right,

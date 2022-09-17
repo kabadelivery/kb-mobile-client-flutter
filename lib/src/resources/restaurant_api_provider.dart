@@ -279,6 +279,69 @@ class RestaurantApiProvider {
     }
   }
 
+  Future<dynamic> fetchShopList(
+      CustomerModel model, String type, Position position) async {
+    xrint(
+        "entered fetchShopList ${position?.latitude} : ${position?.longitude}");
+    if (await Utils.hasNetwork()) {
+      /*  final response = await client
+          .post(Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2),
+          body: position == null ? "" : json.encode(
+              {"location": "${position?.latitude}:${position?.longitude}"}),
+      );*/
+
+      var dio = Dio();
+      dio.options..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+
+      xrint("location is --> ");
+      xrint({"location": "${position?.latitude}:${position?.longitude}"}
+          .toString());
+
+      /*var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_RESTO_LIST_V2).toString(),
+        data: position == null ? "" : json.encode({}
+            // {"location": "${position?.latitude}:${position?.longitude}"}
+        ),
+      );*/
+
+      Map<String, dynamic> params = Map();
+      params.putIfAbsent("limit", () => 1000);
+      params.putIfAbsent("search_type", () => "shop");
+      if (type != null && type != "all") params.putIfAbsent("category", () => type);
+
+
+      var response = await dio.get(
+          Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
+          queryParameters: params
+        // data: position == null ? "" : json.encode({}
+        // {"location": "${position?.latitude}:${position?.longitude}"}
+        // ),
+      );
+
+      xrint(response.data);
+      if (response.statusCode == 200) {
+        // int errorCode = mJsonDecode(response.data)["error"];
+        dynamic data = mJsonDecode(response.data);
+        // if (data["error"] == 0) {
+
+        return data;
+        // } else
+        //   throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
   Future<dynamic> fetchRestaurantList(
       CustomerModel model, String type, Position position) async {
     xrint(

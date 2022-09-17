@@ -155,7 +155,7 @@
   "ad_check_menu": "VOIR MENU",
   "ad_check_restaurant": "VOIR BOUTIQUE",
   "note_reviews": "Notes et Commentaires",
-  "review_us": "Donnez nous votre avis",
+  "review_us": "Donnez un avis",
   "votes": "Avis",
   "r_closed_preorder": "Fermé => Précommandez",
   "r_opened": "Ouvert",
@@ -394,8 +394,8 @@
   "min_short_on_average": "30 min",
   "kaba_point_used_amount": "Points KABA utilisés :",
   "kaba_point_description": "Réduisez vos frais de livraison XXX_XXX FCFA par mois grâce aux KABA POINTS",
-  "month_remain_kaba_points": "Restant en XXX_XXX",
-  "month_used_kaba_points": "Dépensé en XXX_XXX",
+  "month_remain_kaba_points": "Restant en \nXXX_XXX",
+  "month_used_kaba_points": "Dépensé en \nXXX_XXX",
   "mois_1": "Janvier",
   "mois_2": "Février",
   "mois_3": "Mars",
@@ -489,7 +489,7 @@
   "address_pinned_successfully_long": "Adresse epinglée avec succès !",
   "your_location": "Votre position",
   "finding_place": "Recherche en cours ...",
-  "no_content_to_show": "Désolé, cette catégorie est actuellement vide.",
+  "no_content_to_show": "Désolé, Aucun résultat",
   "whatsapp": "Whatsapp",
   "phone_call": "Téléphone",
 
@@ -501,6 +501,15 @@
   "service_drugstore_type_name": "Pharmacies",
   "service_drugstore_type_product": "Produit",
   "service_category_drugstore": "Pharmacies",
-  "expires_at": "EXPIRE LE"
+  "expires_at": "EXPIRE LE",
+  "you_have_unread_message": "Vous avez un nouveau message du service client KABA. Merci de consulter.",
+
+
+  "login_expired_please_login": "Désolé, votre session a expirée. Veuillez vous connecter svp.",
+  "the_end": "- LA FIN -",
+  "payed": "PRÉPAYÉ",
+
+  "only_2_weeks_history": "Limité à deux semaines d'historique de commande"
+
 
 }

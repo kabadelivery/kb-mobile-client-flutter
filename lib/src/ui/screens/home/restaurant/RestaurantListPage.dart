@@ -141,10 +141,10 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           // if (StateContainer
           //     ?.of(context)
           //     ?.location == null) {
-          //   widget.restaurantListPresenter.fetchRestaurantList(widget.customer, null);
+          //   widget.restaurantListPresenter.fetchShopList(widget.customer, null);
           // } else
           xrint("init -- 1");
-          widget.restaurantListPresenter.fetchRestaurantList(
+          widget.restaurantListPresenter.fetchShopList(
               widget.customer,"food", StateContainer.of(context).location);
         } else {
           if (widget.hasGps &&
@@ -158,10 +158,10 @@ class _RestaurantListPageState extends State<RestaurantListPage>
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  .fetchRestaurantList(widget.customer,"food", null);
+                  .fetchShopList(widget.customer,"food", null);
             } else {
               xrint("init -- 4");
-              widget.restaurantListPresenter.fetchRestaurantList(
+              widget.restaurantListPresenter.fetchShopList(
                   widget.customer, "food",StateContainer?.of(context)?.location);
             }
           }
@@ -217,7 +217,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   } else if (pageError) {
                     return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
                       setState(() {
-                        restaurantBloc.fetchRestaurantList(customer: widget.customer, position: StateContainer.of(context).location);
+                        restaurantBloc.fetchShopList(customer: widget.customer, position: StateContainer.of(context).location);
                       });
                     });
                   }
@@ -466,11 +466,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                                   ?.location ==
                                               null) {
                                             widget.restaurantListPresenter
-                                                .fetchRestaurantList(
+                                                .fetchShopList(
                                                     widget.customer,"food", null);
                                           } else
                                             widget.restaurantListPresenter
-                                                .fetchRestaurantList(
+                                                .fetchShopList(
                                                     widget.customer,"food",
                                                     StateContainer.of(context)
                                                         .location);
@@ -890,7 +890,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                 if (position != null && mounted) {
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
-                  widget.restaurantListPresenter.fetchRestaurantList(
+                  widget.restaurantListPresenter.fetchShopList(
                       widget.customer, "food", StateContainer.of(context).location);
                 }
               }
@@ -1283,7 +1283,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchRestaurantList(
+          widget.restaurantListPresenter.fetchShopList(
               widget.customer, "food", StateContainer.of(context).location);
         });
   }
@@ -1292,7 +1292,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchRestaurantList(
+          widget.restaurantListPresenter.fetchShopList(
               widget.customer,"food", StateContainer.of(context).location);
         });
   }
@@ -1301,7 +1301,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return Container();
     // return nothing
     /*  return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
-      InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchRestaurantList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
+      InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchShopList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
         child: Container(
           width: 65,
           height: 35,
@@ -1358,7 +1358,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
-        widget.restaurantListPresenter.fetchRestaurantList(
+        widget.restaurantListPresenter.fetchShopList(
             widget.customer, "food",StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
@@ -1390,4 +1390,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   @override
   void updateBillingState(data) {
   }
+
+  @override
+  void inflateFilteredRestaurants(List<ShopModel> shops, String sKey) {}
+
 }

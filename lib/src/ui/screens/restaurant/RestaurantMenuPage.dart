@@ -149,22 +149,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     var appBar = AppBar(
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
+      titleSpacing: 0,
       title: GestureDetector(
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
             // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
             // SizedBox(width: 10),
-            Container(
-                /*    decoration: BoxDecoration(
-                color: Colors.white.withAlpha(100),
-                borderRadius: BorderRadius.all(Radius.circular(10))),*/
-                padding:
-                    EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                child: Text(
-                    widget?.restaurant == null ? "" : widget?.restaurant?.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, color: Colors.white)))
+                Expanded(
+              child: Container(
+                  padding:
+                      EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                  child: Text(
+                      widget?.restaurant == null ? "" : widget?.restaurant?.name,
+                      overflow: TextOverflow.ellipsis,maxLines: 1,textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white))
+              ),
+            ),
           ])),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -172,28 +173,31 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             Navigator.pop(context);
           }),
       actions: <Widget>[
-        Row(
-          children: <Widget>[
-            RotatedBox(
-                child: AnimatedBuilder(
-                  animation: foodAddAnimation,
-                  child: Text("${_foodCount}/${FOOD_MAX}",
-                      style: TextStyle(color: Colors.white, fontSize: 14)),
-                  builder: (BuildContext context, Widget child) {
-                    return Transform.rotate(
-                        angle: foodAddAnimation.value, child: child);
-                  },
-                ),
-                quarterTurns: 0),
-            BouncingWidget(
-              duration: Duration(milliseconds: 500),
-              scaleFactor: 3,
-              child: IconButton(
-                  key: _menuBasketKey,
-                  icon: Icon(Icons.shopping_cart, color: Colors.white),
-                  onPressed: () => _showMenuBottomSheet(ALL)),
-            ),
-          ],
+        GestureDetector(
+          onTap: () => _showMenuBottomSheet(ALL),
+          child: Row(
+            children: <Widget>[
+              RotatedBox(
+                  child: AnimatedBuilder(
+                    animation: foodAddAnimation,
+                    child: Text("${_foodCount}/${FOOD_MAX}",
+                        style: TextStyle(color: Colors.white, fontSize: 14)),
+                    builder: (BuildContext context, Widget child) {
+                      return Transform.rotate(
+                          angle: foodAddAnimation.value, child: child);
+                    },
+                  ),
+                  quarterTurns: 0),
+              BouncingWidget(
+                duration: Duration(milliseconds: 500),
+                scaleFactor: 3,
+                child: IconButton(
+                    key: _menuBasketKey,
+                    icon: Icon(Icons.shopping_cart, color: Colors.white),
+                    onPressed: () => _showMenuBottomSheet(ALL)),
+              ),
+            ],
+          ),
         )
       ],
     );
@@ -792,7 +796,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                       ]),
                 )),
                 Container(
-                  color: KColors.primaryYellowColor.withAlpha(30),
+                  color: KColors.new_gray,
                   child: Container(
                     height: 115,
                     width: 115,
@@ -994,7 +998,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         dialogText =
             "${AppLocalizations.of(context).translate('t_closed_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("yyy", restaurant?.name)
                 ?.replaceAll("(-)", ".");
 
         break;
@@ -1005,14 +1009,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         dialogText =
             "${AppLocalizations.of(context).translate('t_paused_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("yyy", restaurant?.name)
                 ?.replaceAll("(-)", ".");
         break;
       case 3: // blocked
         dialogText =
             "${AppLocalizations.of(context).translate('t_unavailable_shop_long')}"
                 ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", Utils.capitalize(restaurant?.name))
+                ?.replaceAll("yyy", restaurant?.name)
                 ?.replaceAll("(-)", ".");
         break;
     }

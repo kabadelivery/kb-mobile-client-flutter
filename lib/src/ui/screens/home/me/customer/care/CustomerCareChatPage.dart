@@ -49,7 +49,6 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.presenter.customerCareChatView = this;
     CustomerUtils.getCustomer().then((customer) {
@@ -188,7 +187,8 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 : ListView(
                     children: <Widget>[]..addAll(List.generate(
                           widget.messages?.length, (int position) {
-                        return ChatBubbleWidget(customer: widget.customer,
+                        return ChatBubbleWidget(
+                            customer: widget.customer,
                             message: widget.messages[position]);
                       })),
                     controller: _scrollController,
@@ -419,7 +419,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
   }
 }
 
-class ChatBubbleWidget extends StatelessWidget {
+class ChatBubbleWidget extends StatefulWidget {
   CustomerCareChatMessageModel message;
   bool hasVoucherOffer = false;
 
@@ -429,6 +429,15 @@ class ChatBubbleWidget extends StatelessWidget {
     hasVoucherOffer = _checkHasVoucherOffer(message);
   }
 
+  bool _checkHasVoucherOffer(CustomerCareChatMessageModel chatMessage) {
+    return extractVoucherFromMessage(chatMessage) == null ? false : true;
+  }
+
+  @override
+  State<ChatBubbleWidget> createState() => _ChatBubbleWidgetState();
+}
+
+class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   @override
   Widget build(BuildContext context) {
     //  check if message is message contains a string that matches a regex
@@ -436,11 +445,11 @@ class ChatBubbleWidget extends StatelessWidget {
       children: <Widget>[
         SizedBox(height: 15),
         Row(
-          mainAxisAlignment: message?.user_id == 0
+          mainAxisAlignment: widget.message?.user_id == 0
               ? MainAxisAlignment.end
               : MainAxisAlignment.start,
           children: <Widget>[
-            message?.user_id == 0
+            widget.message?.user_id == 0
                 ? Expanded(flex: 0, child: Container())
                 : Expanded(flex: 2, child: Container()),
             Expanded(
@@ -449,7 +458,7 @@ class ChatBubbleWidget extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        color: message?.user_id == 0
+                        color: widget.message?.user_id == 0
                             ? KColors.new_gray
                             : KColors.chat_transparent_blue,
                         borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -462,12 +471,12 @@ class ChatBubbleWidget extends StatelessWidget {
                           children: <Widget>[
                             Expanded(
                                 child: Text(
-                              "${message?.message}",
+                              "${widget.message?.message}",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
-                                  color: message?.user_id == 0
+                                  color: widget.message?.user_id == 0
                                       ? Colors.black
                                       : Colors.black),
                             )),
@@ -480,11 +489,11 @@ class ChatBubbleWidget extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                   child: Text(
-                                "${Utils.readTimestamp(context, message?.created_at)}",
+                                "${Utils.readTimestamp(context, widget.message?.created_at)}",
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 11,
-                                    color: message?.user_id == 0
+                                    color: widget.message?.user_id == 0
                                         ? Colors.grey
                                         : Colors.grey),
                               )),
@@ -492,36 +501,33 @@ class ChatBubbleWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  hasVoucherOffer
-                      ? ChatVoucherWidget(presenter: ChatVoucherPresenter(),
-                    customer:  customer,
-                      voucher_link: extractVoucherFromMessage(message))
+                  widget.hasVoucherOffer
+                      ? ChatVoucherWidget(
+                          presenter: ChatVoucherPresenter(),
+                          customer: widget.customer,
+                          voucher_link:
+                              extractVoucherFromMessage(widget.message))
                       : Container()
                 ],
               ),
             ),
-            message?.user_id == 0
+            widget.message?.user_id == 0
                 ? Expanded(flex: 2, child: Container())
                 : Expanded(flex: 0, child: Container()),
 //                              widget.messages[position]?.user_id == 0 ? Expanded(flex:0, child: Container()) : Expanded(flex:2, child: Container()),
           ],
         ),
-
       ],
     );
   }
+}
 
-  bool _checkHasVoucherOffer(CustomerCareChatMessageModel chatMessage) {
-    return extractVoucherFromMessage(chatMessage) == null ? false : true;
-  }
-
-  String extractVoucherFromMessage(CustomerCareChatMessageModel chatMessage) {
-    final message = '${chatMessage?.message}';
-    final subscriptionLink = RegExp(r'https://\S+/\S+').firstMatch(message);
-    if (subscriptionLink != null) {
-      return subscriptionLink.group(0);
-    } else {
-      return null;
-    }
+String extractVoucherFromMessage(CustomerCareChatMessageModel chatMessage) {
+  final message = '${chatMessage?.message}';
+  final subscriptionLink = RegExp(r'https://\S+/\S+').firstMatch(message);
+  if (subscriptionLink != null) {
+    return subscriptionLink.group(0);
+  } else {
+    return null;
   }
 }

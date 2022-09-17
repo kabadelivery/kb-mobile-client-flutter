@@ -185,57 +185,81 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            command?.state > 1 && command?.state <= 3
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.directions_bike,
-                                          color: Colors.white, size: 16),
-                                      SizedBox(width: 5),
-                                      Text("${widget?.command?.livreur?.name}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white)),
-                                    ],
-                                  )
-                                : Container(height: 5),
+                           command?.is_payed_at_arrival ? Container() : Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                    BorderRadius.circular(5)),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "${AppLocalizations.of(context).translate("payed")}",
+                                        style: TextStyle(fontWeight: FontWeight.bold,
+                                            color: KColors.primaryColor,
+                                            fontSize: 12)),
+                                  ],
+                                )),
                             /*shipping mode only*/
-                            widget?.command?.state == 2 ||
-                                   ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget?.command?.rating < 1))
-                                ? InkWell(
-                                    child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white.withAlpha(50),
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                                widget?.command?.state == 2
-                                                    ? Icons.call
-                                                    : FontAwesomeIcons
-                                                        .solidStar,
-                                                color: Colors.white,
-                                                size: 16),
-                                            SizedBox(width: 5),
-                                            Text(
-                                                "${AppLocalizations.of(context).translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
-                                                style: TextStyle(
+                            Row(
+                              children: [command?.state > 1 && command?.state <= 3
+                                  ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.directions_bike,
+                                      color: Colors.white, size: 16),
+                                  SizedBox(width: 5),
+                                  Text("${widget?.command?.livreur?.name}",
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white)),
+                                ],
+                              )
+                                  : Container(height: 5),
+                                SizedBox(width: 10),
+                                widget?.command?.state == 2 ||
+                                       ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget?.command?.rating < 1))
+                                    ? InkWell(
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 6, horizontal: 10),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white.withAlpha(50),
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                    widget?.command?.state == 2
+                                                        ? Icons.call
+                                                        : FontAwesomeIcons
+                                                            .solidStar,
                                                     color: Colors.white,
-                                                    fontSize: 12)),
-                                          ],
-                                        )),
-                                    onTap: widget?.command?.state == 2
-                                        ? () => _callShipper()
-                                        : () => _reviewOrder())
-                                : Container()
+                                                    size: 16),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                    "${AppLocalizations.of(context).translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12)),
+                                              ],
+                                            )),
+                                        onTap: widget?.command?.state == 2
+                                            ? () => _callShipper()
+                                            : () => _reviewOrder())
+                                    : Container(),
+                              ],
+                            )
                           ],
                         ),
                       )),

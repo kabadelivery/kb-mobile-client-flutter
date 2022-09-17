@@ -128,21 +128,21 @@ class _SplashPageState extends State<PresentationPage> {
             ],
             showSkipButton: true,
             showNextButton: true,
-            showBackButton: false,
+            showBackButton: true,
             onTapDoneButton: () {
               // Use Navigator.pushReplacement if you want to dispose the latest route
               // so the user will not be able to slide back to the Intro Views.
               _endOfTheSlides();
             },
-            doneText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('done_text')}"),style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
-            skipText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('skip_text')}"),style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: KColors.mBlue)),
-            nextText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('next_text')} >"), style: TextStyle(fontSize: 14, color: KColors.primaryColor)), //next
-            backText: Text(Utils.capitalize("< ${AppLocalizations.of(context).translate('previous_text')}"), style: TextStyle(fontSize: 14, color: KColors.primaryColor)), //next
-            pageButtonTextStyles: const TextStyle(
+            doneText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('done_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)),
+            skipText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('skip_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)),
+            nextText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('next_text')} >"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)), //next
+            backText: Text("< "+Utils.capitalize("${AppLocalizations.of(context).translate('previous_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)), //next
+           /* pageButtonTextStyles: const TextStyle(
               color: Colors.white,
               fontSize: 20.0,
               fontWeight: FontWeight.bold
-            ),
+            ),*/
           ),
         ),
       ),

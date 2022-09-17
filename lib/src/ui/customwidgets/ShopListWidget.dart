@@ -81,7 +81,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                              "${Utils.capitalize(widget?.shopModel?.name)}",
+                                              "${widget?.shopModel?.name}",
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                               textAlign: TextAlign.left,

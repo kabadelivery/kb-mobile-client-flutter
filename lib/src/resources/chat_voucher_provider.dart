@@ -1,6 +1,5 @@
 //FeedsProvider
 
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,14 +19,11 @@ import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 
 class ChatVoucherProvider {
-
-
-  Future<Object> fetchVoucherDetails (CustomerModel customer, String voucher_code) async {
-
+  Future<VoucherModel> fetchVoucherDetails(
+      CustomerModel customer, String voucher_code) async {
     xrint("entered fetchVoucherDetails");
     if (await Utils.hasNetwork()) {
-
-   /*   final response = await client
+      /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES),
           body: json.encode({}),
           headers: Utils.getHeadersWithToken(customer?.token)
@@ -38,8 +34,7 @@ class ChatVoucherProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -47,31 +42,28 @@ class ChatVoucherProvider {
           return validateSSL(cert, host, port);
         };
       };
-      // var response = await dio.post(
-      //   Uri.parse(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES).toString(),
-      //   data: json.encode({}),
-      // );
-      //
-      // xrint(response.data.toString());
-      // if (response.statusCode == 200) {
-      //   int errorCode = mJsonDecode(response.data)["error"];
-      //   if (errorCode == 0) {
-      //     Iterable lo = mJsonDecode(response.data)["data"];
-      //     if (lo == null || lo.isEmpty || lo.length == 0)
-      //       return List<CustomerCareChatMessageModel>();
-      //     else {
-      //       List<CustomerCareChatMessageModel> messages = lo?.map((message) =>
-      //           CustomerCareChatMessageModel.fromJson(message))?.toList();
-      //       return messages;
-      //     }
-      //   } else
-      //     throw Exception(-1); // there is an error in your request
-      // } else {
-      //   throw Exception(response.statusCode); // you have no right to do this
-      // }
+
+      var response = await dio.get(
+          Uri.parse(ServerRoutes.LINK_GET_VOUCHER_DETAILS).toString() +
+              "/${voucher_code}");
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          var obj = mJsonDecode(response.data)["data"];
+          if (obj != null) {
+            return VoucherModel.fromJson(obj);
+          } else {
+            throw Exception(-1);
+          }
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
     } else {
       throw Exception(-2); // you have no network
     }
   }
-
 }

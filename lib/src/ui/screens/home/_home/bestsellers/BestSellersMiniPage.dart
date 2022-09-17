@@ -282,8 +282,8 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                                 children: [
                                   Expanded(
                                     child: Text(
-                                        Utils.capitalize(
-                                                "${data?.food_entity?.restaurant_entity?.name}")
+
+                                                "${data?.food_entity?.restaurant_entity?.name}"
                                     ,
                                         maxLines: 1,
                                         textAlign: TextAlign.start,

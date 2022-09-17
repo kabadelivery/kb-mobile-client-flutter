@@ -42,10 +42,10 @@ class ChatVoucherPresenter implements ChatVoucherContract {
     isWorking = true;
     _voucherView.showLoading(true);
     try {
-      String mVoucher =
+      VoucherModel mVoucher =
           await provider.fetchVoucherDetails(customer, voucher_code);
-
       _voucherView.showLoading(false);
+      _voucherView.inflateVoucher(mVoucher);
     } catch (_) {
       /* BestSeller failure */
       _voucherView.showLoading(false);

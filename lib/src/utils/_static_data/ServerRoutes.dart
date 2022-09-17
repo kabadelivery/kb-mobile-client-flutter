@@ -317,4 +317,7 @@ class ServerRoutes {
 
   static String LINK_FETCH_BILLING =
       ServerConfig.SERVER_ADDRESS + "/api/billings";
+
+  static String LINK_GET_VOUCHER_DETAILS =
+      ServerConfig.SERVER_ADDRESS + "/mobile/api/voucher/get";
 }

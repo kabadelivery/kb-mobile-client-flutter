@@ -11,7 +11,7 @@ import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
 import 'package:KABA/src/ui/customwidgets/CurrentLocationTile.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -318,7 +318,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void _jumpToSearchPage(String type) {
     _jumpToPage(
         context,
-        ShopListPage(
+        ShopListPageRefined(
             context: context,
             type: type,
             foodProposalPresenter: RestaurantFoodProposalPresenter(),
@@ -326,11 +326,18 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToPage(BuildContext context, page) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => page,
-        ));
+
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   @override
@@ -546,8 +553,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
               await Geolocator.getCurrentPosition(
                   desiredAccuracy: LocationAccuracy.high);
-              _jumpToPickAddressPage();
-              /* Stream<Position> positionStream = Geolocator.getPositionStream();
+
+               Stream<Position> positionStream = Geolocator.getPositionStream();
               positionStream.first.then((position) {
                 xrint("position stream");
                 positionStream = Geolocator.getPositionStream();
@@ -564,7 +571,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 setState(() {
                   isPickLocation = false;
                 });
-              });*/
+              });
             }
           }
         }

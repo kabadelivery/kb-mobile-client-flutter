@@ -92,6 +92,9 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
               List<Widget>.generate(data.length, (int index) {
                 return MyNewOrderWidget(command: data[index]);
               })
+          )..add(
+            Container(width: MediaQuery.of(context).size.width,margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+            child: Center(child: Text('${AppLocalizations.of(context).translate("only_2_weeks_history")}', style: TextStyle(color: Colors.grey, fontSize: 12),),),)
           ),
       );
     else

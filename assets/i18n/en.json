@@ -392,8 +392,8 @@
   "min_short_on_average": "30 min",
   "kaba_point_used_amount": "KABA points used :",
   "kaba_point_description": "Get up to XXX_XXX F shipping cost discount by using KABA POINTS",
-  "month_remain_kaba_points": "Left for XXX_XXX",
-  "month_used_kaba_points": "Used in XXX_XXX",
+  "month_remain_kaba_points": "Left for \nXXX_XXX",
+  "month_used_kaba_points": "Used in \nXXX_XXX",
   "mois_1": "January",
   "mois_2": "February",
   "mois_3": "March",
@@ -488,7 +488,7 @@
   "address_pinned_successfully_long": "Address pinned successfully !",
   "your_location": "Your location",
   "finding_place": "Searching for location ...",
-  "no_content_to_show": "Sorry, this category is currently empty.",
+  "no_content_to_show": "Sorry, Empty content",
   "whatsapp": "Whatsapp",
   "phone_call": "Phone call",
 
@@ -501,5 +501,12 @@
   "service_drugstore_type_name": "Drugstore",
   "service_drugstore_type_product": "Product",
   "service_category_drugstore": "Drugstore",
-  "expires_at": "EXPIRES AT"
+  "expires_at": "EXPIRES AT",
+  "you_have_unread_message": "You have a new message from customer care. Please check it.",
+
+  "login_expired_please_login": "Sorry your session has expired. Please login again.",
+  "the_end": "- THE END -",
+  "payed": "PREPAYED",
+
+  "only_2_weeks_history": "Limited to two weeks of order history"
 }
