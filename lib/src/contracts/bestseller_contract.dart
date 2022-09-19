@@ -57,11 +57,13 @@ class BestSellerPresenter implements BestSellerContract {
           List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
           /* send these to json */
           _bestSellerView.inflateBestSeller(bestSellers);
+          _bestSellerView.showLoading(false);
         } else {
           _bestSellerView.showLoading(true);
         }
       } catch(_){
         xrint(_);
+        _bestSellerView.showLoading(true);
       }
 
       try {
@@ -72,6 +74,7 @@ class BestSellerPresenter implements BestSellerContract {
         List<BestSellerModel> bestSellers = lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
         /* send these to json */
         CustomerUtils.saveBestSellerPage(bsellers_json);
+        _bestSellerView.showLoading(false);
         _bestSellerView.inflateBestSeller(bestSellers);
         isWorking = false;
       } catch (_) {

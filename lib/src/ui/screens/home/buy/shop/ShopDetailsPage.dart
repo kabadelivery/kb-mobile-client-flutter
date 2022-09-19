@@ -335,7 +335,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(height: 7),
+                                                  SizedBox(height: 3),
                                                   Container(
                                                     decoration: BoxDecoration(
                                                         color: KColors

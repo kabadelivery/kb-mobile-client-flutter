@@ -21,6 +21,8 @@ class ChatVoucherWidget extends StatefulWidget {
 
   ChatVoucherPresenter presenter;
 
+  bool is_expired = false;
+
   ChatVoucherWidget(
       {Key key,
       this.customer,
@@ -84,7 +86,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
           Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
-                color: KColors.primaryColor,
+                color: widget.is_expired ? Colors.black : KColors.primaryColor,
                 borderRadius: BorderRadius.circular(5)),
             child: Column(
               children: [
@@ -136,7 +138,14 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                             fontSize: 12,
                             color: Colors.white,
                             fontWeight: FontWeight.normal)),
-                    Text("${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
+                    widget.is_expired ? Text("${AppLocalizations.of(context).translate("expired")}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500)
+                    ) :  Text(
+                        "${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 10,
@@ -150,7 +159,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
           SizedBox(
             height: 5,
           ),
-          widget.voucher != null
+          widget.voucher != null && !widget.is_expired
               ? InkWell(
                   onTap: () {
                     _subscribeToVoucher();
@@ -206,6 +215,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
       isLoading = false;
       hasError = false;
       widget.voucher = voucher;
+      widget.is_expired = Utils.isEndDateReached(widget?.voucher?.end_date);
     });
   }
 

@@ -1635,7 +1635,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   }
 
   loadMore() async {
-    await new Future.delayed(new Duration(seconds: 2));
+    await new Future.delayed(new Duration(seconds: 1));
     if (widget?.restaurantList?.length == null) {
       // empty list
     } else {

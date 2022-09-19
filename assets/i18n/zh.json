@@ -501,5 +501,7 @@
   "login_expired_please_login": "抱歉，您的帐户登录已过期。 请重新登录",
   "the_end": "- 结束 -",
   "payed": "已支付",
-  "only_2_weeks_history": "只限于两周订单历史"
+  "only_x_weeks_history": "只限于三个月订单历史",
+  "expired": "过期"
+
 }

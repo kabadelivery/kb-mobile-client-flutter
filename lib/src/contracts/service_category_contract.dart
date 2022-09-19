@@ -54,6 +54,7 @@ class ServiceMainPresenter implements ServiceMainContract {
             throw UnimplementedError();
           }
           _serviceMainView.inflateServiceCategory(res);
+          _serviceMainView.showLoading(false);
         } else {
           _serviceMainView.showLoading(true);
         }
@@ -90,6 +91,7 @@ class ServiceMainPresenter implements ServiceMainContract {
         }
         isWorking = false;
       }
+      isWorking = false;
     });
   }
 

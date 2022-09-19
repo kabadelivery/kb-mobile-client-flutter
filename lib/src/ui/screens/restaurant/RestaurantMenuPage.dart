@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/CustomChipList.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
@@ -150,19 +152,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       titleSpacing: 0,
-      title: GestureDetector(
+      title: GestureDetector(onTap: ()=>_jumpToShopDetails(widget.restaurant),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-            // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-            // SizedBox(width: 10),
+            Icon(Icons.home, color: Colors.white, size: 20),
+                SizedBox(width: 10),
                 Expanded(
               child: Container(
                   padding:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                      EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                   child: Text(
                       widget?.restaurant == null ? "" : widget?.restaurant?.name,
-                      overflow: TextOverflow.ellipsis,maxLines: 1,textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,maxLines: 1,textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white))
               ),
             ),
@@ -389,63 +391,65 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                       ),
                     ],
                   ),
-                  title: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text("${food?.name?.toUpperCase()}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: KColors.new_black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500)),
-                      SizedBox(height: 5),
-                      Row(
-                        children: <Widget>[
-                          Row(children: <Widget>[
-                            /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                      (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
-                                          : Container()),
-                                      */
+                  title: InkWell(onTap: ()=>_jumpToShopDetails(widget.restaurant),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("${food?.name?.toUpperCase()}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: KColors.new_black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
+                        SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                        (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                                            : Container()),
+                                        */
 
-                            Text("${food?.price}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    decoration: food.promotion != 0
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
-                                    color: KColors.primaryYellowColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.normal)),
-                            SizedBox(width: 5),
-                            (food.promotion != 0
-                                ? Text("${food?.promotion_price}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: KColors.primaryColor,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.normal))
-                                : Container()),
-                            SizedBox(width: 5),
-                            Text(
-                                "${AppLocalizations.of(context).translate('currency')}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: KColors.primaryYellowColor,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.normal)),
-                          ]),
-                        ],
-                      ),
-                    ],
+                              Text("${food?.price}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      decoration: food.promotion != 0
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal)),
+                              SizedBox(width: 5),
+                              (food.promotion != 0
+                                  ? Text("${food?.promotion_price}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: KColors.primaryColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.normal))
+                                  : Container()),
+                              SizedBox(width: 5),
+                              Text(
+                                  "${AppLocalizations.of(context).translate('currency')}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.normal)),
+                            ]),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -1196,6 +1200,26 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                   ]);
       },
     );
+  }
+
+  _jumpToShopDetails(ShopModel shopModel) {
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ShopDetailsPage(
+                distance: shopModel?.distance,
+                shipping_price: shopModel?.delivery_pricing,
+                restaurant: shopModel,
+                presenter: RestaurantDetailsPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+          CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 }
 

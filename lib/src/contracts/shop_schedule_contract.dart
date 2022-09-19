@@ -53,6 +53,7 @@ class ShopSchedulePresenter implements ShopScheduleContract {
               lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
           /* send these to json */
           _shopScheduleView.inflateShopSchedule(ShopSchedules);
+          _shopScheduleView.showLoading(false);
         } else {
           _shopScheduleView.showLoading(true);
         }
@@ -69,6 +70,7 @@ class ShopSchedulePresenter implements ShopScheduleContract {
             lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
         /* send these to json */
         CustomerUtils.saveShopSchedulePage(restaurant_id, schedule_json);
+        _shopScheduleView.showLoading(false);
         _shopScheduleView.inflateShopSchedule(ShopSchedules);
         isWorking = false;
       } catch (_) {

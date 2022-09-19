@@ -1110,7 +1110,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      moneyData[index].payAtDelivery == true
+                                   /*   moneyData[index].payAtDelivery == true
                                           ? Container(width: 0, height: 0,) : Icon(
                                               Icons.monetization_on,
                                               color: moneyData[index].type != -1
@@ -1118,7 +1118,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                   : KColors.primaryColor,
                                               size: 15,
                                             )
-                                      ,
+                                      ,*/
                                       Icon(
                                           moneyData[index].type != -1
                                               ? Icons.arrow_upward

@@ -492,24 +492,18 @@
   "no_content_to_show": "Désolé, Aucun résultat",
   "whatsapp": "Whatsapp",
   "phone_call": "Téléphone",
-
   "t_closed_shop_long": "Cher client, yyy est actuellement fermé.\nVeuillez revenir plutard (xxx)",
   "t_paused_shop_long": "Cher client, yyy est actuellement en pause.\nVeuillez revenir plutard ",
   "t_opened_shop_long": "Ouvert",
   "t_unavailable_shop_long": "Cher client, yyy est actuellement indisponible sur Kaba pour raison indépendante de notre volonté.\nVeuillez les contacter.",
-
   "service_drugstore_type_name": "Pharmacies",
   "service_drugstore_type_product": "Produit",
   "service_category_drugstore": "Pharmacies",
   "expires_at": "EXPIRE LE",
   "you_have_unread_message": "Vous avez un nouveau message du service client KABA. Merci de consulter.",
-
-
   "login_expired_please_login": "Désolé, votre session a expirée. Veuillez vous connecter svp.",
-  "the_end": "- LA FIN -",
+  "the_end": "- FIN -",
   "payed": "PRÉPAYÉ",
-
-  "only_2_weeks_history": "Limité à deux semaines d'historique de commande"
-
-
+  "only_x_weeks_history": "Limité à trois mois d'historique de commande",
+  "expired": "EXPIRÉ"
 }

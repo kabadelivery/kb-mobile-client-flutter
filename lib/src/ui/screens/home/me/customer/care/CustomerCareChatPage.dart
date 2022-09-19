@@ -21,6 +21,7 @@ import 'package:toast/toast.dart';
 import '../../../../../../StateContainer.dart';
 
 class CustomerCareChatPage extends StatefulWidget {
+
   static var routeName = "/CustomerCareChatPage";
 
   CustomerCareChatPresenter presenter;

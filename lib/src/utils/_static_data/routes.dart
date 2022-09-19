@@ -12,6 +12,7 @@ import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -70,13 +71,14 @@ var generalRoutes = {
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
   // OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
-  TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
+  // TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   InfoPage.routeName : (BuildContext context) => InfoPage(),
   CustomerCareChatPage.routeName : (BuildContext context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
 
 //  NotificationTestPage.routeName : (BuildContext context) => NotificationTestPage(),
   ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
+  ShopListPageRefined.routeName : (BuildContext context) => ShopListPageRefined(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
   ShopListPage.routeName : (BuildContext context) => ShopListPage(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
   ShopFlowerDetailsPage.routeName : (BuildContext context) => ShopFlowerDetailsPage(presenter: FoodPresenter(),),
   OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter(),),
@@ -88,6 +90,4 @@ var generalRoutes = {
   MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
   OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter()),
   HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter()),
-
-
 };

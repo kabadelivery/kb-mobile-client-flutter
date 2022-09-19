@@ -20,7 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderDetailsPageOld extends StatefulWidget {
-  static var routeName = "/OrderDetailsPage";
+  static var routeName = "/OrderDetailsPageOld";
 
   OrderDetailsPresenter presenter;
 
