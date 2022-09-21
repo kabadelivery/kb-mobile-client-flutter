@@ -217,15 +217,15 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
               SingleChildScrollView(
                   child: Column(children: <Widget>[
                 SizedBox(
-                  height: 9 * MediaQuery.of(context).size.width / 16 - 20,
+                  height: 9 * MediaQuery.of(context).size.width / 16,
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                    /*  borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))),
+                          topRight: Radius.circular(20))*/),
                   child: Column(
                     children: [
                       Padding(

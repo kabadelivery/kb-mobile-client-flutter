@@ -120,7 +120,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(children: <Widget>[
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
                       Container(
                           height: 45,
                           width: 45,
@@ -139,7 +139,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: [  SizedBox(height: 10),
                           Container(
                             width: 1 * MediaQuery.of(context).size.width / 2,
                             child: Text("${command?.restaurant_entity?.name}",
@@ -149,22 +149,22 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                     fontSize: 14),
                                 overflow: TextOverflow.ellipsis),
                           ),
+                        SizedBox(height: 5),
+                          Container(width: MediaQuery.of(context).size.width-160,child: Text("${_getOrderFoodName()}", style: TextStyle(overflow: TextOverflow.ellipsis, fontSize: 12, color: Colors.grey),)),
                           SizedBox(height: 5),
-                          RichText(
-                              text: TextSpan(
-                                  text:
-                                      "${command?.is_payed_at_arrival ? AppLocalizations.of(context).translate('has_to_pay') : AppLocalizations.of(context).translate('already_paid')}  ",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey),
-                                  children: [
-                                TextSpan(
-                                    text:
-                                        "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context).translate('currency')}",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                        color: KColors.primaryColor))
-                              ]))
+                          command?.is_payed_at_arrival ? Container(height: 20,) : Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 6, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                  "${AppLocalizations.of(context).translate("payed")}",
+                                  style: TextStyle(fontWeight: FontWeight.bold,
+                                      color: KColors.primaryColor,
+                                      fontSize: 12))),
+                          SizedBox(height: 10),
                         ],
                       )
                     ]),
@@ -185,45 +185,34 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                           command?.is_payed_at_arrival ? Container() : Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                    BorderRadius.circular(5)),
-                                child: Row(
+                               Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment:
                                   CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                        "${AppLocalizations.of(context).translate("payed")}",
-                                        style: TextStyle(fontWeight: FontWeight.bold,
-                                            color: KColors.primaryColor,
-                                            fontSize: 12)),
+                                    command?.state > 1 && command?.state <= 3
+                                        ? Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.directions_bike,
+                                            color: Colors.white, size: 16),
+                                        SizedBox(width: 5),
+                                        Text("${widget?.command?.livreur?.name}",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white)),
+                                      ],
+                                    )
+                                        : Container(height: 5),
                                   ],
-                                )),
+                                ),
                             /*shipping mode only*/
                             Row(
-                              children: [command?.state > 1 && command?.state <= 3
-                                  ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.directions_bike,
-                                      color: Colors.white, size: 16),
-                                  SizedBox(width: 5),
-                                  Text("${widget?.command?.livreur?.name}",
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white)),
-                                ],
-                              )
-                                  : Container(height: 5),
-                                SizedBox(width: 10),
+                              children: [
+                                // SizedBox(width: 10),
                                 widget?.command?.state == 2 ||
                                        ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget?.command?.rating < 1))
                                     ? InkWell(
@@ -274,6 +263,16 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      SizedBox(height: 5),
+                      RichText(
+                          text: TextSpan(
+                              text:
+                              "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context).translate('currency_short')}",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: KColors.primaryColor))),
+                      SizedBox(height: 5),
                       Container(
                           child: Text(
                               "${Utils.capitalize(_getStateLabel(command))}",
@@ -283,16 +282,16 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           decoration: BoxDecoration(
                               color:
                                   _getStateColor(command?.state).withAlpha(30),
-                              borderRadius: BorderRadius.circular(5)),
+                              borderRadius: BorderRadius.circular(10)),
                           padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 6)),
+                              EdgeInsets.symmetric(vertical: 6, horizontal: 6)),
                       SizedBox(height: 5),
                       Container(
                         child: Text("${_getLastModifiedDate(command)}",
                             maxLines: 1,
                             overflow: TextOverflow.clip,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey, fontSize: 11)),
+                            style: TextStyle(color: Colors.grey, fontSize: 10)),
                       )
                     ]))
           ],
@@ -400,6 +399,14 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
+  }
+
+  _getOrderFoodName() {
+    String condensedName = "";
+    for (var value in widget.command.food_list) {
+      condensedName += " ${value.name} /";
+    }
+    return condensedName.substring(0, condensedName.length-1);
   }
 
 }

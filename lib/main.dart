@@ -269,15 +269,15 @@ class _MyAppState extends State<MyApp> {
                   "KABA",
               theme: ThemeData(
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
-//      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
+     // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
             /*  home: ShopSimpleList(
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-              /* home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
-                restaurantListPresenter: RestaurantListPresenter(), type: "food"),*/
+             /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
               // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
 //             home: MovieCatalogePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
 //               home: MovieDetailsPage(presenter: MoviePresenter()),

@@ -94,7 +94,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
               })
           )..add(
             Container(width: MediaQuery.of(context).size.width,margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-            child: Center(child: Text('${AppLocalizations.of(context).translate("only_2_weeks_history")}', style: TextStyle(color: Colors.grey, fontSize: 12),),),)
+            child: Center(child: Text('${AppLocalizations.of(context).translate("only_3_months_order_history")}', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12),),),)
           ),
       );
     else

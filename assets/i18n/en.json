@@ -503,6 +503,8 @@
   "login_expired_please_login": "Sorry your session has expired. Please login again.",
   "the_end": "- END -",
   "payed": "PREPAYED",
-  "only_x_weeks_history": "Limited to three months of order history",
-  "expired": "EXPIRED"
+  "only_3_months_order_history": "Limited to three months of order history. \nFor more, pleaes contact Customer service.",
+  "only_3_months_transaction_history": "Limited to three months of transaction history. \nFor more, pleaes contact Customer service.",
+  "expired": "EXPIRED",
+  "more_details": "More details"
 }

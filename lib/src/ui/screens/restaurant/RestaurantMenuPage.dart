@@ -1,31 +1,34 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
-import 'package:KABA/src/ui/customwidgets/CustomChipList.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/ShippingFeeTag.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toast/toast.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:toast/toast.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
@@ -42,12 +45,15 @@ class RestaurantMenuPage extends StatefulWidget {
 
   int foodId;
 
+  CustomerModel customer;
+
   RestaurantMenuPage(
       {Key key,
       this.presenter,
       this.restaurant = null,
       this.menuId = -1,
       this.foodId = -1,
+      this.customer,
       this.highlightedFoodId = -1,
       this.fromNotification = false})
       : super(key: key);
@@ -106,6 +112,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     _menuBasketKey = GlobalKey();
     widget.presenter.menuView = this;
 
+    CustomerUtils.getCustomer().then((customer) {
+      setState(() {
+        widget.customer = customer;
+      });
+    });
+
     if (!widget.fromNotification) {
 //      if (widget.menuId == -1)
 //        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
@@ -113,7 +125,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 //        /* be able to fetch menu with food_id, and highlight the food with some interesting color. */
 //        widget.presenter.fetchMenuWithMenuId(widget.menuId);
 //      }
-
       if (widget.menuId != -1) {
         widget.presenter.fetchMenuWithMenuId(widget?.menuId);
       } else if (widget.foodId != -1) {
@@ -152,23 +163,30 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       titleSpacing: 0,
-      title: GestureDetector(onTap: ()=>_jumpToShopDetails(widget.restaurant),
+      title: GestureDetector(
+          onTap: () => _jumpToShopDetails(widget.restaurant),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-            Icon(Icons.home, color: Colors.white, size: 20),
-                SizedBox(width: 10),
+                /*  Icon(Icons.home, color: Colors.white, size: 20),
+                SizedBox(width: 10),*/
                 Expanded(
-              child: Container(
-                  padding:
-                      EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                  child: Text(
-                      widget?.restaurant == null ? "" : widget?.restaurant?.name,
-                      overflow: TextOverflow.ellipsis,maxLines: 1,textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white))
-              ),
-            ),
-          ])),
+                  child: Container(
+                      padding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 10, right: 10),
+                      child: Text(
+                          widget?.restaurant == null
+                              ? ""
+                              : widget?.restaurant?.name,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white))),
+                ),
+              ])),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -205,114 +223,274 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
 
     return Scaffold(
+
       backgroundColor: Colors.white,
       appBar: appBar,
-      body: Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Container(
+          child: Column(
             children: [
-              Container(
-                margin: EdgeInsets.only(top: 20, right: 10, left: 20),
-                child: Text(
-                    "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
-                        ?.toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500)),
+              Expanded(
+                child: Stack(
+                  children: [
+                    NestedScrollView(
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverAppBar(collapsedHeight: 140,
+                            leading: null,
+                            automaticallyImplyLeading: false,
+                            elevation: -10,
+                            expandedHeight: 140,
+                            backgroundColor: Colors.white,
+                            flexibleSpace: SingleChildScrollView(
+                              child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 10, top: 10, bottom: 20),
+                                  height: 140,
+                                  child: Column(
+                                    children: [
+                                      Row(children: [
+                                        Expanded(
+                                            flex: 8,
+                                            child: Text(
+                                                "${widget?.restaurant?.name}"
+                                                    ?.toUpperCase(),
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: KColors.new_black,
+                                                    fontSize: 15))),
+                                        Expanded(flex: 2, child: Container()),
+                                        _getRestaurantStateTag(widget.restaurant)
+                                      ]),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          color: KColors.mBlue,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width *
+                                                  0.8,
+                                          child: Text(
+                                              "${widget?.restaurant?.address}",
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12)),
+                                        )
+                                      ]),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          isLoading
+                                              ? Container()
+                                              : Row(
+                                                  children: [
+                                                    widget.restaurant.distance ==
+                                                            null
+                                                        ? Container()
+                                                        : Container(
+                                                            padding:
+                                                                EdgeInsets.all(5),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10)),
+                                                                color: KColors
+                                                                    .new_gray),
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                    FontAwesomeIcons
+                                                                        .locationArrow,
+                                                                    color: KColors
+                                                                        .mGreen,
+                                                                    size: 10),
+                                                                SizedBox(
+                                                                    width: 10),
+                                                                Text(
+                                                                    "${widget.restaurant.distance} ${AppLocalizations.of(context).translate('km')}",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .normal,
+                                                                        fontStyle:
+                                                                            FontStyle
+                                                                                .normal,
+                                                                        fontSize:
+                                                                            12)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                    SizedBox(width: 10),
+                                                    ShippingFeeTag(
+                                                        widget
+                                                            .restaurant.distance,
+                                                        widget.customer),
+
+                                                  ],
+                                                ),
+                                          GestureDetector(
+                                              onTap: () => _jumpToShopDetails(
+                                                  widget.restaurant),
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 30,
+                                                    top: 15,
+                                                    bottom: 10, right: 15),
+                                                child: Text(
+                                                  "${AppLocalizations.of(context).translate("more_details")}",
+                                                  style: TextStyle(
+                                                      color: KColors.primaryColor,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 12),
+                                                ),
+                                              ))
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ),
+                        ];
+                      },
+                      body: Container(
+                        height: MediaQuery.of(context).size.height,
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            // Container(height: 140, width: MediaQuery.of(context).size.width, color: Colors.yellow.withAlpha(20),),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: 20, right: 10, left: 20),
+                                  child: Text(
+                                      "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
+                                          ?.toUpperCase(),
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              child: ChipList(
+                                /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
+                                        _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
+                                    ? MAX_CHIP_FOR_SCREEN
+                                    : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
+                                        ? _chipList?.length ~/ 2 + 1
+                                        : _chipList?.length),*/
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                style: TextStyle(fontSize: 12),
+                                listOfChipNames: _chipList,
+                                activeBgColorList: [
+                                  Theme.of(context).primaryColor
+                                ],
+                                inactiveBgColorList: [
+                                  KColors.primaryColor.withOpacity(0.1)
+                                ],
+                                activeTextColorList: [Colors.white],
+                                inactiveTextColorList: [KColors.primaryColor],
+                                listOfChipIndicesCurrentlySeclected: [
+                                  currentIndex
+                                ],
+                                extraOnToggle: (val) {
+                                  this.currentIndex = val;
+                                  setState(() {});
+                                  /* scroll to top */
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                  key: PageStorageKey<String>(
+                                      "menu_id_${currentIndex}"),
+                                  child: Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: isLoading
+                                          ? Center(
+                                              child: MyLoadingProgressWidget())
+                                          : (hasNetworkError
+                                              ? _buildNetworkErrorPage()
+                                              : hasSystemError
+                                                  ? _buildSysErrorPage()
+                                                  : Column(children: <Widget>[
+                                                      isLoading
+                                                          ? Center(
+                                                              child:
+                                                                  MyLoadingProgressWidget())
+                                                          : (hasNetworkError
+                                                              ? ErrorPage(
+                                                                  message:
+                                                                      "${AppLocalizations.of(context).translate('network_error')}",
+                                                                  onClickAction:
+                                                                      () {
+                                                                    if (!widget
+                                                                        .fromNotification) {
+                                                                      if (widget
+                                                                              .menuId ==
+                                                                          -1)
+                                                                        widget.presenter.fetchMenuWithRestaurantId(widget
+                                                                            .restaurant
+                                                                            .id);
+                                                                      else
+                                                                        widget
+                                                                            .presenter
+                                                                            .fetchMenuWithMenuId(widget.menuId);
+                                                                    } else
+                                                                      restaurantBloc
+                                                                          .fetchRestaurantMenuList(
+                                                                              widget?.restaurant);
+                                                                  })
+                                                              : hasSystemError
+                                                                  ? ErrorPage(
+                                                                      message:
+                                                                          "${AppLocalizations.of(context).translate('system_error')}",
+                                                                      onClickAction:
+                                                                          () {
+                                                                        if (!widget
+                                                                            .fromNotification) {
+                                                                          if (widget.menuId ==
+                                                                              -1)
+                                                                            widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+                                                                          else
+                                                                            widget.presenter.fetchMenuWithMenuId(widget.menuId);
+                                                                        } else
+                                                                          restaurantBloc
+                                                                              .fetchRestaurantMenuList(widget?.restaurant);
+                                                                      })
+                                                                  : _buildRestaurantMenu()),
+                                                    ])))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            child: ChipList(
-              /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
-                      _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
-                  ? MAX_CHIP_FOR_SCREEN
-                  : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
-                      ? _chipList?.length ~/ 2 + 1
-                      : _chipList?.length),*/
-              mainAxisAlignment: MainAxisAlignment.start,
-              style: TextStyle(fontSize: 12),
-              listOfChipNames: _chipList,
-              activeBgColorList: [Theme.of(context).primaryColor],
-              inactiveBgColorList: [KColors.primaryColor.withOpacity(0.1)],
-              activeTextColorList: [Colors.white],
-              inactiveTextColorList: [KColors.primaryColor],
-              listOfChipIndicesCurrentlySeclected: [currentIndex],
-              extraOnToggle: (val) {
-                this.currentIndex = val;
-                setState(() {});
-                /* scroll to top */
-              },
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              key: PageStorageKey<String>("menu_id_${currentIndex}"),
-              child: Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: isLoading
-                      ? Center(child: MyLoadingProgressWidget())
-                      : (hasNetworkError
-                          ? _buildNetworkErrorPage()
-                          : hasSystemError
-                              ? _buildSysErrorPage()
-                              : Column(children: <Widget>[
-                                  isLoading
-                                      ? Center(child: MyLoadingProgressWidget())
-                                      : (hasNetworkError
-                                          ? ErrorPage(
-                                              message:
-                                                  "${AppLocalizations.of(context).translate('network_error')}",
-                                              onClickAction: () {
-                                                if (!widget.fromNotification) {
-                                                  if (widget.menuId == -1)
-                                                    widget.presenter
-                                                        .fetchMenuWithRestaurantId(
-                                                            widget
-                                                                .restaurant.id);
-                                                  else
-                                                    widget.presenter
-                                                        .fetchMenuWithMenuId(
-                                                            widget.menuId);
-                                                } else
-                                                  restaurantBloc
-                                                      .fetchRestaurantMenuList(
-                                                          widget?.restaurant);
-                                              })
-                                          : hasSystemError
-                                              ? ErrorPage(
-                                                  message:
-                                                      "${AppLocalizations.of(context).translate('system_error')}",
-                                                  onClickAction: () {
-                                                    if (!widget
-                                                        .fromNotification) {
-                                                      if (widget.menuId == -1)
-                                                        widget.presenter
-                                                            .fetchMenuWithRestaurantId(
-                                                                widget
-                                                                    .restaurant
-                                                                    .id);
-                                                      else
-                                                        widget.presenter
-                                                            .fetchMenuWithMenuId(
-                                                                widget.menuId);
-                                                    } else
-                                                      restaurantBloc
-                                                          .fetchRestaurantMenuList(
-                                                              widget
-                                                                  ?.restaurant);
-                                                  })
-                                              : _buildRestaurantMenu()),
-                                ]))),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -391,7 +569,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                       ),
                     ],
                   ),
-                  title: InkWell(onTap: ()=>_jumpToShopDetails(widget.restaurant),
+                  title: InkWell(
+                    onTap: () => _jumpToShopDetails(widget.restaurant),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -820,6 +999,40 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
+  _getRestaurantStateTag(ShopModel shopModel) {
+    String tagText = "-- --";
+    Color tagTextColor = Colors.white;
+
+    switch (shopModel?.open_type) {
+      case 0: // closed
+        tagText = "${AppLocalizations.of(context).translate('t_closed')}";
+        tagTextColor = KColors.mBlue;
+        break;
+      case 1: // open
+        tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        tagTextColor = CommandStateColor.delivered;
+        break;
+      case 2: // paused
+        tagText = "${AppLocalizations.of(context).translate('t_paused')}";
+        tagTextColor = KColors.mBlue;
+        break;
+      case 3: // blocked
+        tagText = "${AppLocalizations.of(context).translate('t_unavailable')}";
+        tagTextColor = KColors.mBlue;
+        break;
+    }
+
+    return shopModel.coming_soon == 0
+        ? Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: tagTextColor),
+            child: Text(Utils.capitalize("${tagText}"),
+                style: TextStyle(color: Colors.white, fontSize: 12)))
+        : Container();
+  }
+
   _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
     food.restaurant_entity = widget.restaurant;
     /*  Navigator.push(
@@ -974,6 +1187,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
         FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
+
+      widget.restaurant.distance = Utils.locationDistance(
+                  StateContainer.of(context).location, widget.restaurant) >
+              100
+          ? "> 100"
+          : Utils.locationDistance(
+                  StateContainer.of(context).location, widget.restaurant)
+              ?.toString();
+
+      // according to the distance, we get the matching delivery fees
+      // i dont want to make another loop
+      widget.restaurant.delivery_pricing = _getShippingPrice(
+          widget.restaurant.distance,
+          StateContainer.of(context).myBillingArray);
+
       /* make sure, the menu_id is selected. */
       this.data = data;
 
@@ -1216,10 +1444,26 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
+  }
+
+  String _getShippingPrice(
+      String distance, Map<String, String> myBillingArray) {
+    try {
+      int distanceInt = int.parse(
+          !distance.contains(".") ? distance : distance.split(".")[0]);
+      if (myBillingArray["$distanceInt"] == null) {
+        return "~";
+      } else {
+        return myBillingArray["$distanceInt"];
+      }
+    } catch (_) {
+      xrint(_);
+      return "~";
+    }
   }
 }
 

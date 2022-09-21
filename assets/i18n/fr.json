@@ -504,6 +504,9 @@
   "login_expired_please_login": "Désolé, votre session a expirée. Veuillez vous connecter svp.",
   "the_end": "- FIN -",
   "payed": "PRÉPAYÉ",
-  "only_x_weeks_history": "Limité à trois mois d'historique de commande",
-  "expired": "EXPIRÉ"
+  "only_3_months_order_history": "Limité à trois mois d'historique de commande.\nPour plus de détails, Veuillez consulter le Service client.",
+  "only_3_months_transaction_history": "Limité à trois mois d'historique de transactions.\nPour plus de détails, Veuillez consulter le Service client.",
+  "expired": "EXPIRÉ",
+  "more_details": "Plus de details"
+
 }

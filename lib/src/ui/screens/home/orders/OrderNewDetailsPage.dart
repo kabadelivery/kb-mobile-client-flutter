@@ -98,7 +98,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                 Navigator.pop(context);
               }),
           centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -241,7 +242,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                               ..addAll([
                                                 SizedBox(width: 10),
                                                 Text(
-                                                    "${widget?.command?.rating}",
+                                                    "${widget?.command?.rating}.0",
                                                     style: TextStyle(
                                                         fontSize: 32,
                                                         fontWeight:
@@ -989,11 +990,11 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+          color: !widget.command.is_payed_at_arrival ? CommandStateColor.delivered.withAlpha(30) : KColors.new_gray, borderRadius: BorderRadius.circular(5)),
       child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-        (int.parse(widget.command?.remise) > 0
+   /*     (int.parse(widget.command?.remise) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -1002,7 +1003,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         fit: BoxFit.cover,
                         image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
-            : Container()),
+            : Container()),*/
         Container(),
         /* content */
         SizedBox(height: 10),
@@ -1091,8 +1092,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                       color: KColors.primaryColor,
                       fontSize: 18)),
             ]),
-        SizedBox(height: 10),
-        (int.parse(widget.command?.remise) > 0
+    /*    SizedBox(height: 10),
+      (int.parse(widget.command?.remise) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -1101,7 +1102,32 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         fit: BoxFit.cover,
                         image: OptimizedCacheImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
-            : Container()),
+            : Container()),*/
+        SizedBox(
+          height: 20,
+        ),
+    !widget.command.is_payed_at_arrival  ? Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: CommandStateColor.delivered,
+                size: 30,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "${AppLocalizations.of(context).translate("payed")}".toUpperCase(),
+                style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: CommandStateColor.delivered),
+              )
+            ],
+          ),
+        ) : Container()
       ]),
     );
   }

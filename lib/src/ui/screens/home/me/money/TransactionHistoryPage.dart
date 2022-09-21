@@ -373,7 +373,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
         margin: EdgeInsets.only(bottom: 20),
         child: Column(
             children: <Widget>[]..addAll(List.generate(
-                  pointData?.last_ten_transactions?.length, (index) {
+                  pointData?.last_ten_transactions?.length + 1, (index) {
                 return Column(
                   children: <Widget>[
                     index == 0 ? SizedBox(height: 15) : Container(),
@@ -422,7 +422,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                       children: [
                                                         Text(
                                                             "${AppLocalizations.of(context)?.translate('kaba_points')}\n",
-                                                            textAlign: TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
                                                                 fontSize: 11,
                                                                 color: Colors
@@ -1110,7 +1111,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       SizedBox(
                                         width: 5,
                                       ),
-                                   /*   moneyData[index].payAtDelivery == true
+                                      /*   moneyData[index].payAtDelivery == true
                                           ? Container(width: 0, height: 0,) : Icon(
                                               Icons.monetization_on,
                                               color: moneyData[index].type != -1
@@ -1137,7 +1138,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                               fontSize: 12)),
                                       SizedBox(width: 5),
                                       Text(
-                                          "${AppLocalizations.of(context)?.translate('currency')}",
+                                          "${AppLocalizations.of(context)?.translate('currency_short')}",
                                           style: TextStyle(
                                               color: moneyData[index].type != -1
                                                   ? CommandStateColor.delivered
@@ -1171,7 +1172,16 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                         ),
                       ),
                       index == moneyData?.length - 1
-                          ? SizedBox(height: 90)
+                          ? Container(
+                              height: 90,
+                              child: Center(
+                                child: Text(
+                                  '${AppLocalizations.of(context).translate("only_3_months_transaction_history")}',
+                textAlign: TextAlign.center,    style: TextStyle(
+                                      color: Colors.grey, fontSize: 12),
+                                ),
+                              ),
+                            )
                           : Container()
                     ],
                   ),

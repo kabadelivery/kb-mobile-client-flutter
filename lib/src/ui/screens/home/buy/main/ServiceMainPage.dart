@@ -92,7 +92,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
     // check if we have permissions but no gps location
     // if we it's the case, show dialog
-
   }
 
   @override

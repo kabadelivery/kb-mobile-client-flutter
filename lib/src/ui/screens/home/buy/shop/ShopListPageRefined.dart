@@ -76,8 +76,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   // List<ShopModel> data;
   List<ShopModel> visibleItems;
 
-
   bool _searchMode = false;
+  bool _searchAutoFocus = false;
 
   int searchTypePosition = 1;
 
@@ -115,7 +115,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   void initState() {
     _restaurantListScrollController.addListener(_onScroll);
     super.initState();
-
 //    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
     widget.foodProposalPresenter.restaurantFoodProposalView = this;
     widget.restaurantListPresenter.restaurantListView = this;
@@ -194,6 +193,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     super.dispose();
   }
 
+  bool autoFocusDone = false;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // should happen once only
+    if (widget.type == "all" && !autoFocusDone) {
+      _searchMode = true;
+      _searchAutoFocus = true;
+      autoFocusDone = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,6 +219,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               onPressed: () {
                 if (_searchMode) {
                   setState(() {
+                    _searchAutoFocus = false;
                     _searchMode = false;
                   });
                 } else
@@ -222,6 +234,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                 : IconButton(
                     onPressed: () {
                       setState(() {
+                        _searchAutoFocus = true;
                         _searchMode = true;
                       });
                     },
@@ -231,12 +244,14 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                       color: Colors.white,
                     ))
           ],
-          title: AnimatedSwitcher(duration: Duration(milliseconds: 300),
+          title: AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
             layoutBuilder: (currentChild, _) => currentChild,
             transitionBuilder: (child, animation) {
               return SlideTransition(
-                position: Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
-                    .animate(animation),
+                position:
+                    Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
+                        .animate(animation),
                 child: child,
               );
             },
@@ -249,8 +264,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                         Expanded(
                           child: Container(
                             height: 35,
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
                             margin: EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
@@ -270,13 +285,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                         _searchMode = false;
                                       }
                                     },
-                                    child:  TextField(
+                                    child: TextField(
+                                        autofocus: _searchAutoFocus,
                                         controller: _filterEditController,
                                         onSubmitted: (val) {
                                           _searchAction(pressButton: true);
                                           xrint("on submitted");
                                         },
                                         onChanged: (val) {
+                                          if (_searchAutoFocus)
+                                            setState(() {
+                                              _searchAutoFocus = false;
+                                            });
                                           xrint("on onChanged");
                                           xrint("${val.toString()}");
                                           EasyDebounce.debounce(
@@ -428,10 +448,12 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                             ? (!_searchMode
                                 ? Container(
                                     color: Colors.white,
-                                    height: MediaQuery.of(context).size.height-150,
+                                    height: MediaQuery.of(context).size.height -
+                                        150,
 //                              padding: EdgeInsets.only(bottom:230),
-                                    child: widget.restaurantList?.length == null ||
-                                        widget.restaurantList?.length == 0
+                                    child: widget.restaurantList?.length ==
+                                                null ||
+                                            widget.restaurantList?.length == 0
                                         ? Container(
                                             child: Center(
                                                 child:
@@ -470,9 +492,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                               child: ListView.builder(
                                                 controller:
                                                     _restaurantListScrollController,
-                                                itemCount: visibleItems?.length != null
-                                                    ? visibleItems.length + 1
-                                                    : 0,
+                                                itemCount:
+                                                    visibleItems?.length != null
+                                                        ? visibleItems.length +
+                                                            1
+                                                        : 0,
                                                 itemBuilder:
                                                     (context, position) {
                                                   if (position ==
@@ -480,28 +504,36 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                                     if (hasMoreData()) {
                                                       return Container(
                                                           width: MediaQuery.of(
-                                                              context)
+                                                                  context)
                                                               .size
                                                               .width,
                                                           height: 100,
                                                           child: Center(
                                                               child:
-                                                              CircularProgressIndicator()));
+                                                                  CircularProgressIndicator()));
                                                     } else {
                                                       return Container(
                                                           width: MediaQuery.of(
-                                                              context)
+                                                                  context)
                                                               .size
                                                               .width,
                                                           height: 100,
                                                           child: Center(
                                                               child: Text(
-                                                                  "${AppLocalizations.of(context).translate("the_end")}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: KColors.new_black),)));
+                                                            "${AppLocalizations.of(context).translate("the_end")}",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 12,
+                                                                color: KColors
+                                                                    .new_black),
+                                                          )));
                                                     }
                                                   } else {
                                                     return ShopListWidget(
                                                         shopModel: visibleItems[
-                                                        position]);
+                                                            position]);
                                                   }
                                                 },
                                               ),
@@ -986,7 +1018,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height-150,
+      height: MediaQuery.of(context).size.height - 150,
 //      padding: EdgeInsets.only(bottom:230),
       child: Scrollbar(
         thumbVisibility: true,
@@ -1109,13 +1141,13 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     return sentence1;
   }
 
-  void _clearFocus({bool close=false}) {
+  void _clearFocus({bool close = false}) {
     setState(() {
       _filterEditController.text = "";
       _searchMode = close;
     });
     _filterEditController.clear();
-  _searchAction();
+    _searchAction();
   }
 
   void mToast(String message) {
@@ -1135,50 +1167,40 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height-150,
+      height: MediaQuery.of(context).size.height - 150,
       // padding: EdgeInsets.only(bottom: 230),
       child: Scrollbar(
         isAlwaysShown: true,
         controller: _restaurantListScrollController,
         child: ListView.builder(
-          controller:
-          _restaurantListScrollController,
-          itemCount: visibleItems?.length != null
-              ? visibleItems.length + 1
-              : 0,
-          itemBuilder:
-              (context, position) {
-            if (position ==
-                visibleItems?.length) {
+          controller: _restaurantListScrollController,
+          itemCount: visibleItems?.length != null ? visibleItems.length + 1 : 0,
+          itemBuilder: (context, position) {
+            if (position == visibleItems?.length) {
               if (hasMoreData()) {
                 return Container(
-                    width: MediaQuery.of(
-                        context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 100,
-                    child: Center(
-                        child:
-                        CircularProgressIndicator()));
+                    child: Center(child: CircularProgressIndicator()));
               } else {
                 return Container(
-                    width: MediaQuery.of(
-                        context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 100,
                     child: Center(
                         child: Text(
-                          "${AppLocalizations.of(context).translate("the_end")}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: KColors.new_black),)));
+                      "${AppLocalizations.of(context).translate("the_end")}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: KColors.new_black),
+                    )));
               }
             } else {
-              return ShopListWidget(
-                  shopModel: visibleItems[
-                  position]);
+              return ShopListWidget(shopModel: visibleItems[position]);
             }
           },
         ),
-   /*     child: ListView.builder(
+        /*     child: ListView.builder(
           addAutomaticKeepAlives: true,
           controller: _restaurantListScrollController,
           itemCount: visibleItems.length + 1,
@@ -1345,8 +1367,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       widget.finalRestaurantList = restaurants;
       widget.restaurantList = restaurants;
       _setLastTimeRestaurantListRequestToNow();
-      visibleItems =
-      (widget?.restaurantList?.length != null && widget?.restaurantList?.length > PAGE_SIZE
+      visibleItems = (widget?.restaurantList?.length != null &&
+              widget?.restaurantList?.length > PAGE_SIZE
           ? widget.restaurantList.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
@@ -1578,9 +1600,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       }
     } else {
       // send the filter request to
-      if (previousSearchKey == _filterEditController.text)
-        return;
-        searchKey = _filterEditController.text?.trim();
+      if (previousSearchKey == _filterEditController.text) return;
+      searchKey = _filterEditController.text?.trim();
       widget.restaurantListPresenter
           .filterShopList(widget.finalRestaurantList, searchKey);
     }
@@ -1605,16 +1626,16 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     previousSearchKey = sKey;
     setState(() {
       widget.restaurantList = shops;
-      visibleItems =
-      (widget?.restaurantList?.length != null && widget.restaurantList?.length > PAGE_SIZE
+      visibleItems = (widget?.restaurantList?.length != null &&
+              widget.restaurantList?.length > PAGE_SIZE
           ? widget.restaurantList.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
   }
 
-    _onScroll() {
+  _onScroll() {
     if (_restaurantListScrollController.offset >=
-        _restaurantListScrollController.position.maxScrollExtent &&
+            _restaurantListScrollController.position.maxScrollExtent &&
         !_restaurantListScrollController.position.outOfRange) {
       if (hasMoreData()) {
         setState(() {
@@ -1650,13 +1671,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   ? widget.restaurantList.length
                   : visibleItems.length + PAGE_SIZE));
         });
-        PAGE_SIZE+=10;
+        PAGE_SIZE += 10;
       }
     }
     setState(() {
       _isBottomLoading = false;
     });
   }
-
-
 }
