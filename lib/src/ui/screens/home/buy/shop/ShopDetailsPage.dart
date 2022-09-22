@@ -85,14 +85,15 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // check restaurant id and work with it.
     widget.presenter.restaurantDetailsView = this;
 
     CustomerUtils.getCustomer().then((customer) {
-      widget.customer = customer;
+      setState(() {
+        widget.customer = customer;
+      });
       if (widget.restaurant != null) {
         // fetch comments
         // we can accept to load the restaurant here if needed
@@ -288,7 +289,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         ),
                                   SizedBox(width: 10),
                                   ShippingFeeTag(
-                                      widget.distance, widget.customer)
+                                      widget.distance)
                                   /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
@@ -322,49 +323,60 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                 onTap: () => _jumpToRestaurantMenu(
                                     context, widget.restaurant),
                                 child: Container(
-                                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,children: [
-                                      Expanded(
-                                          child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: widget.shopSchedule,
-                                      )),
-                                      Expanded(
-                                          child: Container(
-                                              padding: EdgeInsets.all(10),
-                                              child: Column(mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(height: 3),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        color: KColors
-                                                            .primaryColor
-                                                            .withAlpha(30),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5)),
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Text(
-                                                        "${AppLocalizations.of(context).translate('see_menu')} >",
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w600,
+                                    child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                              child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            child: widget.shopSchedule,
+                                          )),
+                                          Expanded(
+                                              child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(height: 3),
+                                                      Container(
+                                                        decoration: BoxDecoration(
                                                             color: KColors
-                                                                .primaryColor)),
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                      "${widget.restaurant?.description}",
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight
-                                                              .normal))
-                                                ],
-                                              ))),
-                                    ]),
+                                                                .primaryColor
+                                                                .withAlpha(30),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5)),
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        child: Text(
+                                                            "${AppLocalizations.of(context).translate('see_menu')} >",
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: KColors
+                                                                    .primaryColor)),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                          "${widget.restaurant?.description}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal))
+                                                    ],
+                                                  ))),
+                                        ]),
                                     /* height: 50,*/
                                     width: MediaQuery.of(context).size.width,
                                     color: KColors.new_gray),
@@ -397,7 +409,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   Row(
                                                       children: List<
                                                               Widget>.generate(
-                                                          widget.restaurant.stars
+                                                          widget.restaurant
+                                                                  .stars
                                                                   .toInt() +
                                                               (widget.restaurant
                                                                               .stars -
@@ -445,8 +458,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                                 "${AppLocalizations.of(context).translate('votes')}",
                                                             style: TextStyle(
                                                                 fontSize: 12,
-                                                                color:
-                                                                    Colors.grey))
+                                                                color: Colors
+                                                                    .grey))
                                                       ])),
                                                 ]),
                                           ),

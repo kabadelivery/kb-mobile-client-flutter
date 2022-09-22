@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ class StateContainer extends StatefulWidget {
   int last_time_get_daily_order = 0;
   int last_time_get_restaurant_list_timeout = 0;
   int tabPosition;
+  CustomerModel customer;
   int balance;
   int loggingState;
   String kabaPoints;
@@ -21,13 +23,13 @@ class StateContainer extends StatefulWidget {
   Position position;
   static const double ANDROID_APP_SIZE = 50;
 
-
   StateContainer(
       {@required this.child,
       this.balance,
       this.loggingState,
       this.hasGotNewMessageOnce,
       this.kabaPoints,
+        this.customer,
       this.hasUnreadMessage,
       this.tabPosition,
       this.position,
@@ -52,14 +54,12 @@ class StateContainerState extends State<StateContainer> {
   int tabPosition = 0;
   int balance;
   int loggingState;
-
+  CustomerModel customer;
   // String kabaPoints;
   bool isBalanceLoading = false;
   Position location;
   Placemark placemark;
-
   // DeliveryAddressModel selectedAddress;
-
   bool hasUnreadMessage = false;
 
   // firebase

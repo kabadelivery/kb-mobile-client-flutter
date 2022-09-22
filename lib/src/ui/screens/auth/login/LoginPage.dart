@@ -296,6 +296,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       // go directly
       await nextStepWithOtpConfirmationPage(customer, "", obj);
     }
+    StateContainer.of(context).myBillingArray = null;
   }
 
   Future<void> nextStepWithOtpConfirmationPage(CustomerModel customer, String mOtp, dynamic obj) async {
@@ -349,11 +350,13 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         StateContainer
             .of(context)
             .updateLoggingState(state: 1);
+        StateContainer.of(context).customer = customer;
       } else {
         /* jump to home page. */
         StateContainer
             .of(context)
             .updateLoggingState(state: 1);
+        StateContainer.of(context).customer = customer;
         Navigator.of(context).pushReplacement(
             PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>

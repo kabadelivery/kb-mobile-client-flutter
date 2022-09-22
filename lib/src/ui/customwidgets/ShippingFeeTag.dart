@@ -9,11 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShippingFeeTag extends StatefulWidget {
+
   String distance;
 
-  CustomerModel customer;
-
-  ShippingFeeTag(this.distance, this.customer);
+  ShippingFeeTag(this.distance);
 
   @override
   _ShippingFeeTagState createState() {
@@ -30,6 +29,9 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
   }
 
   void inflateBillingInformation() {
+    xrint(StateContainer
+        .of(context)
+        .myBillingArray.toString());
     if (StateContainer
         .of(context)
         .myBillingArray == null) {
@@ -38,9 +40,9 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
 
         // fetch billing from the one stored locally
         bool is_email_account =
-        widget.customer == null || widget?.customer?.username == null
+        StateContainer.of(context).customer == null || StateContainer.of(context).customer?.username == null
             ? false
-            : (widget.customer.username.contains("@") ? true : false);
+            : (StateContainer.of(context).customer.username.contains("@") ? true : false);
 
         Map<String, String> myBillingArray = Map();
 
@@ -122,6 +124,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
   String _getShippingPrice(String distance,
       Map<String, String> myBillingArray) {
     try {
+
       int distanceInt =
       int.parse(!distance.contains(".") ? distance : distance.split(".")[0]);
       if (myBillingArray["$distanceInt"] == null) {

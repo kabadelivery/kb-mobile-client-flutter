@@ -100,9 +100,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     if (widget.available_services?.length == 0 &&
         widget.coming_soon_services?.length == 0) {
       widget.presenter.fetchServiceCategoryFromLocation(
-          StateContainer
-              .of(context)
-              .location);
+          StateContainer.of(context).location);
     }
     // fetch billing and update locally
     widget.presenter.fetchBilling();
@@ -325,7 +323,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToPage(BuildContext context, page) {
-
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -333,7 +330,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
           var end = Offset.zero;
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
-          var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
@@ -353,7 +351,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     });
-    Future.delayed(new Duration(seconds: 1), (){
+    Future.delayed(new Duration(seconds: 1), () {
       if (StateContainer.of(context).location == null) {
         _requestGpsLocationDialog();
       }
@@ -553,7 +551,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
               await Geolocator.getCurrentPosition(
                   desiredAccuracy: LocationAccuracy.high);
 
-               Stream<Position> positionStream = Geolocator.getPositionStream();
+              Stream<Position> positionStream = Geolocator.getPositionStream();
               positionStream.first.then((position) {
                 xrint("position stream");
                 positionStream = Geolocator.getPositionStream();

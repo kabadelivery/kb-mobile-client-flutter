@@ -223,7 +223,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
 
     return Scaffold(
-
       backgroundColor: Colors.white,
       appBar: appBar,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -237,35 +236,36 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                     NestedScrollView(
                       headerSliverBuilder: (context, innerBoxIsScrolled) {
                         return [
-                          SliverAppBar(collapsedHeight: 140,
+                          SliverAppBar(
+                            collapsedHeight: 120,
                             leading: null,
                             automaticallyImplyLeading: false,
                             elevation: -10,
-                            expandedHeight: 140,
+                            expandedHeight: 120,
                             backgroundColor: Colors.white,
                             flexibleSpace: SingleChildScrollView(
                               child: Container(
                                   padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 10, bottom: 20),
-                                  height: 140,
+                                      left: 10, right: 10, top: 10),
+                                  height: 120,
                                   child: Column(
                                     children: [
                                       Row(children: [
                                         Expanded(
                                             flex: 8,
                                             child: Text(
-                                                "${widget?.restaurant?.name}"
-                                                    ?.toUpperCase(),
+                                                "${widget?.restaurant?.name == null ? '' : widget?.restaurant?.name}",
                                                 textAlign: TextAlign.start,
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: KColors.new_black,
                                                     fontSize: 15))),
                                         Expanded(flex: 2, child: Container()),
-                                        _getRestaurantStateTag(widget.restaurant)
+                                        _getRestaurantStateTag(
+                                            widget.restaurant)
                                       ]),
                                       SizedBox(
-                                        height: 5,
+                                        height: 10,
                                       ),
                                       Row(children: [
                                         Icon(
@@ -275,31 +275,34 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                         ),
                                         SizedBox(width: 5),
                                         Container(
-                                          width:
-                                              MediaQuery.of(context).size.width *
-                                                  0.8,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.8,
                                           child: Text(
-                                              "${widget?.restaurant?.address}",
+                                              "${widget?.restaurant?.address == null ? '' : widget?.restaurant?.address}",
                                               style: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12)),
                                         )
                                       ]),
-                                      SizedBox(height: 10),
+
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          isLoading
+                                          isLoading && StateContainer.of(context).location != null
                                               ? Container()
                                               : Row(
                                                   children: [
-                                                    widget.restaurant.distance ==
+                                                    widget.restaurant
+                                                                .distance ==
                                                             null
                                                         ? Container()
                                                         : Container(
                                                             padding:
-                                                                EdgeInsets.all(5),
+                                                                EdgeInsets.all(
+                                                                    5),
                                                             decoration: BoxDecoration(
                                                                 borderRadius: BorderRadius
                                                                     .all(Radius
@@ -335,10 +338,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                           ),
                                                     SizedBox(width: 10),
                                                     ShippingFeeTag(
-                                                        widget
-                                                            .restaurant.distance,
-                                                        widget.customer),
-
+                                                        widget.restaurant
+                                                            .distance),
                                                   ],
                                                 ),
                                           GestureDetector(
@@ -348,12 +349,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                 padding: EdgeInsets.only(
                                                     left: 30,
                                                     top: 15,
-                                                    bottom: 10, right: 15),
+                                                    bottom: 10,
+                                                    right: 15),
                                                 child: Text(
                                                   "${AppLocalizations.of(context).translate("more_details")}",
                                                   style: TextStyle(
-                                                      color: KColors.primaryColor,
-                                                      fontWeight: FontWeight.bold,
+                                                      color:
+                                                          KColors.primaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 12),
                                                 ),
                                               ))
@@ -377,10 +381,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                               children: [
                                 Container(
                                   margin: EdgeInsets.only(
-                                      top: 20, right: 10, left: 20),
+                                      top: 10, right: 10, left: 20),
                                   child: Text(
                                       "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
-                                          ?.toUpperCase(),
+                                         ,
                                       style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 12,
@@ -1022,13 +1026,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         break;
     }
 
-    return shopModel.coming_soon == 0
+    return shopModel?.coming_soon == 0
         ? Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderRadius: BorderRadius.all(Radius.circular(15)),
                 color: tagTextColor),
-            child: Text(Utils.capitalize("${tagText}"),
+            child: Text(Utils.capitalize("${tagText}"?.toUpperCase()),
                 style: TextStyle(color: Colors.white, fontSize: 12)))
         : Container();
   }

@@ -271,6 +271,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
+                                      SizedBox(width: 20,),
                                       widget.food.promotion == 0
                                           ? Text("${widget.food?.price}",
                                               style: TextStyle(

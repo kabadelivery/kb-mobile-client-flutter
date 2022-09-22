@@ -185,7 +185,7 @@
   "processing_payment": "Hello, we are processing your payment. Please wait V(^_^)V",
   "order_amount": "Order Price:",
   "delivery_amount": "Delivery price",
-  "net_price": "Net to Pay",
+  "net_price": "Net Price",
   "discount": "Discount",
   "cooking_time_estimation": "Estimated Cooking Time",
   "additional_info": "Any special request about the order ?",

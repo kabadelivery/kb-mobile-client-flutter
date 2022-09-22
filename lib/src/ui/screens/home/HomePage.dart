@@ -127,12 +127,21 @@ class _HomePageState extends State<HomePage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                  content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    SizedBox(height: 80, width: 80, child: Icon(Icons.account_circle, color: KColors.primaryColor,)),
+                  content:
+                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    SizedBox(
+                        height: 80,
+                        width: 80,
+                        child: Icon(
+                          Icons.account_circle,
+                          color: KColors.primaryColor,
+                        )),
                     SizedBox(height: 10),
-                    Text(  "${AppLocalizations.of(context).translate('login_expired_please_login')}",
+                    Text(
+                        "${AppLocalizations.of(context).translate('login_expired_please_login')}",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: KColors.new_black, fontSize: 13))
+                        style:
+                            TextStyle(color: KColors.new_black, fontSize: 13))
                   ]),
                   actions: <Widget>[
                     OutlinedButton(
@@ -148,16 +157,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: KColors.primaryColor, width: 1))),
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
                       child: new Text(
                           "${AppLocalizations.of(context).translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        _jumpToPage(
-                            context,
-                            launchPage);
+                        _jumpToPage(context, launchPage);
                       },
                     ),
                   ]);
@@ -174,15 +181,14 @@ class _HomePageState extends State<HomePage> {
     return res;
   }
 
-
   void _logout() {
     CustomerUtils.clearCustomerInformations().whenComplete(() {
       StateContainer.of(context).updateLoggingState(state: 0);
       StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
-      // StateContainer.of(context).selectedAddress = null;
+      StateContainer.of(context).customer = null;
       StateContainer.of(context).myBillingArray = null;
-      StateContainer.of(context).location = null;
+      // StateContainer.of(context).location = null;
       // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
       StateContainer.of(context).hasUnreadMessage = false;
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
@@ -400,7 +406,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    // check update
+CustomerUtils.getCustomer().then((value) {
+ setState(() {
+   StateContainer.of(context).customer = value;
+ });
+});    // check update
   }
 
   void mDialog(String message) {
@@ -1172,7 +1182,9 @@ class _HomePageState extends State<HomePage> {
                     // SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.setString("_has_accepted_gps", "ok");
                     // call get location again...
-                    _getLastKnowLocation();
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      _getLastKnowLocation();
+                    });
                     Navigator.of(context).pop();
                   },
                 )
@@ -1401,7 +1413,6 @@ class _HomePageState extends State<HomePage> {
       StateContainer.of(context).location_asked = true;
     else
       return;
-
     if (mounted) {
       _getLastKnowLocation();
       if (widget.hasGps == false &&

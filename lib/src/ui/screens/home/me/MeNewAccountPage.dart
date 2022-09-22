@@ -1554,9 +1554,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       StateContainer.of(context).updateLoggingState(state: 0);
       StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
+      StateContainer.of(context).customer = null;
       // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
-      StateContainer.of(context).location = null;
+      // StateContainer.of(context).location = null;
       // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
       StateContainer.of(context).hasUnreadMessage = false;
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
