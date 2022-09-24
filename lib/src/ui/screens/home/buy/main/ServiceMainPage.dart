@@ -253,7 +253,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 shrinkWrap: true,
                 children: []..addAll(widget.available_services
                     .map((e) =>
-                        BuyCategoryWidget(e, available: true, mDialog: mDialog))
+                        BuyCategoryWidget(e, available: true, mDialog: mDialog, showPlacePicker: showPlacePicker))
                     .toList()),
               ),
               SizedBox(height: 30),
@@ -313,13 +313,75 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToSearchPage(String type) {
-    _jumpToPage(
-        context,
-        ShopListPageRefined(
-            context: context,
-            type: type,
-            foodProposalPresenter: RestaurantFoodProposalPresenter(),
-            restaurantListPresenter: RestaurantListPresenter()));
+    if (StateContainer.of(context).location?.latitude == null && StateContainer.of(context).hasAskedLocation == false) {
+      StateContainer.of(context).hasAskedLocation = true;
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${AppLocalizations.of(context).translate('info')}"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            image: new AssetImage(ImageAssets.address),
+                          ))),
+                  SizedBox(height: 10),
+                  Text(
+                      "${AppLocalizations.of(context).translate(
+                          'request_location_permission')}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14))
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('refuse')}"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _jumpToPage(
+                      context,
+                      ShopListPageRefined(
+                          context: context,
+                          type: type,
+                          foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                          restaurantListPresenter: RestaurantListPresenter()));
+                },
+              ),
+              TextButton(
+                child: Text(
+                    "${AppLocalizations.of(context).translate('accept')}"),
+                onPressed: () {
+                  /* */
+                  // SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setString("_has_accepted_gps", "ok");
+                  Navigator.of(context).pop();
+                  // call get location again...
+                  showPlacePicker(context);
+                },
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      _jumpToPage(
+          context,
+          ShopListPageRefined(
+              context: context,
+              type: type,
+              foodProposalPresenter: RestaurantFoodProposalPresenter(),
+              restaurantListPresenter: RestaurantListPresenter()));
+    }
   }
 
   void _jumpToPage(BuildContext context, page) {
@@ -351,11 +413,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     });
-    Future.delayed(new Duration(seconds: 1), () {
+    // methode de demande de géolocation trop agressive
+    /* Future.delayed(new Duration(seconds: 1), () {
       if (StateContainer.of(context).location == null) {
         _requestGpsLocationDialog();
       }
-    });
+    });*/
   }
 
   @override
@@ -488,13 +551,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: new AssetImage(
-                                  ImageAssets.location_permission),
+                              image: new AssetImage(ImageAssets.address),
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('location_explanation')}",
-                        textAlign: TextAlign.center)
+                        "${AppLocalizations.of(context).translate('request_location_permission')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
                   ],
                 ),
               ),
@@ -528,7 +591,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if (permission == LocationPermission.deniedForever) {
           await Geolocator.openAppSettings();
         } else if (permission == LocationPermission.denied) {
-          Geolocator.requestPermission();
+         await Geolocator.requestPermission();
         } else {
           // location is enabled
           bool isLocationServiceEnabled =
@@ -578,7 +641,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   void _jumpToPickAddressPage() async {
     lo.LocationData location = await lo.Location().getLocation();
-
     // xrint(widget.gps_location);
     if (StateContainer.of(context)?.location != null) {
       xrint("moving to me");
@@ -623,6 +685,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     return _myCurrentTile;
   }
 
+/*
   void _requestGpsLocationDialog() {
     showDialog<void>(
       context: context,
@@ -673,5 +736,5 @@ class ServiceMainPageState extends State<ServiceMainPage>
         );
       },
     );
-  }
+  }*/
 }

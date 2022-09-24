@@ -621,7 +621,7 @@ CustomerUtils.getCustomer().then((value) {
 
   @override
   Widget build(BuildContext context) {
-    _requestGpsPermissionAndLocation();
+    // _requestGpsPermissionAndLocation();
     if (loginStuffChecked == 0) {
       /* check the login status */
       checkLogin().then((value) {

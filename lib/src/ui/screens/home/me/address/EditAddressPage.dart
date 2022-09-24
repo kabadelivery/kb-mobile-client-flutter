@@ -389,7 +389,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                               image: new DecorationImage(
                                 fit: BoxFit.cover,
                                 image: new AssetImage(
-                                    ImageAssets.location_permission),
+                                    ImageAssets.address),
                               ))),
                       SizedBox(height: 10),
                       Text(
@@ -774,7 +774,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                             image: new DecorationImage(
                               fit: BoxFit.cover,
                               image: new AssetImage(
-                                  ImageAssets.location_permission),
+                                  ImageAssets.address),
                             ))),
                     SizedBox(height: 10),
                     Text(

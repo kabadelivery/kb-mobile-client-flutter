@@ -291,12 +291,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          isLoading && StateContainer.of(context).location != null
+                                          isLoading || StateContainer.of(context).location?.latitude == null
                                               ? Container()
                                               : Row(
                                                   children: [
-                                                    widget.restaurant
-                                                                .distance ==
+                                                    widget?.restaurant
+                                                                ?.distance ==
                                                             null
                                                         ? Container()
                                                         : Container(
@@ -321,7 +321,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                 SizedBox(
                                                                     width: 10),
                                                                 Text(
-                                                                    "${widget.restaurant.distance} ${AppLocalizations.of(context).translate('km')}",
+                                                                    "${widget?.restaurant?.distance} ${AppLocalizations.of(context).translate('km')}",
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .grey,
@@ -338,8 +338,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                           ),
                                                     SizedBox(width: 10),
                                                     ShippingFeeTag(
-                                                        widget.restaurant
-                                                            .distance),
+                                                        widget?.restaurant
+                                                            ?.distance),
                                                   ],
                                                 ),
                                           GestureDetector(
@@ -1192,7 +1192,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         FOOD_MAX = int.parse(restaurant.max_food);
       widget.restaurant = restaurant;
 
-      widget.restaurant.distance = Utils.locationDistance(
+      widget?.restaurant?.distance = Utils.locationDistance(
                   StateContainer.of(context).location, widget.restaurant) >
               100
           ? "> 100"
@@ -1203,7 +1203,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       // according to the distance, we get the matching delivery fees
       // i dont want to make another loop
       widget.restaurant.delivery_pricing = _getShippingPrice(
-          widget.restaurant.distance,
+          widget?.restaurant?.distance,
           StateContainer.of(context).myBillingArray);
 
       /* make sure, the menu_id is selected. */
@@ -1224,7 +1224,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     showLoading(false);
     // two seconds after, we jump
     Future.delayed(Duration(seconds: 1), () {
-      Scrollable.ensureVisible(dataKey.currentContext);
+      Scrollable.ensureVisible(dataKey.currentContext, duration: Duration(milliseconds: 500), curve: Curves.easeInOut );
     });
 
     String dialogText = "";
@@ -1257,7 +1257,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         break;
     }
     if (dialogText != "") {
-      _comingSoon(context, restaurant, dialogText);
+      Future.delayed(Duration(milliseconds: 600), (){
+        _comingSoon(context, restaurant, dialogText);
+      });
     }
   }
 

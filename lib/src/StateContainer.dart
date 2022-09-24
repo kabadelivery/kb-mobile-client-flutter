@@ -19,6 +19,7 @@ class StateContainer extends StatefulWidget {
   String kabaPoints;
   bool isBalanceLoading = false;
   bool hasUnreadMessage;
+  bool hasAskedLocation = false;
   bool hasGotNewMessageOnce;
   Position position;
   static const double ANDROID_APP_SIZE = 50;
@@ -30,6 +31,7 @@ class StateContainer extends StatefulWidget {
       this.hasGotNewMessageOnce,
       this.kabaPoints,
         this.customer,
+      this.hasAskedLocation,
       this.hasUnreadMessage,
       this.tabPosition,
       this.position,
@@ -61,6 +63,7 @@ class StateContainerState extends State<StateContainer> {
   Placemark placemark;
   // DeliveryAddressModel selectedAddress;
   bool hasUnreadMessage = false;
+  bool hasAskedLocation = false;
 
   // firebase
   FirebaseAnalytics analytics;

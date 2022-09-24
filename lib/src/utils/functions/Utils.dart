@@ -14,7 +14,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:intl/intl.dart';
 
-
 Color hexToColor(String code) {
   return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
 }
@@ -28,8 +27,8 @@ int mHexToInt(String code) {
   return int.parse(code);
 }
 
-mJsonDecode(var source){
-  if (source is String){
+mJsonDecode(var source) {
+  if (source is String) {
     return json.decode(source);
   } else {
     return source;
@@ -57,7 +56,7 @@ class Utils {
   static Map<String, String> getDioHeadersWithToken(String token) {
     return {
       "Authorization": "Bearer " + token,
-      "cache-control" : "no-cache",
+      "cache-control": "no-cache",
       Headers.contentTypeHeader: Headers.jsonContentType,
     };
   }
@@ -65,9 +64,10 @@ class Utils {
   static inflateLink(String link) {
     if (link != null) {
       String slash = (link.length > 0 && link.indexOf("/") == 0) ? "" : "/";
-      return ServerConfig.IMAGE_BUCKET_BASE_LINK + slash +link;
+      return ServerConfig.IMAGE_BUCKET_BASE_LINK + slash + link;
     } else
-      return ServerConfig.IMAGE_BUCKET_BASE_LINK+"/default_pic/kaba_red_rectangle.png";
+      return ServerConfig.IMAGE_BUCKET_BASE_LINK +
+          "/default_pic/kaba_red_rectangle.png";
   }
 
   static Future hasNetwork() async {
@@ -80,8 +80,8 @@ class Utils {
     return false;
   }
 
-  static String token = "eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiI5MDYyODcyNSIsImlhdCI6MTU2MzQ4MjExNSwiZXhwIjoxNTk0NTg2MTE1fQ.DP2qV_BpF8NzT7cMA6_6nDIIep7A_vL7UqVhOK4-JVOFhkOrpm6aj8MRLP0D6V40GbfT-np12tNh-UKJlokE7txtM-Y1vSRh41JV3FuFxKSblpmXhi-RYF7V-TcAJWJp3AslUJjB50NyjTe-GQ1mK758RpfX-fwUt6T0jvOJqU8nny8DmqWtpbwPH3PRii3lLlDreXz696raktXIFmobZ7pqH5gbTAQ_t5BCtYijhF8QvbIxIXyQ_RDNutzOuPEQLZLBXhqJmo5gB90EMYJzRzeZLlsJ6rlcQ_aCW0acxSC7hnXpRycQE1NFXSGF3i502KriFOC_lwN8oJxfdtyOSYvn6ZcA_JCVD58DoWk3qBwXBFJ2_z0luQzxrY0IeB8fROJTd5jaLR01JO7KtA4f1-AdaR8t7vL1yA6v-T7LtWFyIapSdoiyTaaluGHHp7vB_Ccn-qwT5LoMZraQq2nBv33SB6KNZGwQHnTrYhIypNMhBuHcEiXUBTZXtEKDgU3FQy2f6RsZmw5jtF49i7YVNLZkh4_-tKNy5ZPcjhhwZL2-MC7-klHJI6KBkcf01tWZa45wzMY14U5OTc6ZaHnB10KwmgD0dZcjhW--_6mKLC2pBQY-t-lm8PuOyXZzFjh68vsN9I3e2jJDhkRrgAbFU12gsTUrqu1SPsk9xSa3L0g";
-
+  static String token =
+      "eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiI5MDYyODcyNSIsImlhdCI6MTU2MzQ4MjExNSwiZXhwIjoxNTk0NTg2MTE1fQ.DP2qV_BpF8NzT7cMA6_6nDIIep7A_vL7UqVhOK4-JVOFhkOrpm6aj8MRLP0D6V40GbfT-np12tNh-UKJlokE7txtM-Y1vSRh41JV3FuFxKSblpmXhi-RYF7V-TcAJWJp3AslUJjB50NyjTe-GQ1mK758RpfX-fwUt6T0jvOJqU8nny8DmqWtpbwPH3PRii3lLlDreXz696raktXIFmobZ7pqH5gbTAQ_t5BCtYijhF8QvbIxIXyQ_RDNutzOuPEQLZLBXhqJmo5gB90EMYJzRzeZLlsJ6rlcQ_aCW0acxSC7hnXpRycQE1NFXSGF3i502KriFOC_lwN8oJxfdtyOSYvn6ZcA_JCVD58DoWk3qBwXBFJ2_z0luQzxrY0IeB8fROJTd5jaLR01JO7KtA4f1-AdaR8t7vL1yA6v-T7LtWFyIapSdoiyTaaluGHHp7vB_Ccn-qwT5LoMZraQq2nBv33SB6KNZGwQHnTrYhIypNMhBuHcEiXUBTZXtEKDgU3FQy2f6RsZmw5jtF49i7YVNLZkh4_-tKNy5ZPcjhhwZL2-MC7-klHJI6KBkcf01tWZa45wzMY14U5OTc6ZaHnB10KwmgD0dZcjhW--_6mKLC2pBQY-t-lm8PuOyXZzFjh68vsN9I3e2jJDhkRrgAbFU12gsTUrqu1SPsk9xSa3L0g";
 
   static getStateColor(int state) {
     switch (state) {
@@ -127,15 +127,12 @@ class Utils {
   }
 */
 
+  static String timeStampToDate(String timestamp) {
+    if (timestamp == null) return "";
 
-
-  static String timeStampToDate (String timestamp) {
-
-    if (timestamp == null)
-      return "";
-
-    DateTime commandTime = new DateTime
-        .fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);;
+    DateTime commandTime =
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);
+    ;
     String pattern_not_today = "yyyy-MM-dd";
     DateFormat sdf = DateFormat();
     String formattedDate = "";
@@ -145,11 +142,11 @@ class Utils {
   }
 
   static getExpiryDay(String timestamp) {
-    if (timestamp == null)
-      return "";
+    if (timestamp == null) return "";
 
-    DateTime commandTime = new DateTime
-        .fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);;
+    DateTime commandTime =
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);
+    ;
     String pattern_not_today = "dd";
     DateFormat sdf = DateFormat();
     String formattedDate = "";
@@ -158,11 +155,11 @@ class Utils {
     return formattedDate;
   }
 
-
-  static String readTimestamp (BuildContext context, int timestamp) {
-
+  static String readTimestamp(BuildContext context, int timestamp) {
 //      long unixSeconds = Long.parseLong(timeStamp);
-    DateTime commandTime = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);;
+    DateTime commandTime =
+        new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    ;
 
     DateTime currentTime = new DateTime.now();
 
@@ -178,9 +175,14 @@ class Utils {
       sdf = new DateFormat(pattern_today);
       formattedDate = sdf.format(commandTime);
       if (commandTime.day == currentTime.day) {
-        formattedDate = "${AppLocalizations.of(context).translate('today')}" + " " + formattedDate;
+        formattedDate = "${AppLocalizations.of(context).translate('today')}" +
+            " " +
+            formattedDate;
       } else if (commandTime.day + 1 == currentTime.day) {
-        formattedDate = "${AppLocalizations.of(context).translate('yesterday')}" + " " + formattedDate;
+        formattedDate =
+            "${AppLocalizations.of(context).translate('yesterday')}" +
+                " " +
+                formattedDate;
       } else {
         sdf = DateFormat(pattern_not_today);
         formattedDate = sdf.format(commandTime);
@@ -192,41 +194,36 @@ class Utils {
     return formattedDate;
   }
 
-  static bool isPhoneNumber_TGO (String phone_no) {
-    if (phone_no == null || phone_no.length == 0)
-      return false;
+  static bool isPhoneNumber_TGO(String phone_no) {
+    if (phone_no == null || phone_no.length == 0) return false;
     final regex = RegExp(r'^[9,7]{1}[0,1,2,3,6,7,8,9]{1}[0-9]{6}$');
     bool res = regex.hasMatch(phone_no);
     return res;
   }
 
-  static bool isPhoneNumber_Tgcel (String phone_no) {
-    if (phone_no == null || phone_no.length == 0)
-      return false;
+  static bool isPhoneNumber_Tgcel(String phone_no) {
+    if (phone_no == null || phone_no.length == 0) return false;
     final regex = RegExp(r'^[9,7]{1}[0-3]{1}[0-9]{6}$');
     bool res = regex.hasMatch(phone_no);
     return res;
   }
 
-  static bool isPhoneNumber_Moov (String phone_no) {
-    if (phone_no == null || phone_no.length == 0)
-      return false;
+  static bool isPhoneNumber_Moov(String phone_no) {
+    if (phone_no == null || phone_no.length == 0) return false;
     final regex = RegExp(r'^[9,7]{1}[6-9]{1}[0-9]{6}$');
     bool res = regex.hasMatch(phone_no);
     return res;
   }
 
   static bool isCode /* 4 digits string */ (String code) {
-    if (code == null || code.length != 4)
-      return false;
+    if (code == null || code.length != 4) return false;
     final regex = RegExp(r'^[0-9]{4}$');
     bool res = regex.hasMatch(code);
     return res;
   }
 
   static String inflatePrice(String balance) {
-    if (balance == null || "" == (balance))
-      balance = "0";
+    if (balance == null || "" == (balance)) balance = "0";
 
     if (int.parse(balance) < 1000) {
       return balance;
@@ -246,14 +243,13 @@ class Utils {
       }
       xrint(reverseString(mbalance));
       return reverseString(res);
-    } catch(_){
+    } catch (_) {
       return "...";
     }
   }
 
-  static bool isEmailValid (String email) {
-    if (email == null || email.length == 0)
-      return false;
+  static bool isEmailValid(String email) {
+    if (email == null || email.length == 0) return false;
     final regex = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
     bool res = regex.hasMatch(email);
     return res;
@@ -264,57 +260,69 @@ class Utils {
   }
 
   static String hidePhoneNumber(String phone_number_email) {
-    if (phone_number_email == null)
-      return "********";
+    if (phone_number_email == null) return "********";
     if (Utils.isEmailValid(phone_number_email)) {
       // hide email
       int ind = phone_number_email.lastIndexOf("@");
       if (ind > 3) {
-        return phone_number_email.substring(0,3)+"****"+phone_number_email.substring(ind);
+        return phone_number_email.substring(0, 3) +
+            "****" +
+            phone_number_email.substring(ind);
       } else {
         phone_number_email;
       }
-    } else  if (Utils.isPhoneNumber_TGO(phone_number_email)) {
+    } else if (Utils.isPhoneNumber_TGO(phone_number_email)) {
       // hide phone number
-      return phone_number_email.substring(0,2)+"****"+phone_number_email.substring(6,8);
+      return phone_number_email.substring(0, 2) +
+          "****" +
+          phone_number_email.substring(6, 8);
     } else {
       return "********";
     }
-
   }
 
-  static String timeStampToDayDate (String timeStamp, {List<String> dayz}) {
-
+  static String timeStampToDayDate(String timeStamp, {List<String> dayz}) {
     try {
       int unixSeconds = int.parse(timeStamp);
-      DateTime date = new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
+      DateTime date =
+          new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
 
       int day_of_week = date.weekday;
 
       if (dayz == null || dayz.length != 7)
-        dayz = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+        dayz = [
+          "Lundi",
+          "Mardi",
+          "Mercredi",
+          "Jeudi",
+          "Vendredi",
+          "Samedi",
+          "Dimanche"
+        ];
 
       int day = date.day;
       int month = date.month;
 
-      String daY = dayz[day_of_week-1];
-      daY += ("("+(day>0 && day <=9 ? "0":"")+"${day}/"+(month>0 && month<=9? "0":"")+"${month})");
+      String daY = dayz[day_of_week - 1];
+      daY += ("(" +
+          (day > 0 && day <= 9 ? "0" : "") +
+          "${day}/" +
+          (month > 0 && month <= 9 ? "0" : "") +
+          "${month})");
       return daY;
-
-    } catch (e){
+    } catch (e) {
       e.xrintStackTrace();
     }
     return "-- --";
   }
 
-
-  static String timeStampToHourMinute (String timeStamp) {
-
+  static String timeStampToHourMinute(String timeStamp) {
     try {
       int unixSeconds = int.parse(timeStamp);
-      DateTime date = new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
+      DateTime date =
+          new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
       return new DateFormat("Hm").format(date);
-    } catch (e){
+    } catch (e) {
       e.xrintStackTrace();
     }
     return "-- --";
@@ -322,25 +330,24 @@ class Utils {
 
   static bool within3days(String last_update) {
     int orderLastUpdate = int.parse(last_update);
-    return orderLastUpdate > (DateTime.now().millisecondsSinceEpoch/1000 - 3*3600*24);
+    return orderLastUpdate >
+        (DateTime.now().millisecondsSinceEpoch / 1000 - 3 * 3600 * 24);
   }
 
   // function to generate a random string of length n
-  static String getAlphaNumericString({int n=9})
-  {
-
+  static String getAlphaNumericString({int n = 9}) {
     String str = "RandomString_";
     int nb = new Random().nextInt(1000);
     for (int i = 0; i < n; i++) {
-      str+="${nb}";
+      str += "${nb}";
     }
     // return the resultant string
     return str;
   }
 
   static bool isEndDateReached(String endTimeStamp) {
-
-    DateTime endDate = new DateTime.fromMillisecondsSinceEpoch(int.parse(endTimeStamp) * 1000);
+    DateTime endDate =
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(endTimeStamp) * 1000);
     return endDate.isBefore(DateTime.now());
   }
 
@@ -350,28 +357,28 @@ class Utils {
   }
 
   static double locationDistance(Position position, ShopModel restaurant) {
-
-    double lat1 = position.latitude;
-    double long1 = position.longitude;
-
-    double lat2 = double.parse(restaurant.location.split(":")[0]);
-    double long2 = double.parse(restaurant.location.split(":")[1]);
-
-   double distance = Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
-   distance = 1.15/* error factor */ * distance/1000; // distance meter
-   return double.parse(distance.toStringAsPrecision(1));
-    // crop to 1 number after comma
+    try {
+      double lat1 = position.latitude;
+      double long1 = position.longitude;
+      double lat2 = double.parse(restaurant.location.split(":")[0]);
+      double long2 = double.parse(restaurant.location.split(":")[1]);
+      double distance =
+          Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
+      distance = 1.15 /* error factor */ * distance / 1000; // distance meter
+      return double.parse(distance.toStringAsPrecision(1));
+      // crop to 1 number after comma
+    } catch (e) {
+      xrint(e);
+      return 100;
+    }
   }
 
-  static String capitalize (String s){
-    if (s.length < 2)
-      return s;
-   return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+  static String capitalize(String s) {
+    if (s.length < 2) return s;
+    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   }
 
   static String replaceNewLineBy(String text, String placebo) {
     return text.replaceAll("\n", placebo);
   }
-
 }
-
