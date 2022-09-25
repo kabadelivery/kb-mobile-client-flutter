@@ -296,7 +296,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
         setState(() {
           loadingToGoOut = true;
         });
-        Future.delayed(Duration(seconds: 3), (){
+        Future.delayed(Duration(seconds: 2), (){
           Navigator.of(context).pop({'otp_valid':"valid"});
         });
       } else {

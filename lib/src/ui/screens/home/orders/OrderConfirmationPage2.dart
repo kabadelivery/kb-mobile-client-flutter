@@ -1493,6 +1493,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     showPayNowLoading(false);
 
     if (errorCode == 0) {
+      CustomerUtils.unlockBestSellerVersion();
       _showOrderSuccessDialog();
     } else {
       String message = "";

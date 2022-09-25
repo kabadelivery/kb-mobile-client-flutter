@@ -133,6 +133,42 @@ class CustomerUtils {
     return jsonContent;
   }
 
+
+  //////////////
+  static saveBestSellerVersion() async {
+    // get date millisecond
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt("_best_seller_version" + signature, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  static getBestSellerLockDate() async {
+    // get date
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      int mls = prefs.getInt("_best_seller_version" + signature);
+      return mls;
+    } catch(e){
+      return 0;
+    }
+  }
+
+  static canLoadBestSeller() async {
+    int tmp = 0;
+    try{tmp = await getBestSellerLockDate();}catch(e){xrint(e);}
+    if (DateTime.now().millisecondsSinceEpoch - tmp > 1000*60*60*24*3) // 1 days maximums after, need to reload best seller
+      return true;
+    return false;
+  }
+
+  static unlockBestSellerVersion() async {
+    // remove date
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("_best_seller_version" + signature);
+  }
+
+  ///////////////////////
+
+
   static saveBestSellerPage(String wp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_b_seller" + signature, wp);
@@ -179,8 +215,7 @@ class CustomerUtils {
     }
   }
 
-  static Future<void> saveAddressLocally(
-      Position selectedAddress) async {
+  static Future<void> saveAddressLocally(Position selectedAddress) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(
         "_selectedAddress" + signature, json.encode(selectedAddress.toJson()));
@@ -189,9 +224,10 @@ class CustomerUtils {
   static Future<Position> getSavedAddressLocally() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String address = prefs.get("_selectedAddress" + signature);var res = Position.fromMap(json.decode(address));
+      String address = prefs.get("_selectedAddress" + signature);
+      var res = Position.fromMap(json.decode(address));
       return res;
-    } catch(e){
+    } catch (e) {
       return null;
     }
   }
