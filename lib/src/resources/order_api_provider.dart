@@ -83,8 +83,13 @@ class OrderApiProvider {
 
     var device;
 
-    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-    String token = await firebaseMessaging.getToken();
+    String token = "";
+    try {
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      token = await firebaseMessaging.getToken();
+    } catch(e){
+      xrint(e);
+    }
 
     if (Platform.isAndroid) {
       // Android-specific code
@@ -297,8 +302,13 @@ String content = response.data.toString();
 
     var device;
 
-    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-    String token = await firebaseMessaging.getToken();
+    String token = "";
+    try {
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      token = await firebaseMessaging.getToken();
+    } catch(e){
+      xrint(e);
+    }
 
     if (Platform.isAndroid) {
       // Android-specific code
