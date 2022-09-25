@@ -142,7 +142,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       if (!(await CustomerUtils.isPusTokenUploaded())) {
         this.widget.presenter.updateToken(customer);
       }
-      widget.customer = customer;
+      setState(() {
+        widget.customer = customer;
+      });
       /* check kaba points */
       Future.delayed(Duration(seconds: 1)).then((value) {
         this.widget.presenter.checkBalance(customer);
@@ -157,12 +159,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     // your account
 
     CustomerUtils.getCustomer().then((customer) {
-      if (customer != null ) {
+      if (customer != null) {
         widget.customer = customer;
         this.widget.presenter.checkUnreadMessages(customer);
         popupMenus = [
-          "${AppLocalizations.of(context).translate(
-              'add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
+          "${AppLocalizations.of(context).translate('add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
           "${AppLocalizations.of(context).translate('settings')}",
           "${AppLocalizations.of(context).translate('logout')}",
         ];
@@ -314,7 +315,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   Widget build(BuildContext context) {
     if (widget.bestSellerMini == null)
       widget.bestSellerMini =
-          BestSellersMiniPage(presenter: BestSellerPresenter());
+          BestSellersMiniPage(presenter: BestSellerPresenter(), customer: widget.customer);
     /* init fetch data bloc */
     return Scaffold(
         backgroundColor: Colors.white,
@@ -994,36 +995,34 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   void hasUnreadMessages(bool hasNewMessage) {
+    if (StateContainer.of(context).loggingState == 0) return;
 
-    if (StateContainer.of(context).loggingState == 0)
-      return;
-
-      setState(() {
-        StateContainer.of(context).hasUnreadMessage = hasNewMessage;
-      });
-      // alert new message
-if (hasNewMessage) {
-  SnackBar snackBar = SnackBar(
-    backgroundColor: KColors.primaryColor,
-    duration: Duration(seconds: 10),
-    content: Text(
-      "${AppLocalizations.of(context).translate('you_have_unread_message')}",
-      style: TextStyle(color: Colors.white),
-    ),
-    action: SnackBarAction(
-      label:
-      "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
-      textColor: Colors.white,
-      onPressed: () {
-        // Some code to undo the change.
-        ScaffoldMessenger.of(context).clearSnackBars();
-        _jumpToPage(context,
-            CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
-      },
-    ),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
+    setState(() {
+      StateContainer.of(context).hasUnreadMessage = hasNewMessage;
+    });
+    // alert new message
+    if (hasNewMessage) {
+      SnackBar snackBar = SnackBar(
+        backgroundColor: KColors.primaryColor,
+        duration: Duration(seconds: 10),
+        content: Text(
+          "${AppLocalizations.of(context).translate('you_have_unread_message')}",
+          style: TextStyle(color: Colors.white),
+        ),
+        action: SnackBarAction(
+          label:
+              "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+          textColor: Colors.white,
+          onPressed: () {
+            // Some code to undo the change.
+            ScaffoldMessenger.of(context).clearSnackBars();
+            _jumpToPage(context,
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override

@@ -39,7 +39,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
     // TODO: implement initState
     super.initState();
     widget.presenter.bestSellerView = this;
-    widget.presenter.fetchBestSeller();
+    widget.presenter.fetchBestSeller(null);
   }
 
   bool isLoading = false;
@@ -101,11 +101,11 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(null); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(null); });
   }
 
   _buildBSellerList() {

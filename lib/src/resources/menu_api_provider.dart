@@ -209,8 +209,8 @@ class MenuApiProvider {
     }
   }
 
-  Future<dynamic> fetchBestSellerList() async {
-    xrint("entered fetchBestSellerList");
+  Future<dynamic> fetchBestSellerList(CustomerModel customer) async {
+    xrint("entered fetchBestSellerList \n");
     if (await Utils.hasNetwork()) {
       /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST),
@@ -219,7 +219,10 @@ class MenuApiProvider {
           .timeout(const Duration(seconds: 30));*/
 
       var dio = Dio();
-      dio.options..connectTimeout = 10000;
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 10000;
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =

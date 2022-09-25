@@ -1,5 +1,6 @@
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ class BestSellersMiniPage extends StatefulWidget {
 
   List<BestSellerModel> data;
 
-  BestSellersMiniPage({Key key, this.title, this.presenter}) : super(key: key);
+  CustomerModel customer;
+
+  BestSellersMiniPage({Key key, this.title, this.presenter, this.customer}) : super(key: key);
 
   final String title;
 
@@ -44,7 +47,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   @override
   Widget build(BuildContext context) {
     if (widget.data == null) {
-      widget.presenter.fetchBestSeller();
+      widget.presenter.fetchBestSeller(widget.customer);
     } else {
       if (!isDataInflated) {
         inflateBestSeller(widget.data);
@@ -105,17 +108,17 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "",// "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller();
+          widget.presenter.fetchBestSeller(widget?.customer);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "", //"""${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller();
+          widget.presenter.fetchBestSeller(widget?.customer);
         });
   }
 

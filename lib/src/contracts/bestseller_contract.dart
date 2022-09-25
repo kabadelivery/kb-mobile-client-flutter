@@ -1,4 +1,5 @@
 import 'package:KABA/src/models/BestSellerModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -8,7 +9,7 @@ class BestSellerContract {
 //  void BestSeller (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
-  void fetchBestSeller() {}
+  void fetchBestSeller(CustomerModel customer) {}
 }
 
 class BestSellerView {
@@ -38,7 +39,7 @@ class BestSellerPresenter implements BestSellerContract {
   }
 
   @override
-  Future fetchBestSeller() async {
+  Future fetchBestSeller(CustomerModel customer) async {
     /* fetch the one store in the local file first */
 
     if (isWorking) return;
@@ -64,10 +65,13 @@ class BestSellerPresenter implements BestSellerContract {
 
       // at each order, make sure we reload best sellers.
       bool canLoadBestSeller = await CustomerUtils.canLoadBestSeller();
-      if (!canLoadBestSeller) return;
+      if (!canLoadBestSeller) {
+        isWorking = false;
+        return;
+      }
 
       try {
-        String bsellers_json = await provider.fetchBestSellerList();
+        String bsellers_json = await provider.fetchBestSellerList(customer);
         // save best seller json
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(bsellers_json)["data"];
@@ -89,6 +93,7 @@ class BestSellerPresenter implements BestSellerContract {
         }
         isWorking = false;
       }
+
     });
   }
 }

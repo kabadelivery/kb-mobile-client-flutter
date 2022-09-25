@@ -49,6 +49,7 @@ class Utils {
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
+    if (token != null)
     headers["Authorization"] = "Bearer " + token;
     return headers;
   }
