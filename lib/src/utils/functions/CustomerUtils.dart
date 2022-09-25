@@ -155,7 +155,7 @@ class CustomerUtils {
   static canLoadBestSeller() async {
     int tmp = 0;
     try{tmp = await getBestSellerLockDate();}catch(e){xrint(e);}
-    if (DateTime.now().millisecondsSinceEpoch - tmp > 1000*60*60*24*3) // 1 days maximums after, need to reload best seller
+    if (DateTime.now().millisecondsSinceEpoch - tmp > 1000*60*60*24*3) // 3 days maximums after, need to reload best seller
       return true;
     return false;
   }
