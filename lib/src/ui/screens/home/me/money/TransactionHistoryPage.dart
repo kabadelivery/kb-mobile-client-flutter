@@ -373,7 +373,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
         margin: EdgeInsets.only(bottom: 20),
         child: Column(
             children: <Widget>[]..addAll(List.generate(
-                  pointData?.last_ten_transactions?.length + 1, (index) {
+                  pointData?.last_ten_transactions?.length, (index) {
                 return Column(
                   children: <Widget>[
                     index == 0 ? SizedBox(height: 15) : Container(),
