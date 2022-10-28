@@ -320,4 +320,15 @@ class ServerRoutes {
 
   static String LINK_GET_VOUCHER_DETAILS =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/voucher/get";
+
+  static String LINK_DELETE_ACCOUNT_REQUEST =
+      ServerConfig.SERVER_ADDRESS + "/mobile/api/request-account-deleting";
+
+  static String LINK_GET_VOUCHER_FOR_DAMAGE =
+      ServerConfig.SERVER_ADDRESS + "/mobile/api/request-voucher";
+
+  static String LINK_DELETE_ACCOUNT_REFUND =
+      ServerConfig.SERVER_ADDRESS + "/mobile/api/delete-account";
+
+
 }

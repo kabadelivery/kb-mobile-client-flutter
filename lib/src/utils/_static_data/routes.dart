@@ -1,5 +1,7 @@
 import 'package:KABA/src/NotificationTestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/delete_account_questionning_contract.dart';
+import 'package:KABA/src/contracts/delete_account_refund_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
@@ -8,6 +10,8 @@ import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/ui/customwidgets/RestaurantNewCommentWidget.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountFixPropositionPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
@@ -47,6 +51,9 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
+
+import '../../ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
+import '../../ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
 
 var generalRoutes = {
 
@@ -90,4 +97,10 @@ var generalRoutes = {
   MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
   OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter()),
   HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter()),
+
+
+  DeleteAccountRefundQuestionnaryPage.routeName : (BuildContext context) => DeleteAccountRefundQuestionnaryPage(presenter: DeleteAccountRefundPresenter(), fixId: null, ),
+  DeleteAccountQuestioningPage.routeName : (BuildContext context) => DeleteAccountQuestioningPage(presenter:DeleteAccountQuestioningPresenter() ),
+  DeleteAccountSuccessfulPage.routeName : (BuildContext context) => DeleteAccountSuccessfulPage( ),
+  DeleteAccountFixPropositionPage.routeName : (BuildContext context) => DeleteAccountFixPropositionPage( ),
 };

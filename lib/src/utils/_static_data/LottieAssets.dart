@@ -12,4 +12,8 @@ class LottieAssets {
   static final String best_sales = "assets/lottie/best_sales.json";
   static final String new_ = "assets/lottie/new.json";
   static final String drugstore = "assets/lottie/drugstore.json";
+  static final String sad_face = "assets/lottie/sad_face.json";
+  static final String wearesorry = "assets/lottie/wearesorry.zip";
+  static final String success = "assets/lottie/success.json";
+  static final String hint_direction = "assets/lottie/hint_direction.json";
 }

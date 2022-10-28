@@ -1428,6 +1428,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 
   if (Platform.isIOS) {
 // Android-specific code
+
     try {
       var _data = json.decode(message_entry["data"])["data"];
       xrint(" inside notificationFromMessage 840 -- " + _data.toString());

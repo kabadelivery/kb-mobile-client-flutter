@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:KABA/src/TestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/cinema_contract.dart';
+import 'package:KABA/src/contracts/delete_account_questionning_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
@@ -24,6 +25,10 @@ import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountFixPropositionPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
@@ -269,14 +274,22 @@ class _MyAppState extends State<MyApp> {
                   "KABA",
               theme: ThemeData(
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
-     // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
+              // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-            /*  home: ShopSimpleList(
+              /*  home: ShopSimpleList(
+
+            //  coque de noix de coco...
+
+            //  desxintox, buvable, infections, probleme de trompes, dents, empoisonement,
+            //  morsures danniamales, constipation, maux de foi, rein
+
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-             /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
+              // home: DeleteAccountSuccessfulPage(),
+              // home: DeleteAccountFixPropositionPage(),
+              /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
                 restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
               // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
 //             home: MovieCatalogePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),

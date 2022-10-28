@@ -1,23 +1,27 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 
-class DeleteAccountRefundQuestionnaryPage extends StatefulWidget {
-  static var routeName = "/DeleteAccountRefundQuestionnaryPage";
+class DeleteAccountSuccessfulPage extends StatefulWidget {
+  static var routeName = "/DeleteAccountSuccessfulPage";
+
+  int refundedBalance;
+
+  DeleteAccountSuccessfulPage({@required this.refundedBalance = 0});
 
   @override
   State<StatefulWidget> createState() {
-    return DeleteAccountRefundQuestionnaryPageState();
+    return DeleteAccountSuccessfulPageState();
   }
 }
 
-class DeleteAccountRefundQuestionnaryPageState
-    extends State<DeleteAccountRefundQuestionnaryPage> {
-  bool _isAgreed = false;
-
+class DeleteAccountSuccessfulPageState
+    extends State<DeleteAccountSuccessfulPage> {
   @override
   void initState() {
     super.initState();
@@ -56,288 +60,122 @@ class DeleteAccountRefundQuestionnaryPageState
           child: Container(
             height: MediaQuery.of(context).size.height,
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Stack(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                Container(
+                  width: 100,
+                  height: 100,
+                  child: Lottie.asset(LottieAssets.success),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "${AppLocalizations.of(context).translate("account_deleted")}",
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: KColors.new_black,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                widget.refundedBalance > 0
+                    ? Column(
                         children: [
-                          Expanded(
-                            child: Text(
-                              "${AppLocalizations.of(context).translate('please_fill_in_this_form')}",
+                          Text(
+                              "${AppLocalizations.of(context).translate("balance_dued")}"
+                                  .toUpperCase(),
                               style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.normal)),
+                          SizedBox(
+                            height: 5,
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "${AppLocalizations.of(context).translate('needed_to_send_remaining_balance')}",
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
-                              textAlign: TextAlign.center,
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: KColors.primaryColor.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 12),
+                                child: Text(
+                                  "${Utils.inflatePrice("${widget.refundedBalance}")}",
+                                  style: TextStyle(
+                                      color: KColors.primaryColor,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                  "${AppLocalizations.of(context).translate("currency")}",
+                                  style: TextStyle(
+                                      color: KColors.primaryYellowColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold))
+                            ],
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      /* last name */
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                                text: TextSpan(
-                                    text:     "${AppLocalizations.of(context).translate('beneficiary_last_name')}",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                    children: [
-                                  TextSpan(
-                                      text: " *",
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.red))
-                                ])),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: KColors.new_gray,
-                                  borderRadius: BorderRadius.circular(5)),
-                              width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 10),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                      child: TextField(
-                                    decoration: InputDecoration.collapsed(),
-                                    style: TextStyle(
-                                        color: KColors.new_black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  )),
-                                ],
-                              ),
-                            )
-                          ]),
-                      /* first name */
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                                text: TextSpan(
-                                    text:     "${AppLocalizations.of(context).translate('beneficiary_first_name')}",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                    children: [
-                                  TextSpan(
-                                      text: " *",
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.red))
-                                ])),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: KColors.new_gray,
-                                  borderRadius: BorderRadius.circular(5)),
-                              width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 10),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                      child: TextField(
-                                    decoration: InputDecoration.collapsed(),
-                                    style: TextStyle(
-                                        color: KColors.new_black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  )),
-                                ],
-                              ),
-                            )
-                          ]),
-                      /* first name */
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                                text: TextSpan(
-                                    text:     "${AppLocalizations.of(context).translate('beneficiary_mobile_money_account')}",
-
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                    children: [
-                                  TextSpan(
-                                      text: " *",
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.red))
-                                ])),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: KColors.new_gray,
-                                  borderRadius: BorderRadius.circular(5)),
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 15),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.withAlpha(50),
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(5),
-                                            bottomLeft: Radius.circular(5))),
-                                    margin: EdgeInsets.only(right: 15),
-                                    child: Text(
-                                      "+228",
-                                      style: TextStyle(
-                                          color: KColors.new_black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: TextField(
-                                    decoration: InputDecoration.collapsed(),
-                                    style: TextStyle(
-                                        color: KColors.new_black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  )),
-                                ],
-                              ),
-                            )
-                          ]),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                              child: Text(
-                                  "${AppLocalizations.of(context).translate('mobile_money_only_notice')}",
-                            textAlign: TextAlign.start,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "${AppLocalizations.of(context).translate("refund_within_72_hrs_description")}",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 10, color: KColors.primaryColor),
-                          )),
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
                         ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                              value: this._isAgreed,
-                              onChanged: (value) => setState(() {
-                                    this._isAgreed = !this._isAgreed;
-                                  })),
-                          Expanded(
-                              child: RichText(
-                                  text: TextSpan(
-                                      text: "${AppLocalizations.of(context).translate('i_agree_to')}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w400),
-                                      children: [
-                                TextSpan(
-                                    text: "${AppLocalizations.of(context).translate('terms_n_conditions')}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: KColors.new_black,
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: "${AppLocalizations.of(context).translate('_and_')}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w400)),
-                                TextSpan(
-                                    text: "${AppLocalizations.of(context).translate('ppolicy')}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: KColors.new_black,
-                                        fontWeight: FontWeight.bold))
-                              ])))
-                        ],
-                      ),
-                      SizedBox(height: 40,)
+                      )
+                    : Container(),
+                GestureDetector(
+                  onTap: ()=>_backToHome(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Container(
+                        decoration: BoxDecoration(
+                            color: KColors.primaryColor,
+                            borderRadius: BorderRadius.circular(5)),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                        child: Text(
+                          "${AppLocalizations.of(context).translate("back_to_home")}"
+                              .toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ))
                     ],
                   ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  child: GestureDetector(
-                    onTap: () => _deleteAccount(),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width-40,
-                      decoration: BoxDecoration(
-                          color: KColors.primaryColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      // color: KColors.new_gray,
-
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                /*    Icon(Icons.add, color: Colors.white),
-                          SizedBox(width: 10),*/
-                                Text(
-                                    "${AppLocalizations.of(context).translate('delete_account_button')}"
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                )
               ],
             ),
           ),
         ));
   }
 
-  _deleteAccount() {}
+
+  _backToHome() {
+/* simply pop */
+  Navigator.pop(context);
+  }
 }

@@ -17,6 +17,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
@@ -30,6 +31,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lo;
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -169,6 +171,34 @@ class ServiceMainPageState extends State<ServiceMainPage>
         child: SingleChildScrollView(
           child: Column(
             children: [
+              /* hint */
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  showPlacePicker(context);
+                },
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                        child: Text(
+                      "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    )),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      child: Lottie.asset(LottieAssets.hint_direction),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+              ),
               GestureDetector(
                 onTap: () {
                   showPlacePicker(context);
@@ -252,8 +282,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 ),
                 shrinkWrap: true,
                 children: []..addAll(widget.available_services
-                    .map((e) =>
-                        BuyCategoryWidget(e, available: true, mDialog: mDialog, showPlacePicker: showPlacePicker))
+                    .map((e) => BuyCategoryWidget(e,
+                        available: true,
+                        mDialog: mDialog,
+                        showPlacePicker: showPlacePicker))
                     .toList()),
               ),
               SizedBox(height: 30),
@@ -313,7 +345,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToSearchPage(String type) {
-    if (StateContainer.of(context).location?.latitude == null && StateContainer.of(context).hasAskedLocation == false) {
+    if (StateContainer.of(context).location?.latitude == null &&
+        StateContainer.of(context).hasAskedLocation == false) {
       StateContainer.of(context).hasAskedLocation = true;
       showDialog<void>(
         context: context,
@@ -335,8 +368,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate(
-                          'request_location_permission')}",
+                      "${AppLocalizations.of(context).translate('request_location_permission')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14))
                 ],
@@ -344,8 +376,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
             ),
             actions: <Widget>[
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('refuse')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('refuse')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(
@@ -353,13 +385,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       ShopListPageRefined(
                           context: context,
                           type: type,
-                          foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                          foodProposalPresenter:
+                              RestaurantFoodProposalPresenter(),
                           restaurantListPresenter: RestaurantListPresenter()));
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('accept')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('accept')}"),
                 onPressed: () {
                   /* */
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -591,7 +624,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if (permission == LocationPermission.deniedForever) {
           await Geolocator.openAppSettings();
         } else if (permission == LocationPermission.denied) {
-         await Geolocator.requestPermission();
+          await Geolocator.requestPermission();
         } else {
           // location is enabled
           bool isLocationServiceEnabled =

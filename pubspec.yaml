@@ -162,6 +162,10 @@ flutter:
     - assets/images/vectors/bottom_icons/orders_selected.svg
     - assets/images/vectors/bottom_icons/me_selected.svg
     #lottie
+    - assets/lottie/success.json
+    - assets/lottie/hint_direction.json
+    - assets/lottie/wearesorry.zip
+    - assets/lottie/sad_face.json
     - assets/lottie/new.json
     - assets/lottie/best_sales.json
     - assets/lottie/books.json

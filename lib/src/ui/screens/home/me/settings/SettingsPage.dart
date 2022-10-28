@@ -1,5 +1,7 @@
 import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/contracts/delete_account_questionning_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,8 +39,9 @@ class _SettingsPageState extends State<SettingsPage> {
             onPressed: () {
               Navigator.pop(context);
             }),
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -82,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           InkWell(
-            onTap: () => _jumpWebPage("CGU", ServerRoutes.CGU_PAGE),
+            onTap: () => _startDeleteAccountProcess(),
             child: Container(
               padding:
                   EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
@@ -93,17 +96,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               child: Row(mainAxisSize: MainAxisSize.max, children: [
-                Icon(Icons.abc_outlined, color: KColors.primaryColor),
+                Icon(Icons.delete_forever, color: KColors.primaryColor),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('cgu')}"),
+                        "${AppLocalizations.of(context).translate('delete_account')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
           ),
+
           InkWell(
             onTap: () => _jumpToInfoPage(),
             child: Container(
@@ -124,6 +128,30 @@ class _SettingsPageState extends State<SettingsPage> {
                 Text(
                     Utils.capitalize(
                         "${AppLocalizations.of(context).translate('app_info')}"),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+              ]),
+            ),
+          ),
+
+          InkWell(
+            onTap: () => _jumpWebPage("CGU", ServerRoutes.CGU_PAGE),
+            child: Container(
+              padding:
+              EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom:
+                  BorderSide(width: 0.8, color: Colors.grey.withAlpha(35)),
+                ),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.max, children: [
+                Icon(Icons.abc_outlined, color: KColors.primaryColor),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                    Utils.capitalize(
+                        "${AppLocalizations.of(context).translate('cgu')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
@@ -197,6 +225,17 @@ class _SettingsPageState extends State<SettingsPage> {
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
             presenter: RecoverPasswordPresenter(), is_a_process: true),
+      ),
+    );
+  }
+
+  _startDeleteAccountProcess() {
+    /* jump to other activity */
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeleteAccountQuestioningPage(
+            presenter: DeleteAccountQuestioningPresenter()),
       ),
     );
   }

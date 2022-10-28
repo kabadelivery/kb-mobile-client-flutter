@@ -19,7 +19,9 @@ class MyVoucherMiniWidget extends StatefulWidget {
 
   bool isForOrderConfirmation;
 
-  MyVoucherMiniWidget({this.voucher, this.pick = false, this.subscribeSuccess = false, isForOrderConfirmation = false});
+  bool isGift;
+
+  MyVoucherMiniWidget({this.voucher, this.pick = false, this.subscribeSuccess = false, isForOrderConfirmation = false, this.isGift = false});
 
   @override
   _MyVoucherMiniWidgetState createState() {
@@ -97,6 +99,13 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
 //      color: Colors.grey,
 //      backgroundBlendMode: BlendMode.saturation,
 //    ),
+if (widget.voucher.already_used_count == null) {
+  widget.voucher.already_used_count = 0;
+  widget.voucher.end_date = "${DateTime
+      .now()
+      .add(Duration(days: 30))
+      .millisecondsSinceEpoch}";
+}
 
     return widget.voucher.use_count-widget.voucher.already_used_count == 0 || Utils.isEndDateReached(widget?.voucher?.end_date) ?
     Container(
@@ -154,7 +163,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                   ),
                                   SizedBox(height: 10),
                                   /* SHOW EXPIRY DATE */
-                                  Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
+                                  widget.isGift ? Container(height: 15,): Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
                                   SizedBox(height: 10),
                                 ])
                             ),
@@ -229,7 +238,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                 ),
                                 SizedBox(height: 10),
                                 /* SHOW EXPIRY DATE */
-                                Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
+                                widget.isGift ? Container(height: 15,): Text("${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}", textAlign: TextAlign.center, style: TextStyle(color: expiresDateColor,fontSize: 12)),
                                 SizedBox(height: 10),
                               ])
                           ),
@@ -274,15 +283,15 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   }
 
   _onLongPressVoucher() {
+    if (widget.isGift)return;
     if (widget.pick || widget.isForOrderConfirmation) {
       _jumpToVoucherDetails();
     }
   }
 
   _tapVoucher() {
-
+    if (widget.isGift)return;
     if (widget?.isForOrderConfirmation == true) {
-
       return;
     }
 

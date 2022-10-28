@@ -7,6 +7,7 @@ import 'package:KABA/src/xrint.dart';
 class AddVoucherContract {
 
   void subscribeVoucher (CustomerModel customer, String promoCode, {bool isQrCode = false}){}
+  void subscribeVoucherForDamage (CustomerModel customer, int damage_id){}
 }
 
 class AddVoucherView {
@@ -58,6 +59,37 @@ class AddVoucherPresenter implements AddVoucherContract {
         _voucherView.systemError();
       } else {
         _voucherView.networkError();
+      }
+    }
+    isWorking = false;
+  }
+
+  @override
+  Future<void> subscribeVoucherForDamage(CustomerModel customer, int damage_id) async {
+    if (isWorking)
+      return;
+    isWorking = true;
+    _voucherView.showLoading(true);
+    try {
+      var mVoucher = await provider.subscribeVoucherForDamage(customer, damage_id);
+      // also get the restaurant entity here.
+      _voucherView.showLoading(false);
+      if (mVoucher is VoucherModel && mVoucher?.id != null) {
+        _voucherView.subscribeSuccessfull(mVoucher);
+      } else {
+        _voucherView.subscribeSuccessError(mVoucher);
+      }
+    } catch (_) {
+      /* BestSeller failure */
+      _voucherView.showLoading(false);
+      xrint("error ${_}");
+      if (_ == -2) {
+        _voucherView.systemError();
+      } else {
+        _voucherView.networkError();
+      }
+      if (damage_id != -1){
+        _voucherView.subscribeSuccessError(null);
       }
     }
     isWorking = false;
