@@ -146,11 +146,42 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       int mls = prefs.getInt("_best_seller_version" + signature);
-     if (mls == null)
-        mls = 0;
-     return mls;
+      if (mls == null) mls = 0;
+      return mls;
     } catch (e) {
       return 0;
+    }
+  }
+
+  static getProposalLockDate() async {
+    // get date
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      int mls = prefs.getInt("_proposal_version" + signature);
+      if (mls == null) mls = 0;
+      return mls;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  static saveProposalVersion() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(
+        "_proposal_version" + signature, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  static canLoadProposal() async {
+    int tmp = 0;
+    try {
+      tmp = await getProposalLockDate();
+      if (DateTime.now().millisecondsSinceEpoch - tmp >
+          1000 * 60 * 60 * 6) // 6 hours maximums after, need to reload proposal
+        return true;
+      return false;
+    } catch (e) {
+      xrint(e);
+      return true;
     }
   }
 
@@ -158,9 +189,7 @@ class CustomerUtils {
     int tmp = 0;
     try {
       tmp = await getBestSellerLockDate();
-      if (DateTime
-          .now()
-          .millisecondsSinceEpoch - tmp >
+      if (DateTime.now().millisecondsSinceEpoch - tmp >
           1000 *
               60 *
               60 *
@@ -170,7 +199,7 @@ class CustomerUtils {
       return false;
     } catch (e) {
       xrint(e);
-     return true;
+      return true;
     }
   }
 
@@ -191,6 +220,17 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonContent = prefs.getString("_b_seller" + signature);
     return jsonContent;
+  }
+
+  static getOldProposalPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonContent = prefs.getString("_proposal_" + signature);
+    return jsonContent;
+  }
+
+  static saveProposalPage(String proposals_json) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("_proposal_" + signature, proposals_json);
   }
 
   /*  */

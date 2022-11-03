@@ -116,7 +116,7 @@
   "please_wait_fees_percentage": "Please wait until we update fees percentage.",
   "phone_number_wrong": "Phone number is wrong",
   "my_balance": "MY BALANCE",
-  "sorry_empty_transactions": "Sorry, you have made no transaction yet !",
+  "sorry_empty_transactions": "Sorry, you have no recent transactions !",
   "top_kaba_account": "TO KABA ACCOUNT",
   "insert_transfer_amount": "Please enter the amount you want to transfer",
   "pay": "PAY",
@@ -379,7 +379,7 @@
   "debit_points_kaba": "KABA Point debit",
   "credit_points_kaba": "KABA Point Credit",
   "non_eligible": "Non-Eligible",
-  "non_eligible_reason": "Sorry you have not yet unlock the discount feature based on KABA Points",
+  "non_eligible_reason": "Make XXX orders or reach YYY Kaba points in order to unlock the feature",
   "your_points": "Your Points",
   "this_feature_is_building": "This feature is building and will be soon available",
   "demo_account_alert": "Sorry, you cannot make an order using a demo account. Please, use another account to make your order.",
@@ -540,5 +540,7 @@
   "fix_please_wait": "Voucher subscription in progress ...",
   "name_field_error": "Please enter your real name",
   "pls_agree_to_terms": "Please agree to terms and conditions",
-  "current_address_tile_hint": "Please make sure the selected location is the delivery destination for accurate delivery charges"
+  "current_address_tile_hint": "Please make sure the selected location is the delivery destination for accurate delivery charges",
+
+  "our_propositions": "Suggestions"
 }

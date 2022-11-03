@@ -11,6 +11,7 @@ import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
+import 'package:KABA/src/contracts/proposal_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
@@ -31,6 +32,7 @@ import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/proposal/ProposalMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -92,6 +94,7 @@ class HomeWelcomeNewPage extends StatefulWidget {
   static var routeName = "/HomeWelcomeNewPage";
 
   BestSellersMiniPage bestSellerMini = null;
+  ProposalMiniPage proposalMini = null;
 
   HomeWelcomeNewPage(
       {Key key, this.title, this.presenter, this.destination, this.argument})
@@ -314,8 +317,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   @override
   Widget build(BuildContext context) {
     if (widget.bestSellerMini == null)
-      widget.bestSellerMini =
-          BestSellersMiniPage(presenter: BestSellerPresenter(), customer: widget.customer);
+      widget.bestSellerMini = BestSellersMiniPage(
+          presenter: BestSellerPresenter(), customer: widget.customer);
+    if (widget.proposalMini == null)
+      widget.proposalMini = ProposalMiniPage(
+          presenter: ProposalPresenter(), customer: widget.customer);
     /* init fetch data bloc */
     return Scaffold(
         backgroundColor: Colors.white,
@@ -430,7 +436,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     return GestureDetector(
       onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
       child: Center(
-        child: Container(
+        child: Container(color: Colors.white,
           padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 20),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -452,18 +458,20 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             image: OptimizedCacheImageProvider(
                                 Utils.inflateLink(restaurant.pic))))),
                 SizedBox(height: 10),
-                Container(
-                    height: 35,
-                    width: MediaQuery.of(context).size.width /
-                        (isInHorizontalScrollviewMode ? 5 : 3),
-                    child: Text(restaurant?.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: KColors.new_black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12),
-                        textAlign: TextAlign.center)),
+                Container(color: Colors.white,
+                  child: Container(
+                      height: 35,
+                      width: MediaQuery.of(context).size.width /
+                          (isInHorizontalScrollviewMode ? 5 : 3),
+                      child: Text(restaurant?.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: KColors.new_black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12),
+                          textAlign: TextAlign.center)),
+                ),
                 SizedBox(height: 10),
                 !isInHorizontalScrollviewMode
                     ? _getShinningImage(restaurant)
@@ -564,13 +572,15 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
+                      margin: EdgeInsets.only(bottom:10, top: 15),
                       child: ClipPath(
-                          clipper: KabaRoundTopClipper(),
+                          // clipper: KabaRoundTopClipper(),
                           child: data.slider.length > 1
                               ? CarouselSlider(
                                   options: CarouselOptions(
                                     onPageChanged: _carousselPageChanged,
-                                    viewportFraction: 1,
+                                    enlargeCenterPage: true,
+                                    viewportFraction: 0.825 ,
                                     autoPlay:
                                         data.slider.length > 1 ? true : false,
                                     reverse:
@@ -579,9 +589,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                         data.slider.length > 1 ? true : false,
                                     autoPlayInterval: Duration(seconds: 5),
                                     autoPlayAnimationDuration:
-                                        Duration(milliseconds: 150),
+                                        Duration(milliseconds: 300),
                                     autoPlayCurve: Curves.fastOutSlowIn,
-                                    height: 9 *
+                                    height: 0.825 *9 *
                                         MediaQuery.of(context).size.width /
                                         16,
                                   ),
@@ -593,18 +603,21 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                               data.slider,
                                               data.slider.indexOf(admodel)),
                                           child: Container(
-                                              height: 9 *
+                                              height: 0.825*9 *
                                                   MediaQuery.of(context)
                                                       .size
                                                       .width /
                                                   16,
-                                              width: MediaQuery.of(context)
+                                              width: 0.825* MediaQuery.of(context)
                                                   .size
                                                   .width,
-                                              child: OptimizedCacheImage(
-                                                  imageUrl: Utils.inflateLink(
-                                                      admodel.pic),
-                                                  fit: BoxFit.cover)),
+                                              child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                child: OptimizedCacheImage(
+                                                    imageUrl: Utils.inflateLink(
+                                                        admodel.pic),
+                                                    fit: BoxFit.cover),
+                                              )),
                                         );
                                       },
                                     );
@@ -700,7 +713,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: [
                     SizedBox(width: 10),
                     Text(
-                      "${AppLocalizations.of(context).translate('best_seller')}"
+                      "${AppLocalizations.of(context).translate('our_propositions')}"
                           .toUpperCase(),
                       style: TextStyle(
                           color: Colors.grey,
@@ -711,14 +724,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     SizedBox(
                         height: 30,
                         width: 30,
-                        child: Lottie.asset(LottieAssets.best_sales,
+                        child: Lottie.asset(LottieAssets.proposal,
                             animate: true))
                   ],
                 ),
                 SizedBox(height: 10),
                 Container(
-                    child: widget.bestSellerMini,
-                    height: 110,
+                    child: widget.proposalMini,
+                    height: 125,
                     color: KColors.new_gray,
                     width: MediaQuery.of(context).size.width),
 
@@ -754,6 +767,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                             animate: true))
                                   ],
                                 ),
+
                                 false
                                     ? GestureDetector(
                                         onTap: () {
@@ -774,6 +788,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                               ],
                             ),
                           ),
+                          SizedBox(height: 10),
                           Container(
                             color: Colors.white,
                             height: 150,
@@ -793,6 +808,39 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     : Container(),
                 // SizedBox(height: 20),
                 /* meilleures ventes, cinema, evenemnts, etc... */
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 10),
+                    Text(
+                      "${AppLocalizations.of(context).translate('best_seller')}"
+                          .toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(width: 5),
+                    SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Lottie.asset(LottieAssets.best_sales,
+                            animate: true))
+                  ],
+                ),
+                Row(mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Container(
+                          child: widget.bestSellerMini,
+                          height: 110,
+                        color: Colors.blue,
+                          // color: KColors.new_gray,
+                          width: MediaQuery.of(context).size.width),
+                    ),
+                  ],
+                ),
                 /* groups ads */
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -356,18 +356,198 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     if (pointData == null ||
         !pointData
             ?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
-      return Center(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(Icons.discount, color: Colors.grey),
-          SizedBox(height: 5),
-          Text(
-              "${AppLocalizations.of(context)?.translate('non_eligible_reason')}",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey)),
+      return Column(
+        children: [
+          SizedBox(height: 15),
+          Center(
+              child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+                pointData?.is_eligible
+                    ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
+                        .replaceAll(
+                            "XXX_XXX", "${pointData?.monthly_limit_amount}")
+                    : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: KColors.new_black, fontSize: 11)),
+          )),
+          SizedBox(height: 20),
+          Opacity(opacity: 0.7,
+            child: Center(
+              child: Container(
+                color: KColors.new_gray,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: 20, left: 10, right: 10, bottom: 15),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              "${AppLocalizations.of(context)?.translate('kaba_points')}\n",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey)),
+                                        ]),
+                                    SizedBox(height: 5),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  "${pointData?.balance == null ? "---" : pointData?.balance}",
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.black)),
+                                            ],
+                                          ),
+                                        ]),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                              "${AppLocalizations.of(context)?.translate('month_remain_kaba_points')}"
+                                                  .replaceAll(
+                                                      "XXX_XXX", currentMonth),
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey)),
+                                        ]),
+                                    SizedBox(height: 5),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  "${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}",
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: CommandStateColor
+                                                          .delivered)),
+                                            ],
+                                          ),
+                                        ])
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                              "${AppLocalizations.of(context)?.translate('month_used_kaba_points')}"
+                                                  .replaceAll(
+                                                      "XXX_XXX", currentMonth),
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey)),
+                                        ]),
+                                    SizedBox(height: 5),
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  "${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}",
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:
+                                                          KColors.primaryColor)),
+                                            ],
+                                          ),
+                                        ]),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 20),
+                    pointData?.is_eligible
+                        ? Container()
+                        : RawMaterialButton(
+                            onPressed: () => mToast(
+                                "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
+                                    .replaceAll("XXX_XXX",
+                                        "${pointData?.monthly_limit_amount}")),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.info_outline, color: Colors.grey),
+                                  SizedBox(width: 5),
+                                  Text(
+                                      "${AppLocalizations.of(context)?.translate('your_points')}",
+                                      style: TextStyle(color: Colors.grey)),
+                                ])),
+                    false
+                        ? RawMaterialButton(
+                            onPressed: () => mToast(
+                                "${AppLocalizations.of(context)?.translate('non_eligible_reason')}"),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.info_outline, color: Colors.grey),
+                                  SizedBox(width: 5),
+                                  Text(
+                                      "${AppLocalizations.of(context)?.translate('non_eligible')}",
+                                      style: TextStyle(color: Colors.grey)),
+                                ]),
+                          )
+                        : Container(),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(Icons.discount, color:  KColors.primaryColor),
+                  SizedBox(height: 5),
+                  Text(
+                      "${AppLocalizations.of(context)?.translate('non_eligible_reason')}".replaceAll("XXX", pointData?.eligible_order_count?.toString()).replaceAll("YYY", pointData?.monthly_limit_amount?.toString()),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: KColors.primaryColor)),
+                ],
+              ))
         ],
-      ));
+      );
 
     return Container(
         margin: EdgeInsets.only(bottom: 20),
@@ -987,18 +1167,64 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
 
   _buildMoneyTransactionHistoryList() {
     if (moneyData == null || moneyData?.length == 0)
-      return Center(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(Icons.monetization_on, color: Colors.grey),
-          SizedBox(height: 5),
-          Text(
-              "${AppLocalizations.of(context)?.translate('sorry_empty_transactions')}",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey)),
+      return Column(
+        children: [
+          Center(
+            child: Container(
+              color: KColors.new_gray,
+              margin: EdgeInsets.only(top: 15, bottom: 10),
+              padding:
+                  EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)?.translate('available_balance')}",
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w400)),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                                "${balance == null ? (StateContainer.of(context).balance == null || StateContainer.of(context).balance == 0 ? "--" : StateContainer.of(context).balance) : balance}",
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: KColors.new_black)),
+                            SizedBox(width: 5),
+                            Text(
+                                "  ${AppLocalizations.of(context)?.translate('currency')}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: KColors.primaryYellowColor,
+                                    fontSize: 14))
+                          ],
+                        ),
+                      ]),
+                ],
+              ),
+            ),
+          ),
+          Center(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.monetization_on, color: Colors.grey),
+              SizedBox(height: 5),
+              Text(
+                  "${AppLocalizations.of(context)?.translate('sorry_empty_transactions')}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey)),
+            ],
+          )),
         ],
-      ));
+      );
 
     return Container(
         child: Column(
@@ -1177,7 +1403,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               child: Center(
                                 child: Text(
                                   '${AppLocalizations.of(context).translate("only_3_months_transaction_history")}',
-                textAlign: TextAlign.center,    style: TextStyle(
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
                                       color: Colors.grey, fontSize: 12),
                                 ),
                               ),

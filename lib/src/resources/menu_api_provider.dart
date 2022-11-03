@@ -422,4 +422,54 @@ class MenuApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+
+
+  Future<dynamic> fetchProposalList (CustomerModel customer) async {
+    xrint("entered fetchProposalList \n");
+    if (await Utils.hasNetwork()) {
+
+
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 10000;
+
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST).toString(),
+        data: json.encode({}),
+      );
+
+      /* look for menu details and put result inside data array and send back */
+      var res = {"error": 1, "data":[]};
+
+      response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
+          data: json.encode({'id': 150}));
+
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+         res["data"] = mJsonDecode(response.data)["data"]["menus"][0]["foods"];
+         return json.encode(res).toString();
+          // return response.data.toString();
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
 }

@@ -166,165 +166,180 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   _buildServicePage() {
-    return Container(
+    return Container(height: MediaQuery.of(context).size.height,
         color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              /* hint */
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  showPlacePicker(context);
-                },
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  /* hint */
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      showPlacePicker(context);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Text(
+                          "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        )),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          child: Lottie.asset(LottieAssets.hint_direction),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
                     ),
-                    Expanded(
-                        child: Text(
-                      "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    )),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      child: Lottie.asset(LottieAssets.hint_direction),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showPlacePicker(context);
-                },
-                child: Stack(
-                  children: [
-                    StateContainer?.of(context)?.location == null
-                        ? Container(
-                            margin: EdgeInsets.only(
-                                left: 20, right: 20, top: 20, bottom: 15),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                                color: KColors.mBlue.withAlpha(10),
-                                borderRadius: BorderRadius.circular(5)),
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showPlacePicker(context);
+                    },
+                    child: Stack(
+                      children: [
+                        StateContainer?.of(context)?.location == null
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    left: 20, right: 20, top: 20, bottom: 15),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 15),
+                                decoration: BoxDecoration(
+                                    color: KColors.mBlue.withAlpha(10),
+                                    borderRadius: BorderRadius.circular(5)),
+                                width: MediaQuery.of(context).size.width,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                            child: Icon(Icons.location_on,
+                                                color: KColors.mBlue, size: 15),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: KColors.mBlue
+                                                    .withAlpha(30)),
+                                            padding: EdgeInsets.all(5)),
+                                        SizedBox(width: 10),
+                                        Text(
+                                            Utils.capitalize(
+                                                "${AppLocalizations.of(context).translate('please_select_main_location')}"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.grey)),
+                                      ],
+                                    ),
                                     Container(
-                                        child: Icon(Icons.location_on,
-                                            color: KColors.mBlue, size: 15),
+                                        child: Icon(Icons.add,
+                                            color: KColors.primaryColor,
+                                            size: 15),
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: KColors.mBlue.withAlpha(30)),
+                                            color: KColors.primaryColor
+                                                .withAlpha(30)),
                                         padding: EdgeInsets.all(5)),
-                                    SizedBox(width: 10),
-                                    Text(
-                                        Utils.capitalize(
-                                            "${AppLocalizations.of(context).translate('please_select_main_location')}"),
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey)),
                                   ],
                                 ),
-                                Container(
-                                    child: Icon(Icons.add,
-                                        color: KColors.primaryColor, size: 15),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color:
-                                            KColors.primaryColor.withAlpha(30)),
-                                    padding: EdgeInsets.all(5)),
-                              ],
-                            ),
-                          )
-                        : getCurrentTile(),
-                    isPickLocation
-                        ? Positioned(
-                            top: 35,
-                            right: 70,
-                            child: SizedBox(
-                                height: 15,
-                                width: 15,
-                                child: CircularProgressIndicator(
-                                  color: Colors.green,
-                                  strokeWidth: 2,
-                                )))
-                        : Container()
-                  ],
-                ),
-              ),
-              InkWell(
-                  child: SearchStatelessWidget(
-                      title:
-                          "${AppLocalizations.of(context).translate("what_want_buy")}"),
-                  onTap: () {
-                    _jumpToSearchPage("all");
-                  }),
-              GridView(
-                physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(20),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  childAspectRatio: 2.7,
-                ),
-                shrinkWrap: true,
-                children: []..addAll(widget.available_services
-                    .map((e) => BuyCategoryWidget(e,
-                        available: true,
-                        mDialog: mDialog,
-                        showPlacePicker: showPlacePicker))
-                    .toList()),
-              ),
-              SizedBox(height: 30),
-              widget.coming_soon_services?.length > 0
-                  ? Opacity(
-                      opacity: 0.5,
-                      child: Container(
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.only(left: 30),
-                                  child: Text(
-                                      "${AppLocalizations.of(context).translate('coming_soon')}")),
-                            ],
+                              )
+                            : getCurrentTile(),
+                        isPickLocation
+                            ? Positioned(
+                                top: 35,
+                                right: 70,
+                                child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.green,
+                                      strokeWidth: 2,
+                                    )))
+                            : Container()
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                      child: SearchStatelessWidget(
+                          title:
+                              "${AppLocalizations.of(context).translate("what_want_buy")}"),
+                      onTap: () {
+                        _jumpToSearchPage("all");
+                      }),
+                  GridView(
+                    physics: BouncingScrollPhysics(),
+                    padding: const EdgeInsets.all(20),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      childAspectRatio: 2.7,
+                    ),
+                    shrinkWrap: true,
+                    children: []..addAll(widget.available_services
+                        .map((e) => BuyCategoryWidget(e,
+                            available: true,
+                            mDialog: mDialog,
+                            showPlacePicker: showPlacePicker))
+                        .toList()),
+                  ),
+                  SizedBox(height: 30),
+                  widget.coming_soon_services?.length > 0
+                      ? Opacity(
+                          opacity: 0.5,
+                          child: Container(
+                            child: Column(children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.only(left: 30),
+                                      child: Text(
+                                          "${AppLocalizations.of(context).translate('coming_soon')}")),
+                                ],
+                              ),
+                              GridView(
+                                physics: BouncingScrollPhysics(),
+                                padding: const EdgeInsets.all(20),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 2.7,
+                                ),
+                                shrinkWrap: true,
+                                children: []..addAll(widget.coming_soon_services
+                                    .map((e) => BuyCategoryWidget(e,
+                                        available: false, mDialog: mDialog))
+                                    .toList()),
+                              ),
+                            ]),
                           ),
-                          GridView(
-                            physics: BouncingScrollPhysics(),
-                            padding: const EdgeInsets.all(20),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              crossAxisCount: 2,
-                              childAspectRatio: 2.7,
-                            ),
-                            shrinkWrap: true,
-                            children: []..addAll(widget.coming_soon_services
-                                .map((e) => BuyCategoryWidget(e,
-                                    available: false, mDialog: mDialog))
-                                .toList()),
-                          ),
-                        ]),
-                      ),
-                    )
-                  : Container()
-            ],
-          ),
+                        )
+                      : Container()
+                ],
+              ),
+            ),
+            Positioned(bottom: 0, right: 0,
+                child: Opacity(
+              opacity: .5,
+              child: Lottie.network(
+                  'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json', width: 160, height: 160, errorBuilder: (BuildContext context, Object error, StackTrace st){
+                    return Container();
+              }),
+            ))
+          ],
         )
         /*Column(
         children: [

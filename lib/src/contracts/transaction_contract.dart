@@ -85,7 +85,6 @@ class TransactionPresenter implements TransactionContract {
       // also get the restaurant entity here.
       _transactionView.showBalance(balance);
       isFetchBalanceWorking = false;
-
     } catch (_) {
       /* Transaction failure */
       xrint("error ${_}");

@@ -116,7 +116,7 @@
   "please_wait_fees_percentage": "Veuillez patienter. Nous mettons à jour les frais de transaction",
   "phone_number_wrong": "Numéro de Téléphone erroné",
   "my_balance": "MON SOLDE",
-  "sorry_empty_transactions": "Désolé, vous n'avez pas encore effectué de transaction !",
+  "sorry_empty_transactions": "Désolé, Aucune transaction récente !",
   "top_kaba_account": "VERS COMPTE KABA",
   "insert_transfer_amount": "Veuillez entrer le montant que vous voulez transférer",
   "pay": "PAYER",
@@ -375,19 +375,17 @@
   "gps_location_valid": "Position GPS recupérée avec succès.\nVeuillez remplir les autres informations.",
   "notice": "Notification:",
   "alert_message_received": "Bien reçu !",
-  "balance": "Solde",
   "points": "Points",
   "debit_points_kaba": "Débit de Point KABA",
   "credit_points_kaba": "Crédit de Point KABA",
   "non_eligible": "Non-Eligible",
-  "non_eligible_reason": "Désolé, vous n'avez pas encore déverrouillé la fonction de réduction basée sur les KABA Points",
+  "non_eligible_reason": "Passez XXX commandes ou atteignez YYY points Kaba pour débloquer la fonctionnalité",
   "your_points": "Vos Points",
   "this_feature_is_building": "Cette fonctionnalité est en construction et sera bientôt disponible",
   "demo_account_alert": "Désolé, vous ne pouvez pas passer de commande avec un compte démo. Veuillez réessayer en créant un vrai compte.",
   "sorry_email_account_no_pay_delivery": "Désolé. Les comptes Email ne sont pas autorisés à payer en espèces à la livraison ! Pour payer en espèces à la livraison, veuillez plutôt créer un compte avec votre numéro de téléphone.",
   "discount_point_available": "Points réduction disponible ",
   "use_delivery_point": "Réduisez votre facture de ",
-  "use_of_kaba_points": "Réduisez vos frais de livraison grâce aux Points KABA. Sélectionner OUI pour les utiliser",
   "use_of_kaba_points": "Vos points KABA peuvent être utilisés pour obtenir une remise sur les frais de livraison. Veuillez Cochez OUI ci-dessous pour l'utiliser",
   "kaba_points_monthly_limit_reached": "Vous avez atteint la limite de Points KABA à utiliser par mois",
   "use_of_kaba_points_not_eligible": "Désolé, vous n'êtes pas encore éligible pour utiliser la fonction de réduction des points KABA",
@@ -541,5 +539,7 @@
   "fix_please_wait": "Subscription du bon de réduction en cours ...",
   "name_field_error": "Veuillez entrer votre vrai nom",
   "pls_agree_to_terms": "Veuillez accepter les termes et conditions",
-  "current_address_tile_hint": "Veuillez vous assurer que l'emplacement sélectionné est la destination de livraison pour des frais de livraison précis"
+  "current_address_tile_hint": "Veuillez vous assurer que l'emplacement sélectionné est la destination de livraison pour des frais de livraison précis",
+  "our_propositions": "Propositions"
+
 }

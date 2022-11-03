@@ -292,7 +292,7 @@ class _MyAppState extends State<MyApp> {
               /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
                 restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
               // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
-//             home: MovieCatalogePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
+//             home: MovieCataloguePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
 //               home: MovieDetailsPage(presenter: MoviePresenter()),
 //             home: SearchProductPage(),
 //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),

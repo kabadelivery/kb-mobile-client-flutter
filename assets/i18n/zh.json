@@ -116,7 +116,7 @@
   "please_wait_fees_percentage": "请等待更新费用比例完成",
   "phone_number_wrong": "电话号码有误",
   "my_balance": "余额",
-  "sorry_empty_transactions": "对不起，您还没有进行交易！",
+  "sorry_empty_transactions": "抱歉，近期没有交易",
   "top_kaba_account": "往快吧账户转账",
   "insert_transfer_amount": "请输入金额",
   "pay": "支付",
@@ -378,7 +378,7 @@
   "debit_points_kaba": "KABA 积分借记",
   "credit_points_kaba": "KABA Point 到账",
   "non_eligible": "不合格",
-  "non_eligible_reason": "抱歉您还没有KABA积分优惠功能",
+  "non_eligible_reason": "下XXX单或达到YYYKaba积分即可解锁该功能",
   "your_points": "积分",
   "this_feature_is_building": "此功能正在构建中，即将推出",
   "demo_account_alert": "抱歉，无法使用测试张下单。请使用别的账号下订单。",
@@ -539,5 +539,6 @@
   "fix_please_wait": "优惠卷订阅进行中 ...",
   "name_field_error": "请输入您的真正的名字",
   "pls_agree_to_terms": "请同意条款和条件",
-  "current_address_tile_hint": "请确保选择的位置是送货目的地以便外送费准确"
+  "current_address_tile_hint": "请确保选择的位置是送货目的地以便外送费准确",
+  "our_propositions": "建议"
 }
