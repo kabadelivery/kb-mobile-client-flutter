@@ -541,6 +541,7 @@
   "pls_agree_to_terms": "Veuillez accepter les termes et conditions",
   "current_address_tile_hint": "Veuillez vous assurer que l'emplacement sélectionné est la destination de livraison pour des frais de livraison précis",
   "our_propositions": "Propositions",
-  "filter_settings": "Paramètre du filtre"
+  "filter_settings": "Paramètre du filtre",
+  "reparation_voucher": "Bon de réparation"
 
 }

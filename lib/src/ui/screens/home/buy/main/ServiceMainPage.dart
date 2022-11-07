@@ -175,7 +175,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 children: [
                   /* hint */
                   SizedBox(height: 20),
-                  GestureDetector(
+                 StateContainer.of(context).location == null ? GestureDetector(
                     onTap: () {
                       showPlacePicker(context);
                     },
@@ -200,7 +200,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
                       ],
                     ),
-                  ),
+                  ) : Container(),
                   GestureDetector(
                     onTap: () {
                       showPlacePicker(context);

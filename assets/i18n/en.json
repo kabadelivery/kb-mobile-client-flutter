@@ -543,5 +543,6 @@
   "current_address_tile_hint": "Please make sure the selected location is the delivery destination for accurate delivery charges",
 
   "our_propositions": "Suggestions",
-  "filter_settings": "Filter settings"
+  "filter_settings": "Filter settings",
+  "reparation_voucher": "Reparation voucher"
 }
