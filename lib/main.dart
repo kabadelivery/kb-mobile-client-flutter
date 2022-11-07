@@ -31,7 +31,6 @@ import 'package:KABA/src/ui/screens/delete_account/DeleteAccountRefundQuestionna
 import 'package:KABA/src/ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopScheduleMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
@@ -82,7 +81,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-  // OptimizedCacheImage. = CacheManagerLogLevel.none;
+  // CachedNetworkImage. = CacheManagerLogLevel.none;
 
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
@@ -298,7 +297,7 @@ class _MyAppState extends State<MyApp> {
 //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
               // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
               //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
-              /*home: RestaurantListPage(
+              /*home: RestaurantListPage (
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),
                   restaurantListPresenter: RestaurantListPresenter()),*/

@@ -29,7 +29,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.cover,
-                    image: OptimizedCacheImageProvider(Utils.inflateLink(comment.pic))
+                    image: CachedNetworkImageProvider(Utils.inflateLink(comment.pic))
                 )
             ),
             height:40, width: 40,

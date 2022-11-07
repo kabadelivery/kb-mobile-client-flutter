@@ -90,7 +90,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                     width: 3),
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         // Utils.inflateLink(movie?.pic)
                                         widget?.movie?.pic)))),
                       ),

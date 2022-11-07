@@ -212,6 +212,9 @@ flutter:
     - assets/images/png/location_check_ok.png
     - assets/images/png/alarm.png
     - assets/images/png/demo.png
+    - assets/images/png/filter_yellow.png
+    - assets/images/png/filter_red.png
+    - assets/images/png/opened.png
     # presentation
     - assets/images/vectors/app_presentation/sl_enjoy.svg
     - assets/images/vectors/app_presentation/sl_choice.svg

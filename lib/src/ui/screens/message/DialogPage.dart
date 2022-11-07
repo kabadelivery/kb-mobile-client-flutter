@@ -47,7 +47,7 @@ class DialogPage extends AlertDialog {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(pic)
+                          image: CachedNetworkImageProvider(pic)
                       )
                   )
               ),

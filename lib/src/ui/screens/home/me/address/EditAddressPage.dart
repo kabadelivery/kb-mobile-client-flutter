@@ -385,9 +385,9 @@ class _EditAddressPageState extends State<EditAddressPage>
                           width: 100,
                           decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                              shape: BoxShape.circle,
+
                               image: new DecorationImage(
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
                                 image: new AssetImage(
                                     ImageAssets.address),
                               ))),
@@ -770,9 +770,9 @@ class _EditAddressPageState extends State<EditAddressPage>
                         width: 100,
                         decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
+
                             image: new DecorationImage(
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitHeight,
                               image: new AssetImage(
                                   ImageAssets.address),
                             ))),

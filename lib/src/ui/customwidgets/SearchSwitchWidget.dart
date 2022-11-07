@@ -1,10 +1,10 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tinycolor/tinycolor.dart';
 
 class SearchSwitchWidget extends StatefulWidget {
   Function onSwitch;
@@ -14,9 +14,18 @@ class SearchSwitchWidget extends StatefulWidget {
   String type;
 
   Function scrollToTopFunction;
+  Function listContentFilter;
+
+  Map<String, dynamic> filterConfiguration;
 
   SearchSwitchWidget(
-      this.selectedPosition, this.onSwitch, this.filterFunction,this.scrollToTopFunction, this.type);
+      this.selectedPosition,
+      this.onSwitch,
+      this.filterFunction,
+      this.listContentFilter,
+      this.scrollToTopFunction,
+      this.type,
+      this.filterConfiguration);
 
   @override
   _SearchSwitchWidgetState createState() {
@@ -192,19 +201,39 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                 ),
                 SizedBox(width: 5),
                 widget.selectedPosition == 1
-                    ? GestureDetector(onTap: widget.scrollToTopFunction,
-                      child: Container(padding: EdgeInsets.all(8),width: 70,
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: KColors.primaryColor,
-                            size: 20,
-                          ),
-                   decoration: BoxDecoration(
-                       color: KColors.primaryColor.withAlpha(30),
-                       borderRadius: BorderRadius.circular(5)
-                   ),
+                    ? GestureDetector(
+                        onTap: widget
+                            .listContentFilter, //widget.scrollToTopFunction,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          width: 70,
+                          child: widget.filterConfiguration != null &&
+                                  widget.filterConfiguration["opened_filter"] ==
+                                      true
+                              ? Container(
+                                  height: 40,
+                                  width: 30,
+                                  child: Image.asset(
+                                    ImageAssets.opened,
+                                    height: 40.0,
+                                    width: 40.0,
+                                    fit: BoxFit.fitHeight,
+                                    alignment: Alignment.center,
+                                  ))
+                              : Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: Image.asset(
+                                    ImageAssets.filter_red,
+                                    height: 20.0,
+                                    width: 20.0,
+                                    alignment: Alignment.center,
+                                  )),
+                          decoration: BoxDecoration(
+                              /* color: KColors.primaryColor.withAlpha(30),*/
+                              borderRadius: BorderRadius.circular(5)),
                         ),
-                    )
+                      )
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

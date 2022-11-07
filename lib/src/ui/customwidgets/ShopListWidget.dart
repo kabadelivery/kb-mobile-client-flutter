@@ -67,7 +67,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                       color: Colors.white,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: OptimizedCacheImageProvider(
+                                          image: CachedNetworkImageProvider(
                                               Utils.inflateLink(
                                                   widget.shopModel?.pic))))),
                               /*title:*/
@@ -136,7 +136,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                 .withAlpha(150))),
                                     SizedBox(height: 10),
                                     /* kilometers and shipping fees */
-                                    Row(children: <Widget>[
+                                    Row (children: <Widget>[
                                       _getRestaurantStateTag(widget?.shopModel),
                                       SizedBox(width: 5),
                                       widget.shopModel?.distance == null
@@ -328,7 +328,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: OptimizedCacheImageProvider(
+                              image: CachedNetworkImageProvider(
                                   Utils.inflateLink(shopModel?.pic))))),
                   SizedBox(height: 10),
                   Text(

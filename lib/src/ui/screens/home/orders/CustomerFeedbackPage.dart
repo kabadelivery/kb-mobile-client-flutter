@@ -116,7 +116,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(
                                             "${widget?.command?.livreur?.pic}"))))),
 

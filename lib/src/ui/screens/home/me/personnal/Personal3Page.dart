@@ -155,7 +155,7 @@ class _Personal3PageState extends State<Personal3Page>
                               fit: BoxFit.cover,
                               image: (_image != null
                                   ? FileImage(_image)
-                                  : OptimizedCacheImageProvider(
+                                  : CachedNetworkImageProvider(
                                       Utils.inflateLink(widget
                                           .customer?.profile_picture)))))),
                   Positioned(

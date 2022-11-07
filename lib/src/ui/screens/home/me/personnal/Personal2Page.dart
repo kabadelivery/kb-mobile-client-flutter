@@ -155,7 +155,7 @@ class _Personal2PageState extends State<Personal2Page>
                             fit: BoxFit.cover,
                             image: (_image != null
                                 ? FileImage(_image)
-                                : OptimizedCacheImageProvider(Utils.inflateLink(
+                                : CachedNetworkImageProvider(Utils.inflateLink(
                                     widget.customer?.profile_picture)))))),
                 Positioned(
                     child: InkWell(

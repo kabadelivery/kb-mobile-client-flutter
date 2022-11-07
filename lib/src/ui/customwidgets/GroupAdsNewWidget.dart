@@ -56,7 +56,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: OptimizedCacheImageProvider(
+                                image: CachedNetworkImageProvider(
                                     Utils.inflateLink(
                                         widget.groupAd.big_pub.pic)))),
                         width: MediaQuery.of(context).size.width,
@@ -78,7 +78,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(
+                          image: CachedNetworkImageProvider(
                               Utils.inflateLink(widget?.groupAd?.small_pub?.pic))))),
               SizedBox(width: 10,),
               Expanded(

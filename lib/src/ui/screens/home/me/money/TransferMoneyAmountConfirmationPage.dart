@@ -98,7 +98,7 @@ class _TransferMoneyAmountConfirmationPageState
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
                               widget?.moneyReceiver?.profile_picture))))),
               SizedBox(
                 height: 20,

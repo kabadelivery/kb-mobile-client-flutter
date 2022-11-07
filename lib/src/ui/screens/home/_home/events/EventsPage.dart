@@ -122,7 +122,7 @@ class _EvenementPageState extends State<EvenementPage> implements EvenementView 
                           Flex(
                             direction: Axis.vertical,
                             children: <Widget>[
-                              OptimizedCacheImage(
+                              CachedNetworkImage(
                                   imageUrl: Utils.inflateLink(data[position].pic),
                                   fit: BoxFit.fill
                               )

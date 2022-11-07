@@ -260,7 +260,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
+                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
                                 )
                             )
                         ), onTap: ()=>

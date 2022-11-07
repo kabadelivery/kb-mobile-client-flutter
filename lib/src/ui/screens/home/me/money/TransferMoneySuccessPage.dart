@@ -81,7 +81,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                     shape: BoxShape.rectangle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.moneyReceiver?.profile_picture))
+                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.moneyReceiver?.profile_picture))
                                     )
                                 )
                             ),

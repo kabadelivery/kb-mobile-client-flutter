@@ -358,7 +358,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                                   bottomRight: Radius.circular(8)),
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: OptimizedCacheImageProvider(
+                                  image: CachedNetworkImageProvider(
                                       Utils.inflateLink(product?.pic)))),
                         ),
                       ),

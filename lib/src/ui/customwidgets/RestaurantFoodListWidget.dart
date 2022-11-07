@@ -81,7 +81,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: OptimizedCacheImageProvider(Utils.inflateLink(food.pic))
+                                  image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
                               )
                           ),
                         ),
@@ -97,7 +97,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                                   shape: BoxShape.circle,
                                   image: new DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: OptimizedCacheImageProvider(Utils.inflateLink(food.pic))
+                                      image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
                                   )
                               ),
                             )) // invisible view

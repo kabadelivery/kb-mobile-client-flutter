@@ -620,7 +620,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: OptimizedCacheImageProvider(
+                              image: CachedNetworkImageProvider(
                                   Utils.inflateLink(food.pic)))),
                     ),
                   ],
@@ -1001,7 +1001,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: OptimizedCacheImageProvider(Utils.inflateLink(
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),*/
         Container(),
@@ -1100,7 +1100,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: OptimizedCacheImageProvider(Utils.inflateLink(
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),*/
         SizedBox(

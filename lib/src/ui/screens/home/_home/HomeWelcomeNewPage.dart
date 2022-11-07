@@ -436,7 +436,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     return GestureDetector(
       onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
       child: Center(
-        child: Container(color: Colors.white,
+        child: Container(
+          color: Colors.white,
           padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 20),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -455,10 +456,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             width: 2),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: OptimizedCacheImageProvider(
+                            image: CachedNetworkImageProvider(
                                 Utils.inflateLink(restaurant.pic))))),
                 SizedBox(height: 10),
-                Container(color: Colors.white,
+                Container(
+                  color: Colors.white,
                   child: Container(
                       height: 35,
                       width: MediaQuery.of(context).size.width /
@@ -572,7 +574,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
-                      margin: EdgeInsets.only(bottom:10, top: 15),
+                      margin: EdgeInsets.only(bottom: 10, top: 15),
                       child: ClipPath(
                           // clipper: KabaRoundTopClipper(),
                           child: data.slider.length > 1
@@ -580,18 +582,19 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   options: CarouselOptions(
                                     onPageChanged: _carousselPageChanged,
                                     enlargeCenterPage: true,
-                                    viewportFraction: 0.825 ,
+                                    viewportFraction: 0.825,
                                     autoPlay:
                                         data.slider.length > 1 ? true : false,
                                     reverse:
                                         data.slider.length > 1 ? true : false,
-                                    enableInfiniteScroll:
-                                        data.slider.length > 1 ? true : false,
+                                    enableInfiniteScroll: false,
+                                    // data.slider.length > 1 ? true : false,
                                     autoPlayInterval: Duration(seconds: 5),
                                     autoPlayAnimationDuration:
                                         Duration(milliseconds: 300),
                                     autoPlayCurve: Curves.fastOutSlowIn,
-                                    height: 0.825 *9 *
+                                    height: 0.825 *
+                                        9 *
                                         MediaQuery.of(context).size.width /
                                         16,
                                   ),
@@ -603,17 +606,20 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                               data.slider,
                                               data.slider.indexOf(admodel)),
                                           child: Container(
-                                              height: 0.825*9 *
+                                              height: 0.825 *
+                                                  9 *
                                                   MediaQuery.of(context)
                                                       .size
                                                       .width /
                                                   16,
-                                              width: 0.825* MediaQuery.of(context)
-                                                  .size
-                                                  .width,
+                                              width: 0.825 *
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
                                               child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                child: OptimizedCacheImage(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                child: CachedNetworkImage(
                                                     imageUrl: Utils.inflateLink(
                                                         admodel.pic),
                                                     fit: BoxFit.cover),
@@ -630,7 +636,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                           MediaQuery.of(context).size.width /
                                           16,
                                       width: MediaQuery.of(context).size.width,
-                                      child: OptimizedCacheImage(
+                                      child: CachedNetworkImage(
                                           imageUrl: Utils.inflateLink(
                                               data.slider[0].pic),
                                           fit: BoxFit.cover)),
@@ -653,8 +659,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                         margin: EdgeInsets.only(
                                             right: 2.5, top: 2.5),
                                         height: 7,
-                                        width: index == _carousselPageIndex ||
-                                                index == data.slider.length
+                                        width: index ==
+                                                data.slider.length -
+                                                    _carousselPageIndex -
+                                                    1
                                             ? 12
                                             : 7,
                                         decoration: new BoxDecoration(
@@ -663,8 +671,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                             border: new Border.all(
                                                 color: KColors.primaryColor),
                                             color: (index ==
-                                                        _carousselPageIndex ||
-                                                    index == data.slider.length)
+                                                    data.slider.length -
+                                                        _carousselPageIndex -
+                                                        1)
                                                 ? KColors.primaryColor
                                                 : Colors.transparent));
                                   })
@@ -724,8 +733,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                     SizedBox(
                         height: 30,
                         width: 30,
-                        child: Lottie.asset(LottieAssets.proposal,
-                            animate: true))
+                        child:
+                            Lottie.asset(LottieAssets.proposal, animate: true))
                   ],
                 ),
                 SizedBox(height: 10),
@@ -767,7 +776,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                             animate: true))
                                   ],
                                 ),
-
                                 false
                                     ? GestureDetector(
                                         onTap: () {
@@ -829,13 +837,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             animate: true))
                   ],
                 ),
-                Row(mainAxisSize: MainAxisSize.max,
+                Row(
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: Container(
                           child: widget.bestSellerMini,
                           height: 110,
-                        color: Colors.blue,
+                          color: Colors.blue,
                           // color: KColors.new_gray,
                           width: MediaQuery.of(context).size.width),
                     ),

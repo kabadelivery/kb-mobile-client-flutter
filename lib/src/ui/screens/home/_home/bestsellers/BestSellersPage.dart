@@ -181,7 +181,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                     shape: BoxShape.circle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: OptimizedCacheImageProvider(
+                        image: CachedNetworkImageProvider(
                             Utils.inflateLink(data?.food_entity?.pic))
                     )
                 ),

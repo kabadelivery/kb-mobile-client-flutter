@@ -64,6 +64,8 @@ class RestaurantListPresenter implements RestaurantListContract {
       // save data if it contains restaurants, then the filtering will be done on it
       List<ShopModel> restaurants = [];
 
+      var configuration = await CustomerUtils.getShopListFilterConfiguration();
+
       if (data["data"]?.length > 0)
         restaurants = await compute(sortOutRestaurantList, {
           "data": data,
@@ -71,7 +73,8 @@ class RestaurantListPresenter implements RestaurantListContract {
           "is_email_account": customer == null || customer?.username == null
               ? false
               : (customer.username.contains("@") ? true : false),
-          "filter_key": filter_key
+          "filter_key": filter_key,
+          "filter_configuration": configuration
         });
 
       // save billing locally so that the other stuffs can use it.
@@ -131,6 +134,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
     bool is_email_account = data["is_email_account"];
     Position tmpPosition = data["position"];
     String filter_key = data["filter_key"];
+    Map<String, dynamic> configuration = data["filter_configuration"];
 
     xrint("before filtered ${tmp?.length}");
     /* filter the data */
@@ -162,16 +166,20 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       int indexOf79 = -1;
       int indexOf80 = -1;
 
+      // filter tmp with only restaurant that are opened or all
+      tmp = tmp.where((e) {
+        if (configuration["opened_filter"] == true)
+          return e.is_open == 1 && e.coming_soon == 0;
+        return true;
+      }).toList();
+
+      /* make sure the distances and shipping prices are computed */
       for (int s = 0; s < tmp.length; s++) {
-        // restaurants[s].distanceBetweenMeandRestaurant = Utils.locationDistance(position, restaurants[s]);
         tmp[s].distance = Utils.locationDistance(tmpPosition, tmp[s]) > 100
             ? "> 100"
             : Utils.locationDistance(tmpPosition, tmp[s])?.toString();
-        // according to the distance, we get the matching delivery fees
-        // i dont want to make another loop
         tmp[s].delivery_pricing =
             _getShippingPrice(tmp[s].distance, myBillingArray);
-
         if (tmp[s].id == 79) indexOf79 = s;
         if (tmp[s].id == 80) indexOf80 = s;
       }

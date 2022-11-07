@@ -206,7 +206,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                         return Container(
                             height: 9 * MediaQuery.of(context).size.width / 16,
                             width: MediaQuery.of(context).size.width,
-                            child: OptimizedCacheImage(
+                            child: CachedNetworkImage(
                                 imageUrl: Utils.inflateLink(pictureLink),
                                 fit: BoxFit.cover));
                       },

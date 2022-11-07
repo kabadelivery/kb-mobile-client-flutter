@@ -386,7 +386,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       shape: BoxShape.rectangle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
                               NetworkImages.kaba_promotion_gif))))),
               Container(),
               /* content */
@@ -463,7 +463,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       shape: BoxShape.rectangle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(
+                          image: CachedNetworkImageProvider(Utils.inflateLink(
                               NetworkImages.kaba_promotion_gif)))))),
             ]),
           ));
@@ -492,7 +492,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           shape: BoxShape.rectangle,
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: OptimizedCacheImageProvider(
+                              image: CachedNetworkImageProvider(
                                   Utils.inflateLink(
                                       NetworkImages.kaba_promotion_gif)))))
                   : Container()),
@@ -619,7 +619,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           shape: BoxShape.rectangle,
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: OptimizedCacheImageProvider(
+                              image: CachedNetworkImageProvider(
                                   Utils.inflateLink(
                                       NetworkImages.kaba_promotion_gif)))))
                   : Container()),
@@ -1888,7 +1888,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(
+                          image: CachedNetworkImageProvider(
                               Utils.inflateLink(food.pic)))),
                 ),
                 trailing:  Row(

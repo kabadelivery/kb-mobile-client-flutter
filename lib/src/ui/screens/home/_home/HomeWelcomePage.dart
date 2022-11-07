@@ -390,7 +390,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(restaurant.pic))
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
                       )
                   )
               ),
@@ -517,7 +517,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                   child: Container(
                                       height: 9*MediaQuery.of(context).size.width/16,
                                       width: MediaQuery.of(context).size.width,
-                                      child:OptimizedCacheImage(
+                                      child:CachedNetworkImage(
                                           imageUrl: Utils.inflateLink(admodel.pic),
                                           fit: BoxFit.cover
                                       )
@@ -532,7 +532,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                           child: Container(
                               height: 9*MediaQuery.of(context).size.width/16,
                               width: MediaQuery.of(context).size.width,
-                              child:OptimizedCacheImage(
+                              child:CachedNetworkImage(
                                   imageUrl: Utils.inflateLink(data.slider[0].pic),
                                   fit: BoxFit.cover
                               )
@@ -633,7 +633,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                     decoration: BoxDecoration(
                                         image: new DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: OptimizedCacheImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
+                                            image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
                                         )
                                     ),
                                   ),
@@ -668,7 +668,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                                     Container(
                                                       padding: EdgeInsets.all(5),
                                                       height:90, width: 120,
-                                                      child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
+                                                      child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
                                                     ),
                                                   ],
                                                 )), onTap: _jumpToBestSeller),
@@ -680,7 +680,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                                 Container(
                                                   padding: EdgeInsets.all(5),
                                                   height:90, width: 120,
-                                                  child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
+                                                  child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
                                                 ),
                                               ],
                                             ),
@@ -707,7 +707,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             Container(
                                               padding: EdgeInsets.all(5),
                                               height:90, width: 120,
-                                              child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
+                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://freepngimg.com/thumb/roar/35300-2-lioness-roar-transparent-background.png"),
                                             ),
                                           ],
                                         ),
@@ -717,7 +717,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                             Container(
                                               padding: EdgeInsets.all(5),
                                               height:90, width: 120,
-                                              child:OptimizedCacheImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
+                                              child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: "https://clipart.info/images/ccovers/1495725897Free-spiderman-png-transparent-background.png"),
                                             ),
                                           ],
                                         ),

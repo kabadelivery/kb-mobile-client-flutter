@@ -51,7 +51,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
+                                image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
                             )
                         )
                     ),
@@ -179,7 +179,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(restaurantModel?.pic))
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel?.pic))
                       )
                   )
               ),

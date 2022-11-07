@@ -34,6 +34,9 @@ class ImageAssets {
       "assets/images/png/location_check_ok.png";
   static final String emergency_icon = "assets/images/png/alarm.png";
   static final String demo_icon = "assets/images/png/demo.png";
+  static final String filter_yellow = "assets/images/png/filter_yellow.png";
+  static final String filter_red = "assets/images/png/filter_red.png";
+  static final String opened = "assets/images/png/opened.png";
 
 
 }

@@ -80,7 +80,7 @@ class FlowerWidgetItem extends StatelessWidget {
                             // shape: BoxShape.rectangle,
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: OptimizedCacheImageProvider(
+                                image: CachedNetworkImageProvider(
                                     Utils.inflateLink(food?.pic)))),
                       ),
                     ),

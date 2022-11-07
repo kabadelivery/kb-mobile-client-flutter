@@ -167,7 +167,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         shape: BoxShape.rectangle,
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: OptimizedCacheImageProvider(
+                            image: CachedNetworkImageProvider(
                                 Utils.inflateLink(food?.pic)))),
                   ),
                   SizedBox(width: 10),

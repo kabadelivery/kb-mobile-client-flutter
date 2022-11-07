@@ -15,7 +15,7 @@ import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.
 import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPage.dart';
+
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
@@ -86,7 +86,6 @@ var generalRoutes = {
 //  NotificationTestPage.routeName : (BuildContext context) => NotificationTestPage(),
   ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
   ShopListPageRefined.routeName : (BuildContext context) => ShopListPageRefined(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
-  ShopListPage.routeName : (BuildContext context) => ShopListPage(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
   ShopFlowerDetailsPage.routeName : (BuildContext context) => ShopFlowerDetailsPage(presenter: FoodPresenter(),),
   OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter(),),
   HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter(),),

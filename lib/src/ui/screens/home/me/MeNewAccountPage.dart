@@ -251,7 +251,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               color: Colors.grey.withAlpha(100),
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: OptimizedCacheImageProvider(
+                                  image: CachedNetworkImageProvider(
                                       Utils.inflateLink(
                                           widget.customerData.profile_picture),
                                       cacheKey: widget
@@ -723,7 +723,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(widget
                                             .customerData.profile_picture))))),
                         onTap: () => _seeProfilePicture()

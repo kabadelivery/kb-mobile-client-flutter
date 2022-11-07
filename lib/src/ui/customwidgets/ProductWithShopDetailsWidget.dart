@@ -7,6 +7,7 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,7 +65,7 @@ class _ProductWithShopDetailsWidgetState
                                     width: 3),
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(widget?.food?.pic)))),
                           ),
                           SizedBox(width: 18),

@@ -21,6 +21,7 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -568,7 +569,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: OptimizedCacheImageProvider(
+                                image: CachedNetworkImageProvider(
                                     Utils.inflateLink(food.pic)))),
                       ),
                     ],
@@ -737,7 +738,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(food?.pic)))),
                           ),
                         ],
@@ -993,7 +994,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             bottomRight: Radius.circular(8)),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: OptimizedCacheImageProvider(
+                            image: CachedNetworkImageProvider(
                                 Utils.inflateLink(food?.pic)))),
                   ),
                 ),
@@ -1279,7 +1280,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                               fit: BoxFit.cover,
-                              image: OptimizedCacheImageProvider(
+                              image: CachedNetworkImageProvider(
                                   Utils.inflateLink(shopModel?.pic))))),
                   SizedBox(height: 10),
                   Text("${message}",

@@ -406,11 +406,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-CustomerUtils.getCustomer().then((value) {
- setState(() {
-   StateContainer.of(context).customer = value;
- });
-});    // check update
+    CustomerUtils.getCustomer().then((value) {
+      setState(() {
+        StateContainer.of(context).customer = value;
+      });
+    }); // check update
   }
 
   void mDialog(String message) {
@@ -735,9 +735,9 @@ CustomerUtils.getCustomer().then((value) {
                         width: 100,
                         decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
+
                             image: new DecorationImage(
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitHeight,
                               image:
                                   new AssetImage(ImageAssets.login_description),
                             ))),
@@ -785,8 +785,10 @@ CustomerUtils.getCustomer().then((value) {
           //
         }
       }
+    } else if (value == 1) {
+      _getLastKnowLocation(jumpToBuyPageDetails: true);
     } else {
-      // 0,1
+      // 0
       setState(() {
         StateContainer.of(context).updateTabPosition(tabPosition: value);
       });
@@ -1078,9 +1080,9 @@ CustomerUtils.getCustomer().then((value) {
                       width: 100,
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                          shape: BoxShape.circle,
+
                           image: new DecorationImage(
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitHeight,
                             image:
                                 new AssetImage(ImageAssets.login_description),
                           ))),
@@ -1121,7 +1123,7 @@ CustomerUtils.getCustomer().then((value) {
     }
   }
 
-  Future _getLastKnowLocation() async {
+  Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
     /* show a dialog describing that we are going to need to use permissions
     * //
     * */
@@ -1153,9 +1155,9 @@ CustomerUtils.getCustomer().then((value) {
                         width: 100,
                         decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
+
                             image: new DecorationImage(
-                              fit: BoxFit.cover,
+
                               image: new AssetImage(ImageAssets.address),
                             ))),
                     SizedBox(height: 10),
@@ -1183,7 +1185,7 @@ CustomerUtils.getCustomer().then((value) {
                     prefs.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     Future.delayed(Duration(milliseconds: 1000), () {
-                      _getLastKnowLocation();
+                      _getLastKnowLocation(jumpToBuyPageDetails: jumpToBuyPageDetails);
                     });
                     Navigator.of(context).pop();
                   },
@@ -1218,9 +1220,9 @@ CustomerUtils.getCustomer().then((value) {
                           width: 100,
                           decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                              shape: BoxShape.circle,
+
                               image: new DecorationImage(
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
                                 image: new AssetImage(ImageAssets.address),
                               ))),
                       SizedBox(height: 10),
@@ -1245,6 +1247,11 @@ CustomerUtils.getCustomer().then((value) {
                     onPressed: () async {
                       /* */
                       await Geolocator.openAppSettings();
+                      /*LocationPermission permission2 = await Geolocator.checkPermission();
+                      if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                        _getLastKnowLocation(
+                            jumpToBuyPageDetails: jumpToBuyPageDetails);
+                      }*/
                       Navigator.of(context).pop();
                     },
                   )
@@ -1276,9 +1283,8 @@ CustomerUtils.getCustomer().then((value) {
                           width: 100,
                           decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                              shape: BoxShape.circle,
                               image: new DecorationImage(
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
                                 image: new AssetImage(ImageAssets.address),
                               ))),
                       SizedBox(height: 10),
@@ -1302,7 +1308,12 @@ CustomerUtils.getCustomer().then((value) {
                         "${AppLocalizations.of(context).translate('accept')}"),
                     onPressed: () async {
                       /* */
-                      Geolocator.requestPermission();
+                     await Geolocator.requestPermission();
+                    LocationPermission permission2 = await Geolocator.checkPermission();
+                     if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                       _getLastKnowLocation(
+                           jumpToBuyPageDetails: jumpToBuyPageDetails);
+                     }
                       Navigator.of(context).pop();
                     },
                   )
@@ -1338,9 +1349,9 @@ CustomerUtils.getCustomer().then((value) {
                             width: 100,
                             decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                                shape: BoxShape.circle,
+
                                 image: new DecorationImage(
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fitHeight,
                                   image: new AssetImage(
                                       ImageAssets.location_permission),
                                 ))),
@@ -1366,6 +1377,11 @@ CustomerUtils.getCustomer().then((value) {
                       onPressed: () async {
                         /* */
                         await Geolocator.openLocationSettings();
+                        LocationPermission permission2 = await Geolocator.checkPermission();
+                        if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                          _getLastKnowLocation(
+                              jumpToBuyPageDetails: jumpToBuyPageDetails);
+                        }
                         Navigator.of(context).pop();
                       },
                     )
@@ -1375,6 +1391,15 @@ CustomerUtils.getCustomer().then((value) {
             );
             /* ---- */
           } else {
+            /* show loading dialog until this finishes then close */
+
+            // switch to page two
+            if (jumpToBuyPageDetails) {
+              setState(() {
+                StateContainer.of(context).updateTabPosition(tabPosition: 1);
+              });
+            }
+
             positionStream =
                 Geolocator.getPositionStream().listen((Position position) {
               /* compare current and old position */

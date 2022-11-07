@@ -155,7 +155,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                 )),
           ),
           background: Container(
-            child: OptimizedCacheImage(
+            child: CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
           )),
@@ -235,7 +235,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: OptimizedCacheImageProvider(
+                                        image: CachedNetworkImageProvider(
                                             Utils.inflateLink(
                                                 widget?.restaurant?.pic))))),
                           ),

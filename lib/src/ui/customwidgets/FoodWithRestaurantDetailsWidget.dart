@@ -69,7 +69,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(widget?.food?.pic)))),
                           ),
                           Container(
@@ -79,7 +79,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: OptimizedCacheImageProvider(
+                                    image: CachedNetworkImageProvider(
                                         Utils.inflateLink(widget?.food.pic)))),
                           )
                         ],
@@ -158,7 +158,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: OptimizedCacheImageProvider(
+                                        image: CachedNetworkImageProvider(
                                             Utils.inflateLink(widget?.food
                                                 ?.restaurant_entity?.pic))))),
                             trailing:

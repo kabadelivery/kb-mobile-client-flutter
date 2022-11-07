@@ -122,7 +122,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: OptimizedCacheImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
+                                          image: CachedNetworkImageProvider(Utils.inflateLink(command.restaurant_entity.pic))
                                       )
                                   )
                               ),
@@ -315,7 +315,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(Utils.inflateLink(food.pic))
+                          image: CachedNetworkImageProvider(Utils.inflateLink(food.pic))
                       )
                   ),
                 ),

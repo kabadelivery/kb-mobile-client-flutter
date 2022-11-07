@@ -364,4 +364,27 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("_billing" + signature, billing);
   }
+
+  /* save configuration  */
+  static Future<void> updateShopListFilterConfiguration(
+      Map<String,dynamic> configuration) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      prefs.setString(
+          "_shop_list_filter" + signature, json.encode(configuration));
+    } catch (e) {
+      xrint(e);
+    }
+  }
+
+/*  get configuration */
+  static Future<Map<String,dynamic>> getShopListFilterConfiguration() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String tmp = prefs.getString("_shop_list_filter" + signature);
+      return json.decode(tmp);
+    } catch (e) {
+      return Map<String,dynamic>();
+    }
+  }
 }

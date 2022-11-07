@@ -100,7 +100,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                     // color: Colors.blueAccent,
 //                                    height: 9*MediaQuery.of(context).size.width/16,
 //                                       height: MediaQuery.of(context).size.width,
-                                    child: OptimizedCacheImage(
+                                    child: CachedNetworkImage(
                                   imageUrl: Utils.inflateLink(admodel.pic),
                                   fit: BoxFit.fitWidth,
                                   progressIndicatorBuilder:

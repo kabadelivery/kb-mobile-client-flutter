@@ -194,7 +194,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 child: Container(
                     height: 9 * MediaQuery.of(context).size.width / 16,
                     width: MediaQuery.of(context).size.width,
-                    child: OptimizedCacheImage(
+                    child: CachedNetworkImage(
                         imageUrl:
                             Utils.inflateLink(widget.restaurant?.theme_pic),
                         fit: BoxFit.cover)),
@@ -564,7 +564,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 )),
           ),
           background: Container(
-            child: OptimizedCacheImage(
+            child: CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
           )),
@@ -645,7 +645,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: OptimizedCacheImageProvider(
+                                        image: CachedNetworkImageProvider(
                                             Utils.inflateLink(
                                                 widget?.restaurant?.pic))))),
                           ),

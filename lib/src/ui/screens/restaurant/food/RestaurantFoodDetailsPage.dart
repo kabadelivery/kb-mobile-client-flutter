@@ -186,7 +186,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                                     shape: BoxShape.circle,
                                                     image: new DecorationImage(
                                                         fit: BoxFit.cover,
-                                                        image: OptimizedCacheImageProvider(Utils.inflateLink(widget?.food?.pic))
+                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.food?.pic))
                                                     )
                                                 )
                                             ),
@@ -483,7 +483,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                           return Container(
                               height: 9*MediaQuery.of(context).size.width/16,
                               width: 9*MediaQuery.of(context).size.width,
-                              child:OptimizedCacheImage(
+                              child:CachedNetworkImage(
                                   imageUrl: Utils.inflateLink(pictureLink),
                                   fit: BoxFit.cover
                               )

@@ -41,7 +41,7 @@ class MovieWidgetItem extends StatelessWidget {
                       color: KColors.primaryYellowColor.withOpacity(0.3),
                       width: 3),
                   image: new DecorationImage(
-                      fit: BoxFit.cover, image: OptimizedCacheImageProvider(
+                      fit: BoxFit.cover, image: CachedNetworkImageProvider(
                           // Utils.inflateLink(movie?.pic)
                           movie?.pic))
               ),

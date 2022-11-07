@@ -47,6 +47,7 @@ class RestaurantFoodProposalPresenter implements RestaurantFoodProposalContract 
     try {
       List<ShopProductModel> foods = await provider.fetchRestaurantFoodProposal2FromTag(query, tag);
       _restaurantFoodProposalView.searchMenuShowLoading(false);
+      /* could filter for only the opened or all */
       _restaurantFoodProposalView.inflateFoodsProposal(foods);
     } catch (_) {
       /* RestaurantFoodProposal failure */

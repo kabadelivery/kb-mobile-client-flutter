@@ -184,7 +184,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                           width: 3),
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: OptimizedCacheImageProvider(
+                          image: CachedNetworkImageProvider(
                               Utils.inflateLink(data?.food_entity?.pic)))),
                 ),
                 Container(

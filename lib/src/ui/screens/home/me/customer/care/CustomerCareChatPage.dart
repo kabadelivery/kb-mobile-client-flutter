@@ -69,7 +69,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
 
   /*     Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, decoration: BoxDecoration(image: new DecorationImage(
               fit: BoxFit.cover,
-              image: OptimizedCacheImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
+              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
           ))),*/
 
   @override

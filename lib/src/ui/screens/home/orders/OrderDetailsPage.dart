@@ -827,7 +827,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: OptimizedCacheImageProvider(Utils.inflateLink(
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
         Container(),
@@ -935,7 +935,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                     shape: BoxShape.rectangle,
                     image: new DecorationImage(
                         fit: BoxFit.cover,
-                        image: OptimizedCacheImageProvider(Utils.inflateLink(
+                        image: CachedNetworkImageProvider(Utils.inflateLink(
                             "/web/assets/app_icons/promo_large.gif")))))
             : Container()),
       ]),

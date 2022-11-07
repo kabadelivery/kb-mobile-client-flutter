@@ -17,6 +17,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:KABA/src/utils/recustomlib/flutter_switch.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -111,6 +112,10 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   String searchKey = "";
   String previousSearchKey = "";
 
+  bool _open_filter_value;
+
+  Map<String, dynamic> filterConfiguration;
+
   @override
   void initState() {
     _restaurantListScrollController.addListener(_onScroll);
@@ -127,10 +132,13 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       widget.customer = customer;
     });
 
+    CustomerUtils.getShopListFilterConfiguration().then((value) {
+      filterConfiguration = value;
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // timeout stuff
       // last_update_timeout = getTimeOutLastTime();
-
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool has_subscribed = false;
       try {
@@ -194,6 +202,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   }
 
   bool autoFocusDone = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -435,7 +444,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           children: <Widget>[
             SizedBox(height: 10),
             SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                _scrollToTopFunction, widget?.type),
+                _listContentFilter, _scrollToTopFunction, widget?.type, filterConfiguration),
             SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
@@ -1466,6 +1475,99 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       _filterDropdownValue = newValue;
     });
     _scrollToTop();
+  }
+
+  _listContentFilter() {
+    /* open filter box and show settings
+    * 1. fetch local configuration
+    *
+    * */
+    CustomerUtils.getShopListFilterConfiguration().then((configuration) {
+      filterConfiguration = configuration;
+
+      _open_filter_value = filterConfiguration["opened_filter"] == null
+          ? false
+          : filterConfiguration["opened_filter"];
+
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return StatefulBuilder(builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "${AppLocalizations.of(context).translate("filter_settings")}",
+                ),
+                content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.grey.withAlpha(30)),
+                            child: Text(
+                                "${AppLocalizations.of(context).translate('t_opened')}"
+                                    ?.toUpperCase(),
+                                style: TextStyle(
+                                    color: CommandStateColor.delivered,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600))),
+                        FlutterSwitch(
+                          width: 60.0,
+                          height: 30.0,
+                          valueFontSize: 14.0,
+                          toggleSize: 20.0,
+                          value: _open_filter_value,
+                          borderRadius: 10.0,
+                          padding: 5.0,
+                          activeColor: KColors.primaryColor,
+                          showOnOff: true,
+                          onToggle: (val) {
+                            setState(() {
+                              _open_filter_value = val;
+                            });
+                          },
+                        ),
+                      ]),
+                ]),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      // trigger the update of the page
+                      setState(() {
+                        /* update filter */
+                        filterConfiguration["opened_filter"] =
+                            _open_filter_value;
+                      });
+                      CustomerUtils.updateShopListFilterConfiguration(
+                          filterConfiguration);
+                      widget.restaurantListPresenter.fetchShopList(
+                          widget.customer,
+                          widget.type,
+                          StateContainer.of(context).location);
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: KColors.primaryColor,
+                        ),
+                        padding: EdgeInsets.only(
+                            left: 15, right: 15, top: 10, bottom: 10),
+                        child: Text(
+                          "${AppLocalizations.of(context).translate("ok")}"
+                              .toUpperCase(),
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        )),
+                  ),
+                ],
+              );
+            });
+          });
+    });
   }
 
   _scrollToTopFunction() {
