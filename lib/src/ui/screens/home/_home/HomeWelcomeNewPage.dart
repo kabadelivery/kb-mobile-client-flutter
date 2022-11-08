@@ -11,7 +11,6 @@ import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
-import 'package:KABA/src/contracts/proposal_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
@@ -22,7 +21,6 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/customwidgets/GroupAdsNewWidget.dart';
-import 'package:KABA/src/ui/customwidgets/GroupAdsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
@@ -32,7 +30,7 @@ import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersMiniPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
-import 'package:KABA/src/ui/screens/home/_home/proposal/ProposalMiniPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/proposal/ProposalMiniPageWithPreloadedData.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -63,14 +61,11 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 //import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 // For Flutter applications, you'll most likely want to use
 // the url_launcher package.
@@ -94,7 +89,7 @@ class HomeWelcomeNewPage extends StatefulWidget {
   static var routeName = "/HomeWelcomeNewPage";
 
   BestSellersMiniPage bestSellerMini = null;
-  ProposalMiniPage proposalMini = null;
+  ProposalMiniWithPreloadedDataPage proposalMini = null;
 
   HomeWelcomeNewPage(
       {Key key, this.title, this.presenter, this.destination, this.argument})
@@ -319,9 +314,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     if (widget.bestSellerMini == null)
       widget.bestSellerMini = BestSellersMiniPage(
           presenter: BestSellerPresenter(), customer: widget.customer);
-    if (widget.proposalMini == null)
-      widget.proposalMini = ProposalMiniPage(
-          presenter: ProposalPresenter(), customer: widget.customer);
+    if (widget.proposalMini == null && widget?.data?.food_suggestions != null && widget?.data?.food_suggestions?.length > 0)
+      widget.proposalMini = ProposalMiniWithPreloadedDataPage(
+          data: widget?.data?.food_suggestions);
     /* init fetch data bloc */
     return Scaffold(
         backgroundColor: Colors.white,
@@ -716,34 +711,38 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 )),
                 /* all the restaurants button*/
                 SizedBox(height: 30),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 10),
-                    Text(
-                      "${AppLocalizations.of(context).translate('our_propositions')}"
-                          .toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(width: 5),
-                    SizedBox(
-                        height: 30,
-                        width: 30,
-                        child:
-                            Lottie.asset(LottieAssets.proposal, animate: true))
-                  ],
-                ),
-                SizedBox(height: 10),
-                Container(
-                    child: widget.proposalMini,
-                    height: 125,
-                    color: KColors.new_gray,
-                    width: MediaQuery.of(context).size.width),
-
+             widget.proposalMini == null ||   widget?.data?.food_suggestions?.length == null || widget?.data?.food_suggestions?.length == 0 ? Container()
+                    : Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 10),
+                              Text(
+                                "${AppLocalizations.of(context).translate('our_propositions')}"
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(width: 5),
+                              SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: Lottie.asset(LottieAssets.proposal,
+                                      animate: true))
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                              child: widget.proposalMini,
+                              height: 125,
+                              color: KColors.new_gray,
+                              width: MediaQuery.of(context).size.width),
+                        ],
+                      ),
                 /* horizontal scrolling bar */
                 data?.resto?.length > 6
                     ? Column(

@@ -7,6 +7,7 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -36,9 +37,9 @@ class BuyCategoryWidget extends StatefulWidget {
 }
 
 class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
-
   void _jumpToPage(BuildContext context) {
-    if (StateContainer.of(context).location?.latitude == null && StateContainer.of(context).hasAskedLocation == false) {
+    if (StateContainer.of(context).location?.latitude == null &&
+        StateContainer.of(context).hasAskedLocation == false) {
       StateContainer.of(context).hasAskedLocation = true;
       showDialog<void>(
         context: context,
@@ -229,7 +230,23 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     );
   }
 
+
   String getCategoryTitle(BuildContext context) {
+
+  /* get language of phone */
+    try {
+      Locale myLocale = Localizations.localeOf(context);
+      String name = widget.entity.name[myLocale?.languageCode];
+      if (name != null)
+        return name;
+      else
+        return getCategoryTitleOld(context);
+    } catch (e){
+      return getCategoryTitleOld(context);
+    }
+  }
+
+   String getCategoryTitleOld(BuildContext context) {
     String category_name_code = "";
     switch (widget.entity?.key) {
       case "food": // food
@@ -267,12 +284,12 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     if ("" == category_name_code) {
       category_name_code = "service_category_unknown";
     }
-
     return "${AppLocalizations.of(context).translate(category_name_code)}";
   }
 
   getCategoryIcon() {
-    String category_icon = "";
+    /*
+     String category_icon = "";
     switch (widget.entity?.key) {
       case "food": // food
         category_icon = LottieAssets.food;
@@ -308,9 +325,15 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     if ("" == category_icon) {
       return Icon(Icons.not_interested);
     }
+*/
 
-    return Lottie.asset(category_icon, animate: widget.available);
-    // return MyLottie(path: category_icon);
+    return widget.entity.is_lottie_file == 1
+        ? Lottie.network(widget.entity.file_link)
+        : CachedNetworkImage(
+      imageUrl: widget.entity.file_link,
+      errorWidget: (context, url, error) => Icon(Icons.not_interested),
+    );
+    //return Lottie.asset(category_icon, animate: widget.available);
   }
 }
 

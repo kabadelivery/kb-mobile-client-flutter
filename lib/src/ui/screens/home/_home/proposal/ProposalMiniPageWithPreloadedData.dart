@@ -16,139 +16,47 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
-class ProposalMiniPage extends StatefulWidget {
-  static var routeName = "/ProposalMiniPage";
+class ProposalMiniWithPreloadedDataPage extends StatefulWidget {
+  static var routeName = "/ProposalMiniWithPreloadedDataPage";
 
-  ProposalPresenter presenter;
+  List<ShopProductModel> data = [];
 
-  List<ShopProductModel> data;
 
-  CustomerModel customer;
-
-  List<ShopProductModel> food_suggestions;
-
-  ProposalMiniPage({Key key, this.presenter, this.customer, this.food_suggestions})
+  ProposalMiniWithPreloadedDataPage({Key key, this.data})
       : super(key: key);
 
+
   @override
-  _ProposalMiniPageState createState() => _ProposalMiniPageState();
+  _ProposalMiniWithPreloadedDataPageState createState() => _ProposalMiniWithPreloadedDataPageState();
 }
 
-class _ProposalMiniPageState extends State<ProposalMiniPage>
-    implements ProposalView {
+class _ProposalMiniWithPreloadedDataPageState extends State<ProposalMiniWithPreloadedDataPage>  {
   int _carousselPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    widget.presenter.proposalView = this;
   }
-
-  bool isLoading = true;
-  bool hasNetworkError = false;
-  bool hasSystemError = false;
-  bool isDataInflated = false;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.data == null) {
-      widget.presenter.fetchProposal(widget.customer);
-    } else {
-      if (!isDataInflated) {
-        inflateProposal(widget.data);
-        isDataInflated = true;
-      }
-    }
+
     return Container(
         color: Colors.white,
-        child: isLoading
-            ? Center(
-                child: SizedBox(
-                    height: 25, width: 25, child: CircularProgressIndicator()))
-            : (hasNetworkError
-                ? _buildNetworkErrorPage()
-                : hasSystemError
-                    ? _buildSysErrorPage()
-                    : _buildProposalList()));
+        child:  _buildProposalList());
   }
 
-  @override
-  void inflateProposal(List<ShopProductModel> proposals) {
-    showLoading(false);
-    setState(() {
-      widget.data = proposals;
-    });
-  }
-
-  @override
-  void networkError() {
-    showLoading(false);
-    /* show a page of network error. */
-    if (widget?.data == null)
-      setState(() {
-        this.hasNetworkError = true;
-      });
-  }
-
-  @override
-  void showLoading(bool isLoading) {
-    setState(() {
-      this.isLoading = isLoading;
-      if (isLoading == true) {
-        this.hasNetworkError = false;
-        this.hasSystemError = false;
-      }
-    });
-  }
-
-  @override
-  void systemError() {
-    showLoading(false);
-    /* show a page of network error. */
-    if (widget?.data == null)
-      setState(() {
-        this.hasSystemError = true;
-      });
-  }
-
-  _buildSysErrorPage() {
-    return ErrorPage(
-        message: "",
-        // "${AppLocalizations.of(context).translate('system_error')}",
-        onClickAction: () {
-          widget.presenter.fetchProposal(widget?.customer);
-        });
-  }
-
-  _buildNetworkErrorPage() {
-    return ErrorPage(
-        message: "",
-        //"""${AppLocalizations.of(context).translate('network_error')}",
-        onClickAction: () {
-          widget.presenter.fetchProposal(widget?.customer);
-        });
-  }
 
   _buildProposalList() {
-    if (widget.data == null) {
-      /* just show empty page. */
-      return _buildSysErrorPage();
-    }
-    /*   return Container(
-        margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
-        child: ListView.builder(
-            addAutomaticKeepAlives: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.data?.length,
-            itemBuilder: (BuildContext context, int position) {
-              return _buildProposalListItem(position, widget.data[position]);
-            }));*/
+
     return Column(
       children: [
         Container(
             child: CarouselSlider(
-                options: CarouselOptions(height: 115.0, autoPlayAnimationDuration: Duration(seconds: 2), viewportFraction: 1, enableInfiniteScroll: true, onPageChanged: _carousselPageChanged, autoPlay: true, autoPlayInterval: Duration(seconds: 5)),
-                items: widget.data.map((position) {
+                options: CarouselOptions(height: 115.0, autoPlayAnimationDuration: Duration(seconds: 2), viewportFraction: 1,
+                    enableInfiniteScroll: widget?.data?.length != null && widget?.data?.length > 1,
+                    onPageChanged: _carousselPageChanged, autoPlay: true, autoPlayInterval: Duration(seconds: 5)),
+                items: widget?.data?.length == null ? [] : widget.data.map((position) {
                   return Builder(
                     builder: (BuildContext context) {
                       return _buildProposalListItem(position);
@@ -164,7 +72,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
             children: [
               Row(
                 children: <Widget>[]..addAll(
-                    List<Widget>.generate(widget.data.length,
+                    List<Widget>.generate(widget?.data?.length == null ? 0 : widget.data.length,
                             (int index) {
                           return Container(
                               margin: EdgeInsets.only(
@@ -194,6 +102,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
       ],
     );
   }
+
 
   _carousselPageChanged(int index, CarouselPageChangedReason changeReason) {
     setState(() {

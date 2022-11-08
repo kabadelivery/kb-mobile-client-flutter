@@ -2,11 +2,11 @@
 
 class ServerConfig {
 
- // static const String ip_address = "app.kaba-delivery.com"; // prod server
- // static const String pay_ip_address = "pay.kaba-delivery.com";
+ static const String ip_address = "app.kaba-delivery.com"; // prod server
+ static const String pay_ip_address = "pay.kaba-delivery.com";
 
- static const String ip_address = "dev.kaba-delivery.com"; // dev server
- static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+ // static const String ip_address = "dev.kaba-delivery.com"; // dev server
+ // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
 
  // static const String ip_address = "kaba-technology.com"; // dev server
  // static const String pay_ip_address = "pay.kaba-technology.com";
@@ -19,7 +19,6 @@ class ServerConfig {
  static const String APP_SERVER_HOST = "app.kaba-delivery.com";
 
  static const String IMAGE_BUCKET_BASE_LINK = "https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com";
-
 
  // static String TOPIC = "kaba_flutter";
  // static String HMS_TOPIC = "kaba_flutter";

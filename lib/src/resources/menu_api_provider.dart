@@ -140,6 +140,9 @@ class MenuApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+
+      xrint(json.encode({'menu_id': menuId}));
+
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
         data: json.encode({'menu_id': menuId}),
