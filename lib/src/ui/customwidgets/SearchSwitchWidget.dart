@@ -4,6 +4,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SearchSwitchWidget extends StatefulWidget {
@@ -220,15 +221,24 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                     fit: BoxFit.fitHeight,
                                     alignment: Alignment.center,
                                   ))
-                              : Container(
-                                  height: 20,
-                                  width: 20,
-                                  child: Image.asset(
-                                    ImageAssets.filter_red,
-                                    height: 20.0,
-                                    width: 20.0,
-                                    alignment: Alignment.center,
-                                  )),
+                              :
+                          // ShakeItem(autoPlay: _autoPlay, shakeList: [ShakeDefaultConstant1(),ShakeDefaultConstant2()]),
+                          ShakeWidget(
+                            duration: Duration(milliseconds: 1000),
+                            shakeConstant: ShakeLittleConstant1(),
+                            autoPlay: true,
+                            enableWebMouseHover: true,
+
+                          child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: Image.asset(
+                                      ImageAssets.filter_red,
+                                      height: 20.0,
+                                      width: 20.0,
+                                      alignment: Alignment.center,
+                                    )),
+                              ),
                           decoration: BoxDecoration(
                               /* color: KColors.primaryColor.withAlpha(30),*/
                               borderRadius: BorderRadius.circular(5)),

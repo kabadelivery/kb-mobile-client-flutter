@@ -277,6 +277,8 @@ class DeleteAccountQuestioningPageState
     widget.presenter.postQuestioningResult(
         widget.customer, reasons, _messageFieldController.text);
   }
+
+
 }
 
 class InformationCheckBox extends StatefulWidget {

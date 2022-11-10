@@ -1376,13 +1376,13 @@ class _HomePageState extends State<HomePage> {
                           "${AppLocalizations.of(context).translate('accept')}"),
                       onPressed: () async {
                         /* */
+                        Navigator.of(context).pop();
                         await Geolocator.openLocationSettings();
-                        LocationPermission permission2 = await Geolocator.checkPermission();
+                       /* LocationPermission permission2 = await Geolocator.checkPermission();
                         if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
                           _getLastKnowLocation(
                               jumpToBuyPageDetails: jumpToBuyPageDetails);
-                        }
-                        Navigator.of(context).pop();
+                        }*/
                       },
                     )
                   ],

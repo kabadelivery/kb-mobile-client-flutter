@@ -28,7 +28,8 @@ class DeleteAccountFixPropositionPage extends StatefulWidget {
 
   int balance;
 
-  DeleteAccountFixPropositionPage({Key key, this.fixId, this.voucher, this.balance})
+  DeleteAccountFixPropositionPage(
+      {Key key, this.fixId, this.voucher, this.balance})
       : super(key: key);
 
   @override
@@ -103,64 +104,70 @@ class DeleteAccountFixPropositionPageState
               SizedBox(
                 height: 10,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "${AppLocalizations.of(context).translate('we_offer_you_voucher')}",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              MyVoucherMiniWidget(
-                voucher: widget.voucher,
-                pick: false,
-                isGift: true,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onTap: () => _getCoupon(),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 40,
-                  decoration: BoxDecoration(
-                      color: KColors.primaryColor,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Row(
+              widget.voucher != null
+                  ? Column(
+                      children: [
+                        Row(
                           mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            /*    Icon(Icons.add, color: Colors.white),
-                            SizedBox(width: 10),*/
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                             Text(
-                                "${AppLocalizations.of(context).translate('get_coupon')}"
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal))
+                              "${AppLocalizations.of(context).translate('we_offer_you_voucher')}",
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w400),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Container(
+                        SizedBox(
+                          height: 10,
+                        ),
+                        MyVoucherMiniWidget(
+                          voucher: widget.voucher,
+                          pick: false,
+                          isGift: true,
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        GestureDetector(
+                          onTap: () => _getCoupon(),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width - 40,
+                            decoration: BoxDecoration(
+                                color: KColors.primaryColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      /*    Icon(Icons.add, color: Colors.white),
+                            SizedBox(width: 10),*/
+                                      Text(
+                                          "${AppLocalizations.of(context).translate('get_coupon')}"
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.normal))
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(), Container(
                 width: 160,
                 height: 2,
                 color: KColors.new_gray,
@@ -213,7 +220,11 @@ class DeleteAccountFixPropositionPageState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeleteAccountRefundQuestionnaryPage(presenter: DeleteAccountRefundPresenter(), fixId: widget.fixId, amountRefunded: widget.balance, ),
+        builder: (context) => DeleteAccountRefundQuestionnaryPage(
+          presenter: DeleteAccountRefundPresenter(),
+          fixId: widget.fixId,
+          amountRefunded: widget.balance,
+        ),
       ),
     );
   }
@@ -224,16 +235,16 @@ class DeleteAccountFixPropositionPageState
     Navigator.pushAndRemoveUntil(
         context,
         new MaterialPageRoute(
-            settings:
-            RouteSettings(name: HomePage.routeName),
-            builder: (BuildContext context) =>
-                HomePage()),
-            (r) => false);
+            settings: RouteSettings(name: HomePage.routeName),
+            builder: (BuildContext context) => HomePage()),
+        (r) => false);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddVouchersPage(
-          customer: widget.customer, damage_id: widget.fixId, presenter: AddVoucherPresenter(),
+          customer: widget.customer,
+          damage_id: widget.fixId,
+          presenter: AddVoucherPresenter(),
         ),
       ),
     );

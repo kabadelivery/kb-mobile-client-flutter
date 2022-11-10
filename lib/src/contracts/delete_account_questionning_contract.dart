@@ -11,6 +11,7 @@ class DeleteAccountQuestioningContract {
 }
 
 class DeleteAccountQuestioningView {
+
   void showLoading(bool isLoading) {}
 
   void systemError() {}
@@ -18,6 +19,7 @@ class DeleteAccountQuestioningView {
   void networkError() {}
 
   void showProposedReparation(VoucherModel mVoucher, int fixId, int balance) {}
+
 }
 
 /* login presenter */
@@ -47,14 +49,13 @@ class DeleteAccountQuestioningPresenter
     try {
       var res =
           await provider.postQuestioningResult(customer, reasons, message);
-      VoucherModel mVoucher = VoucherModel.fromJson(res["data"]["voucher"]);
+      VoucherModel mVoucher = null;
+      if (res["data"]["voucher"] != null)
+        mVoucher = VoucherModel.fromJson(res["data"]["voucher"]);
       // also get the restaurant entity here.
       _deleteAccountQuestioningView.showLoading(false);
-      if (mVoucher?.subscription_code != null) {
-        _deleteAccountQuestioningView.showProposedReparation(mVoucher, res["data"]["id"], res["data"]["balance"]);
-      } else {
-        _deleteAccountQuestioningView.systemError();
-      }
+      _deleteAccountQuestioningView.showProposedReparation(
+          mVoucher, res["data"]["id"], res["data"]["balance"]);
     } catch (_) {
       /* BestSeller failure */
       _deleteAccountQuestioningView.showLoading(false);

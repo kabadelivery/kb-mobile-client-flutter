@@ -927,8 +927,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                           "${AppLocalizations.of(context).translate('accept')}"),
                       onPressed: () async {
                         /* */
-                        await Geolocator.openLocationSettings();
                         Navigator.of(context).pop();
+                        await Geolocator.openLocationSettings();
                       },
                     )
                   ],
