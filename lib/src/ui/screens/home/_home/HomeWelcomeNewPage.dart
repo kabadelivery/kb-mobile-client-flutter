@@ -843,7 +843,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       child: Container(
                           child: widget.bestSellerMini,
                           height: 110,
-                          color: Colors.blue,
+                          color: Colors.white,
                           // color: KColors.new_gray,
                           width: MediaQuery.of(context).size.width),
                     ),

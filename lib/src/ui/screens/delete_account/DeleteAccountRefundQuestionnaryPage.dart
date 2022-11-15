@@ -275,6 +275,7 @@ class DeleteAccountRefundQuestionnaryPageState
                                     Expanded(
                                         child: TextFormField(
                                       controller: _phoneNumberController,
+                                      keyboardType:TextInputType.number,
                                       validator: (value) {
                                         if (value == null ||
                                             value.isEmpty ||

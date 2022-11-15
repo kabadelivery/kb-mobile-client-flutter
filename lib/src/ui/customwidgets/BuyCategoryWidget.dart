@@ -207,20 +207,13 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                       right: 0,
                       top: 0,
                       child: Container(
-                          padding: EdgeInsets.only(
-                              top: 2, bottom: 2, right: 5, left: 5),
-                          decoration: BoxDecoration(
-                              color: KColors.primaryYellowColor,
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5))),
-                          child: Text(
-                              // "${AppLocalizations.of(context).translate('new')}",
-                              "NEW",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10))),
+                        margin: EdgeInsets.all(8),
+                        padding: EdgeInsets.only(
+                            top: 4, bottom: 4, right: 4, left: 4),
+                        decoration: BoxDecoration(
+                            color: KColors.primaryYellowColor,
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
                     )
                   : Container()
             ],
@@ -230,10 +223,8 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     );
   }
 
-
   String getCategoryTitle(BuildContext context) {
-
-  /* get language of phone */
+    /* get language of phone */
     try {
       Locale myLocale = Localizations.localeOf(context);
       String name = widget.entity.name[myLocale?.languageCode];
@@ -241,12 +232,12 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         return name;
       else
         return getCategoryTitleOld(context);
-    } catch (e){
+    } catch (e) {
       return getCategoryTitleOld(context);
     }
   }
 
-   String getCategoryTitleOld(BuildContext context) {
+  String getCategoryTitleOld(BuildContext context) {
     String category_name_code = "";
     switch (widget.entity?.key) {
       case "food": // food
@@ -330,9 +321,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     return widget.entity.is_lottie_file == 1
         ? Lottie.network(widget.entity.file_link)
         : CachedNetworkImage(
-      imageUrl: widget.entity.file_link,
-      errorWidget: (context, url, error) => Icon(Icons.not_interested),
-    );
+            imageUrl: widget.entity.file_link,
+            errorWidget: (context, url, error) => Icon(Icons.not_interested),
+          );
     //return Lottie.asset(category_icon, animate: widget.available);
   }
 }
