@@ -192,7 +192,7 @@ class _SplashPageState extends State<SplashPage> {
                     maintainInteractivity: false,
                     child: Row(
                       children: [
-                        Lottie.asset("assets/lottie/books.json"),
+                       /* Lottie.asset("assets/lottie/books.json"),
                         Lottie.asset("assets/lottie/drinks.json"),
                         Lottie.asset("assets/lottie/flower.json"),
                         Lottie.asset("assets/lottie/food.json"),
@@ -200,14 +200,14 @@ class _SplashPageState extends State<SplashPage> {
                         Lottie.asset("assets/lottie/movie.json"),
                         Lottie.asset("assets/lottie/package_delivery.json"),
                         Lottie.asset("assets/lottie/shopping.json"),
-                        Lottie.asset("assets/lottie/ticket.json"),
+                        Lottie.asset("assets/lottie/ticket.json"),*/
                         Lottie.asset("assets/lottie/fire.json"),
                         Lottie.asset("assets/lottie/best_sales.json"),
                         Lottie.asset("assets/lottie/new.json"),
                         Lottie.asset("assets/lottie/sad_face.json"),
                       ],
                     ),
-                  ),*/
+                  ),
                 ]
             )),
       ),
