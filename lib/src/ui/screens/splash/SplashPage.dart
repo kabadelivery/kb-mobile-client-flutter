@@ -207,7 +207,7 @@ class _SplashPageState extends State<SplashPage> {
                         Lottie.asset("assets/lottie/sad_face.json"),
                       ],
                     ),
-                  ),
+                  ),*/
                 ]
             )),
       ),
