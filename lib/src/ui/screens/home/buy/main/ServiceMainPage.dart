@@ -695,6 +695,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           StateContainer.of(context).location.latitude,
           StateContainer.of(context).location.longitude);
     }
+
     xrint("i pick address");
 
     /* get my position */

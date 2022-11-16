@@ -481,60 +481,60 @@ class _EditAddressPageState extends State<EditAddressPage>
       xrint("_jumpToPickAddressPage RETURN -- 481 ");
       return;
     }
-      setState(() {
-        isPickLocation = true;
-      });
+    setState(() {
+      isPickLocation = true;
+    });
 
+    if (StateContainer.of(context).location == null) {
       lo.LocationData location = await lo.Location().getLocation();
-
       StateContainer.of(context).updateLocation(
           location: Position(
               latitude: location.latitude, longitude: location.longitude));
+    }
 
-      xrint(widget.gps_location);
-      if (widget.locationConfirmed && widget.address?.location != null) {
-        xrint("moving to pre-registered location");
-        Pp.PlacePickerState.initialTarget = LatLng(
-          double.parse(widget.address?.location?.split(":")[0]),
-          double.parse(widget.address?.location?.split(":")[1]),
-        );
-      } else {
-        xrint("moving to me");
-        Pp.PlacePickerState.initialTarget = LatLng(
-            StateContainer.of(context).location.latitude,
-            StateContainer.of(context).location.longitude);
-      }
-      xrint("i pick address");
+    xrint(widget.gps_location);
+    if (widget.locationConfirmed && widget.address?.location != null) {
+      xrint("moving to pre-registered location");
+      Pp.PlacePickerState.initialTarget = LatLng(
+        double.parse(widget.address?.location?.split(":")[0]),
+        double.parse(widget.address?.location?.split(":")[1]),
+      );
+    } else {
+      xrint("moving to me");
+      Pp.PlacePickerState.initialTarget = LatLng(
+          StateContainer.of(context).location.latitude,
+          StateContainer.of(context).location.longitude);
+    }
+    xrint("i pick address");
 
-      /* get my position */
-      LatLng result = await Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
-              alreadyHasLocation: widget.locationConfirmed)));
-      /* use this location to generate details about the place the user lives and so on. */
-      widget.locationConfirmed = false;
-      widget.presenter.editAddressView = this;
+    /* get my position */
+    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
+            alreadyHasLocation: widget.locationConfirmed)));
+    /* use this location to generate details about the place the user lives and so on. */
+    widget.locationConfirmed = false;
+    widget.presenter.editAddressView = this;
 
-      CustomerUtils.getCustomer().then((customer) {
-        widget.customer = customer;
-        xrint("get and has customer ");
+    CustomerUtils.getCustomer().then((customer) {
+      widget.customer = customer;
+      xrint("get and has customer ");
 
-        if (result != null) {
-          setState(() {
-            _checkLocationLoading = true;
-            address.location = "${result.latitude}:${result.longitude}";
-          });
-          xrint(address.location);
-          // use mvp to launch a request and place the result here.
-          widget.presenter.checkLocationDetails(widget.customer,
-              position: Position(
-                  longitude: result.longitude, latitude: result.latitude));
-        }
-      }).whenComplete(() {
+      if (result != null) {
         setState(() {
-          isPickLocation = false;
+          _checkLocationLoading = true;
+          address.location = "${result.latitude}:${result.longitude}";
         });
+        xrint(address.location);
+        // use mvp to launch a request and place the result here.
+        widget.presenter.checkLocationDetails(widget.customer,
+            position: Position(
+                longitude: result.longitude, latitude: result.latitude));
+      }
+    }).whenComplete(() {
+      setState(() {
+        isPickLocation = false;
       });
-
+    });
   }
 
   void _exit() {
