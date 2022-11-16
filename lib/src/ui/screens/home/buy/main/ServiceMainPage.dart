@@ -577,12 +577,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
       String _has_accepted_gps = prefs.getString("_has_accepted_gps");
       /* no need to commit */
-      /* expiration date in 3months */
-
+      /* expiration date in 3 months */
       if (_has_accepted_gps != "ok") {
         return showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: false, // user must tap button !
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("${AppLocalizations.of(context).translate('info')}"),
@@ -688,7 +687,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToPickAddressPage() async {
-    lo.LocationData location = await lo.Location().getLocation();
+    // lo.LocationData location = await lo.Location().getLocation();
     // xrint(widget.gps_location);
     if (StateContainer.of(context)?.location != null) {
       xrint("moving to me");

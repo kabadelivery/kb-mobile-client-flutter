@@ -311,7 +311,7 @@ class _EditAddressPageState extends State<EditAddressPage>
               MRaisedButton(
                   padding:
                       EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
-            /*      shape: RoundedRectangleBorder(
+                  /*      shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(5.0)),*/
                   child: Row(
                     children: <Widget>[
@@ -358,7 +358,6 @@ class _EditAddressPageState extends State<EditAddressPage>
   StreamSubscription<Position> positionStream;
 
   void showPlacePicker(BuildContext context) async {
-    // confirm you want localisation here...
     if (StateContainer.of(context).location != null)
       _jumpToPickAddressPage();
     else
@@ -366,11 +365,11 @@ class _EditAddressPageState extends State<EditAddressPage>
         prefs = value;
         String _has_accepted_gps = prefs.getString("_has_accepted_gps");
         /* no need to commit */
-        /* expiration date in 3months */
+        /* expiration date in 3 months */
         if (_has_accepted_gps != "ok") {
           return showDialog<void>(
             context: context,
-            barrierDismissible: false, // user must tap button!
+            barrierDismissible: false, // user must tap button !
             builder: (BuildContext context) {
               return AlertDialog(
                 title:
@@ -385,16 +384,16 @@ class _EditAddressPageState extends State<EditAddressPage>
                           width: 100,
                           decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-
+                              shape: BoxShape.circle,
                               image: new DecorationImage(
-                                fit: BoxFit.fitHeight,
-                                image: new AssetImage(
-                                    ImageAssets.address),
+                                fit: BoxFit.cover,
+                                image: new AssetImage(ImageAssets.address),
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('location_explanation')}",
-                          textAlign: TextAlign.center)
+                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
                     ],
                   ),
                 ),
@@ -428,39 +427,40 @@ class _EditAddressPageState extends State<EditAddressPage>
           if (permission == LocationPermission.deniedForever) {
             await Geolocator.openAppSettings();
           } else if (permission == LocationPermission.denied) {
-            Geolocator.requestPermission();
+            await Geolocator.requestPermission();
           } else {
             // location is enabled
             bool isLocationServiceEnabled =
                 await Geolocator.isLocationServiceEnabled();
             if (!isLocationServiceEnabled) {
-              /* dialog to activate gps location */
+              xrint("openLocationSettings -- 436");
               await Geolocator.openLocationSettings();
             } else {
               if (isPickLocation) {
-                xrint("already picking address, OUTTTTT");
+                xrint("already picking address, OUTTTTT  -- 440");
                 return;
               } else {
-                setState(() {
-                  isPickLocation = true;
-                });
-                await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-                // _jumpToPickAddressPage();
+                xrint("accuracy high set up --- 44Four");
+                await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.high);
 
-        Stream<Position> positionStream =
+                Stream<Position> positionStream =
                     Geolocator.getPositionStream();
+                xrint("getPositionStream 449");
+
                 positionStream.first.then((position) {
                   xrint("position stream");
-                  /* do it recursevely until two positions are identical*/
                   positionStream = Geolocator.getPositionStream();
                   positionStream.first.then((position1) {
                     // we do it twice to make sure we get a good location
+                    xrint("position stream first -- ");
                     _jumpToPickAddressPage();
                   }).catchError((onError) {
                     setState(() {
                       isPickLocation = false;
                     });
                   });
+                  // _jumpToPickAddressPage();
                 }).catchError((onError) {
                   setState(() {
                     isPickLocation = false;
@@ -476,62 +476,65 @@ class _EditAddressPageState extends State<EditAddressPage>
   bool isPickLocation = false;
 
   void _jumpToPickAddressPage() async {
-    lo.LocationData location = await lo.Location().getLocation();
-
-    StateContainer.of(context).updateLocation(
-        location: Position(
-            latitude: location.latitude, longitude: location.longitude));
-
-    /*if (StateContainer.of(context)?.location != null)
-      Pp.PlacePickerState.initialTarget = LatLng(StateContainer
-          .of(context)
-          .location
-          .latitude, StateContainer
-          .of(context)
-          .location
-          .longitude);*/
-
-    xrint(widget.gps_location);
-    if (widget.locationConfirmed && widget.address?.location != null) {
-      xrint("moving to pre-registered location");
-      Pp.PlacePickerState.initialTarget = LatLng(
-        double.parse(widget.address?.location?.split(":")[0]),
-        double.parse(widget.address?.location?.split(":")[1]),
-      );
-    } else {
-      xrint("moving to me");
-      Pp.PlacePickerState.initialTarget = LatLng(
-          StateContainer.of(context).location.latitude,
-          StateContainer.of(context).location.longitude);
+    xrint("_jumpToPickAddressPage -- ");
+    if (isPickLocation) {
+      xrint("_jumpToPickAddressPage RETURN -- 481 ");
+      return;
     }
-    xrint("i pick address");
-
-    /* get my position */
-    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
-            alreadyHasLocation: widget.locationConfirmed)));
-    /* use this location to generate details about the place the user lives and so on. */
-    widget.locationConfirmed = false;
-    widget.presenter.editAddressView = this;
-
-    CustomerUtils.getCustomer().then((customer) {
-      widget.customer = customer;
-
-      if (result != null) {
-        setState(() {
-          _checkLocationLoading = true;
-          address.location = "${result.latitude}:${result.longitude}";
-        });
-        xrint(address.location);
-        // use mvp to launch a request and place the result here.
-        widget.presenter.checkLocationDetails(widget.customer,
-            position: Position(
-                longitude: result.longitude, latitude: result.latitude));
-      }
       setState(() {
-        isPickLocation = false;
+        isPickLocation = true;
       });
-    });
+
+      lo.LocationData location = await lo.Location().getLocation();
+
+      StateContainer.of(context).updateLocation(
+          location: Position(
+              latitude: location.latitude, longitude: location.longitude));
+
+      xrint(widget.gps_location);
+      if (widget.locationConfirmed && widget.address?.location != null) {
+        xrint("moving to pre-registered location");
+        Pp.PlacePickerState.initialTarget = LatLng(
+          double.parse(widget.address?.location?.split(":")[0]),
+          double.parse(widget.address?.location?.split(":")[1]),
+        );
+      } else {
+        xrint("moving to me");
+        Pp.PlacePickerState.initialTarget = LatLng(
+            StateContainer.of(context).location.latitude,
+            StateContainer.of(context).location.longitude);
+      }
+      xrint("i pick address");
+
+      /* get my position */
+      LatLng result = await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
+              alreadyHasLocation: widget.locationConfirmed)));
+      /* use this location to generate details about the place the user lives and so on. */
+      widget.locationConfirmed = false;
+      widget.presenter.editAddressView = this;
+
+      CustomerUtils.getCustomer().then((customer) {
+        widget.customer = customer;
+        xrint("get and has customer ");
+
+        if (result != null) {
+          setState(() {
+            _checkLocationLoading = true;
+            address.location = "${result.latitude}:${result.longitude}";
+          });
+          xrint(address.location);
+          // use mvp to launch a request and place the result here.
+          widget.presenter.checkLocationDetails(widget.customer,
+              position: Position(
+                  longitude: result.longitude, latitude: result.latitude));
+        }
+      }).whenComplete(() {
+        setState(() {
+          isPickLocation = false;
+        });
+      });
+
   }
 
   void _exit() {
@@ -772,10 +775,9 @@ class _EditAddressPageState extends State<EditAddressPage>
 //                      border: new Border.all(color: Colors.white, width: 2),
 
                             image: new DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: new AssetImage(
-                                  ImageAssets.address),
-                            ))),
+                          fit: BoxFit.fitHeight,
+                          image: new AssetImage(ImageAssets.address),
+                        ))),
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate('location_explanation')}",

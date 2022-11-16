@@ -482,7 +482,6 @@ class PlacePickerState extends State<PlacePicker> {
       target = LatLng(locationData.latitude, locationData.longitude);
       moveToLocation(target);
     }).catchError((error) {
-      // TODO: Handle the exception here
       xrint(error);
     });
   }
