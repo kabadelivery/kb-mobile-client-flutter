@@ -7,11 +7,13 @@ import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart'
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopListWidget extends StatefulWidget {
@@ -53,23 +55,33 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                               // ListTile(
                               /* contentPadding: EdgeInsets.only(top:10, bottom:10, left: 10),
                                 leading: */
-                              Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      border: new Border.all(
-                                          color: KColors.primaryYellowColor,
-                                          width: 3),
-                                      /*borderRadius:
-                                          BorderRadius.all(Radius.circular(2)),*/
-                                      // border: new Border.all(color: KColors.primaryYellowColor, width: 2),
-                                      shape: BoxShape.circle,
-                                      color: Colors.white,
-                                      image: new DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                              Utils.inflateLink(
-                                                  widget.shopModel?.pic))))),
+
+                              Stack(
+                                children: [
+                                  Container(height: 80, width: 60,   padding: EdgeInsets.all(0), margin: EdgeInsets.all(0),
+                                    child: Center(
+                                      child: Container(
+                                          height: 60,
+                                          width: 60,
+                                          decoration: BoxDecoration(
+                                              border: new Border.all(
+                                                  color: widget.shopModel?.is_promotion == 1 ? KColors.pureGreen : KColors.primaryYellowColor,
+                                                  width: 3),
+                                              /*borderRadius:
+                                                  BorderRadius.all(Radius.circular(2)),*/
+                                              // border: new Border.all(color: KColors.primaryYellowColor, width: 2),
+                                              shape: BoxShape.circle,
+                                              color: Colors.white,
+                                              image: new DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: CachedNetworkImageProvider(
+                                                      Utils.inflateLink(
+                                                          widget.shopModel?.pic))))),
+                                    ),
+                                  ),
+                                  Positioned(top: 0, right: 0, child: widget.shopModel?.is_promotion == 1 ? Container(width: 40, height: 40,child: LottieBuilder.network("https://app.kaba-delivery.com/lottie/promotion_lottie.json"),padding: EdgeInsets.all(0), margin: EdgeInsets.all(0),): Container())
+                                ],
+                              ),
                               /*title:*/
                               SizedBox(width: 15),
                               Expanded(

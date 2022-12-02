@@ -328,7 +328,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         )
                       : Container()
-                ],
+               , SizedBox(height: 160,) ],
               ),
             ),
             Positioned(bottom: 0, right: 0,

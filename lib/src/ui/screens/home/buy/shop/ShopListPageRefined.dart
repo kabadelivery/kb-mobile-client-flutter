@@ -230,7 +230,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   setState(() {
                     _searchAutoFocus = false;
                     _searchMode = false;
+                    _filterEditController.text = "";
                   });
+_searchAction();
                 } else
                   Navigator.pop(context);
               }),

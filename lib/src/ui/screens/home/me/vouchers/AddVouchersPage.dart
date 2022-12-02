@@ -5,6 +5,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/VoucherSubscribeSuccessPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,18 +54,22 @@ class _AddVouchersPageState extends State<AddVouchersPage>
         isValidCode = _isValidCode(_promoCodeFieldController.text);
       });
     });
-    if (widget.qrCode != null) {
-      _promoCodeFieldController.text = widget.qrCode;
-      if (_promoCodeFieldController.text?.trim() != "" &&
-          _promoCodeFieldController.text?.trim()?.length != null &&
-          _promoCodeFieldController.text?.trim()?.length > 2)
+    /* check if customer token is not null before moving forward, otherwise, we fetching for that */
+    CustomerUtils.getCustomer().then((value) {
+      widget.customer = value;
+      if (widget.qrCode != null) {
+        _promoCodeFieldController.text = widget.qrCode;
+        if (_promoCodeFieldController.text?.trim() != "" &&
+            _promoCodeFieldController.text?.trim()?.length != null &&
+            _promoCodeFieldController.text?.trim()?.length > 2)
+          widget.presenter
+              .subscribeVoucher(widget.customer, widget.qrCode, isQrCode: true);
+      }
+      if (widget.damage_id != -1) {
         widget.presenter
-            .subscribeVoucher(widget.customer, widget.qrCode, isQrCode: true);
-    }
-    if (widget.damage_id != -1) {
-      widget.presenter
-          .subscribeVoucherForDamage(widget.customer, widget.damage_id);
-    }
+            .subscribeVoucherForDamage(widget.customer, widget.damage_id);
+      }
+    });
   }
 
   @override
@@ -121,61 +126,71 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           ],
                         )
                       : Container(),
-          damageError ?
-          Column(
-            children: [
-              Container(
-                child: Text(
-                  "${AppLocalizations.of(context).translate("system_error")}",textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: KColors.new_black, fontSize: 14),
-                ),
-                margin: EdgeInsets.symmetric(vertical: 15),
-              ),
-              SizedBox(height: 20,),
-              Container(
-                margin:
-                EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: MaterialButton(
-                      color:KColors.primaryColor,
-                      padding: EdgeInsets.only(top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                              "${AppLocalizations.of(context).translate('try_again')}"
-                                  .toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.white)),
-                          isLaunching
-                              ? Row(
-                            children: <Widget>[
-                              SizedBox(width: 10),
-                              SizedBox(
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<Color>(
-                                          Colors.white)),
-                                  height: 20,
-                                  width: 20),
-                            ],
-                          )
-                              : Container(),
-                        ],
-                      ),
-                      onPressed: () {
-                        if (widget.damage_id != -1) {
-                          widget.presenter
-                              .subscribeVoucherForDamage(widget.customer, widget.damage_id);
-                        }
-                      }),
-                ),
-              ),
-            ],
-          ) : Container(),
+                  damageError
+                      ? Column(
+                          children: [
+                            Container(
+                              child: Text(
+                                "${AppLocalizations.of(context).translate("system_error")}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.new_black, fontSize: 14),
+                              ),
+                              margin: EdgeInsets.symmetric(vertical: 15),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: 15, bottom: 15, left: 20, right: 20),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: MaterialButton(
+                                    color: KColors.primaryColor,
+                                    padding: EdgeInsets.only(top: 5, bottom: 5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                            "${AppLocalizations.of(context).translate('try_again')}"
+                                                .toUpperCase(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white)),
+                                        isLaunching
+                                            ? Row(
+                                                children: <Widget>[
+                                                  SizedBox(width: 10),
+                                                  SizedBox(
+                                                      child: CircularProgressIndicator(
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                      Color>(
+                                                                  Colors
+                                                                      .white)),
+                                                      height: 20,
+                                                      width: 20),
+                                                ],
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                    onPressed: () {
+                                      if (widget.damage_id != -1) {
+                                        widget.presenter
+                                            .subscribeVoucherForDamage(
+                                                widget.customer,
+                                                widget.damage_id);
+                                      }
+                                    }),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
                   SizedBox(height: 20),
                 ],
               )
@@ -286,9 +301,9 @@ class _AddVouchersPageState extends State<AddVouchersPage>
   void subscribeSuccessError(int error) {
     if (widget.damage_id != -1) {
       /* damage reparation error, show a button to make him try again */
-   setState(() {
-     damageError = true;
-   });
+      setState(() {
+        damageError = true;
+      });
       return;
     }
 
