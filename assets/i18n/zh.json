@@ -528,7 +528,6 @@
   "terms_n_conditions": "条款和条件",
   "_and_": "和",
   "ppolicy": "隐私政策",
-
   "account_deleted": "帐号已删除成功",
   "balance_dued": "应付余额",
   "refund_within_72_hrs_description": "我们的客服会在72小时内联系收款人并退还余额",
@@ -544,5 +543,4 @@
   "our_propositions": "建议",
   "filter_settings": "筛选设置",
   "reparation_voucher": "赔偿券"
-
 }

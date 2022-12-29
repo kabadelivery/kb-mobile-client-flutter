@@ -166,7 +166,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   _buildServicePage() {
-    return Container(height: MediaQuery.of(context).size.height,
+    return Container(
+        height: MediaQuery.of(context).size.height,
         color: Colors.white,
         child: Stack(
           children: [
@@ -175,32 +176,36 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 children: [
                   /* hint */
                   SizedBox(height: 20),
-                 StateContainer.of(context).location == null ? GestureDetector(
-                    onTap: () {
-                      showPlacePicker(context);
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                            child: Text(
-                          "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        )),
-                        Container(
-                          height: 40,
-                          width: 40,
-                          child: Lottie.asset(LottieAssets.hint_direction),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
-                  ) : Container(),
+                  StateContainer.of(context).location == null
+                      ? GestureDetector(
+                          onTap: () {
+                            showPlacePicker(context);
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: Text(
+                                "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 12),
+                              )),
+                              Container(
+                                height: 40,
+                                width: 40,
+                                child:
+                                    Lottie.asset(LottieAssets.hint_direction),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
                   GestureDetector(
                     onTap: () {
                       showPlacePicker(context);
@@ -327,18 +332,24 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             ]),
                           ),
                         )
-                      : Container()
-               , SizedBox(height: 160,) ],
+                      : Container(),
+                  SizedBox(height: 160)
+                ],
               ),
             ),
-            Positioned(bottom: 0, right: 0,
+            Positioned(
+                bottom: 0,
+                right: 0,
                 child: Opacity(
-              opacity: .5,
-              child: Lottie.network(
-                  'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json', width: 160, height: 160, errorBuilder: (BuildContext context, Object error, StackTrace st){
+                  opacity: .5,
+                  child: Lottie.network(
+                      'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
+                      width: 160,
+                      height: 160, errorBuilder:
+                          (BuildContext context, Object error, StackTrace st) {
                     return Container();
-              }),
-            ))
+                  }),
+                ))
           ],
         )
         /*Column(
