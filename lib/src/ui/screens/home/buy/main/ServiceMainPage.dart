@@ -340,15 +340,17 @@ class ServiceMainPageState extends State<ServiceMainPage>
             Positioned(
                 bottom: 0,
                 right: 0,
-                child: Opacity(
-                  opacity: .5,
-                  child: Lottie.network(
-                      'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
-                      width: 160,
-                      height: 160, errorBuilder:
-                          (BuildContext context, Object error, StackTrace st) {
-                    return Container();
-                  }),
+                child: IgnorePointer(
+                  child: Opacity(
+                    opacity: .5,
+                    child: Lottie.network(
+                        'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
+                        width: 160,
+                        height: 160, errorBuilder:
+                            (BuildContext context, Object error, StackTrace st) {
+                      return Container();
+                    }),
+                  ),
                 ))
           ],
         )

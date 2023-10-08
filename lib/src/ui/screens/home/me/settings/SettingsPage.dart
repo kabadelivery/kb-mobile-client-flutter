@@ -107,7 +107,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ]),
             ),
           ),
-
           InkWell(
             onTap: () => _jumpToInfoPage(),
             child: Container(
@@ -132,16 +131,15 @@ class _SettingsPageState extends State<SettingsPage> {
               ]),
             ),
           ),
-
           InkWell(
             onTap: () => _jumpWebPage("CGU", ServerRoutes.CGU_PAGE),
             child: Container(
               padding:
-              EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
+                  EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
               decoration: BoxDecoration(
                 border: Border(
                   bottom:
-                  BorderSide(width: 0.8, color: Colors.grey.withAlpha(35)),
+                      BorderSide(width: 0.8, color: Colors.grey.withAlpha(35)),
                 ),
               ),
               child: Row(mainAxisSize: MainAxisSize.max, children: [
@@ -180,16 +178,16 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    var uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
-      throw 'Could not launch $url';
+      throw 'Could not launch $uri';
     }
   }
 
   void _jumpWebPage(String title, String link) {
     _launchURL(link);
-
     /* Navigator.push(
       context,
       MaterialPageRoute(

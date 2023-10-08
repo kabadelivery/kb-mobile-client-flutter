@@ -49,6 +49,8 @@ class ServiceMainPresenter implements ServiceMainContract {
           List<ServiceMainEntity> res = lo
               ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
               ?.toList();
+          /* order list by position */
+          res.sort((a, b) => (a.position - b.position));
           // also get the restaurant entity here.
           if (!(res != null && res.length > 0)) {
             throw UnimplementedError();
@@ -70,7 +72,8 @@ class ServiceMainPresenter implements ServiceMainContract {
         List<ServiceMainEntity> res = lo
             ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
             ?.toList();
-
+        /* order list by position */
+        res.sort((a, b) => (a.position - b.position));
         // also get the restaurant entity here.
         if (!(res?.length > 0)) {
           throw UnimplementedError();
