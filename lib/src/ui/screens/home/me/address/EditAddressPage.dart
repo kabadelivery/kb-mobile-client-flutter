@@ -17,7 +17,8 @@ import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dar
 import 'package:KABA/src/xrint.dart';
 
 // import 'package:android_intent/android_intent.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';

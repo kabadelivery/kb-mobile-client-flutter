@@ -7,7 +7,7 @@ import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
-import 'package:country_code_picker/country_localizations.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

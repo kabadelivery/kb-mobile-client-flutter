@@ -4,7 +4,8 @@ import 'dart:math';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -294,10 +295,10 @@ class PlacePickerState extends State<PlacePicker> {
           "${this.locationResult.latLng.longitude}";
     }*/
     if (initialTarget != null) {
-      endpoint += "&location=${initialTarget.latitude}," +
-          "${initialTarget.longitude}";
+      endpoint +=
+          "&location=${initialTarget.latitude}," + "${initialTarget.longitude}";
       // endpoint += "&locationbias=circle:100000@${initialTarget.latitude},${initialTarget.longitude}";
-    endpoint+="&locationbias=circle:150000@6.221316,1.188478";
+      endpoint += "&locationbias=circle:150000@6.221316,1.188478";
     }
 
     http.get(Uri.parse(endpoint)).then((response) {

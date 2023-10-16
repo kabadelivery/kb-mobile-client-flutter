@@ -17,7 +17,8 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,9 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                               children: <Widget>[
                                 SizedBox(height: 10),
                                 ChipList(
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
                                   listOfChipNames: _menuChoices,
                                   activeBgColorList: [
                                     Theme.of(context).primaryColor
@@ -161,12 +164,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
 
     this?.data = data;
 
-    return SingleChildScrollView(child: Column(
-      children: [
-
-
-      ]
-    ));
+    return SingleChildScrollView(child: Column(children: []));
   }
 
   _jumpToMovieDetails(BuildContext context, ShopProductModel food) {

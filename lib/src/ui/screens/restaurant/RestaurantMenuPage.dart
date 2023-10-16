@@ -20,7 +20,8 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
@@ -287,12 +288,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                   fontSize: 12)),
                                         )
                                       ]),
-
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          isLoading || StateContainer.of(context).location?.latitude == null
+                                          isLoading ||
+                                                  StateContainer.of(context)
+                                                          .location
+                                                          ?.latitude ==
+                                                      null
                                               ? Container()
                                               : Row(
                                                   children: [
@@ -338,9 +342,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                             ),
                                                           ),
                                                     SizedBox(width: 10),
-                                                    ShippingFeeTag(
-                                                        widget?.restaurant
-                                                            ?.distance),
+                                                    ShippingFeeTag(widget
+                                                        ?.restaurant?.distance),
                                                   ],
                                                 ),
                                           GestureDetector(
@@ -384,8 +387,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   margin: EdgeInsets.only(
                                       top: 10, right: 10, left: 20),
                                   child: Text(
-                                      "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}"
-                                         ,
+                                      "${Utils.capitalize(AppLocalizations.of(context).translate('our_menu'))}",
                                       style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 12,
@@ -1225,7 +1227,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     showLoading(false);
     // two seconds after, we jump
     Future.delayed(Duration(seconds: 1), () {
-      Scrollable.ensureVisible(dataKey.currentContext, duration: Duration(milliseconds: 500), curve: Curves.easeInOut );
+      Scrollable.ensureVisible(dataKey.currentContext,
+          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     });
 
     String dialogText = "";
@@ -1258,7 +1261,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         break;
     }
     if (dialogText != "") {
-      Future.delayed(Duration(milliseconds: 600), (){
+      Future.delayed(Duration(milliseconds: 600), () {
         _comingSoon(context, restaurant, dialogText);
       });
     }

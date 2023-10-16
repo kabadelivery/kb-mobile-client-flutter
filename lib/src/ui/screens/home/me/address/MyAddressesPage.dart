@@ -13,7 +13,8 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
@@ -658,7 +659,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         address.id,
         ...widget.favoriteAddress
       ]); /* notification to show that notification has been pinned on top */
-  /*    ElegantNotification.info(
+      /*    ElegantNotification.info(
               toastDuration: Duration(seconds: 5),
               title: Text(
                   "${AppLocalizations.of(context).translate('address_pinned_successfully_short')}"),
@@ -667,9 +668,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                   "${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"))
           .show(context);*/
       final snackBar = SnackBar(
-        content:   Text("${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"),
+        content: Text(
+            "${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"),
         action: SnackBarAction(
-          label: "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+          label:
+              "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
           onPressed: () {
             // Some code to undo the change.
             ScaffoldMessenger.of(context).clearSnackBars();

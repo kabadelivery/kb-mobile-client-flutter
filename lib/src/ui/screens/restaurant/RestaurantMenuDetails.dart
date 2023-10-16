@@ -5,7 +5,8 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
@@ -78,8 +79,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
             onPressed: () {
               Navigator.pop(context);
             }),
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -171,54 +173,65 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                 Utils.inflateLink(food?.pic)))),
                   ),
                   SizedBox(width: 10),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Container(width: MediaQuery.of(context).size.width-160,
-                      child: Text("${Utils.capitalize(food?.name)}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: KColors.new_black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500)),
-                    ),
-                    SizedBox(height: 2),
-                    Container(
-                      width: 1 * MediaQuery.of(context).size.width / 2,
-                      child: Text("${Utils.capitalize(food?.description)}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal)),
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            InkWell(
-                                child: Container(decoration: BoxDecoration(color: KColors.primaryColor.withAlpha(30), shape: BoxShape.circle), padding: EdgeInsets.all(5),
-                                  child: Icon(Icons.remove,
-                                      color: KColors.primaryColor, size: 10),
-                                ),
-                                onTap: () => _decreaseQuantity(food)),
-                            Container(
-                                margin: EdgeInsets.only(left: 5, right: 5),
-                                child: Text(
-                                    "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
-                                    style: TextStyle(
-                                        color: KColors.new_black, fontWeight: FontWeight.w600, fontSize: 15))),
-                            InkWell(
-                                child: Icon(Icons.add_circle,
-                                    size: 23, color: KColors.primaryColor),
-                                onTap: () => _increaseQuantity(food)),
-                          ]),
-                    ),
-                  ])
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width - 160,
+                          child: Text("${Utils.capitalize(food?.name)}",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: KColors.new_black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500)),
+                        ),
+                        SizedBox(height: 2),
+                        Container(
+                          width: 1 * MediaQuery.of(context).size.width / 2,
+                          child: Text("${Utils.capitalize(food?.description)}",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal)),
+                        ),
+                        SizedBox(height: 15),
+                        Container(
+                          child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                InkWell(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: KColors.primaryColor
+                                              .withAlpha(30),
+                                          shape: BoxShape.circle),
+                                      padding: EdgeInsets.all(5),
+                                      child: Icon(Icons.remove,
+                                          color: KColors.primaryColor,
+                                          size: 10),
+                                    ),
+                                    onTap: () => _decreaseQuantity(food)),
+                                Container(
+                                    margin: EdgeInsets.only(left: 5, right: 5),
+                                    child: Text(
+                                        "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
+                                        style: TextStyle(
+                                            color: KColors.new_black,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15))),
+                                InkWell(
+                                    child: Icon(Icons.add_circle,
+                                        size: 23, color: KColors.primaryColor),
+                                    onTap: () => _increaseQuantity(food)),
+                              ]),
+                        ),
+                      ])
                 ],
               ),
               Positioned(
@@ -241,7 +254,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                   decoration: BoxDecoration(
                       color: KColors.primaryColor.withAlpha(30),
                       borderRadius: BorderRadius.all(Radius.circular(20))),
-                  padding: EdgeInsets.only(top:5, bottom: 5, left: 10,right: 10),
+                  padding:
+                      EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                   child: Row(children: <Widget>[
                     SizedBox(width: 2),
                     Text("${food?.price}",
@@ -267,7 +281,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                 fontWeight: FontWeight.normal))
                         : Container()),
                     SizedBox(width: 3),
-                    Text("${AppLocalizations.of(context).translate('currency')}",
+                    Text(
+                        "${AppLocalizations.of(context).translate('currency')}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -338,9 +353,11 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         ),
         Positioned(
           bottom: 35,
-          child: Container(width: MediaQuery.of(context).size.width,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(left: 10, right: 10),
-            child: Row(mainAxisSize: MainAxisSize.max,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
                   child: Container(
@@ -348,8 +365,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10))),
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 5, left: 10, right: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -371,7 +388,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                   "${AppLocalizations.of(context).translate('currency')}",
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontSize: 12, color: KColors.primaryColor)),
+                                      fontSize: 12,
+                                      color: KColors.primaryColor)),
                             ],
                           ),
                         ],
@@ -380,7 +398,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                 Expanded(
                   child: _foodCount == 0
                       ? Container()
-                      : Container(margin: EdgeInsets.only(right: 20),
+                      : Container(
+                          margin: EdgeInsets.only(right: 20),
                           height: 50,
                           // width: 0.9 * MediaQuery.of(context).size.width / 2,
                           padding: EdgeInsets.all(5),
@@ -390,7 +409,6 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                               _continuePurchase();
                             },
                             child: Container(
-
                               decoration: BoxDecoration(
                                   color: KColors.primaryColor,
                                   borderRadius:
@@ -544,10 +562,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       width: 100,
                       decoration: BoxDecoration(
                           image: new DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image:
-                                new AssetImage(ImageAssets.login_description),
-                          ))),
+                        fit: BoxFit.fitHeight,
+                        image: new AssetImage(ImageAssets.login_description),
+                      ))),
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_place_order")}",
@@ -613,10 +630,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
   }
-
 }

@@ -13,7 +13,8 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
