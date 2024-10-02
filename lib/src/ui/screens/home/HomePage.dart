@@ -203,6 +203,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+   // get_token();
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(),
@@ -488,13 +489,16 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
+    print("ntofi fooof  ${message.data['notification']}");
 
+    String notificationJson = message.data['notification'];
+    Map<String, dynamic> notificationData = jsonDecode(notificationJson);
     xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
     if (message.notification != null) {
       xrint('p_notify Message also contained a notification: ${message.data}');
       NotificationItem notificationItem =
-          _notificationFromMessage(message.data);
-      _handlePayLoad(notificationItem.destination.toSpecialString());
+          _notificationFromMessage(notificationData);
+      _handlePayLoad(notificationItem.destination.toString());
     }
   }
 
@@ -523,20 +527,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handlePayLoad(String payload) {
-    NotificationFDestination notificationFDestination;
+    print('payloader $payload');
+
+    Map<String, dynamic> notificationFDestination;
+    String payloadData = '$payload';
 
     try {
-      notificationFDestination =
-          NotificationFDestination.fromJson(json.decode(payload));
-      xrint(notificationFDestination.toString());
-    } catch (_) {
-      xrint(_);
-    }
+      notificationFDestination =json.decode(payloadData);
+    //  print('payloader ${notificationFDestination.type.toString()}');
+     // xrint(notificationFDestination.toString());
 
-    switch (notificationFDestination.type) {
+    } catch (e) {
+      print("ERRRRRRRRRRRRR"+e);
+    }
+    int type = int.parse(notificationFDestination['type'].toString());
+    int product_id = int.parse(notificationFDestination['product_id'].toString());
+    switch (type) {
       /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
-        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
+        _jumpToFoodDetailsWithId(product_id);
         break;
       case NotificationFDestination.COMMAND_PAGE:
       case NotificationFDestination.COMMAND_DETAILS:
@@ -545,7 +554,7 @@ class _HomePageState extends State<HomePage> {
       case NotificationFDestination.COMMAND_END_SHIPPING:
       case NotificationFDestination.COMMAND_CANCELLED:
       case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(notificationFDestination.product_id);
+        _jumpToOrderDetailsWithId(product_id);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
         _jumpToTransactionHistory();
@@ -557,10 +566,10 @@ class _HomePageState extends State<HomePage> {
 //        _jumpToArticleInterface(notificationFDestination.product_id);
         break;
       case NotificationFDestination.RESTAURANT_PAGE:
-        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
+        _jumpToRestaurantDetailsPage(product_id);
         break;
       case NotificationFDestination.RESTAURANT_MENU:
-        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
+        _jumpToRestaurantMenuPage(product_id);
         break;
       case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
         _jumpToServiceClient();
@@ -618,7 +627,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   int loginStuffChecked = 0;
-
+  //  //get device token
+  //   void get_token()async{
+  //     String token =await FirebaseMessaging.instance.getToken();
+  //     print('Device token $token');
+  //   }
   @override
   Widget build(BuildContext context) {
     // _requestGpsPermissionAndLocation();
@@ -652,6 +665,7 @@ class _HomePageState extends State<HomePage> {
 
       loginStuffChecked = 1;
     }
+
     return Scaffold(
       body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
@@ -1455,17 +1469,19 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 // Android-specific code
 
     try {
-      var _data = json.decode(message_entry["data"])["data"];
+      var _data = message_entry;
       xrint(" inside notificationFromMessage 840 -- " + _data.toString());
       NotificationItem notificationItem = new NotificationItem(
-          title: _data["notification"]["title"],
-          body: _data["notification"]["body"],
-          image_link: _data["notification"]["image_link"],
-          priority: "${_data["notification"]["destination"]["priority"]}",
+          title: _data["title"],
+          body: _data["body"],
+          image_link: _data["image_link"],
+          priority: "${_data["destination"]["priority"]}",
           destination: NotificationFDestination(
-              type: _data["notification"]["destination"]["type"],
-              product_id: int.parse(
-                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
+              type: _data["destination"]["type"],
+             product_id: 0
+             ));
+
+
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
@@ -1473,21 +1489,25 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   } else if (Platform.isAndroid) {
 // IOS-specific code
     try {
-      var _data = json.decode(message_entry["data"])["data"];
+      var _data = message_entry;
+      Map<String, dynamic> destinationData = jsonDecode(_data["destination"]);
+
       xrint(" inside notificationFromMessage 857 -- " + _data.toString());
+
       NotificationItem notificationItem = new NotificationItem(
-          title: _data["notification"]["title"],
-          body: _data["notification"]["body"],
-          image_link: _data["notification"]["image_link"],
-          priority: "${_data["notification"]["destination"]["priority"]}",
+          title: _data["title"],
+          body: _data["body"],
+          image_link: _data["image_link"],
+          priority: destinationData['priority'].toString(),
           destination: NotificationFDestination(
-              type: _data["notification"]["destination"]["type"],
-              product_id: int.parse(
-                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
+              type: int.parse(destinationData['type'].toString()),
+              product_id: 0
+          ));
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
     }
+
   }
   return null;
 }

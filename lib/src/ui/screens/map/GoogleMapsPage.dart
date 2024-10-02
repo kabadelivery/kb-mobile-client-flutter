@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../utils/_static_data/KTheme.dart';
+
 
 class GoogleMapsPage extends StatefulWidget {
 
@@ -31,7 +33,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
       zoom: 18);
 
   var geolocator = Geolocator();
-  var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+  var locationOptions = LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
   StreamSubscription<Position> positionStream;
 
@@ -42,8 +44,11 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
     // TODO: implement initState
     super.initState();
 
-    positionStream = geolocator.getPositionStream(locationOptions).listen(
-            (Position position) => _onPositionChanged(position));
+positionStream = Geolocator.getPositionStream(locationSettings: locationOptions).listen(
+      (Position position) {
+        _onPositionChanged(position);
+      },
+    );
   }
 
   @override
@@ -62,7 +67,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
 
   Future<void> _goToMe() async {
     if (_myPosition == null) {
-      _myPosition = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+      _myPosition = await Geolocator.getLastKnownPosition();
     }
     final GoogleMapController controller = await _controller.future;
     if (_myPosition != null)
