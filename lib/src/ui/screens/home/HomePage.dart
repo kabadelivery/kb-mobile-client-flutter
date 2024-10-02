@@ -27,8 +27,6 @@ import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -40,16 +38,12 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:elegant_notification/elegant_notification.dart';
-import 'package:elegant_notification/resources/arrays.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -203,6 +197,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    get_token();
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(),
@@ -263,21 +258,6 @@ class _HomePageState extends State<HomePage> {
                           "${AppLocalizations.of(context).translate("congrats_for_email_account")} 😊",
                           style: TextStyle(fontSize: 14),
                           textAlign: TextAlign.center)
-                      /*      RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '${AppLocalizations.of(context).translate("congrats_for_email_account")}',
-                      ),
-                      TextSpan(
-                        text: '😊', // emoji characters
-                        // style: TextStyle(
-                        //   fontFamily: 'EmojiOne',
-                        // ),
-                      ),
-                    ],
-                  ),
-                )*/
                     ],
                   ),
                 ),
@@ -363,21 +343,8 @@ class _HomePageState extends State<HomePage> {
       if (connectivityResult == ConnectivityResult.mobile ||
           connectivityResult == ConnectivityResult.wifi) {
         StateContainer.of(context).is_offline = false;
-        /*ElegantNotification.success(toastDuration: Duration(seconds: 10),
-            title:  Text("${AppLocalizations.of(context).translate('online_alert_title')}"),
-            notificationPosition: NotificationPosition.center,
-            description:  Text("${AppLocalizations.of(context).translate('online_alert_description')}")
-        ).show(context);*/
       } else {
         if (!StateContainer.of(context).is_offline) {
-          /*  ElegantNotification.error(
-                  toastDuration: Duration(seconds: 10),
-                  title: Text(
-                      "${AppLocalizations.of(context).translate('offline_alert_title')}"),
-                  notificationPosition: NotificationPosition.center,
-                  description: Text(
-                      "${AppLocalizations.of(context).translate('offline_alert_description')}"))
-              .show(context);*/
           SnackBar snackBar = SnackBar(
             content: Text(
                 "${AppLocalizations.of(context).translate('offline_alert_description')}"),
@@ -488,14 +455,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
-
-    xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
-    if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message.data}');
-      NotificationItem notificationItem =
-          _notificationFromMessage(message.data);
-      _handlePayLoad(notificationItem.destination.toSpecialString());
-    }
+    xrint('p_notify Message also contained a notification: ${message.data}');
+    NotificationItem notificationItem = _notificationFromMessage(message.data);
+    _handlePayLoad(notificationItem.destination.toSpecialString());
   }
 
   Future<void> _firebaseMessagingBackgroundHandler(
@@ -523,20 +485,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handlePayLoad(String payload) {
-    NotificationFDestination notificationFDestination;
+    print('payloader $payload');
+
+    Map<String, dynamic> notificationFDestination;
+    String payloadData = '$payload';
 
     try {
-      notificationFDestination =
-          NotificationFDestination.fromJson(json.decode(payload));
+      notificationFDestination = json.decode(payloadData);
+      //  print('payloader ${notificationFDestination.type.toString()}');
       xrint(notificationFDestination.toString());
-    } catch (_) {
-      xrint(_);
+    } catch (e) {
+      xrint(e);
     }
-
-    switch (notificationFDestination.type) {
+    int type = int.parse(notificationFDestination['type'].toString());
+    int product_id =
+        int.parse(notificationFDestination['product_id'].toString());
+    switch (type) {
       /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
-        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
+        _jumpToFoodDetailsWithId(product_id);
         break;
       case NotificationFDestination.COMMAND_PAGE:
       case NotificationFDestination.COMMAND_DETAILS:
@@ -545,7 +512,7 @@ class _HomePageState extends State<HomePage> {
       case NotificationFDestination.COMMAND_END_SHIPPING:
       case NotificationFDestination.COMMAND_CANCELLED:
       case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(notificationFDestination.product_id);
+        _jumpToOrderDetailsWithId(product_id);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
         _jumpToTransactionHistory();
@@ -557,10 +524,10 @@ class _HomePageState extends State<HomePage> {
 //        _jumpToArticleInterface(notificationFDestination.product_id);
         break;
       case NotificationFDestination.RESTAURANT_PAGE:
-        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
+        _jumpToRestaurantDetailsPage(product_id);
         break;
       case NotificationFDestination.RESTAURANT_MENU:
-        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
+        _jumpToRestaurantMenuPage(product_id);
         break;
       case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
         _jumpToServiceClient();
@@ -618,6 +585,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   int loginStuffChecked = 0;
+  //  //get device token
+  void get_token() async {
+    String token = await FirebaseMessaging.instance.getToken();
+    print('Device token $token');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -652,6 +624,7 @@ class _HomePageState extends State<HomePage> {
 
       loginStuffChecked = 1;
     }
+
     return Scaffold(
       body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
@@ -737,10 +710,9 @@ class _HomePageState extends State<HomePage> {
 //                      border: new Border.all(color: Colors.white, width: 2),
 
                             image: new DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image:
-                                  new AssetImage(ImageAssets.login_description),
-                            ))),
+                          fit: BoxFit.fitHeight,
+                          image: new AssetImage(ImageAssets.login_description),
+                        ))),
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate(msg[value % 2])}",
@@ -1082,10 +1054,9 @@ class _HomePageState extends State<HomePage> {
 //                      border: new Border.all(color: Colors.white, width: 2),
 
                           image: new DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image:
-                                new AssetImage(ImageAssets.login_description),
-                          ))),
+                        fit: BoxFit.fitHeight,
+                        image: new AssetImage(ImageAssets.login_description),
+                      ))),
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
@@ -1154,12 +1125,9 @@ class _HomePageState extends State<HomePage> {
                         height: 100,
                         width: 100,
                         decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-
                             image: new DecorationImage(
-
-                              image: new AssetImage(ImageAssets.address),
-                            ))),
+                          image: new AssetImage(ImageAssets.address),
+                        ))),
                     SizedBox(height: 10),
                     Text(
                         "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
@@ -1180,12 +1148,11 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                       "${AppLocalizations.of(context).translate('accept')}"),
                   onPressed: () {
-                    /* */
-                    // SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     Future.delayed(Duration(milliseconds: 1000), () {
-                      _getLastKnowLocation(jumpToBuyPageDetails: jumpToBuyPageDetails);
+                      _getLastKnowLocation(
+                          jumpToBuyPageDetails: jumpToBuyPageDetails);
                     });
                     Navigator.of(context).pop();
                   },
@@ -1219,12 +1186,10 @@ class _HomePageState extends State<HomePage> {
                           height: 100,
                           width: 100,
                           decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-
                               image: new DecorationImage(
-                                fit: BoxFit.fitHeight,
-                                image: new AssetImage(ImageAssets.address),
-                              ))),
+                            fit: BoxFit.fitHeight,
+                            image: new AssetImage(ImageAssets.address),
+                          ))),
                       SizedBox(height: 10),
                       Text(
                           "${AppLocalizations.of(context).translate('request_location_permission')}",
@@ -1247,11 +1212,6 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       /* */
                       await Geolocator.openAppSettings();
-                      /*LocationPermission permission2 = await Geolocator.checkPermission();
-                      if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
-                        _getLastKnowLocation(
-                            jumpToBuyPageDetails: jumpToBuyPageDetails);
-                      }*/
                       Navigator.of(context).pop();
                     },
                   )
@@ -1266,7 +1226,7 @@ class _HomePageState extends State<HomePage> {
           /* ---- */
           return showDialog<void>(
             context: context,
-            barrierDismissible: false, // user must tap button!
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
@@ -1284,9 +1244,9 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                               image: new DecorationImage(
-                                fit: BoxFit.fitHeight,
-                                image: new AssetImage(ImageAssets.address),
-                              ))),
+                            fit: BoxFit.fitHeight,
+                            image: new AssetImage(ImageAssets.address),
+                          ))),
                       SizedBox(height: 10),
                       Text(
                           "${AppLocalizations.of(context).translate('request_location_permission')}",
@@ -1308,12 +1268,14 @@ class _HomePageState extends State<HomePage> {
                         "${AppLocalizations.of(context).translate('accept')}"),
                     onPressed: () async {
                       /* */
-                     await Geolocator.requestPermission();
-                    LocationPermission permission2 = await Geolocator.checkPermission();
-                     if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
-                       _getLastKnowLocation(
-                           jumpToBuyPageDetails: jumpToBuyPageDetails);
-                     }
+                      await Geolocator.requestPermission();
+                      LocationPermission permission2 =
+                          await Geolocator.checkPermission();
+                      if (permission2 == LocationPermission.always ||
+                          permission2 == LocationPermission.whileInUse) {
+                        _getLastKnowLocation(
+                            jumpToBuyPageDetails: jumpToBuyPageDetails);
+                      }
                       Navigator.of(context).pop();
                     },
                   )
@@ -1321,15 +1283,10 @@ class _HomePageState extends State<HomePage> {
               );
             },
           );
-          /* ---- */
         } else {
-          // location is enabled
           bool isLocationServiceEnabled =
               await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
-            /*  ---- */
-            // await Geolocator.openLocationSettings();
-            /* ---- */
             return showDialog<void>(
               context: context,
               barrierDismissible: false, // user must tap button!
@@ -1342,19 +1299,15 @@ class _HomePageState extends State<HomePage> {
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: <Widget>[
-                        /* add an image*/
-                        // location_permission
                         Container(
                             height: 100,
                             width: 100,
                             decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-
                                 image: new DecorationImage(
-                                  fit: BoxFit.fitHeight,
-                                  image: new AssetImage(
-                                      ImageAssets.location_permission),
-                                ))),
+                              fit: BoxFit.fitHeight,
+                              image: new AssetImage(
+                                  ImageAssets.location_permission),
+                            ))),
                         SizedBox(height: 10),
                         Text(
                             "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
@@ -1378,11 +1331,6 @@ class _HomePageState extends State<HomePage> {
                         /* */
                         Navigator.of(context).pop();
                         await Geolocator.openLocationSettings();
-                       /* LocationPermission permission2 = await Geolocator.checkPermission();
-                        if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
-                          _getLastKnowLocation(
-                              jumpToBuyPageDetails: jumpToBuyPageDetails);
-                        }*/
                       },
                     )
                   ],
@@ -1451,43 +1399,20 @@ class _HomePageState extends State<HomePage> {
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   xrint(" inside notificationFromMessage -- " + message_entry.toString());
 
-  if (Platform.isIOS) {
-// Android-specific code
-
-    try {
-      var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 840 -- " + _data.toString());
-      NotificationItem notificationItem = new NotificationItem(
-          title: _data["notification"]["title"],
-          body: _data["notification"]["body"],
-          image_link: _data["notification"]["image_link"],
-          priority: "${_data["notification"]["destination"]["priority"]}",
-          destination: NotificationFDestination(
-              type: _data["notification"]["destination"]["type"],
-              product_id: int.parse(
-                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
-      return notificationItem;
-    } catch (_) {
-      xrint(_.toString());
-    }
-  } else if (Platform.isAndroid) {
-// IOS-specific code
-    try {
-      var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 857 -- " + _data.toString());
-      NotificationItem notificationItem = new NotificationItem(
-          title: _data["notification"]["title"],
-          body: _data["notification"]["body"],
-          image_link: _data["notification"]["image_link"],
-          priority: "${_data["notification"]["destination"]["priority"]}",
-          destination: NotificationFDestination(
-              type: _data["notification"]["destination"]["type"],
-              product_id: int.parse(
-                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
-      return notificationItem;
-    } catch (_) {
-      xrint(_.toString());
-    }
+  try {
+    var _data = jsonDecode(message_entry["notification"]);
+    Map<String, dynamic> destinationData = jsonDecode(_data["destination"]);
+    NotificationItem notificationItem = new NotificationItem(
+        title: _data["title"],
+        body: _data["body"],
+        image_link: _data["image_link"],
+        priority: destinationData['priority'].toString(),
+        destination: NotificationFDestination(
+            type: int.parse(destinationData['type'].toString()),
+            product_id: destinationData["product_id"]));
+    return notificationItem;
+  } catch (_) {
+    xrint(_.toString());
   }
   return null;
 }

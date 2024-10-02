@@ -44,25 +44,8 @@ Future<void> main() async {
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
-  // wanna listen to realtime database and make changes, preparing it for version 3.3.4
-  // DatabaseReference alertRef = FirebaseDatabase.instance.ref('mobile_app_alert');
-  // alertRef.onValue.listen((DatabaseEvent event) {
-  //   final data = event.snapshot.value;
-  //   xrint("${data}");
-  // });
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
-    // await SentryFlutter.init(
-    //       (options) {
-    //     options.dsn = 'https://db3d3fa783f643539ad13a7e84437ad6@o1211273.ingest.sentry.io/6351988';
-    //     // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-    //     // We recommend adjusting this value in production.
-    //     options.tracesSampleRate = 1.0;
-    //   },
-    //   appRunner: () =>  runApp(StateContainer(child: MyApp(appLanguage: appLanguage))),
-    // );
-
     runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
   });
 }
@@ -128,73 +111,6 @@ class _MyAppState extends State<MyApp> {
                 Locale('en', 'US'),
                 Locale('fr', 'FR'),
                 Locale.fromSubtags(languageCode: 'zh')
-                /*      Locale("af"),
-                Locale("am"),
-                Locale("ar"),
-                Locale("az"),
-                Locale("be"),
-                Locale("bg"),
-                Locale("bn"),
-                Locale("bs"),
-                Locale("ca"),
-                Locale("cs"),
-                Locale("da"),
-                Locale("de"),
-                Locale("el"),
-                Locale("es"),
-                Locale("et"),
-                Locale("fa"),
-                Locale("fi"),
-                Locale("gl"),
-                Locale("ha"),
-                Locale("he"),
-                Locale("hi"),
-                Locale("hr"),
-                Locale("hu"),
-                Locale("hy"),
-                Locale("id"),
-                Locale("is"),
-                Locale("it"),
-                Locale("ja"),
-                Locale("ka"),
-                Locale("kk"),
-                Locale("km"),
-                Locale("ko"),
-                Locale("ku"),
-                Locale("ky"),
-                Locale("lt"),
-                Locale("lv"),
-                Locale("mk"),
-                Locale("ml"),
-                Locale("mn"),
-                Locale("ms"),
-                Locale("nb"),
-                Locale("nl"),
-                Locale("nn"),
-                Locale("no"),
-                Locale("pl"),
-                Locale("ps"),
-                Locale("pt"),
-                Locale("ro"),
-                Locale("ru"),
-                Locale("sd"),
-                Locale("sk"),
-                Locale("sl"),
-                Locale("so"),
-                Locale("sq"),
-                Locale("sr"),
-                Locale("sv"),
-                Locale("ta"),
-                Locale("tg"),
-                Locale("th"),
-                Locale("tk"),
-                Locale("tr"),
-                Locale("tt"),
-                Locale("uk"),
-                Locale("ug"),
-                Locale("ur"),
-                Locale("uz"),
-                Locale("vi")*/
               ],
               navigatorObservers: [
                 FirebaseAnalyticsObserver(analytics: widget.analytics),
@@ -226,7 +142,8 @@ class _MyAppState extends State<MyApp> {
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
-              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+              home: SplashPage(
+                  analytics: widget.analytics, observer: widget.observer),
               // home: DeleteAccountSuccessfulPage(),
               // home: DeleteAccountFixPropositionPage(),
               /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
