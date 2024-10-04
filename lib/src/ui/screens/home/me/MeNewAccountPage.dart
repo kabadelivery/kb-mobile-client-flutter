@@ -473,8 +473,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     StateContainer.of(context).hasUnreadMessage
-                        ? Container(padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
                             child: Text("01",
                                 style: TextStyle(
                                     color: KColors.mBlue,
@@ -1511,7 +1515,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            data: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

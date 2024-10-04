@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -17,24 +16,20 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
-// import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-  // CachedNetworkImage. = CacheManagerLogLevel.none;
-
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
   await appLanguage.fetchLocale();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: KColors.primaryColor, // navigation bar color
+    systemNavigationBarColor: KColors.primaryColor,
   ));
 
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    AppConfig.CHANNEL_ID, // id
-    AppConfig.CHANNEL_NAME, // title
-    description: AppConfig.CHANNEL_DESCRIPTION, // description
+    AppConfig.CHANNEL_ID,
+    AppConfig.CHANNEL_NAME,
+    description: AppConfig.CHANNEL_DESCRIPTION,
     importance: Importance.max,
   );
 
@@ -84,22 +79,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // logTextController.dispose();
-    // topicTextController.dispose();
     super.dispose();
-  }
-
-  void clearLog() {
-    setState(() {
-      // logTextController.text = "";
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // StateContainer.of(context);
-
-    // precache logo of the splashPage
+    /* precache logo of the splashPage */
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
 
     return ChangeNotifierProvider<AppLanguage>(
@@ -114,7 +99,6 @@ class _MyAppState extends State<MyApp> {
               ],
               navigatorObservers: [
                 FirebaseAnalyticsObserver(analytics: widget.analytics),
-                // SentryNavigatorObserver(),
               ],
               localizationsDelegates: [
                 AppLocalizations.delegate,
@@ -125,9 +109,7 @@ class _MyAppState extends State<MyApp> {
               ],
               debugShowCheckedModeBanner: false,
               navigatorKey: navigatorKey,
-              onGenerateTitle: (BuildContext context) =>
-//          "${AppLocalizations.of(context).translate('app_title')}",
-                  "KABA",
+              onGenerateTitle: (BuildContext context) => "KABA",
               theme: ThemeData(
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
               // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
@@ -184,12 +166,5 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }));
-  }
-}
-
-class CustomIntentPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Text("hard"), color: Colors.white);
   }
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/plus_code/open_location_code.dart';
@@ -151,20 +150,22 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               } else if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 children = <Widget>[
-                                 /* LoadingAnimationWidget.prograssiveDots(
+                                  /* LoadingAnimationWidget.prograssiveDots(
                                     color: KColors.mBlue,
                                     size: 18,
                                   ),*/
                                   Row(
                                     children: [
                                       Text(
-                                          "${encode(StateContainer.of(context).location.latitude,
-                                              StateContainer.of(context).location.longitude)}",
+                                          "${encode(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude)}",
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: Colors.grey,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: 12)), SizedBox(width: 5,),
+                                              fontSize: 12)),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
                                       LoadingAnimationWidget.prograssiveDots(
                                         color: KColors.mBlue,
                                         size: 18,

@@ -1,5 +1,4 @@
 import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/service_category_contract.dart';
@@ -12,7 +11,6 @@ import 'package:KABA/src/ui/customwidgets/CurrentLocationTile.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
-import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -25,12 +23,9 @@ import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dar
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart' as lo;
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,16 +46,12 @@ class ServiceMainPage extends StatefulWidget {
 
   Position initialLocation;
 
-  ServiceMainPage({Key key, this.presenter
-      /*this.destination, this.argument*/
-      })
-      : super(key: key);
+  ServiceMainPage({Key key, this.presenter}) : super(key: key);
 
   @override
   ServiceMainPageState createState() => ServiceMainPageState();
 }
 
-/* we show categories */
 class ServiceMainPageState extends State<ServiceMainPage>
     implements ServiceMainView {
   bool isLoading;
@@ -90,10 +81,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasSystemError = false;
     hasNetworkError = false;
     isLoading = false;
-    // launch service
-
-    // check if we have permissions but no gps location
-    // if we it's the case, show dialog
   }
 
   @override
@@ -104,7 +91,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       widget.presenter.fetchServiceCategoryFromLocation(
           StateContainer.of(context).location);
     }
-    // fetch billing and update locally
     widget.presenter.fetchBilling();
   }
 
@@ -346,30 +332,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     child: Lottie.network(
                         'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
                         width: 160,
-                        height: 160, errorBuilder:
-                            (BuildContext context, Object error, StackTrace st) {
+                        height: 160, errorBuilder: (BuildContext context,
+                            Object error, StackTrace st) {
                       return Container();
                     }),
                   ),
                 ))
           ],
-        )
-        /*Column(
-        children: [
-          GridView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: available_services.length,
-              itemBuilder: (context, index) =>
-                  (BuyCategoryWidget(available_services[index])),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 2,
-                childAspectRatio: 2,
-              )),
-        ],
-      ),*/
-        );
+        ));
   }
 
   void _jumpToSearchPage(String type) {
@@ -422,7 +392,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 child:
                     Text("${AppLocalizations.of(context).translate('accept')}"),
                 onPressed: () {
-                  /* */
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setString("_has_accepted_gps", "ok");
                   Navigator.of(context).pop();
@@ -474,12 +443,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     });
-    // methode de demande de géolocation trop agressive
-    /* Future.delayed(new Duration(seconds: 1), () {
-      if (StateContainer.of(context).location == null) {
-        _requestGpsLocationDialog();
-      }
-    });*/
   }
 
   @override
@@ -512,7 +475,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void mDialog(String message) {
     _showDialog(
       icon: Icon(Icons.info_outline, color: Colors.red),
-      message: "${message}",
+      message: "$message",
       isYesOrNo: false,
     );
   }
@@ -521,7 +484,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       {String svgIcons,
       Icon icon,
       var message,
-      bool okBackToHome = false,
       bool isYesOrNo = false,
       Function actionIfYes}) {
     showDialog(
@@ -583,8 +545,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void showPlacePicker(BuildContext context) async {
-    // confirm you want localisation here...
-
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
@@ -594,7 +554,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
       if (_has_accepted_gps != "ok") {
         return showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button !
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("${AppLocalizations.of(context).translate('info')}"),
@@ -602,12 +562,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 child: ListBody(
                   children: <Widget>[
                     /* add an image*/
-                    // location_permission
                     Container(
                         height: 100,
                         width: 100,
                         decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                               fit: BoxFit.cover,
@@ -634,9 +592,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       "${AppLocalizations.of(context).translate('accept')}"),
                   onPressed: () {
                     /* */
-                    // SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.setString("_has_accepted_gps", "ok");
-                    // call get location again...
                     showPlacePicker(context);
                     Navigator.of(context).pop();
                   },
@@ -653,7 +609,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
         } else if (permission == LocationPermission.denied) {
           await Geolocator.requestPermission();
         } else {
-          // location is enabled
           bool isLocationServiceEnabled =
               await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
@@ -686,7 +641,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     isPickLocation = false;
                   });
                 });
-                // _jumpToPickAddressPage();
               }).catchError((onError) {
                 setState(() {
                   isPickLocation = false;
@@ -700,8 +654,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _jumpToPickAddressPage() async {
-    // lo.LocationData location = await lo.Location().getLocation();
-    // xrint(widget.gps_location);
     if (StateContainer.of(context)?.location != null) {
       xrint("moving to me");
       Pp.PlacePickerState.initialTarget = LatLng(
@@ -745,57 +697,4 @@ class ServiceMainPageState extends State<ServiceMainPage>
     if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile();
     return _myCurrentTile;
   }
-
-/*
-  void _requestGpsLocationDialog() {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              "${AppLocalizations.of(context).translate('request')}"
-                  .toUpperCase(),
-              style: TextStyle(color: KColors.primaryColor)),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: new AssetImage(ImageAssets.address),
-                        ))),
-                SizedBox(height: 10),
-                Text(
-                    "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14))
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child:
-                  Text("${AppLocalizations.of(context).translate('refuse')}"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child:
-                  Text("${AppLocalizations.of(context).translate('accept')}"),
-              onPressed: () {
-                showPlacePicker(context);
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
-  }*/
 }

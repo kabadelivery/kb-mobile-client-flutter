@@ -288,8 +288,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           ),
                                         ),
                                   SizedBox(width: 10),
-                                  ShippingFeeTag(
-                                      widget.distance)
+                                  ShippingFeeTag(widget.distance)
                                   /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
@@ -1241,7 +1240,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            data: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

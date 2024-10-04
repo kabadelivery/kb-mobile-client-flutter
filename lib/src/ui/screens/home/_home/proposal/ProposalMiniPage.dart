@@ -2,19 +2,14 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:KABA/src/contracts/bestseller_contract.dart';
-import 'package:KABA/src/models/BestSellerModel.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ProposalMiniPage extends StatefulWidget {
   static var routeName = "/ProposalMiniPage";
@@ -27,7 +22,8 @@ class ProposalMiniPage extends StatefulWidget {
 
   List<ShopProductModel> food_suggestions;
 
-  ProposalMiniPage({Key key, this.presenter, this.customer, this.food_suggestions})
+  ProposalMiniPage(
+      {Key key, this.presenter, this.customer, this.food_suggestions})
       : super(key: key);
 
   @override
@@ -134,20 +130,19 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
       /* just show empty page. */
       return _buildSysErrorPage();
     }
-    /*   return Container(
-        margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
-        child: ListView.builder(
-            addAutomaticKeepAlives: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.data?.length,
-            itemBuilder: (BuildContext context, int position) {
-              return _buildProposalListItem(position, widget.data[position]);
-            }));*/
+
     return Column(
       children: [
         Container(
             child: CarouselSlider(
-                options: CarouselOptions(height: 115.0, autoPlayAnimationDuration: Duration(seconds: 2), viewportFraction: 1, enableInfiniteScroll: true, onPageChanged: _carousselPageChanged, autoPlay: true, autoPlayInterval: Duration(seconds: 5)),
+                options: CarouselOptions(
+                    height: 115.0,
+                    autoPlayAnimationDuration: Duration(seconds: 2),
+                    viewportFraction: 1,
+                    enableInfiniteScroll: true,
+                    onPageChanged: _carousselPageChanged,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 5)),
                 items: widget.data.map((position) {
                   return Builder(
                     builder: (BuildContext context) {
@@ -164,29 +159,24 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
             children: [
               Row(
                 children: <Widget>[]..addAll(
-                    List<Widget>.generate(widget.data.length,
-                            (int index) {
-                          return Container(
-                              margin: EdgeInsets.only(
-                                  right: 2.5, top: 2.5),
-                              height: 7,
-                              width: index == _carousselPageIndex ||
-                                  index == widget.data.length
-                                  ? 12
-                                  : 7,
-                              decoration: new BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(5)),
-                                  border: new Border.all(
-                                      color: KColors.primaryColor),
-                                  color: (index ==
-                                      _carousselPageIndex ||
-                                      index == widget.data.length)
-                                      ? KColors.primaryColor
-                                      : Colors.transparent));
-                        })
-                  /* add a list of rounded views */
-                ),
+                      List<Widget>.generate(widget.data.length, (int index) {
+                    return Container(
+                        margin: EdgeInsets.only(right: 2.5, top: 2.5),
+                        height: 7,
+                        width: index == _carousselPageIndex ||
+                                index == widget.data.length
+                            ? 12
+                            : 7,
+                        decoration: new BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            border: new Border.all(color: KColors.primaryColor),
+                            color: (index == _carousselPageIndex ||
+                                    index == widget.data.length)
+                                ? KColors.primaryColor
+                                : Colors.transparent));
+                  })
+                      /* add a list of rounded views */
+                      ),
               ),
             ],
           ),

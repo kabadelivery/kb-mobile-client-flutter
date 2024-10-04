@@ -12,15 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
-
 class GroupAdsWidget extends StatefulWidget {
-
   GroupAdsModel groupAd;
 
   GroupAdsWidget({
     Key key,
     this.groupAd,
-  }): super(key:key);
+  }) : super(key: key);
 
   @override
   _GroupAdsWidgetState createState() => _GroupAdsWidgetState();
@@ -29,36 +27,48 @@ class GroupAdsWidget extends StatefulWidget {
 class _GroupAdsWidgetState extends State<GroupAdsWidget> {
   @override
   Widget build(BuildContext context) {
-    return
-      (
-          Stack(
-              children: <Widget>[
-                Container(  margin: EdgeInsets.only(bottom: 20),
-                    color: Colors.grey.shade300.withAlpha(50),
-                    padding: EdgeInsets.only(top:30),
-                    child: Column(
-                        children:<Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.width/3,
-                            child: Row(
-                              children: <Widget>[
+    return (Stack(children: <Widget>[
+      Container(
+          margin: EdgeInsets.only(bottom: 20),
+          color: Colors.grey.shade300.withAlpha(50),
+          padding: EdgeInsets.only(top: 30),
+          child: Column(children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.width / 3,
+              child: Row(
+                children: <Widget>[
 //                                 2 views
-                                Expanded( // big add
-                                  flex: 2,
-                                  child: GestureDetector(onTap: ()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
-                                    child: CachedNetworkImage(fit:BoxFit.cover,imageUrl: Utils.inflateLink(widget.groupAd.big_pub.pic)),
-                                  ),
-                                ),
-                                Expanded( // small add
-                                    flex: 1,
-                                    child: GestureDetector(onTap:()=>_jumpToAdsList([widget.groupAd.big_pub, widget.groupAd.small_pub], 1),
-                                        child:Container(
-                                          child: CachedNetworkImage(fit:BoxFit.cover, imageUrl: Utils.inflateLink(widget.groupAd.small_pub.pic)),
-                                        ))),
-                              ],
-                            ),
-                          ),
-                          /* Container(
+                  Expanded(
+                    // big add
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () => _jumpToAdsList(
+                          [widget.groupAd.big_pub, widget.groupAd.small_pub],
+                          0),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl:
+                              Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                    ),
+                  ),
+                  Expanded(
+                      // small add
+                      flex: 1,
+                      child: GestureDetector(
+                          onTap: () => _jumpToAdsList([
+                                widget.groupAd.big_pub,
+                                widget.groupAd.small_pub
+                              ], 1),
+                          child: Container(
+                            child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: Utils.inflateLink(
+                                    widget.groupAd.small_pub.pic)),
+                          ))),
+                ],
+              ),
+            ),
+            /* Container(
                             color:Colors.white,
                               padding: EdgeInsets.only(right:5, left:5, bottom:10, top:10),
                               child: Row(
@@ -69,8 +79,8 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                                         child: Text(groupAd.small_pub.name)),
                                   ]
                               )),*/
-                          /* space for those white backgroud images */
-                          /*    SizedBox(height: 3),
+            /* space for those white backgroud images */
+            /*    SizedBox(height: 3),
                          Container(
                             color: Colors.grey.shade300.withAlpha(50),
                             child: Row(mainAxisSize: MainAxisSize.max,children: <Widget>[
@@ -120,43 +130,35 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                               ),
                             ]),
                           )*/
-                        ])
-                ),
+          ])),
 //                 title
-                Positioned(
-                    top:15,
-                    child:
-                    Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight:Radius.circular(7), bottomRight:Radius.circular(7)), color: KColors.primaryColor),
-                        child:Text(
-                            widget.groupAd.title?.toUpperCase(),
-                            style: TextStyle(color: Colors.white, fontSize: 14)
-                        ))),
-              ])
-      );
+      Positioned(
+          top: 15,
+          child: Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(7),
+                      bottomRight: Radius.circular(7)),
+                  color: KColors.primaryColor),
+              child: Text(widget.groupAd.title?.toUpperCase(),
+                  style: TextStyle(color: Colors.white, fontSize: 14)))),
+    ]));
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) {
-
-   /* Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
-      ),
-    );*/
-
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
+            ads: slider, position: position, presenter: AdsViewerPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 }

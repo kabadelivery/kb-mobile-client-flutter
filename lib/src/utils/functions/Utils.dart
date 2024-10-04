@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -11,7 +10,6 @@ import 'package:KABA/src/xrint.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:intl/intl.dart';
 
 Color hexToColor(String code) {
@@ -23,7 +21,6 @@ int hexToInt(String code) {
 }
 
 int mHexToInt(String code) {
-// return BigInt.parse(strip0x(code), radix: 16);
   return int.parse(code);
 }
 
@@ -37,11 +34,9 @@ mJsonDecode(var source) {
 
 class Utils {
   static Map<String, String> getHeaders() {
-    String token = "";
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
-//    headers["Authorization"] = "Bearer "+token;
     return headers;
   }
 
@@ -49,8 +44,7 @@ class Utils {
     Map<String, String> headers = Map();
     headers["Content-Type"] = "application/json";
     headers["cache-control"] = "no-cache";
-    if (token != null)
-    headers["Authorization"] = "Bearer " + token;
+    if (token != null) headers["Authorization"] = "Bearer " + token;
     return headers;
   }
 
@@ -99,47 +93,15 @@ class Utils {
     }
   }
 
-  /* static String readTimestamp(int timestamp) {
-    var now = new DateTime.now();
-    var format = DateFormat('HH:mm a');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    var diff = now.difference(date);
-    var time = '';
-
-    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 ||
-        diff.inMinutes > 0 && diff.inHours == 0 ||
-        diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
-    } else if (diff.inDays > 0 && diff.inDays < 7) {
-      if (diff.inDays == 1) {
-        time = diff.inDays.toString() + ' DAY AGO';
-      } else {
-        time = diff.inDays.toString() + ' DAYS AGO';
-      }
-    } else {
-      if (diff.inDays == 7) {
-        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
-      } else {
-        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
-      }
-    }
-
-    return time;
-  }
-*/
-
   static String timeStampToDate(String timestamp) {
     if (timestamp == null) return "";
 
     DateTime commandTime =
         new DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);
-    ;
-    String pattern_not_today = "yyyy-MM-dd";
-    DateFormat sdf = DateFormat();
-    String formattedDate = "";
-    sdf = DateFormat(pattern_not_today);
-    formattedDate = sdf.format(commandTime);
-    return formattedDate;
+
+    String patternNotToday = "yyyy-MM-dd";
+    DateFormat simpleDateFormat = DateFormat(patternNotToday);
+    return simpleDateFormat.format(commandTime);
   }
 
   static getExpiryDay(String timestamp) {
@@ -147,34 +109,28 @@ class Utils {
 
     DateTime commandTime =
         new DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp) * 1000);
-    ;
-    String pattern_not_today = "dd";
-    DateFormat sdf = DateFormat();
-    String formattedDate = "";
-    sdf = DateFormat(pattern_not_today);
-    formattedDate = sdf.format(commandTime);
-    return formattedDate;
+
+    String patternNotToday = "dd";
+    DateFormat simpleDateFormat = DateFormat(patternNotToday);
+    return simpleDateFormat.format(commandTime);
   }
 
   static String readTimestamp(BuildContext context, int timestamp) {
-//      long unixSeconds = Long.parseLong(timeStamp);
     DateTime commandTime =
         new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    ;
 
     DateTime currentTime = new DateTime.now();
 
     String pattern_not_today = "yyyy-MM-dd HH:mm:ss";
     String pattern_today = "HH:mm:ss";
 
-    DateFormat sdf = DateFormat();
-//      sdf..setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    DateFormat simpleDateFormat = DateFormat();
     String formattedDate = "";
 
     if (commandTime.month == currentTime.month &&
         commandTime.year == currentTime.year) {
-      sdf = new DateFormat(pattern_today);
-      formattedDate = sdf.format(commandTime);
+      simpleDateFormat = new DateFormat(pattern_today);
+      formattedDate = simpleDateFormat.format(commandTime);
       if (commandTime.day == currentTime.day) {
         formattedDate = "${AppLocalizations.of(context).translate('today')}" +
             " " +
@@ -185,12 +141,12 @@ class Utils {
                 " " +
                 formattedDate;
       } else {
-        sdf = DateFormat(pattern_not_today);
-        formattedDate = sdf.format(commandTime);
+        simpleDateFormat = DateFormat(pattern_not_today);
+        formattedDate = simpleDateFormat.format(commandTime);
       }
     } else {
-      sdf = DateFormat(pattern_not_today);
-      formattedDate = sdf.format(commandTime);
+      simpleDateFormat = DateFormat(pattern_not_today);
+      formattedDate = simpleDateFormat.format(commandTime);
     }
     return formattedDate;
   }
@@ -260,23 +216,23 @@ class Utils {
     return balance.split('').reversed.join('');
   }
 
-  static String hidePhoneNumber(String phone_number_email) {
-    if (phone_number_email == null) return "********";
-    if (Utils.isEmailValid(phone_number_email)) {
+  static String hidePhoneNumber(String phoneNumberEmail) {
+    if (phoneNumberEmail == null) return "********";
+    if (Utils.isEmailValid(phoneNumberEmail)) {
       // hide email
-      int ind = phone_number_email.lastIndexOf("@");
+      int ind = phoneNumberEmail.lastIndexOf("@");
       if (ind > 3) {
-        return phone_number_email.substring(0, 3) +
+        return phoneNumberEmail.substring(0, 3) +
             "****" +
-            phone_number_email.substring(ind);
+            phoneNumberEmail.substring(ind);
       } else {
-        phone_number_email;
+        phoneNumberEmail;
       }
-    } else if (Utils.isPhoneNumber_TGO(phone_number_email)) {
+    } else if (Utils.isPhoneNumber_TGO(phoneNumberEmail)) {
       // hide phone number
-      return phone_number_email.substring(0, 2) +
+      return phoneNumberEmail.substring(0, 2) +
           "****" +
-          phone_number_email.substring(6, 8);
+          phoneNumberEmail.substring(6, 8);
     } else {
       return "********";
     }

@@ -1,38 +1,34 @@
+import 'package:KABA/src/contracts/ads_viewer_contract.dart';
+import 'package:KABA/src/contracts/menu_contract.dart';
+import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/models/AdModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:KABA/src/contracts/ads_viewer_contract.dart';
-import 'package:KABA/src/contracts/menu_contract.dart';
-import 'package:KABA/src/contracts/restaurant_details_contract.dart';
-import 'package:KABA/src/models/AdModel.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class AdsPreviewPage extends StatefulWidget {
   static var routeName = "/AdsPreviewPage";
 
   AdsViewerPresenter presenter;
 
-  /* list of ads */
-  List<AdModel> data;
+  List<AdModel> ads;
 
   int position;
 
-  AdsPreviewPage({Key key, this.data, this.presenter, this.position = 0})
+  AdsPreviewPage({Key key, this.ads, this.presenter, this.position = 0})
       : super(key: key);
 
   @override
@@ -53,7 +49,8 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          brightness: Brightness.dark,elevation: 0,
+          brightness: Brightness.dark,
+          elevation: 0,
           backgroundColor: KColors.new_black,
           leading: IconButton(
               icon: SizedBox(
@@ -69,8 +66,6 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
         body: Stack(
           children: <Widget>[
             Container(
-              // color: Colors.red,
-              // center a picture thing in the middle
               child: Center(
                 child: Container(
                   height: MediaQuery.of(context).size.width,
@@ -82,24 +77,15 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                           onPageChanged: _carousselPageChanged,
                           viewportFraction: 1.0,
                           initialPage: widget.position,
-//                      autoPlay: widget.data.length > 1 ? true:false,
                           enableInfiniteScroll:
-                              widget.data.length > 1 ? true : false,
+                              widget.ads.length > 1 ? true : false,
                           height: MediaQuery.of(context).size.width,
                         ),
-                        items: widget.data.map((admodel) {
+                        items: widget.ads.map((admodel) {
                           return Builder(
                             builder: (BuildContext context) {
-//                                PinchZoom(
-//                                    image: Image.network('http://placerabbit.com/200/333'),
-//                                    zoomedBackgroundColor: KColors.new_black.withOpacity(0.5),
-//                                    resetDuration: const Duration(milliseconds: 100),
-//                                    maxScale: 2.5,
                               return PinchZoom(
                                 child: Container(
-                                    // color: Colors.blueAccent,
-//                                    height: 9*MediaQuery.of(context).size.width/16,
-//                                       height: MediaQuery.of(context).size.width,
                                     child: CachedNetworkImage(
                                   imageUrl: Utils.inflateLink(admodel.pic),
                                   fit: BoxFit.fitWidth,
@@ -107,12 +93,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                       (context, url, downloadProgress) =>
                                           CircularProgressIndicator(
                                               value: downloadProgress.progress),
-                                )
-//                                    child: PhotoView(
-//                                      imageProvider: NetworkImage(Utils.inflateLink(admodel.pic), scale: 1.0),
-//                                    )
-                                    ),
-                                // zoomedBackgroundColor: KColors.new_black,
+                                )),
                                 resetDuration:
                                     const Duration(milliseconds: 100),
                                 maxScale: 2.5,
@@ -123,7 +104,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                           );
                         }).toList(),
                       )),
-                      widget?.data?.length > 1
+                      widget.ads.length > 1
                           ? Positioned(
                               bottom: 10,
                               right: 0,
@@ -131,30 +112,28 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 padding: const EdgeInsets.only(right: 9.0),
                                 child: Row(
                                   children: <Widget>[]..addAll(
-                                        List<Widget>.generate(
-                                            widget.data.length, (int index) {
+                                        List<Widget>.generate(widget.ads.length,
+                                            (int index) {
                                       return Container(
                                           margin: EdgeInsets.only(
                                               right: 2.5, top: 2.5),
                                           height: 9,
-                                          width: index ==
-                                              widget.position ||
-                                              index ==
-                                                  widget.data.length ? 15 : 9,
+                                          width: index == widget.position ||
+                                                  index == widget.ads.length
+                                              ? 15
+                                              : 9,
                                           decoration: new BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10)),
                                               border: new Border.all(
                                                   color: Colors.white),
-                                              color: (index ==
-                                                          widget.position ||
-                                                      index ==
-                                                          widget.data.length)
-                                                  ? Colors.white
-                                                  : Colors.transparent));
-                                    })
-                                        /* add a list of rounded views */
-                                        ),
+                                              color:
+                                                  (index == widget.position ||
+                                                          index ==
+                                                              widget.ads.length)
+                                                      ? Colors.white
+                                                      : Colors.transparent));
+                                    })),
                                 ),
                               ))
                           : Container(),
@@ -163,7 +142,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                 ),
               ),
             ),
-            _getVoirMenuTextFromAd(widget.data[widget.position]) != ""
+            _getVoirMenuTextFromAd(widget.ads[widget.position]) != ""
                 ? Positioned(
                     top: 0,
                     right: 10,
@@ -173,11 +152,9 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 MaterialStateProperty.all(Colors.transparent),
                             side: MaterialStateProperty.all(
                                 BorderSide(color: Colors.white, width: 1))),
-                        onPressed: () =>
-                            _onAdsButtonPressed(widget.data[widget.position]),
+                        onPressed: () => _selectAd(widget.ads[widget.position]),
                         child: Row(
                           children: <Widget>[
-                            /* circular progress */
                             isLoading
                                 ? Row(
                                     children: <Widget>[
@@ -192,7 +169,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 : Container(),
                             Text(
                                 _getVoirMenuTextFromAd(
-                                    widget.data[widget.position]),
+                                    widget.ads[widget.position]),
                                 style: TextStyle(color: Colors.white)),
                           ],
                         )))
@@ -206,7 +183,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.all(4),
                       child: Text(
-                          "${widget.data[widget.position]?.description == null ? "" : widget.data[widget.position]?.description}",
+                          "${widget.ads[widget.position]?.description == null ? "" : widget.ads[widget.position]?.description}",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 7,
                           style: TextStyle(color: Colors.white))),
@@ -256,28 +233,21 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
     return -1;
   }
 
-  _onAdsButtonPressed(AdModel data) {
-    /* jump to supposed activity */
-    switch (data.type) {
+  _selectAd(AdModel ad) {
+    switch (ad.type) {
       case AdModel.TYPE_REPAS:
-        widget.presenter.loadFoodFromId(data.entity_id);
+        widget.presenter.loadFoodFromId(ad.entity_id);
         break;
-//      case AdModel.TYPE_ARTICLE:
-//        break;
       case AdModel.TYPE_ARTICLE_WEB:
-        // go the article page //
-        xrint(
-            "Go to link -> ${ServerConfig.SERVER_ADDRESS + "/api/link/${data.link}"}");
-        _launchURL(ServerConfig.SERVER_ADDRESS + "/api/link/${data.link}");
+        _launchURL(ServerConfig.SERVER_ADDRESS + "/api/link/${ad.link}");
         break;
       case AdModel.TYPE_RESTAURANT:
         widget.presenter.loadRestaurantFromId(
-          data.entity_id, /* for menu 1*/
+          ad.entity_id,
         );
         break;
       case AdModel.TYPE_MENU:
-        // use the id and get the restaurant id for here.
-        _jumpToRestaurantMenuPage(data.entity_id);
+        _jumpToRestaurantMenuPage(ad.entity_id);
         break;
     }
   }
@@ -291,7 +261,6 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
 
   @override
   void showLoading(bool isLoading) {
-    // show loading into the page
     setState(() {
       this.isLoading = isLoading;
     });
@@ -300,7 +269,6 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   @override
   void updateFood(ShopProductModel foodModel) {
     showLoading(false);
-    // jump to restaurant
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -312,7 +280,6 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   @override
   void updateRestaurantForDetails(ShopModel restaurantModel) {
     showLoading(false);
-    // jump to restaurant
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -326,7 +293,6 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   @override
   void updateRestaurantForMenu(ShopModel restaurantModel) {
     showLoading(false);
-    // jump to restaurant
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -336,12 +302,12 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
     );
   }
 
-  void _jumpToRestaurantMenuPage(int entity_id) {
+  void _jumpToRestaurantMenuPage(int entityId) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
-            RestaurantMenuPage(menuId: entity_id, presenter: MenuPresenter()),
+            RestaurantMenuPage(menuId: entityId, presenter: MenuPresenter()),
       ),
     );
   }
