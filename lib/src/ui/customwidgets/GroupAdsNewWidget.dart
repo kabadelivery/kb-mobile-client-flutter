@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
@@ -7,10 +5,7 @@ import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class GroupAdsNewWidget extends StatefulWidget {
   GroupAdsModel groupAd;

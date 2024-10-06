@@ -35,7 +35,6 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
   @override
   void dispose() {
     super.dispose();
-    //   load delivery address model if exists and if user is logged
   }
 
   @override

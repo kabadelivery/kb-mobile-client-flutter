@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:KABA/src/models/ServiceMainEntity.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/EvenementModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
@@ -10,28 +14,11 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/EvenementModel.dart';
-import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-
-import 'package:http/http.dart';
 
 class AppApiProvider {
   Future<dynamic> fetchHomeScreenModel() async {
     xrint("entered fetchHomeScreenModel");
     if (await Utils.hasNetwork()) {
-/*
-      final response = await client
-          .get(Uri.parse(ServerRoutes.LINK_HOME_PAGE),
-          headers: Utils.getHeaders()).timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -66,13 +53,6 @@ class AppApiProvider {
       CustomerModel customer, Position position) async {
     xrint("entered checkLocationDetails");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_LOCATION_DETAILS),
-          body: position == null ? "" : json.encode(
-              {"coordinates": "${position.latitude}:${position.longitude}"}),
-          headers: Utils.getHeadersWithToken(customer.token)).timeout(
-          const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token)
@@ -120,11 +100,6 @@ class AppApiProvider {
     /* get the events and show it */
     xrint("entered fetchEvenementList");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_EVENEMENTS_LIST)).timeout(
-          const Duration(seconds: 30));
-*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -207,12 +182,6 @@ class AppApiProvider {
     }
 
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_REGISTER_PUSH_TOKEN), body: _data,
-          headers: Utils.getHeadersWithToken(customer.token))
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token)
@@ -242,11 +211,6 @@ class AppApiProvider {
   checkUnreadMessages(customer) async {
 //
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
-          headers: Utils.getHeadersWithToken(customer.token))
-          .timeout(const Duration(seconds: 30));
-      */
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token)
@@ -274,38 +238,8 @@ class AppApiProvider {
     }
   }
 
-  /*
-  SELECT * FROM `food`, menu WHERE food.name LIKE '%piment%' AND
-   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
-   food.description LIKE '%piment%' GROUP BY food.id
-  * */
-
-  /*
-  *  second proposal
-  *
-   SELECT food.name, (SELECT command.id FROM command WHERE command.food_command LIKE CONCAT("",food.id,"")) as order_count FROM `food`, menu WHERE food.name LIKE '%piment%' AND
-   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
-   food.description LIKE '%piment%' GROUP BY food.id ORDER BY order_count desc
-  *
-  * */
-
-  /*
-  fuck this
-
-   SELECT food.name, (SELECT count(command.id) FROM command WHERE command.start_time > '2020-07-01'  AND command.food_command LIKE CONCAT("",food.id,"")) as order_count FROM `food`, menu WHERE food.name LIKE '%piment%' AND
-   food.menu_id = menu.id OR menu.name LIKE '%piment%' OR
-   food.description LIKE '%piment%' GROUP BY food.id ORDER BY order_count desc LIMIT 0,10
-
-   */
-  /* order by most sold count */
   fetchFoodFromRestaurantByName(String desc) async {
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES),
-          body: {"desc":"${desc == null ? "" : desc}"}
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -357,11 +291,6 @@ class AppApiProvider {
 
   checkVersion() async {
     if (await Utils.hasNetwork()) {
-      /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_APP_VERSION)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -396,13 +325,6 @@ class AppApiProvider {
   checkBalance(CustomerModel customer) async {
     xrint("entered checkBalance vHomePage");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token)
@@ -438,14 +360,6 @@ class AppApiProvider {
   checkKabaPoints(CustomerModel customer) async {
     xrint("entered checkKabaPoints");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.GET_KABA_POINTS),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer.token)
-      )
-          .timeout(const Duration(seconds: 30));
-     */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token)

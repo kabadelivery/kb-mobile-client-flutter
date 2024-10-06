@@ -2,30 +2,25 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/CommentModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/MoneyTransactionModel.dart';
 import 'package:KABA/src/models/PointObjModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/UserTokenModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:http/http.dart' show Client, MultipartRequest, StreamedResponse;
-import 'package:KABA/src/models/CommentModel.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/models/MoneyTransactionModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 
 class ClientPersonalApiProvider {
   var TGO = "228";
 
-  /// COMMENTS
-  ///
-  /// Get restaurants comments list
   fetchRestaurantComment(
       ShopModel restaurantModel, UserTokenModel userToken) async {
     xrint("entered fetchRestaurantComment");
@@ -78,9 +73,6 @@ class ClientPersonalApiProvider {
     }
   }
 
-  /// User Delivery Addresses
-  ///
-  /// Get customer account's delivery address
   Future<List<DeliveryAddressModel>> fetchMyAddresses(
       UserTokenModel userToken) async {
     xrint("entered fetchMyAddresses");
@@ -216,12 +208,6 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
 
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_USER_REGISTER),
-          body: json.encode({"nickname": nickname, "password": password, "whatsapp_number": whatsapp_number, "phone_number": phone_number, "email": email, "request_id":request_id, 'type': Utils.isEmailValid(email) ? 1 : 0}))
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -253,32 +239,6 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
-  /*
-  Future<String> loginAction({String login, String password}) async {
-
-    xrint("entered loginAction");
-    if (await Utils.hasNetwork()) {
-//      await Future.delayed(const Duration(seconds: 1));
-      var request =   MultipartRequest("POST", Uri.parse(ServerRoutes.LINK_USER_LOGIN));
-      request.fields['_username'] = "${login}";
-      request.fields['_password'] = "${password}";
-      /*    request.files.add(http.MultipartFile.fromPath(
-        'package',
-        'build/package.tar.gz',
-        contentType: new MediaType('application', 'x-tar'),
-      ));*/
-      try {
-        StreamedResponse send = await request.send();
-        String body = await send.stream.transform(utf8.decoder).single;
-        return body;
-      } catch (_) {
-        throw Exception(-1); // system error
-      }
-    } else {
-      throw Exception(-2); // you have no network
-    }
-  }*/
 
   Future<dynamic> loginAction(
       {String login,
@@ -326,11 +286,6 @@ class ClientPersonalApiProvider {
         };
       }
 
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2),
-        body:  json.encode({"username": login, "password":password, 'device':device }),
-      ).timeout(const Duration(seconds: 30));
-      */
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -350,18 +305,13 @@ class ClientPersonalApiProvider {
             {"username": login, "password": password, 'device': device}),
       );
 
-      // if var 2 -> return something different
-
       xrint(response.data);
       var responseData = response.data;
       try {
         var data = json.decode(responseData);
         int error = int.parse("${data["error"]}");
-        // xrint(error);
-        // everything is fine
         return data;
       } catch (_) {
-        // if error, data is string
         return {
           "error": responseData["error"],
           "code": responseData["code"],
@@ -377,9 +327,6 @@ class ClientPersonalApiProvider {
     }
   }
 
-  /// UPDATE CUSTOMER INFORMATIONS -nickname, job, district ... -
-  ///
-  ///
   Future<CustomerModel> updatePersonnalPage(CustomerModel customer) async {
     xrint("entered updatePersonnalPage");
     if (await Utils.hasNetwork()) {
@@ -405,11 +352,6 @@ class ClientPersonalApiProvider {
           'profile_picture': customer.profile_picture
         });
 
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_UPDATE_USER_INFORMATIONS),
-          body: _data,
-          headers: Utils.getHeadersWithToken(customer?.token)).timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -430,7 +372,6 @@ class ClientPersonalApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          /* return resulting customer that has to be saved in the shared preferences again. */
           var obj = mJsonDecode(response.data);
           customer = CustomerModel.fromJson(obj["data"]);
           return customer;
@@ -449,14 +390,6 @@ class ClientPersonalApiProvider {
       CustomerModel customer) async {
     xrint("entered fetchPointTransactionsHistory");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 60));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -475,7 +408,6 @@ class ClientPersonalApiProvider {
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-        // int errorCode = mJsonDecode(response.data)["error"];
         PointObjModel data = PointObjModel.fromMap(mJsonDecode(response.data));
         return data;
       } else {
@@ -491,14 +423,6 @@ class ClientPersonalApiProvider {
       CustomerModel customer) async {
     xrint("entered fetchMoneyTransactionsHistory");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_TRANSACTION_HISTORY),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 60));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -539,14 +463,6 @@ class ClientPersonalApiProvider {
   checkBalance(CustomerModel customer) async {
     xrint("entered checkBalance");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_BALANCE),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 60));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -583,13 +499,6 @@ class ClientPersonalApiProvider {
       double fees) async {
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber) ? ServerRoutes.LINK_TOPUP_TMONEY : ServerRoutes.LINK_TOPUP_FLOOZ),
-          body: json.encode({"phone_number": phoneNumber, "amount": balance, 'fees':'$fees'}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -633,13 +542,6 @@ class ClientPersonalApiProvider {
           'fees': '$fees'
         })} ${ServerRoutes.LINK_TOPUP_PAYDUNYA}");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_TOPUP_PAYDUNYA),
-          body: json.encode({"amount": balance, 'fees':'$fees'}),
-          headers: Utils.getHeadersWithToken(customer?.token))
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -674,14 +576,6 @@ class ClientPersonalApiProvider {
   launchTransferMoneyRequest(CustomerModel customer, String username) async {
     xrint("entered launchTransferMoneyRequest");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_USER_ACCOUNT),
-          body: json.encode({"username": username}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));
-    */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -724,13 +618,6 @@ class ClientPersonalApiProvider {
       String transaction_password, String amount) async {
     xrint("entered launchTransferMoneyAction");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_MONEY_TRANSFER),
-          body: json.encode({"id": receiverId, "amount": amount, "transaction_password":transaction_password}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));
-      */
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -779,12 +666,6 @@ class ClientPersonalApiProvider {
   Future<dynamic> fetchFees(CustomerModel customer) async {
     xrint("entered fetchFees");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_TOPUP_FEES_RATE_V2),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));
-*/
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -802,13 +683,6 @@ class ClientPersonalApiProvider {
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
-        // check the fees, if an error during this process, throw error no pb
-//        int fees_flooz = mJsonDecode(response.body)["data"]["fees_flooz"];
-//        int fees_tmoney = mJsonDecode(response.body)["data"]["fees_tmoney"];
-//        int fees_bankcard = mJsonDecode(response.body)["data"]["fees_bankcard"];
-        /* if (fees > 0)
-          return fees;
-        return 10;*/
         return mJsonDecode(response.data)["data"];
       } else {
         throw Exception(response.statusCode); // you have no right to do this
@@ -822,14 +696,6 @@ class ClientPersonalApiProvider {
     xrint("entered recoverPasswordSendingCodeAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
-      /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS),
-          body:
-          Utils.isEmailValid(login) ?
-          json.encode({"email": login, "type": 1}) :  json.encode({"phone_number": TGO + login, "type": 0})
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -861,11 +727,6 @@ class ClientPersonalApiProvider {
     /*  */
     xrint("entered checkRecoverPasswordRequestCodeAction");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE),
-          body: json.encode({"code": code, "request_id": requestId}))
-          .timeout(const Duration(seconds: 60));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 60000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -896,13 +757,6 @@ class ClientPersonalApiProvider {
       String login, String newCode, String requestId) async {
     xrint("entered passwordResetAction");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_PASSWORD_RESET),
-          body: Utils.isEmailValid(login) ?
-          json.encode({"password": newCode, "request_id": requestId, "email":"${login}"}) :
-          json.encode({"password": newCode, "request_id": requestId, "phone_number":"228${login}"}) )
-          .timeout(const Duration(seconds: 60));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 60000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:KABA/src/contracts/ads_viewer_contract.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
@@ -7,10 +5,7 @@ import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class GroupAdsWidget extends StatefulWidget {
   GroupAdsModel groupAd;
@@ -68,68 +63,6 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                 ],
               ),
             ),
-            /* Container(
-                            color:Colors.white,
-                              padding: EdgeInsets.only(right:5, left:5, bottom:10, top:10),
-                              child: Row(
-                                  children: <Widget>[
-                                    Expanded(flex:2,
-                                        child: Text(groupAd.big_pub.name)),
-                                    Expanded(flex:1,
-                                        child: Text(groupAd.small_pub.name)),
-                                  ]
-                              )),*/
-            /* space for those white backgroud images */
-            /*    SizedBox(height: 3),
-                         Container(
-                            color: Colors.grey.shade300.withAlpha(50),
-                            child: Row(mainAxisSize: MainAxisSize.max,children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child:Container(
-                                    height: MediaQuery.of(context).size.width/3,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.rectangle,
-                                        image: new DecorationImage(
-                                            fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://photosfine.files.wordpress.com/2012/04/white-background-fruit-and-vegetables-18.jpg")
-                                        )
-                                    )
-                                ),
-                              ),
-                              SizedBox(width: 1),
-                              Expanded(
-                                flex: 1,
-                                child:Container(
-                                    height: MediaQuery.of(context).size.width/3,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.rectangle,
-                                        image: new DecorationImage(
-                                            fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://www.netsolutions.com/insights/wp-content/uploads/2018/10/Zomato-online-food-delivery-app.jpg")
-                                        )
-                                    )
-                                ),
-                              ),
-                              SizedBox(width: 1,),
-                              Expanded(
-                                flex: 1,
-                                child:Container(
-                                    height: MediaQuery.of(context).size.width/3,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.rectangle,
-                                        image: new DecorationImage(
-                                            fit: BoxFit.contain,
-                                            image: CachedNetworkImageProvider("https://www.thesun.co.uk/wp-content/uploads/2019/10/VP-COMP-KFC-V2.jpg")
-                                        )
-                                    )
-                                ),
-                              ),
-                            ]),
-                          )*/
           ])),
 //                 title
       Positioned(
