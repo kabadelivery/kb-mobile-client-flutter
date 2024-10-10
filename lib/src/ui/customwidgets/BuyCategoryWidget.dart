@@ -6,11 +6,9 @@ import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -324,7 +322,6 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
             imageUrl: widget.entity.file_link,
             errorWidget: (context, url, error) => Icon(Icons.not_interested),
           );
-    //return Lottie.asset(category_icon, animate: widget.available);
   }
 }
 

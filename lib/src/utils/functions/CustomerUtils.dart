@@ -1,26 +1,20 @@
 import 'dart:convert';
 
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/xrint.dart';
-import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
-import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/xrint.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerUtils {
-  static String signature = XRINT_DEBUG_VALUE ? "debug" : "prod";
+  static String signature = kDebugMode ? "debug" : "prod";
 
   static persistTokenAndUserdata(String token, String loginResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString("_loginResponse" + signature, loginResponse);
-    /* no need to commit */
-    /* expiration date in 3months */
     String expDate =
         "${DateTime.now().add(Duration(days: 180)).millisecondsSinceEpoch}";
     prefs.setString(
@@ -37,7 +31,6 @@ class CustomerUtils {
       String token = obj["data"]["payload"]["token"];
       customer.token = token;
       customer.created_at = obj["data"]["customer"]["created_at"];
-      // created_at
     } catch (_) {
       customer = null;
     }
@@ -51,7 +44,6 @@ class CustomerUtils {
       String jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer);
       String token = obj["data"]["payload"]["token"];
-//      customer = CustomerModel.fromJson(obj["data"]["customer"]);
       customer.token = token;
       obj['data']['customer'] = customer.toJson();
       String _sd = json.encode(obj);
@@ -70,14 +62,6 @@ class CustomerUtils {
     prefs.remove("_homepage_" + signature);
     prefs.remove("is_push_token_uploaded");
     prefs.remove("_selectedAddress" + signature);
-
-// prefs.clear();
-    /*String jsonCustomer = prefs.getString("_loginResponse"+signature);
-    var obj = json.decode(jsonCustomer);
-    CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
-    String token = obj["data"]["payload"]["token"];
-    customer.token = token;
-    return customer;*/
   }
 
   static Future<UserTokenModel> getUserToken() async {
@@ -104,7 +88,7 @@ class CustomerUtils {
       String jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer);
       otp = obj["login_code"];
-      xrint("getLoginOtpCode :: otp = ${otp}");
+      xrint("getLoginOtpCode :: otp = $otp");
     } catch (_) {
       xrint("getLoginOtpCode :: otp retrieve error");
     }
@@ -133,16 +117,13 @@ class CustomerUtils {
     return jsonContent;
   }
 
-  //////////////
   static saveBestSellerVersion() async {
-    // get date millisecond
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("_best_seller_version" + signature,
         DateTime.now().millisecondsSinceEpoch);
   }
 
   static getBestSellerLockDate() async {
-    // get date
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       int mls = prefs.getInt("_best_seller_version" + signature);
@@ -154,7 +135,6 @@ class CustomerUtils {
   }
 
   static getProposalLockDate() async {
-    // get date
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       int mls = prefs.getInt("_proposal_version" + signature);
@@ -204,12 +184,9 @@ class CustomerUtils {
   }
 
   static unlockBestSellerVersion() async {
-    // remove date
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("_best_seller_version" + signature);
   }
-
-  ///////////////////////
 
   static saveBestSellerPage(String wp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -228,23 +205,20 @@ class CustomerUtils {
     return jsonContent;
   }
 
-  static saveProposalPage(String proposals_json) async {
+  static saveProposalPage(String proposalsJson) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_proposal_" + signature, proposals_json);
+    prefs.setString("_proposal_" + signature, proposalsJson);
   }
 
-  /*  */
-
-  static saveShopSchedulePage(int restaurant_id, String wp) async {
+  static saveShopSchedulePage(int restaurantId, String wp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("_restaurant_schedule_${restaurant_id}_" + signature, wp);
+    prefs.setString("_restaurant_schedule_${restaurantId}_" + signature, wp);
   }
 
-  /* old shop schedule page */
-  static getOldShopSchedulePage(int restaurant_id) async {
+  static getOldShopSchedulePage(int restaurantId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonContent =
-        prefs.getString("_restaurant_schedule_${restaurant_id}_" + signature);
+        prefs.getString("_restaurant_schedule_${restaurantId}_" + signature);
     return jsonContent;
   }
 
@@ -256,8 +230,8 @@ class CustomerUtils {
   static Future<List<int>> getFavoriteAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String favorite_list = prefs.get("_favorite_list" + signature);
-      List<dynamic> res = json.decode(favorite_list);
+      String favoriteList = prefs.get("_favorite_list" + signature);
+      List<dynamic> res = json.decode(favoriteList);
       List<int> ress = [];
       res.forEach((element) {
         ress.add(element);
@@ -305,12 +279,12 @@ class CustomerUtils {
   }
 
   static Future<String> getLastValidOtp(
-      {String username, MIN_LAPSED_SECONDS = 60 * 5}) async {
+      {String username, minLapsedSeconds = 60 * 5}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String otp_saved_time =
+      String otpSavedTime =
           prefs.getString("${username}_otp_saved_time" + signature);
-      if (int.parse(otp_saved_time) + MIN_LAPSED_SECONDS >
+      if (int.parse(otpSavedTime) + minLapsedSeconds >
           (DateTime.now().millisecondsSinceEpoch / 1000)) {
         return prefs.getString("${username}_last_otp" + signature);
       } else {
@@ -345,11 +319,11 @@ class CustomerUtils {
     prefs.setBool("is_push_token_uploaded", true);
   }
 
-  static bool isGpsLocation(String gps_latlong) {
+  static bool isGpsLocation(String gpsLatLong) {
     /* if gps location is under the format z.xxxxxx,y.xxxxx,
     * thus two different numbers with a length or minimum 6 chars each,
     * we confirm it's a gps location */
-    List<String> latlong = gps_latlong.split(",").toList();
+    List<String> latlong = gpsLatLong.split(",").toList();
     if (latlong.length == 2 &&
         double.parse(latlong[0]).isFinite &&
         double.parse(latlong[0]).abs() <= 90 &&
@@ -367,7 +341,7 @@ class CustomerUtils {
 
   /* save configuration  */
   static Future<void> updateShopListFilterConfiguration(
-      Map<String,dynamic> configuration) async {
+      Map<String, dynamic> configuration) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       prefs.setString(
@@ -378,13 +352,13 @@ class CustomerUtils {
   }
 
 /*  get configuration */
-  static Future<Map<String,dynamic>> getShopListFilterConfiguration() async {
+  static Future<Map<String, dynamic>> getShopListFilterConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String tmp = prefs.getString("_shop_list_filter" + signature);
       return json.decode(tmp);
     } catch (e) {
-      return Map<String,dynamic>();
+      return Map<String, dynamic>();
     }
   }
 }

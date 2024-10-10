@@ -1,10 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-
-
 class ShopModel {
-
   String name;
   int id;
   String pic;
@@ -15,7 +9,7 @@ class ShopModel {
   String email;
   String main_contact;
   String working_hour;
-  String distance="";
+  String distance = "";
   String menu_foods;
   int is_open;
   int coming_soon;
@@ -30,16 +24,32 @@ class ShopModel {
   String location;
   String category_id;
 
-  // other
   double distanceBetweenMeandRestaurant = 0;
 
-  ShopModel({this.id, this.name, this.pic, this.contactId, this.email,
-    this.distance, this.is_open, this.stars, this.votes, this.theme_pic,
-    this.description, this.address, this.main_contact,
-    this.working_hour, this.coming_soon,category_id,
-    this.is_promotion,
-    this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food,
-  this.location});
+  ShopModel(
+      {this.id,
+      this.name,
+      this.pic,
+      this.contactId,
+      this.email,
+      this.distance,
+      this.is_open,
+      this.stars,
+      this.votes,
+      this.theme_pic,
+      this.description,
+      this.address,
+      this.main_contact,
+      this.working_hour,
+      this.coming_soon,
+      category_id,
+      this.is_promotion,
+      this.is_new,
+      this.open_type,
+      this.delivery_pricing,
+      this.discount,
+      this.max_food,
+      this.location});
 
   ShopModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -50,8 +60,7 @@ class ShopModel {
     distance = json['distance'];
     menu_foods = json['menu_foods'];
     is_open = json['is_open'];
-    if (json['stars'] != null)
-      stars = double.parse("${json['stars']}");
+    if (json['stars'] != null) stars = double.parse("${json['stars']}");
     votes = json['votes'];
     theme_pic = json['theme_pic'];
     description = json['description'];
@@ -69,27 +78,26 @@ class ShopModel {
     category_id = "${json["category_id"]}";
   }
 
-
-  Map toJson () => {
-    "id" : (id as int),
-    "name" : name,
-    "pic" : pic,
-    "contactId" : contactId,
-    "email" : email,
-    "distance" : distance,
-    "menu_foods" : menu_foods,
-    "is_open" : is_open,
-    "stars" : stars,
-    "theme_pic" : theme_pic,
-    "description" : description,
-    "main_contact" : main_contact,
-    "working_hour" : working_hour,
-    "coming_soon" : coming_soon,
-    "is_promotion" : is_promotion,
-    "is_new" : is_new,
-    "location": location,
-    "category_id": category_id
-  };
+  Map toJson() => {
+        "id": (id as int),
+        "name": name,
+        "pic": pic,
+        "contactId": contactId,
+        "email": email,
+        "distance": distance,
+        "menu_foods": menu_foods,
+        "is_open": is_open,
+        "stars": stars,
+        "theme_pic": theme_pic,
+        "description": description,
+        "main_contact": main_contact,
+        "working_hour": working_hour,
+        "coming_soon": coming_soon,
+        "is_promotion": is_promotion,
+        "is_new": is_new,
+        "location": location,
+        "category_id": category_id
+      };
 
   @override
   String toString() {

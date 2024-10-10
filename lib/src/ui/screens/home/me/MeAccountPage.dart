@@ -54,9 +54,7 @@ import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
-
 class MeAccountPage extends StatefulWidget {
-
   CustomerModel customerData;
 
   CustomerModel customer;
@@ -67,11 +65,10 @@ class MeAccountPage extends StatefulWidget {
 
   @override
   _MeAccountPageState createState() => _MeAccountPageState();
-
 }
 
-class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateMixin{
-
+class _MeAccountPageState extends State<MeAccountPage>
+    with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
 
   StateContainerState container;
@@ -81,13 +78,15 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    popupMenus = ["Add Voucher", /*"Scan QR",*/"Settings","Logout"];
+    popupMenus = ["Add Voucher", /*"Scan QR",*/ "Settings", "Logout"];
     CustomerUtils.getCustomer().then((customer) async {
       widget.customer = customer;
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
+      popupMenus = [
+        "${AppLocalizations.of(context).translate('add_voucher')}",
         // "${AppLocalizations.of(context).translate('scan')}",
         "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",];
+        "${AppLocalizations.of(context).translate('logout')}",
+      ];
     });
   }
 
@@ -95,10 +94,12 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}",
+      popupMenus = [
+        "${AppLocalizations.of(context).translate('add_voucher')}",
         // "${AppLocalizations.of(context).translate('scan')}",
         "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",];
+        "${AppLocalizations.of(context).translate('logout')}",
+      ];
     });
   }
 
@@ -112,44 +113,47 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   }*/
 
   void _jumpToAddVoucherPage() {
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            AddVouchersPage(
+                presenter: AddVoucherPresenter(), customer: widget.customer),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch(popupMenus.indexOf(value)) {
+    switch (popupMenus.indexOf(value)) {
       case 0:
-      // scan
+        // scan
         _jumpToAddVoucherPage();
         break;
       case 1:
-      // scan
-      //   _jumpToScanPage();
-      //   break;
-      // case :
+        // scan
+        //   _jumpToScanPage();
+        //   break;
+        // case :
         _jumpToPage(context, SettingsPage());
         break;
       case 2:
-      /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete((){
+        /* logout */
+        CustomerUtils.clearCustomerInformations().whenComplete(() {
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
           // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
           StateContainer.of(context).hasUnreadMessage = false;
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
-          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, SplashPage.routeName, (r) => false);
         });
         break;
     }
@@ -161,23 +165,21 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
         backgroundColor: Colors.grey.shade100,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
-            child: widget.customerData != null ? _buildMyPage(widget.customerData) : FutureBuilder(
-                future: CustomerUtils.getCustomer(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return _buildMyPage(snapshot.data);
-                  } else if (snapshot.hasError) {
-                    /* go back to login page because of error in login or so. */
-                  }
-                  return Center(child: CircularProgressIndicator());
-                }
-            )
-        )
-    );
+            child: widget.customerData != null
+                ? _buildMyPage(widget.customerData)
+                : FutureBuilder(
+                    future: CustomerUtils.getCustomer(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        return _buildMyPage(snapshot.data);
+                      } else if (snapshot.hasError) {
+                        /* go back to login page because of error in login or so. */
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    })));
   }
 
-
-  void _jumpToPage (BuildContext context, page) {
+  void _jumpToPage(BuildContext context, page) {
     /*  Navigator.push(
       context,
       MaterialPageRoute(
@@ -185,55 +187,61 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-        page,
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   Widget _buildMyPage(data) {
-
     widget.customerData = data;
 
-    double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
+    double expandedHeight = 9 * MediaQuery.of(context).size.width / 16 + 20;
     var flexibleSpaceWidget = new SliverAppBar(
       actions: <Widget>[
-        InkWell(onTap: ()=>_jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-          child: Container(width: 60,height:60,
-            child: FlareActor(
-                FlareData.new_message,
+        InkWell(
+          onTap: () => _jumpToPage(context,
+              CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+          child: Container(
+            width: 60,
+            height: 60,
+            child: FlareActor(FlareData.new_message,
                 alignment: Alignment.center,
                 animation: "normal",
                 fit: BoxFit.contain,
-                isPaused : StateContainer.of(context).hasUnreadMessage != true
-            ),
+                isPaused: StateContainer.of(context).hasUnreadMessage != true),
           ),
         ),
         PopupMenuButton<String>(
           onSelected: menuChoiceAction,
           itemBuilder: (BuildContext context) {
-            return popupMenus.map((String menuName){
-              return PopupMenuItem<String>(value: menuName, child: Text(menuName));
+            return popupMenus.map((String menuName) {
+              return PopupMenuItem<String>(
+                  value: menuName, child: Text(menuName));
             }).toList();
           },
         )
       ],
 //      leading: IconButton(tooltip: "Scanner", icon: Icon(Icons.center_focus_strong), onPressed: (){_jumpToScanPage();}),
-      leading: IconButton(icon: SizedBox(
-          height: 25,
-          width: 25,
-          child: SvgPicture.asset(
-            VectorsData.kaba_icon_svg,
-            color: Colors.white,
-          )), onPressed: (){_jumpToInfoPage();}),
+      leading: IconButton(
+          icon: SizedBox(
+              height: 25,
+              width: 25,
+              child: SvgPicture.asset(
+                VectorsData.kaba_icon_svg,
+                color: Colors.white,
+              )),
+          onPressed: () {
+            _jumpToInfoPage();
+          }),
       expandedHeight: expandedHeight,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -245,8 +253,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 fontSize: 15.0,
               ))*/
           background: Container(
-            child:
-            Column(mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 50),
                 Row(
@@ -254,31 +262,46 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                   children: <Widget>[
                     GestureDetector(
                         child: Container(
-                            height:100, width: 100,
+                            height: 100,
+                            width: 100,
                             decoration: BoxDecoration(
-                                border: new Border.all(color: Colors.white, width: 2),
+                                border: new Border.all(
+                                    color: Colors.white, width: 2),
                                 shape: BoxShape.circle,
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(Utils.inflateLink(widget.customerData.profile_picture))
-                                )
-                            )
-                        ), onTap: ()=>
-                        _seeProfilePicture()
+                                    image: CachedNetworkImageProvider(
+                                        Utils.inflateLink(widget
+                                            .customerData.profile_picture))))),
+                        onTap: () => _seeProfilePicture()
 //                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
-                    ),
+                        ),
                     Container(
-                        padding: EdgeInsets.only(right:20),
+                        padding: EdgeInsets.only(right: 20),
 //                    decoration: BoxDecoration(border: Border),
-                        child:Column(
+                        child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(widget.customerData.nickname, style:TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
-                              SizedBox(height:10),
-                              Text( Utils.isPhoneNumber_TGO(widget.customerData.username)? "XXXX${widget.customerData.username.substring(4)}" : "${widget.customerData.username.substring(0,4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@")-1)}", style:TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.right),
-                              SizedBox(height:10),
-                            ])
-                    )],
+                              Text(
+                                widget.customerData.nickname,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                  Utils.isPhoneNumber_TGO(
+                                          widget.customerData.username)
+                                      ? "XXXX${widget.customerData.username.substring(4)}"
+                                      : "${widget.customerData.username.substring(0, 4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@") - 1)}",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                  textAlign: TextAlign.right),
+                              SizedBox(height: 10),
+                            ]))
+                  ],
                 ),
                 // SizedBox(height: 20),
                 // Center(
@@ -305,19 +328,18 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                 // ),
               ],
             ),
-            padding:EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
 //            color: KColors.primaryYellowColor,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
-                  colors: [KColors.primaryYellowColor, Colors.yellow]
-              ),
+                  colors: [KColors.primaryYellowColor, Colors.yellow]),
             ),
           )),
     );
 
-    return  new DefaultTabController(
+    return new DefaultTabController(
       length: 1,
       child: NestedScrollView(
           controller: _scrollController,
@@ -326,145 +348,208 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
               flexibleSpaceWidget,
             ];
           },
-          body:
-          SingleChildScrollView(
-            child:   Column(
+          body: SingleChildScrollView(
+            child: Column(
                 children: <Widget>[
-                  /* top-up & xof */
-                  Container(
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-
-                          /* le solde ! */
-                          Expanded(flex:1,
-                            child: InkWell(
-                              onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  children: <Widget>[
+              /* top-up & xof */
+              Container(
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      /* le solde ! */
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () => _jumpToPage(
+                              context,
+                              TransactionHistoryPage(
+                                  presenter: TransactionPresenter())),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
-                                    SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: SvgPicture.asset(
-                                          VectorsData.balance,
-                                        )),
-                                    SizedBox(height:10),
-                                    Center(
-                                      child: Center(
-                                        child: Row(mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
-                                            // Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                                            // SizedBox(width:5),
-                                            // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
-                                          /*  SizedBox(width:10),
+                                SizedBox(
+                                    height: 40,
+                                    width: 40,
+                                    child: SvgPicture.asset(
+                                      VectorsData.balance,
+                                    )),
+                                SizedBox(height: 10),
+                                Center(
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "${AppLocalizations.of(context).translate('balance')}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        )
+                                        // Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                        // SizedBox(width:5),
+                                        // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+                                        /*  SizedBox(width:10),
                                             StateContainer.of(context).isBalanceLoading ?
                                             SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.green), strokeWidth: 3), height: 12, width: 12) : Container(),
-                                          */],
-                                        ),
-                                      ),
-                                    )
-
-                                  ],
-                                ),
-                              ),
+                                          */
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                          //////////  //////////  //////////  //////////  //////////  //////////
+                        ),
+                      ),
+                      //////////  //////////  //////////  //////////  //////////  //////////
 
-                          Expanded(flex:1,
-                            child: InkWell(
-                              onTap: () => _jumpToTopUpPage(),
-                              child: Container(
-                                child: Column(
-                                  children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () => _jumpToTopUpPage(),
+                          child: Container(
+                            child: Column(
+                              children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
-                                    SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: SvgPicture.asset(
-                                          VectorsData.topup,
-                                        )),
-                                    SizedBox(height:5),
-                                    Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
-                                  ],
-                                ),
-                              ),
+                                SizedBox(
+                                    height: 40,
+                                    width: 40,
+                                    child: SvgPicture.asset(
+                                      VectorsData.topup,
+                                    )),
+                                SizedBox(height: 5),
+                                Text(
+                                  "${AppLocalizations.of(context).translate('top_up')}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                )
+                              ],
                             ),
                           ),
-                          Expanded(flex:1,
-                            child: InkWell(
-                              onTap: () => _jumpToPage(context,  TransferMoneyRequestPage(presenter: TransferMoneyRequestPresenter())),
-                              child: Container(
-                                child: Column(
-                                  children: <Widget>[
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () => _jumpToPage(
+                              context,
+                              TransferMoneyRequestPage(
+                                  presenter: TransferMoneyRequestPresenter())),
+                          child: Container(
+                            child: Column(
+                              children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
-                                    SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: SvgPicture.asset(
-                                          VectorsData.transfer_money,
-                                        )),
-                                    SizedBox(height:5),
-                                    Text("${AppLocalizations.of(context).translate('transfer')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),)
-                                  ],
-                                ),
-                              ),
+                                SizedBox(
+                                    height: 40,
+                                    width: 40,
+                                    child: SvgPicture.asset(
+                                      VectorsData.transfer_money,
+                                    )),
+                                SizedBox(height: 5),
+                                Text(
+                                  "${AppLocalizations.of(context).translate('transfer')}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                )
+                              ],
                             ),
                           ),
-                        ],
-                      )),
-                  /* do you have  a suggestion ? */
-                  Container(
-                      padding: EdgeInsets.only(top:20, bottom:20),
-                      color: Colors.grey.shade100,
-                      child:Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            InkWell(onTap: () => _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
-                                child:Container(
-                                    decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
-                                    padding: EdgeInsets.only(left:10),
-                                    child: Row(mainAxisSize: MainAxisSize.min,  mainAxisAlignment: MainAxisAlignment.start,children:<Widget>[
-                                      Text("${AppLocalizations.of(context).translate('suggestions')}", style: TextStyle(color: KColors.primaryYellowColor)),
-                                      IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor))
+                        ),
+                      ),
+                    ],
+                  )),
+              /* do you have  a suggestion ? */
+              Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  color: Colors.grey.shade100,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        InkWell(
+                            onTap: () => _jumpToPage(
+                                context,
+                                CustomerCareChatPage(
+                                    presenter: CustomerCareChatPresenter())),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: new BorderRadius.only(
+                                        topRight: const Radius.circular(20.0),
+                                        bottomRight:
+                                            const Radius.circular(20.0))),
+                                padding: EdgeInsets.only(left: 10),
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                          "${AppLocalizations.of(context).translate('suggestions')}",
+                                          style: TextStyle(
+                                              color:
+                                                  KColors.primaryYellowColor)),
+                                      IconButton(
+                                          onPressed: null,
+                                          icon: Icon(Icons.chevron_right,
+                                              color: KColors.primaryColor))
                                     ])))
-                          ])),
-                  /* menu box */
-                  Card(
-                      elevation: 8.0,
-                      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                      child: Container(
-                          decoration: BoxDecoration(color: Color.fromRGBO(255, 255, 255,1), borderRadius: BorderRadius.all(Radius.circular(7)),   boxShadow: [
+                      ])),
+              /* menu box */
+              Card(
+                  elevation: 8.0,
+                  margin:
+                      new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                          boxShadow: [
                             new BoxShadow(
                               color: Colors.grey..withAlpha(50),
                               offset: new Offset(0.0, 2.0),
                             )
                           ]),
-                          child: Table(
-                            /* menus */
-                              children: <TableRow>[
-                                TableRow(
-                                    children:<TableCell> [
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.person, color: KColors.primaryYellowColor),iconSize: 50, onPressed: () =>_jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter()))),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('profile')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      /*    TableCell(
+                      child: Table(
+                          /* menus */
+                          children: <TableRow>[
+                            TableRow(children: <TableCell>[
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.person,
+                                              color:
+                                                  KColors.primaryYellowColor),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context,
+                                              Personal2Page(
+                                                  customer: widget.customerData,
+                                                  presenter:
+                                                      PersonnalPagePresenter()))),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                        "${AppLocalizations.of(context).translate('profile')}"
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 15),
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              /*    TableCell(
                                         child: Container(
                                           padding: EdgeInsets.all(10),
                                           child: Column(
@@ -483,104 +568,179 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                                           ),
                                         ),
                                       ),*/
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.location_on, color: KColors.primaryYellowColor, size: 60),iconSize: 50,  onPressed: () =>_jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()))),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('addresses')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.fastfood, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, LastOrdersPage())),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('orders')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ]
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.location_on,
+                                              color: KColors.primaryYellowColor,
+                                              size: 60),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context,
+                                              MyAddressesPage(
+                                                  presenter:
+                                                      AddressPresenter()))),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                        "${AppLocalizations.of(context).translate('addresses')}"
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 15),
+                                      ))
+                                    ],
+                                  ),
                                 ),
-                                TableRow(
-                                    children:<TableCell> [
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.notifications, color: KColors.primaryColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, FeedsPage(presenter: FeedPresenter()))),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('feeds')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 15),))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.card_giftcard, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()))),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('coupon')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15)))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              IconButton (icon:Icon(Icons.settings, color: KColors.primaryYellowColor, size: 60),iconSize: 50, onPressed: () =>_jumpToPage(context, SettingsPage())),
-                                              SizedBox(height:10),
-                                              Center(child: Text("${AppLocalizations.of(context).translate('settings')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 15),))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.fastfood,
+                                              color: KColors.primaryYellowColor,
+                                              size: 60),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context, LastOrdersPage())),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                        "${AppLocalizations.of(context).translate('orders')}"
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 15),
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            TableRow(children: <TableCell>[
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.notifications,
+                                              color: KColors.primaryColor,
+                                              size: 60),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context,
+                                              FeedsPage(
+                                                  presenter: FeedPresenter()))),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                        "${AppLocalizations.of(context).translate('feeds')}"
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryColor,
+                                            fontSize: 15),
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.card_giftcard,
+                                              color: KColors.primaryYellowColor,
+                                              size: 60),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context,
+                                              MyVouchersPage(
+                                                  presenter:
+                                                      VoucherPresenter()))),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                              "${AppLocalizations.of(context).translate('coupon')}"
+                                                  .toUpperCase(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: KColors
+                                                      .primaryYellowColor,
+                                                  fontSize: 15)))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                          icon: Icon(Icons.settings,
+                                              color: KColors.primaryYellowColor,
+                                              size: 60),
+                                          iconSize: 50,
+                                          onPressed: () => _jumpToPage(
+                                              context, SettingsPage())),
+                                      SizedBox(height: 10),
+                                      Center(
+                                          child: Text(
+                                        "${AppLocalizations.of(context).translate('settings')}"
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor,
+                                            fontSize: 15),
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ),
 //                                      TableCell(child:Container())
-                                    ]
-                                )
-                              ]
-                          )
-                      )),
-                ]..add(
-                    Container(
-                      margin: EdgeInsets.only(top: 15, bottom: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+                            ])
+                          ]))),
+            ]..add(Container(
+                    margin: EdgeInsets.only(top: 15, bottom: 25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
 //                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
-                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
-                        ],
-                      ),
-                    ))
-            ),
+                        Text(
+                          "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        )
+                      ],
+                    ),
+                  ))),
           )),
     );
   }
 
   void _jumpToTransactionHistory() {
-    _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+    _jumpToPage(
+        context, TransactionHistoryPage(presenter: TransactionPresenter()));
   }
 
   _jumpToTopUpPage() async {
-
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -589,21 +749,24 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     );
 
     if (results != null && results.containsKey('check_balance')) {
-
 //      bool check_balance =  results['check_balance'];
       String link = results['link'];
       if (results['check_balance'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-      if (link != null) {
-        link = Uri.encodeFull(link);
-        _launchURL(link);
-      } else {
-        // top up
-      }
-        _showDialog(message: "${AppLocalizations.of(context).translate('please_check_balance')}", svgIcon: VectorsData.account_balance);
+        if (link != null) {
+          link = Uri.encodeFull(link);
+          _launchURL(link);
+        } else {
+          // top up
+        }
+        _showDialog(
+            message:
+                "${AppLocalizations.of(context).translate('please_check_balance')}",
+            svgIcon: VectorsData.account_balance);
       }
     }
   }
+
 /*
   Future<void> _jumpToScanPage() async {
 
@@ -655,8 +818,9 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     List<String> pathSegments = mUri.pathSegments.toList();
     var arg = null;
 
-    if ("${mUri.host}" != ServerConfig.APP_SERVER_HOST || pathSegments.length == 0
-        || mUri.scheme != "https") {
+    if ("${mUri.host}" != ServerConfig.APP_SERVER_HOST ||
+        pathSegments.length == 0 ||
+        mUri.scheme != "https") {
       return data;
     }
 
@@ -668,10 +832,12 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             // widget.destination = SplashPage.VOUCHER;
             /* convert from hexadecimal to decimal */
             arg = "${pathSegments[1]}";
-            _jumpToPage(context, AddVouchersPage(
-                presenter: AddVoucherPresenter(),
-                qrCode: "${arg}".toUpperCase(),
-                customer: widget.customer));
+            _jumpToPage(
+                context,
+                AddVouchersPage(
+                    presenter: AddVoucherPresenter(),
+                    qrCode: "${arg}".toUpperCase(),
+                    customer: widget.customer));
           }
           break;
         case "vouchers":
@@ -685,55 +851,63 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
           break;
         case "transactions":
-          _jumpToPage(
-              context,
+          _jumpToPage(context,
               TransactionHistoryPage(presenter: TransactionPresenter()));
           break;
         case "restaurants":
           StateContainer.of(context).updateTabPosition(tabPosition: 1);
-          Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-              builder: (BuildContext context) => HomePage()), (r) => false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              new MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage()),
+              (r) => false);
           break;
         case "restaurant":
           if (pathSegments.length > 1) {
             xrint("restaurant id -> ${pathSegments[1]}");
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, ShopDetailsPage(
-                restaurant: ShopModel(id: arg),
-                presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(
+                context,
+                ShopDetailsPage(
+                    restaurant: ShopModel(id: arg),
+                    presenter: RestaurantDetailsPresenter()));
           }
           break;
         case "order":
           if (pathSegments.length > 1) {
             xrint("order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderNewDetailsPage(
-                orderId: arg, presenter: OrderDetailsPresenter()));
+            _jumpToPage(
+                context,
+                OrderNewDetailsPage(
+                    orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
         case "food":
           if (pathSegments.length > 1) {
             xrint("food id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                foodId: arg, presenter: MenuPresenter()));
+            _jumpToPage(context,
+                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter()));
           }
           break;
         case "menu":
           if (pathSegments.length > 1) {
             xrint("menu id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                menuId: arg, presenter: MenuPresenter()));
+            _jumpToPage(context,
+                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter()));
           }
           break;
         case "review-order":
           if (pathSegments.length > 1) {
             xrint("review-order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderNewDetailsPage(
-                orderId: arg, presenter: OrderDetailsPresenter()));
+            _jumpToPage(
+                context,
+                OrderNewDetailsPage(
+                    orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
         default:
@@ -752,56 +926,69 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
   }
 
   void _showDialog2(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]
-        );
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          svgIcons,
+                        )
+                      : icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
+            actions: isYesOrNo
+                ? <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
+                : <Widget>[
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
-
 
   Future<dynamic> _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -816,85 +1003,85 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
     return -1;
   }
 
-  Future<dynamic> _showDialog(
-      {String svgIcon, var message,}) {
+  Future<dynamic> _showDialog({
+    String svgIcon,
+    var message,
+  }) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: SvgPicture.asset(
-                          svgIcon
-                      )),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
-            ),
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon)),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
             actions: <Widget>[
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context).translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context).translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+                  _jumpToPage(
+                      context,
+                      TransactionHistoryPage(
+                          presenter: TransactionPresenter()));
                 },
               ),
-            ]
-        );
+            ]);
       },
     );
   }
 
   _seeProfilePicture() {
+    List<AdModel> slider = [
+      AdModel(pic: "${widget?.customerData?.profile_picture}")
+    ];
 
-    List<AdModel> slider = [AdModel(pic:"${widget?.customerData?.profile_picture}")];
-
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AdsPreviewPage(data: slider, position:0, presenter: AdsViewerPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
+            ads: slider, position: 0, presenter: AdsViewerPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
-
 
   void _jumpToInfoPage() {
-    Navigator.of(context).push(
-        PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                InfoPage(),
-            transitionsBuilder: (context, animation, secondaryAnimation,
-                child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin: begin, end: end);
-              var curvedAnimation = CurvedAnimation(
-                  parent: animation, curve: curve);
-              return SlideTransition(
-                  position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => InfoPage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
-
-
 }

@@ -69,9 +69,7 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
 
-
 class HomeWelcomePage extends StatefulWidget {
-
   HomeScreenModel data;
 
   var argument;
@@ -84,8 +82,9 @@ class HomeWelcomePage extends StatefulWidget {
 
   CustomerModel customer;
 
-  HomeWelcomePage({Key key, this.title, this.presenter, this.destination, this.argument}) : super(key: key);
-
+  HomeWelcomePage(
+      {Key key, this.title, this.presenter, this.destination, this.argument})
+      : super(key: key);
 
   final String title;
 
@@ -93,15 +92,12 @@ class HomeWelcomePage extends StatefulWidget {
   _HomeWelcomePageState createState() => _HomeWelcomePageState();
 }
 
-class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelcomeView {
-
+class _HomeWelcomePageState extends State<HomeWelcomePage>
+    implements HomeWelcomeView {
   List<String> popupMenus;
 
-  List<String> _popupMenus () {
-
-    if (StateContainer
-        .of(context)
-        .loggingState == 0) {
+  List<String> _popupMenus() {
+    if (StateContainer.of(context).loggingState == 0) {
       return null;
     } else {
       return popupMenus;
@@ -110,12 +106,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   int _carousselPageIndex = 0;
 
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
-
 
   @override
   void initState() {
@@ -123,8 +119,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
     /* if logged in .. we have settings and loggout */
 
-    popupMenus = ["Add Voucher", /*"Scan QR",*/"Settings","Logout"]; // standard
-
+    popupMenus = [
+      "Add Voucher",
+      /*"Scan QR",*/ "Settings",
+      "Logout"
+    ]; // standard
 
     this.widget.presenter.homeWelcomeView = this;
     showLoading(true);
@@ -135,7 +134,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       }
       widget.customer = customer;
       /* check kaba points */
-      Future.delayed(Duration(seconds: 1)).then((value){
+      Future.delayed(Duration(seconds: 1)).then((value) {
         this.widget.presenter.checkBalance(customer);
       });
     });
@@ -150,47 +149,49 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       this.widget.presenter.checkUnreadMessages(customer);
-      popupMenus = ["${AppLocalizations.of(context).translate('add_voucher')}"/*,"${AppLocalizations.of(context).translate('scan')}"*/,"${AppLocalizations.of(context).translate('settings')}","${AppLocalizations.of(context).translate('logout')}",];
+      popupMenus = [
+        "${AppLocalizations.of(context).translate('add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
+        "${AppLocalizations.of(context).translate('settings')}",
+        "${AppLocalizations.of(context).translate('logout')}",
+      ];
     });
 
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) async {
-
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool has_subscribed = false;
       try {
         prefs.getBool('has_subscribed');
-      } catch(_) {
+      } catch (_) {
         has_subscribed = false;
       }
       if (has_subscribed != true) {
         FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-        _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC).whenComplete(() => {
-          prefs.setBool('has_subscribed', true)
-        });
+        _firebaseMessaging
+            .subscribeToTopic(ServerConfig.TOPIC)
+            .whenComplete(() => {prefs.setBool('has_subscribed', true)});
       }
     });
 
     Timer.run(() {
-
-      if (!(DateTime
-          .now()
-          .millisecondsSinceEpoch - StateContainer
-          .of(context)
-          .lastTimeLinkMatchAction > 2000)) {
+      if (!(DateTime.now().millisecondsSinceEpoch -
+              StateContainer.of(context).lastTimeLinkMatchAction >
+          2000)) {
         return;
       }
 
-      StateContainer.of(context).lastTimeLinkMatchAction = DateTime.now().millisecondsSinceEpoch;
+      StateContainer.of(context).lastTimeLinkMatchAction =
+          DateTime.now().millisecondsSinceEpoch;
 
       if (widget?.destination != null) {
-        switch(widget.destination) {
+        switch (widget.destination) {
           case SplashPage.TRANSACTIONS:
             _checkIfLoggedInAndDoAction(() {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  settings: RouteSettings(name: TransactionHistoryPage.routeName), // <----------
-                  builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+                  settings: RouteSettings(
+                      name: TransactionHistoryPage.routeName), // <----------
+                  builder: (context) =>
+                      TransactionHistoryPage(presenter: TransactionPresenter()),
                 ),
               );
             });
@@ -199,15 +200,21 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             StateContainer.of(context).tabPosition = 1;
             break;
           case SplashPage.RESTAURANT:
-            _jumpToPage(context, ShopDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(
+                context,
+                ShopDetailsPage(
+                    restaurant: ShopModel(id: widget.argument),
+                    presenter: RestaurantDetailsPresenter()));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(context, AddVouchersPage(
-                  presenter: AddVoucherPresenter(),
-                  qrCode: "${widget.argument}".toUpperCase(),
-                  autoSubscribe: true,
-                  customer: widget.customer));
+              _jumpToPage(
+                  context,
+                  AddVouchersPage(
+                      presenter: AddVoucherPresenter(),
+                      qrCode: "${widget.argument}".toUpperCase(),
+                      autoSubscribe: true,
+                      customer: widget.customer));
             });
             break;
           case SplashPage.VOUCHERS:
@@ -225,8 +232,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
             break;
           case SplashPage.ORDER:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(context, OrderNewDetailsPage(orderId: widget.argument,
-                  presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderNewDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             });
             break;
           case SplashPage.FOOD:
@@ -234,48 +244,59 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), foodId: widget.argument, highlightedFoodId: widget.argument),
+                  builder: (context) => RestaurantMenuPage(
+                      presenter: MenuPresenter(),
+                      foodId: widget.argument,
+                      highlightedFoodId: widget.argument),
                 ),
               );
             break;
           case SplashPage.MENU:
-            _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    menuId: widget.argument, presenter: MenuPresenter()));
             break;
           case SplashPage.REVIEW_ORDER:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(context, OrderNewDetailsPage(orderId: widget.argument,
-                  presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderNewDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             });
             break;
           case SplashPage.LOCATION_PICKED:
-
             _checkIfLoggedInAndDoAction(() {
               // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
-              _jumpToPage(context, MyAddressesPage(
-                  presenter: AddressPresenter(),
-                  gps_location: widget.argument.toString().replaceAll(
-                      ",", ":")));
+              _jumpToPage(
+                  context,
+                  MyAddressesPage(
+                      presenter: AddressPresenter(),
+                      gps_location:
+                          widget.argument.toString().replaceAll(",", ":")));
             });
             break;
         }
         widget.destination = null;
       }
     });
-
   }
 
   @override
   void didChangeDependencies() {
-    xrint("dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
+    xrint(
+        "dig change dependencies hwelcomepage -> ${widget.destination} -- ${widget.argument}");
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-
     /* init fetch data bloc */
     return Scaffold(
-        appBar: AppBar(title: SizedBox(height: 70,
+        appBar: AppBar(
+          title: SizedBox(
+              height: 70,
 //            margin: EdgeInsets.only(bottom: 30, top: 30),
 //            decoration: BoxDecoration(
 //                border: new Border(bottom: BorderSide(color: Colors.white, width: 2)),
@@ -283,34 +304,55 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //            ),
 //            padding: EdgeInsets.only(left:8, right: 8, top:8, bottom:8),
 
-            child:GestureDetector(onTap: (){
-              setState(() {
-                StateContainer.of(context).updateTabPosition(tabPosition: 1);
-              });
-            },
-              child: Container(margin: EdgeInsets.only(bottom: 15, top: 20),
-                decoration: BoxDecoration(
-                  border: new Border(bottom: BorderSide(color: Colors.white, width: 1)),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    StateContainer.of(context)
+                        .updateTabPosition(tabPosition: 1);
+                  });
+                },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 15, top: 20),
+                  decoration: BoxDecoration(
+                    border: new Border(
+                        bottom: BorderSide(color: Colors.white, width: 1)),
 //                color: Colors.white.withAlpha(30)
-                ),
-                child:Container(child: TextField(textAlign: TextAlign.center,decoration:InputDecoration(hintText: widget.data?.feed == null ? "KABA DELIVERY" : widget.data?.feed , hintStyle: TextStyle(color:Colors.white)), style: TextStyle(fontSize: _textSizeWithText(widget.data?.feed)), enabled: false)),
+                  ),
+                  child: Container(
+                      child: TextField(
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                              hintText: widget.data?.feed == null
+                                  ? "KABA DELIVERY"
+                                  : widget.data?.feed,
+                              hintStyle: TextStyle(color: Colors.white)),
+                          style: TextStyle(
+                              fontSize: _textSizeWithText(widget.data?.feed)),
+                          enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
-              ),
-            )),
-          leading: IconButton(icon: SizedBox(
-              height: 25,
-              width: 25,
-              child: SvgPicture.asset(
-                VectorsData.kaba_icon_svg,
-                color: Colors.white,
-              )), onPressed: (){_jumpToInfoPage();}),
+                ),
+              )),
+          leading: IconButton(
+              icon: SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: SvgPicture.asset(
+                    VectorsData.kaba_icon_svg,
+                    color: Colors.white,
+                  )),
+              onPressed: () {
+                _jumpToInfoPage();
+              }),
           backgroundColor: KColors.primaryColor,
           actions: <Widget>[
-            InkWell(onTap: ()=>_jumpToWhatsapp(),
-              child: Container(width: 42,height:42,
+            InkWell(
+              onTap: () => _jumpToWhatsapp(),
+              child: Container(
+                width: 42,
+                height: 42,
                 child: IconButton(
                   icon: Image.asset(ImageAssets.whatsapp),
-                  onPressed: ()=>_jumpToWhatsapp(),
+                  onPressed: () => _jumpToWhatsapp(),
                   // setup whatsapp button
                   /*child: FlareActor(
                     FlareData.new_message,
@@ -321,28 +363,31 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 ),
               ),
             ),
-            StateContainer.of(context).loggingState == 0 ? SizedBox(width:15) : PopupMenuButton<String>(
-              onSelected: menuChoiceAction,
-              itemBuilder: (BuildContext context) {
-                return _popupMenus().map((String menuName){
-                  return PopupMenuItem<String>(value: menuName, child: Text(menuName));
-                }).toList();
-              },
-            )
-          ], systemOverlayStyle: SystemUiOverlayStyle.light,
+            StateContainer.of(context).loggingState == 0
+                ? SizedBox(width: 15)
+                : PopupMenuButton<String>(
+                    onSelected: menuChoiceAction,
+                    itemBuilder: (BuildContext context) {
+                      return _popupMenus().map((String menuName) {
+                        return PopupMenuItem<String>(
+                            value: menuName, child: Text(menuName));
+                      }).toList();
+                    },
+                  )
+          ],
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child:  _buildHomeScreen(widget.data),
-        )
-    );
+          child: _buildHomeScreen(widget.data),
+        ));
   }
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch(_popupMenus().indexOf(value)) {
+    switch (_popupMenus().indexOf(value)) {
       case 0:
-      // scan
+        // scan
         _jumpToAddVoucherPage();
         break;
         /* case 1:
@@ -353,17 +398,17 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         _jumpToPage(context, SettingsPage());
         break;
       case 2:
-      /* logout */
-        CustomerUtils.clearCustomerInformations().whenComplete((){
-
+        /* logout */
+        CustomerUtils.clearCustomerInformations().whenComplete(() {
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-        /*  StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
+          /*  StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
           StateContainer.of(context).hasUnreadMessage = false;
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
-          Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, SplashPage.routeName, (r) => false);
         });
         break;
     }
@@ -377,29 +422,28 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   _mainRestaurantWidget({ShopModel restaurant}) {
     return GestureDetector(
-      onTap: ()=>{_jumpToRestaurantDetails(context, restaurant)},
-      child: Container (
-        padding: EdgeInsets.only(top:20, right:15, left:15),
+      onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
+      child: Container(
+        padding: EdgeInsets.only(top: 20, right: 15, left: 15),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container (
+              Container(
                   width: 60.0,
                   height: 60.0,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurant.pic))
-                      )
-                  )
-              ),
+                          image: CachedNetworkImageProvider(
+                              Utils.inflateLink(restaurant.pic))))),
               SizedBox(height: 10),
-              Text(restaurant.name, style:TextStyle(color: Colors.grey, fontSize: 12), textAlign: TextAlign.center),
+              Text(restaurant.name,
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center),
               SizedBox(height: 10),
               _getShinningImage(restaurant)
-            ]
-        ),
+            ]),
       ),
     );
   }
@@ -412,18 +456,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            BestSellersPage (presenter: BestSellerPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            BestSellersPage(presenter: BestSellerPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   void _jumpToEvents() {
@@ -434,20 +479,20 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
       ),
     );*/
 
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            EvenementPage (presenter: EvenementPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            EvenementPage(presenter: EvenementPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
-
 
   Future<void> _refresh() async {
     widget.presenter.fetchHomePage();
@@ -456,21 +501,19 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //    return;
   }
 
-
   void _jumpToInfoPage() {
-
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            InfoPage(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => InfoPage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
 
     /* Navigator.push(
       context,
@@ -481,219 +524,266 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   Widget _buildHomeScreen(HomeScreenModel data) {
-
-    if (data != null)
-      widget.data = data;
+    if (data != null) widget.data = data;
     if (widget.data != null)
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
           child: ListView(
               children: <Widget>[
-
-                /*top slide*/
-                Stack(
-                  children: <Widget>[
-                    ClipPath(
-                        clipper: KabaRoundTopClipper(),
-                        child:
-                        data.slider.length > 1 ?  CarouselSlider(
-                          options: CarouselOptions(
-                            onPageChanged: _carousselPageChanged,
-                            viewportFraction: 1.0,
-                            autoPlay: data.slider.length > 1 ? true:false,
-                            reverse: data.slider.length > 1 ? true:false,
-                            enableInfiniteScroll: data.slider.length > 1 ? true:false,
-                            autoPlayInterval: Duration(seconds: 5),
-                            autoPlayAnimationDuration: Duration(milliseconds: 150),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            height: 9*MediaQuery.of(context).size.width/16,
-                          ),
-                          items: data.slider.map((admodel) {
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return GestureDetector(
-                                  onTap: ()=>_jumpToAdsList(data.slider, data.slider.indexOf(admodel)),
-                                  child: Container(
-                                      height: 9*MediaQuery.of(context).size.width/16,
-                                      width: MediaQuery.of(context).size.width,
-                                      child:CachedNetworkImage(
-                                          imageUrl: Utils.inflateLink(admodel.pic),
-                                          fit: BoxFit.cover
-                                      )
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ) :
-                        GestureDetector(
-                          onTap: ()=>_jumpToAdsList(data.slider, 0),
-                          child: Container(
-                              height: 9*MediaQuery.of(context).size.width/16,
-                              width: MediaQuery.of(context).size.width,
-                              child:CachedNetworkImage(
-                                  imageUrl: Utils.inflateLink(data.slider[0].pic),
-                                  fit: BoxFit.cover
-                              )
-                          ),
-                        )
-                    ),
-                    Positioned(
-                        bottom: 10,
-                        right:0,
-                        child:Padding(
-                          padding: const EdgeInsets.only(right:9.0),
-                          child: Row(
-                            children: <Widget>[]
-                              ..addAll(
-                                  List<Widget>.generate(data.slider.length, (int index) {
-                                    return Container(
-                                        margin: EdgeInsets.only(right:2.5, top: 2.5),
-                                        height: 9,width:9,
-                                        decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            border: new Border.all(color: Colors.white),
-                                            color: (index==_carousselPageIndex || index==data.slider.length)?Colors.white:Colors.transparent
-                                        ));
-                                  })
-                                /* add a list of rounded views */
+            /*top slide*/
+            Stack(
+              children: <Widget>[
+                ClipPath(
+                    clipper: KabaRoundTopClipper(),
+                    child: data.slider.length > 1
+                        ? CarouselSlider(
+                            options: CarouselOptions(
+                              onPageChanged: _carousselPageChanged,
+                              viewportFraction: 1.0,
+                              autoPlay: data.slider.length > 1 ? true : false,
+                              reverse: data.slider.length > 1 ? true : false,
+                              enableInfiniteScroll:
+                                  data.slider.length > 1 ? true : false,
+                              autoPlayInterval: Duration(seconds: 5),
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 150),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              height:
+                                  9 * MediaQuery.of(context).size.width / 16,
+                            ),
+                            items: data.slider.map((admodel) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return GestureDetector(
+                                    onTap: () => _jumpToAdsList(data.slider,
+                                        data.slider.indexOf(admodel)),
+                                    child: Container(
+                                        height: 9 *
+                                            MediaQuery.of(context).size.width /
+                                            16,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: CachedNetworkImage(
+                                            imageUrl:
+                                                Utils.inflateLink(admodel.pic),
+                                            fit: BoxFit.cover)),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          )
+                        : GestureDetector(
+                            onTap: () => _jumpToAdsList(data.slider, 0),
+                            child: Container(
+                                height:
+                                    9 * MediaQuery.of(context).size.width / 16,
+                                width: MediaQuery.of(context).size.width,
+                                child: CachedNetworkImage(
+                                    imageUrl:
+                                        Utils.inflateLink(data.slider[0].pic),
+                                    fit: BoxFit.cover)),
+                          )),
+                Positioned(
+                    bottom: 10,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 9.0),
+                      child: Row(
+                        children: <Widget>[]..addAll(List<Widget>.generate(
+                                  data.slider.length, (int index) {
+                            return Container(
+                                margin: EdgeInsets.only(right: 2.5, top: 2.5),
+                                height: 9,
+                                width: 9,
+                                decoration: new BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    border: new Border.all(color: Colors.white),
+                                    color: (index == _carousselPageIndex ||
+                                            index == data.slider.length)
+                                        ? Colors.white
+                                        : Colors.transparent));
+                          })
+                              /* add a list of rounded views */
                               ),
-                          ),
-                        )),
-                  ],
-                ),
-                /* top restaurants */
-                SizedBox(child:
-                Table(
-                  children: <TableRow>[]
-                    ..addAll(
-                      // ignore: null_aware_before_operator
-                        List<TableRow>.generate(_getRestaurantRowCount(data.resto.length), (int rowIndex) {
-                          return TableRow(
-                              children:<TableCell>[]
-                                ..addAll(
-                                  /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
+                      ),
+                    )),
+              ],
+            ),
+            /* top restaurants */
+            SizedBox(
+                child: Table(
+              children: <TableRow>[]..addAll(
+                    // ignore: null_aware_before_operator
+                    List<TableRow>.generate(
+                        _getRestaurantRowCount(data.resto.length),
+                        (int rowIndex) {
+                  return TableRow(
+                      children: <TableCell>[]..addAll(
+                            /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
                                     return
                                       TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
                                   })*/
-                                    List<TableCell>.generate (3, (int cell_index) {
-                                      if (data.resto.length > rowIndex*3+cell_index) {
-                                        return
-                                          TableCell(
-                                              child: _mainRestaurantWidget(
-                                                  restaurant: data
-                                                      .resto[rowIndex*3+cell_index]));
-                                      } else {
-                                        return TableCell(
-                                            child: Container());
-                                      }
-                                    })
-                                ));
-                        })
-                      /* add a list of rounded views */
+                            List<TableCell>.generate(3, (int cell_index) {
+                          if (data.resto.length > rowIndex * 3 + cell_index) {
+                            return TableCell(
+                                child: _mainRestaurantWidget(
+                                    restaurant:
+                                        data.resto[rowIndex * 3 + cell_index]));
+                          } else {
+                            return TableCell(child: Container());
+                          }
+                        })));
+                })
+                    /* add a list of rounded views */
                     ),
+            )),
+            /* all the restaurants button*/
+            SizedBox(height: 10),
+            SizedBox(height: 10),
+            Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                color: Colors.grey.shade100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    InkWell(
+                        onTap: () {
+                          _switchAllRestaurant();
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(20.0),
+                                    bottomLeft: const Radius.circular(20.0))),
+                            padding: EdgeInsets.only(left: 10),
+                            child: Row(children: <Widget>[
+                              Text(
+                                  "${AppLocalizations.of(context).translate('all_restaurants')}",
+                                  style: TextStyle(
+                                      color: KColors.primaryColor,
+                                      fontWeight: FontWeight.bold)),
+                              IconButton(
+                                  onPressed: null,
+                                  icon: Icon(
+                                    Icons.chevron_right,
+                                    color: KColors.primaryColor,
+                                  ))
+                            ])))
+                  ],
                 )),
-                /* all the restaurants button*/
-                SizedBox(height: 10),
-                SizedBox(height: 10),
-                Container(
-                    padding: EdgeInsets.only(top:20, bottom:20),
-                    color: Colors.grey.shade100,
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        InkWell(onTap: (){_switchAllRestaurant();},
-                            child:Container(
-                                decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topLeft:  const  Radius.circular(20.0), bottomLeft: const  Radius.circular(20.0))),
-                                padding: EdgeInsets.only(left:10),
-                                child:
-                                Row(children:<Widget>[
-                                  Text("${AppLocalizations.of(context).translate('all_restaurants')}", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
-                                  IconButton(onPressed: null, icon: Icon(Icons.chevron_right, color: KColors.primaryColor,))
-                                ]))
-                        )
-                      ],
-                    )),
-                Container(
-                    padding: EdgeInsets.only(top:20, bottom:20),
-                    color: Colors.grey.shade100,
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        InkWell(onTap: (){_callCustomerCare();},
-                            child:Container(
-                                decoration: BoxDecoration(color:Colors.white, borderRadius: new BorderRadius.only(topRight:  const  Radius.circular(20.0), bottomRight: const  Radius.circular(20.0))),
-                                padding: EdgeInsets.only(right:10),
-                                child:
-                                Row(children:<Widget>[
-                                  SizedBox(width: 5),
-                                  Container(height: 50, width: 40,
-                                    decoration: BoxDecoration(
-                                        image: new DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/call.gif"))
-                                        )
-                                    ),
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text("${AppLocalizations.of(context).translate('call_us')}", style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)),
-                                ]))
-                        )
-                      ],
-                    )),
-                /* meilleures ventes, cinema, evenemnts, etc... */
-                Container(
-                    color: Colors.grey.shade100,
-                    child:Card(
-                      color: Colors.white,
-                      margin: EdgeInsets.all(10),
-                      child: Table(
-                        /* table */
-                        children: <TableRow>[
-                          TableRow(
-                              children: <TableCell>[
-                                TableCell(
-                                  child: Container(
-                                    padding:EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                color: Colors.grey.shade100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    InkWell(
+                        onTap: () {
+                          _callCustomerCare();
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: new BorderRadius.only(
+                                    topRight: const Radius.circular(20.0),
+                                    bottomRight: const Radius.circular(20.0))),
+                            padding: EdgeInsets.only(right: 10),
+                            child: Row(children: <Widget>[
+                              SizedBox(width: 5),
+                              Container(
+                                height: 50,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                    image: new DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: CachedNetworkImageProvider(
+                                            Utils.inflateLink(
+                                                "/web/assets/app_icons/call.gif")))),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                  "${AppLocalizations.of(context).translate('call_us')}",
+                                  style: TextStyle(
+                                      color: KColors.mGreen,
+                                      fontWeight: FontWeight.bold)),
+                            ])))
+                  ],
+                )),
+            /* meilleures ventes, cinema, evenemnts, etc... */
+            Container(
+                color: Colors.grey.shade100,
+                child: Card(
+                  color: Colors.white,
+                  margin: EdgeInsets.all(10),
+                  child: Table(
+                    /* table */
+                    children: <TableRow>[
+                      TableRow(children: <TableCell>[
+                        TableCell(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                InkWell(
+                                    child: Container(
+                                        child: Column(
                                       children: <Widget>[
-                                        InkWell(
-                                            child:Container(
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    Text("${AppLocalizations.of(context).translate('best_seller')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:14, color: KColors.primaryColor)),
-                                                    Container(
-                                                      padding: EdgeInsets.all(5),
-                                                      height:90, width: 120,
-                                                      child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl: Utils.inflateLink(widget.data.promotion.pic)),
-                                                    ),
-                                                  ],
-                                                )), onTap: _jumpToBestSeller),
-                                        InkWell(onTap: _jumpToEvents,
-                                          child: Container(
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text("${AppLocalizations.of(context).translate('events')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize:14, color: KColors.primaryYellowColor)),
-                                                Container(
-                                                  padding: EdgeInsets.all(5),
-                                                  height:90, width: 120,
-                                                  child:CachedNetworkImage(fit:BoxFit.fitHeight,imageUrl:Utils.inflateLink(widget.data.event.pic)),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                        Text(
+                                            "${AppLocalizations.of(context).translate('best_seller')}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: KColors.primaryColor)),
+                                        Container(
+                                          padding: EdgeInsets.all(5),
+                                          height: 90,
+                                          width: 120,
+                                          child: CachedNetworkImage(
+                                              fit: BoxFit.fitHeight,
+                                              imageUrl: Utils.inflateLink(
+                                                  widget.data.promotion.pic)),
+                                        ),
+                                      ],
+                                    )),
+                                    onTap: _jumpToBestSeller),
+                                InkWell(
+                                  onTap: _jumpToEvents,
+                                  child: Container(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                            "${AppLocalizations.of(context).translate('events')}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: KColors
+                                                    .primaryYellowColor)),
+                                        Container(
+                                          padding: EdgeInsets.all(5),
+                                          height: 90,
+                                          width: 120,
+                                          child: CachedNetworkImage(
+                                              fit: BoxFit.fitHeight,
+                                              imageUrl: Utils.inflateLink(
+                                                  widget.data.event.pic)),
                                         ),
                                       ],
                                     ),
                                   ),
-                                )
-                              ]
+                                ),
+                              ],
+                            ),
                           ),
-                          // BON PLANS ET CINEMA
-                          /* TableRow(
+                        )
+                      ]),
+                      // BON PLANS ET CINEMA
+                      /* TableRow(
                               children: <TableCell>[
                                 TableCell(
                                   child: Container(
@@ -727,75 +817,84 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                                 )
                               ]
                           ) */
-                        ],
-                      ),
-                    )
-                ),
-                /* groups ads */
-                Column(
-                    children: <Widget>[]
-                      ..addAll(
-                          List<Widget>.generate(data.groupad.length, (int index) {
-                            return GroupAdsWidget(groupAd: data.groupad[index]);
-                          })
-                      )
-                )
-              ]..add(
-                  InkWell(
-                    onTap: () {_jumpToInfoPage();},
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15, bottom: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
-                          SizedBox(height:5),
-                          Text("${AppLocalizations.of(context).translate('powered_by_kaba_tech')}", style: TextStyle(fontSize: 12,color: Colors.grey),)
-                        ],
-                      ),
+                    ],
+                  ),
+                )),
+            /* groups ads */
+            Column(
+                children: <Widget>[]..addAll(
+                      List<Widget>.generate(data.groupad.length, (int index) {
+                    return GroupAdsWidget(groupAd: data.groupad[index]);
+                  })))
+          ]..add(InkWell(
+                  onTap: () {
+                    _jumpToInfoPage();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 15, bottom: 25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.whatshot,
+                            size: 20, color: KColors.primaryColor),
+                        SizedBox(height: 5),
+                        Text(
+                          "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        )
+                      ],
                     ),
-                  ))
-          ));
+                  ),
+                ))));
     else {
       data = HomeWelcomePage.standardData;
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
-          child: Center(child : isLoading ? MyLoadingProgressWidget() :
-          Container(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                IconButton(icon: Icon(Icons.flight_takeoff, color: Colors.grey)),
-                SizedBox(height: 5),
-                Container(margin: EdgeInsets.only(left:20,right:20),child: Text("${AppLocalizations.of(context).translate('home_page_loading_error')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
-                SizedBox(height: 5),
-                MRaisedButton(
-                   /* shape: RoundedRectangleBorder(
+          child: Center(
+              child: isLoading
+                  ? MyLoadingProgressWidget()
+                  : Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(
+                              icon: Icon(Icons.flight_takeoff,
+                                  color: Colors.grey)),
+                          SizedBox(height: 5),
+                          Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Text(
+                                  "${AppLocalizations.of(context).translate('home_page_loading_error')}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.grey))),
+                          SizedBox(height: 5),
+                          MRaisedButton(
+                              /* shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(18.0),
                     ),*/
-                    color: Colors.yellow,child: Text("${AppLocalizations.of(context).translate('try_again')}"), onPressed: () {widget.presenter.fetchHomePage();})
-              ],
-            ),
-          )
-          )
-      );
+                              color: Colors.yellow,
+                              child: Text(
+                                  "${AppLocalizations.of(context).translate('try_again')}"),
+                              onPressed: () {
+                                widget.presenter.fetchHomePage();
+                              })
+                        ],
+                      ),
+                    )));
     }
 /*    setState(() {
       isLoading = false;
     });*/
   }
 
-
-
   int _getRestaurantRowCount(int restaurantCount) {
-
     int i;
-    for(i = 1; i*3 < restaurantCount; i++);
+    for (i = 1; i * 3 < restaurantCount; i++);
     return i;
   }
 
   void _switchAllRestaurant() {
-
     // tell welcome page to switch.
     /*setState(() {
       HomePage.updateSelectedPage(2);
@@ -841,8 +940,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   void updateHomeWelcomePage(HomeScreenModel data) {
     // TODO: implement updateHomeWelcomePage
     setState(() {
-      if (data != null)
-        widget.data = data;
+      if (data != null) widget.data = data;
     });
   }
 
@@ -851,37 +949,28 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) {
-
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
-      ),
-    );*/
-
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
+            ads: slider, position: position, presenter: AdsViewerPresenter()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   _textSizeWithText(String feed) {
-
     double ssize = 0;
-    if (feed != null)
-      ssize = 1.0 * feed?.length;
+    if (feed != null) ssize = 1.0 * feed?.length;
     // from 8 to 16 according to the size.
     // 8 for more than ...
     // to 16 as maximum.
-    return  (230 - 2*ssize)/13;
+    return (230 - 2 * ssize) / 13;
   }
 
   Future<void> _callCustomerCare() async {
@@ -902,8 +991,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void hasUnreadMessages(bool hasNewMessage) {
-    if (hasNewMessage){
-
+    if (hasNewMessage) {
       // check inside the sharedprefs
       if (StateContainer.of(context).hasUnreadMessage) {
         // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: hasNewMessage);
@@ -911,33 +999,41 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         _playMusicForNewMessage();
       }
       setState(() {
-       /* StateContainer.of(context).updateUnreadMessage(
+        /* StateContainer.of(context).updateUnreadMessage(
             hasUnreadMessage: hasNewMessage);
-    */    StateContainer.of(context).hasUnreadMessage = hasNewMessage;  });
+    */
+        StateContainer.of(context).hasUnreadMessage = hasNewMessage;
+      });
     } else {
       setState(() {
-    /*    StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
-        StateContainer.of(context).hasUnreadMessage = false;   });
+        /*    StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);*/
+        StateContainer.of(context).hasUnreadMessage = false;
+      });
     }
   }
 
   @override
   void setState(fn) {
-    if(mounted) {
+    if (mounted) {
       super.setState(fn);
     }
   }
 
   _getShinningImage(ShopModel restaurant) {
-
     //
-    if (restaurant.is_new == 1){
+    if (restaurant.is_new == 1) {
       // new logo
-      return ShinningTextWidget(text:"${AppLocalizations.of(context).translate('new')}", backgroundColor: KColors.primaryYellowColor, textColor: Colors.white);
+      return ShinningTextWidget(
+          text: "${AppLocalizations.of(context).translate('new')}",
+          backgroundColor: KColors.primaryYellowColor,
+          textColor: Colors.white);
     } else {
       if (restaurant.is_promotion == 1) {
         // promotion
-        return ShinningTextWidget(text:"${AppLocalizations.of(context).translate('promo')}", backgroundColor: KColors.primaryColor, textColor: Colors.white);
+        return ShinningTextWidget(
+            text: "${AppLocalizations.of(context).translate('promo')}",
+            backgroundColor: KColors.primaryColor,
+            textColor: Colors.white);
       } else {
         return Container();
       }
@@ -998,139 +1094,153 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]
-        );
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          svgIcons,
+                        )
+                      : icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
+            actions: isYesOrNo
+                ? <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
+                : <Widget>[
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
 
   void _jumpToAddVoucherPage() {
-    Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            AddVouchersPage(
+                presenter: AddVoucherPresenter(), customer: widget.customer),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end);
+          var curvedAnimation =
+              CurvedAnimation(parent: animation, curve: curve);
+          return SlideTransition(
+              position: tween.animate(curvedAnimation), child: child);
+        }));
   }
 
   @override
   void checkServiceMessage(AlertMessageModel data) {
-
     inflateServiceMessage(data);
 
     isMessageSeenMessageAlert(data).then((value) {
-      if (value == false && StateContainer.of(context).service_message["show"] == 1) {
+      if (value == false &&
+          StateContainer.of(context).service_message["show"] == 1) {
         // showOverlayfunctionwithmessage(data);
-        showDialogForEmergencyMessage("${StateContainer
-            .of(context)
-            .service_message["message"]}", data);
+        showDialogForEmergencyMessage(
+            "${StateContainer.of(context).service_message["message"]}", data);
       }
     });
-
   }
 
   void showOverlayfunctionwithmessage(AlertMessageModel data) {
-    showOverlayNotification(
-            (context) {
-          return StateContainer
-              .of(context)
-              .service_message["show"] == 1 ?
-          Container(
-            color: KColors.mBlue,
-            padding: EdgeInsets.only(left: 8, bottom: 5, right: 8, top:45),
-            child: Column(
-              children: [
-                // {"message": smessage, "date": message_date};
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text("${AppLocalizations.of(context).translate(
-                      'notice')}", style: TextStyle(color: Colors.white, decoration: TextDecoration.none,
-                      // fontFamily: "Dosis-Bold",
-                      fontSize: 16))
-                ]),
-                Container(height: 3),
-                Text("${StateContainer
-                    .of(context)
-                    .service_message["message"]}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white,decoration: TextDecoration.none,
-                        // fontFamily: "Dosis-Light",
-                        fontSize: 11)),
-                Container(height: 5),
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      saveMessageAsRead(data);
-                      setState(() {
-                        OverlaySupportEntry.of(context).dismiss(animate: true);
-                      });
-                    },
-                    child: Text("${AppLocalizations.of(context).translate(
-                        'alert_message_received')}", textAlign: TextAlign
-                        .center,
-                        style: TextStyle(color: Colors.white,
+    showOverlayNotification((context) {
+      return StateContainer.of(context).service_message["show"] == 1
+          ? Container(
+              color: KColors.mBlue,
+              padding: EdgeInsets.only(left: 8, bottom: 5, right: 8, top: 45),
+              child: Column(
+                children: [
+                  // {"message": smessage, "date": message_date};
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    Text("${AppLocalizations.of(context).translate('notice')}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
                             // fontFamily: "Dosis-Bold",
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ])
-              ],
-            ),
-            alignment: Alignment.center,
-          ) : Container();
-        },
-        position: NotificationPosition.top,
-        duration: Duration.zero
-    );
+                            fontSize: 16))
+                  ]),
+                  Container(height: 3),
+                  Text(
+                      "${StateContainer.of(context).service_message["message"]}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                          // fontFamily: "Dosis-Light",
+                          fontSize: 11)),
+                  Container(height: 5),
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        saveMessageAsRead(data);
+                        setState(() {
+                          OverlaySupportEntry.of(context)
+                              .dismiss(animate: true);
+                        });
+                      },
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('alert_message_received')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              // fontFamily: "Dosis-Bold",
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ])
+                ],
+              ),
+              alignment: Alignment.center,
+            )
+          : Container();
+    }, position: NotificationPosition.top, duration: Duration.zero);
   }
 
   void inflateServiceMessage(AlertMessageModel data) {
@@ -1143,12 +1253,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
     } else if (defaultLocale.contains("zh")) {
       smessage = data.messages["zh"];
     }
-    StateContainer.of(context).service_message = {"message": smessage, "show": data.showAlert};
+    StateContainer.of(context).service_message = {
+      "message": smessage,
+      "show": data.showAlert
+    };
   }
 
   @override
-  void checkVersion(String code, int force, String cl_en, String cl_fr, String cl_zh) {
-
+  void checkVersion(
+      String code, int force, String cl_en, String cl_fr, String cl_zh) {
     String mCode = code.replaceAll(new RegExp(r'\.'), "");
 
     String defaultLocale = Platform.localeName;
@@ -1170,7 +1283,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 //     xrint("app-code = $appCode");
       if (appCode < _code) {
         // 2.3.4 < 4.5.6
-        if (force == 1){
+        if (force == 1) {
           /* show the dialog. */
           Future.delayed(new Duration(seconds: 1)).then((value) {
             iShowDialog(code, 1, change_log: cl);
@@ -1198,87 +1311,96 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
         context: context,
         builder: (_) {
           return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(
-                      height: 100, width: 100,
-                      decoration: BoxDecoration(
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: new AssetImage(
-                                ImageAssets.emergency_icon),
-                          )
-                      )
-                  ),
-                  SizedBox(height: 10),
-                  Text("$message", textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13)),
-                  SizedBox(height:5),
-                  Row(mainAxisAlignment: MainAxisAlignment.center,children:[
-                    OutlinedButton(
-                      style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)), // update
-                      onPressed: () {
-                        saveMessageAsRead(data);
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ])
-                ]
-            ),
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image: new AssetImage(ImageAssets.emergency_icon),
+                      ))),
+              SizedBox(height: 10),
+              Text("$message",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13)),
+              SizedBox(height: 5),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                OutlinedButton(
+                  style: ButtonStyle(
+                      side: MaterialStateProperty.all(
+                          BorderSide(color: Colors.grey, width: 1))),
+                  child: new Text(
+                      "${AppLocalizations.of(context).translate('ok')}",
+                      style: TextStyle(color: KColors.primaryColor)), // update
+                  onPressed: () {
+                    saveMessageAsRead(data);
+                    Navigator.of(context).pop();
+                  },
+                )
+              ])
+            ]),
           );
         });
 //  });
   }
 
-
-  void iShowDialog(String version, int force,{String change_log=null} ) {
+  void iShowDialog(String version, int force, {String change_log = null}) {
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (_) {
           return AlertDialog(
-              content: Column(mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(
-                        height: 80,
-                        width: 80,
-                        child: Icon(Icons.settings, size: 80, color: KColors.primaryColor)),
-                    SizedBox(height: 10),
-                    Text("$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ", textAlign: TextAlign.center,
-                        style: TextStyle(color: KColors.new_black, fontSize: 13))
-                  ]
-              ),
-              actions:
-              force == 1 ? <Widget>[
-                OutlinedButton(
-                  child: new Text(
-                      "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
-                  onPressed: () {
-                    _updateApp();
-                  },
-                ),
-              ] :
-              <Widget>[
-                OutlinedButton(
-                  style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                  child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)), // update
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                OutlinedButton(
-                  style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                  child: new Text(
-                      "${AppLocalizations.of(context).translate('update')} $version", style: TextStyle(color: KColors.primaryColor)),
-                  onPressed: () {
-                    _updateApp();
-                  },
-                ),
-              ]
-          );
+              content:
+                  Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: Icon(Icons.settings,
+                        size: 80, color: KColors.primaryColor)),
+                SizedBox(height: 10),
+                Text(
+                    "$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: KColors.new_black, fontSize: 13))
+              ]),
+              actions: force == 1
+                  ? <Widget>[
+                      OutlinedButton(
+                        child: new Text(
+                            "${AppLocalizations.of(context).translate('update')} $version",
+                            style: TextStyle(color: KColors.primaryColor)),
+                        onPressed: () {
+                          _updateApp();
+                        },
+                      ),
+                    ]
+                  : <Widget>[
+                      OutlinedButton(
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all(
+                                BorderSide(color: Colors.grey, width: 1))),
+                        child: new Text(
+                            "${AppLocalizations.of(context).translate('refuse')}",
+                            style: TextStyle(color: Colors.grey)), // update
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      OutlinedButton(
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all(BorderSide(
+                                color: KColors.primaryColor, width: 1))),
+                        child: new Text(
+                            "${AppLocalizations.of(context).translate('update')} $version",
+                            style: TextStyle(color: KColors.primaryColor)),
+                        onPressed: () {
+                          _updateApp();
+                        },
+                      ),
+                    ]);
         });
 //  });
   }
@@ -1313,12 +1435,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   @override
   void showBalanceLoading(bool isLoading) {
-
     setState(() {
       try {
-        StateContainer.of(context).updateBalanceLoadingState(
-            isBalanceLoading: isLoading);
-      } catch (_){
+        StateContainer.of(context)
+            .updateBalanceLoadingState(isBalanceLoading: isLoading);
+      } catch (_) {
         xrint(_.toString());
       }
     });
@@ -1330,7 +1451,6 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   _jumpToWhatsapp() async {
-
     final link = WhatsAppUnilink(
       phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
       text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
@@ -1342,37 +1462,34 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
   }
 
   void _checkIfLoggedInAndDoAction(Function callback) {
-    if (StateContainer
-        .of(context)
-        .loggingState == 0) {
+    if (StateContainer.of(context).loggingState == 0) {
       // not logged in... show dialog and also go there
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate(
-                'please_login_before_going_forward_title')}"),
+            title: Text(
+                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   /* add an image*/
                   // location_permission
                   Container(
-                      height: 100, width: 100,
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                           shape: BoxShape.circle,
                           image: new DecorationImage(
                             fit: BoxFit.cover,
-                            image: new AssetImage(
-                                ImageAssets.login_description),
-                          )
-                      )
-                  ),
+                            image:
+                                new AssetImage(ImageAssets.login_description),
+                          ))),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate(
-                      "please_login_before_going_forward_random")}",
+                  Text(
+                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -1386,8 +1503,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -1416,28 +1533,28 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>  implements HomeWelco
 
   Future<void> saveMessageAsRead(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (data?.uuid != null)
-      prefs.setBool(data?.uuid, true);
+    if (data?.uuid != null) prefs.setBool(data?.uuid, true);
   }
 }
-
 
 class KabaRoundTopClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0.0, size.height*0.97);
-    path.arcToPoint(Offset(size.width, size.height), radius: Radius.circular(2000));
+    path.lineTo(0.0, size.height * 0.97);
+    path.arcToPoint(Offset(size.width, size.height),
+        radius: Radius.circular(2000));
 //    path.lineTo(size.width, size.height*1);
     path.lineTo(size.width, 0);
     path.close();
     return path;
   }
+
   @override
   bool shouldReclip(KabaRoundTopClipper oldClipper) => true;
 }
 
-void _jumpToPage (BuildContext context, page) {
+void _jumpToPage(BuildContext context, page) {
   /* Navigator.push(
     context,
     MaterialPageRoute(
@@ -1445,18 +1562,17 @@ void _jumpToPage (BuildContext context, page) {
     ),
   );*/
 
-  Navigator.of(context).push(
-      PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-      page,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var begin = Offset(1.0, 0.0);
-            var end = Offset.zero;
-            var curve = Curves.ease;
-            var tween = Tween(begin:begin, end:end);
-            var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          }
-      ));
+  Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end);
+        var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+        return SlideTransition(
+            position: tween.animate(curvedAnimation), child: child);
+      }));
 }
 
 Future<void> _playMusicForNewMessage() async {
@@ -1470,7 +1586,6 @@ Future<void> _playMusicForNewMessage() async {
 }
 
 void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
-
   /* Navigator.push(
     context,
     MaterialPageRoute(
@@ -1479,16 +1594,16 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     ),
   );*/
 
-  Navigator.of(context).push(
-      PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var begin = Offset(1.0, 0.0);
-            var end = Offset.zero;
-            var curve = Curves.ease;
-            var tween = Tween(begin:begin, end:end);
-            var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-            return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-          }
-      ));
+  Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
+          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end);
+        var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+        return SlideTransition(
+            position: tween.animate(curvedAnimation), child: child);
+      }));
 }

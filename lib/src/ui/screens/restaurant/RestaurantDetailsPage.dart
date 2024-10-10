@@ -191,7 +191,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                     Text(
                                         "${AppLocalizations.of(context).translate('opening_time')}",
                                         style: TextStyle(
-                                            color: KColors.new_black.withAlpha(150),
+                                            color: KColors.new_black
+                                                .withAlpha(150),
                                             fontSize: 16)),
                                     isUpdatingRestaurantOpenType
                                         ? Container()
@@ -203,7 +204,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                                 Text(
                                                     "${widget?.restaurant?.working_hour}",
                                                     style: TextStyle(
-                                                        color: KColors.new_black,
+                                                        color:
+                                                            KColors.new_black,
                                                         fontSize: 16)),
                                               ])
                                   ],
@@ -805,7 +807,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            data: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

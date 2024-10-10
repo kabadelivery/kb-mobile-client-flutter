@@ -1,41 +1,20 @@
-//FeedsProvider
-
-
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/FeedModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/FeedModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-
-
 import 'package:dio/dio.dart';
 
 class ServiceMainApiProvider {
-
-
-  Future<Object> fetchCategories () async {
-
+  Future<Object> fetchCategories() async {
     xrint("entered fetchCategories");
     if (await Utils.hasNetwork()) {
-
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_LASTEST_FEEDS),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
-      dio.options
-        ..connectTimeout = 10000
-      ;
+      dio.options..connectTimeout = 10000;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -44,7 +23,8 @@ class ServiceMainApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(Uri.parse(ServerRoutes.LINK_GET_SERVICE_CATEGORIES).toString(),
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_GET_SERVICE_CATEGORIES).toString(),
           data: json.encode({}));
 
       print(response.statusCode);
@@ -53,12 +33,13 @@ class ServiceMainApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          Iterable lo = mJsonDecode(response.data)["data"]["notification_feeds"];
+          Iterable lo =
+              mJsonDecode(response.data)["data"]["notification_feeds"];
           if (lo == null || lo.isEmpty || lo.length == 0)
             return List<FeedModel>();
           else {
-            List<FeedModel> feeds = lo?.map((feed) =>
-                FeedModel.fromJson(feed))?.toList();
+            List<FeedModel> feeds =
+                lo?.map((feed) => FeedModel.fromJson(feed))?.toList();
             return feeds;
           }
         } else
@@ -70,5 +51,4 @@ class ServiceMainApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
 }

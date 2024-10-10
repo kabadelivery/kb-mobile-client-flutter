@@ -2,38 +2,23 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/CommandModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/CommandModel.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/UserTokenModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 
 class CommandsApiProvider {
-
-
   Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer) async {
-
     xrint("entered fetchDailyOrders");
     if (await Utils.hasNetwork()) {
-
-     /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -46,14 +31,14 @@ class CommandsApiProvider {
         data: json.encode({}),
       );
 
-
       xrint(customer?.toJson()?.toString());
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["commands"];
-          List<CommandModel> commandModel = lo?.map((command) => CommandModel.fromJson(command))?.toList();
+          List<CommandModel> commandModel =
+              lo?.map((command) => CommandModel.fromJson(command))?.toList();
           return commandModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -65,26 +50,15 @@ class CommandsApiProvider {
     }
   }
 
-
   /* order details */
-  Future<CommandModel> fetchOrderDetails(CustomerModel customer, int orderId) async {
-
+  Future<CommandModel> fetchOrderDetails(
+      CustomerModel customer, int orderId) async {
     xrint("entered fetchOrderDetails");
     if (await Utils.hasNetwork()) {
-
-
-     /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS),
-          body: json.encode({"command_id": orderId}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -94,15 +68,15 @@ class CommandsApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS).toString(),
-        data:  json.encode({"command_id": orderId}),
+        data: json.encode({"command_id": orderId}),
       );
 
-
-     xrint(response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          CommandModel commandModel = CommandModel.fromJson(mJsonDecode(response.data)["data"]["command"]);
+          CommandModel commandModel = CommandModel.fromJson(
+              mJsonDecode(response.data)["data"]["command"]);
           return commandModel;
         } else
           throw Exception(-1); // there is an error in your request
@@ -114,25 +88,14 @@ class CommandsApiProvider {
     }
   }
 
-
   /* all orders details */
   Future<List<CommandModel>> fetchLastOrders(CustomerModel customer) async {
-
     xrint("entered fetchLastOrders");
     if (await Utils.hasNetwork()) {
-
-   /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_ALL_COMMAND_LIST),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));
-   */
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -142,7 +105,7 @@ class CommandsApiProvider {
       };
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_GET_ALL_COMMAND_LIST).toString(),
-        data:  json.encode({}),
+        data: json.encode({}),
       );
 
       xrint(response.data.toString());
@@ -150,23 +113,24 @@ class CommandsApiProvider {
         if (response.statusCode == 200) {
           int errorCode = mJsonDecode(response.data)["error"];
           if (errorCode == 0) {
-
             try {
               Iterable lo = mJsonDecode(response.data)["data"]["commands"];
               if (lo == null || lo.isEmpty || lo.length == 0)
                 return List<CommandModel>();
+
               /// else
-              List<CommandModel> commandModel = lo?.map((command) =>
-                  CommandModel.fromJson(command))?.toList();
+              List<CommandModel> commandModel = lo
+                  ?.map((command) => CommandModel.fromJson(command))
+                  ?.toList();
               return commandModel;
             } catch (_) {
               return List<CommandModel>();
             }
           } else
             throw Exception(-1); // there is an error in your request
-        } }
-      catch(_) {
-       xrint(_);
+        }
+      } catch (_) {
+        xrint(_);
         return List<CommandModel>();
       }
     } else {
