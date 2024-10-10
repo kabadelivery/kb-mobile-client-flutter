@@ -1,24 +1,19 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
+import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
-import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
-
-import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:KABA/src/contracts/order_contract.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage.old';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
+import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:iphone_has_notch/iphone_has_notch.dart';
 import 'package:toast/toast.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantMenuDetails extends StatefulWidget {
   static var routeName = "/RestaurantMenuDetails";
