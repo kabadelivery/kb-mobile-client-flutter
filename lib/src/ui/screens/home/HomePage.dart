@@ -80,9 +80,8 @@ class _HomePageState extends State<HomePage> {
   ServiceMainPage serviceMainPage;
   DailyOrdersPage dailyOrdersPage;
   MeNewAccountPage meAccountPage;
-
+  static String messageId = "";
   List<StatefulWidget> pages;
-
   final PageStorageBucket bucket = PageStorageBucket();
 
   final PageStorageKey homeKey = PageStorageKey("homeKey"),
@@ -165,6 +164,8 @@ class _HomePageState extends State<HomePage> {
     }
     return loginCheckResult;
   }
+  //sharedPreferences to save messageId
+
 
   void _logout() {
     CustomerUtils.clearCustomerInformations().whenComplete(() {
@@ -187,6 +188,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     get_token();
+
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(),
@@ -278,18 +280,20 @@ class _HomePageState extends State<HomePage> {
         onSelectNotification: onSelectNotification);
 
     // new try
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message)async {
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
-
       if (message.notification != null) {
-        xrint(
-            'pnotif Message also contained a notification: ${message.notification.toString()}');
+        xrint('pnotif Message also contained a notification: ${message.notification.toString()}');
 
         NotificationItem notificationItem =
             _notificationFromMessage(message.data);
-        iLaunchNotifications(notificationItem);
+          if(message.messageId!=messageId){
+            iLaunchNotifications(notificationItem);
+            messageId=message.messageId;
+          }
+
       }
     });
 
@@ -354,6 +358,7 @@ class _HomePageState extends State<HomePage> {
         StateContainer.of(context).customer = value;
       });
     });
+  //  _resetValue();
   }
 
   void mDialog(String message) {
