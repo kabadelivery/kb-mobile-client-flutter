@@ -280,7 +280,7 @@ class _HomePageState extends State<HomePage> {
         onSelectNotification: onSelectNotification);
 
     // new try
-    FirebaseMessaging.onMessage.listen((RemoteMessage message)async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message){
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
@@ -293,7 +293,6 @@ class _HomePageState extends State<HomePage> {
             iLaunchNotifications(notificationItem);
             messageId=message.messageId;
           }
-
       }
     });
 
