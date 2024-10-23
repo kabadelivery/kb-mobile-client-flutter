@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -107,10 +108,27 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('register')}", style:TextStyle(color:KColors.primaryColor)),
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+          backgroundColor: KColors.primaryColor,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('register')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
         ),
         backgroundColor: Colors.white,
         body: Container(
@@ -121,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 30),
-                    Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
+                    // Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     /* radiobutton - check who are you */
                     !isCodeSent ? Row(
@@ -132,15 +150,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              'Phone',
-                              style: new TextStyle(fontSize: 16.0)),
+                              "${AppLocalizations.of(context).translate('phone_number')}",
+                              style: new TextStyle(fontSize: 14.0)),
                           new Radio(
                             value: 1,
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              'E-mail',
-                              style: new TextStyle(fontSize: 16.0)),
+                              "${AppLocalizations.of(context).translate('email')}",
+                              style: new TextStyle(fontSize: 14.0)),
                         ]) : Container(),
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
@@ -151,7 +169,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController,
                                 enabled: !isCodeSent,
-                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:Colors.black)),
+                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.new_black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
 
@@ -163,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             child: TextField(controller: _nicknameFieldController,
                                 enabled: !isCodeSent,
                                 onChanged: _onNicknameFieldTextChanged,
-                                decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:Colors.black),
+                                decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:KColors.new_black),
                                 keyboardType: TextInputType.emailAddress),
                             decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
@@ -197,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 child: TextField(controller: _whatsappPhonenumberController,
                                     enabled: !isCodeSent,
                                     onChanged: _onWhaNumberieldTextChanged,
-                                    decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:Colors.black),
+                                    decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:KColors.new_black),
                                     keyboardType: TextInputType.emailAddress),
                                 decoration:  isWhaNumberError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                             )),
@@ -222,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:Colors.black), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
@@ -628,7 +646,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

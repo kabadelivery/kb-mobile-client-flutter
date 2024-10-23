@@ -4,6 +4,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,17 +49,17 @@ class _SplashPageState extends State<PresentationPage> {
           builder: (context) => IntroViewsFlutter(
             [
               PageViewModel(
-                pageColor: Color(0x85FDD047),
+                pageColor: Color.fromRGBO(253,216,54,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
                   "${AppLocalizations.of(context).translate('choice_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('choice')}",
+                  "${AppLocalizations.of(context).translate('choice')}".toUpperCase(),
                 ),
-                titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
+                titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.choice,
                   height: 285.0,
@@ -67,17 +68,17 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor: Color(0x8D00C9AF),
+                pageColor: Color.fromRGBO(24,119,213,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
                   "${AppLocalizations.of(context).translate('payment_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('payment')}",
+                  "${AppLocalizations.of(context).translate('payment')}".toUpperCase(),
                 ),
-                titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
+                titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.payment,
                   height: 285.0,
@@ -86,17 +87,17 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor: Color(0x88FF873B),
+                pageColor: Color.fromRGBO(0,88,86,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
                   "${AppLocalizations.of(context).translate('address_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('address')}",
+                  "${AppLocalizations.of(context).translate('address')}".toUpperCase(),
                 ),
-                titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
+                titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.address,
                   height: 285.0,
@@ -105,17 +106,17 @@ class _SplashPageState extends State<PresentationPage> {
                 ),
               ),
               PageViewModel(
-                pageColor:  Color(0x99CC1641),
+                pageColor:  Color.fromRGBO(205,31,69,0.1),
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
                   "${AppLocalizations.of(context).translate('enjoy_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('enjoy')}",
+                  "${AppLocalizations.of(context).translate('enjoy')}".toUpperCase(),
                 ),
-                titleTextStyle: const TextStyle(color: Colors.white),
-                bodyTextStyle: const TextStyle(color: Colors.white, fontSize: 18),
+                titleTextStyle:   TextStyle(color: KColors.new_black, fontSize: 25, fontWeight: FontWeight.bold),
+                bodyTextStyle:   TextStyle(color: KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500),
                 mainImage: Image.asset(
                   ImageAssets.enjoy,
                   height: 285.0,
@@ -127,20 +128,21 @@ class _SplashPageState extends State<PresentationPage> {
             ],
             showSkipButton: true,
             showNextButton: true,
-            showBackButton: false,
+            showBackButton: true,
             onTapDoneButton: () {
               // Use Navigator.pushReplacement if you want to dispose the latest route
               // so the user will not be able to slide back to the Intro Views.
               _endOfTheSlides();
             },
-            doneText: Text("${AppLocalizations.of(context).translate('done_text')}"),
-            skipText: Text("${AppLocalizations.of(context).translate('skip_text')}"), //skip_text
-            nextText: Text("${AppLocalizations.of(context).translate('next_text')}"), //next
-            pageButtonTextStyles: const TextStyle(
+            doneText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('done_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)),
+            skipText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('skip_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)),
+            nextText: Text(Utils.capitalize("${AppLocalizations.of(context).translate('next_text')} >"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)), //next
+            backText: Text("< "+Utils.capitalize("${AppLocalizations.of(context).translate('previous_text')}"), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: KColors.primaryColor)), //next
+           /* pageButtonTextStyles: const TextStyle(
               color: Colors.white,
               fontSize: 20.0,
               fontWeight: FontWeight.bold
-            ),
+            ),*/
           ),
         ),
       ),

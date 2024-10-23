@@ -74,7 +74,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                 StateContainer.of(context).updateLoggingState(state: 0);
                 StateContainer.of(context).updateBalance(balance: 0);
                 // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-                StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+                // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+                StateContainer.of(context).hasUnreadMessage = false;
                 StateContainer.of(context).updateTabPosition(tabPosition: 0);
                 Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
               });
@@ -101,10 +102,27 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('recover_password')}", style:TextStyle(color:KColors.primaryColor)),
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.of(context).maybePop();}),
+          backgroundColor: KColors.primaryColor,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+      centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  Utils.capitalize(
+                      "${AppLocalizations.of(context).translate('recover_password')}"),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ],
+          ),
         ),
         backgroundColor: Colors.white,
         body: Container(
@@ -123,7 +141,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:Colors.black)),
+                            child: TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.new_black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
 
@@ -429,7 +447,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       CustomerUtils.clearCustomerInformations().whenComplete(() {
         StateContainer.of(context).updateBalance(balance: 0);
         // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-        StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+        // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+        StateContainer.of(context).hasUnreadMessage = false;
         StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
         Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
@@ -468,7 +487,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

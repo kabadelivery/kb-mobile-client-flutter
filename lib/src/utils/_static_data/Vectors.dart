@@ -31,4 +31,15 @@
   static final String address_creation_error = "assets/images/vectors/address_creation_error.svg";
 
   // location pick ok
+
+ // bottom asset
+  static final String home = "assets/images/vectors/bottom_icons/home.svg";
+  static final String buy = "assets/images/vectors/bottom_icons/buy.svg";
+  static final String orders = "assets/images/vectors/bottom_icons/orders.svg";
+  static final String me = "assets/images/vectors/bottom_icons/me.svg";
+
+  static final String home_selected = "assets/images/vectors/bottom_icons/home_selected.svg";
+  static final String buy_selected = "assets/images/vectors/bottom_icons/buy_selected.svg";
+  static final String orders_selected = "assets/images/vectors/bottom_icons/orders_selected.svg";
+  static final String me_selected = "assets/images/vectors/bottom_icons/me_selected.svg";
  }

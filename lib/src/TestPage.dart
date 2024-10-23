@@ -1,18 +1,23 @@
-
-
 import 'dart:math';
 
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieWidgetItem.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/movies/shop_refined/ShopSimpleList.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:audioplayer/audioplayer.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flare_flutter/base/animation/actor_animation.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
+
 // import 'package:just_audio/just_audio.dart';
 import 'package:vibration/vibration.dart';
-
 
 class TestPage extends StatefulWidget {
   @override
@@ -20,71 +25,174 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
+  bool _searchMode = false;
+
+  TextEditingController _filterEditController = TextEditingController();
+
+  String searchKey = "mami";
+
+  ShopSimpleList shl;
+
+  get _shopSimpleList {
+    if (shl == null)
+      shl = ShopSimpleList(
+          search_key: searchKey,
+          type: "food",
+          restaurantListPresenter: RestaurantListPresenter());
+    return shl;
+  }
 
   @override
   Widget build(BuildContext context) {
 //    return Scaffold();
     return new Scaffold(
-        body: Center(
-          child: MaterialButton(
-              child: Text("ok"),
-              onPressed: () {
-_playMusic();
-              }
-          ),
-        )
-
-      //TrackingInput(),
-    );
+        appBar: AppBar(
+          title: Text("Test page"),
+        ),
+        body: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(5),
+                      bottomLeft: Radius.circular(5)),
+                  color: KColors.primaryColor.withAlpha(30)),
+              padding: EdgeInsets.only(left: 8, right: 8),
+              margin: EdgeInsets.only(left: 20),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (hasFocus) {
+                        if (hasFocus) {
+                          // do staff
+                          _searchMode = true;
+                        } else {
+                          // out search mode
+                          _searchMode = false;
+                        }
+                      },
+                      child: TextField(
+                          controller: _filterEditController,
+                          onChanged: (val) {
+                            EasyDebounce.debounce(
+                                'search-input-debouncer',
+                                Duration(milliseconds: 300),
+                                () => {_searchFoodProposal()});
+                          },
+                          style:
+                              TextStyle(color: KColors.new_black, fontSize: 14),
+                          textInputAction: TextInputAction.search,
+                          decoration: InputDecoration.collapsed(
+                              hintText:
+                                  "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                              hintStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: KColors.new_black.withAlpha(150))),
+                          enabled: true),
+                    ),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.close, color: Colors.grey),
+                      onPressed: () {
+                        _clearFocus();
+                      })
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Expanded(child: _shopSimpleList)
+          ],
+        ));
   }
 
+  _searchFoodProposal() {
+    /* search food, change the object */
+    searchKey = _filterEditController.text;
+    ShopSimpleList tmp = _shopSimpleList;
+    setState(() {
+      tmp.search_key = searchKey;
+    });
+  }
 
+  void _clearFocus() {
+    _filterEditController.clear();
+  }
 }
 
- Future<void> _playMusic() async {
+class SearchObjectResultPage extends StatefulWidget {
+  String search_key;
 
-    // play music
-   // AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-   //  audioPlayer.setVolume(1.0);
-    // AudioPlayer.logEnabled = true;
+  SearchObjectResultPage({Key key, this.search_key}) : super(key: key);
 
-   // audioPlayer.play("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3", isLocal: false);
-   // audioPlayer.play("assets/command_success_hold_on.mp3", isLocal: true);
-   // audioPlayer.play("/assets/command_success_hold_on.mp3", isLocal: true);
-   // audioPlayer.play("file://assets/command_success_hold_on.mp3", isLocal: true);
-   //
-   // audioPlayer.play("money_transfer_successfull.mp3", isLocal: true);
-   // audioPlayer.play("assets/money_transfer_successfull.mp3", isLocal: true);
-   // audioPlayer.play("/assets/money_transfer_successfull.mp3", isLocal: true);
-   // audioPlayer.play("file://assets/money_transfer_successfull.mp3", isLocal: true);
+  @override
+  _SearchObjectResultPageState createState() {
+    return _SearchObjectResultPageState();
+  }
+}
 
-    // audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);   /**/
-
-   final player = AudioPlayer();
-   player.play("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3");
-   // player.setAudioSource(AudioSource.uri(Uri.parse(
-   //     "${MusicData.command_success_hold_on}")));
-   // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
-   //
-   // player.setAudioSource(AudioSource.uri(Uri.parse('asset:///${MusicData.c_command_success_hold_on}')),
-   //      initialPosition: Duration.zero, preload: true);
-   //
-
-    if (await Vibration.hasVibrator ()
-    ) {
-      Vibration.vibrate(duration: 500);
-    }
+class _SearchObjectResultPageState extends State<SearchObjectResultPage> {
+  @override
+  void initState() {
+    super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Center(child: Text("${widget.search_key}")),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width);
+  }
+}
+
+Future<void> _playMusic() async {
+  // play music
+  // AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  //  audioPlayer.setVolume(1.0);
+  // AudioPlayer.logEnabled = true;
+
+  // audioPlayer.play("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3", isLocal: false);
+  // audioPlayer.play("assets/command_success_hold_on.mp3", isLocal: true);
+  // audioPlayer.play("/assets/command_success_hold_on.mp3", isLocal: true);
+  // audioPlayer.play("file://assets/command_success_hold_on.mp3", isLocal: true);
+  //
+  // audioPlayer.play("money_transfer_successfull.mp3", isLocal: true);
+  // audioPlayer.play("assets/money_transfer_successfull.mp3", isLocal: true);
+  // audioPlayer.play("/assets/money_transfer_successfull.mp3", isLocal: true);
+  // audioPlayer.play("file://assets/money_transfer_successfull.mp3", isLocal: true);
+
+  // audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);   /**/
+
+  final player = AudioPlayer();
+  player.play(
+      "https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3");
+  // player.setAudioSource(AudioSource.uri(Uri.parse(
+  //     "${MusicData.command_success_hold_on}")));
+  // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
+  //
+  // player.setAudioSource(AudioSource.uri(Uri.parse('asset:///${MusicData.c_command_success_hold_on}')),
+  //      initialPosition: Duration.zero, preload: true);
+  //
+
+  if (await Vibration.hasVibrator()) {
+    Vibration.vibrate(duration: 500);
+  }
+}
 
 // track user input
 class TrackingInput extends StatefulWidget {
   @override
   TrackingState createState() => new TrackingState();
 }
-class TrackingState extends State<TrackingInput> {
 
+class TrackingState extends State<TrackingInput> {
   ///these get set when we build the widget
   double screenWidth = 0.0;
   double screenHeight = 0.0;
@@ -144,6 +252,7 @@ class TrackingState extends State<TrackingInput> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Spacer(),
+
                 ///Each widget on the main view
                 addWaterBtn(),
                 subWaterBtn(),
@@ -155,6 +264,7 @@ class TrackingState extends State<TrackingInput> {
       ),
     );
   }
+
   ///set up our bottom sheet menu
   void _showMenu() {
     showModalBottomSheet<void>(
@@ -197,6 +307,7 @@ class TrackingState extends State<TrackingInput> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+
                       ///our animated button that decreases your goal
                       FlareWaterTrackButton(
                         artboard: "UI arrow right",
@@ -217,6 +328,7 @@ class TrackingState extends State<TrackingInput> {
                   ),
                   // Some vertical padding between text and buttons row
                   const SizedBox(height: 20),
+
                   ///our Flare button that closes our menu
                   ///TODO: Here is your challenge!
                   FlareWaterTrackButton(
@@ -247,7 +359,7 @@ class TrackingState extends State<TrackingInput> {
   ///we'll use this to increase how much water the user has drunk, hooked
   ///via button
   void _incrementWater() {
-   /* setState(() {
+    /* setState(() {
       if (currentWaterCount < selectedGlasses) {
         currentWaterCount = currentWaterCount + 1;
 
@@ -264,7 +376,8 @@ class TrackingState extends State<TrackingInput> {
         _flareController.playAnimation("iceboy_win");
       }
     });
-  */}
+  */
+  }
 
   ///we'll use this to decrease our user's water intake, hooked to a button
   void _decrementWater() {
@@ -294,7 +407,6 @@ class TrackingState extends State<TrackingInput> {
     });
   }
 
-
   Widget settingsButton() {
     return RawMaterialButton(
       constraints: BoxConstraints.tight(Size(95, 30)),
@@ -304,9 +416,7 @@ class TrackingState extends State<TrackingInput> {
       splashColor: Colors.transparent,
       elevation: 0.0,
       child: FlareActor("assets/flare/WaterArtboards.flr",
-          fit: BoxFit.contain,
-          sizeFromArtboard: true,
-          artboard: "UI Ellipse"),
+          fit: BoxFit.contain, sizeFromArtboard: true, artboard: "UI Ellipse"),
     );
   }
 
@@ -345,9 +455,7 @@ class TrackingState extends State<TrackingInput> {
   }
 }
 
-
 class AnimationControls extends FlareController {
-
   ///so we can reference this any where once we declare it
   FlutterActorArtboard _artboard;
 
@@ -376,13 +484,12 @@ class AnimationControls extends FlareController {
     _iceboyMoveY = artboard.getAnimation("iceboy_move_up");
   }
 
-
   bool advance(FlutterActorArtboard artboard, double elapsed) {
     //we need this separate from our generic mixing animations,
 // b/c the animation duration is needed in this calculation
     if (artboard.name.compareTo("Artboard") == 0) {
-      _currentWaterFill += (_waterFill - _currentWaterFill) * min(1, elapsed *
-          _smoothTime);
+      _currentWaterFill +=
+          (_waterFill - _currentWaterFill) * min(1, elapsed * _smoothTime);
       _fillAnimation.apply(
           _currentWaterFill * _fillAnimation.duration, artboard, 1);
       _iceboyMoveY.apply(
@@ -403,9 +510,8 @@ class AnimationControls extends FlareController {
 
   void setViewTransform(Mat2D viewTransform) {}
 
-
   ///called from the 'tracking_input'
- /* void playAnimation(String animName){
+  /* void playAnimation(String animName){
     ActorAnimation animation = _artboard.getAnimation(animName);
     if (animation != null) {
       _baseAnimations.add(FlareAnimationLayer()
@@ -414,14 +520,16 @@ class AnimationControls extends FlareController {
       );
     }
   }*/
+
   ///called from the 'tracking_input'
   ///updates the water fill line
-  void updateWaterPercent(double amt){
+  void updateWaterPercent(double amt) {
     _waterFill = amt;
   }
+
   ///called from the 'tracking_input'
   ///resets the water fill line
-  void resetWater(){
+  void resetWater() {
     _waterFill = 0;
   }
 }
@@ -433,6 +541,7 @@ class FlareWaterTrackButton extends StatefulWidget {
   final String pressAnimation;
   final String artboard;
   final VoidCallback onPressed;
+
   const FlareWaterTrackButton(
       {this.artboard, this.pressAnimation, this.onPressed});
 
@@ -460,6 +569,3 @@ class _FlareWaterTrackButtonState extends State<FlareWaterTrackButton> {
     );
   }
 }
-
-
-

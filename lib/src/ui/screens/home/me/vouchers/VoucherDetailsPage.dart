@@ -1,5 +1,5 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -89,7 +89,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                             version: QrVersions.auto,
                             size: 160,
                             gapless: false,
-                            foregroundColor: Colors.black,
+                            foregroundColor: KColors.new_black,
                             embeddedImageStyle: QrEmbeddedImageStyle(
                               size: Size(35, 35),
                             ),
@@ -115,7 +115,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                   /* details du restaurant */
                   SizedBox(height: 20),
-                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: KColors.new_black, fontWeight: FontWeight.bold, fontSize: 16)),
                   widget.voucher?.description == null ? Container() : Column(
                     children: <Widget>[
                       SizedBox(height: 10),
@@ -130,7 +130,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
 //                       /* start a mini food list .. */
 // //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
-//                       //  _miniFoodWidget(RestaurantFoodModel.randomFood())
+//                       //  _miniFoodWidget(ShopProductModel.randomFood())
 //                     ]/*..add(InkWell(onTap: (){setState(() {
 //                       widget.food_see_more = true;
 //                     });},
@@ -201,11 +201,11 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       Column(crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text("-${(widget.voucher.use_count-widget.voucher.already_used_count)*widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
-          Container(width:110, height: 2, color: Colors.black, margin: EdgeInsets.only(bottom:1),),
+          Container(width:110, height: 2, color: KColors.new_black, margin: EdgeInsets.only(bottom:1),),
           Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black)),
-              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.black)),
+              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: KColors.new_black)),
+              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: KColors.new_black)),
             ],
           ),
         ],
@@ -230,7 +230,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     Toast.show(message, context, duration: Toast.LENGTH_LONG);
   }
 
-  _miniFoodWidget(RestaurantFoodModel food) {
+  _miniFoodWidget(ShopProductModel food) {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +238,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 13, fontWeight: FontWeight.w500)),
+            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,7 +258,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     );
   }
 
-  _miniFoodsText(List<RestaurantFoodModel> products) {
+  _miniFoodsText(List<ShopProductModel> products) {
 
     if (products?.length > 20 && widget.food_see_more == false) {
       return "${products?.length} ${AppLocalizations.of(context).translate('foods_')}\n\n> See More <";

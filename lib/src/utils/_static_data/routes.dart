@@ -1,10 +1,27 @@
 import 'package:KABA/src/NotificationTestPage.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
+import 'package:KABA/src/contracts/delete_account_questionning_contract.dart';
+import 'package:KABA/src/contracts/delete_account_refund_contract.dart';
 import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
+import 'package:KABA/src/contracts/home_welcome_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_contract.dart';
+import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
+import 'package:KABA/src/ui/customwidgets/RestaurantNewCommentWidget.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountFixPropositionPage.dart';
+import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/HomeWelcomeNewPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/search/SearchProductPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
+import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/feeds_contract.dart';
 import 'package:KABA/src/contracts/food_contract.dart';
@@ -35,6 +52,9 @@ import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.da
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 
+import '../../ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
+import '../../ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
+
 var generalRoutes = {
 
   SplashPage.routeName: (BuildContext context) => SplashPage(),
@@ -43,6 +63,7 @@ var generalRoutes = {
   RecoverPasswordPage.routeName : (BuildContext context) => RecoverPasswordPage(),
   RetrievePasswordPage.routeName : (BuildContext context) => RetrievePasswordPage(),
   RestaurantDetailsPage.routeName : (BuildContext context) => RestaurantDetailsPage(presenter: RestaurantDetailsPresenter()),
+  ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
   BestSellersPage.routeName : (BuildContext context) => BestSellersPage(presenter: BestSellerPresenter()),
   RestaurantMenuPage.routeName : (BuildContext context) => RestaurantMenuPage(fromNotification: true, presenter: MenuPresenter()),
   MyAddressesPage.routeName : (BuildContext context) => MyAddressesPage(presenter: AddressPresenter()),
@@ -56,12 +77,29 @@ var generalRoutes = {
   TransactionHistoryPage.routeName : (BuildContext context) => TransactionHistoryPage(presenter: TransactionPresenter()),
   RestaurantFoodDetailsPage.routeName : (BuildContext context) => RestaurantFoodDetailsPage(presenter: FoodPresenter()),
   FeedsPage.routeName : (BuildContext context) => FeedsPage(presenter: FeedPresenter()),
-  OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
-  TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
+  // OrderDetailsPage.routeName : (BuildContext context) => OrderDetailsPage(presenter: OrderDetailsPresenter()),
+  // TopUpPage.routeName : (BuildContext context) => TopUpPage(presenter: TopUpPresenter()),
   SettingsPage.routeName : (BuildContext context) => SettingsPage(),
   InfoPage.routeName : (BuildContext context) => InfoPage(),
   CustomerCareChatPage.routeName : (BuildContext context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
 
 //  NotificationTestPage.routeName : (BuildContext context) => NotificationTestPage(),
+  ShopDetailsPage.routeName : (BuildContext context) => ShopDetailsPage(presenter: RestaurantDetailsPresenter()),
+  ShopListPageRefined.routeName : (BuildContext context) => ShopListPageRefined(restaurantListPresenter: RestaurantListPresenter(), foodProposalPresenter: RestaurantFoodProposalPresenter()),
+  ShopFlowerDetailsPage.routeName : (BuildContext context) => ShopFlowerDetailsPage(presenter: FoodPresenter(),),
+  OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter(),),
+  HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter(),),
+  MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
 
+  SearchProductPage.routeName : (BuildContext context) => SearchProductPage(),
+  TopNewUpPage.routeName : (BuildContext context) => TopNewUpPage(presenter: TopUpPresenter()),
+  MeNewAccountPage.routeName : (BuildContext context) => MeNewAccountPage(),
+  OrderNewDetailsPage.routeName : (BuildContext context) => OrderNewDetailsPage(presenter: OrderDetailsPresenter()),
+  HomeWelcomeNewPage.routeName : (BuildContext context) => HomeWelcomeNewPage(presenter: HomeWelcomePresenter()),
+
+
+  DeleteAccountRefundQuestionnaryPage.routeName : (BuildContext context) => DeleteAccountRefundQuestionnaryPage(presenter: DeleteAccountRefundPresenter(), fixId: null, ),
+  DeleteAccountQuestioningPage.routeName : (BuildContext context) => DeleteAccountQuestioningPage(presenter:DeleteAccountQuestioningPresenter() ),
+  DeleteAccountSuccessfulPage.routeName : (BuildContext context) => DeleteAccountSuccessfulPage( ),
+  DeleteAccountFixPropositionPage.routeName : (BuildContext context) => DeleteAccountFixPropositionPage( ),
 };

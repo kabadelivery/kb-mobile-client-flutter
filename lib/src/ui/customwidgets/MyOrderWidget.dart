@@ -4,11 +4,13 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MyOrderWidget extends StatefulWidget {
 
@@ -103,7 +105,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                 // just in case this is a preorder
                 SizedBox(height: 10),
                 widget?.command?.is_preorder == 1 ? Container(color: KColors.primaryColor, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_day')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToDayDate(widget.command.preorder_hour.start, dayz: dayz)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
-                widget?.command?.is_preorder == 1 ? Container(color: Colors.black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_time_frame')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
+                widget?.command?.is_preorder == 1 ? Container(color: KColors.new_black, margin: EdgeInsets.only(left:10, right:10), padding: EdgeInsets.only(top: 8, bottom: 8),child: Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[Text("${AppLocalizations.of(context).translate('delivery_time_frame')}", style: TextStyle(color: Colors.white, fontSize: 16)), SizedBox(width: 5), Text("${Utils.timeStampToHourMinute(widget.command.preorder_hour.start)} à ${Utils.timeStampToHourMinute(widget.command.preorder_hour.end)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))])) : Container(),
                 (Card(
                     elevation: 8.0,
                     margin: new EdgeInsets.symmetric(horizontal: 10.0),
@@ -174,7 +176,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
                               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                                 Container(padding: EdgeInsets.only(left:10, right:10),child: Text(_getLastModifiedDate(command), style: TextStyle(fontSize: 14, color: Colors.grey, fontStyle: FontStyle.italic))),
                                 Row(children: <Widget>[
-                                  Text('${AppLocalizations.of(context).translate('total')}: '.toUpperCase(),style: new TextStyle(color: Colors.black, fontSize: 18)),
+                                  Text('${AppLocalizations.of(context).translate('total')}: '.toUpperCase(),style: new TextStyle(color: KColors.new_black, fontSize: 18)),
                                   Container(child: Text("${command?.is_preorder == 1 ? command.preorder_total_pricing :(command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} F", style: TextStyle(fontSize: 16,color: Colors.white)), color: KColors.primaryColor, padding: EdgeInsets.all(10))
                                 ])
                               ]),
@@ -233,7 +235,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
   }
 
   String _getLastModifiedDate(CommandModel command) {
-    return Utils.readTimestamp(int.parse(command?.last_update));
+    return Utils.readTimestamp(context, int.parse(command?.last_update));
   }
 
   _jumpToCommandDetails(CommandModel command) {
@@ -246,7 +248,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
+            OrderNewDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -330,7 +332,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                       /* food price*/
                       Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                         /* price has a line on top in case */
-                        Text("${food?.price}", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? Colors.black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
+                        Text("${food?.price}", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color: food.promotion!=0 ? KColors.new_black : KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: food.promotion!=0 ? TextDecoration.lineThrough : TextDecoration.none)),
                         SizedBox(width: 5),
                         (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.none))
                             : Container()),
@@ -346,7 +348,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
             RichText(
               text: new TextSpan(
                 text: 'X ',
-                style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black),
                 children: <TextSpan>[
                   TextSpan(text: " ${food.quantity} ", style: TextStyle(fontSize: 24, color: KColors.primaryColor)),
                 ],

@@ -182,7 +182,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   Expanded(flex: 4, child: Text("${AppLocalizations.of(context).translate('total')}", textAlign: TextAlign.start, style: TextStyle(fontSize: 15))),
                   Expanded(flex: 6,
 //                      child: Text("${widget.total} F", textAlign: TextAlign.end, style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: KColors.primaryColor))
-                      child: TextField( controller: _totalAmountFieldController, focusNode: _totalFocusNode, textAlign: TextAlign.right, style: TextStyle(fontSize: 16, color: Colors.black),
+                      child: TextField( controller: _totalAmountFieldController, focusNode: _totalFocusNode, textAlign: TextAlign.right, style: TextStyle(fontSize: 16, color: KColors.new_black),
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               border: InputBorder.none,

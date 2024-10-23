@@ -14,10 +14,11 @@ import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
@@ -29,6 +30,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -50,6 +52,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class MeAccountPage extends StatefulWidget {
@@ -143,7 +146,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           StateContainer.of(context).updateLoggingState(state: 0);
           StateContainer.of(context).updateBalance(balance: 0);
           // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-          StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+          // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+          StateContainer.of(context).hasUnreadMessage = false;
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
           Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
         });
@@ -695,8 +699,8 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
             xrint("restaurant id -> ${pathSegments[1]}");
             /* convert from hexadecimal to decimal */
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantDetailsPage(
-                restaurant: RestaurantModel(id: arg),
+            _jumpToPage(context, ShopDetailsPage(
+                restaurant: ShopModel(id: arg),
                 presenter: RestaurantDetailsPresenter()));
           }
           break;
@@ -704,7 +708,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           if (pathSegments.length > 1) {
             xrint("order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
+            _jumpToPage(context, OrderNewDetailsPage(
                 orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
@@ -728,7 +732,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
           if (pathSegments.length > 1) {
             xrint("review-order id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, OrderDetailsPage(
+            _jumpToPage(context, OrderNewDetailsPage(
                 orderId: arg, presenter: OrderDetailsPresenter()));
           }
           break;
@@ -763,7 +767,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:
@@ -828,7 +832,7 @@ class _MeAccountPageState extends State<MeAccountPage> with TickerProviderStateM
                       )),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[

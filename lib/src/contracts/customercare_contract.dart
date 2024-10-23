@@ -7,8 +7,8 @@ import 'package:KABA/src/xrint.dart';
 class CustomerCareChatContract {
 
 //  void CustomerCareChat (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-//  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+//  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
   void fetchCustomerCareChat(CustomerModel customer) {}
   void sendMessageToCustomerCareChat (CustomerModel customer, String message) {}
 }

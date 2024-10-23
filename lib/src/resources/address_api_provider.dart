@@ -10,7 +10,7 @@ import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -46,7 +46,7 @@ class AddressApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -104,7 +104,7 @@ class AddressApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -152,7 +152,7 @@ class AddressApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000;
+        ..connectTimeout = 10000;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -201,7 +201,7 @@ class AddressApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

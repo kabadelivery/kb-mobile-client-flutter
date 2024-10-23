@@ -7,56 +7,59 @@ import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/customercare_contract.dart';
 import 'package:KABA/src/contracts/daily_order_contract.dart';
-import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/home_welcome_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/order_details_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
-import 'package:KABA/src/contracts/restaurant_list_contract.dart';
-import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
+import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
-import '_home/HomeWelcomePage.dart';
-import 'me/MeAccountPage.dart';
+import '_home/HomeWelcomeNewPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
 
 class HomePage extends StatefulWidget {
-
   static var routeName = "/HomePage";
 
   var argument;
@@ -65,7 +68,11 @@ class HomePage extends StatefulWidget {
 
   CustomerModel customer;
 
-  HomePage({Key key, this.destination, this.argument}) : super(key: key) ;
+  var samePositionCount = 0;
+
+  bool hasGps = false;
+
+  HomePage({Key key, this.destination, this.argument}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -75,109 +82,186 @@ class HomePage extends StatefulWidget {
   }
 }
 
-
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-
 class _HomePageState extends State<HomePage> {
+  HomeWelcomeNewPage homeWelcomePage;
 
-  HomeWelcomePage homeWelcomePage;
-  RestaurantListPage restaurantListPage;
+  // RestaurantListPage restaurantListPage;
+  ServiceMainPage serviceMainPage;
   DailyOrdersPage dailyOrdersPage;
-  MeAccountPage meAccountPage;
+  MeNewAccountPage meAccountPage;
 
   List<StatefulWidget> pages;
 
   final PageStorageBucket bucket = PageStorageBucket();
 
   final PageStorageKey homeKey = PageStorageKey("homeKey"),
-      restaurantKey = PageStorageKey("restaurantKey"),
+      // restaurantKey = PageStorageKey("restaurantKey"),
+      serviceMainKey = PageStorageKey("serviceMainKey"),
       orderKey = PageStorageKey("orderKey"),
       meKey = PageStorageKey("meKey");
 
   SharedPreferences prefs;
 
+  var subscription;
+
+  StreamSubscription<Position> positionStream;
+  Position tmpLocation;
 
   Future<int> checkLogin() async {
     StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String expDate = prefs.getString("_login_expiration_date");
+    String expDate =
+        prefs.getString("_login_expiration_date" + CustomerUtils.signature);
     int res = 0; // not logged in
     try {
       if (expDate != null) {
-        if (DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
+        if (DateTime.now()
+            .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           /* session expired : clean params */
-          prefs.remove("_customer");
-          prefs.remove("_token");
-          prefs.remove("_login_expiration_date");
+          _logout();
+          // show logout dialog that tells you to re-login
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  content:
+                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    SizedBox(
+                        height: 80,
+                        width: 80,
+                        child: Icon(
+                          Icons.account_circle,
+                          color: KColors.primaryColor,
+                        )),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('login_expired_please_login')}",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(color: KColors.new_black, fontSize: 13))
+                  ]),
+                  actions: <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _jumpToPage(context, launchPage);
+                      },
+                    ),
+                  ]);
+            },
+          );
         } else {
           res = 1; // is logged in
         }
       }
     } catch (_) {
-      xrint ("error checklogin() ");
+      xrint("error checklogin() ");
       res = 0; // not logged in
     }
     return res;
   }
 
+  void _logout() {
+    CustomerUtils.clearCustomerInformations().whenComplete(() {
+      StateContainer.of(context).updateLoggingState(state: 0);
+      StateContainer.of(context).loggingState = 0;
+      StateContainer.of(context).updateBalance(balance: 0);
+      StateContainer.of(context).customer = null;
+      StateContainer.of(context).myBillingArray = null;
+      // StateContainer.of(context).location = null;
+      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
+      StateContainer.of(context).hasUnreadMessage = false;
+      StateContainer.of(context).updateTabPosition(tabPosition: 0);
+      Navigator.pushNamedAndRemoveUntil(
+          context, SplashPage.routeName, (r) => false);
+    });
+  }
+
   // 0 not logged in
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
-
-    homeWelcomePage = HomeWelcomePage(key: homeKey,
+    homeWelcomePage = HomeWelcomeNewPage(
+        key: homeKey,
         presenter: HomeWelcomePresenter(),
         destination: widget.destination,
         argument: widget.argument);
-    restaurantListPage = RestaurantListPage(context: context,
-        key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
+    // restaurantListPage = RestaurantListPage(context: context,
+    //     key: restaurantKey, foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter());
+    serviceMainPage =
+        ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter());
     dailyOrdersPage =
         DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
-    meAccountPage = MeAccountPage(key: meKey);
-    pages =
-    [homeWelcomePage, restaurantListPage, dailyOrdersPage, meAccountPage];
+    meAccountPage = MeNewAccountPage(key: meKey);
+    pages = [
+      homeWelcomePage,
+      serviceMainPage,
+      // restaurantListPage,
+      dailyOrdersPage,
+      meAccountPage
+    ];
     super.initState();
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
 
-      /* if you are email... and you've been created in the last 2 minutes... congratualitions, you've created e-mail account. */
+      /* if you are email... and you've been created in the last 2 minutes... congratualitions, you've created e-main account. */
       /* make sure you show it once on a single device... */
 
       SharedPreferences.getInstance().then((value) async {
         prefs = value;
 
-        String _has_seen_email_account_notification = prefs.getString("_has_seen_email_account_notification");
+        String _has_seen_email_account_notification =
+            prefs.getString("_has_seen_email_account_notification");
 
-        if (_has_seen_email_account_notification != "1" && Utils.isEmailValid(customer?.email))
+        if (_has_seen_email_account_notification != "1" &&
+            Utils.isEmailValid(customer?.email))
           showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("${AppLocalizations.of(context).translate(
-                    'welcome')}"),
+                title: Text(
+                    "${AppLocalizations.of(context).translate('welcome')}"),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
                       /* add an image*/
                       // location_permission
                       Container(
-                          height: 100, width: 100,
+                          height: 100,
+                          width: 100,
                           child: Image.asset(
                             ImageAssets.diaspora,
                             height: 100.0,
                             width: 100.0,
                             alignment: Alignment.center,
-                          )
-                      ),
+                          )),
                       SizedBox(height: 10),
-                      Text("${AppLocalizations.of(context).translate(
-                          "congrats_for_email_account")} 😊",style: TextStyle(fontSize: 14),
+                      Text(
+                          "${AppLocalizations.of(context).translate("congrats_for_email_account")} 😊",
+                          style: TextStyle(fontSize: 14),
                           textAlign: TextAlign.center)
                       /*      RichText(
                   text: TextSpan(
@@ -194,16 +278,16 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 )*/
-
                     ],
                   ),
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context).translate('ok')}"),
+                    child:
+                        Text("${AppLocalizations.of(context).translate('ok')}"),
                     onPressed: () {
-                      prefs.setString("_has_seen_email_account_notification", "1");
+                      prefs.setString(
+                          "_has_seen_email_account_notification", "1");
                       Navigator.of(context).pop();
                     },
                   ),
@@ -218,8 +302,8 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging = FirebaseMessaging.instance;
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid = new AndroidInitializationSettings(
-        'kaba_notification_default');
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         requestBadgePermission: true,
@@ -230,30 +314,29 @@ class _HomePageState extends State<HomePage> {
     var initializationSettingsMacOs = MacOSInitializationSettings();
 
     var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
 
       if (message.notification != null) {
-        xrint('pnotif Message also contained a notification: ${message
-            .notification.toString()}');
+        xrint(
+            'pnotif Message also contained a notification: ${message.notification.toString()}');
 
-        NotificationItem notificationItem = _notificationFromMessage(message.data);
+        NotificationItem notificationItem =
+            _notificationFromMessage(message.data);
         iLaunchNotifications(notificationItem);
       }
-
     });
 
-    _firebaseMessaging.subscribeToTopic(ServerConfig.TOPIC)
+    _firebaseMessaging
+        .subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
       SharedPreferences prefs_ = await SharedPreferences.getInstance();
       prefs_.setBool('has_subscribed', true);
@@ -264,8 +347,71 @@ class _HomePageState extends State<HomePage> {
       initUniLinksStream();
     });
 
-  }
+    Connectivity().checkConnectivity().then((connectivityResult) {
+      if (!(connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi))
+        StateContainer.of(context).is_offline = true;
+      else
+        StateContainer.of(context).is_offline = false;
+    });
 
+    // network
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult connectivityResult) {
+      // Got a new connectivity status!
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        StateContainer.of(context).is_offline = false;
+        /*ElegantNotification.success(toastDuration: Duration(seconds: 10),
+            title:  Text("${AppLocalizations.of(context).translate('online_alert_title')}"),
+            notificationPosition: NotificationPosition.center,
+            description:  Text("${AppLocalizations.of(context).translate('online_alert_description')}")
+        ).show(context);*/
+      } else {
+        if (!StateContainer.of(context).is_offline) {
+          /*  ElegantNotification.error(
+                  toastDuration: Duration(seconds: 10),
+                  title: Text(
+                      "${AppLocalizations.of(context).translate('offline_alert_title')}"),
+                  notificationPosition: NotificationPosition.center,
+                  description: Text(
+                      "${AppLocalizations.of(context).translate('offline_alert_description')}"))
+              .show(context);*/
+          SnackBar snackBar = SnackBar(
+            content: Text(
+                "${AppLocalizations.of(context).translate('offline_alert_description')}"),
+            action: SnackBarAction(
+              label: "${AppLocalizations.of(context).translate('ok')}"
+                  .toUpperCase(),
+              onPressed: () {
+                // Some code to undo the change.
+                ScaffoldMessenger.of(context).clearSnackBars();
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        StateContainer.of(context).is_offline = true;
+      }
+    });
+
+    //   get saved locally address
+    /* then everytime the app restarts, we retrieve it. */
+    CustomerUtils.getSavedAddressLocally().then((Position position) {
+      if (position != null && position?.longitude != null) {
+        setState(() {
+          StateContainer.of(context).location = position;
+        });
+      }
+    });
+
+    CustomerUtils.getCustomer().then((value) {
+      setState(() {
+        StateContainer.of(context).customer = value;
+      });
+    }); // check update
+  }
 
   void mDialog(String message) {
     _showDialog(
@@ -276,86 +422,97 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]
-        );
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          svgIcons,
+                        )
+                      : icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
+            actions: isYesOrNo
+                ? <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
+                : <Widget>[
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
-
-
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
 
     xrint("_firebaseMessagingOpenedAppHandler: ${message.data})");
     if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message
-          .data}');
-      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      xrint('p_notify Message also contained a notification: ${message.data}');
+      NotificationItem notificationItem =
+          _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
     }
   }
 
-
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     await Firebase.initializeApp();
 
     xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
     if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message
-          .data}');
-      NotificationItem notificationItem = _notificationFromMessage(message.data);
+      xrint('p_notify Message also contained a notification: ${message.data}');
+      NotificationItem notificationItem =
+          _notificationFromMessage(message.data);
       _handlePayLoad(notificationItem.destination.toSpecialString());
     }
   }
 
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) {
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) {
     xrint("onDidReceiveLocalNotification ${payload}");
     _handlePayLoad(payload);
   }
@@ -365,20 +522,19 @@ class _HomePageState extends State<HomePage> {
     _handlePayLoad(payload);
   }
 
-
   void _handlePayLoad(String payload) {
     NotificationFDestination notificationFDestination;
 
     try {
-      notificationFDestination = NotificationFDestination
-          .fromJson(json.decode(payload));
+      notificationFDestination =
+          NotificationFDestination.fromJson(json.decode(payload));
       xrint(notificationFDestination.toString());
     } catch (_) {
       xrint(_);
     }
 
     switch (notificationFDestination.type) {
-    /* go to the activity we are supposed to go to with only the id */
+      /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
         _jumpToFoodDetailsWithId(notificationFDestination.product_id);
         break;
@@ -410,27 +566,29 @@ class _HomePageState extends State<HomePage> {
         _jumpToServiceClient();
         break;
       case NotificationFDestination.IMPORTANT_INFORMATION:
-      /* important information */
+        /* important information */
         break;
     }
   }
 
-
   void _jumpToFoodDetailsWithId(int product_id) {
-
-    _jumpToPage(context, RestaurantMenuPage(foodId: product_id, presenter: MenuPresenter()));
+    _jumpToPage(context,
+        RestaurantMenuPage(foodId: product_id, presenter: MenuPresenter()));
     // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
   }
 
-
   void _jumpToOrderDetailsWithId(int product_id) {
-    _jumpToPage(context, OrderDetailsPage(orderId: product_id, presenter: OrderDetailsPresenter()));
-    // navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
+    _jumpToPage(
+        context,
+        OrderNewDetailsPage(
+            orderId: product_id, presenter: OrderDetailsPresenter()));
+    // navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: product_id);
   }
 
   void _jumpToTransactionHistory() {
     xrint("_jumpINGToTransactionHistory");
-    _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+    _jumpToPage(
+        context, TransactionHistoryPage(presenter: TransactionPresenter()));
     // navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
   }
 
@@ -441,17 +599,21 @@ class _HomePageState extends State<HomePage> {
   void _jumpToRestaurantDetailsPage(int product_id) {
     /* send a negative id when we want to show the food inside the menu */
 //    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
-    _jumpToPage(context, RestaurantDetailsPage(restaurantId: product_id,presenter: RestaurantDetailsPresenter()));
+    _jumpToPage(
+        context,
+        ShopDetailsPage(
+            restaurantId: product_id, presenter: RestaurantDetailsPresenter()));
   }
 
   void _jumpToRestaurantMenuPage(int product_id) {
-
-    _jumpToPage(context, RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()));
+    _jumpToPage(context,
+        RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()));
     // navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
   }
 
   void _jumpToServiceClient() {
-    _jumpToPage(context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+    _jumpToPage(
+        context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
     // navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
   }
 
@@ -459,7 +621,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
+    // _requestGpsPermissionAndLocation();
     if (loginStuffChecked == 0) {
       /* check the login status */
       checkLogin().then((value) {
@@ -478,44 +640,62 @@ class _HomePageState extends State<HomePage> {
           } else {
             FirebaseMessaging.onBackgroundMessage(
                 _firebaseMessagingBackgroundHandler);
-            FirebaseMessaging.onMessageOpenedApp.listen(
-                _firebaseMessagingOpenedAppHandler);
+            FirebaseMessaging.onMessageOpenedApp
+                .listen(_firebaseMessagingOpenedAppHandler);
           }
         });
-      } catch(_) {
-        xrint("===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
+      } catch (_) {
+        xrint(
+            "===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
       }
       // }
 
-      loginStuffChecked  = 1;
+      loginStuffChecked = 1;
     }
     return Scaffold(
-      body: pages[StateContainer
-          .of(context)
-          .tabPosition],
+      body: pages[StateContainer.of(context).tabPosition],
       bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12.5,
+        unselectedFontSize: 12,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: ("${AppLocalizations.of(context).translate('home')}"),
+            icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
+            activeIcon: SvgPicture.asset(VectorsData.home_selected),
+            label: Utils.capitalize(
+                "${AppLocalizations.of(context).translate('home')}"),
+            tooltip: Utils.capitalize(
+                "${AppLocalizations.of(context).translate('home')}"),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: (
-                '${AppLocalizations.of(context).translate('restaurant')}'),
+            // icon: Icon(Icons.restaurant),
+            // label: ('${AppLocalizations.of(context).translate('restaurant')}'),
+            icon: SvgPicture.asset(VectorsData.buy),
+            // Icon(FontAwesomeIcons.shoppingCart),
+            activeIcon: SvgPicture.asset(VectorsData.buy_selected),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('buy')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('buy')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
-            label: ('${AppLocalizations.of(context).translate('orders')}'),
+            icon: SvgPicture.asset(VectorsData.orders),
+            // Icon(Icons.view_list),
+            activeIcon: SvgPicture.asset(VectorsData.orders_selected),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('orders')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('orders')}'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: ('${AppLocalizations.of(context).translate('account')}'),
+            icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
+            activeIcon: SvgPicture.asset(VectorsData.me_selected),
+            label: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('account')}'),
+            tooltip: Utils.capitalize(
+                '${AppLocalizations.of(context).translate('account')}'),
           ),
         ],
-        currentIndex: StateContainer
-            .of(context)
-            .tabPosition,
+        currentIndex: StateContainer.of(context).tabPosition,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -526,46 +706,46 @@ class _HomePageState extends State<HomePage> {
 
   /* keep gps location inside STATE CONTAINER and use it even for the map. */
   _onItemTapped(int value) {
-
     /* first check if user is connected / logged in
     * - if yes, switch
     * - otherwise, no switch, send him to login page...
     *
     * */
-    var msg = ["please_login_before_going_forward_description_orders", "please_login_before_going_forward_description_account"];
+    var msg = [
+      "please_login_before_going_forward_description_orders",
+      "please_login_before_going_forward_description_account"
+    ];
     if (value == 2 || value == 3) {
-      if (StateContainer
-          .of(context)
-          .loggingState == 0) {
+      if (StateContainer.of(context).loggingState == 0) {
         // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate(
-                  'please_login_before_going_forward_title')}"),
+              title: Text(
+                  "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
                     /* add an image*/
                     // location_permission
                     Container(
-                        height: 100, width: 100,
+                        height: 100,
+                        width: 100,
                         decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                            shape: BoxShape.circle,
+
                             image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: new AssetImage(
-                                  ImageAssets.login_description),
-                            )
-                        )
-                    ),
+                              fit: BoxFit.fitHeight,
+                              image:
+                                  new AssetImage(ImageAssets.login_description),
+                            ))),
                     SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context).translate(
-                        msg[value%2])}",
-                        textAlign: TextAlign.center)
+                    Text(
+                        "${AppLocalizations.of(context).translate(msg[value % 2])}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
                   ],
                 ),
               ),
@@ -605,8 +785,10 @@ class _HomePageState extends State<HomePage> {
           //
         }
       }
+    } else if (value == 1) {
+      _getLastKnowLocation(jumpToBuyPageDetails: true);
     } else {
-      // 0,1
+      // 0
       setState(() {
         StateContainer.of(context).updateTabPosition(tabPosition: value);
       });
@@ -619,8 +801,7 @@ class _HomePageState extends State<HomePage> {
     // Attach a listener to the stream
     _sub = getLinksStream().listen((String link) {
       // Parse the link and warn the user, if it is not correct
-      if (link == null)
-        return;
+      if (link == null) return;
       xrint("initialLinkStream ${link}");
       // send the links to home page to handle them instead
       _handleLinksImmediately(link);
@@ -632,16 +813,22 @@ class _HomePageState extends State<HomePage> {
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
 
-  void _handleLinksImmediately(String link) {
-    if (!(DateTime
-        .now()
-        .millisecondsSinceEpoch - StateContainer
-        .of(context)
-        .lastTimeLinkMatchAction > 2000)) {
-      return;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    subscription.cancel();
   }
 
-    StateContainer.of(context).lastTimeLinkMatchAction = DateTime.now().millisecondsSinceEpoch;
+  void _handleLinksImmediately(String link) {
+    if (!(DateTime.now().millisecondsSinceEpoch -
+            StateContainer.of(context).lastTimeLinkMatchAction >
+        2000)) {
+      return;
+    }
+
+    StateContainer.of(context).lastTimeLinkMatchAction =
+        DateTime.now().millisecondsSinceEpoch;
 
     // if you are logged in, we can just move to the activity.
     Uri mUri = Uri.parse(link);
@@ -652,20 +839,19 @@ class _HomePageState extends State<HomePage> {
 
 // adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://app.kaba-delivery.com/transactions"'
 
-
-    if (link.substring(0,3).compareTo("geo") == 0 && CustomerUtils.isGpsLocation("${mUri.path}")) {
+    if (link.substring(0, 3).compareTo("geo") == 0 &&
+        CustomerUtils.isGpsLocation("${mUri.path}")) {
       // we have a gps location
       xrint("path is gps location -> ${link}");
       /*6.33:3.44*/
       _checkIfLoggedInAndDoAction(() {
-        StateContainer
-            .of(context)
-            .tabPosition = 3;
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
-              gps_location: "${mUri.path}".replaceAll(",", ":")));
-
+        StateContainer.of(context).tabPosition = 3;
+        _jumpToPage(
+            context,
+            MyAddressesPage(
+                presenter: AddressPresenter(),
+                gps_location: "${mUri.path}".replaceAll(",", ":")));
       });
-
     } else {
       // we dont have  a gps location
       xrint("path is not gps location -> ${link}");
@@ -682,8 +868,14 @@ class _HomePageState extends State<HomePage> {
               widget.destination = SplashPage.VOUCHER;
               /* convert from hexadecimal to decimal */
               widget.argument = "${pathSegments[1]}";
-              _jumpToPage(context, AddVouchersPage(presenter: AddVoucherPresenter(), qrCode: "${widget.argument}".toUpperCase(),customer: widget.customer));
-            }});
+              _jumpToPage(
+                  context,
+                  AddVouchersPage(
+                      presenter: AddVoucherPresenter(),
+                      qrCode: "${widget.argument}".toUpperCase(),
+                      customer: widget.customer));
+            }
+          });
           break;
         case "vouchers":
           _checkIfLoggedInAndDoAction(() {
@@ -698,17 +890,18 @@ class _HomePageState extends State<HomePage> {
             xrint("addresses page");
             widget.destination = SplashPage.ADDRESSES;
             /* convert from hexadecimal to decimal */
-            _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+            _jumpToPage(
+                context, MyAddressesPage(presenter: AddressPresenter()));
           });
           break;
         case "transactions":
           _checkIfLoggedInAndDoAction(() {
-            _jumpToPage(
-                context, TransactionHistoryPage(presenter: TransactionPresenter()));
+            _jumpToPage(context,
+                TransactionHistoryPage(presenter: TransactionPresenter()));
           });
           break;
         case "restaurants":
-        //    widget.destination = SplashPage.RESTAURANT_LIST;
+          //    widget.destination = SplashPage.RESTAURANT_LIST;
           setState(() {
             StateContainer.of(context).updateTabPosition(tabPosition: 1);
           });
@@ -719,9 +912,11 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.RESTAURANT;
             /* convert from hexadecimal to decimal */
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantDetailsPage(
-                restaurant: RestaurantModel(id: widget.argument),
-                presenter: RestaurantDetailsPresenter()));
+            _jumpToPage(
+                context,
+                ShopDetailsPage(
+                    restaurant: ShopModel(id: widget.argument),
+                    presenter: RestaurantDetailsPresenter()));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
@@ -731,8 +926,11 @@ class _HomePageState extends State<HomePage> {
               xrint("order id -> ${pathSegments[1]}");
               widget.destination = SplashPage.ORDER;
               widget.argument = int.parse("${pathSegments[1]}");
-              _jumpToPage(context, OrderDetailsPage(
-                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderNewDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             }
           });
           break;
@@ -741,8 +939,10 @@ class _HomePageState extends State<HomePage> {
             xrint("food id -> ${pathSegments[1]}");
             widget.destination = SplashPage.FOOD;
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                foodId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    foodId: widget.argument, presenter: MenuPresenter()));
           }
           break;
         case "menu":
@@ -751,8 +951,10 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.MENU;
             widget.argument = int.parse("${pathSegments[1]}");
 //          widget.argument = mHexToInt("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(
-                menuId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    menuId: widget.argument, presenter: MenuPresenter()));
           }
           break;
         case "review-order":
@@ -761,9 +963,18 @@ class _HomePageState extends State<HomePage> {
               xrint("review-order id -> ${pathSegments[1]}");
               widget.destination = SplashPage.REVIEW_ORDER;
               widget.argument = int.parse("${pathSegments[1]}");
-              _jumpToPage(context, OrderDetailsPage(
-                  orderId: widget.argument, presenter: OrderDetailsPresenter()));
+              _jumpToPage(
+                  context,
+                  OrderNewDetailsPage(
+                      orderId: widget.argument,
+                      presenter: OrderDetailsPresenter()));
             }
+          });
+          break;
+        case "customer-care-message":
+          _checkIfLoggedInAndDoAction(() {
+            _jumpToPage(context,
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
           });
           break;
       }
@@ -773,8 +984,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleLinks(String link) {
     // if you are logged in, we can just move to the activity.
-    if (link == null)
-      return;
+    if (link == null) return;
 
     Uri mUri = Uri.parse(link);
 //    mUri.scheme == "https";
@@ -836,11 +1046,13 @@ class _HomePageState extends State<HomePage> {
           widget.argument = int.parse("${pathSegments[1]}");
         }
         break;
+      case "customer-care-message":
+        widget.destination = SplashPage.CUSTOM_CARE;
+        break;
     }
   }
 
   void _jumpToPage(BuildContext context, page) {
-
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -849,38 +1061,36 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkIfLoggedInAndDoAction(Function callback) {
-    if (StateContainer
-        .of(context)
-        .loggingState == 0) {
+    if (StateContainer.of(context).loggingState == 0) {
       // not logged in... show dialog and also go there
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate(
-                'please_login_before_going_forward_title')}"),
+            title: Text(
+                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   /* add an image*/
                   // location_permission
                   Container(
-                      height: 100, width: 100,
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
-                          shape: BoxShape.circle,
+
                           image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: new AssetImage(
-                                ImageAssets.login_description),
-                          )
-                      )
-                  ),
+                            fit: BoxFit.fitHeight,
+                            image:
+                                new AssetImage(ImageAssets.login_description),
+                          ))),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate(
-                      "please_login_before_going_forward_random")}",
-                      textAlign: TextAlign.center)
+                  Text(
+                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14))
                 ],
               ),
             ),
@@ -893,8 +1103,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                child:
+                    Text("${AppLocalizations.of(context).translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -913,38 +1123,340 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
+    /* show a dialog describing that we are going to need to use permissions
+    * //
+    * */
 
-}
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
 
+      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
 
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context).translate('request')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    /* add an image*/
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
 
-/*
+                            image: new DecorationImage(
 
-Future<dynamic> _backgroundMessageHandling(Map<String, dynamic> message) async {
-  xrint("onBackgroundMessage: $message");
-*/
-/* send json version of notification object. *//*
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('accept')}"),
+                  onPressed: () {
+                    /* */
+                    // SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      _getLastKnowLocation(jumpToBuyPageDetails: jumpToBuyPageDetails);
+                    });
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        // permission has been accepted
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          /*  ---- */
+          // await Geolocator.openAppSettings();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context).translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
 
-  if (Platform.isAndroid) {
-    NotificationItem notificationItem = _notificationFromMessage(message);
-    return iLaunchNotifications(notificationItem);
-  } else {
-    NotificationItem notificationItem = _notificationFromMessage(message);
-    return iLaunchNotifications(notificationItem);
+                              image: new DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.openAppSettings();
+                      /*LocationPermission permission2 = await Geolocator.checkPermission();
+                      if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                        _getLastKnowLocation(
+                            jumpToBuyPageDetails: jumpToBuyPageDetails);
+                      }*/
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else if (permission == LocationPermission.denied) {
+          /* ---- */
+          // Geolocator.requestPermission();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context).translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+                              image: new DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                     await Geolocator.requestPermission();
+                    LocationPermission permission2 = await Geolocator.checkPermission();
+                     if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                       _getLastKnowLocation(
+                           jumpToBuyPageDetails: jumpToBuyPageDetails);
+                     }
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else {
+          // location is enabled
+          bool isLocationServiceEnabled =
+              await Geolocator.isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            /*  ---- */
+            // await Geolocator.openLocationSettings();
+            /* ---- */
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                      "${AppLocalizations.of(context).translate('permission_')}"
+                          .toUpperCase(),
+                      style: TextStyle(color: KColors.primaryColor)),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        /* add an image*/
+                        // location_permission
+                        Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+//                      border: new Border.all(color: Colors.white, width: 2),
+
+                                image: new DecorationImage(
+                                  fit: BoxFit.fitHeight,
+                                  image: new AssetImage(
+                                      ImageAssets.location_permission),
+                                ))),
+                        SizedBox(height: 10),
+                        Text(
+                            "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14))
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('refuse')}"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context).translate('accept')}"),
+                      onPressed: () async {
+                        /* */
+                        Navigator.of(context).pop();
+                        await Geolocator.openLocationSettings();
+                       /* LocationPermission permission2 = await Geolocator.checkPermission();
+                        if (permission2 == LocationPermission.always || permission2 == LocationPermission.whileInUse) {
+                          _getLastKnowLocation(
+                              jumpToBuyPageDetails: jumpToBuyPageDetails);
+                        }*/
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+            /* ---- */
+          } else {
+            /* show loading dialog until this finishes then close */
+
+            // switch to page two
+            if (jumpToBuyPageDetails) {
+              setState(() {
+                StateContainer.of(context).updateTabPosition(tabPosition: 1);
+              });
+            }
+
+            positionStream =
+                Geolocator.getPositionStream().listen((Position position) {
+              /* compare current and old position */
+              if (position?.latitude != null &&
+                  tmpLocation?.latitude != null &&
+                  (position.latitude * 100).round() ==
+                      (tmpLocation.latitude * 100).round() &&
+                  (position.longitude * 100).round() ==
+                      (tmpLocation.longitude * 100).round()) {
+                widget.samePositionCount++;
+                // return;
+              } else {
+                widget.samePositionCount = 0;
+                tmpLocation = StateContainer.of(context).location;
+                if (position != null && mounted) {
+                  widget.hasGps = true;
+                  setState(() {
+                    StateContainer.of(context)
+                        .updateLocation(location: position);
+                  });
+                }
+              }
+              if (widget.samePositionCount >= 3 || widget.hasGps)
+                positionStream?.cancel();
+            });
+          }
+        }
+      }
+    });
   }
-  return Future.value(0);
+
+  void _requestGpsPermissionAndLocation() {
+    /* has been requested already, we shouldnt request a second time during this time */
+    //  explain to the user why we need it, and then pick it
+    if (!StateContainer.of(context).location_asked)
+      StateContainer.of(context).location_asked = true;
+    else
+      return;
+    if (mounted) {
+      _getLastKnowLocation();
+      if (widget.hasGps == false &&
+          StateContainer?.of(context)?.location != null) {
+        xrint("init -- 1");
+      } else {}
+    }
+  }
 }
-*/
 
 NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
-
-  xrint(" inside notificationFromMessage -- "+message_entry.toString());
+  xrint(" inside notificationFromMessage -- " + message_entry.toString());
 
   if (Platform.isIOS) {
 // Android-specific code
+
     try {
       var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 840 -- "+_data.toString());
+      xrint(" inside notificationFromMessage 840 -- " + _data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -952,8 +1464,8 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
           priority: "${_data["notification"]["destination"]["priority"]}",
           destination: NotificationFDestination(
               type: _data["notification"]["destination"]["type"],
-              product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-      );
+              product_id: int.parse(
+                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
@@ -962,7 +1474,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
 // IOS-specific code
     try {
       var _data = json.decode(message_entry["data"])["data"];
-      xrint(" inside notificationFromMessage 857 -- "+_data.toString());
+      xrint(" inside notificationFromMessage 857 -- " + _data.toString());
       NotificationItem notificationItem = new NotificationItem(
           title: _data["notification"]["title"],
           body: _data["notification"]["body"],
@@ -970,8 +1482,8 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
           priority: "${_data["notification"]["destination"]["priority"]}",
           destination: NotificationFDestination(
               type: _data["notification"]["destination"]["type"],
-              product_id: int.parse("${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"] }"))
-      );
+              product_id: int.parse(
+                  "${_data["notification"]["destination"]["product_id"] == null ? 0 : _data["notification"]["destination"]["product_id"]}")));
       return notificationItem;
     } catch (_) {
       xrint(_.toString());
@@ -980,40 +1492,24 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> message_entry) {
   return null;
 }
 
-Future<void> iLaunchNotifications (NotificationItem notificationItem) async {
+Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
+  String groupKey = "tg.tmye.kaba.brave.one";
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID,
-      AppConfig.CHANNEL_NAME,
+      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
       channelDescription: AppConfig.CHANNEL_DESCRIPTION,
       importance: Importance.max,
       priority: Priority.max,
+      groupKey: groupKey,
       ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
 
-  return flutterLocalNotificationsPlugin.show(
-      notificationItem.hashCode, notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString()
-  );
-
-}
-
-
-class AppbarhintFieldWidget extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
-      child:TextField(decoration: InputDecoration(border: OutlineInputBorder(), hintText:"Play basketball with us today", hintMaxLines: 1, hintStyle: TextStyle(color:Colors.white))),
-      color: Colors.transparent,
-    );
-  }
-
-
-
+  return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
+      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
+      payload: notificationItem?.destination?.toSpecialString());
 }

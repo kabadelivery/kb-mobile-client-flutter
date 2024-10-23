@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
@@ -6,11 +7,14 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
+import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
@@ -27,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import '../../../StateContainer.dart';
@@ -43,6 +48,7 @@ class SplashPage extends StatefulWidget { // translated
       FOOD = "FOOD",
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
+  CUSTOM_CARE = "CUSTOM-CARE",
       RESTAURANT_LIST = "RESTAURANT-LIST",
       ADDRESSES = "ADDRESSES",
       LOCATION_PICKED = "LOCATION_PICKED";
@@ -72,7 +78,6 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // SystemChrome.setEnabledSystemUIOverlays ([]);
     startTimeout();
     _listenToUniLinks();
   }
@@ -84,9 +89,6 @@ class _SplashPageState extends State<SplashPage> {
     // Exit full screen
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
-
-
-
 
   Future handleTimeout() async {
 
@@ -179,7 +181,33 @@ class _SplashPageState extends State<SplashPage> {
                   /* text */
                   SizedBox(height: 10),
                   Text("${AppLocalizations.of(context).translate('app_title')}",
-                      style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                      style: TextStyle(color:KColors.new_black, fontWeight: FontWeight.bold, fontSize: 18)),
+
+              /* hide lottie stuffs */
+                  Visibility(
+                    visible: false,
+                    maintainSize: false,
+                    maintainState: true,
+                    maintainAnimation: false,
+                    maintainInteractivity: false,
+                    child: Row(
+                      children: [
+                       /* Lottie.asset("assets/lottie/books.json"),
+                        Lottie.asset("assets/lottie/drinks.json"),
+                        Lottie.asset("assets/lottie/flower.json"),
+                        Lottie.asset("assets/lottie/food.json"),
+                        Lottie.asset("assets/lottie/groceries.json"),
+                        Lottie.asset("assets/lottie/movie.json"),
+                        Lottie.asset("assets/lottie/package_delivery.json"),
+                        Lottie.asset("assets/lottie/shopping.json"),
+                        Lottie.asset("assets/lottie/ticket.json"),*/
+                        Lottie.asset("assets/lottie/fire.json"),
+                        Lottie.asset("assets/lottie/best_sales.json"),
+                        Lottie.asset("assets/lottie/new.json"),
+                        Lottie.asset("assets/lottie/sad_face.json"),
+                      ],
+                    ),
+                  ),
                 ]
             )),
       ),
@@ -333,8 +361,8 @@ class _SplashPageState extends State<SplashPage> {
           xrint("restaurant id -> ${pathSegments[1]}");
           widget.destination = SplashPage.RESTAURANT;
           widget.argument = int.parse("${pathSegments[1]}");
-//          _jumpToPage(context, RestaurantDetailsPage(restaurant: RestaurantModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
+//          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
+          navigatorKey.currentState.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "order":
@@ -343,7 +371,7 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
         }
         break;
       case "food":
@@ -370,8 +398,12 @@ class _SplashPageState extends State<SplashPage> {
           widget.destination = SplashPage.REVIEW_ORDER;
           widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: pathSegments[1]);
+          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
         }
+        break;
+      case "customer-care-message":
+        widget.destination = SplashPage.CUSTOM_CARE;
+        navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
         break;
     }
   }
@@ -482,6 +514,9 @@ class _SplashPageState extends State<SplashPage> {
 //          widget.argument = mHexToInt("${pathSegments[1]}");
           }
           break;
+        case "customer-care-message":
+          widget.destination = SplashPage.CUSTOM_CARE;
+          break;
       }
     }
   }
@@ -501,5 +536,7 @@ class _SplashPageState extends State<SplashPage> {
         ));
 
   }
-
 }
+
+
+/* lottie stuffs */

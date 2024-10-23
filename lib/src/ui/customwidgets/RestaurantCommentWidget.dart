@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class RestaurantCommentWidget extends StatelessWidget {
@@ -44,7 +45,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 SizedBox(height: 5),
                 Row(mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text("${Utils.readTimestamp(comment?.created_at)}", textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 12)),
+                    Text("${Utils.readTimestamp(context, comment?.created_at)}", textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black.withAlpha(150), fontSize: 12)),
                   ],
                 ),
                 SizedBox(height: 5),
@@ -58,7 +59,7 @@ class RestaurantCommentWidget extends StatelessWidget {
                 SizedBox(height: 5),
                 Row(
                   children: <Widget>[
-                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:Colors.black.withAlpha(150), fontSize: 15))),
+                    Flexible(child: Text(comment.content.trim(), textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black.withAlpha(150), fontSize: 15))),
                   ],
                 )
               ]

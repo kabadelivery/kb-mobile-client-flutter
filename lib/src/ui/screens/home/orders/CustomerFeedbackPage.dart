@@ -1,4 +1,6 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/order_feedback_contract.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
@@ -10,9 +12,11 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderFeedbackPage extends StatefulWidget {
-
   static var routeName = "/OrderFeedbackPage";
 
   OrderFeedbackPresenter presenter;
@@ -21,8 +25,7 @@ class OrderFeedbackPage extends StatefulWidget {
 
   int max_rate = 5;
 
-
-  OrderFeedbackPage ({Key key, this.orderId, this.presenter}) : super(key: key);
+  OrderFeedbackPage({Key key, this.orderId, this.presenter}) : super(key: key);
 
   int orderId; // = 8744;
 
@@ -33,14 +36,13 @@ class OrderFeedbackPage extends StatefulWidget {
   _OrderFeedbackPageState createState() => _OrderFeedbackPageState();
 }
 
-class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderFeedbackView {
-
-
+class _OrderFeedbackPageState extends State<OrderFeedbackPage>
+    implements OrderFeedbackView {
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
-  TextEditingController _feedbackTextController  = TextEditingController();
+  TextEditingController _feedbackTextController = TextEditingController();
 
   bool isSendingFeedback = false;
 
@@ -48,11 +50,13 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   void initState() {
     // TODO: implement initState
     super.initState();
-   widget.presenter.orderFeedbackView = this;
+    widget.presenter.orderFeedbackView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
-      if (widget.orderId != null && widget.orderId != 0 && widget.customer != null) {
+      if (widget.orderId != null &&
+          widget.orderId != 0 &&
+          widget.customer != null) {
         widget.presenter.loadOrderDetailsForFeedback(customer, widget.orderId);
       }
     });
@@ -61,156 +65,243 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-      isLoading ? Center(child: MyLoadingProgressWidget()) : (
-          hasNetworkError || hasSystemError ? ErrorPage(message: "Network error, please try again.", onClickAction: ()=>  widget.presenter.loadOrderDetailsForFeedback(widget.customer, widget.orderId)) :
-          Stack(
-            children: <Widget>[
-              Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, color: KColors.mBlue,
-                /*  decoration: BoxDecoration(image: new DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(Utils.inflateLink("/web/assets/app_icons/kabachat.jpg"))
-          )*/
-              ),
-              Center(
-                child: SingleChildScrollView(
-                  child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        brightness: Brightness.light,
+        backgroundColor: KColors.primaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+//        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
+          centerTitle: true,
+          title: Row(mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('note_and_review')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
+      ),
+      body: isLoading
+          ? Center(child: MyLoadingProgressWidget())
+          : (hasNetworkError || hasSystemError
+              ? ErrorPage(
+                  message: "Network error, please try again.",
+                  onClickAction: () => widget.presenter
+                      .loadOrderDetailsForFeedback(
+                          widget.customer, widget.orderId))
+              : SingleChildScrollView(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 30),
 
-                    Container(margin: EdgeInsets.only(left:20,right:20),child: Text("We need to know what you think about our services to serve you better. Would you please rate us?", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
+                        Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: KColors.new_gray,
+                                border: new Border.all(
+                                    color: KColors.primaryYellowColor,
+                                    width: 2),
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(
+                                        Utils.inflateLink(
+                                            "${widget?.command?.livreur?.pic}"))))),
 
-                    SizedBox(height:20),
-
-                    Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
-
-                      // delivery man
-                      Column(
-                        children: <Widget>[
-                          Row(
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
                             children: <Widget>[
-                              Container(
-                                  height:90, width: 90,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      border: new Border.all(color: Colors.white, width: 2),
-                                      shape: BoxShape.circle,
-                                      image: new DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(Utils.inflateLink("${widget?.command?.livreur?.pic}"))
-                                      )
-                                  )
-                              ),
-                              Container(margin: EdgeInsets.only(left:10,right:10),child: Text(" X ", style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),)),
-                              // restaurant picture
-                              Container(
-                                  height:90, width: 90,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      border: new Border.all(color: Colors.white, width: 2),
-                                      shape: BoxShape.circle,
-                                      image: new DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(Utils.inflateLink(widget?.command?.restaurant_entity?.pic))
-                                      )
-                                  )
-                              ),
+                              SizedBox(height: 15),
+                              Text("${widget?.command?.livreur?.name}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: KColors.new_black,
+                                      fontSize: 14)),
+                              SizedBox(height: 5),
+                              Text(
+                                  "${AppLocalizations.of(context).translate('shipper')}",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              SizedBox(height: 30),
+                              Text(
+                                  "${AppLocalizations.of(context).translate('please_give_rating')}",
+                                  style: TextStyle(
+                                      color: KColors.new_black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14)),
                             ],
                           ),
-                        ],
-                      ),
-                    ]),
-
-                    Column(
-                      children: <Widget>[
-                        SizedBox(height:15),
-                        Row(
-                          children: <Widget>[
-                            Container(width: MediaQuery.of(context).size.width/2,
-                                padding: EdgeInsets.all(10),
-                                child: Text("KABA DELIVERY",
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight
-                                            .bold))),
-
-                            Container(width: MediaQuery.of(context).size.width/2,
-                                padding: EdgeInsets.all(10),
-                                child: Text("${widget?.command?.restaurant_entity?.name}",
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight
-                                            .bold))),
-                          ],
                         ),
 
-                      ],
-                    ),
+                        SizedBox(height: 20),
 
-                    SizedBox(height:20),
+                        // rating starts.
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                  icon: Icon(
+                                      widget.rate >= 1
+                                          ? FontAwesomeIcons.solidStar
+                                          : FontAwesomeIcons.star,
+                                      color: Colors.yellow,
+                                      size: 35),
+                                  onPressed: () => _starPressed(1)),
+                              IconButton(
+                                  icon: Icon(
+                                      widget.rate >= 2
+                                          ? FontAwesomeIcons.solidStar
+                                          : FontAwesomeIcons.star,
+                                      color: Colors.yellow,
+                                      size: 35),
+                                  onPressed: () => _starPressed(2)),
+                              IconButton(
+                                  icon: Icon(
+                                      widget.rate >= 3
+                                          ? FontAwesomeIcons.solidStar
+                                          : FontAwesomeIcons.star,
+                                      color: Colors.yellow,
+                                      size: 35),
+                                  onPressed: () => _starPressed(3)),
+                              IconButton(
+                                  icon: Icon(
+                                      widget.rate >= 4
+                                          ? FontAwesomeIcons.solidStar
+                                          : FontAwesomeIcons.star,
+                                      color: Colors.yellow,
+                                      size: 35),
+                                  onPressed: () => _starPressed(4)),
+                              IconButton(
+                                  icon: Icon(
+                                      widget.rate >= 5
+                                          ? FontAwesomeIcons.solidStar
+                                          : FontAwesomeIcons.star,
+                                      color: Colors.yellow,
+                                      size: 35),
+                                  onPressed: () => _starPressed(5)),
+                            ]),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text("${widget.rate}/${widget.max_rate}",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey)),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                                "${AppLocalizations.of(context).translate('anything_to_say_about_the_service')}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: KColors.new_black)),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        // text field
+                        Container(
+                          height: 120,
+                          margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              color: KColors.new_gray),
+                          padding: EdgeInsets.all(10),
+                          child: TextField(
+                            maxLines: 5,
+                            controller: _feedbackTextController,
+                            style: TextStyle(
+                                color: KColors.new_black, fontSize: 14),
+                            maxLength: 500,
+                            textAlign: TextAlign.left,
+                            decoration:
+                                InputDecoration.collapsed(hintText: "..."),
+                          ),
+                        ),
 
-                    // rating starts.
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                      IconButton(icon: Icon(widget.rate >= 1 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(1)),
-                      IconButton(icon: Icon(widget.rate >= 2 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(2)),
-                      IconButton(icon: Icon(widget.rate >= 3 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(3)),
-                      IconButton(icon: Icon(widget.rate >= 4 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(4)),
-                      IconButton(icon: Icon(widget.rate >= 5 ? Icons.star : Icons.star_border, color: Colors.yellow, size: 50),onPressed: () => _starPressed(5)),
-                    ]),
-                    SizedBox(height:20),
-                    // text field
-                    Container (margin: EdgeInsets.only(left:20, right:20, top:20),decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200), padding: EdgeInsets.all(10),
-                      child: TextField(controller: _feedbackTextController, style: TextStyle(color: Colors.black, fontSize: 16), maxLength: 500, textAlign: TextAlign.left,
-                        decoration: InputDecoration.collapsed(hintText: "Please give us a review..."),
-                      ),
-                    ),
+                        SizedBox(height: 50),
 
-                    SizedBox(height:30),
-
-
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: Colors.white,
-                            child: Row(mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text("SEND THE REVIEW ${widget.rate}/${widget.max_rate}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                                isSendingFeedback ?  Row(
-                                  children: <Widget>[
-                                    SizedBox(width: 10),
-                                    SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)), height: 15, width: 15) ,
-                                  ],
-                                )  : Container(),
+                        GestureDetector(
+                          onTap: () => _sendReview(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: KColors.primaryColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.all(15),
+                            margin: EdgeInsets.only(left: 20, right: 20),
+                            child: Center(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${AppLocalizations.of(context).translate('submit')}"
+                                      ?.toUpperCase(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                      color: Colors.white),
+                                ),
+                                isSendingFeedback
+                                    ? Row(
+                                        children: <Widget>[
+                                          SizedBox(width: 10),
+                                          SizedBox(
+                                              child: CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(Colors.white)),
+                                              height: 15,
+                                              width: 15),
+                                        ],
+                                      )
+                                    : Container(),
                               ],
-                            ), onPressed: () => _sendReview()),
-                      ],
-                    ),
-                  ]),
-                ),
-              ),
-            ],
-          )),
+                            )),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        )
+                      ]),
+                )),
     );
   }
 
   void _starPressed(int position) {
-
     setState(() {
       widget.rate = position;
     });
   }
 
   _sendReview() {
-
     String reviewMessage = _feedbackTextController.text;
     int reviewStars = widget.rate;
-    widget.presenter.sendFeedback(widget.customer, widget.orderId, reviewStars, reviewMessage);
+    widget.presenter.sendFeedback(
+        widget.customer, widget.orderId, reviewStars, reviewMessage);
   }
 
   @override
   void inflateOrderDetails(CommandModel command) {
-
     xrint("images ${command?.restaurant_entity?.pic}");
     setState(() {
       widget.command = command;
@@ -225,27 +316,25 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
   }
 
   @override
-  void systemError() {
-  }
+  void systemError() {}
 
   @override
-  void networkError() {
-  }
-
+  void networkError() {}
 
   @override
   void sendFeedbackSuccess() {
-
     _showDialog(
       okBackToHome: false,
-      icon: Icon(Icons.check, color: Colors.blue,),
+      icon: Icon(
+        Icons.check,
+        color: Colors.blue,
+      ),
       message: "Thank you for submitting your review.",
     );
   }
 
   @override
   void sendFeedbackError(int errorCode) {
-
     // feedback network error.
     _showDialog(
       okBackToHome: false,
@@ -254,41 +343,35 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
     );
   }
 
-
-
-  void _showDialog(
-      {Icon icon, var message, bool okBackToHome = false}) {
+  void _showDialog({Icon icon, var message, bool okBackToHome = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
-                ]
-            ),
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(height: 80, width: 80, child: icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
             actions: <Widget>[
               OutlinedButton(
-                child: new Text(
-                    "OK", style: TextStyle(color: KColors.primaryColor)),
+                child: new Text("OK",
+                    style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   if (!okBackToHome) {
                     Navigator.of(context).pop({'ok': true});
                     Navigator.of(context).pop({'ok': true});
                   } else
-                    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-                        builder: (BuildContext context) => HomePage()), (
-                        r) => false);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage()),
+                        (r) => false);
                 },
               ),
-            ]
-        );
+            ]);
       },
     );
   }
@@ -299,6 +382,4 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage> implements OrderF
       isSendingFeedback = issending;
     });
   }
-
-
 }

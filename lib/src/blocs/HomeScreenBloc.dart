@@ -1,5 +1,5 @@
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/repository.dart';
 import 'package:rxdart/rxdart.dart';
 

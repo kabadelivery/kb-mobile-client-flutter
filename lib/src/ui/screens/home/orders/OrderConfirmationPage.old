@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/MyAddressModel.old';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/PreOrderConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/CustomSwitchPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
@@ -11,7 +11,7 @@ class OrderConfirmationPage extends StatefulWidget {
 
   static var routeName = "/OrderConfirmationPage";
 
-  Map<RestaurantFoodModel, int> addons, foods;
+  Map<ShopProductModel, int> addons, foods;
 
   int totalPrice;
 
@@ -36,7 +36,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
   /* pricing configuration */
   OrderBillConfiguration orderBillConfiguration;
 
-  Map<RestaurantFoodModel, int> addons, foods;
+  Map<ShopProductModel, int> addons, foods;
 
   int totalPrice;
 
@@ -77,7 +77,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
     List<Widget> m = <Widget>[];
     if (preorder_timeranges != null && preorder_timeranges.length > 0) {
       m.add(SizedBox(height: 10));
-      m.add(Center(child: Text("A quelle periode preferez vous etre livrer?",style: TextStyle(color: Colors.black.withAlpha(150)))));
+      m.add(Center(child: Text("A quelle periode preferez vous etre livrer?",style: TextStyle(color: KColors.new_black.withAlpha(150)))));
       m.add(SizedBox(height: 10));
       m.addAll(List.generate(preorder_timeranges.length, (int position){
         return _buildTimeRangeEntry(preorder_timeranges[position], position);
@@ -109,7 +109,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
             children: <Widget>[
               Text("${preorder_timerang}", style: TextStyle(
                 fontSize: preorder_timerange_selection == position ? 20 : 18,
-                color:  preorder_timerange_selection == position ? KColors.primaryColor : Colors.black,
+                color:  preorder_timerange_selection == position ? KColors.primaryColor : KColors.new_black,
               )),
               /* iconbutton that shows which one is selected */
               preorder_timerange_selection == position ? Icon(Icons.check_circle, color: KColors.primaryColor) : Container()
@@ -130,7 +130,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
             ),
             SizedBox(height: 10),
             Row(children: <Widget>[
-              Expanded(child: Text(selectedAddress.description, textAlign: TextAlign.left,style: TextStyle(color: Colors.black.withAlpha(200)))),
+              Expanded(child: Text(selectedAddress.description, textAlign: TextAlign.left,style: TextStyle(color: KColors.new_black.withAlpha(200)))),
               IconButton(icon: Icon(Icons.delete_forever, color: KColors.primaryColor), onPressed: () {})
             ])
           ]
@@ -152,7 +152,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Remise: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)), Text("${orderBillConfiguration.remise} FCFA",  style: TextStyle(fontSize: 16, color: Colors.green))]),
             SizedBox(height: 10),
-            Container(height: 1, color: Colors.black,width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(left: 10, right: 10)),
+            Container(height: 1, color: KColors.new_black,width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(left: 10, right: 10)),
             SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Text("Net à Payer: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), Text("${orderBillConfiguration.total_pricing} FCFA",  style: TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor,fontSize: 18))]),
           ],
@@ -196,7 +196,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Text("Prix Commande", style: TextStyle(color: Colors.black, fontSize: 14)),
+                Text("Prix Commande", style: TextStyle(color: KColors.new_black, fontSize: 14)),
                 Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                   IconButton(icon:Icon(Icons.attach_money, color: KColors.primaryColor), onPressed: () {},),
                   Text("${totalPrice}F", style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
@@ -233,7 +233,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
               SizedBox(height: 10),
               _buildAddress(MyAddressModel.fake()),
               SizedBox(height: 15),
-              Center(child: Text("Utilisez un bon ? ",style: TextStyle(color: Colors.black.withAlpha(150)))),
+              Center(child: Text("Utilisez un bon ? ",style: TextStyle(color: KColors.new_black.withAlpha(150)))),
               SizedBox(height: 15),
               /* set up the boxes for the bills */
               Row(children: <Widget>[
@@ -254,7 +254,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                   child: Row(children: <Widget>[
                     Text("295 FCFA ", style: TextStyle(fontWeight: FontWeight.bold,color: KColors.primaryColor, fontSize: 18)),
                     SizedBox(width: 10),
-                    Text("Solde insuffisant ! ", style: TextStyle(color: Colors.black, fontSize: 18))
+                    Text("Solde insuffisant ! ", style: TextStyle(color: KColors.new_black, fontSize: 18))
                   ]))
             ])
       ),

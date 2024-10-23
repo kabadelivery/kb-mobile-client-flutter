@@ -181,18 +181,18 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                               return Container(
                                                   margin: EdgeInsets.only(right: (index!=_inputCount-1?10:0)),
                                                   decoration: new BoxDecoration(
-                                                    border: new Border(bottom: BorderSide(color:Colors.black, width: 2)),
+                                                    border: new Border(bottom: BorderSide(color:KColors.new_black, width: 2)),
                                                   ),
                                                   child: SizedBox(width: 30, height:30,child:Center(child:
                                                   Text(pwd.trim().length > index ? /*pwd[index]*/ "${pwd.substring(index,index+1)}" : "",
                                                       // TextField(decoration: new InputDecoration.collapsed(hintText: "*"),
-                                                      style: TextStyle(fontSize: 30,color: Colors.black)))));
+                                                      style: TextStyle(fontSize: 30,color: KColors.new_black)))));
                                             })
                                         )
                                   ),/* rows for password */
                                   SizedBox(height:20),
                                   loadingToGoOut ?
-                                  Center(child: SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black)), height: 15, width: 15))
+                                  Center(child: SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.new_black)), height: 15, width: 15))
                                       :
                                   Container(
                                       decoration: BoxDecoration(
@@ -296,7 +296,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
         setState(() {
           loadingToGoOut = true;
         });
-        Future.delayed(Duration(seconds: 3), (){
+        Future.delayed(Duration(seconds: 2), (){
           Navigator.of(context).pop({'otp_valid':"valid"});
         });
       } else {
@@ -363,7 +363,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:
@@ -427,7 +427,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

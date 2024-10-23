@@ -2,7 +2,7 @@ import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/KabaShippingMan.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
 class DeliveryTimeFrameModel {
 

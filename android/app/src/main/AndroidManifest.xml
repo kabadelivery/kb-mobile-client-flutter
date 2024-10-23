@@ -2,28 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="tg.tmye.kaba.brave.one">
 
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove"/>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
-    <uses-sdk tools:overrideLibrary="net.touchcapture.qr.flutterqr,com.google.zxing.client.android"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:node="remove" />
 
-    <uses-feature android:name="android.hardware.location.network" android:required="false" />
-    <uses-feature android:name="android.hardware.location.gps" android:required="false"  />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-sdk tools:overrideLibrary="net.touchcapture.qr.flutterqr,com.google.zxing.client.android" />
+
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <!-- barcode scanner use -->
 
     <!-- we need to be able to ask these permissions at the right moment. -->
-    <uses-permission-sdk-23 android:name="android.permission.CAMERA"/>
-<!--    <uses-permission android:name="android.permission.CAMERA" />-->
+    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <!--    <uses-permission android:name="android.permission.CAMERA" />-->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- vibrate -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -48,33 +57,33 @@
 
 
     <application
-        tools:replace="android:icon"
+        android:icon="@mipmap/launcher_icon"
         android:label="KABA"
-        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/kaba_logo_round"
-        android:networkSecurityConfig="@xml/network_security"
-        android:icon="@mipmap/launcher_icon">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:icon">
 
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <meta-data android:name="io.flutter.network-policy"
-            android:resource="@xml/network_security"/>
+        <meta-data
+            android:name="io.flutter.network-policy"
+            android:resource="@xml/network_security" />
 
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
             android:allowTaskReparenting="true"
-            android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:launchMode="singleInstance"
+            android:showWhenLocked="false"
+            android:theme="@style/LaunchTheme"
+            android:turnScreenOn="false"
+            android:windowSoftInputMode="adjustResize">
 
             <!-- Specify that the launch screen should continue being displayed -->
             <!-- until Flutter renders its first frame. -->
@@ -83,10 +92,10 @@
                 android:resource="@drawable/launch_background" />
 
             <!-- Theme to apply as soon as Flutter begins rendering frames -->
-       <!--     <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"
-                />-->
+            <!--     <meta-data
+                     android:name="io.flutter.embedding.android.NormalTheme"
+                     android:resource="@style/NormalTheme"
+                     />-->
 
             <!-- This keeps the window background of the activity showing
                  until Flutter renders its first frame. It can be removed if
@@ -95,9 +104,10 @@
             <meta-data
                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
                 android:value="true" />
+
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <intent-filter>
@@ -108,31 +118,41 @@
             <!-- App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="app.kaba-delivery.com" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+                <data android:host="app.kaba-delivery.com" />
+                <!--   <data
+                       android:scheme="https"
+                       android:host="app.kaba-delivery.com" />-->
             </intent-filter>
 
             <!-- opening maps in kaba -->
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-<!--                <data android:scheme="https" android:host="maps.google.com" />-->
+                <!--                <data android:scheme="https" android:host="maps.google.com" />-->
                 <data android:scheme="geo" />
             </intent-filter>
         </activity>
 
         <!-- ulrichabiguime@gmail.com kaba-tmye-2018 -->
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC2GyigAWazOTJtOcR6XM1UfJLGl2eqQd0" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
 
         <meta-data
@@ -142,27 +162,27 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="kaba-notification-channel-id" />
-<!--
+        <!--
 
 
-        <receiver
-            android:name="com.huawei.hms.flutter.push.receiver.BackgroundMessageBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.huawei.hms.flutter.push.receiver.BACKGROUND_REMOTE_MESSAGE"/>
-            </intent-filter>
-        </receiver>
+                <receiver
+                    android:name="com.huawei.hms.flutter.push.receiver.BackgroundMessageBroadcastReceiver"
+                    android:enabled="true"
+                    android:exported="true">
+                    <intent-filter>
+                        <action android:name="com.huawei.hms.flutter.push.receiver.BACKGROUND_REMOTE_MESSAGE"/>
+                    </intent-filter>
+                </receiver>
 
 
-        <meta-data
-            android:name="com.huawei.hms.client.appid"
-        android:value="appid=104925749" />
-    &lt;!&ndash; Replace xxx with the actual payment ID, which can be obtained from the app's IAP information. &ndash;&gt; &ndash;&gt;
-    <meta-data
-        android:name="com.huawei.hms.client.cpid"
-        android:value="cpid=2640228000020036107" />
--->
+                <meta-data
+                    android:name="com.huawei.hms.client.appid"
+                android:value="appid=104925749" />
+            &lt;!&ndash; Replace xxx with the actual payment ID, which can be obtained from the app's IAP information. &ndash;&gt; &ndash;&gt;
+            <meta-data
+                android:name="com.huawei.hms.client.cpid"
+                android:value="cpid=2640228000020036107" />
+        -->
 
 
     </application>

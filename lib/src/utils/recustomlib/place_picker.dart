@@ -4,12 +4,12 @@ import 'dart:math';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-
 
 /// The result returned after completing location selection.
 class LocationResult {
@@ -141,13 +141,13 @@ class PlacePickerState extends State<PlacePicker> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () {
-          Navigator.pop(context);
-        }),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         key: this.appBarKey,
         title: SearchInput((it) {
           searchPlace(it);
@@ -177,43 +177,43 @@ class PlacePickerState extends State<PlacePicker> {
           this.hasSearchTerm
               ? SizedBox()
               : Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SelectPlaceAction(getLocationName(), () {
-                  if (markers.first.position != null) {
-                    Navigator.of(context).pop(markers.first.position);
-                  } else
-                    Navigator.of(context).pop(this.target);
-                }),
-              /*  Divider(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SelectPlaceAction(getLocationName(), () {
+                        if (markers.first.position != null) {
+                          Navigator.of(context).pop(markers.first.position);
+                        } else
+                          Navigator.of(context).pop(this.target);
+                      }),
+                      /*  Divider(
                   height: 8,
                 ),*/
-                Padding(
-                  child: Text(
-                    "${AppLocalizations.of(context).translate('nearby_places')}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
+                      Padding(
+                        child: Text(
+                          "${AppLocalizations.of(context).translate('nearby_places')}",
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          children: this
+                              .nearbyPlaces
+                              .map((it) => NearbyPlaceItem(it, () {
+                                    moveToLocation(it.latLng);
+                                  }))
+                              .toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: ListView(
-                    children: this
-                        .nearbyPlaces
-                        .map((it) => NearbyPlaceItem(it, () {
-                      moveToLocation(it.latLng);
-                    }))
-                        .toList(),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -258,7 +258,7 @@ class PlacePickerState extends State<PlacePicker> {
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-    this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext.findRenderObject();
 
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -366,7 +366,7 @@ class PlacePickerState extends State<PlacePicker> {
     http.get(Uri.parse(endpoint)).then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> location =
-        jsonDecode(response.body)['result']['geometry']['location'];
+            jsonDecode(response.body)['result']['geometry']['location'];
 
         LatLng latLng = LatLng(location['lat'], location['lng']);
 
@@ -383,7 +383,7 @@ class PlacePickerState extends State<PlacePicker> {
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-    this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext.findRenderObject();
 
     clearOverlay();
 
@@ -441,16 +441,16 @@ class PlacePickerState extends State<PlacePicker> {
 
   /// Fetches and updates the nearby places to the provided lat,lng
   void getNearbyPlaces(LatLng latLng) {
-
     http
-        .get(Uri.parse("https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-        "key=${widget.apiKey}&" +
-        "location=${latLng.latitude},${latLng.longitude}&radius=150"))
+        .get(Uri.parse(
+            "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "key=${widget.apiKey}&" +
+                "location=${latLng.latitude},${latLng.longitude}&radius=150"))
         .then((response) {
       if (response.statusCode == 200) {
         this.nearbyPlaces.clear();
         for (Map<String, dynamic> item
-        in jsonDecode(response.body)['results']) {
+            in jsonDecode(response.body)['results']) {
           NearbyPlace nearbyPlace = NearbyPlace();
 
           nearbyPlace.name = item['name'];
@@ -479,8 +479,8 @@ class PlacePickerState extends State<PlacePicker> {
   void reverseGeocodeLatLng(LatLng latLng) {
     http
         .get(Uri.parse("https://maps.googleapis.com/maps/api/geocode/json?" +
-        "latlng=${latLng.latitude},${latLng.longitude}&" +
-        "key=${widget.apiKey}"))
+            "latlng=${latLng.latitude},${latLng.longitude}&" +
+            "key=${widget.apiKey}"))
         .then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -524,6 +524,7 @@ class PlacePickerState extends State<PlacePicker> {
 
     // getNearbyPlaces(latLng);
   }
+
   LatLng target;
   void moveToCurrentUserLocation() {
     var location = Location();
@@ -600,7 +601,8 @@ class SearchInputState extends State<SearchInput> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                hintText: "${AppLocalizations.of(context).translate('search_place')}",
+                hintText:
+                    "${AppLocalizations.of(context).translate('search_place')}",
                 border: InputBorder.none,
               ),
               controller: this.editController,
@@ -616,25 +618,29 @@ class SearchInputState extends State<SearchInput> {
           ),
           this.hasSearchEntry
               ? GestureDetector(
-            child: Icon(
-              Icons.clear,
-              color: KColors.primaryColor,
-            ),
-            onTap: () {
-              this.editController.clear();
-              setState(() {
-                this.hasSearchEntry = false;
-              });
-            },
-          )
+                  child: Icon(
+                    Icons.clear,
+                    color: KColors.primaryColor,
+                  ),
+                  onTap: () {
+                    this.editController.clear();
+                    setState(() {
+                      this.hasSearchEntry = false;
+                    });
+                  },
+                )
               : SizedBox(),
           SizedBox(
             width: 8,
           ),
-          IconButton(icon: Icon(
-            Icons.search,
-            color: Colors.black,
-          ), onPressed: (){onSearchInputChange();},
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: KColors.new_black,
+            ),
+            onPressed: () {
+              onSearchInputChange();
+            },
           ),
         ],
       ),
@@ -675,7 +681,7 @@ class SelectPlaceAction extends StatelessWidget {
                     BouncingWidget(
                       duration: Duration(milliseconds: 400),
                       scaleFactor: 3,
-                      child:  Text(
+                      child: Text(
                         locationName,
                         style: TextStyle(
                           color: Colors.white,
@@ -687,7 +693,7 @@ class SelectPlaceAction extends StatelessWidget {
                     Text(
                       "${AppLocalizations.of(context).translate('tap_location')}",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: KColors.new_black,
                         fontSize: 15,
                       ),
                     ),
@@ -697,7 +703,7 @@ class SelectPlaceAction extends StatelessWidget {
               BouncingWidget(
                 duration: Duration(milliseconds: 200),
                 scaleFactor: 3,
-                child:   Icon(
+                child: Icon(
                   Icons.arrow_forward,
                 ),
               ),
@@ -783,7 +789,7 @@ class RichSuggestion extends StatelessWidget {
     final List<TextSpan> result = [];
 
     String startText =
-    this.autoCompleteItem.text.substring(0, this.autoCompleteItem.offset);
+        this.autoCompleteItem.text.substring(0, this.autoCompleteItem.offset);
     if (startText.isNotEmpty) {
       result.add(
         TextSpan(
@@ -803,7 +809,7 @@ class RichSuggestion extends StatelessWidget {
     result.add(TextSpan(
       text: boldText,
       style: TextStyle(
-        color: Colors.black,
+        color: KColors.new_black,
         fontSize: 15,
       ),
     ));
@@ -825,8 +831,6 @@ class RichSuggestion extends StatelessWidget {
     return result;
   }
 }
-
-
 
 /// A UUID generator.
 ///

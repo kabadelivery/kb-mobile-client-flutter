@@ -37,7 +37,7 @@ class CustomerCareChatApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -82,8 +82,13 @@ class CustomerCareChatApiProvider {
 
       var device;
 
-      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-      String token = await firebaseMessaging.getToken();
+      String token = "";
+      try {
+        final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+          token = await firebaseMessaging.getToken();
+      } catch(e){
+        xrint(e);
+      }
 
       if (Platform.isAndroid) {
         // Android-specific code
@@ -120,7 +125,7 @@ class CustomerCareChatApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
+        ..connectTimeout = 10000
       ;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

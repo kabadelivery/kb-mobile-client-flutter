@@ -1,7 +1,8 @@
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -9,10 +10,11 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantListWidget extends StatefulWidget {
 
-  RestaurantModel restaurantModel;
+  ShopModel restaurantModel;
 
   RestaurantListWidget({
     Key key,
@@ -49,7 +51,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             shape: BoxShape.circle,
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(Utils.inflateLink(widget.restaurantModel.pic))
+                                image: CachedNetworkImageProvider(Utils.inflateLink(widget?.restaurantModel?.pic))
                             )
                         )
                     ),
@@ -60,7 +62,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       children: <Widget>[
                         Text("${widget?.restaurantModel?.name}", overflow: TextOverflow.ellipsis,maxLines: 2, textAlign: TextAlign.left, style: TextStyle(color:KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.w500)),
                         SizedBox(height:10),
-                        Text("${widget?.restaurantModel?.address}", maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 13, color: Colors.black.withAlpha(150))),
+                        Text("${widget?.restaurantModel?.address}", maxLines:3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, style: TextStyle(fontSize: 13, color: KColors.new_black.withAlpha(150))),
                       ],
                     )
                 ),
@@ -99,17 +101,17 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: KColors.primaryYellowColor),
                               child: Row(
                                 children: <Widget>[
-                                 Icon(Icons.directions_bike, color: Colors.black, size: 14),
+                                 Icon(Icons.directions_bike, color: KColors.new_black, size: 14),
                                   SizedBox(width:5),
                                   Text(
                                       (widget.restaurantModel?.delivery_pricing=="~" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget.restaurantModel?.delivery_pricing+" F"),
-                                      style: TextStyle(color: Colors.black, fontSize: 12)
+                                      style: TextStyle(color: KColors.new_black, fontSize: 12)
                                   ),
                                 ],
                               )),
                           SizedBox(width: 10),
                           widget.restaurantModel?.distance == null ? Container() :
-                          Text("~${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
+                          Text("~${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}", style: TextStyle(color: KColors.new_black, fontWeight: FontWeight.normal, fontStyle: FontStyle.normal, fontSize: 12))
                         ])
                       ],
                     ))
@@ -118,7 +120,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
           onTap: (){widget?.restaurantModel?.coming_soon==0?_jumpToRestaurantMenu(context, widget.restaurantModel):_comingSoon(context, widget.restaurantModel);}));
   }
 
-  void _jumpToRestaurantDetails(BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
 
    /* Navigator.push(
       context,
@@ -129,7 +131,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+            ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -141,7 +143,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
         ));
   }
 
-  void _jumpToRestaurantMenu (BuildContext context, RestaurantModel restaurantModel) {
+  void _jumpToRestaurantMenu (BuildContext context, ShopModel restaurantModel) {
 
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
@@ -165,7 +167,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     );*/
   }
 
-  void _comingSoon(BuildContext context, RestaurantModel restaurantModel) {
+  void _comingSoon(BuildContext context, ShopModel restaurantModel) {
     /* show the coming soon dialog */
     showDialog(context: context, builder: (BuildContext context)=>AlertDialog(
         content: Column(mainAxisSize: MainAxisSize.min,
@@ -177,14 +179,14 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel.pic))
+                          image: CachedNetworkImageProvider(Utils.inflateLink(restaurantModel?.pic))
                       )
                   )
               ),
               SizedBox(height: 10),
               Text("${AppLocalizations.of(context).translate('coming_soon_dialog')}",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 13))
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
             ]
         ),
         actions: <Widget>[
@@ -200,7 +202,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     ));
   }
 
-  _getRestaurantStateTag(RestaurantModel restaurantModel) {
+  _getRestaurantStateTag(ShopModel restaurantModel) {
 
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
@@ -236,7 +238,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
 
   }
 
-  getRating(RestaurantModel restaurantModel) {
+  getRating(ShopModel restaurantModel) {
 
    /* return Row(children: <Widget>[]
       ..addAll(

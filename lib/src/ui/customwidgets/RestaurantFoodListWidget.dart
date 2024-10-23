@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class RestaurantFoodListWidget extends StatefulWidget {
 
@@ -17,7 +18,7 @@ class RestaurantFoodListWidget extends StatefulWidget {
   // ignore: non_constant_identifier_names
   Offset basket_offset;
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   RestaurantFoodListWidget({this.text, this.basket_offset, this.food});
 
@@ -37,7 +38,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
 
   Offset basket_offset;
 
-  RestaurantFoodModel food;
+  ShopProductModel food;
 
   _RestaurantFoodListWidgetState({this.basket_offset, this.food});
 
@@ -107,7 +108,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:Colors.black, fontSize: 14, fontWeight: FontWeight.w500)),
+                        Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)),
                         SizedBox(height: 5),
                         Row(
                           children: <Widget>[
@@ -142,7 +143,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget> wit
     return 0;
   }
 
-  _jumpToFoodDetails(BuildContext context, RestaurantFoodModel food) {
+  _jumpToFoodDetails(BuildContext context, ShopProductModel food) {
    /* Navigator.push(
       context,
       MaterialPageRoute(

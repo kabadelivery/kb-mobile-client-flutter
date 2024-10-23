@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
-import 'package:KABA/src/models/RestaurantSubMenuModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
@@ -14,8 +14,8 @@ import 'package:KABA/src/xrint.dart';
 class MenuContract {
 
 //  void login (String password, String phoneCode){}
-//  Map<RestaurantFoodModel, int> food_selected, adds_on_selected;
-//  void computeBilling (CustomerModel customer, Map<RestaurantFoodModel, int> foods, DeliveryAddressModel address){}
+//  Map<ShopProductModel, int> food_selected, adds_on_selected;
+//  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
   void fetchMenuWithRestaurantId(int restaurantId) {}
   void fetchMenuWithFoodId (int foodId) {}
   fetchMenuWithMenuId(int menuId) {}
@@ -27,7 +27,7 @@ class MenuView {
   void loginFailure (String message) {}*/
   void systemError () {}
   void networkError () {}
-  void inflateMenu (RestaurantModel restaurant, List<RestaurantSubMenuModel> data) {}
+  void inflateMenu (ShopModel restaurant, List<RestaurantSubMenuModel> data) {}
   void highLightFood(int menuId, int foodId) {}
 }
 
@@ -107,7 +107,7 @@ class MenuPresenter implements MenuContract {
       int menuId = 0;
       // also get the restaurant entity here.
       _menuView.showLoading(false);
-      RestaurantFoodModel food = res["food"];
+      ShopProductModel food = res["food"];
       _menuView.highLightFood(int.parse(food.menu_id),foodId);
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {

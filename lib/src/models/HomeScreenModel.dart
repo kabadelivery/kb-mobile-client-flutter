@@ -1,8 +1,10 @@
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:core';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/EvenementModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 
 
 Iterable l;
@@ -19,11 +21,13 @@ class HomeScreenModel {
 
   int serial_home;
   String feed;
-  List<RestaurantModel> resto;
+  List<ShopModel> resto;
   List<AdModel> slider;
 //  List<AdModel> kaba_pub;
   List<GroupAdsModel> groupad;
   List<HomeScreenSubMenuModel> subMenus;
+  List<ShopProductModel> food_suggestions;
+
   AdModel event, promotion;
 
   HomeScreenModel({this.serial_home,
@@ -33,6 +37,7 @@ class HomeScreenModel {
     this.event,
     this.promotion,
     this.groupad,
+    this.food_suggestions,
     this.subMenus});
 
   HomeScreenModel.fromJson(Map<String, dynamic> json) {
@@ -43,7 +48,7 @@ class HomeScreenModel {
     /* manually get the json */
 
     l = json["resto"];
-    resto = l?.map((resto) => RestaurantModel.fromJson(resto))?.toList();
+    resto = l?.map((resto) => ShopModel.fromJson(resto))?.toList();
 
     l = json["slider"];
     slider = l?.map((slider_model) => AdModel.fromJson(slider_model))?.toList();
@@ -54,6 +59,14 @@ class HomeScreenModel {
 
     l = json["groupad"];
     groupad = l?.map((groupad) => GroupAdsModel.fromJson(groupad))?.toList();
+
+    try {
+      l = json["food_suggestions"];
+      food_suggestions =
+          l?.map((product) => ShopProductModel.fromJson(product))?.toList();
+    } catch(e){
+      xrint(e);
+    }
 
     l = json["subMenus"];
     subMenus = l?.map((subMenus) => HomeScreenSubMenuModel.fromJson(subMenus))?.toList();

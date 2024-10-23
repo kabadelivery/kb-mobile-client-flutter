@@ -1,14 +1,12 @@
 import 'package:KABA/src/models/HomeScreenModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:flutter/foundation.dart';
 
 import '../xrint.dart';
 
-
 class VoucherModel {
-
-  var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
+  // var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
 
   int id;
   String restaurant_name;
@@ -16,11 +14,12 @@ class VoucherModel {
   String details;
   int value;
   int state; //
-  int type; // type,
+  int type; // type, % or F discount
   int category; // category, food, delivery, category
-  List<RestaurantFoodModel> products;
-//  RestaurantModel restaurant_entity;
-  List<RestaurantModel> restaurants;
+  List<ShopProductModel> products;
+
+//  ShopModel restaurant_entity;
+  List<ShopModel> restaurants;
   int use_count; // how much time can i use the voucher
   int already_used_count;
 
@@ -64,17 +63,16 @@ class VoucherModel {
 //  private $createdAt;
 //  private $updatedAt;
 
-
-  VoucherModel({this.id, this.details, this.value, this.state, this.type,
+  VoucherModel({
+    this.id,
+    this.details,
+    this.value,
+    this.state,
+    this.type,
   }); // timestamp
 
-
   VoucherModel.fromJson(Map<String, dynamic> json) {
-
     id = json['id'];
-
-//    if (json["restaurant_entity"] != null)
-//      restaurant_name = RestaurantModel.fromJson(json['restaurant_entity']).name;
 
     trade_name = json['trade_name'];
     type = json['type'];
@@ -86,13 +84,13 @@ class VoucherModel {
     try {
       if (json['restaurants'] != null || json['restaurants'] != []) {
         l = json["restaurants"];
-        restaurants = l?.map((r) => RestaurantModel.fromJson(r))?.toList();
+        restaurants = l?.map((r) => ShopModel.fromJson(r))?.toList();
       }
       /*   if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
           json['restaurant_entity'] != [])
-      restaurant_entity = RestaurantModel(id: json['restaurant_entity']['id'],
+      restaurant_entity = ShopModel(id: json['restaurant_entity']['id'],
             name: json['restaurant_entity']['name']);*/
-    } catch(_) {
+    } catch (_) {
       xrint(_);
     }
     use_count = json['use_count'];
@@ -100,36 +98,33 @@ class VoucherModel {
     subscription_code = json['subscription_code'];
     qr_code = json['qr_code'];
     tag = json['tag'];
-    start_date = json['start_date'];
+    start_date = "${json['start_date']}";
     description = json['description'];
 
     if (json['products'] != null || json['products'] != []) {
       l = json["products"];
-      products = l?.map((r) => RestaurantFoodModel.fromJson(r))?.toList();
+      products = l?.map((r) => ShopProductModel.fromJson(r))?.toList();
     }
 
-    end_date = json['end_date'];
+    end_date = "${json['end_date']}";
   }
 
-
-  Map toJson () => {
-    "type" : (type as int),
-    "details" : details,
-    "value" : value,
-    "already_used_count" : already_used_count,
-    "state" : state,
-    "type" : type,
-    'description': description
-  };
+  Map toJson() => {
+        "type": (type as int),
+        "details": details,
+        "value": value,
+        "already_used_count": already_used_count,
+        "state": state,
+        "type": type,
+        'description': description
+      };
 
   @override
   String toString() {
     return toJson().toString();
   }
 
-
   VoucherModel.randomRestaurant() : super() {
-
     /*
     imagine we want the promotion over specific foods,
      we need to choose them as well, and get them into the voucher
@@ -152,10 +147,10 @@ class VoucherModel {
   }
 
   VoucherModel.randomDelivery() : super() {
-
     id = 100;
     restaurant_name = "DELIVERY";
-    details = "this voucher works for everyrestaurant"; // DEPENDS IF IT WORKS ONLY ON A RESTAURANT
+    details =
+        "this voucher works for everyrestaurant"; // DEPENDS IF IT WORKS ONLY ON A RESTAURANT
     value = 10;
     state = 1; // no deleted
     type = 1; // percentage or value
@@ -171,7 +166,6 @@ class VoucherModel {
   }
 
   VoucherModel.randomBoth() : super() {
-
     /*
       discount on both, delivery fees and food fees
       */
@@ -197,12 +191,10 @@ class VoucherModel {
     // send the appended restaurant names or so.
     if (this.restaurants?.length == null)
       return null;
-    else if (this.restaurants?.length == 1){
+    else if (this.restaurants?.length == 1) {
       return this.restaurants[0]?.name;
     } else {
       return "-1";
     }
   }
-
-
 }

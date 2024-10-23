@@ -11,19 +11,17 @@ import 'package:http/http.dart' show Client;
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/RestaurantModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/DebugTools.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 
-
-
 class VoucherApiProvider {
-
-
-
-
-  loadVouchers({CustomerModel customer, int restaurantId = -1, List<int> foodsId, bool pick = false}) async {
+  loadVouchers(
+      {CustomerModel customer,
+      int restaurantId = -1,
+      List<int> foodsId,
+      bool pick = false}) async {
 /*
     return List.generate(3, (index) => VoucherModel.randomRestaurant()).toList()..addAll(
         List.generate(3, (index) => VoucherModel.randomBoth()).toList()
@@ -33,9 +31,7 @@ class VoucherApiProvider {
 */
     xrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
-
-
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(restaurantId == -1 ?
       ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER),
           body: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
@@ -46,8 +42,7 @@ class VoucherApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -56,12 +51,17 @@ class VoucherApiProvider {
         };
       };
 
-      var response = await dio.post(Uri.parse(restaurantId == -1 ?
-      ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER).toString(),
-          data: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}));
+      var response = await dio.post(
+          Uri.parse(restaurantId == -1
+                  ? ServerRoutes.LINK_GET_MY_VOUCHERS
+                  : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER)
+              .toString(),
+          data: restaurantId == -1
+              ? ""
+              : json.encode(
+                  {"restaurant_id": '${restaurantId}', 'foods': foodsId}));
 
-
-     xrint(response.data);
+      xrint(response.data);
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
@@ -69,8 +69,8 @@ class VoucherApiProvider {
           if (lo == null) {
             return [];
           } else {
-            List<VoucherModel> vouchers = lo?.map((voucher) =>
-                VoucherModel.fromJson(voucher))?.toList();
+            List<VoucherModel> vouchers =
+                lo?.map((voucher) => VoucherModel.fromJson(voucher))?.toList();
             return vouchers;
           }
         } else
@@ -80,15 +80,15 @@ class VoucherApiProvider {
       }
     } else {
       throw Exception(-2); // you have no network
-    } /**/
+    }
+    /**/
   }
 
   subscribeVoucher(CustomerModel customer, String promoCode,
       {bool isQrCode = false}) async {
     xrint("entered subscribeVoucher");
     if (await Utils.hasNetwork()) {
-
-     /* final response = await client
+      /* final response = await client
           .post(Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS),
           body: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
             "code": "${promoCode}"
@@ -100,8 +100,7 @@ class VoucherApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 30000
-      ;
+        ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -109,10 +108,46 @@ class VoucherApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS).toString(),
-          data: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
-            "code": "${promoCode}"
-          }));
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS).toString(),
+          data: json.encode(isQrCode
+              ? {"qr_code": "${promoCode}"}
+              : {"code": "${promoCode}"}));
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          // return voucher , with instance of .
+          return VoucherModel.fromJson(mJsonDecode(response.data)["data"]);
+        } else {
+          // -1, -2,
+          return errorCode;
+        }
+      } else
+        return -1;
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
+  subscribeVoucherForDamage(CustomerModel customer, int damage_id) async {
+    xrint("entered subscribeVoucherForDamage");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_GET_VOUCHER_FOR_DAMAGE).toString(),
+          data: json.encode({"account_deleting_request_id": "${damage_id}"}));
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {

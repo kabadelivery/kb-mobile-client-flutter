@@ -45,7 +45,7 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Expanded (child: Container (child: Text("${widget.address?.name?.toUpperCase()}", style: TextStyle(color: Colors.black.withAlpha(180), fontWeight: FontWeight.bold,fontSize: 18)))),
+                      Expanded (child: Container (child: Text("${widget.address?.name?.toUpperCase()}", style: TextStyle(color: KColors.new_black.withAlpha(180), fontWeight: FontWeight.bold,fontSize: 18)))),
                     ],
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,7 +63,7 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
                       ),
                     ],
                   ),
-                  Row(children: <Widget>[Text("Contact", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:Colors.black)), SizedBox(width: 10),
+                  Row(children: <Widget>[Text("Contact", style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color:KColors.new_black)), SizedBox(width: 10),
                     Text("${widget.address?.phone_number}", style: TextStyle(fontSize: 16, color: CommandStateColor.delivered, fontWeight: FontWeight.bold))])
                 ],
               ),

@@ -5,11 +5,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/models/BestSellerModel.dart';
-import 'package:KABA/src/models/RestaurantFoodModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class BestSellersPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
     // TODO: implement initState
     super.initState();
     widget.presenter.bestSellerView = this;
-    widget.presenter.fetchBestSeller();
+    widget.presenter.fetchBestSeller(null);
   }
 
   bool isLoading = false;
@@ -100,11 +101,11 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(null); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(); });
+    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchBestSeller(null); });
   }
 
   _buildBSellerList() {
@@ -122,7 +123,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-  _jumpToFoodDetails(RestaurantFoodModel food) {
+  _jumpToFoodDetails(ShopProductModel food) {
     Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
             RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
@@ -217,7 +218,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: KColors.new_black,
                                         fontWeight: FontWeight
                                             .bold)),
                               ),
@@ -238,7 +239,7 @@ class _BestSellersPageState extends State<BestSellersPage> implements BestSeller
                                       .bold)) : Text(
                               "${data?.food_entity?.price}",
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: KColors.new_black,
                                   decoration:  TextDecoration.lineThrough,
                                   fontSize: 30,
                                   fontWeight: FontWeight

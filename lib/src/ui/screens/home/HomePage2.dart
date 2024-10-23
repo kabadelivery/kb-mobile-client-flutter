@@ -1,12 +1,13 @@
 import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
+import 'package:KABA/src/ui/screens/home/_home/HomeWelcomePage.dart';
 import 'package:KABA/src/ui/screens/home/restaurant/RestaurantListPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '_home/HomeWelcomePage.dart';
+import '_home/HomeWelcomeNewPage.dart';
 import 'me/MeAccountPage.dart';
 import 'orders/DailyOrdersPage.dart';
 

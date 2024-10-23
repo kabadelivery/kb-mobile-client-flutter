@@ -1,12 +1,15 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/blocs/UserDataBloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/MyNewOrderWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 
 
@@ -35,13 +38,30 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.light,
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
-          backgroundColor: Colors.white,
-          title: Text("${AppLocalizations.of(context).translate('last_orders')}", style:TextStyle(color:KColors.primaryColor)),
-        ),
+    return Scaffold( appBar: AppBar(
+      toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+      brightness: Brightness.light,
+      backgroundColor: KColors.primaryColor,
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      centerTitle: true,
+      title: Row(mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+              Utils.capitalize(
+                  "${AppLocalizations.of(context).translate('last_orders')}"),
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
+        ],
+      ),
+    ),
+
         backgroundColor: Colors.white,
         body:  StreamBuilder(
             stream: userDataBloc.mLastOrders,
@@ -70,8 +90,11 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
         ]
           ..addAll(
               List<Widget>.generate(data.length, (int index) {
-                return MyOrderWidget(command: data[index]);
+                return MyNewOrderWidget(command: data[index]);
               })
+          )..add(
+            Container(width: MediaQuery.of(context).size.width,margin: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+            child: Center(child: Text('${AppLocalizations.of(context).translate("only_3_months_order_history")}', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12),),),)
           ),
       );
     else

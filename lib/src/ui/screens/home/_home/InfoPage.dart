@@ -46,10 +46,10 @@ class _InfoPageState extends State<InfoPage> {
           value: SystemUiOverlayStyle.dark,
           child: Stack(
             children: <Widget>[
-             Positioned(left: 10, top:35, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(FontAwesomeIcons.timesCircle, size: 40, color: Colors.black))),
+             Positioned(left: 10, top:35, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(FontAwesomeIcons.timesCircle, size: 40, color: KColors.new_black))),
               Column(
                 children: <Widget>[
-                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${AppLocalizations.of(context).translate('version')} ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black))]), flex: 1, ),
+                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${AppLocalizations.of(context).translate('version')} ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: KColors.new_black))]), flex: 1, ),
                   Expanded(child: Image(image: AssetImage(ImageAssets.kaba_copyright_presentation), width: MediaQuery.of(context).size.width), flex: 5),
                 ],
               ),

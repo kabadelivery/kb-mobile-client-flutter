@@ -1,8 +1,7 @@
-
-
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -11,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:toast/toast.dart';
 
-
 class TopUpPage extends StatefulWidget {
-
   static var routeName = "/TopUpPage";
 
   TopUpPresenter presenter;
@@ -22,11 +19,11 @@ class TopUpPage extends StatefulWidget {
 
   var fees = 0;
 
-  double  fees_tmoney = 10.0;
+  double fees_tmoney = 10.0;
 
-  double  fees_flooz = 10.0;
+  double fees_flooz = 10.0;
 
-  double  fees_bankcard = 10.0;
+  double fees_bankcard = 10.0;
 
   TopUpPage({Key key, this.presenter}) : super(key: key);
 
@@ -37,7 +34,6 @@ class TopUpPage extends StatefulWidget {
 }
 
 class _TopUpPageState extends State<TopUpPage> implements TopUpView {
-
   TextEditingController _phoneNumberFieldController;
   TextEditingController _amountFieldController;
   TextEditingController _totalAmountFieldController;
@@ -54,7 +50,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   bool isGetFeesLoading = false;
   FocusNode _totalFocusNode, _amountFocusNode;
 
-  int selectedPaymentMode = 0;  // 0 tmoney 1 bank card 2 flooz
+  int selectedPaymentMode = 0; // 0 tmoney 1 bank card 2 flooz
 
   TextEditingController _feesFieldController;
 
@@ -82,15 +78,14 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     _amountFocusNode = new FocusNode();
   }
 
-
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    feesDescription = "${AppLocalizations.of(context).translate('why_top_up_fees')}";
+    feesDescription =
+        "${AppLocalizations.of(context).translate('why_top_up_fees')}";
   }
 
-  void _updateSelectedPaymentMode (int mode) {
+  void _updateSelectedPaymentMode(int mode) {
     selectedPaymentMode = mode;
     _updateFromInitialAmountTotal();
   }
@@ -99,161 +94,292 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
         brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
+        title: Text(
+            "${AppLocalizations.of(context).translate('top_up')}".toUpperCase(),
+            style: TextStyle(color: KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
-        child: Column(
-            children: <Widget>[
-              SizedBox(height: 15),
-              /* define mobile money and visa-card */
-              Container(padding: EdgeInsets.all(10),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(0)), child: Container(child: Text("T-MONEY", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 0 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(1)), child: Container(child: Text("BANK CARD", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 1 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  InkWell(onTap: ()=> setState(() => _updateSelectedPaymentMode(2)), child: Container(child: Text("FLOOZ", style: TextStyle(color: Colors.black, fontSize: 16)), padding: EdgeInsets.all(5), decoration: BoxDecoration(color: selectedPaymentMode == 2 ? KColors.primaryColor.withAlpha(100) : Colors.grey.withAlpha(100), borderRadius: BorderRadius.all(Radius.circular(5)))))
+        child: Column(children: <Widget>[
+          SizedBox(height: 15),
+          /* define mobile money and visa-card */
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                      onTap: () =>
+                          setState(() => _updateSelectedPaymentMode(0)),
+                      child: Container(
+                          child: Text("T-MONEY",
+                              style:
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: selectedPaymentMode == 0
+                                  ? KColors.primaryColor.withAlpha(100)
+                                  : Colors.grey.withAlpha(100),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))))),
+                  InkWell(
+                      onTap: () =>
+                          setState(() => _updateSelectedPaymentMode(1)),
+                      child: Container(
+                          child: Text("BANK CARD",
+                              style:
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: selectedPaymentMode == 1
+                                  ? KColors.primaryColor.withAlpha(100)
+                                  : Colors.grey.withAlpha(100),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))))),
+                  InkWell(
+                      onTap: () =>
+                          setState(() => _updateSelectedPaymentMode(2)),
+                      child: Container(
+                          child: Text("FLOOZ",
+                              style:
+                                  TextStyle(color: KColors.new_black, fontSize: 16)),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: selectedPaymentMode == 2
+                                  ? KColors.primaryColor.withAlpha(100)
+                                  : Colors.grey.withAlpha(100),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)))))
                 ]),
-              ),
-
-              selectedPaymentMode != 1 ? Column(children: [
-                SizedBox(height: 15),
-                /* phone number just in case we are working with moov*/
-                Container(color: Colors.white, padding: EdgeInsets.all(10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('topup_phone_number')}")),
-                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: TextField(controller: _phoneNumberFieldController, textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 20),
-                          decoration: InputDecoration(fillColor: Colors.yellow,
-                              border: InputBorder.none,
-                              hintMaxLines: 5,
-                              hintStyle: TextStyle(fontSize: 13)
-                          ),
-                          keyboardType: TextInputType.phone
-                      ),
-                    ))
+          ),
+          selectedPaymentMode != 1
+              ? Column(children: [
+                  SizedBox(height: 30),
+                  /* phone number just in case we are working with moov*/
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              flex: 3,
+                              child: Text(
+                                  "${AppLocalizations.of(context).translate('topup_phone_number')}")),
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                padding: EdgeInsets.only(left: 5, right: 5),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.withAlpha(40),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                child: TextField(
+                                    controller: _phoneNumberFieldController,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(fontSize: 20),
+                                    decoration: InputDecoration(
+                                        fillColor: Colors.yellow,
+                                        border: InputBorder.none,
+                                        hintMaxLines: 5,
+                                        hintStyle: TextStyle(fontSize: 13)),
+                                    keyboardType: TextInputType.phone),
+                              ))
+                        ]),
+                  ),
+                ])
+              : Container(),
+          Column(children: [
+            SizedBox(height: 30),
+            /* amount you wanna get paid */
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Text(
+                            "${AppLocalizations.of(context).translate('amount_to_topup')}")),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.grey.withAlpha(40),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          child: TextField(
+                              controller: _amountFieldController,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(fontSize: 20),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.yellow,
+                                  border: InputBorder.none,
+                                  hintMaxLines: 5,
+                                  hintStyle: TextStyle(fontSize: 13)),
+                              keyboardType: TextInputType.number),
+                        ))
                   ]),
-                ),
-              ]) : Container(),
+            ),
+          ]),
+          SizedBox(height: 10),
+          isGetFeesLoading
+              ? SizedBox(
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(KColors.mGreen)),
+                  height: 15,
+                  width: 15)
+              : Container(),
+          SizedBox(height: 5),
 
-              Column(children: [
-                SizedBox(height: 30),
-                /* amount you wanna get paid */
-                Container(color: Colors.white, padding: EdgeInsets.all(10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('amount_to_topup')}")),
-                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: Colors.grey.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: TextField(controller: _amountFieldController, textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 20),
-                          decoration: InputDecoration(fillColor: Colors.yellow,
-                              border: InputBorder.none,
-                              hintMaxLines: 5,
-                              hintStyle: TextStyle(fontSize: 13)
-                          ),
-                          keyboardType: TextInputType.number
-                      ),
-                    ))
+          /* please be patient ... */
+
+          isGetFeesLoading
+              ? Text(
+                  "${"${AppLocalizations.of(context).translate('please_wait_fees_percentage')}"}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: KColors.mGreen, fontWeight: FontWeight.bold))
+              : Text(
+                  "* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"}"
+                  " ${_getFees()}%",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: KColors.primaryColor,
+                      fontWeight: FontWeight.bold)),
+          Column(children: [
+            SizedBox(height: 10),
+            /* amount you wanna get paid */
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Text(
+                            "${AppLocalizations.of(context).translate('fees')}")),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          decoration: BoxDecoration(
+                              color: KColors.primaryYellowColor.withAlpha(40),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          child: TextField(
+                              controller: _feesFieldController,
+                              enabled: false,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(fontSize: 20),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.yellow,
+                                  border: InputBorder.none,
+                                  hintMaxLines: 5,
+                                  hintStyle: TextStyle(fontSize: 13)),
+                              keyboardType: TextInputType.number),
+                        ))
                   ]),
-                ),
-              ]),
-
-              SizedBox(height: 10),
-
-              isGetFeesLoading ?  SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.mGreen)), height: 15, width: 15) : Container(),
-
-              SizedBox(height: 5),
-
-              /* please be patient ... */
-
-              isGetFeesLoading ? Text("${"${AppLocalizations.of(context).translate('please_wait_fees_percentage')}"}", textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.mGreen, fontWeight: FontWeight.bold)) :
-              Text("* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"}"
-                  " ${_getFees()}%", textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.primaryColor, fontWeight: FontWeight.bold)),
-
-
-
-              Column(children: [
-                SizedBox(height: 10),
-                /* amount you wanna get paid */
-                Container(color: Colors.white, padding: EdgeInsets.all(10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('fees')}")),
-                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: TextField(controller: _feesFieldController, enabled: false, textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 20),
-                          decoration: InputDecoration(fillColor: Colors.yellow,
-                              border: InputBorder.none,
-                              hintMaxLines: 5,
-                              hintStyle: TextStyle(fontSize: 13)
-                          ),
-                          keyboardType: TextInputType.number
-                      ),
-                    ))
+            ),
+          ]),
+          Column(children: [
+            SizedBox(height: 10),
+            /* amount you wanna get paid */
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Text(
+                            "${AppLocalizations.of(context).translate('total_amount')}")),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 5, right: 5),
+                          decoration: BoxDecoration(
+                              color: CommandStateColor.delivered.withAlpha(40),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          child: TextField(
+                              controller: _totalAmountFieldController,
+                              enabled: false,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(fontSize: 20),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.yellow,
+                                  border: InputBorder.none,
+                                  hintMaxLines: 5,
+                                  hintStyle: TextStyle(fontSize: 13)),
+                              keyboardType: TextInputType.number),
+                        ))
                   ]),
-                ),
-              ]),
-
-
-              Column(children: [
-                SizedBox(height: 10),
-                /* amount you wanna get paid */
-                Container(color: Colors.white, padding: EdgeInsets.all(10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(flex:3, child: Text("${AppLocalizations.of(context).translate('total_amount')}")),
-                    Expanded(flex: 3, child: Container(padding: EdgeInsets.only(left:5,right:5), decoration: BoxDecoration(color: CommandStateColor.delivered.withAlpha(40), borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: TextField(controller: _totalAmountFieldController, enabled: false, textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 20),
-                          decoration: InputDecoration(fillColor: Colors.yellow,
-                              border: InputBorder.none,
-                              hintMaxLines: 5,
-                              hintStyle: TextStyle(fontSize: 13)
-                          ),
-                          keyboardType: TextInputType.number
-                      ),
-                    ))
-                  ]),
-                ),
-              ]),
-
-              SizedBox(height: 30),
-
-              Center(child: Text("${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €")),
-
-              SizedBox(height: 30),
-
-              Row(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(60))),
-                    child: RaisedButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color: KColors.primaryColor, child: Row(
+            ),
+          ]),
+          SizedBox(height: 30),
+          Center(
+              child: Text(
+                  "${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €")),
+          SizedBox(height: 30),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(60))),
+                child: MRaisedButton(
+                    padding: EdgeInsets.only(
+                        top: 15, bottom: 15, left: 10, right: 10),
+                    color: KColors.primaryColor,
+                    child: Row(
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('top_up')}".toUpperCase(), style: TextStyle(fontSize: 14, color: Colors.white)),
-                        SizedBox(width:10),
-                        Text("${_totalAmountFieldController.text} XOF", style: TextStyle(color: Colors.white, fontSize: 20)),
+                        Text(
+                            "${AppLocalizations.of(context).translate('top_up')}"
+                                .toUpperCase(),
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width: 10),
+                        Text("${_totalAmountFieldController.text} XOF",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
                         SizedBox(width: 8),
-                        isLaunching ?  Row(
-                          children: <Widget>[
-                            SizedBox(width: 10),
-                            SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) ,
-                          ],
-                        )  : Container(),
+                        isLaunching
+                            ? Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                      child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white)),
+                                      height: 15,
+                                      width: 15),
+                                ],
+                              )
+                            : Container(),
                       ],
-                    ), onPressed: () {
+                    ),
+                    onPressed: () {
                       iLaunchTransaction();
                     }),
-                  ),
-                ],
               ),
-
-              SizedBox(height: 50)
-            ]
-        ),
+            ],
+          ),
+          SizedBox(height: 50)
+        ]),
       ),
     );
   }
@@ -277,7 +403,6 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   @override
   void topUpToWeb(String link) {
-
     Navigator.of(context).pop({'check_balance': true, 'link': link});
   }
 
@@ -286,9 +411,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     Navigator.of(context).pop({'check_balance': true});
   }
 
-
   bool _checkOperator() {
-
     String number = "${_phoneNumberFieldController.text}";
 
     String mOperator = "---";
@@ -323,31 +446,34 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   void iLaunchTransaction() {
-
-    if (isGetFeesLoading){
-      mToast("${AppLocalizations.of(context).translate('please_wait_fees_percentage')}");
+    if (isGetFeesLoading) {
+      mToast(
+          "${AppLocalizations.of(context).translate('please_wait_fees_percentage')}");
       return;
     }
 
-    if (selectedPaymentMode != 1 && !Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text)) {
+    if (selectedPaymentMode != 1 &&
+        !Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text)) {
       mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
     } else {
-      if (widget.customer != null)
-        if (selectedPaymentMode == 0 || selectedPaymentMode == 2)
-          widget.presenter.launchTopUp(
-              widget.customer, "${_phoneNumberFieldController.text}",
-              "${_amountFieldController.text}", _getFees());
-        else {
-          // launch pay dunya
-          String amount = "${_amountFieldController.text}";
-          int _amount = int.parse(amount);
-          if (_amount >= BANK_MIN_AMOUNT)
-            widget.presenter.launchPayDunya(
-                widget.customer,
-                "${_amountFieldController.text}", _getFees());
-          else
-            mDialog("${AppLocalizations.of(context).translate('bank_card_top_up_min')} ${BANK_MIN_AMOUNT}");
-        }
+      if (widget.customer != null) if (selectedPaymentMode == 0 ||
+          selectedPaymentMode == 2)
+        widget.presenter.launchTopUp(
+            widget.customer,
+            "${_phoneNumberFieldController.text}",
+            "${_amountFieldController.text}",
+            _getFees());
+      else {
+        // launch pay dunya
+        String amount = "${_amountFieldController.text}";
+        int _amount = int.parse(amount);
+        if (_amount >= BANK_MIN_AMOUNT)
+          widget.presenter.launchPayDunya(
+              widget.customer, "${_amountFieldController.text}", _getFees());
+        else
+          mDialog(
+              "${AppLocalizations.of(context).translate('bank_card_top_up_min')} ${BANK_MIN_AMOUNT}");
+      }
       else
         mToast("${AppLocalizations.of(context).translate('system_error')}");
     }
@@ -358,7 +484,6 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   void mDialog(String message) {
-
     _showDialog(
       icon: Icon(Icons.info_outline, color: Colors.red),
       message: "${message}",
@@ -367,59 +492,71 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String svgIcons,
+      Icon icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
-                ]
-            ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes();
-                },
-              ),
-            ] : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-
-            ]
-        );
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          svgIcons,
+                        )
+                      : icon),
+              SizedBox(height: 10),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: KColors.new_black, fontSize: 13))
+            ]),
+            actions: isYesOrNo
+                ? <Widget>[
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes();
+                      },
+                    ),
+                  ]
+                : <Widget>[
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context).translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
 
-
-  void _updateFromTotal () {
+  void _updateFromTotal() {
     /* check which one has focus before updating */
     setState(() {
       if (!_amountFocusNode.hasFocus) {
@@ -437,7 +574,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     });
   }
 
-  void _updateFromInitialAmountTotal () {
+  void _updateFromInitialAmountTotal() {
     /* check which one has focus before updating */
     setState(() {
       if (!_totalFocusNode.hasFocus) {
@@ -446,7 +583,8 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
         widget.fees = _getFeesFromAmount();
         _feesFieldController.text = "${widget.fees}";
         _totalAmountFieldController.removeListener(_updateFromTotal);
-        _totalAmountFieldController.text = "${_getRealTotalAmountFromInitial()}";
+        _totalAmountFieldController.text =
+            "${_getRealTotalAmountFromInitial()}";
         _totalAmountFieldController.addListener(_updateFromTotal);
         // update amount
       } else {
@@ -458,18 +596,18 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   _getFeesFromAmount() {
     String amount = _amountFieldController.text;
     double amount_;
-    if(amount == null || "" == amount.trim())
+    if (amount == null || "" == amount.trim())
       amount_ = 0;
     else
       amount_ = double.parse(amount);
 
-    return ((_getFees().toDouble()*amount_.toDouble())~/100);
+    return ((_getFees().toDouble() * amount_.toDouble()) ~/ 100);
   }
 
   _getFeesFromTotal() {
     String total = _totalAmountFieldController.text;
     double total_;
-    if(total_ == null || "" == total.trim())
+    if (total_ == null || "" == total.trim())
       total_ = 0;
     else {
       total_ = double.parse(total);
@@ -479,26 +617,23 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     return fees;
   }
 
-  _getRealInitialAmountFromTotal () {
-
+  _getRealInitialAmountFromTotal() {
     String _total = _totalAmountFieldController.text;
     double total;
-    if(_total == null || "" == _total.trim())
+    if (_total == null || "" == _total.trim())
       total = 0;
     else
       total = double.parse(_total);
 
     // amount = total / (1+fees)
-    return (100*total/(100.toDouble()+_getFees().toDouble())).toInt();
+    return (100 * total / (100.toDouble() + _getFees().toDouble())).toInt();
   }
 
-
-  _getRealTotalAmountFromInitial () {
-
+  _getRealTotalAmountFromInitial() {
     int fees = _getFeesFromAmount();
     String _amount = _amountFieldController.text;
     int amount;
-    if(_amount == null || "" == _amount.trim())
+    if (_amount == null || "" == _amount.trim())
       amount = 0;
     else
       amount = int.parse(_amount);
@@ -523,7 +658,6 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
     });
   }*/
 
-
   @override
   void showGetFeesLoading(bool isGetFeesLoading) {
     setState(() {
@@ -532,7 +666,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   double _getFees() {
-    switch(selectedPaymentMode){
+    switch (selectedPaymentMode) {
       case 0:
         return widget.fees_tmoney;
         break;
@@ -546,7 +680,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   _getTotalAmountEuro() {
-    return double.parse(((_getRealTotalAmountFromInitial()/euroRatio)).toStringAsFixed(2));
+    return double.parse(
+        ((_getRealTotalAmountFromInitial() / euroRatio)).toStringAsFixed(2));
   }
-
 }

@@ -1,3 +1,4 @@
+import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -10,6 +11,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -66,13 +68,25 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('my_vouchers')}", style:TextStyle(color:KColors.primaryColor)),
-        leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+        backgroundColor: KColors.primaryColor,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context).translate('my_vouchers')}"),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ],
+        ),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){Navigator.pop(context);}),
         actions: <Widget>[
-          // IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: Colors.black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
-          IconButton(icon: Icon(Icons.add_box, color: KColors.primaryColor),onPressed: ()=>_jumpToAddNewVoucher_Code())
+          // IconButton(icon: Icon(FontAwesomeIcons.qrcode, color: KColors.new_black),onPressed: ()=>_jumpToAddNewVoucher_Scan()),
+          IconButton(icon: Icon(Icons.add_box, color: Colors.white),onPressed: ()=>_jumpToAddNewVoucher_Code())
         ],
       ),
       body: Stack(
@@ -87,7 +101,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
             left: 0,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                /*     RaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
+                /*     MRaisedButton(child: Container(padding: EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Icon(Icons.add, color: KColors.primaryColor),
@@ -289,7 +303,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 13))
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions:

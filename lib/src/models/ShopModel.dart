@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 
 
-class RestaurantModel {
+class ShopModel {
 
   String name;
   int id;
@@ -28,19 +28,20 @@ class RestaurantModel {
   int open_type;
   String discount;
   String location;
+  String category_id;
 
   // other
   double distanceBetweenMeandRestaurant = 0;
 
-  RestaurantModel({this.id, this.name, this.pic, this.contactId, this.email,
+  ShopModel({this.id, this.name, this.pic, this.contactId, this.email,
     this.distance, this.is_open, this.stars, this.votes, this.theme_pic,
     this.description, this.address, this.main_contact,
-    this.working_hour, this.coming_soon,
+    this.working_hour, this.coming_soon,category_id,
     this.is_promotion,
     this.is_new, this.open_type, this.delivery_pricing, this.discount, this.max_food,
   this.location});
 
-  RestaurantModel.fromJson(Map<String, dynamic> json) {
+  ShopModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     pic = json['pic'];
@@ -65,6 +66,7 @@ class RestaurantModel {
     delivery_pricing = "${json['delivery_pricing']}";
     max_food = json['max_food'];
     location = json["location"];
+    category_id = "${json["category_id"]}";
   }
 
 
@@ -85,7 +87,8 @@ class RestaurantModel {
     "coming_soon" : coming_soon,
     "is_promotion" : is_promotion,
     "is_new" : is_new,
-    "location": location
+    "location": location,
+    "category_id": category_id
   };
 
   @override

@@ -1,60 +1,28 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
-import 'dart:math';
 
-import 'package:KABA/src/TestPage.dart';
-import 'package:KABA/src/contracts/address_contract.dart';
-import 'package:KABA/src/contracts/edit_address_contract.dart';
-import 'package:KABA/src/contracts/register_contract.dart';
-import 'package:KABA/src/contracts/topup_contract.dart';
-import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/NotificationFDestination.dart';
-import 'package:KABA/src/models/NotificationItem.dart';
-import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
-import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
-import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
-import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
-import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
-// import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
-import 'package:KABA/src/ui/screens/splash/PresentationPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
-import 'package:KABA/src/xrint.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:country_code_picker/country_localizations.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:overlay_support/overlay_support.dart';
-// import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:provider/provider.dart';
 
+// import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-
-  CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
+  // CachedNetworkImage. = CacheManagerLogLevel.none;
 
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
@@ -71,7 +39,8 @@ Future<void> main() async {
   );
 
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
@@ -84,7 +53,6 @@ Future<void> main() async {
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
-
     // await SentryFlutter.init(
     //       (options) {
     //     options.dsn = 'https://db3d3fa783f643539ad13a7e84437ad6@o1211273.ingest.sentry.io/6351988';
@@ -99,15 +67,12 @@ Future<void> main() async {
   });
 }
 
-
-
-FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 
 class MyApp extends StatefulWidget {
-
-      FirebaseAnalytics analytics;
-    FirebaseAnalyticsObserver observer;
+  FirebaseAnalytics analytics;
+  FirebaseAnalyticsObserver observer;
 
   var appLanguage;
 
@@ -118,28 +83,19 @@ class MyApp extends StatefulWidget {
 
   @override
   _MyAppState createState() => _MyAppState();
-
 }
 
-
 class _MyAppState extends State<MyApp> {
-
-
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
-    // hms.Push.enableLogger();
-    // logTextController = new TextEditingController();
-    // topicTextController = new TextEditingController();
-    // initPlatformState();
-
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
@@ -158,7 +114,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     // StateContainer.of(context);
 
     // precache logo of the splashPage
@@ -173,7 +128,7 @@ class _MyAppState extends State<MyApp> {
                 Locale('en', 'US'),
                 Locale('fr', 'FR'),
                 Locale.fromSubtags(languageCode: 'zh')
-        /*      Locale("af"),
+                /*      Locale("af"),
                 Locale("am"),
                 Locale("ar"),
                 Locale("az"),
@@ -252,20 +207,44 @@ class _MyAppState extends State<MyApp> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-
               debugShowCheckedModeBanner: false,
               navigatorKey: navigatorKey,
               onGenerateTitle: (BuildContext context) =>
 //          "${AppLocalizations.of(context).translate('app_title')}",
-              "KABA",
-              theme: ThemeData(primarySwatch: KColors.colorCustom,
-                  fontFamily: 'GoogleSans'),
-//      home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: RestaurantModel(id:31, name:"FESTIVAL DES GLACES")),
+                  "KABA",
+              theme: ThemeData(
+                  primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
+              // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
+              /*  home: ShopSimpleList(
+
+            //  coque de noix de coco...
+
+            //  desxintox, buvable, infections, probleme de trompes, dents, empoisonement,
+            //  morsures danniamales, constipation, maux de foi, rein
+
+                  type: "shop",
+                  restaurantListPresenter: RestaurantListPresenter()),*/
+              // home: TestPage(),
               home: SplashPage(analytics: widget.analytics, observer: widget.observer),
-            // home: TransactionHistoryPage(presenter: TransactionPresenter()),
-          // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
-          //   home: TestPage(),
+              // home: DeleteAccountSuccessfulPage(),
+              // home: DeleteAccountFixPropositionPage(),
+              /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
+              // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
+//             home: MovieCataloguePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
+//               home: MovieDetailsPage(presenter: MoviePresenter()),
+//             home: SearchProductPage(),
+//             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
+              // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
+              //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
+              /*home: RestaurantListPage (
+                  context: context,
+                  foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                  restaurantListPresenter: RestaurantListPresenter()),*/
+              // home: TransactionHistoryPage(presenter: TransactionPresenter()),
+              // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
+              //   home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
 //           home: MyAddressesPage(presenter: AddressPresenter()),
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
@@ -289,44 +268,11 @@ class _MyAppState extends State<MyApp> {
           );
         }));
   }
-
-
-  void _jumpToFoodDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: -1*product_id);
-  }
-
-  void _jumpToOrderDetailsWithId(int product_id) {
-    navigatorKey.currentState.pushNamed(OrderDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToTransactionHistory() {
-    navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-  }
-
-  /* void _jumpToArticleInterface(int product_id) {
-    navigatorKey.currentState.pushNamed(WebViewPage.routeName, arguments: product_id);
-  }*/
-
-  void _jumpToRestaurantDetailsPage(int product_id) {
-    /* send a negative id when we want to show the food inside the menu */
-    navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToRestaurantMenuPage(int product_id) {
-    navigatorKey.currentState.pushNamed(RestaurantMenuPage.routeName, arguments: product_id);
-  }
-
-  void _jumpToServiceClient() {
-    navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
-  }
-
 }
 
-class CustomIntentPage extends StatelessWidget{
+class CustomIntentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(child: Text("hard"), color: Colors.white);
   }
 }
-
-
