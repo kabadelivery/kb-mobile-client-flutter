@@ -14,12 +14,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 //if (flutterVersionCode == null) {
-    flutterVersionCode = '361'
+    flutterVersionCode = '362'
 //}
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 //if (flutterVersionName == null) {
-    flutterVersionName = '3.6.1'
+    flutterVersionName = '3.6.2'
 //}
 
 apply plugin: 'com.android.application'
@@ -35,7 +35,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     lintOptions {
         disable 'InvalidPackage'
@@ -46,7 +46,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "tg.tmye.kaba.brave.one"
         minSdkVersion 20
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

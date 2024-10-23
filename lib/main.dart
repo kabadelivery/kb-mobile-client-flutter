@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -17,24 +16,20 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
-// import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'src/StateContainer.dart';
 
 Future<void> main() async {
-  // CachedNetworkImage. = CacheManagerLogLevel.none;
-
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
   await appLanguage.fetchLocale();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: KColors.primaryColor, // navigation bar color
+    systemNavigationBarColor: KColors.primaryColor,
   ));
 
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    AppConfig.CHANNEL_ID, // id
-    AppConfig.CHANNEL_NAME, // title
-    description: AppConfig.CHANNEL_DESCRIPTION, // description
+    AppConfig.CHANNEL_ID,
+    AppConfig.CHANNEL_NAME,
+    description: AppConfig.CHANNEL_DESCRIPTION,
     importance: Importance.max,
   );
 
@@ -44,25 +39,8 @@ Future<void> main() async {
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
 
-  // wanna listen to realtime database and make changes, preparing it for version 3.3.4
-  // DatabaseReference alertRef = FirebaseDatabase.instance.ref('mobile_app_alert');
-  // alertRef.onValue.listen((DatabaseEvent event) {
-  //   final data = event.snapshot.value;
-  //   xrint("${data}");
-  // });
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
-    // await SentryFlutter.init(
-    //       (options) {
-    //     options.dsn = 'https://db3d3fa783f643539ad13a7e84437ad6@o1211273.ingest.sentry.io/6351988';
-    //     // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-    //     // We recommend adjusting this value in production.
-    //     options.tracesSampleRate = 1.0;
-    //   },
-    //   appRunner: () =>  runApp(StateContainer(child: MyApp(appLanguage: appLanguage))),
-    // );
-
     runApp(StateContainer(child: MyApp(appLanguage: appLanguage)));
   });
 }
@@ -101,22 +79,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // logTextController.dispose();
-    // topicTextController.dispose();
     super.dispose();
-  }
-
-  void clearLog() {
-    setState(() {
-      // logTextController.text = "";
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // StateContainer.of(context);
-
-    // precache logo of the splashPage
+    /* precache logo of the splashPage */
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
 
     return ChangeNotifierProvider<AppLanguage>(
@@ -128,77 +96,9 @@ class _MyAppState extends State<MyApp> {
                 Locale('en', 'US'),
                 Locale('fr', 'FR'),
                 Locale.fromSubtags(languageCode: 'zh')
-                /*      Locale("af"),
-                Locale("am"),
-                Locale("ar"),
-                Locale("az"),
-                Locale("be"),
-                Locale("bg"),
-                Locale("bn"),
-                Locale("bs"),
-                Locale("ca"),
-                Locale("cs"),
-                Locale("da"),
-                Locale("de"),
-                Locale("el"),
-                Locale("es"),
-                Locale("et"),
-                Locale("fa"),
-                Locale("fi"),
-                Locale("gl"),
-                Locale("ha"),
-                Locale("he"),
-                Locale("hi"),
-                Locale("hr"),
-                Locale("hu"),
-                Locale("hy"),
-                Locale("id"),
-                Locale("is"),
-                Locale("it"),
-                Locale("ja"),
-                Locale("ka"),
-                Locale("kk"),
-                Locale("km"),
-                Locale("ko"),
-                Locale("ku"),
-                Locale("ky"),
-                Locale("lt"),
-                Locale("lv"),
-                Locale("mk"),
-                Locale("ml"),
-                Locale("mn"),
-                Locale("ms"),
-                Locale("nb"),
-                Locale("nl"),
-                Locale("nn"),
-                Locale("no"),
-                Locale("pl"),
-                Locale("ps"),
-                Locale("pt"),
-                Locale("ro"),
-                Locale("ru"),
-                Locale("sd"),
-                Locale("sk"),
-                Locale("sl"),
-                Locale("so"),
-                Locale("sq"),
-                Locale("sr"),
-                Locale("sv"),
-                Locale("ta"),
-                Locale("tg"),
-                Locale("th"),
-                Locale("tk"),
-                Locale("tr"),
-                Locale("tt"),
-                Locale("uk"),
-                Locale("ug"),
-                Locale("ur"),
-                Locale("uz"),
-                Locale("vi")*/
               ],
               navigatorObservers: [
                 FirebaseAnalyticsObserver(analytics: widget.analytics),
-                // SentryNavigatorObserver(),
               ],
               localizationsDelegates: [
                 AppLocalizations.delegate,
@@ -209,9 +109,7 @@ class _MyAppState extends State<MyApp> {
               ],
               debugShowCheckedModeBanner: false,
               navigatorKey: navigatorKey,
-              onGenerateTitle: (BuildContext context) =>
-//          "${AppLocalizations.of(context).translate('app_title')}",
-                  "KABA",
+              onGenerateTitle: (BuildContext context) => "KABA",
               theme: ThemeData(
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
               // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
@@ -226,7 +124,8 @@ class _MyAppState extends State<MyApp> {
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
-              home: SplashPage(analytics: widget.analytics, observer: widget.observer),
+              home: SplashPage(
+                  analytics: widget.analytics, observer: widget.observer),
               // home: DeleteAccountSuccessfulPage(),
               // home: DeleteAccountFixPropositionPage(),
               /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
@@ -267,12 +166,5 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         }));
-  }
-}
-
-class CustomIntentPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Text("hard"), color: Colors.white);
   }
 }

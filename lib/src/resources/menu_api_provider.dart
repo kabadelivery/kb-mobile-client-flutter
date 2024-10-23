@@ -2,35 +2,23 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/ShopCategoryModelModel.dart';
+import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/BestSellerModel.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/models/ShopCategoryModelModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 
 class MenuApiProvider {
   Future<Map> fetchRestaurantMenuList(int restaurantId) async {
     xrint("entered fetchRestaurantMenuList $restaurantId");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID),
-        body: json.encode({'id': restaurantId}),
-      )
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
-      dio.options
-        // ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000;
+      dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -72,12 +60,6 @@ class MenuApiProvider {
   fetchRestaurantMenuListWithFoodId(int foodId) async {
     xrint("entered fetchRestaurantMenuListWithFoodId");
     if (await Utils.hasNetwork()) {
-      /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
-        body: json.encode({'food_id': foodId}),
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -125,12 +107,6 @@ class MenuApiProvider {
   Future<Map> fetchRestaurantMenuListWithMenuId(int menuId) async {
     xrint("entered fetchRestaurantMenuListWithMenuId");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID), // by menu_id
-        body: json.encode({'menu_id': menuId}),
-      )
-          .timeout(const Duration(seconds: 30));
-      */
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -177,12 +153,6 @@ class MenuApiProvider {
   fetchShopScheduleList(int restaurant_id) async {
     xrint("entered fetchShopScheduleList");
     if (await Utils.hasNetwork()) {
-      /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST),
-        body: json.encode([]),
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -256,12 +226,6 @@ class MenuApiProvider {
   fetchFoodDetailsWithId(int foodId) async {
     xrint("entered fetchFoodDetailsWithId");
     if (await Utils.hasNetwork()) {
-      /*  final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_FOOD_DETAILS_SIMPLE),
-        body: json.encode({"food_id": foodId}),
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -297,14 +261,6 @@ class MenuApiProvider {
     xrint(
         "entered fetchRestaurantWithId with $restaurantDetailsId and ${customer?.toJson()?.toString()}");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_DETAILS),
-        body: json.encode({"id": restaurantDetailsId}),
-        headers: customer?.token == null ? Map() : Utils.getHeadersWithToken(customer?.token),
-      )
-          .timeout(const Duration(seconds: 30));
-     */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -342,14 +298,6 @@ class MenuApiProvider {
       String message) async {
     xrint("entered reviewRestaurant");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_POST_COMMENT),
-        body: json.encode({"restaurant_id": restaurant?.id, "stars": stars, "comment": message}),
-        headers: Utils.getHeadersWithToken(customer?.token),
-      )
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -388,14 +336,6 @@ class MenuApiProvider {
   checkCanComment(CustomerModel customer, ShopModel restaurant) async {
     xrint("entered checkCanComment");
     if (await Utils.hasNetwork()) {
-      /*final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_CHECK_CAN_COMMENT),
-        body: json.encode({"restaurant_id": restaurant?.id}),
-        headers: Utils.getHeadersWithToken(customer?.token),
-      )
-          .timeout(const Duration(seconds: 30));
-      */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -426,12 +366,9 @@ class MenuApiProvider {
     }
   }
 
-
-  Future<dynamic> fetchProposalList (CustomerModel customer) async {
+  Future<dynamic> fetchProposalList(CustomerModel customer) async {
     xrint("entered fetchProposalList \n");
     if (await Utils.hasNetwork()) {
-
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -444,26 +381,24 @@ class MenuApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-
       var response = await dio.post(
         Uri.parse(ServerRoutes.LINK_GET_BESTSELLERS_LIST).toString(),
         data: json.encode({}),
       );
 
       /* look for menu details and put result inside data array and send back */
-      var res = {"error": 1, "data":[]};
+      var res = {"error": 1, "data": []};
 
       response = await dio.post(
           Uri.parse(ServerRoutes.LINK_MENU_BY_RESTAURANT_ID).toString(),
           data: json.encode({'id': 150}));
 
-
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-         res["data"] = mJsonDecode(response.data)["data"]["menus"][0]["foods"];
-         return json.encode(res).toString();
+          res["data"] = mJsonDecode(response.data)["data"]["menus"][0]["foods"];
+          return json.encode(res).toString();
           // return response.data.toString();
         } else
           throw Exception(-1); // there is an error in your request
@@ -474,5 +409,4 @@ class MenuApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
 }

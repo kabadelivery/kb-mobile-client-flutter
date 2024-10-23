@@ -1,20 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/CommandModel.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 
 class VoucherApiProvider {
   loadVouchers(
@@ -22,23 +16,8 @@ class VoucherApiProvider {
       int restaurantId = -1,
       List<int> foodsId,
       bool pick = false}) async {
-/*
-    return List.generate(3, (index) => VoucherModel.randomRestaurant()).toList()..addAll(
-        List.generate(3, (index) => VoucherModel.randomBoth()).toList()
-    )..addAll(
-        List.generate(3, (index) => VoucherModel.randomDelivery()).toList()
-    );
-*/
     xrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(restaurantId == -1 ?
-      ServerRoutes.LINK_GET_MY_VOUCHERS : ServerRoutes.LINK_GET_VOUCHERS_FOR_ORDER),
-          body: restaurantId == -1 ? "" : json.encode({"restaurant_id": '${restaurantId}', 'foods': foodsId}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -88,15 +67,6 @@ class VoucherApiProvider {
       {bool isQrCode = false}) async {
     xrint("entered subscribeVoucher");
     if (await Utils.hasNetwork()) {
-      /* final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_SUBSCRIBE_VOUCHERS),
-          body: json.encode(isQrCode ? {"qr_code": "${promoCode}"} : {
-            "code": "${promoCode}"
-          }),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));*/
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
@@ -118,7 +88,6 @@ class VoucherApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          // return voucher , with instance of .
           return VoucherModel.fromJson(mJsonDecode(response.data)["data"]);
         } else {
           // -1, -2,

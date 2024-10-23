@@ -1,36 +1,19 @@
-//FeedsProvider
-
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:http/http.dart' show Client;
-import 'package:KABA/src/models/CustomerCareChatMessageModel.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/FeedModel.dart';
-import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:KABA/src/utils/functions/DebugTools.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 
 class ChatVoucherProvider {
   Future<VoucherModel> fetchVoucherDetails(
       CustomerModel customer, String voucher_code) async {
     xrint("entered fetchVoucherDetails");
     if (await Utils.hasNetwork()) {
-      /*   final response = await client
-          .post(Uri.parse(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES),
-          body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
-      )
-          .timeout(const Duration(seconds: 30));
-   */
-
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)

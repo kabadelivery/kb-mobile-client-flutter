@@ -1,18 +1,16 @@
+import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:KABA/src/contracts/bestseller_contract.dart';
 import 'package:KABA/src/models/BestSellerModel.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
+import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class BestSellersMiniPage extends StatefulWidget {
   static var routeName = "/BestSellersMiniPage";
@@ -23,7 +21,8 @@ class BestSellersMiniPage extends StatefulWidget {
 
   CustomerModel customer;
 
-  BestSellersMiniPage({Key key, this.title, this.presenter, this.customer}) : super(key: key);
+  BestSellersMiniPage({Key key, this.title, this.presenter, this.customer})
+      : super(key: key);
 
   final String title;
 
@@ -108,7 +107,8 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "",// "${AppLocalizations.of(context).translate('system_error')}",
+        message:
+            "", // "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.presenter.fetchBestSeller(widget?.customer);
         });
@@ -116,7 +116,8 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "", //"""${AppLocalizations.of(context).translate('network_error')}",
+        message:
+            "", //"""${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.presenter.fetchBestSeller(widget?.customer);
         });
@@ -129,7 +130,8 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
     }
     return Container(
         margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
-        child: ListView.builder(addAutomaticKeepAlives: true,
+        child: ListView.builder(
+            addAutomaticKeepAlives: true,
             scrollDirection: Axis.horizontal,
             itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
@@ -280,14 +282,14 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Expanded(
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
                                     child: Text(
-
-                                                "${data?.food_entity?.restaurant_entity?.name}"
-                                    ,
+                                        "${data?.food_entity?.restaurant_entity?.name}",
                                         maxLines: 1,
                                         textAlign: TextAlign.start,
                                         overflow: TextOverflow.ellipsis,

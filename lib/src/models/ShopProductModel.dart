@@ -35,24 +35,6 @@ class ShopProductModel {
       this.promotion,
       this.restaurant_entity});
 
-//    "id": 1810,
-//      "name": "Couscous - séparé",
-//      "description": "Couscous + lait (emballé dans de sachets différents) ",
-//      "priority": 1,
-//      "promotion": 0,
-//      "promotion_price": null,
-//      "pic": "food_pic/SZa8MVNIdcFhKvr.jpg",
-//      "food_details_pictures": [
-//      "food_pic/D7vHrFywMgasiDy.jpg"
-//      ],
-//      "price": "300",
-//      "menu_id": "261",
-//      "is_deleted": 0,
-//      "lastupdate": "07-11-2019 15:44:55pm",
-//      "rating_quantity": 0,
-//      "rating_percentage": 0
-//   },
-
   ShopProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];

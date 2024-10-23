@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import '../xrint.dart';
 
 class VoucherModel {
-  // var VOUCHER_category_FOOD = 1999, VOUCHER_category_DELIVERYFEES = 1998, VOUCHER_category_ALL = 1997;
-
   int id;
   String restaurant_name;
   String trade_name;
@@ -28,40 +26,7 @@ class VoucherModel {
   String qr_code;
   String start_date, end_date; // timestamp
   String tag;
-
-  // added 08102021
   String description;
-
-//  int reward_type;
-//  int reward_cash_value;
-//  int reward_percentage_value;
-
-  // type -> LIVRAISON, REPAS, ALL
-  // category -> POURCENTAGE OU VALEURE
-
-//  private $id; , id of the voucher
-//  private $name; , name of the voucher (for the admin)
-//  private $type; type of the voucher, (ajouter les bons de consommation ou tu consommes et que ca reste a chaque fois)
-//  private $category; ?
-//  private $value; , value -1000F or -10%
-//  private $maxPersons; , max personn that can subscribe to this voucher
-//  private $restaurantId; , restaurant where this voucher can eventually used
-//  private $products; , the products that concern the promotion
-//  private $canSelfSubscribe=0; , can i share the voucher with somebody to share it
-//  private $isRewarded=0; , is anybody getting money behind this voucher
-//  private $rewardOnFood=0;
-//  private $rewardtype; , is the reward giving on the food or a fixed amount
-//  private $rewardCashValue;
-//  private $rewardPercentageValue;
-//  private $enabled; , enabled or disabled
-//  private $useCount;
-//  private $subscriptionCode;
-//  private $qrCode;
-//  private $startDate;
-//  private $endDate;
-//  private $tags;
-//  private $createdAt;
-//  private $updatedAt;
 
   VoucherModel({
     this.id,
@@ -69,14 +34,13 @@ class VoucherModel {
     this.value,
     this.state,
     this.type,
-  }); // timestamp
+  });
 
   VoucherModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
 
     trade_name = json['trade_name'];
     type = json['type'];
-//    details = json['details'];
     value = json['value'];
     state = json['state'];
     type = json['type'];
@@ -86,10 +50,6 @@ class VoucherModel {
         l = json["restaurants"];
         restaurants = l?.map((r) => ShopModel.fromJson(r))?.toList();
       }
-      /*   if (json['restaurant_id'] != null && json['restaurant_entity'] != null &&
-          json['restaurant_entity'] != [])
-      restaurant_entity = ShopModel(id: json['restaurant_entity']['id'],
-            name: json['restaurant_entity']['name']);*/
     } catch (_) {
       xrint(_);
     }

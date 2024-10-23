@@ -54,21 +54,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
-//import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
-
-// For Flutter applications, you'll most likely want to use
-// the url_launcher package.
 
 import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
@@ -161,7 +156,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         widget.customer = customer;
         this.widget.presenter.checkUnreadMessages(customer);
         popupMenus = [
-          "${AppLocalizations.of(context).translate('add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
+          "${AppLocalizations.of(context).translate('add_voucher')}",
           "${AppLocalizations.of(context).translate('settings')}",
           "${AppLocalizations.of(context).translate('logout')}",
         ];
@@ -236,7 +231,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             });
             break;
           case SplashPage.ADDRESSES:
-//           xrint("voucher homewelcome -> ${widget.argument}");
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
                   context, MyAddressesPage(presenter: AddressPresenter()));
@@ -280,7 +274,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             break;
           case SplashPage.LOCATION_PICKED:
             _checkIfLoggedInAndDoAction(() {
-              // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
               _jumpToPage(
                   context,
                   MyAddressesPage(
@@ -291,7 +284,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             break;
           case SplashPage.CUSTOM_CARE:
             _checkIfLoggedInAndDoAction(() {
-              // mToast("hwp current route is ${ModalRoute.of(context).settings.name}");
               _jumpToPage(context,
                   CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
             });
@@ -314,7 +306,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     if (widget.bestSellerMini == null)
       widget.bestSellerMini = BestSellersMiniPage(
           presenter: BestSellerPresenter(), customer: widget.customer);
-    if (widget.proposalMini == null && widget?.data?.food_suggestions != null && widget?.data?.food_suggestions?.length > 0)
+    if (widget.proposalMini == null &&
+        widget?.data?.food_suggestions != null &&
+        widget?.data?.food_suggestions?.length > 0)
       widget.proposalMini = ProposalMiniWithPreloadedDataPage(
           data: widget?.data?.food_suggestions);
     /* init fetch data bloc */
@@ -357,7 +351,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 height: 42,
                 child: IconButton(
                   icon: Icon(Icons.phone, color: Colors.white),
-                  // Image.asset(ImageAssets.whatsapp),
                   onPressed: () => _showBottomContactSheet(),
                 ),
               ),
@@ -386,12 +379,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     /* jump to the other activity */
     switch (_popupMenus().indexOf(value)) {
       case 0:
-        // scan
         _jumpToAddVoucherPage();
         break;
-        /* case 1:
-      // scan
-        _jumpToScanPage();*/
         break;
       case 1:
         _jumpToPage(context, SettingsPage());
@@ -409,10 +398,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       StateContainer.of(context).loggingState = 0;
       StateContainer.of(context).updateBalance(balance: 0);
       StateContainer.of(context).customer = null;
-      // StateContainer.of(context).selectedAddress = null;
       StateContainer.of(context).myBillingArray = null;
-      // StateContainer.of(context).location = null;
-      // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
       StateContainer.of(context).hasUnreadMessage = false;
       StateContainer.of(context).updateTabPosition(tabPosition: 0);
       Navigator.pushNamedAndRemoveUntil(
@@ -480,13 +466,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void _jumpToBestSeller() {
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BestSellersPage (presenter: BestSellerPresenter()),
-      ),
-    );*/
-
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             BestSellersPage(presenter: BestSellerPresenter()),
@@ -503,13 +482,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void _jumpToEvents() {
-    /* Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EvenementPage (presenter: EvenementPresenter()),
-      ),
-    );*/
-
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             EvenementPage(presenter: EvenementPresenter()),
@@ -527,9 +499,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   Future<void> _refresh() async {
     widget.presenter.fetchHomePage();
-//    homeScreenBloc.fetchHomeScreenModel();
-//    await Future.delayed(const Duration(seconds:1));
-//    return;
   }
 
   void _jumpToInfoPage() {
@@ -545,13 +514,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
-
-    /* Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => InfoPage(), // ramener infos
-      ),
-    );*/
   }
 
   Widget _buildHomeScreen(HomeScreenModel data) {
@@ -690,10 +652,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             (int rowIndex) {
                       return TableRow(
                           children: <TableCell>[]..addAll(
-                                /*   List<TableCell>.generate ((data.resto.length-rowIndex*3)%4, (int cell_index) {
-                                    return
-                                      TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
-                                  })*/
                                 List<TableCell>.generate(3, (int cell_index) {
                               if (data.resto.length >
                                   rowIndex * 3 + cell_index) {
@@ -711,7 +669,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 )),
                 /* all the restaurants button*/
                 SizedBox(height: 30),
-             widget.proposalMini == null ||   widget?.data?.food_suggestions?.length == null || widget?.data?.food_suggestions?.length == 0 ? Container()
+                widget.proposalMini == null ||
+                        widget?.data?.food_suggestions?.length == null ||
+                        widget?.data?.food_suggestions?.length == 0
+                    ? Container()
                     : Column(
                         children: [
                           Row(
@@ -775,23 +736,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                             animate: true))
                                   ],
                                 ),
-                                false
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          _switchAllRestaurant();
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.only(right: 10),
-                                            child: Text(
-                                              Utils.capitalize(
-                                                  "${AppLocalizations.of(context).translate('see_all')} >"),
-                                              style: TextStyle(
-                                                  color: KColors.primaryColor,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500),
-                                            )),
-                                      )
-                                    : Container()
                               ],
                             ),
                           ),
@@ -813,7 +757,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         ],
                       )
                     : Container(),
-                // SizedBox(height: 20),
                 /* meilleures ventes, cinema, evenemnts, etc... */
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -870,7 +813,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         child: Lottie.asset(LottieAssets.fire, animate: true))
                   ],
                 ),
-
                 Column(
                     children: <Widget>[]..addAll(List<Widget>.generate(
                           data.groupad.length, (int index) {
@@ -920,9 +862,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   style: TextStyle(color: Colors.grey))),
                           SizedBox(height: 5),
                           MRaisedButton(
-                              /*shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(18.0),
-                              ),*/
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 15),
                               color: Colors.yellow,
@@ -935,55 +874,36 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       ),
                     )));
     }
-/*    setState(() {
-      isLoading = false;
-    });*/
   }
 
   int _getRestaurantRowCount(int restaurantCount) {
-    return 2;
-    // int i;
-    // for (i = 1; i * 3 < restaurantCount; i++);
-    // return i;
+    return 2; 
   }
 
-  void _switchAllRestaurant() {
-    // tell welcome page to switch.
-    /*setState(() {
-      HomePage.updateSelectedPage(2);
-    });*/
+  void _switchAllRestaurant() { 
     StateContainer.of(context).updateTabPosition(tabPosition: 1);
   }
 
   @override
   void networkError() {
-    // TODO: implement networkError
-    showLoading(false);
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
-    /* setState(() {
-      hasNetworkError = true;
-    });*/
+     showLoading(false);
+    mToast("${AppLocalizations.of(context).translate('network_error')}"); 
   }
 
   @override
-  void showErrorMessage(String message) {
-    // TODO: implement showErrorMessage
-    //  hasSystemError = true;
-    showLoading(false);
-    // mToast("${AppLocalizations.of(context).translate('error_message')}");
+  void showErrorMessage(String message) { 
+    showLoading(false); 
   }
 
   @override
-  void showLoading(bool isLoading) {
-    // TODO: implement showLoading
+  void showLoading(bool isLoading) { 
     setState(() {
       this.isLoading = isLoading;
     });
   }
 
   @override
-  void sysError() {
-    // TODO: implement sysError
+  void sysError() { 
     setState(() {
       hasSystemError = true;
     });
@@ -1001,17 +921,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     to.Toast.show(message, context, duration: to.Toast.LENGTH_LONG);
   }
 
-  _jumpToAdsList(List<AdModel> slider, int position) {
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdsPreviewPage(data: slider, position:position, presenter: AdsViewerPresenter()),
-      ),
-    );*/
+  _jumpToAdsList(List<AdModel> slider, int position) { 
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            data: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
