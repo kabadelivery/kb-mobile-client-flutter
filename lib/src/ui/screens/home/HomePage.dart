@@ -1352,7 +1352,7 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> messageEntry) {
         priority: destinationData['priority'].toString(),
         destination: NotificationFDestination(
             type: int.parse(destinationData['type'].toString()),
-            product_id: destinationData["product_id"]));
+            product_id: int.parse(destinationData["product_id"].toString())));
     return notificationItem;
   } catch (_) {
     xrint(_.toString());
