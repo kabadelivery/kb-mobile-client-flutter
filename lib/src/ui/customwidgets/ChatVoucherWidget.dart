@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatVoucherWidget extends StatefulWidget {
-
   String voucher_link;
 
   VoucherModel voucher;
@@ -41,7 +40,6 @@ class ChatVoucherWidget extends StatefulWidget {
 
 class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
     implements ChatVoucherView {
-
   bool isLoading = true;
   bool hasError = false;
 
@@ -66,7 +64,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
             children: [
               Container(
                 height: 20,
-                child: LoadingAnimationWidget.prograssiveDots(
+                child: LoadingAnimationWidget.progressiveDots(
                   color: KColors.primaryColor,
                   size: 40,
                 ),
@@ -106,7 +104,9 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    Row(mainAxisSize: MainAxisSize.max,mainAxisAlignment: MainAxisAlignment.start,
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 10),
                         Text(
@@ -138,19 +138,21 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                             fontSize: 12,
                             color: Colors.white,
                             fontWeight: FontWeight.normal)),
-                    widget.is_expired ? Text("${AppLocalizations.of(context).translate("expired")}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500)
-                    ) :  Text(
-                        "${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal)),
+                    widget.is_expired
+                        ? Text(
+                            "${AppLocalizations.of(context).translate("expired")}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500))
+                        : Text(
+                            "${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal)),
                   ],
                 )
               ],

@@ -166,7 +166,6 @@ class _HomePageState extends State<HomePage> {
   }
   //sharedPreferences to save messageId
 
-
   void _logout() {
     CustomerUtils.clearCustomerInformations().whenComplete(() {
       StateContainer.of(context).updateLoggingState(state: 0);
@@ -280,19 +279,20 @@ class _HomePageState extends State<HomePage> {
         onSelectNotification: onSelectNotification);
 
     // new try
-    FirebaseMessaging.onMessage.listen((RemoteMessage message){
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
       if (message.notification != null) {
-        xrint('pnotif Message also contained a notification: ${message.notification.toString()}');
+        xrint(
+            'pnotif Message also contained a notification: ${message.notification.toString()}');
 
         NotificationItem notificationItem =
             _notificationFromMessage(message.data);
-          if(message.messageId!=messageId){
-            iLaunchNotifications(notificationItem);
-            messageId=message.messageId;
-          }
+        if (message.messageId != messageId) {
+          iLaunchNotifications(notificationItem);
+          messageId = message.messageId;
+        }
       }
     });
 
@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage> {
         StateContainer.of(context).customer = value;
       });
     });
-  //  _resetValue();
+    //  _resetValue();
   }
 
   void mDialog(String message) {

@@ -149,10 +149,6 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                               } else if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 children = <Widget>[
-                                  /* LoadingAnimationWidget.prograssiveDots(
-                                    color: KColors.mBlue,
-                                    size: 18,
-                                  ),*/
                                   Row(
                                     children: [
                                       Text(
@@ -165,7 +161,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      LoadingAnimationWidget.prograssiveDots(
+                                      LoadingAnimationWidget.progressiveDots(
                                         color: KColors.mBlue,
                                         size: 18,
                                       )
