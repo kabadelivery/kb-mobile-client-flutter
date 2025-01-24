@@ -957,6 +957,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         priceActualCommand,
         priceTotalToPay,
         priceNormalDelivery,
+        additionnalFee,
         priceActualDelivery;
 
     priceNormalCommand = widget.command.food_pricing;
@@ -970,17 +971,20 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
       priceActualDelivery = widget.command.preorder_shipping_pricing;
       priceNormalCommand = widget.command.food_pricing;
       priceNormalDelivery = widget.command.shipping_pricing;
+      additionnalFee=widget.command.additionnal_fee;
     } else if (widget.command.is_promotion == 1) {
       priceTotalToPay = widget.command.promotion_total_pricing;
       priceActualCommand = widget.command.promotion_food_pricing;
       priceActualDelivery = widget.command.promotion_shipping_pricing;
       priceNormalCommand = widget.command.food_pricing;
       priceNormalDelivery = widget.command.shipping_pricing;
+      additionnalFee=widget.command.additionnal_fee;
     } else if (widget.command.is_promotion == 0 &&
         widget?.command?.is_preorder == 0) {
       priceTotalToPay = widget.command.total_pricing;
       priceActualCommand = widget.command.food_pricing;
       priceActualDelivery = widget.command.shipping_pricing;
+      additionnalFee=widget.command.additionnal_fee;
       showRemise = false;
       showDeliveryNormal = false;
       showFoodNormal = false;
@@ -1048,8 +1052,34 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   : Container(),
               Text("${priceActualDelivery}", style: TextStyle(fontSize: 15)),
             ],
-          )
+          ),
+
+
         ]),
+        SizedBox(height: 10),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:[
+          Text("${AppLocalizations.of(context).translate('additional_fees')}",
+              style: TextStyle(fontSize: 15)),
+          Text("${additionnalFee}", style: TextStyle(fontSize: 15)),
+        ]),
+        SizedBox(height: 10),
+        Container(
+          decoration:BoxDecoration(
+              color:Color(0x54B6B6B6),
+              borderRadius:BorderRadius.circular(5)
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+                "${AppLocalizations.of(context).translate('additional_fees_description')}",
+                style: TextStyle(
+
+                    fontSize: 12,
+                    color: Colors.black)),
+          ),
+
+        ),
+        //additionnal fees
         SizedBox(height: 10),
         int.parse(widget.command?.remise) > 0
             ? Row(

@@ -64,7 +64,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = true;
     try {
       OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address, voucher, useKabaPoint);
-      _orderConfirmationView.showLoading(false);
+     _orderConfirmationView.showLoading(false);
       _orderConfirmationView.inflateBillingConfiguration2(orderBillConfiguration);
       isWorking = false;
     } catch (_) {
@@ -200,5 +200,6 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     }
     isWorking = false;
   }
+
 
 }

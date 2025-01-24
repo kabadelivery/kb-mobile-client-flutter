@@ -11,20 +11,27 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/sample/restaurant_menu_sample.json";
 
   /* get current command db */
-  static const String LINK_MY_COMMANDS_GET_CURRENT =
-      ServerConfig.SERVER_ADDRESS + "/mobile/api/command/v3/get";
+  //static const String LINK_MY_COMMANDS_GET_CURRENT =
+  //    ServerConfig.SERVER_ADDRESS + "/mobile/api/command/v3/get";
+   static const String LINK_MY_COMMANDS_GET_CURRENT ="https://ccb3-102-64-169-68.ngrok-free.app/mobile/api/command/v4/get";
 
   /* get all commands list */
+ // static const String LINK_GET_ALL_COMMAND_LIST =
+ //     ServerConfig.SERVER_ADDRESS + "/mobile/api/command/all/v3/get";
   static const String LINK_GET_ALL_COMMAND_LIST =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/command/all/v3/get";
 
   /* create command db */
-  static const String LINK_CREATE_COMMAND =
-      ServerConfig.SERVER_ADDRESS_SECURE + "/mobile/api/command/v3/create";
+ // static const String LINK_CREATE_COMMAND =
+ //     ServerConfig.SERVER_ADDRESS_SECURE + "/mobile/api/command/v3/create";
+  static const String LINK_CREATE_COMMAND ="https://ccb3-102-64-169-68.ngrok-free.app/mobile/api/command/v4/create";//dev local
+
 
   /* get command details */
-  static const String LINK_GET_COMMAND_DETAILS =
-      ServerConfig.SERVER_ADDRESS + "/mobile/api/command/details/v3/get";
+//  static const String LINK_GET_COMMAND_DETAILS =
+//      ServerConfig.SERVER_ADDRESS + "/mobile/api/command/details/v3/get";
+  /* get command details */
+  static const String LINK_GET_COMMAND_DETAILS ="https://ccb3-102-64-169-68.ngrok-free.app/mobile/api/command/details/v4/get";
 
   /* get current basket content */
   static const String LINK_MY_BASKET_GET =
@@ -146,8 +153,9 @@ class ServerRoutes {
   static const String LINK_CHECK_RESTAURANT_IS_OPEN =
       ServerConfig.SERVER_ADDRESS + "/api/resto/state/get";
 
-  static const String LINK_COMPUTE_BILLING =
-      ServerConfig.SERVER_ADDRESS + "/mobile/api/commandBilling/v3/get";
+  //static const String LINK_COMPUTE_BILLING =
+  //    ServerConfig.SERVER_ADDRESS + "/mobile/api/commandBilling/v3/get";
+  static const String LINK_COMPUTE_BILLING = "https://ccb3-102-64-169-68.ngrok-free.app/mobile/api/command_billing/v4/get"; //dev local
 
   static const String LINK_GET_LASTEST_FEEDS =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/feeds/get";

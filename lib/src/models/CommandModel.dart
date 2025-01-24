@@ -57,6 +57,8 @@ class CommandModel {
   int rating;
   String comment;
 
+  int additionnal_fee;
+
 
   CommandModel({this.id, this.restaurant_id, this.state,
     this.shipping_address, this.restaurant_entity, this.food_list,
@@ -67,7 +69,9 @@ class CommandModel {
     this.promotion_total_pricing, this.promotion_shipping_pricing,
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
     this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity,
-  this.kaba_point_used_amount});
+    this.kaba_point_used_amount,
+    this.additionnal_fee,
+  });
 
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -89,7 +93,7 @@ class CommandModel {
     passphrase = json['passphrase'];
     reason = json['reason'];
     infos = json['infos'];
-
+    additionnal_fee=json['additionnal_fee'];
     if (json['livreur'] != null)
       livreur = KabaShippingMan.fromJson(json['livreur']);
     else
@@ -147,6 +151,7 @@ class CommandModel {
     "shipping_pricing" : shipping_pricing,
     "promotion_shipping_pricing" : promotion_shipping_pricing,
     "remise" : remise,
+    "additionnal_fee":additionnal_fee,
     "last_update" : last_update,
     "livreur" : livreur.toJson(),
     "is_payed_at_arrival" : is_payed_at_arrival,
