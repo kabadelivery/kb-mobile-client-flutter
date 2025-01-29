@@ -1063,22 +1063,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           Text("${additionnalFee}", style: TextStyle(fontSize: 15)),
         ]),
         SizedBox(height: 10),
-        Container(
-          decoration:BoxDecoration(
-              color:Color(0x54B6B6B6),
-              borderRadius:BorderRadius.circular(5)
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-                "${AppLocalizations.of(context).translate('additional_fees_description')}",
-                style: TextStyle(
 
-                    fontSize: 12,
-                    color: Colors.black)),
-          ),
-
-        ),
         //additionnal fees
         SizedBox(height: 10),
         int.parse(widget.command?.remise) > 0
