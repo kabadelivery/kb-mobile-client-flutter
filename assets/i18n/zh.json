@@ -542,5 +542,7 @@
   "current_address_tile_hint": "请确保选择的位置是送货目的地以便外送费准确",
   "our_propositions": "建议",
   "filter_settings": "筛选设置",
-  "reparation_voucher": "赔偿券"
+  "reparation_voucher": "赔偿券",
+  "additional_fees": "额外费用",
+  "additional_fees_description": "这些费用适用于下雨、公共假期、周末、需求旺盛和夜间."
 }

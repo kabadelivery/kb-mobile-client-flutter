@@ -53,6 +53,7 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+      print("customer?.token ${customer?.token}");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING).toString(),
           data: _data);
@@ -185,7 +186,7 @@ class OrderApiProvider {
           data: json.encode({"command_id": orderId}));
 
       String content = response.data.toString();
-      xrint(content);
+      xrint("content ${content}");
       if (response.statusCode == 200) {
         return CommandModel.fromJson(
             mJsonDecode(response.data)["data"]["command"]);

@@ -37,13 +37,14 @@ class OrderBillConfiguration {
   bool hasCheckedOpen = false;
 
   int total_preorder_pricing;
-
   //
   KabaPointConfigurationModel kaba_point;
 
   // eligible voucher
   List<VoucherModel> eligible_vouchers;
 
+  Map<String,dynamic> additional_fees;
+  int  additional_fees_total_price;
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration.none();
 
@@ -53,7 +54,15 @@ class OrderBillConfiguration {
 
     p.promotion_pricing = 3000; //"3000";
     p.promotion_shipping_pricing = 400; // "400";
-
+    p.additional_fees={
+      "COMMISSION_FEE": 360,
+      "PACKAGING_FEE": 200,
+      "WEATHER_FEE": 0,
+      "NIGHT_FEE": 10,
+      "PUBLIC_HOLYDAY_FEE": 100,
+      "WEEKEND_FEE": 0
+    };
+    p.additional_fees_total_price=670;
     p.remise = 30; // "30";
     p.account_balance = 4000;
 
@@ -82,7 +91,8 @@ class OrderBillConfiguration {
     this.total_pricing, this.total_normal_pricing, this.account_balance,
     this.out_of_range, this.pay_at_delivery, this.prepayed, this.trustful,
     this.max_pay, this.cooking_time, this.can_preorder, this.discount, this.eligible_vouchers,
-    this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt, this.kaba_point});
+    this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt, this.kaba_point,
+    this.additional_fees,this.additional_fees_total_price});
 
 
   OrderBillConfiguration.fromJson(Map<String, dynamic> json) {
@@ -101,10 +111,12 @@ class OrderBillConfiguration {
     max_pay = json['max_pay'];
     kaba_point = KabaPointConfigurationModel.fromMap(json["kaba_point"]);
     cooking_time = json['cooking_time'];
-
+    additional_fees = json['additional_fees'];
+    additional_fees_total_price = json['additional_fees_total_price'];
     // eligible voucher
       l = json["eligible_vouchers"];
     eligible_vouchers = l?.map((voucher_model) => VoucherModel.fromJson(voucher_model))?.toList();
+
   }
 
   Map toJson () => {
@@ -122,7 +134,9 @@ class OrderBillConfiguration {
     "trustful" : trustful,
     "max_pay" : max_pay,
     "cooking_time" : cooking_time,
-    "kaba_point": kaba_point?.toMap()
+    "kaba_point": kaba_point?.toMap(),
+    "additional_fees":additional_fees,
+    "additional_fees_total_price":additional_fees_total_price,
   };
 
   @override

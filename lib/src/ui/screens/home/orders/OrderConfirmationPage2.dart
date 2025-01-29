@@ -44,6 +44,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pulsator/pulsator.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -220,6 +221,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       this.widget.presenter.orderConfirmationView = this;
       CustomerUtils.getCustomer().then((customer) {
         widget.customer = customer;
+
         // launch request for retrieving the delivery prices and so on.
         widget.presenter.computeBilling(widget.restaurant, widget.customer,
             widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
@@ -579,6 +581,46 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       ],
                     )
                   ]),
+              SizedBox(height: 10),
+              //additional_fees
+              _orderBillConfiguration?.additional_fees_total_price!=0||_orderBillConfiguration?.additional_fees_total_price!=null?
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context).translate('additional_fees')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                    /* check if there is promotion on Livraison */
+                    Row(
+                      children: <Widget>[
+                        /* montant livraison promotion */
+                        Text(
+                           "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context).translate('currency')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+
+                      ],
+                    )
+                  ])
+                  :Container(),
+              SizedBox(height: 10),
+              Container(
+                decoration:BoxDecoration(
+                  color:Color(0x54B6B6B6),
+                  borderRadius:BorderRadius.circular(5)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "${AppLocalizations.of(context).translate('additional_fees_description')}",
+                      style: TextStyle(
+
+                          fontSize: 12,
+                          color: Colors.black)),
+                ),
+
+              ),
               SizedBox(height: 10),
               _orderBillConfiguration?.remise > 0
                   ? Row(
@@ -1293,7 +1335,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
-            widget.presenter.payAtDelivery(
+            await widget.presenter.payAtDelivery(
                 widget.customer,
                 widget.foods,
                 _selectedAddress,
@@ -1358,7 +1400,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
-            widget.presenter.payPreorder(
+            await widget.presenter.payPreorder(
                 widget.customer,
                 widget.foods,
                 _selectedAddress,
@@ -1366,7 +1408,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _addInfoController.text,
                 selectedFrame.start,
                 selectedFrame.end);
-          } else {
+        } else {
             mToast("${AppLocalizations.of(context).translate('wrong_code')}");
           }
         }
@@ -2063,6 +2105,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.remise = configuration.remise;
     _orderBillConfiguration.kaba_point = configuration.kaba_point;
     _orderBillConfiguration.eligible_vouchers = configuration.eligible_vouchers;
+    _orderBillConfiguration.additional_fees = configuration.additional_fees;
+    _orderBillConfiguration.additional_fees_total_price = configuration.additional_fees_total_price;
 
     _orderBillConfiguration
         .total_preorder_pricing = (configuration.command_pricing.toDouble() +

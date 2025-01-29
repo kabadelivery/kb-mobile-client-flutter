@@ -100,6 +100,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   jwt_decoder: ^2.0.1
   flutter_shake_animated: ^0.0.5
+  pulsator: ^1.0.0+2
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0

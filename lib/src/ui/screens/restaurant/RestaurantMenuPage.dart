@@ -689,11 +689,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  Widget _buildFoodListWidget2(
+  Future<Widget> _buildFoodListWidget2(
       {ShopProductModel food,
       int foodIndex,
       int menuIndex,
-      int highlightedFoodId}) {
+      int highlightedFoodId}) async {
     /*return Expanded(
     child: InkWell(
           onTap: ()=> _jumpToFoodDetails(context, food),
