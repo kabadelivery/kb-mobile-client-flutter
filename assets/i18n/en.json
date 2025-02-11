@@ -545,5 +545,15 @@
   "filter_settings": "Filter settings",
   "reparation_voucher": "Reparation voucher",
   "additional_fees": "Additional fees",
-  "additional_fees_description": "These charges apply during rain, public holidays, weekends, high demand and at night."
+  "additional_fees_description": "These charges apply during rain, public holidays, weekends, high demand and at night.",
+  "out_of_app_order":"Out of app order",
+  "package_shipping": "Package shipping",
+  "choose_an_image": "Choose an image",
+  "product_name": "Product name",
+  "product_price": "Product price",
+  "quantity": "Quantity",
+  "additionnal_info": "Additionnal informations",
+  "choose_order_address": "Choose the order collection address",
+  "add_product": "Add a product",
+  "image_size_exceed": "Image is too large. Please pick an image under 3MB"
 }

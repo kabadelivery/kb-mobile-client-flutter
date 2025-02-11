@@ -12,7 +12,7 @@ class ServerRoutes {
 
   /* get current command db */
    static const String LINK_MY_COMMANDS_GET_CURRENT =
-       ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/command/v4/get";
+       ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/out_of_app_order/get";
 
   /* get all commands list */
   static const String LINK_GET_ALL_COMMAND_LIST =
@@ -329,6 +329,9 @@ class ServerRoutes {
 
   static String LINK_DELETE_ACCOUNT_REFUND =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/delete-account";
+
+  static const String LINK_OUT_OF_APP_COMPUTE_BILLING =
+      ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/outOfAppOrder/billing/get";
 
 
 }

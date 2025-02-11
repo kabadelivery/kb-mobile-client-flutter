@@ -19,6 +19,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class OrderApiProvider {
+
   Future<OrderBillConfiguration> computeBillingAction(
       CustomerModel customer,
       ShopModel restaurant,

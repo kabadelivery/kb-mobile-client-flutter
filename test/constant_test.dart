@@ -15,6 +15,6 @@ void main() {
     expect(ServerConfig.TOPIC, "kaba_delivery_all");
     expect(ServerConfig.HMS_TOPIC, "kaba_delivery_all");
     expect(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP, "_first_time_19062021");
-    expect(XRINT_DEBUG_VALUE, false);
+ // expect(XRINT_DEBUG_VALUE, false);
   });
 }

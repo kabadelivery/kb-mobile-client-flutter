@@ -2400,7 +2400,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         ),
         _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
       ]);
-    } else {
+    }
+    else {
 //      _selectedVoucher
       return Column(
         children: [

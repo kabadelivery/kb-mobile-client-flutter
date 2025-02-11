@@ -4,6 +4,8 @@ import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/package.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -78,7 +80,9 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                     widget.mDialog(
                         "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
                   } else {
-                    page = ShopListPageRefined(
+                    page =widget.entity.key=="packages"?PackageOrderPage():
+                    widget.entity.key=="out of app"? OutOfAppOrderPage():
+                    ShopListPageRefined(
                         context: context,
                         type: widget.entity?.key,
                         foodProposalPresenter:
@@ -131,7 +135,10 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         widget.mDialog(
             "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
       } else {
-        page = ShopListPageRefined(
+        print('key ${widget.key}');
+        page =widget.entity.key=="packages"?PackageOrderPage():
+        widget.entity.key=="out of app"? OutOfAppOrderPage():
+        ShopListPageRefined(
             context: context,
             type: widget.entity?.key,
             foodProposalPresenter: RestaurantFoodProposalPresenter(),

@@ -544,5 +544,16 @@
   "filter_settings": "筛选设置",
   "reparation_voucher": "赔偿券",
   "additional_fees": "额外费用",
-  "additional_fees_description": "这些费用适用于下雨、公共假期、周末、需求旺盛和夜间."
+  "additional_fees_description": "这些费用适用于下雨、公共假期、周末、需求旺盛和夜间.",
+  "out_of_app_order":"订单已退出申请",
+  "package_shipping": "包裹递送",
+  "choose_an_image": "选择图像",
+  "product_name": "产品名称",
+  "product_price": "产品价格",
+  "quantity": "数量",
+  "additionnal_info": "附加信息",
+  "choose_order_address": "选择订单收货地址",
+  "add_product": "添加产品",
+  "image_size_exceed": "图片太大。请选择 3MB 以下的图片"
+
 }

@@ -54,6 +54,8 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 
 import '../../ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
 import '../../ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
+import '../../ui/screens/out_of_app_orders/out_of_app.dart';
+import '../../ui/screens/out_of_app_orders/package.dart';
 
 var generalRoutes = {
 
@@ -102,4 +104,7 @@ var generalRoutes = {
   DeleteAccountQuestioningPage.routeName : (BuildContext context) => DeleteAccountQuestioningPage(presenter:DeleteAccountQuestioningPresenter() ),
   DeleteAccountSuccessfulPage.routeName : (BuildContext context) => DeleteAccountSuccessfulPage( ),
   DeleteAccountFixPropositionPage.routeName : (BuildContext context) => DeleteAccountFixPropositionPage( ),
+  PackageOrderPage.routeName : (BuildContext context) =>PackageOrderPage(),
+  OutOfAppOrderPage.routeName : (BuildContext context) =>OutOfAppOrderPage(),
+
 };
