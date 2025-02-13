@@ -48,6 +48,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
         order_address = locationState.selectedOrderAddress;
       }
     }else if(address_type==2){
+      order_address = []; //change later for multiple address
       order_address.add(results['selection'] as DeliveryAddressModel);
       locationNotifier.pickOrderAddress(results['selection']);
        locationNotifier.setOrderAddressPicked(true);

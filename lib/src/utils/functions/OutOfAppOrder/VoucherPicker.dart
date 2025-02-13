@@ -14,7 +14,7 @@ import '../../../state_management/out_of_app_order/products_state.dart';
 import '../../../ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import '../CustomerUtils.dart';
 
-void SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherModel voucher) async {
+Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherModel voucher) async {
   /* just like we pick and address, we pick a voucher. */
 
   /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
@@ -25,11 +25,7 @@ void SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherM
     * - result may be only vouchers,
     *
     * */
-  final locationState= ref.watch(locationStateProvider);
-  final voucherState= ref.watch(voucherStateProvider);
-  final locationNotifier= ref.read(locationStateProvider.notifier);
-  final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
-  final productState = ref.watch(productListProvider);
+
   Map results;
   if (!has_voucher) {
    ref.read(voucherStateProvider.notifier).setVoucher(null);
@@ -40,8 +36,8 @@ void SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherM
         builder: (context) => MyVouchersPage(
             pick: true,
             presenter: VoucherPresenter(),
-            restaurantId:null,
-            foods: null
+            restaurantId:-1,
+            foods: [33]
         ),
       ),
     );
@@ -51,35 +47,39 @@ void SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherM
   }
 
   if (results != null && results.containsKey('voucher')) {
-      ref.read(voucherStateProvider.notifier).setVoucher(results['voucher']);
 
-    if (locationState.selectedShippingAddress!= null) {
+    return results['voucher'];
 
-      CustomerUtils.getCustomer().then((customer)async {
+  }
+}
+Future<OrderBillConfiguration> getBillingForVoucher(BuildContext context,WidgetRef ref,VoucherModel voucher){
+  final locationState= ref.watch(locationStateProvider);
+  final voucherState= ref.watch(voucherStateProvider);
+  final locationNotifier= ref.read(locationStateProvider.notifier);
+  final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+  final productState = ref.watch(productListProvider);
+  ref.read(voucherStateProvider.notifier).setVoucher(voucher);
 
-        ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+  if (locationState.selectedShippingAddress!= null) {
+
+    CustomerUtils.getCustomer().then((customer)async {
+
+      ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
 
 
-        OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-        outOfAppNotifier.setIsBillBuilt(false);
-        outOfAppNotifier.setShowLoading(true);
-        try{
-          OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
-              customer,
-              locationState.selectedOrderAddress,
-              productState,
-              locationState.selectedShippingAddress,
-              voucherState.selectedVoucher,
-              false);
-          ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-          outOfAppNotifier.setIsBillBuilt(true);
-          outOfAppNotifier.setShowLoading(false);
-          print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
-        }catch(e){
-          print("ENRRRRRR $e");
-        }
+      OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+      outOfAppNotifier.setIsBillBuilt(false);
+      outOfAppNotifier.setShowLoading(true);
 
-      });
-    }
+        OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
+            customer,
+            locationState.selectedOrderAddress,
+            productState,
+            locationState.selectedShippingAddress,
+            voucher,
+            false);
+return orderBillConfiguration;
+
+    });
   }
 }

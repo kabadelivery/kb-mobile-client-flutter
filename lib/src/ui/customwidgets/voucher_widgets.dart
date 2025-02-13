@@ -35,7 +35,14 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
         SizedBox(height: 10),
         /* do you have a voucher you want to use ? */
         InkWell(
-          onTap: () => SelectVoucher(context,ref,false,null),
+          onTap: ()async {
+                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
+                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+
+                ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                outOfAppNotifier.setIsBillBuilt(true);
+                outOfAppNotifier.setShowLoading(false);
+          },
           child: Shimmer(
             duration: Duration(seconds: 2),
             //Default value
@@ -66,11 +73,27 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                         children: <Widget>[
                           IconButton(
                               icon: Icon(Icons.add, color: KColors.white),
-                              onPressed: () => SelectVoucher(context,ref,false,null)),
+                              onPressed: ()async {
+                                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
+                                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+
+                                ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                                outOfAppNotifier.setIsBillBuilt(true);
+                                outOfAppNotifier.setShowLoading(false);
+                              },
+                          ),
                           IconButton(
                               icon: Icon(FontAwesomeIcons.ticketAlt,
                                   color: Colors.white),
-                              onPressed: () => SelectVoucher(context,ref,false,null))
+                              onPressed: ()async {
+                                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
+                                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+
+                                ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                                outOfAppNotifier.setIsBillBuilt(true);
+                                outOfAppNotifier.setShowLoading(false);
+                              },
+                          )
                         ],
                       ),
                       Text(
@@ -79,10 +102,14 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                     ])),
           ),
         ),
-        _buildEligibleVoucher(context,ref,orderBillingState.orderBillConfiguration.eligible_vouchers)
+        _buildEligibleVoucher(
+            context,
+            ref,
+            null)
       ]);
     }
     else {
+      OrderBillConfiguration orderBillConfiguration;
 //   _selectedVoucher
       return Column(
         children: [
@@ -107,40 +134,26 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                         child: IconButton(
                             icon: Icon(Icons.delete_forever,
                                 color: Colors.white, size: 20),
-                            onPressed: () {
+                            onPressed: ()async  {
                               voucherNotifier.setVoucher(null);
-
-                              CustomerUtils.getCustomer().then((customer) async {
-                                orderBillingNotifier.setCustomer(customer);
-                                // launch request for retrieving the delivery prices and so on.
-                                if (locationState.selectedShippingAddress != null) {
-                                  OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                                  outOfAppNotifier.setIsBillBuilt(false);
-                                  outOfAppNotifier.setShowLoading(true);
-                                  try{
-                                    OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
-                                        customer,
-                                        locationState.selectedOrderAddress,
-                                        productState,
-                                        locationState.selectedShippingAddress,
-                                        null,
-                                        false);
-                                    ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-                                    outOfAppNotifier.setIsBillBuilt(true);
-                                    outOfAppNotifier.setShowLoading(false);
-                                    print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
-                                  }catch(e){
-                                    print(e);
-                                  }
-                                }
-                              });
-                            }),
+                              outOfAppNotifier.setIsBillBuilt(false);
+                              outOfAppNotifier.setShowLoading(true);
+                              OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+                               orderBillConfiguration= await api.computeBillingAction(
+                                  orderBillingState.customer,
+                                  locationState.selectedOrderAddress,
+                                  productState,
+                                  locationState.selectedShippingAddress,
+                                  null,
+                                  false);
+                            }
+                            ),
                       ),
                     ),
                   )),
             ],
           ),
-          _buildEligibleVoucher(context,ref,orderBillingState.orderBillConfiguration.eligible_vouchers)
+          _buildEligibleVoucher(context,ref,orderBillConfiguration)
         ],
       );
     }
@@ -148,7 +161,15 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
 
 }
 
-Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,List<VoucherModel> eligible_vouchers) {
+Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConfiguration orderBillConfiguration) {
+
+  List<VoucherModel> eligible_vouchers = orderBillConfiguration!=null?orderBillConfiguration.eligible_vouchers:[];
+  if(orderBillConfiguration!=null){
+    ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+    var outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+    outOfAppNotifier.setIsBillBuilt(true);
+    outOfAppNotifier.setShowLoading(false);
+  }
   return Consumer(builder: (context,ref,child){
     final voucherState = ref.watch(voucherStateProvider);
     final voucherNotifier = ref.read(voucherStateProvider.notifier);
@@ -219,8 +240,13 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,List<VoucherM
                                 style: TextStyle(color: Colors.grey, fontSize: 12))
                           ]),
                       GestureDetector(
-                        onTap: () {
-                          SelectVoucher(context,ref,true,eligible_vouchers[index]);
+                        onTap: () async{
+                          VoucherModel voucher = await SelectVoucher(context,ref,true,eligible_vouchers[index]);
+                          OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+
+                          ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                          outOfAppNotifier.setIsBillBuilt(true);
+                          outOfAppNotifier.setShowLoading(false);
                         },
                         child: Container(
                           child: Text(

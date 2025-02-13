@@ -1,5 +1,6 @@
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
+import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +44,9 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
     final orderBillingState = ref.watch(orderBillingStateProvider);
     final locationState = ref.watch(locationStateProvider);
-    print("showLoading ${outOfAppScreenState.showLoading}");
+    final voucherState = ref.watch(voucherStateProvider);
+
+    print("voucherState ${voucherState.selectedVoucher}");
     print("isBillBuilt ${outOfAppScreenState.isBillBuilt}");
     return  Scaffold(
         appBar: AppBar(
@@ -133,7 +136,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
             MyLoadingProgressWidget()
                 :Container()
             ,
-            products.isNotEmpty && outOfAppScreenState.showLoading==false?Column(
+            products.isNotEmpty && outOfAppScreenState.showLoading==false?
+            Column(
               children: [
                 SizedBox(height: 10,),
                 locationState.selectedShippingAddress!=null &&  outOfAppScreenState.isBillBuilt==true?
@@ -170,7 +174,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
               ],
             ):Container(),
             SizedBox(key: poweredByKey, height: 25),
-            BuildCouponSpace(context,ref),
+            outOfAppScreenState.isBillBuilt==true &&
+                outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
           ],
         ),
       ),

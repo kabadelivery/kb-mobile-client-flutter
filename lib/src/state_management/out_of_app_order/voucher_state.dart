@@ -5,16 +5,18 @@ import '../../models/VoucherModel.dart';
 class VoucherState {
   VoucherModel selectedVoucher;
   VoucherModel oldSelectedVoucher;
-
-  VoucherState({this.selectedVoucher = null, this.oldSelectedVoucher = null});
+  bool usePoint ;
+  VoucherState({this.selectedVoucher = null, this.oldSelectedVoucher = null,this.usePoint=false});
 
   VoucherState copyWith({
     VoucherModel selectedVoucher,
     VoucherModel oldSelectedVoucher,
+    bool usePoint
 }){
     return VoucherState(
         selectedVoucher:selectedVoucher??this.selectedVoucher,
       oldSelectedVoucher:selectedVoucher??this.oldSelectedVoucher,
+        usePoint:usePoint??this.usePoint
     );
 }
 }
@@ -27,9 +29,13 @@ class VoucherStateNotifier extends StateNotifier<VoucherState>{
   void setOldVoucher(VoucherModel voucher){
     state = state.copyWith(oldSelectedVoucher: voucher);
   }
+  void setUsePoint(bool usePoint){
+    state = state.copyWith(usePoint:usePoint);
+  }
   void reset(){
     state = state.copyWith(selectedVoucher: null);
     state = state.copyWith(oldSelectedVoucher: null);
+    state = state.copyWith(usePoint:false);
   }
 }
 final voucherStateProvider = StateNotifierProvider<VoucherStateNotifier,VoucherState>((ref) {
