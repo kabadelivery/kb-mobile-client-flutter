@@ -13,7 +13,10 @@ class OutOfAppScreenState{
     bool showLoading,
     bool isBillBuilt
 }){
-    return OutOfAppScreenState(showLoading:showLoading,isBillBuilt:isBillBuilt);
+    return OutOfAppScreenState(
+      showLoading: showLoading ?? this.showLoading,
+      isBillBuilt: isBillBuilt ?? this.isBillBuilt,
+    );
   }
 }
 
@@ -29,4 +32,5 @@ class OutOfAppScreenStateNotifier extends StateNotifier<OutOfAppScreenState>{
 }
 
 final outOfAppScreenStateProvier = StateNotifierProvider<OutOfAppScreenStateNotifier,OutOfAppScreenState>((ref){
+  return OutOfAppScreenStateNotifier();
 });

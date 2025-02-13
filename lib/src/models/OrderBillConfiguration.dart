@@ -45,6 +45,7 @@ class OrderBillConfiguration {
 
   Map<String,dynamic> additional_fees;
   int  additional_fees_total_price;
+
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration.none();
 
@@ -103,7 +104,7 @@ class OrderBillConfiguration {
     total_pricing = json['total_pricing'];
     total_normal_pricing = json['total_normal_pricing'];
     promotion_shipping_pricing = json['promotion_shipping_pricing'];
-    remise = int.parse(json['remise']);
+    remise = json['remise'] is int ? json['remise'] : int.parse(json['remise'].toString());
     out_of_range = json['out_of_range'];
     pay_at_delivery = json['pay_at_delivery'];
     prepayed = json['prepayed'];

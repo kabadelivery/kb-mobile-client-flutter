@@ -331,7 +331,7 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/mobile/api/delete-account";
 
   static const String LINK_OUT_OF_APP_COMPUTE_BILLING =
-      ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/outOfAppOrder/billing/get";
+      ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/out_of_app_order/billing/get";
 
 
 }

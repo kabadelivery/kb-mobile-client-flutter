@@ -554,6 +554,8 @@
   "additionnal_info": "附加信息",
   "choose_order_address": "选择订单收货地址",
   "add_product": "添加产品",
-  "image_size_exceed": "图片太大。请选择 3MB 以下的图片"
-
+  "image_size_exceed": "图片太大。请选择 3MB 以下的图片",
+  "finalize": "完成",
+  "shipping_address": "送货地址",
+  "order_address": "购买地址"
 }

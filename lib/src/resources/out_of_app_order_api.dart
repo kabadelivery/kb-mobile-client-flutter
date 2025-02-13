@@ -24,16 +24,19 @@ class OutOfAppOrderApiProvider{
       xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
        var order_adress_ids= [];
-      for(DeliveryAddressModel adress in order_adress){
-        order_adress_ids.add(adress.id);
-      }
+       if(order_adress!=null){
+         for(DeliveryAddressModel adress in order_adress){
+           order_adress_ids.add(adress.id);
+         }
+       }
 
       var _data = json.encode({
         'order_details': foods,
-        'order_address': order_adress_ids,
+        'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
         'shipping_address': shipping_adress.id,
         "voucher_id": voucher?.id,
-        "use_kaba_point": useKabaPoints
+        "use_kaba_point": useKabaPoints,
+        "pay_at_delivery":true
       });
 
       xrint(_data.toString());

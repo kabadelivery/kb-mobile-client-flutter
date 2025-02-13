@@ -7,14 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
 import '../../../models/VoucherModel.dart';
+import '../../../state_management/out_of_app_order/location_state.dart';
+import '../../../state_management/out_of_app_order/order_billing_state.dart';
+import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/BouncingWidget.dart';
+import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
+import '../../customwidgets/voucher_widgets.dart';
 
 
 class OutOfAppOrderPage extends ConsumerWidget  {
@@ -35,6 +40,11 @@ class OutOfAppOrderPage extends ConsumerWidget  {
   Widget build(BuildContext context,WidgetRef ref) {
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
+    final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+    final orderBillingState = ref.watch(orderBillingStateProvider);
+    final locationState = ref.watch(locationStateProvider);
+    print("showLoading ${outOfAppScreenState.showLoading}");
+    print("isBillBuilt ${outOfAppScreenState.isBillBuilt}");
     return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -70,7 +80,6 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                 itemCount: products.length,
                 itemBuilder: (context,index){
                   Map<String,dynamic> product = products[index];
-                  print("pAAAAAATH ${product['image']}");
                   if(products.length!=0){
                       return Container(
                           margin: EdgeInsets.only(bottom: 15),
@@ -116,11 +125,52 @@ class OutOfAppOrderPage extends ConsumerWidget  {
             ),
             AdditionnalInfo(context),
             SizedBox(height: 10,),
-            ShowBilling(context,OrderBillConfiguration.fake()),
-            SizedBox(height: 10,),
-            ChooseShippingAddress(context,shipping_address_type),
-            SizedBox(height: 10,),
-            ChooseShippingAddress(context,order_address_type),
+
+            outOfAppScreenState.isBillBuilt==true &&
+            outOfAppScreenState.showLoading==false?
+            ShowBilling(context,orderBillingState.orderBillConfiguration):
+            outOfAppScreenState.showLoading==true?
+            MyLoadingProgressWidget()
+                :Container()
+            ,
+            products.isNotEmpty && outOfAppScreenState.showLoading==false?Column(
+              children: [
+                SizedBox(height: 10,),
+                locationState.selectedShippingAddress!=null &&  outOfAppScreenState.isBillBuilt==true?
+                Column(
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context).translate('shipping_address')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: KColors.new_black)),
+                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+
+                  ],
+                ):
+                ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
+                SizedBox(height: 10,),
+                locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
+                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type):Container(),
+                locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
+                Column(
+                  children: [
+                    Text(
+                        "${AppLocalizations.of(context).translate('order_address')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: KColors.new_black)),
+                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
+
+                  ],
+                ):Container()
+                ,
+              ],
+            ):Container(),
+            SizedBox(key: poweredByKey, height: 25),
+            BuildCouponSpace(context,ref),
           ],
         ),
       ),

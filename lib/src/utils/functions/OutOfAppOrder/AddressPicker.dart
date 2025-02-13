@@ -4,19 +4,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../contracts/address_contract.dart';
+import '../../../models/DeliveryAddressModel.dart';
+import '../../../models/OrderBillConfiguration.dart';
 import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
+import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../ui/screens/home/me/address/MyAddressesPage.dart';
 import '../CustomerUtils.dart';
 
-Future _pickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredByKey) async {
+Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredByKey,int address_type) async {
   final locationState= ref.watch(locationStateProvider);
   final locationNotifier= ref.read(locationStateProvider.notifier);
+  final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
   final productState = ref.watch(productListProvider);
-  ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
-  ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
-
+  final voucherState= ref.watch(voucherStateProvider);
+ // ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
+//  ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
+  List<DeliveryAddressModel> order_address=null;
+  DeliveryAddressModel shipping_address=null;
   /* jump and get it */
   if(context.mounted){
   Map results = await Navigator.of(context).push(PageRouteBuilder(
@@ -34,32 +40,46 @@ Future _pickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey powered
       }));
 
   if (results != null && results.containsKey('selection')) {
-    locationNotifier.pickShippingAddress(results['selection']);
-    locationNotifier.setShippingAddressPicked(true);
+    if(address_type==1){
+      shipping_address = results['selection'];
+      locationNotifier.pickShippingAddress(shipping_address);
+      locationNotifier.setShippingAddressPicked(true);
+      if(locationState.is_order_address_picked){
+        order_address = locationState.selectedOrderAddress;
+      }
+    }else if(address_type==2){
+      order_address.add(results['selection'] as DeliveryAddressModel);
+      locationNotifier.pickOrderAddress(results['selection']);
+       locationNotifier.setOrderAddressPicked(true);
+      if(locationState.is_shipping_address_picked){
+        shipping_address = locationState.selectedShippingAddress;
+      }
+    }
       /* update / refresh this page */
-    CustomerUtils.getCustomer().then((customer) {
+    await CustomerUtils.getCustomer().then((customer) async {
      ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
       // launch request for retrieving the delivery prices and so on.
       //get billing
-
-      if(locationState.is_order_address_picked==true){
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+        outOfAppNotifier.setIsBillBuilt(false);
+        outOfAppNotifier.setShowLoading(true);
+        try{
+          OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
+              customer,
+              order_address,
+              productState,
+              shipping_address,
+              voucherState.selectedVoucher,
+              false);
+          ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+          outOfAppNotifier.setIsBillBuilt(true);
+          outOfAppNotifier.setShowLoading(false);
+          print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
+        }catch(e){
+          print("ENRRRRRR $e");
+        }
 
-        api.computeBillingAction(
-            customer,
-            locationState.selectedOrderAddress,
-            productState,
-            locationState.selectedShippingAddress,
-            null,
-            false);
-      }
-      else{
 
-      }
-     ref.read(outOfAppScreenStateProvier.notifier).setShowLoading(true);
-      Future.delayed(Duration(seconds: 1), () {
-        Scrollable.ensureVisible(poweredByKey.currentContext);
-      });
     });
   }
   }

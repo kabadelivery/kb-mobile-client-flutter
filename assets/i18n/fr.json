@@ -554,5 +554,8 @@
   "additionnal_info": "Informations supplémentaires",
   "choose_order_address": "Choisir l'adresse de recupération de commande",
   "add_product": "Ajouter un produit",
-  "image_size_exceed": "L'image est trop grande. Veuillez choisir une image de moins de 3Mo"
+  "image_size_exceed": "L'image est trop grande. Veuillez choisir une image de moins de 3Mo",
+  "finalize": "Finaliser",
+  "shipping_address": "Adresse de livraison",
+  "order_address": "Adresse de l'achat"
 }

@@ -18,7 +18,7 @@ Widget OutOfAppProductForm(BuildContext context){
   final _formKey = GlobalKey<FormState>();
   return Container(
     width: size.width,
-    height: 290,
+    height: 300,
     decoration: BoxDecoration(
         color: Color(0x42d2d2d2),
         borderRadius: BorderRadius.circular(5)
@@ -84,8 +84,8 @@ Widget OutOfAppProductForm(BuildContext context){
 ),
             Container(
               width: size.width*.5,
-              child: Column(
-
+              child:
+              Column(
                 children: [
                   TextFormField(
                     controller: _nameController,
@@ -186,13 +186,11 @@ Widget OutOfAppProductForm(BuildContext context){
                             ref.read(productListProvider.notifier).addProduct(product);
                             quantityNotifier.reset();
                             ref.read(imageCacheProvider.notifier).saveImagePath("");
-
-                            Navigator.pop(context);
-
+                            _nameController.text="";
+                            _priceController.text="";
                           }
                         },
                         child:  Container(
-
                             decoration: BoxDecoration(
                                 color: KColors.primaryColor,
                                 borderRadius: BorderRadius.circular(5)
@@ -205,10 +203,29 @@ Widget OutOfAppProductForm(BuildContext context){
                             )
                         ),
                       ),
+                      SizedBox(height: 10),
+                      InkWell(
+                        onTap: (){
+                              Navigator.pop(context);
+                        },
+                        child:
+                        Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xffeaa243),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+                            child:Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text("${AppLocalizations.of(context).translate('finalize')}"
+                                  ,style:TextStyle(color: Colors.white)
+                              ),
+                            )
+                        ),
+                      ),
                     ],
                   );
-  },
-),
+                },
+              ),
                 ],
               ),
             ),
@@ -216,6 +233,5 @@ Widget OutOfAppProductForm(BuildContext context){
         ),
       ),
     ),
-  
 );
 }
