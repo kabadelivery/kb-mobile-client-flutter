@@ -27,7 +27,13 @@ class OrderBillingStateNotifier extends StateNotifier<OrderBillingState>{
   void setOrderBillConfiguration(OrderBillConfiguration orderBillConfiguration){
     state = state.copyWith(orderBillConfiguration:orderBillConfiguration);
   }
+  void reset(){
+    state = state.copyWith(
+        customer:null,
+        orderBillConfiguration:null
+    );
+  }
 }
-final orderBillingStateProvider = StateNotifierProvider<OrderBillingStateNotifier,OrderBillingState>((ref){
+final orderBillingStateProvider = StateNotifierProvider.autoDispose<OrderBillingStateNotifier,OrderBillingState>((ref){
   return OrderBillingStateNotifier();
 });

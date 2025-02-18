@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 import '../models/CustomerModel.dart';
 import '../models/DeliveryAddressModel.dart';
 import '../models/OrderBillConfiguration.dart';
@@ -68,5 +71,164 @@ class OutOfAppOrderApiProvider{
       throw Exception(-2); // you have no right to do this
     }
   }
+  Future<int> launchOrder(
+      bool isPayAtDelivery,
+      CustomerModel customer,
+      List<DeliveryAddressModel> order_address,
+      List<Map<String,dynamic>> foods,
+      DeliveryAddressModel selectedAddress,
+      String mCode,
+      String infos,
+      VoucherModel voucher,
+      bool useKabaPoint)async{
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
+    var device;
+
+    String token = "";
+    try {
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      token = await firebaseMessaging.getToken();
+    } catch (e) {
+      xrint(e);
+    }
+
+    if (Platform.isAndroid) {
+      // Android-specific code
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      xrint("Running on ${androidInfo.model}"); // e.g. "Moto G (4)"
+      device = {
+        "os_version": "${androidInfo.version.baseOS}",
+        "build_device": "${androidInfo.device}",
+        "version_sdk": "${androidInfo.version.sdkInt}",
+        "build_model": "${androidInfo.model}",
+        "build_product": "${androidInfo.product}",
+        "push_token": "$token"
+      };
+    }
+    else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      xrint("Running on ${iosInfo.utsname.machine}"); // e.g. "iPod7,1"
+      device = {
+        "os_version": "${iosInfo.systemVersion}",
+        "build_device": "${iosInfo.utsname.sysname}",
+        "version_sdk": "${iosInfo.utsname.version}",
+        'build_model': '${iosInfo.utsname.machine}',
+        "build_product": "${iosInfo.model}",
+        "push_token": "$token"
+      };
+    }
+    xrint("entered payAtDelivery");
+    if (await Utils.hasNetwork()) {
+      var order_adress_ids= [];
+      if(order_address!=null){
+        for(DeliveryAddressModel adress in order_address){
+          order_adress_ids.add(adress.id);
+        }
+      }
+
+      var formData = [];
+
+      for (int i = 0; i < foods.length; i++) {
+        formData.add(
+            {'name',  foods[i]['name'],
+              'price', foods[i]['price'].toString(),
+              'quantity', foods[i]['quantity'].toString(),
+              'image', ""
+            }
+        );
+      }
+
+      var _data = json.encode({
+        'order_details': foods,
+        'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
+        'pay_at_delivery': isPayAtDelivery,
+        'shipping_address': selectedAddress.id,
+        'transaction_password': '$mCode',
+        'infos': '$infos',
+        'device': device, // device informations
+        'push_token': '$token', // push token
+        "voucher_id": voucher?.id,
+        "use_kaba_point": useKabaPoint
+      });
+
+      xrint("000 _ " + _data.toString());
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 90000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+          Uri.parse(ServerRoutes.LINK_OUT_OF_APP_CREATE_COMMAND).toString(),
+          data: _data);
+
+      xrint("001 _ " + response.data.toString());
+      xrint("002 _status code  " + response.statusCode.toString());
+
+      if (response.statusCode == 200) {
+        // if ok, send true or false
+        return mJsonDecode(response.data)["error"];
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2); // you have no right to do this
+    }
+  }
+
+  Future<dynamic> uploadMultipleImages(List<Map<String, dynamic>> formDataList,CustomerModel customer) async {
+    try {
+      Dio dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..connectTimeout = 90000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      String url = ServerRoutes.LINK_UPLOAD_PRODUCT_IMAGE;
+
+      // Create form data
+      FormData formData = FormData();
+
+      for (int i = 0; i < formDataList.length; i++) {
+        var order = formDataList[i];
+
+        formData.fields.addAll([
+          MapEntry('name_$i', order['name']),
+          MapEntry('price_$i', order['price'].toString()),
+          MapEntry('quantity_$i', order['quantity'].toString()),
+        ]);
+        if (order['image'] != null && order['image'] is File) {
+          File imageFile = order['image'];
+          formData.files.add(
+            MapEntry(
+              "image_$i",
+              await MultipartFile.fromFile(imageFile.path, filename: imageFile.path.split('/').last),
+            ),
+          );
+        }
+      }
+      Response response = await dio.post(
+        url,
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+
+      return response.data;
+    } catch (e, stackTrace) {
+      print("Error: $e");
+      print("StackTrace: $stackTrace");
+
+      return "Error: $e\nLine: ${stackTrace.toString().split("\n")[0]}";
+    }
+  }
 }

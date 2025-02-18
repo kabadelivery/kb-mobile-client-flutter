@@ -29,19 +29,27 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
     final locationNotifier= ref.read(locationStateProvider.notifier);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     final productState = ref.watch(productListProvider);
+    VoucherModel voucherSelected = voucherState.selectedVoucher;
 
-    if (voucherState.selectedVoucher == null) {
+    print('VoucherModeler $voucherSelected');
+    if (voucherSelected == null) {
       return Column(children: <Widget>[
         SizedBox(height: 10),
         /* do you have a voucher you want to use ? */
         InkWell(
           onTap: ()async {
-                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
-                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
-
-                ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+            try{
+              VoucherModel voucher = await SelectVoucher(context, ref, false, null);
+              await getBillingForVoucher(context,ref,voucher).then((value)async {
                 outOfAppNotifier.setIsBillBuilt(true);
                 outOfAppNotifier.setShowLoading(false);
+                orderBillingNotifier.setOrderBillConfiguration(value);
+
+              });
+            }catch(e){
+              print("ERROR getBillingForVoucher : $e");
+            }
+
           },
           child: Shimmer(
             duration: Duration(seconds: 2),
@@ -135,17 +143,33 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                             icon: Icon(Icons.delete_forever,
                                 color: Colors.white, size: 20),
                             onPressed: ()async  {
-                              voucherNotifier.setVoucher(null);
+                              List<Map<String, dynamic>> formData = [];
+
+                              for (int i = 0; i < productState.length; i++) {
+                                formData.add(
+                                    { 'name': productState[i]['name'],
+                                      'price': productState[i]['price'].toString(),
+                                      'quantity': productState[i]['quantity'].toString(),
+                                      'image': ""
+                                    }
+                                );
+                              }
                               outOfAppNotifier.setIsBillBuilt(false);
                               outOfAppNotifier.setShowLoading(true);
                               OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                               orderBillConfiguration= await api.computeBillingAction(
+                              await api.computeBillingAction(
                                   orderBillingState.customer,
                                   locationState.selectedOrderAddress,
-                                  productState,
+                                  formData,
                                   locationState.selectedShippingAddress,
                                   null,
-                                  false);
+                                  false).then((value){
+                                voucherNotifier.state.selectedVoucher=null;
+                                outOfAppNotifier.setIsBillBuilt(true);
+                                outOfAppNotifier.setShowLoading(false);
+                                orderBillingNotifier.setOrderBillConfiguration(value);
+
+                              });
                             }
                             ),
                       ),

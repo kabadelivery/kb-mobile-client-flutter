@@ -12,7 +12,7 @@ Widget OutOfAppProduct(
     BuildContext context,
     WidgetRef ref,
     int index,
-    String image,
+    File image,
     String name,
     int price,
     int quantity){
@@ -50,7 +50,7 @@ Widget OutOfAppProduct(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
-                                image: FileImage(File(image)),
+                                image: FileImage(image),
                                 fit: BoxFit.cover
                             )
                         ),

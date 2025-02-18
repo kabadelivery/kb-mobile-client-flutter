@@ -8,14 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
 import '../../../models/VoucherModel.dart';
+import '../../../state_management/out_of_app_order/additionnal_info_state.dart';
 import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
+import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/BouncingWidget.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
+import '../../customwidgets/address_additionnal_info_widget.dart';
 import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
@@ -27,6 +30,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
   static var routeName = "/OutOfAppOrderPage";
   int shipping_address_type=1;
   int order_address_type=2;
+  int simple_additionnal_info_type =1;
+  int address_additionnal_info_type=2;
   GlobalKey poweredByKey = GlobalKey();
   void showOutOfAppProductForm(BuildContext context) {
     showDialog(
@@ -45,7 +50,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     final orderBillingState = ref.watch(orderBillingStateProvider);
     final locationState = ref.watch(locationStateProvider);
     final voucherState = ref.watch(voucherStateProvider);
-
+    final additionnalInfoState = ref.watch(additionnalInfoProvider);
     print("voucherState ${voucherState.selectedVoucher}");
     print("isBillBuilt ${outOfAppScreenState.isBillBuilt}");
     return  Scaffold(
@@ -126,9 +131,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
             SizedBox(
               height: 10,
             ),
-            AdditionnalInfo(context),
+            AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
             SizedBox(height: 10,),
-
             outOfAppScreenState.isBillBuilt==true &&
             outOfAppScreenState.showLoading==false?
             ShowBilling(context,orderBillingState.orderBillConfiguration):
@@ -156,7 +160,29 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                 ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
                 SizedBox(height: 10,),
                 locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
-                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type):Container(),
+                Column(
+                  children: [
+                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                    SizedBox(height: 10,),
+                    additionnalInfoState.can_add_address_info==false?
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
+                            style: TextStyle(
+
+                                fontSize: 14,
+                                color: Colors.grey)),
+                        SizedBox(height: 10,),
+                        CanAddAdditionnInfo(context,ref),
+                      ],
+                    ):
+                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
+                    SizedBox(height: 10,),
+                  ],
+                ):Container(),
                 locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
                 Column(
                   children: [
@@ -176,6 +202,46 @@ class OutOfAppOrderPage extends ConsumerWidget  {
             SizedBox(key: poweredByKey, height: 25),
             outOfAppScreenState.isBillBuilt==true &&
                 outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
+            SizedBox(height: 20,),
+            outOfAppScreenState.isBillBuilt==true &&
+                outOfAppScreenState.showLoading==false?
+            Container(
+              decoration: BoxDecoration(
+                  color: KColors.primaryColor.withAlpha(30),
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+              child: InkWell(
+                onTap: () => payAtDelivery(
+                 context,
+                  ref,
+                  true
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.directions_bike,
+                                color: KColors.primaryColor),
+                            SizedBox(width: 5),
+                            Text(
+                                "${AppLocalizations.of(context).translate('pay_at_arrival')}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: KColors.primaryColor,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                          ],
+                        ),
+
+                      ]),
+                ),
+              ),
+            ):
+            Container()
           ],
         ),
       ),

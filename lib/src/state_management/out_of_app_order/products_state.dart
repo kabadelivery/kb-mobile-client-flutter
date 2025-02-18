@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +20,7 @@ class OutOfAppProductNotifier extends StateNotifier<List<Map<String,dynamic>>>{
 
 }
 
-final productListProvider = StateNotifierProvider<OutOfAppProductNotifier,List<Map<String,dynamic>>>(
+final productListProvider = StateNotifierProvider.autoDispose<OutOfAppProductNotifier,List<Map<String,dynamic>>>(
         (ref) => OutOfAppProductNotifier()
 );
 
@@ -42,15 +44,15 @@ final quantityProvider = StateNotifierProvider<QuantityNotifier,int>((ref) {
   return QuantityNotifier();
 });
 
-class ImageCacheNotifier extends StateNotifier<String>{
-  ImageCacheNotifier():super("");
+class ImageCacheNotifier extends StateNotifier<File>{
+  ImageCacheNotifier():super(null);
 
-  void saveImagePath(String path){
+  void saveImagePath(File path){
     state = path;
   }
 }
 
-final imageCacheProvider = StateNotifierProvider<ImageCacheNotifier,String>((ref) {
+final imageCacheProvider = StateNotifierProvider<ImageCacheNotifier,File>((ref) {
   return ImageCacheNotifier();
 });
 

@@ -558,5 +558,7 @@
   "image_size_exceed": "Image is too large. Please pick an image under 3MB",
   "finalize": "Finalize",
   "shipping_address": "Shipping address",
-  "order_address": "Purchase address"
+  "order_address": "Purchase address",
+  "add_address_additionnal_info": "Do you have any additionnal information on the purchase address ? ",
+  "address_additionnal_info": "Address additionnal info..."
 }

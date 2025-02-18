@@ -65,8 +65,17 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
         selectedOrderAddress: state.selectedOrderAddress.where((a) => a!=order_address).toList(),
     );
   }
+
+  void reset(){
+    state = state.copyWith(
+      is_order_address_picked: false,
+      is_shipping_address_picked:false ,
+      selectedOrderAddress: null,
+      selectedShippingAddress: null
+    );
+  }
 }
 
-final locationStateProvider = StateNotifierProvider<PickingAddressNotifier,PickingAdressState>((ref){
+final locationStateProvider = StateNotifierProvider.autoDispose<PickingAddressNotifier,PickingAdressState>((ref){
   return PickingAddressNotifier();
 });

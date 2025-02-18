@@ -103,6 +103,7 @@ dependencies:
   pulsator: ^1.0.0+2
   flutter_riverpod: ^2.3.7
   path_provider: ^2.1.1
+  mime: ^1.0.4
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0

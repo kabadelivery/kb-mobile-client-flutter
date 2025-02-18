@@ -557,5 +557,7 @@
   "image_size_exceed": "L'image est trop grande. Veuillez choisir une image de moins de 3Mo",
   "finalize": "Finaliser",
   "shipping_address": "Adresse de livraison",
-  "order_address": "Adresse de l'achat"
+  "order_address": "Adresse de l'achat",
+  "add_address_additionnal_info": "Avez-vous des informations supplémentaires sur l'adresse d'achat ?",
+  "address_additionnal_info": "Informations supplémentaires sur l'adresse..."
 }

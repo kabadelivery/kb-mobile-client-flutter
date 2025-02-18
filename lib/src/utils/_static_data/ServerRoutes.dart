@@ -333,5 +333,11 @@ class ServerRoutes {
   static const String LINK_OUT_OF_APP_COMPUTE_BILLING =
       ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/out_of_app_order/billing/get";
 
+  /* create command db */
+  static const String LINK_OUT_OF_APP_CREATE_COMMAND =
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/create";
+  /* upload image */
+  static const String LINK_UPLOAD_PRODUCT_IMAGE =
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/image/upload";
 
 }

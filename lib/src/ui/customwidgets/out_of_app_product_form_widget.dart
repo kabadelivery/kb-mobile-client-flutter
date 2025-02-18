@@ -14,7 +14,7 @@ Widget OutOfAppProductForm(BuildContext context){
   TextEditingController _priceController = TextEditingController();
   Size size = MediaQuery.of(context).size;
 
-  String imagePath='';
+  File imagePath=null;
   final _formKey = GlobalKey<FormState>();
   return Container(
     width: size.width,
@@ -38,7 +38,7 @@ Widget OutOfAppProductForm(BuildContext context){
     return GestureDetector(
               onTap: ()async{
                 try{
-                  await PickImage(context,ref).then((value){
+                  await pickImage(context,ref).then((value){
                     ref.read(imageCacheProvider.notifier).state = value;
                     imagePath = ref.watch(imageCacheProvider.notifier).state;
                   });
@@ -54,12 +54,12 @@ Widget OutOfAppProductForm(BuildContext context){
                 decoration: BoxDecoration(
                     color: Color(0x64d2d2d2),
                     borderRadius: BorderRadius.circular(5),
-                    image: imagePath.isNotEmpty? DecorationImage(
-                        image: FileImage(File(imageCache)),
+                    image: imagePath!=null? DecorationImage(
+                        image: FileImage(imagePath),
                       fit: BoxFit.cover
                     ):null,
                 ),
-                child: imagePath.isEmpty?
+                child: imagePath==null?
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,11 +183,14 @@ Widget OutOfAppProductForm(BuildContext context){
                               "quantity":int.parse(quantity.toString()),
                               "image":imagePath
                             };
+
+                            print("product $product");
                             ref.read(productListProvider.notifier).addProduct(product);
                             quantityNotifier.reset();
-                            ref.read(imageCacheProvider.notifier).saveImagePath("");
+                            ref.read(imageCacheProvider.notifier).saveImagePath(null);
                             _nameController.text="";
                             _priceController.text="";
+                            imagePath=null;
                           }
                         },
                         child:  Container(

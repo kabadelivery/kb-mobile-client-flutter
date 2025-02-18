@@ -38,6 +38,6 @@ class VoucherStateNotifier extends StateNotifier<VoucherState>{
     state = state.copyWith(usePoint:false);
   }
 }
-final voucherStateProvider = StateNotifierProvider<VoucherStateNotifier,VoucherState>((ref) {
+final voucherStateProvider = StateNotifierProvider.autoDispose<VoucherStateNotifier,VoucherState>((ref) {
   return VoucherStateNotifier();
 });

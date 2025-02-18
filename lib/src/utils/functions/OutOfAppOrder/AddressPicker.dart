@@ -65,10 +65,21 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
         outOfAppNotifier.setIsBillBuilt(false);
         outOfAppNotifier.setShowLoading(true);
         try{
+          List<Map<String, dynamic>> formData = [];
+
+          for (int i = 0; i < productState.length; i++) {
+            formData.add(
+                { 'name': productState[i]['name'],
+                  'price': productState[i]['price'].toString(),
+                  'quantity': productState[i]['quantity'].toString(),
+                  'image': ""
+                }
+            );
+          }
           OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
               customer,
               order_address,
-              productState,
+              formData,
               shipping_address,
               voucherState.selectedVoucher,
               false);

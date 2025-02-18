@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,34 +53,43 @@ Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_v
 
   }
 }
-Future<OrderBillConfiguration> getBillingForVoucher(BuildContext context,WidgetRef ref,VoucherModel voucher){
+Future<OrderBillConfiguration> getBillingForVoucher(BuildContext context,WidgetRef ref,VoucherModel voucher)async{
   final locationState= ref.watch(locationStateProvider);
   final voucherState= ref.watch(voucherStateProvider);
   final locationNotifier= ref.read(locationStateProvider.notifier);
   final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
   final productState = ref.watch(productListProvider);
-  ref.read(voucherStateProvider.notifier).setVoucher(voucher);
-
-  if (locationState.selectedShippingAddress!= null) {
-
-    CustomerUtils.getCustomer().then((customer)async {
-
+  try{
+    ref.read(voucherStateProvider.notifier).setVoucher(voucher);
+      CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
       ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+    List<Map<String, dynamic>> formData = [];
 
+    for (int i = 0; i < productState.length; i++) {
+      formData.add(
+          { 'name': productState[i]['name'],
+            'price': productState[i]['price'].toString(),
+            'quantity': productState[i]['quantity'].toString(),
+            'image': ""
+          }
+      );
+    }
 
       OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
       outOfAppNotifier.setIsBillBuilt(false);
       outOfAppNotifier.setShowLoading(true);
 
-        OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
-            customer,
-            locationState.selectedOrderAddress,
-            productState,
-            locationState.selectedShippingAddress,
-            voucher,
-            false);
-return orderBillConfiguration;
-
-    });
+      OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
+          customer,
+          locationState.selectedOrderAddress,
+          formData,
+          locationState.selectedShippingAddress,
+          voucher,
+          false);
+      return orderBillConfiguration;
+  }catch(e){
+    print("ERROR : $e");
+    return null;
   }
+
 }

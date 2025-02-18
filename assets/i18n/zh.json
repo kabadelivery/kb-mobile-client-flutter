@@ -557,5 +557,7 @@
   "image_size_exceed": "图片太大。请选择 3MB 以下的图片",
   "finalize": "完成",
   "shipping_address": "送货地址",
-  "order_address": "购买地址"
+  "order_address": "购买地址",
+  "add_address_additionnal_info": "您有关于购买地址的其他信息吗？",
+  "address_additionnal_info": "地址其他信息..."
 }

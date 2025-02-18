@@ -8,38 +8,37 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../../localizations/AppLocalizations.dart';
 Future<bool> _isImageSizeValid(File imageFile) async {
   final fileSize = await imageFile.length();
   return fileSize <= 3 * 1024 * 1024; // 3MB
 }
-Future<String> PickImage(BuildContext context,WidgetRef ref) async {
+Future<File> pickImage(BuildContext context, WidgetRef ref) async {
   final _picker = ImagePicker();
 
   PermissionStatus status = await Permission.photos.request();
   if (!status.isGranted) {
-    return "";
+    return null;
   }
+
   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
   if (pickedFile != null) {
     File imageFile = File(pickedFile.path);
 
     if (await _isImageSizeValid(imageFile)) {
-      final cacheDir = await getTemporaryDirectory();
-      final cachedImagePath = '${cacheDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-      // Save image to cache
-      await imageFile.copy(cachedImagePath);
-      ref.read(imageCacheProvider.notifier).state = cachedImagePath;
-      print("###IMAGE PATH : $cachedImagePath");
-
-      return cachedImagePath;
+      return imageFile;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Image is too large. Please pick an image under 3MB'),
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        content:  Text("${AppLocalizations.of(context).translate('image_size_exceed')}"
+            ,style:TextStyle(color: Colors.white)
+        ),
       ));
-      throw Exception('Image too large');
+      return null;
     }
   }
+
+  return null; // Return null if no file was picked
 }
 
 Future<void> removeImageFromCache(String imagePath) async {
