@@ -71,6 +71,7 @@ void sorryDemoAccountAlert(BuildContext context) {
     message:
     "${AppLocalizations.of(context).translate('demo_account_alert')}",
     isYesOrNo: false,
+    context: context
   );
 }
 void payAtDelivery(
@@ -99,6 +100,7 @@ void payAtDelivery(
         message:
         "${AppLocalizations.of(context).translate('sorry_email_account_no_pay_delivery')}",
         isYesOrNo: false,
+        context: context
       );
     } else {
       _showDialog(
@@ -106,6 +108,7 @@ void payAtDelivery(
         message:
         "${AppLocalizations.of(context).translate('sorry_ongoing_order')}",
         isYesOrNo: false,
+        context: context
       );
     }
     return;
@@ -117,6 +120,7 @@ void payAtDelivery(
         message:
         "${AppLocalizations.of(context).translate('prevent_pay_at_delivery')}",
         isYesOrNo: true,
+        context: context,
         actionIfYes: () => payAtDelivery(context,ref,order_type,true,));
     return;
   }
@@ -268,6 +272,7 @@ void _showDialog(
 void launchOrderResponse(int errorCode,BuildContext context, WidgetRef ref) {
 
  ref.read(outOfAppScreenStateProvier.notifier).setIsPayAtDeliveryLoading(false);
+ print("ERROR CODE $errorCode");
   if (errorCode == 0) {
     CustomerUtils.unlockBestSellerVersion();
     _showOrderSuccessDialog(context);
@@ -318,6 +323,7 @@ void launchOrderResponse(int errorCode,BuildContext context, WidgetRef ref) {
       icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
       message: message,
       isYesOrNo: false,
+      context: context
     );
   }
 }
@@ -330,6 +336,7 @@ void _showOrderSuccessDialog(BuildContext context) {
     message:
     "${AppLocalizations.of(context).translate('order_congratz_praise')}",
     isYesOrNo: false,
+    context: context
   );
 }
 Future<void> _playMusicForSuccess() async {

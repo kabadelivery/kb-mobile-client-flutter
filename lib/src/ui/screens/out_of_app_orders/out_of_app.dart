@@ -77,7 +77,9 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     ],
     ),
     ),
-    body: Padding(
+    body:outOfAppScreenState.isPayAtDeliveryLoading==true?
+    Center(child: MyLoadingProgressWidget(),)
+    :Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
         child: Column(

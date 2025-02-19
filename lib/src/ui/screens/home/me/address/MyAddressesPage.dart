@@ -159,7 +159,15 @@ class _MyAddressesPageState extends State<MyAddressesPage>
           onTap: () {
             CustomerUtils.getCustomer().then((customer)async {
               await determinePosition().then((value)async{
+                DeliveryAddressModel old_address  =DeliveryAddressModel();
+                for(DeliveryAddressModel adr in widget?.data){
+                  if(adr.name==AppLocalizations.of(context).translate('choose_actual_location').toString()){
+                    old_address=adr;
+                    break;
+                  }
+                }
                 DeliveryAddressModel address = DeliveryAddressModel(
+                  id: old_address.id,
                   name:"${AppLocalizations.of(context).translate('choose_actual_location')}",
                   location: "${value.latitude}:${value.longitude}",
                   phone_number:customer.phone_number.toString(),
@@ -190,7 +198,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             bottom: 0,
             right: 0,
             left: 0,
-            top: 50,
+
             child: Container(
               // color: KColors.new_gray,
               padding:
@@ -261,10 +269,12 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     ? Column(
                         children: [
                           SizedBox(height: 10),
-                          buildAddressListWidgetNew(address: widget.data[index])
+                          widget.data[index].name!=AppLocalizations.of(context).translate('choose_actual_location').toString()?
+                          buildAddressListWidgetNew(address: widget.data[index]):Container()
                         ],
                       )
-                    : buildAddressListWidgetNew(address: widget.data[index]);
+                    : widget.data[index].name!=AppLocalizations.of(context).translate('choose_actual_location').toString()?
+                buildAddressListWidgetNew(address: widget.data[index]):Container();
               else
                 return Container(height: 100);
             }))),
