@@ -25,10 +25,11 @@ class OrderNewDetailsPage extends StatefulWidget {
 
   OrderDetailsPresenter presenter;
 
-  OrderNewDetailsPage({Key key, this.orderId, this.presenter})
+  OrderNewDetailsPage({Key key, this.orderId, this.presenter,this.is_out_of_app_order=false})
       : super(key: key);
 
   int orderId;
+  bool is_out_of_app_order;
   CustomerModel customer;
   CommandModel command;
 
@@ -57,7 +58,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           widget.orderId != 0 &&
           widget.command == null &&
           widget.customer != null) {
-        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId);
+        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
       }
     });
   }
@@ -70,7 +71,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
       if (widget.customer != null && widget.command == null) {
         // there must be a food id.
         widget.presenter
-            .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+            .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
       } else {
         // postpone it to the next second by adding showing the loading button.
         if (!waitedForCustomerOnce) {
@@ -79,7 +80,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           Future.delayed(Duration(seconds: 1)).then((onValue) {
             if (widget.customer != null && widget.command == null) {
               widget.presenter
-                  .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+                  .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
             }
           });
         }
@@ -598,6 +599,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
   }
 
   Widget _buildBasketItem(OrderItemModel food, int quantity) {
+    print("_buildBasketItem $food");
     return Container(
         margin: EdgeInsets.only(top: 4, bottom: 4),
         child: InkWell(
@@ -654,14 +656,14 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    decoration: food.promotion != 0
+                                    decoration: food.promotion != 0 &&food.promotion!=null
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
                                     color: KColors.new_black,
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal)),
                             SizedBox(width: 5),
-                            (food.promotion != 0
+                            (food.promotion != 0&&food.promotion!=null
                                 ? Text("${food?.promotion_price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
@@ -891,7 +893,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         bool feedBackOk = results['ok'];
         if (feedBackOk) {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget?.command?.id);
+              .fetchOrderDetailsWithId(widget.customer, widget?.command?.id,is_out_of_app_order:widget.is_out_of_app_order);
         }
       }
     } else {
@@ -939,7 +941,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+              .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
         });
   }
 
@@ -948,7 +950,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+              .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
         });
   }
 

@@ -558,6 +558,9 @@
   "finalize": "完成",
   "shipping_address": "送货地址",
   "order_address": "购买地址",
-  "add_address_additionnal_info": "您有关于购买地址的其他信息吗？",
-  "address_additionnal_info": "地址其他信息..."
+  "add_address_additionnal_info": "或者在文中加上购买地址？",
+  "address_additionnal_info": "地址其他信息...",
+  "normal_orders": "正常订单",
+  "out_of_app_orders": "应用程序和套餐已售罄",
+  "out_of_app_order":"订单已退出申请"
 }

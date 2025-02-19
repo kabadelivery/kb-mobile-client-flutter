@@ -46,7 +46,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
   }
 
   @override
-  Future<void> fetchOrderDetailsWithId(CustomerModel customerModel, int orderId) async {
+  Future<void> fetchOrderDetailsWithId(CustomerModel customerModel, int orderId,{bool is_out_of_app_order=false}) async {
 
     _orderDetailsView.showLoading(true);
     /* make network request, create a lib that makes network request. */
@@ -54,17 +54,18 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       return;
     isWorking = true;
     try {
-      CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId);
+      CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId,is_out_of_app_order:is_out_of_app_order);
       _orderDetailsView.showLoading(false);
       if (commandModel != null) {
         _orderDetailsView.inflateOrderDetails(commandModel);
       } else {
         _orderDetailsView.systemError();
       }
-    } catch(_) {
+    } catch(_,stackTrace) {
       /* Food failure */
       _orderDetailsView.showLoading(false);
       xrint("error ${_}");
+      print("StackTrace: $stackTrace");
       if (_ == -2) {
         _orderDetailsView.systemError();
       } else {

@@ -38,7 +38,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   // String last_update_timeout = "";
 
   int MAX_MINUTES_FOR_AUTO_RELOAD = 5;
-
+  bool is_out_of_app_order = false;
   @override
   void initState() {
     widget.presenter.dailyOrderView = this;
@@ -85,16 +85,100 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
         ),
       ),
 
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark,
-          child: Container(
-              child: isLoading
-                  ? Center(child: MyLoadingProgressWidget())
-                  : (hasNetworkError
-                      ? _buildNetworkErrorPage()
-                      : hasSystemError
-                          ? _buildSysErrorPage()
-                          : _buildOrderList())),
+        body: Column(
+          children: [
+            //choose type
+            SizedBox(height: 10,),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Container(
+                height: 40,
+
+                width: MediaQuery.of(context).size.width*.95,
+                decoration: BoxDecoration(
+                    color: Color(0x6EC5C5C5),
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        if(is_out_of_app_order==true){
+                          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: false);
+                        }
+                        setState(() {
+                          is_out_of_app_order=false;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        alignment: Alignment.center,
+                        height: 40,
+                        width: (MediaQuery.of(context).size.width*.95)/2,
+                        decoration: BoxDecoration(
+                            color: is_out_of_app_order==true?
+                            Colors.transparent:
+                            KColors.primaryColor,
+                            borderRadius: BorderRadius.only(
+                                topLeft:Radius.circular(10),
+                                bottomLeft:Radius.circular(10)
+                            )
+                        ),
+                        child: Text(
+                            "${AppLocalizations.of(context).translate('normal_orders')}",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color:is_out_of_app_order==false? Colors.white :KColors.new_black)),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        if(is_out_of_app_order==false){
+                          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: true);
+                        }
+                        setState(() {
+                          is_out_of_app_order=true;
+                        });
+                      },
+                      child:  AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        alignment: Alignment.center,
+                        height: 40,
+                        width: (MediaQuery.of(context).size.width*.95)/2,
+                        decoration: BoxDecoration(
+                            color: is_out_of_app_order==true?
+                            KColors.primaryColor:
+                            Colors.transparent,
+                            borderRadius: BorderRadius.only(
+                                topRight:Radius.circular(10),
+                                bottomRight:Radius.circular(10)
+                            )
+                        ),
+                        child:  Text(
+                            "${AppLocalizations.of(context).translate('out_of_app_orders')}",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color:is_out_of_app_order==true? Colors.white :Colors.grey)),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.dark,
+              child: Container(
+                height: MediaQuery.of(context).size.height*.77,
+                  child: isLoading
+                      ? Center(child: MyLoadingProgressWidget())
+                      : (hasNetworkError
+                          ? _buildNetworkErrorPage()
+                          : hasSystemError
+                              ? _buildSysErrorPage()
+                              : _buildOrderList())),
+            ),
+          ],
         ));
   }
 
@@ -104,9 +188,17 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
+
+            //build out of app
+            //build normalOrder List
             Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
               InkWell(
-                onTap: () => widget.presenter.loadDailyOrders(widget.customer),
+                onTap: () {
+                  if(is_out_of_app_order==true)
+                    widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: true);
+                  else
+                      widget.presenter.loadDailyOrders(widget.customer);
+                },
                 child: Container(
                   // width: 80,
                   height: 40,
@@ -233,7 +325,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('system_error')}",
         onClickAction: () {
-          widget.presenter.loadDailyOrders(widget.customer);
+          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
         });
   }
 
@@ -241,7 +333,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context).translate('network_error')}",
         onClickAction: () {
-          widget.presenter.loadDailyOrders(widget.customer);
+          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
         });
   }
 
@@ -294,7 +386,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
       int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
 
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD)
-        widget.presenter.loadDailyOrders(widget.customer);
+        widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
     });
   }
 

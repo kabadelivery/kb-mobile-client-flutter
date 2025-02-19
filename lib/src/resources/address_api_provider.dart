@@ -44,6 +44,16 @@ class AddressApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+      print(json.encode({
+        "id": address?.id,
+        "name": address?.name,
+        "location": address?.location,
+        "phone_number": address?.phone_number,
+        "description": address?.description,
+        "description_details": address?.description,
+        "near": address?.near,
+        "quartier": address?.quartier
+      }));
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_CREATE_NEW_ADRESS).toString(),
           data: json.encode({

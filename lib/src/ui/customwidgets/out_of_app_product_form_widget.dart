@@ -6,6 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../localizations/AppLocalizations.dart';
+import '../../models/CustomerModel.dart';
+import '../../models/DeliveryAddressModel.dart';
+import '../../resources/out_of_app_order_api.dart';
+import '../../state_management/out_of_app_order/additionnal_info_state.dart';
+import '../../state_management/out_of_app_order/location_state.dart';
+import '../../state_management/out_of_app_order/order_billing_state.dart';
+import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
+import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import 'BouncingWidget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,9 +42,11 @@ Widget OutOfAppProductForm(BuildContext context){
             Consumer(
   builder: (context, ref,child) {
     final imageCache = ref.watch(imageCacheProvider);
+    final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
 
     return GestureDetector(
-              onTap: ()async{
+
+              onTap:outOfAppScreenState.showLoading==false? ()async{
                 try{
                   await pickImage(context,ref).then((value){
                     ref.read(imageCacheProvider.notifier).state = value;
@@ -46,7 +56,7 @@ Widget OutOfAppProductForm(BuildContext context){
                 }catch(e){
                   print("##Error in image picking, out of app order## $e");
                 }
-              },
+              }:null,
               child: Container(
                 height: 100,
                 width: 100,
@@ -84,6 +94,7 @@ Widget OutOfAppProductForm(BuildContext context){
 ),
             Container(
               width: size.width*.5,
+              alignment: Alignment.center,
               child:
               Column(
                 children: [
@@ -118,10 +129,16 @@ Widget OutOfAppProductForm(BuildContext context){
                     builder: (context, ref,child) {
                       final quantity = ref.watch(quantityProvider);
                       final quantityNotifier = ref.read(quantityProvider.notifier);
+                      final products = ref.watch(productListProvider);
+                      final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+                      final orderBillingState = ref.watch(orderBillingStateProvider);
+                      final orderBillingNotifier = ref.read(orderBillingStateProvider.notifier);
+                      final locationState = ref.watch(locationStateProvider);
+                      final voucherState = ref.watch(voucherStateProvider);
+                      final outOfAppNotifier =ref.read(outOfAppScreenStateProvier.notifier);
 
-
-
-                      return Column(
+                      return outOfAppScreenState.showLoading==false?
+                      Column(
                     children: [
                       Row(
                         children: [
@@ -208,8 +225,39 @@ Widget OutOfAppProductForm(BuildContext context){
                       ),
                       SizedBox(height: 10),
                       InkWell(
-                        onTap: (){
+                        onTap: ()async{
+
+                              if(locationState.is_shipping_address_picked){
+                                var foods = ref.watch(productListProvider);
+                                List<Map<String, dynamic>> formData = [];
+
+                                for (int i = 0; i < foods.length; i++) {
+                                  formData.add(
+                                      { 'name': foods[i]['name'],
+                                        'price': foods[i]['price'].toString(),
+                                        'quantity': foods[i]['quantity'].toString(),
+                                        'image': ""
+                                      }
+                                  );
+                                }
+                                OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+                                CustomerModel customer =orderBillingState.customer;
+                                List<DeliveryAddressModel> order_address = locationState.selectedOrderAddress;
+                                DeliveryAddressModel shipping_adress =  locationState.selectedShippingAddress;
+                                var _selectedVoucher =voucherState.selectedVoucher;
+                                var _usePoint = voucherState.usePoint;
+                                outOfAppNotifier.setIsBillBuilt(false);
+                                outOfAppNotifier.setShowLoading(true);
+                                await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher, _usePoint).then((value){
+                                  ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(value);
+                                  outOfAppNotifier .setIsBillBuilt(true);
+                                  outOfAppNotifier.setShowLoading(false);
+                                });
+                              }else{
+                                orderBillingNotifier.setOrderBillConfiguration(null);
+                              }
                               Navigator.pop(context);
+
                         },
                         child:
                         Container(
@@ -226,6 +274,14 @@ Widget OutOfAppProductForm(BuildContext context){
                         ),
                       ),
                     ],
+                  ):Container(
+                        height: 60,
+                        alignment: Alignment.center,
+                    width: size.width,
+                    child: Container(
+                          height: 40,width: 40,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(),),
                   );
                 },
               ),

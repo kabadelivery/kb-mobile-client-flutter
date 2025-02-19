@@ -41,21 +41,23 @@ class DailyOrderPresenter implements DailyOrderContract {
   }
 
   @override
-  Future<void> loadDailyOrders(CustomerModel customer) async {
+  Future<void> loadDailyOrders(CustomerModel customer,
+      {bool is_out_of_app_order = false}) async {
 
     if (isWorking)
       return;
     isWorking = true;
     _dailyOrderView.showLoading(true);
     try {
-      List<CommandModel> commands = await provider.fetchDailyOrders(customer);
+      List<CommandModel> commands = await provider.fetchDailyOrders(customer,is_out_of_app_order: is_out_of_app_order);
       // also get the restaurant entity here.
       _dailyOrderView.showLoading(false);
       _dailyOrderView.inflateOrder(commands);
-    } catch (_) {
+    } catch (_,stackTrace) {
       /* BestSeller failure */
       _dailyOrderView.showLoading(false);
       xrint("error ${_}");
+      print("StackTrace: $stackTrace");
       if (_ == -2) {
         _dailyOrderView.systemError();
       } else {

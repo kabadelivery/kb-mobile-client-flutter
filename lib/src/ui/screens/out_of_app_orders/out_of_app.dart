@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
@@ -32,6 +33,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
   int order_address_type=2;
   int simple_additionnal_info_type =1;
   int address_additionnal_info_type=2;
+  int out_of_app_order_type=3;
+  int out_of_app_order_type_without_address=4;
   GlobalKey poweredByKey = GlobalKey();
   void showOutOfAppProductForm(BuildContext context) {
     showDialog(
@@ -49,10 +52,11 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
     final orderBillingState = ref.watch(orderBillingStateProvider);
     final locationState = ref.watch(locationStateProvider);
+    final locationNotifier = ref.read(locationStateProvider.notifier);
     final voucherState = ref.watch(voucherStateProvider);
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
     print("voucherState ${voucherState.selectedVoucher}");
-    print("isBillBuilt ${outOfAppScreenState.isBillBuilt}");
+    print("isBillBuilt ${locationState.selectedOrderAddress}");
     return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -163,7 +167,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                 Column(
                   children: [
                     ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
-                    SizedBox(height: 10,),
+                    SizedBox(height: 20,),
                     additionnalInfoState.can_add_address_info==false?
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -173,8 +177,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                             "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
                             style: TextStyle(
 
-                                fontSize: 14,
-                                color: Colors.grey)),
+                                fontSize: 16,
+                                color: Colors.grey.shade700)),
                         SizedBox(height: 10,),
                         CanAddAdditionnInfo(context,ref),
                       ],
@@ -211,11 +215,30 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
               child: InkWell(
-                onTap: () => payAtDelivery(
-                 context,
-                  ref,
-                  true
-                ),
+                onTap: () {
+                  int type_of_order = 4; // Default
+
+                  List<DeliveryAddressModel> adrs = [];
+
+                  if (locationState.selectedOrderAddress == null) {
+                    type_of_order = out_of_app_order_type_without_address;
+                  } else {
+                    adrs = locationState.selectedOrderAddress;
+
+                    if (adrs.isNotEmpty) {
+                      type_of_order = out_of_app_order_type;
+                    } else {
+                      type_of_order = out_of_app_order_type_without_address;
+                    }
+                  }
+
+                  payAtDelivery(
+                      context,
+                      ref,
+                      type_of_order,
+                      true
+                  );
+                },
                 child: Container(
                   padding: EdgeInsets.all(10),
                   child: Column(

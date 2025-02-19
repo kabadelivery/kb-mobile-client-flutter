@@ -558,6 +558,10 @@
   "finalize": "Finaliser",
   "shipping_address": "Adresse de livraison",
   "order_address": "Adresse de l'achat",
-  "add_address_additionnal_info": "Avez-vous des informations supplémentaires sur l'adresse d'achat ?",
-  "address_additionnal_info": "Informations supplémentaires sur l'adresse..."
+  "add_address_additionnal_info": "Ou ajouter à l'écrit l'addresse d'achat?",
+  "address_additionnal_info": "Informations supplémentaires sur l'adresse...",
+  "choose_actual_location": "Choisir votre position actuelle",
+  "normal_orders": "Commandes normales",
+  "out_of_app_orders": "Hors appli & Colis",
+  "out_of_app_order":"Commande hors appli"
 }

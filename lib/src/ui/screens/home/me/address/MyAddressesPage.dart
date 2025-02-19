@@ -6,6 +6,7 @@ import 'package:KABA/src/contracts/edit_address_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/resources/address_api_provider.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/me/address/EditAddressPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
@@ -22,6 +23,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
+
+import '../../../../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 
 class MyAddressesPage extends StatefulWidget {
   static var routeName = "/MyAddressesPage";
@@ -116,8 +119,66 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
+      InkWell(
+      splashColor: Colors.white,
+          child: Container(
+              margin: EdgeInsets.only(left: 10, right: 10,top: 40),
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius:
+                  BorderRadius.all(Radius.circular(5)),
+                  color:  KColors.mBlue.withAlpha(30)
+              ),
+              child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(children: <Widget>[
+                      BouncingWidget(
+                        duration: Duration(milliseconds: 400),
+                        scaleFactor: 2,
+                        child: Icon(Icons.location_on,
+                            size: 28,
+                            color: KColors.mBlue
+
+                        ),
+                      ),
+                    ]),
+                    SizedBox(width: 10),
+                    Text(
+                        "${AppLocalizations.of(context).translate('choose_actual_location')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color:
+                            KColors.mBlue
+
+                        ))
+                  ])),
+          onTap: () {
+            CustomerUtils.getCustomer().then((customer)async {
+              await determinePosition().then((value)async{
+                DeliveryAddressModel address = DeliveryAddressModel(
+                  name:"${AppLocalizations.of(context).translate('choose_actual_location')}",
+                  location: "${value.latitude}:${value.longitude}",
+                  phone_number:customer.phone_number.toString(),
+                  user_id: customer.id.toString(),
+                  description: "${AppLocalizations.of(context).translate('this_location')}",
+                  quartier: "unknown",
+                  near: "near unknown",
+                );
+                AddressApiProvider api = AddressApiProvider();
+                Map jsonData = await api.updateOrCreateAddress(address,customer);
+                DeliveryAddressModel choosedAddres = jsonData["address"];
+                _pickedAddress(choosedAddres);
+              });
+            });
+
+          }),
           Container(
               height: MediaQuery.of(context).size.height,
+              margin: EdgeInsets.only(top: 80),
               child: isLoading
                   ? Center(child: MyLoadingProgressWidget())
                   : (hasNetworkError
@@ -129,6 +190,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             bottom: 0,
             right: 0,
             left: 0,
+            top: 50,
             child: Container(
               // color: KColors.new_gray,
               padding:

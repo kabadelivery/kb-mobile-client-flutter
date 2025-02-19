@@ -9,7 +9,7 @@ class ServerConfig {
 
   //static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
   //static const String stat_ip_address="stats.kaba-delivery.com"; //prod
-  static const String stat_ip_address="f711-102-64-146-32.ngrok-free.app"; //local
+  static const String stat_ip_address="2fd3-102-64-169-68.ngrok-free.app"; //local
 
   static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;

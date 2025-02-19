@@ -105,6 +105,14 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String restoName = "${command?.restaurant_entity?.name}";
+    if(command.order_type==null){
+      restoName = "${command?.restaurant_entity?.name}";
+    }else if(command.order_type==3 ||command.order_type==4){
+      restoName = "${AppLocalizations.of(context).translate('out_of_app_order')}";
+    }else if(command.order_type==5){
+      restoName = "${AppLocalizations.of(context).translate('package_shipping')}";
+    }
     return Opacity(
       opacity: command?.state > 3 ? .7 : 1,
       child: InkWell(
@@ -132,8 +140,13 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
+                                      command.order_type==null?
                                       Utils.inflateLink(
-                                          command.restaurant_entity.pic))))),
+                                          command.restaurant_entity.pic):
+                                  "${command.restaurant_entity.pic}"
+                                  )
+
+                              ))),
                       SizedBox(width: 10),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -142,7 +155,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                         children: [  SizedBox(height: 10),
                           Container(
                             width: 1 * MediaQuery.of(context).size.width / 2,
-                            child: Text("${command?.restaurant_entity?.name}",
+                            child: Text(
+                                restoName,
                                 style: TextStyle(
                                     color: KColors.new_black,
                                     fontWeight: FontWeight.w500,
@@ -359,6 +373,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderNewDetailsPage(
+                is_out_of_app_order:widget.command?.order_type!=null?true:false,
                 orderId: command?.id, presenter: OrderDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);

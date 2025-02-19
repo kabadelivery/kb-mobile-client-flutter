@@ -168,7 +168,7 @@ class OrderApiProvider {
     }
   }
 
-  loadOrderFromId(CustomerModel customer, int orderId) async {
+  loadOrderFromId(CustomerModel customer, int orderId,{bool is_out_of_app_order=false}) async {
     xrint("entered loadOrderFromId");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -183,7 +183,11 @@ class OrderApiProvider {
         };
       };
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_GET_COMMAND_DETAILS).toString(),
+          Uri.parse(
+              is_out_of_app_order==false?
+              ServerRoutes.LINK_GET_COMMAND_DETAILS
+          :ServerRoutes.LINK_OUT_OF_APP_GET_COMMAND_DETAILS
+          ).toString(),
           data: json.encode({"command_id": orderId}));
 
       String content = response.data.toString();

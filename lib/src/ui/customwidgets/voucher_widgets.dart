@@ -85,7 +85,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                 VoucherModel voucher = await SelectVoucher(context, ref, false, null);
                                 OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
 
-                                ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                                orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                                 outOfAppNotifier.setIsBillBuilt(true);
                                 outOfAppNotifier.setShowLoading(false);
                               },

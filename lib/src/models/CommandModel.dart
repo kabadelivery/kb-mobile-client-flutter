@@ -58,7 +58,7 @@ class CommandModel {
   String comment;
 
   int additionnal_fee;
-
+  int order_type;
 
   CommandModel({this.id, this.restaurant_id, this.state,
     this.shipping_address, this.restaurant_entity, this.food_list,
@@ -69,8 +69,7 @@ class CommandModel {
     this.promotion_total_pricing, this.promotion_shipping_pricing,
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
     this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity,
-    this.kaba_point_used_amount,
-    this.additionnal_fee,
+    this.kaba_point_used_amount,this.additionnal_fee, this.order_type,
   });
 
 
@@ -94,6 +93,7 @@ class CommandModel {
     reason = json['reason'];
     infos = json['infos'];
     additionnal_fee=json['additionnal_fee'];
+    order_type=json['order_type'];
     if (json['livreur'] != null)
       livreur = KabaShippingMan.fromJson(json['livreur']);
     else
@@ -101,12 +101,27 @@ class CommandModel {
 
     shipping_address = DeliveryAddressModel.fromJson(json['shipping_address']);
 
-    if (json['restaurant_entity'] != null)
+    if (json['restaurant_entity'] != null && json['restaurant_entity'].isNotEmpty){
       restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
+    }else{
+      restaurant_entity = ShopModel(
+        name: "",
+        pic: "https://img.freepik.com/free-vector/shop-with-sign-we-are-open_23-2148562565.jpg?semt=ais_hybrid"
+      );
+    }
 
     l = json["food_list"];
+    if(json['order_type']==null)
     food_list = l?.map((f) => OrderItemModel.fromJson(f))?.toList();
-
+    else
+      food_list = l?.map((f) => OrderItemModel(
+        name: f['name'] ,
+        price:f['price'],
+        quantity:int.parse( f['quantity'].toString()),
+        pic: f['image'],
+        promotion: 0,
+        promotion_price: f['price']
+      ))?.toList();
     // normal one
     total_pricing = json["total_pricing"];
     shipping_pricing = json["shipping_pricing"];
@@ -160,7 +175,8 @@ class CommandModel {
     "infos" : infos,
     "rating" : rating,
     "comment" : comment,
-    "kaba_point_used_amount": kaba_point_used_amount
+    "kaba_point_used_amount": kaba_point_used_amount,
+    "order_type": order_type,
   };
 
 

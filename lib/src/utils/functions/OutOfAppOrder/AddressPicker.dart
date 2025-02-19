@@ -12,6 +12,7 @@ import '../../../state_management/out_of_app_order/out_of_app_order_screen_state
 import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../ui/screens/home/me/address/MyAddressesPage.dart';
 import '../CustomerUtils.dart';
+import 'package:geolocator/geolocator.dart';
 
 Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredByKey,int address_type) async {
   final locationState= ref.watch(locationStateProvider);
@@ -95,4 +96,28 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
     });
   }
   }
+}
+
+Future<Position> determinePosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    return Future.error('Location services are disabled.');
+  }
+
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return Future.error('Location permissions are denied');
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+  }
+  return await Geolocator.getCurrentPosition();
 }

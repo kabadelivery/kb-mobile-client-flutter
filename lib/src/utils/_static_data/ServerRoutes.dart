@@ -12,11 +12,13 @@ class ServerRoutes {
 
   /* get current command db */
    static const String LINK_MY_COMMANDS_GET_CURRENT =
+       ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/command/v4/get";
+   static const String LINK_OUT_OF_APP_MY_COMMANDS_GET_CURRENT =
        ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/out_of_app_order/get";
 
   /* get all commands list */
   static const String LINK_GET_ALL_COMMAND_LIST =
-      ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/all/v4/get";
+        ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/all/v4/get";
 
   /* create command db */
   static const String LINK_CREATE_COMMAND =
@@ -25,7 +27,8 @@ class ServerRoutes {
   /* get command details */
   static const String LINK_GET_COMMAND_DETAILS =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/details/v4/get";
-
+  static const String LINK_OUT_OF_APP_GET_COMMAND_DETAILS =
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/details/get";
   /* get current basket content */
   static const String LINK_MY_BASKET_GET =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/basket/get";

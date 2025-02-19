@@ -30,7 +30,7 @@ class OrderItemModel {
       name = json['name'];
       price = json['price'];
       promotion_price = json['promotion_price'];
-      quantity = json['quantity'];
+      quantity = int.parse(json['quantity'].toString());
       pic = json['pic'];
       details = json['details'];
       promotion = json['promotion'];

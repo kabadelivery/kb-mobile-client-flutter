@@ -12,7 +12,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 
 class CommandsApiProvider {
-  Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer) async {
+  Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer,{bool is_out_of_app_order=false}) async {
     xrint("entered fetchDailyOrders");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -27,7 +27,11 @@ class CommandsApiProvider {
         };
       };
       var response = await dio.post(
-        Uri.parse(ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT).toString(),
+        Uri.parse(
+            is_out_of_app_order==false?
+            ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT:
+            ServerRoutes.LINK_OUT_OF_APP_MY_COMMANDS_GET_CURRENT
+        ).toString(),
         data: json.encode({}),
       );
 

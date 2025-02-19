@@ -39,13 +39,14 @@ Future<void> launchOrderFunc(
     String infos,
     VoucherModel voucher,
     bool useKabaPoint,
+    int order_type,
     BuildContext context,
     WidgetRef ref
     ) async {
   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
   try {
 
-    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint,order_type);
     launchOrderResponse(error,context,ref);
   } catch (_) {
     /* login failure */
@@ -75,7 +76,8 @@ void sorryDemoAccountAlert(BuildContext context) {
 void payAtDelivery(
     BuildContext context,
     WidgetRef ref,
-    bool isDialogShown
+    int order_type,
+    bool isDialogShown,
     ) async {
   const String DEMO_ACCOUNT_USERNAME = "90000000";
 
@@ -84,9 +86,9 @@ void payAtDelivery(
   var foods = ref.watch(productListProvider);
   List<DeliveryAddressModel> order_address = ref.watch(locationStateProvider).selectedOrderAddress;
   var _selectedAddress = ref.watch(locationStateProvider).selectedShippingAddress;
-  var addInfo = "Infos supplémentaire"+
-      ref.watch(additionnalInfoProvider).additionnal_info+"\n"+
-      "Infos sur l'addresse de commande : \n"+ref.watch(additionnalInfoProvider).additionnal_address_info;
+  var addInfo = "\nInfos supplémentaire : "+"\n\n"+
+      ref.watch(additionnalInfoProvider).additionnal_info+"\n\n\n"+
+      "Infos sur l'addresse de commande : \n\n"+ref.watch(additionnalInfoProvider).additionnal_address_info;
   var _selectedVoucher = ref.watch(voucherStateProvider).selectedVoucher;
   var _usePoint = ref.watch(voucherStateProvider).usePoint;
   if (orderBillConfiguration?.trustful != 1) {
@@ -115,7 +117,7 @@ void payAtDelivery(
         message:
         "${AppLocalizations.of(context).translate('prevent_pay_at_delivery')}",
         isYesOrNo: true,
-        actionIfYes: () => payAtDelivery(context,ref,true));
+        actionIfYes: () => payAtDelivery(context,ref,order_type,true,));
     return;
   }
 
@@ -145,20 +147,21 @@ void payAtDelivery(
           try{
             OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
             print("Upload image : $foods");
-            var orderDetails = await api.uploadMultipleImages(foods,customer);
-            print("orderDetails $orderDetails");
-        //    await launchOrderFunc(
-            //                 customer,
-            //                 orderDetails as List<Map<String,dynamic>>,
-            //                 order_address,
-            //                 _selectedAddress,
-            //                 _mCode,
-            //                 addInfo,
-            //                 _selectedVoucher,
-            //                 _usePoint,
-            //                 context,
-            //                 ref
-            //             );
+        //    var orderDetails = await api.uploadMultipleImages(foods,customer);
+        //    print("orderDetails $orderDetails");
+               await launchOrderFunc(
+                            customer,
+                           foods,// orderDetails as List<Map<String,dynamic>>,
+                            order_address,
+                            _selectedAddress,
+                            _mCode,
+                            addInfo,
+                            _selectedVoucher,
+                            _usePoint,
+                            order_type,
+                            context,
+                            ref
+                        );
           }catch(e){
             return;
           }

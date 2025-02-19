@@ -559,6 +559,10 @@
   "finalize": "Finalize",
   "shipping_address": "Shipping address",
   "order_address": "Purchase address",
-  "add_address_additionnal_info": "Do you have any additionnal information on the purchase address ? ",
-  "address_additionnal_info": "Address additionnal info..."
+  "add_address_additionnal_info": "Or add the purchase address to the writing? ",
+  "address_additionnal_info": "Address additionnal info...",
+  "choose_actual_location": "Choose your actual position",
+  "normal_orders": "Normal orders",
+  "out_of_app_orders": "Out of app & Packages",
+  "out_of_app_order":"Out of app order"
 }

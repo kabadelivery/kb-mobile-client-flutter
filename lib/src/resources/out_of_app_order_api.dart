@@ -5,8 +5,7 @@ import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:mime/mime.dart';
-import 'package:http_parser/http_parser.dart';
+
 import '../models/CustomerModel.dart';
 import '../models/DeliveryAddressModel.dart';
 import '../models/OrderBillConfiguration.dart';
@@ -80,7 +79,10 @@ class OutOfAppOrderApiProvider{
       String mCode,
       String infos,
       VoucherModel voucher,
-      bool useKabaPoint)async{
+      bool useKabaPoint,
+      int order_type
+      )async{
+
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     var device;
@@ -127,20 +129,20 @@ class OutOfAppOrderApiProvider{
         }
       }
 
-      var formData = [];
+      List<Map<String,dynamic>> formData = [];
 
       for (int i = 0; i < foods.length; i++) {
         formData.add(
-            {'name',  foods[i]['name'],
-              'price', foods[i]['price'].toString(),
-              'quantity', foods[i]['quantity'].toString(),
-              'image', ""
+            {'name':  foods[i]['name'],
+              'price': foods[i]['price'].toString(),
+              'quantity': foods[i]['quantity'].toString(),
+              'image': ""
             }
         );
       }
 
       var _data = json.encode({
-        'order_details': foods,
+        'order_details': formData,
         'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
         'pay_at_delivery': isPayAtDelivery,
         'shipping_address': selectedAddress.id,
@@ -149,7 +151,8 @@ class OutOfAppOrderApiProvider{
         'device': device, // device informations
         'push_token': '$token', // push token
         "voucher_id": voucher?.id,
-        "use_kaba_point": useKabaPoint
+        "use_kaba_point": useKabaPoint,
+        "order_type":order_type
       });
 
       xrint("000 _ " + _data.toString());
