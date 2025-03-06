@@ -564,5 +564,13 @@
   "choose_actual_location": "Choose your actual position",
   "normal_orders": "Normal orders",
   "out_of_app_orders": "Out of app & Packages",
-  "out_of_app_order":"Out of app order"
+  "out_of_app_order":"Out of app order",
+  "shipping_package":"Shipping package",
+  "fetch_package":"Fetch package",
+  "package_details":"Enter the package details",
+  "package_amount":"Amount to retrieve",
+  "please_enter_amount":"Please enter the amount",
+  "please_enter_valid_amount":"Please enter a valid amount",
+  "validate":"Validate",
+  "modify":"Modify"
 }

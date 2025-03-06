@@ -562,5 +562,13 @@
   "address_additionnal_info": "地址其他信息...",
   "normal_orders": "正常订单",
   "out_of_app_orders": "应用程序和套餐已售罄",
-  "out_of_app_order":"订单已退出申请"
+  "out_of_app_order":"订单已退出申请",
+  "shipping_package":"包裹递送",
+  "fetch_package":"取货包裹",
+  "package_details":"输入包裹详情",
+  "package_amount":"包裹金额",
+  "please_enter_amount":"请输入金额",
+  "please_enter_valid_amount":"请输入有效的金额",
+  "validate":"验证",
+  "modify":"修改"
 }

@@ -563,5 +563,13 @@
   "choose_actual_location": "Choisir votre position actuelle",
   "normal_orders": "Commandes normales",
   "out_of_app_orders": "Hors appli & Colis",
-  "out_of_app_order":"Commande hors appli"
+  "out_of_app_order":"Commande hors appli",
+  "shipping_package":"Livraison de colis",
+  "fetch_package":"Récupération de colis",
+  "package_details":"Entrer les informations du colis",
+  "package_amount":"Montant a recupérer",
+  "please_enter_amount":"Veuillez entrer le montant",
+  "please_enter_valid_amount":"Veuillez entrer un montant valide",
+  "validate":"Valider",
+  "modify":"Modifier"
 }

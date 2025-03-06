@@ -294,3 +294,100 @@ Widget OutOfAppProductForm(BuildContext context){
     ),
 );
 }
+
+Widget PackageAmountForm(BuildContext context) {
+  TextEditingController _amountController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  
+  return Consumer(
+    builder: (context, ref, child) {
+      final products = ref.watch(productListProvider);
+      final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+      final productsNotifier = ref.read(productListProvider.notifier);
+      
+      final existingPackage = products.where((p) => 
+        p['name'] == (outOfAppScreenState.order_type == 5 ? "shipping_package" : "fetch_package")
+      ).toList();
+      
+      if (existingPackage.isNotEmpty) {
+        _amountController.text = existingPackage.first['price'].toString();
+      }
+
+      return Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0x42d2d2d2),
+                  borderRadius: BorderRadius.circular(5)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: TextFormField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: "${AppLocalizations.of(context).translate('package_amount')}", 
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "${AppLocalizations.of(context).translate('please_enter_amount')}"; 
+                      }
+                      if (double.tryParse(value) == null) {
+                        return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              BouncingWidget(
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    final amount = double.parse(_amountController.text);
+                    final packageType = outOfAppScreenState.order_type == 5 ? "shipping_package" : "fetch_package";
+                    
+                    if (existingPackage.isEmpty) {
+                   
+                      productsNotifier.addProduct(
+                        {
+                          'name': packageType,
+                          'price': amount,
+                          'quantity': 1,
+                          'image': null
+                        }
+                      );
+                    } else {
+                      existingPackage.first['price'] = amount;
+                      productsNotifier.modifyProduct(
+                          existingPackage.first
+                      );
+                    }
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      existingPackage.isEmpty ? "${AppLocalizations.of(context).translate('validate')}" : "${AppLocalizations.of(context).translate('modify')}",
+                      style: TextStyle(color: Colors.white)
+                    ),
+                  )
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+  );
+}
