@@ -77,37 +77,17 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
                 }
             );
           }
-          final outOfAppScreenState = ref.read(outOfAppScreenStateProvier); 
-          
-          if (outOfAppScreenState.order_type == 6 || outOfAppScreenState.order_type == 5) {
-            if (address_type == 2) {
-              OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                customer,
-                order_address, 
-                formData,
-                shipping_address,
-                voucherState.selectedVoucher,
-                false
-              );
-              ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-              outOfAppNotifier.setIsBillBuilt(true);
-              outOfAppNotifier.setShowLoading(false);
-            } else {
-              outOfAppNotifier.setShowLoading(false);
-            }
-          } else {
-            OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
+          OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
               customer,
               order_address,
-              formData, 
+              formData,
               shipping_address,
               voucherState.selectedVoucher,
-              false
-            );
-            ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-            outOfAppNotifier.setIsBillBuilt(true);
-            outOfAppNotifier.setShowLoading(false);
-          }
+              false);
+          ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+          outOfAppNotifier.setIsBillBuilt(true);
+          outOfAppNotifier.setShowLoading(false);
+          print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
         }catch(e){
           print("ENRRRRRR $e");
         }

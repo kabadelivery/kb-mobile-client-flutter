@@ -2,7 +2,7 @@ class ServerConfig {
   //static const String ip_address = "app.kaba-delivery.com"; // prod server
   //static const String pay_ip_address = "pay.kaba-delivery.com";
 
-   static const String ip_address = "brave-metadata-giving-lovely.trycloudflare.com"; // dev server
+   static const String ip_address = "alt-washington-descending-les.trycloudflare.com"; // dev server
   // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
 
   // static const String ip_address = "kaba-technology.com"; // dev server

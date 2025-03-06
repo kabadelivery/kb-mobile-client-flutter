@@ -59,11 +59,14 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
     }
   }
 
-  deleteOrderAddress(DeliveryAddressModel order_address,bool is_order_address_picked){
-    state = state.copyWith(
-        is_order_address_picked:is_order_address_picked,
-        selectedOrderAddress: state.selectedOrderAddress.where((a) => a!=order_address).toList(),
-    );
+  deleteOrderAddress(DeliveryAddressModel order_address, bool is_order_address_picked) {
+    if (state.selectedOrderAddress != null) {
+      final filteredAddresses = state.selectedOrderAddress.where((a) => a != order_address).toList();
+      state = state.copyWith(
+        is_order_address_picked: is_order_address_picked,
+        selectedOrderAddress: filteredAddresses.isEmpty ? null : filteredAddresses,
+      );
+    }
   }
 
   void reset(){
