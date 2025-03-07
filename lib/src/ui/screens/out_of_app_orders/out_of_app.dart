@@ -198,8 +198,9 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: KColors.new_black)),
-                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
-
+                    locationState.selectedOrderAddress.length > 0 ? 
+                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]) : 
+                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
                   ],
                 ):Container()
                 ,

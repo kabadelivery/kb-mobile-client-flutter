@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
 import '../../../models/DeliveryAddressModel.dart';
+import '../../../models/OrderBillConfiguration.dart';
+import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/additionnal_info_state.dart';
 import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
@@ -12,6 +14,7 @@ import '../../../state_management/out_of_app_order/out_of_app_order_screen_state
 import '../../../state_management/out_of_app_order/products_state.dart';
 import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
+import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
@@ -47,6 +50,8 @@ class PackageOrderPage extends ConsumerWidget {
     final locationNotifier = ref.read(locationStateProvider.notifier);
     final voucherState = ref.watch(voucherStateProvider);
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
+    final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+
     print("voucherState ${voucherState.selectedVoucher}");
     print("isBillBuilt ${locationState.selectedOrderAddress}"); 
     if(outOfAppScreenState.order_type==0){ 
@@ -78,11 +83,7 @@ class PackageOrderPage extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child:Column(
           children: [
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                Padding(
+                   Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Container(
                 height: 40,
@@ -97,6 +98,7 @@ class PackageOrderPage extends ConsumerWidget {
                   children: [
                     GestureDetector(
                       onTap: (){
+                        
                     ref.read(outOfAppScreenStateProvier.notifier).setOrderType(5);
                       },
                       child: AnimatedContainer(
@@ -121,8 +123,51 @@ class PackageOrderPage extends ConsumerWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
-                    ref.read(outOfAppScreenStateProvier.notifier).setOrderType(6);
+                      onTap: ()async{
+                        if(outOfAppScreenState.order_type==5){
+                                ref.read(outOfAppScreenStateProvier.notifier).setOrderType(6);
+
+                           if (locationState.is_shipping_address_picked==true && locationState.is_order_address_picked==true) {
+                                  await CustomerUtils.getCustomer().then((customer) async {
+                                    ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+                                    
+                                    OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+                                    outOfAppNotifier.setIsBillBuilt(false);
+                                    outOfAppNotifier.setShowLoading(true);
+
+                                    try {
+                                      List<Map<String, dynamic>> formData = [];
+                                      for (int i = 0; i < products.length; i++) {
+                                        formData.add({
+                                          'name': products[i]['name'],
+                                          'price': 0.toString(),
+                                          'quantity':1.toString(),
+                                          'image': ""
+                                        });
+                                      }
+                                      ref.read(productListProvider.notifier).clearProducts();
+                                      for (var product in formData) {
+                                        ref.read(productListProvider.notifier).addProduct(product);
+                                      }
+
+                                      OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
+                                        customer,
+                                        locationState.selectedOrderAddress,
+                                        formData,
+                                        locationState.selectedShippingAddress,
+                                        voucherState.selectedVoucher,
+                                        false
+                                      );
+
+                                      ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                                      outOfAppNotifier.setIsBillBuilt(true);
+                                      outOfAppNotifier.setShowLoading(false);
+                                    } catch (e) {
+                                      print("Error calculating billing: $e");
+                                    }
+                                  });
+                                }
+                        }
                       },
                       child:  AnimatedContainer(
                         duration: Duration(milliseconds: 500),
@@ -153,145 +198,157 @@ class PackageOrderPage extends ConsumerWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
-              SizedBox(height: 10,),
-              AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-              SizedBox(height: 10,),
-              PackageAmountForm(context),
-              SizedBox(height: 10,),
-              outOfAppScreenState.isBillBuilt==true &&
-                  outOfAppScreenState.showLoading==false?
-              ShowBilling(context,orderBillingState.orderBillConfiguration):
-              outOfAppScreenState.showLoading==true?
-              MyLoadingProgressWidget()
-                  :Container()
-              ,
-              products.isNotEmpty && outOfAppScreenState.showLoading==false?
-              Column(
-                children: [
-                  SizedBox(height: 10,),
-                  locationState.selectedShippingAddress!=null &&  outOfAppScreenState.isBillBuilt==true?
-                  Column(
-                    children: [
-                      Text(
-                          "${AppLocalizations.of(context).translate('shipping_address')}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: KColors.new_black)),
-                      BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
-
-                    ],
-                  ):
-                  ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
-                  SizedBox(height: 10,),
-                  locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
-                  Column(
-                    children: [
-                      ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
-                      SizedBox(height: 20,),
-                      additionnalInfoState.can_add_address_info==false?
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                              "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
-                              style: TextStyle(
-
-                                  fontSize: 16,
-                                  color: Colors.grey.shade700)),
-                          SizedBox(height: 10,),
-                          CanAddAdditionnInfo(context,ref),
-                        ],
-                      ):
-                      AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
-                      SizedBox(height: 10,),
-                    ],
-                  ):Container(),
-                  locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
-                  Column(
-                    children: [
-                      Text(
-                          "${AppLocalizations.of(context).translate('order_address')}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: KColors.new_black)),
-                      BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
-
-                    ],
-                  ):Container()
-                  ,
-                ],
-              ):Container(),
-              SizedBox(key: poweredByKey, height: 25),
-              outOfAppScreenState.isBillBuilt==true &&
-                  outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
-              SizedBox(height: 20,),
-              outOfAppScreenState.isBillBuilt==true &&
-                  outOfAppScreenState.showLoading==false?
-              Container(
-                decoration: BoxDecoration(
-                    color: KColors.primaryColor.withAlpha(30),
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                child: InkWell(
-                  onTap: () {
-                    int type_of_order = 4; // Default
-
-                    List<DeliveryAddressModel> adrs = [];
-
-                    if (locationState.selectedOrderAddress == null) {
-                      type_of_order = out_of_app_order_type_without_address;
-                    } else {
-                      adrs = locationState.selectedOrderAddress;
-
-                      if (adrs.isNotEmpty) {
-                        type_of_order = out_of_app_order_type;
-                      } else {
-                        type_of_order = out_of_app_order_type_without_address;
-                      }
-                    }
-
-                    payAtDelivery(
-                        context,
-                        ref,
-                        type_of_order,
-                        true
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.directions_bike,
-                                  color: KColors.primaryColor),
-                              SizedBox(width: 5),
-                              Text(
-                                  "${AppLocalizations.of(context).translate('pay_at_arrival')}",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: KColors.primaryColor,
-                                    fontWeight: FontWeight.w500,
-                                  )),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
+                    SizedBox(height: 10,),
+                    AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+                    SizedBox(height: 10,),
+                    outOfAppScreenState.order_type == shipping_package_type 
+                        ? Column(
+                            children: [
+                              PackageAmountForm(context),
+                              SizedBox(height: 10,),
                             ],
-                          ),
+                          )
+                        : Container(),
+                    outOfAppScreenState.isBillBuilt==true &&
+                        outOfAppScreenState.showLoading==false?
+                    ShowBilling(context,orderBillingState.orderBillConfiguration):
+                    outOfAppScreenState.showLoading==true?
+                    MyLoadingProgressWidget()
+                        :Container(),
+                    ((outOfAppScreenState.order_type == shipping_package_type && products.isNotEmpty && outOfAppScreenState.showLoading==false) ||
+                     (outOfAppScreenState.order_type == fetching_package_type && additionnalInfoState.additionnal_info.isNotEmpty))
+                    ? Column(
+                      children: [
+                        SizedBox(height: 10,),
+                        locationState.is_shipping_address_picked==true  ?
+                        Column(
+                          children: [
+                            Text(
+                                "${AppLocalizations.of(context).translate('shipping_address')}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: KColors.new_black)),
+                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+                          ],
+                        ):
+                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
+                         Column(
+                          children: [
+                            SizedBox(height: 10,),
+                            locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
+                            Column(
+                              children: [
+                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                                SizedBox(height: 20,),
+                                additionnalInfoState.can_add_address_info==false?
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
+                                        style: TextStyle(
 
-                        ]),
-                  ),
+                                            fontSize: 16,
+                                            color: Colors.grey.shade700)),
+                                    SizedBox(height: 10,),
+                                    CanAddAdditionnInfo(context,ref),
+                                  ],
+                                ):
+                                AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
+                                SizedBox(height: 10,),
+                              ],
+                            ):Container(),
+                            locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
+                            Column(
+                              children: [
+                                Text(
+                                    "${AppLocalizations.of(context).translate('order_address')}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: KColors.new_black)),
+                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
+                              ],
+                            ):Container(),
+                          ],
+                        ) 
+                      ],
+                    ) : Container(),
+                    SizedBox(key: poweredByKey, height: 25),
+                    outOfAppScreenState.isBillBuilt==true &&
+                        outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
+                    SizedBox(height: 20,),
+                    outOfAppScreenState.isBillBuilt==true &&
+                        outOfAppScreenState.showLoading==false?
+                    Container(
+                      decoration: BoxDecoration(
+                          color: KColors.primaryColor.withAlpha(30),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+                      child: InkWell(
+                        onTap: () {
+                          int type_of_order = 4; // Default
+
+                          List<DeliveryAddressModel> adrs = [];
+
+                          if (locationState.selectedOrderAddress == null) {
+                            type_of_order = out_of_app_order_type_without_address;
+                          } else {
+                            adrs = locationState.selectedOrderAddress;
+
+                            if (adrs.isNotEmpty) {
+                              type_of_order = out_of_app_order_type;
+                            } else {
+                              type_of_order = out_of_app_order_type_without_address;
+                            }
+                          }
+
+                          payAtDelivery(
+                              context,
+                              ref,
+                              type_of_order,
+                              true
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.directions_bike,
+                                        color: KColors.primaryColor),
+                                    SizedBox(width: 5),
+                                    Text(
+                                        "${AppLocalizations.of(context).translate('pay_at_arrival')}",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: KColors.primaryColor,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                  ],
+                                ),
+
+                              ]),
+                        ),
+                      ),
+                    ):
+                    Container()
+                  ],
                 ),
-              ):
-              Container()
-              ],
-          ),
-        ),
-      ]
-      ),
+              ),
+            ),
+      ]),
     )
     );
   }

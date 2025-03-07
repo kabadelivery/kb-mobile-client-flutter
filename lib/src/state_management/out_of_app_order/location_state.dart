@@ -1,4 +1,3 @@
-
 import '../../models/DeliveryAddressModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,14 +57,16 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
       print('Error adding order_address: $e');
     }
   }
-
   deleteOrderAddress(DeliveryAddressModel order_address, bool is_order_address_picked) {
-    if (state.selectedOrderAddress != null) {
-      final filteredAddresses = state.selectedOrderAddress.where((a) => a != order_address).toList();
+    try {
+    
       state = state.copyWith(
-        is_order_address_picked: is_order_address_picked,
-        selectedOrderAddress: filteredAddresses.isEmpty ? null : filteredAddresses,
+        selectedOrderAddress: [],
+        is_order_address_picked:false
       );
+      print("Order address removed: ${state.selectedOrderAddress}");
+    } catch (e) {
+      print('Error removing order_address: $e'); 
     }
   }
 
@@ -75,6 +76,13 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
       is_shipping_address_picked:false ,
       selectedOrderAddress: null,
       selectedShippingAddress: null
+    );
+  }
+
+  void resetOrderAddress() {
+    state = state.copyWith(
+      selectedOrderAddress: null,
+      is_order_address_picked: false
     );
   }
 }

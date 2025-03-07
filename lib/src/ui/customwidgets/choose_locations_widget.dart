@@ -6,8 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../localizations/AppLocalizations.dart';
+import '../../models/CustomerModel.dart';
 import '../../models/DeliveryAddressModel.dart';
+import '../../models/OrderBillConfiguration.dart';
+import '../../resources/out_of_app_order_api.dart';
+import '../../state_management/out_of_app_order/products_state.dart';
+import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
+import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 import '../../utils/functions/Utils.dart';
 import 'BouncingWidget.dart';
@@ -122,6 +128,11 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
     );
 }
 Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressModel selectedAddress) {
+    final locationState= ref.watch(locationStateProvider);
+  final locationNotifier= ref.read(locationStateProvider.notifier);
+  final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+  final productState = ref.watch(productListProvider);
+  final voucherState= ref.watch(voucherStateProvider);
   if (selectedAddress == null)
     return Container();
   else
@@ -167,13 +178,54 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                       decoration: BoxDecoration(
                           shape: BoxShape.circle, color: Colors.white),
                       padding: EdgeInsets.all(8)),
-                  onTap: () {
+                  onTap: () async{
                     /* remove address */
-                    ref.read(locationStateProvider.notifier).deleteOrderAddress(selectedAddress,false);
-                    ref.read(locationStateProvider.notifier).setOrderAddressPicked(false);
+                    locationNotifier.deleteOrderAddress(selectedAddress,false);
+                    locationNotifier.setOrderAddressPicked(false);
                     ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
                     ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
                     ref.read(outOfAppScreenStateProvier.notifier).setShowLoading(false);
+
+                  if (ref.read(outOfAppScreenStateProvier).order_type != 5 && ref.read(outOfAppScreenStateProvier).order_type != 6) {
+                 
+                    await CustomerUtils.getCustomer().then((customer) async {
+        ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+          // launch request for retrieving the delivery prices and so on.
+          //get billing
+            OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+            outOfAppNotifier.setIsBillBuilt(false);
+            outOfAppNotifier.setShowLoading(true);
+            try{
+              List<Map<String, dynamic>> formData = [];
+
+              for (int i = 0; i < productState.length; i++) {
+                formData.add(
+                    { 'name': productState[i]['name'],
+                      'price': productState[i]['price'].toString(),
+                      'quantity': productState[i]['quantity'].toString(),
+                      'image': ""
+                    }
+                );
+              }
+              OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
+                  customer,
+                  [],
+                  formData,
+                  locationState.selectedShippingAddress,
+                  voucherState.selectedVoucher,
+                  false);
+              ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+              outOfAppNotifier.setIsBillBuilt(true);
+              outOfAppNotifier.setShowLoading(false);
+              print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
+        }catch(e){
+          print("ENRRRRRR $e");
+        }
+
+
+    });
+ 
+                  }
                   }))
         ],
       ),

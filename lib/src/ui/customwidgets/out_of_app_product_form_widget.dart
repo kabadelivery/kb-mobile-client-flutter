@@ -8,12 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../models/CustomerModel.dart';
 import '../../models/DeliveryAddressModel.dart';
+import '../../models/OrderBillConfiguration.dart';
 import '../../resources/out_of_app_order_api.dart';
 import '../../state_management/out_of_app_order/additionnal_info_state.dart';
 import '../../state_management/out_of_app_order/location_state.dart';
 import '../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
+import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import 'BouncingWidget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -305,6 +307,10 @@ Widget PackageAmountForm(BuildContext context) {
       final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
       final productsNotifier = ref.read(productListProvider.notifier);
       
+      final locationState = ref.watch(locationStateProvider);
+      final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+      final productState = ref.watch(productListProvider);
+      final voucherState = ref.watch(voucherStateProvider);
       final existingPackage = products.where((p) => 
         p['name'] == (outOfAppScreenState.order_type == 5 ? "shipping_package" : "fetch_package")
       ).toList();
@@ -347,7 +353,7 @@ Widget PackageAmountForm(BuildContext context) {
               ),
               SizedBox(height: 20),
               BouncingWidget(
-                onPressed: () {
+                onPressed: () async{
                   if (_formKey.currentState.validate()) {
                     final amount = double.parse(_amountController.text);
                     final packageType = outOfAppScreenState.order_type == 5 ? "shipping_package" : "fetch_package";
@@ -366,8 +372,46 @@ Widget PackageAmountForm(BuildContext context) {
                       existingPackage.first['price'] = amount;
                       productsNotifier.modifyProduct(
                           existingPackage.first
-                      );
-                    }
+                      );  
+                      if (locationState.is_shipping_address_picked && locationState.is_order_address_picked) {
+                                  await CustomerUtils.getCustomer().then((customer) async {
+                                    ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+                                    
+                                    OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+                                    outOfAppNotifier.setIsBillBuilt(false);
+                                    outOfAppNotifier.setShowLoading(true);
+
+                                    try {
+                                      List<Map<String, dynamic>> formData = [];
+                                      for (int i = 0; i < productState.length; i++) {
+                                        formData.add({
+                                          'name': productState[i]['name'],
+                                          'price': productState[i]['price'].toString(),
+                                          'quantity': productState[i]['quantity'].toString(),
+                                          'image': ""
+                                        });
+                                      }
+
+                                      OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
+                                        customer,
+                                        locationState.selectedOrderAddress,
+                                        formData,
+                                        locationState.selectedShippingAddress,
+                                        voucherState.selectedVoucher,
+                                        false
+                                      );
+
+                                      ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+                                      outOfAppNotifier.setIsBillBuilt(true);
+                                      outOfAppNotifier.setShowLoading(false);
+                                    } catch (e) {
+                                      print("Error calculating billing: $e");
+                                    }
+                                  });
+                                }
+
+
+                        }
                   }
                 },
                 child: Container(
