@@ -52,19 +52,21 @@ class AddressApiProvider {
         "description": address?.description,
         "description_details": address?.description,
         "near": address?.near,
-        "quartier": address?.quartier
+        "quartier": address?.quartier,
+        "picture":address?.picture
       }));
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_CREATE_NEW_ADRESS).toString(),
           data: json.encode({
-            "id": address?.id,
+            "id": address?.id ?? 0,
             "name": address?.name,
             "location": address?.location,
             "phone_number": address?.phone_number,
             "description": address?.description,
             "description_details": address?.description,
             "near": address?.near,
-            "quartier": address?.quartier
+            "quartier": address?.quartier,
+             "picture":address?.picture
           }));
 
       xrint(response.data.toString());

@@ -155,26 +155,24 @@ void payAtDelivery(
           try{
             OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
             print("Upload image : $foods");
-            var orderDetails = await api.uploadMultipleImages(foods,customer).then((value) async{
-                await launchOrderFunc(
-                            customer,
-                            value,
-                            order_address,
-                            _selectedAddress,
-                            _mCode,
-                            addInfo,
-                            _selectedVoucher,
-                            _usePoint,
-                            order_type,
-                            context,
-                            ref,
-                            phone_number
-                        );
-            });
-           
-             
+           final uploadedOrders = await api.uploadMultipleImages(foods, customer);
+            print("Uploaded orders response: $uploadedOrders"); // Debug print
+            await launchOrderFunc(
+                customer,
+                foods,//uploadedOrders, 
+                order_address,
+                _selectedAddress,
+                _mCode,
+                addInfo,
+                _selectedVoucher,
+                _usePoint,
+                order_type,
+                context,
+                ref,
+                phone_number
+            );
           }catch(e){
-            return;
+            return e;
           }
 
         } else {
