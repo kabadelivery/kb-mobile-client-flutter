@@ -44,7 +44,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
       ),
     );
   }
-
+  
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     Size size = MediaQuery.of(context).size;
@@ -138,6 +138,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
               height: 10,
             ),
             AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+            SizedBox(height: 10,),
+            PhoneNumberForm(context),
             SizedBox(height: 10,),
             outOfAppScreenState.isBillBuilt==true &&
             outOfAppScreenState.showLoading==false?

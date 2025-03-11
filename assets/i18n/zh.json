@@ -570,5 +570,8 @@
   "please_enter_amount":"请输入金额",
   "please_enter_valid_amount":"请输入有效的金额",
   "validate":"验证",
-  "modify":"修改"
+  "modify":"修改",
+  "package_order":"包裹订单",
+  "fecthing_package_address":"取货包裹地址",
+  "phone_number_to_contact":"联系号码"
 }

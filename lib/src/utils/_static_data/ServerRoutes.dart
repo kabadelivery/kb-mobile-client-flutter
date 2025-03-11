@@ -28,7 +28,7 @@ class ServerRoutes {
   static const String LINK_GET_COMMAND_DETAILS =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/details/v4/get";
   static const String LINK_OUT_OF_APP_GET_COMMAND_DETAILS =
-      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/details/get";
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/get/details";
   /* get current basket content */
   static const String LINK_MY_BASKET_GET =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/basket/get";

@@ -1,3 +1,4 @@
+import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../state_management/out_of_app_order/products_state.dart';
+import '../../../state_management/out_of_app_order/reset_states.dart';
 import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/CustomerUtils.dart';
@@ -26,8 +28,12 @@ import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
 
-class PackageOrderPage extends ConsumerWidget {
-  static var routeName = "/PackageOrderPage";
+class FecthingPackageOrderPage extends ConsumerWidget {
+
+  final String additional_info;
+
+  FecthingPackageOrderPage({this.additional_info});
+  static var routeName = "/FecthingPackageOrderPage";
 
   int shipping_address_type=1;
   int order_address_type=2;
@@ -51,12 +57,22 @@ class PackageOrderPage extends ConsumerWidget {
     final voucherState = ref.watch(voucherStateProvider);
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+    final productsNotifier = ref.read(productListProvider.notifier);
 
+    if(locationState.selectedOrderAddress.isEmpty){
+      locationState.is_order_address_picked=false;
+    }else{
+      locationState.is_order_address_picked=true;
+    }
+    if(locationState.selectedOrderAddress==null){
+      locationState.selectedOrderAddress=[];
+    }
+
+    outOfAppScreenState.order_type=6;
+    print("locationState ${locationState.is_order_address_picked}");
     print("voucherState ${voucherState.selectedVoucher}");
     print("isBillBuilt ${locationState.selectedOrderAddress}"); 
-    if(outOfAppScreenState.order_type==0){ 
-      outOfAppScreenState.order_type=5;
-    }
+    
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -69,7 +85,7 @@ class PackageOrderPage extends ConsumerWidget {
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('out_of_app_order')}"),
+                    "${AppLocalizations.of(context).translate('package_order')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -97,9 +113,25 @@ class PackageOrderPage extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: (){
-                        
-                    ref.read(outOfAppScreenStateProvier.notifier).setOrderType(5);
+                      onTap: () {
+                        resetAll(ref);
+                        productsNotifier.setProducts([]);
+                        Navigator.of(context).pushReplacement(PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
+                            additional_info: additionnalInfoState.additionnal_info,
+                          ),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var begin = Offset(-1.0, 0.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end);
+                            var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                            return SlideTransition(
+                              position: tween.animate(curvedAnimation),
+                              child: child
+                            );
+                          }
+                        ));
                       },
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 500),
@@ -123,52 +155,7 @@ class PackageOrderPage extends ConsumerWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: ()async{
-                        if(outOfAppScreenState.order_type==5){
-                                ref.read(outOfAppScreenStateProvier.notifier).setOrderType(6);
-
-                           if (locationState.is_shipping_address_picked==true && locationState.is_order_address_picked==true) {
-                                  await CustomerUtils.getCustomer().then((customer) async {
-                                    ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
-                                    
-                                    OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                                    outOfAppNotifier.setIsBillBuilt(false);
-                                    outOfAppNotifier.setShowLoading(true);
-
-                                    try {
-                                      List<Map<String, dynamic>> formData = [];
-                                      for (int i = 0; i < products.length; i++) {
-                                        formData.add({
-                                          'name': products[i]['name'],
-                                          'price': 0.toString(),
-                                          'quantity':1.toString(),
-                                          'image': ""
-                                        });
-                                      }
-                                      ref.read(productListProvider.notifier).clearProducts();
-                                      for (var product in formData) {
-                                        ref.read(productListProvider.notifier).addProduct(product);
-                                      }
-
-                                      OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                                        customer,
-                                        locationState.selectedOrderAddress,
-                                        formData,
-                                        locationState.selectedShippingAddress,
-                                        voucherState.selectedVoucher,
-                                        false
-                                      );
-
-                                      ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-                                      outOfAppNotifier.setIsBillBuilt(true);
-                                      outOfAppNotifier.setShowLoading(false);
-                                    } catch (e) {
-                                      print("Error calculating billing: $e");
-                                    }
-                                  });
-                                }
-                        }
-                      },
+                      onTap: null,
                       child:  AnimatedContainer(
                         duration: Duration(milliseconds: 500),
                         alignment: Alignment.center,
@@ -200,6 +187,7 @@ class PackageOrderPage extends ConsumerWidget {
               ),
             Expanded(
               child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -207,22 +195,15 @@ class PackageOrderPage extends ConsumerWidget {
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                     SizedBox(height: 10,),
-                    outOfAppScreenState.order_type == shipping_package_type 
-                        ? Column(
-                            children: [
-                              PackageAmountForm(context),
-                              SizedBox(height: 10,),
-                            ],
-                          )
-                        : Container(),
+                    PhoneNumberForm(context),
+                    SizedBox(height: 10),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
                     ShowBilling(context,orderBillingState.orderBillConfiguration):
                     outOfAppScreenState.showLoading==true?
                     MyLoadingProgressWidget()
                         :Container(),
-                    ((outOfAppScreenState.order_type == shipping_package_type && products.isNotEmpty && outOfAppScreenState.showLoading==false) ||
-                     (outOfAppScreenState.order_type == fetching_package_type && additionnalInfoState.additionnal_info.isNotEmpty))
+                    ((outOfAppScreenState.order_type == fetching_package_type && additionnalInfoState.additionnal_info.isNotEmpty))
                     ? Column(
                       children: [
                         SizedBox(height: 10,),
@@ -242,7 +223,7 @@ class PackageOrderPage extends ConsumerWidget {
                          Column(
                           children: [
                             SizedBox(height: 10,),
-                            locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
+                            locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null || locationState.selectedOrderAddress.isEmpty)?
                             Column(
                               children: [
                                 ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
@@ -266,18 +247,19 @@ class PackageOrderPage extends ConsumerWidget {
                                 SizedBox(height: 10,),
                               ],
                             ):Container(),
-                            locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
+                            (locationState.is_order_address_picked==true)?
+                            locationState.selectedOrderAddress != null && locationState.selectedOrderAddress.isNotEmpty ?
                             Column(
                               children: [
                                 Text(
-                                    "${AppLocalizations.of(context).translate('order_address')}",
+                                    "${AppLocalizations.of(context).translate('fecthing_package_address')}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                         color: KColors.new_black)),
                                 BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
                               ],
-                            ):Container(),
+                            ):Container():Container(),
                           ],
                         ) 
                       ],
@@ -295,22 +277,7 @@ class PackageOrderPage extends ConsumerWidget {
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                       child: InkWell(
                         onTap: () {
-                          int type_of_order = 4; // Default
-
-                          List<DeliveryAddressModel> adrs = [];
-
-                          if (locationState.selectedOrderAddress == null) {
-                            type_of_order = out_of_app_order_type_without_address;
-                          } else {
-                            adrs = locationState.selectedOrderAddress;
-
-                            if (adrs.isNotEmpty) {
-                              type_of_order = out_of_app_order_type;
-                            } else {
-                              type_of_order = out_of_app_order_type_without_address;
-                            }
-                          }
-
+                          int type_of_order = 6; 
                           payAtDelivery(
                               context,
                               ref,

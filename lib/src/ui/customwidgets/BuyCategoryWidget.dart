@@ -5,7 +5,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
-import 'package:KABA/src/ui/screens/out_of_app_orders/package.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -80,7 +80,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                     widget.mDialog(
                         "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
                   } else {
-                    page =widget.entity.key=="packages"?PackageOrderPage():
+                    page =widget.entity.key=="packages"?ShippingPackageOrderPage():
                     widget.entity.key=="out of app"? OutOfAppOrderPage():
                     ShopListPageRefined(
                         context: context,
@@ -136,7 +136,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
             "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
       } else {
         print('key ${widget.key}');
-        page =widget.entity.key=="packages"?PackageOrderPage():
+        page =widget.entity.key=="packages"?ShippingPackageOrderPage():
         widget.entity.key=="out of app"? OutOfAppOrderPage():
         ShopListPageRefined(
             context: context,

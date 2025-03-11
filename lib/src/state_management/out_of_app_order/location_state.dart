@@ -2,10 +2,10 @@ import '../../models/DeliveryAddressModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PickingAdressState {
-  final bool is_shipping_address_picked;
-  final bool is_order_address_picked;
-  final DeliveryAddressModel selectedShippingAddress;
-  final List<DeliveryAddressModel> selectedOrderAddress;
+   bool is_shipping_address_picked;
+   bool is_order_address_picked;
+   DeliveryAddressModel selectedShippingAddress;
+   List<DeliveryAddressModel> selectedOrderAddress;
 
   PickingAdressState(
   {
@@ -85,6 +85,14 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
       is_order_address_picked: false
     );
   }
+  void resetShippingAddress() {
+    state = state.copyWith(
+      selectedShippingAddress: null,
+      is_shipping_address_picked: false
+    );
+  }
+
+
 }
 
 final locationStateProvider = StateNotifierProvider.autoDispose<PickingAddressNotifier,PickingAdressState>((ref){

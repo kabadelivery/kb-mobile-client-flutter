@@ -373,7 +373,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderNewDetailsPage(
-                is_out_of_app_order:widget.command?.order_type!=null?true:false,
+                is_out_of_app_order:widget.command?.order_type!=0?true:false,
                 orderId: command?.id, presenter: OrderDetailsPresenter()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);

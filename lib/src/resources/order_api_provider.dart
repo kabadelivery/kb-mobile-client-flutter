@@ -182,6 +182,7 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+      print('command_id ${json.encode({"command_id": orderId})}');
       var response = await dio.post(
           Uri.parse(
               is_out_of_app_order==false?

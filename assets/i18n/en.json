@@ -572,5 +572,8 @@
   "please_enter_amount":"Please enter the amount",
   "please_enter_valid_amount":"Please enter a valid amount",
   "validate":"Validate",
-  "modify":"Modify"
+  "modify":"Modify",
+  "package_order":"Package order",
+  "fecthing_package_address":"Fetching package address",
+  "phone_number_to_contact":"Phone number to contact"
 }

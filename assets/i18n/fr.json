@@ -571,5 +571,8 @@
   "please_enter_amount":"Veuillez entrer le montant",
   "please_enter_valid_amount":"Veuillez entrer un montant valide",
   "validate":"Valider",
-  "modify":"Modifier"
+  "modify":"Modifier",
+  "package_order":"Commande de colis",
+  "fecthing_package_address":"Adresse de récupération de colis",
+  "phone_number_to_contact":"Numéro de téléphone à contacter"
 }

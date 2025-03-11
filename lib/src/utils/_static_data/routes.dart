@@ -54,8 +54,9 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 
 import '../../ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
 import '../../ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
+import '../../ui/screens/out_of_app_orders/fetching_package.dart';
 import '../../ui/screens/out_of_app_orders/out_of_app.dart';
-import '../../ui/screens/out_of_app_orders/package.dart';
+import '../../ui/screens/out_of_app_orders/shipping_package.dart';
 
 var generalRoutes = {
 
@@ -104,7 +105,20 @@ var generalRoutes = {
   DeleteAccountQuestioningPage.routeName : (BuildContext context) => DeleteAccountQuestioningPage(presenter:DeleteAccountQuestioningPresenter() ),
   DeleteAccountSuccessfulPage.routeName : (BuildContext context) => DeleteAccountSuccessfulPage( ),
   DeleteAccountFixPropositionPage.routeName : (BuildContext context) => DeleteAccountFixPropositionPage( ),
-  PackageOrderPage.routeName : (BuildContext context) =>PackageOrderPage(),
+  ShippingPackageOrderPage.routeName : (BuildContext context) {
+    final args = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return ShippingPackageOrderPage(
+      additional_info: args == null ? '' : args['additional_info'] ?? '',
+    
+    );
+  },
+    FecthingPackageOrderPage.routeName : (BuildContext context) {
+    final args = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return FecthingPackageOrderPage(
+      additional_info: args == null ? '' : args['additional_info'] ?? '',
+
+    );
+  },
   OutOfAppOrderPage.routeName : (BuildContext context) =>OutOfAppOrderPage(),
 
 };

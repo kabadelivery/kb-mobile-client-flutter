@@ -65,11 +65,27 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
       //get billing
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
          if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
-            if (address_type==2) {
-        outOfAppNotifier.setIsBillBuilt(false);
-        outOfAppNotifier.setShowLoading(true);}
-        }else{       outOfAppNotifier.setIsBillBuilt(false);
-        outOfAppNotifier.setShowLoading(true);}
+            if (address_type==2 || (address_type==1 && locationState.selectedOrderAddress.isNotEmpty)) 
+            {
+              outOfAppNotifier.setIsBillBuilt(false);
+              outOfAppNotifier.setShowLoading(true); 
+
+              if(outOfAppScreenState.order_type==6){
+                var product = {
+                  "name": "Récupération de colis",
+                  "price": 0,
+                  "quantity": 1,
+                  "image": ""
+                };
+                productState.clear();
+                productState.add(product);
+              }
+           }
+  
+        }else{      
+          outOfAppNotifier.setIsBillBuilt(false);
+          outOfAppNotifier.setShowLoading(true);
+        }
         
         try{
           List<Map<String, dynamic>> formData = [];
@@ -84,7 +100,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
             );
           }
           if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
-            if (address_type==2) {
+            if (address_type==2 || (address_type==1 && locationState.selectedOrderAddress.isNotEmpty)) {
               OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
                   customer,
                   order_address,

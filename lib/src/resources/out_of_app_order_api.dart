@@ -80,7 +80,8 @@ class OutOfAppOrderApiProvider{
       String infos,
       VoucherModel voucher,
       bool useKabaPoint,
-      int order_type
+      int order_type,
+      String phone_number
       )async{
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -152,7 +153,8 @@ class OutOfAppOrderApiProvider{
         'push_token': '$token', // push token
         "voucher_id": voucher?.id,
         "use_kaba_point": useKabaPoint,
-        "order_type":order_type
+        "order_type":order_type,
+        "phone_number":phone_number
       });
 
       xrint("000 _ " + _data.toString());
@@ -198,40 +200,40 @@ class OutOfAppOrderApiProvider{
         };
       };
       String url = ServerRoutes.LINK_UPLOAD_PRODUCT_IMAGE;
-
-      // Create form data
-      FormData formData = FormData();
-
-      for (int i = 0; i < formDataList.length; i++) {
+      List<Map<String, dynamic>> orderDetailsWithImages = [];
+      for (var i = 0; i < formDataList.length; i++) {
         var order = formDataList[i];
+        
+        Map<String, dynamic> orderDetail = {
+          'name': order['name'],
+          'price': order['price'].toString(),
+          'quantity': order['quantity'].toString(),
+          'image':await imageToBase64(order['image'])
+        };
 
-        formData.fields.addAll([
-          MapEntry('name_$i', order['name']),
-          MapEntry('price_$i', order['price'].toString()),
-          MapEntry('quantity_$i', order['quantity'].toString()),
-        ]);
-        if (order['image'] != null && order['image'] is File) {
-          File imageFile = order['image'];
-          formData.files.add(
-            MapEntry(
-              "image_$i",
-              await MultipartFile.fromFile(imageFile.path, filename: imageFile.path.split('/').last),
-            ),
-          );
-        }
+        orderDetailsWithImages.add(orderDetail);
       }
+
+      xrint("FormData fields: ${orderDetailsWithImages}");
+
       Response response = await dio.post(
         url,
-        data: formData,
-        options: Options(contentType: 'multipart/form-data'),
+        data: json.encode({"orderDetails":orderDetailsWithImages}),
+      
       );
-
-      return response.data;
+      print("response.data ${response.data}");
+     return response.data['orders'];
     } catch (e, stackTrace) {
       print("Error: $e");
       print("StackTrace: $stackTrace");
 
       return "Error: $e\nLine: ${stackTrace.toString().split("\n")[0]}";
     }
+  }
+
+  Future<String> imageToBase64(File imageFile) async {
+    List<int> imageBytes = await imageFile.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    return base64Image;
   }
 }

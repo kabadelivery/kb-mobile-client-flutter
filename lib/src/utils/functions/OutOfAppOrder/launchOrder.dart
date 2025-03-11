@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/state_management/out_of_app_order/additionnal_info_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/location_state.dart';
@@ -41,12 +43,13 @@ Future<void> launchOrderFunc(
     bool useKabaPoint,
     int order_type,
     BuildContext context,
-    WidgetRef ref
+    WidgetRef ref,
+    String phone_number
     ) async {
   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
   try {
 
-    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint,order_type);
+    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint,order_type,phone_number);
     launchOrderResponse(error,context,ref);
   } catch (_) {
     /* login failure */
@@ -84,6 +87,7 @@ void payAtDelivery(
 
   OrderBillConfiguration orderBillConfiguration = ref.watch(orderBillingStateProvider).orderBillConfiguration;
   CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
+  String phone_number = ref.watch(outOfAppScreenStateProvier).phone_number;
   var foods = ref.watch(productListProvider);
   List<DeliveryAddressModel> order_address = ref.watch(locationStateProvider).selectedOrderAddress;
   var _selectedAddress = ref.watch(locationStateProvider).selectedShippingAddress;
@@ -151,11 +155,10 @@ void payAtDelivery(
           try{
             OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
             print("Upload image : $foods");
-        //    var orderDetails = await api.uploadMultipleImages(foods,customer);
-        //    print("orderDetails $orderDetails");
-               await launchOrderFunc(
+            var orderDetails = await api.uploadMultipleImages(foods,customer).then((value) async{
+                await launchOrderFunc(
                             customer,
-                           foods,// orderDetails as List<Map<String,dynamic>>,
+                            value,
                             order_address,
                             _selectedAddress,
                             _mCode,
@@ -164,8 +167,12 @@ void payAtDelivery(
                             _usePoint,
                             order_type,
                             context,
-                            ref
+                            ref,
+                            phone_number
                         );
+            });
+           
+             
           }catch(e){
             return;
           }

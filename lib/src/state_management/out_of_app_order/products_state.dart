@@ -16,6 +16,9 @@ class OutOfAppProductNotifier extends StateNotifier<List<Map<String,dynamic>>>{
   void clearProducts(){
     state =[];
   }
+  void setProducts(List<Map<String,dynamic>> products){
+    state = products;
+  }
   void modifyProduct(Map<String,dynamic> product){
     final index = state.indexWhere((element) => element['name'] == product['name']);
     if(index != -1){

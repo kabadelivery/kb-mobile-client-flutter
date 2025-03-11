@@ -101,17 +101,9 @@ class CommandModel {
 
     shipping_address = DeliveryAddressModel.fromJson(json['shipping_address']);
 
-    if (json['restaurant_entity'] != null && json['restaurant_entity'].isNotEmpty){
-      restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
-    }else{
-      restaurant_entity = ShopModel(
-        name: "",
-        pic: "https://img.freepik.com/free-vector/shop-with-sign-we-are-open_23-2148562565.jpg?semt=ais_hybrid"
-      );
-    }
-
+    restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
     l = json["food_list"];
-    if(json['order_type']==null)
+    if(json['order_type']==null || json['order_type']==0)
     food_list = l?.map((f) => OrderItemModel.fromJson(f))?.toList();
     else
       food_list = l?.map((f) => OrderItemModel(
