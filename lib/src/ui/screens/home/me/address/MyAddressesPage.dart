@@ -42,12 +42,13 @@ class MyAddressesPage extends StatefulWidget {
   List<int> favoriteAddress = [];
 
   List<DeliveryAddressModel> pureDeliveryAddresses = [];
-
+  int address_type;
   MyAddressesPage(
       {Key key,
       this.presenter,
       this.pick = false,
-      this.gps_location /*6.33:3.44*/
+      this.gps_location /*6.33:3.44*/,
+      this.address_type
       })
       : super(key: key);
 
@@ -146,7 +147,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       ),
                     ]),
                     SizedBox(width: 10),
-                    Text(
+                  wi  Text(
                         "${AppLocalizations.of(context).translate('choose_actual_location')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,

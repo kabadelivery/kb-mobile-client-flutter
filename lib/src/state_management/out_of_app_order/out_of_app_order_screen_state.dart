@@ -6,19 +6,22 @@ class OutOfAppScreenState{
   bool isPayAtDeliveryLoading;
   int order_type;
   String phone_number;
+  String package_amount;
   OutOfAppScreenState({
     this.showLoading = false,
     this.isBillBuilt = false,
     this.isPayAtDeliveryLoading=false,
     this.order_type=0,
     this.phone_number = '',
-  });
+    this.package_amount = '',
+    });
   OutOfAppScreenState copyWith({
     bool showLoading,
     bool isBillBuilt,
     bool isPayAtDeliveryLoading,
     int order_type,
     String phone_number,
+    String package_amount,
   }){
     return OutOfAppScreenState(
       showLoading: showLoading ?? this.showLoading,
@@ -48,7 +51,9 @@ class OutOfAppScreenStateNotifier extends StateNotifier<OutOfAppScreenState>{
   void setPhoneNumber(String phone_number) {
     state = state.copyWith(phone_number: phone_number);
   }
-  
+  void setPackageAmount(String package_amount) {
+    state = state.copyWith(package_amount: package_amount);
+  } 
   void reset(){
     state = state.copyWith(
       showLoading: false,
@@ -56,6 +61,7 @@ class OutOfAppScreenStateNotifier extends StateNotifier<OutOfAppScreenState>{
         isPayAtDeliveryLoading:false,
         order_type:0,
         phone_number: '',
+        package_amount: '',
     );
   }
 }

@@ -56,8 +56,11 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     final voucherState = ref.watch(voucherStateProvider);
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
     print("voucherState ${voucherState.selectedVoucher}");
-    print("isBillBuilt ${locationState.selectedOrderAddress}");
-    return  Scaffold(
+    print("selectedOrderAddress ${locationState.selectedOrderAddress}");
+    if(locationState.selectedOrderAddress==null){
+     locationState.selectedOrderAddress = [];
+
+    }return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
@@ -137,37 +140,22 @@ class OutOfAppOrderPage extends ConsumerWidget  {
             SizedBox(
               height: 10,
             ),
-            AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-            SizedBox(height: 10,),
-            PhoneNumberForm(context),
-            SizedBox(height: 10,),
-            outOfAppScreenState.isBillBuilt==true &&
+        
+            products.isNotEmpty ?
+            Column(
+              children: [
+                  outOfAppScreenState.isBillBuilt==true &&
             outOfAppScreenState.showLoading==false?
             ShowBilling(context,orderBillingState.orderBillConfiguration):
             outOfAppScreenState.showLoading==true?
             MyLoadingProgressWidget()
                 :Container()
             ,
-            products.isNotEmpty && outOfAppScreenState.showLoading==false?
-            Column(
-              children: [
-                SizedBox(height: 10,),
-                locationState.selectedShippingAddress!=null &&  outOfAppScreenState.isBillBuilt==true?
-                Column(
-                  children: [
-                    Text(
-                      "${AppLocalizations.of(context).translate('shipping_address')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: KColors.new_black)),
-                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+            SizedBox(height: 10,),
+            outOfAppScreenState.showLoading==false?
+              Column(
+                children: [
 
-                  ],
-                ):
-                ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
-                SizedBox(height: 10,),
-                locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null)?
                 Column(
                   children: [
                     ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
@@ -190,9 +178,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                     AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
                     SizedBox(height: 10,),
                   ],
-                ):Container(),
-                locationState.is_shipping_address_picked==true &&(locationState.selectedOrderAddress!=null)?
-                Column(
+                ),
+                 locationState.selectedOrderAddress.length > 0 ?   Column(
                   children: [
                     Text(
                         "${AppLocalizations.of(context).translate('order_address')}",
@@ -200,12 +187,33 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: KColors.new_black)),
-                    locationState.selectedOrderAddress.length > 0 ? 
-                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]) : 
-                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                
+                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]) 
                   ],
-                ):Container()
+                ): Container()
                 ,
+                locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type):Container(),
+                locationState.is_shipping_address_picked==true ?   Column(
+                  children: [
+                    Text(
+                        "${AppLocalizations.of(context).translate('shipping_address')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: KColors.new_black)),
+                
+                    BuildOrderAddress(context,ref,locationState.selectedShippingAddress) 
+                  ],
+                ): Container()
+                ,
+                  SizedBox(height: 10,),
+                  AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+                  SizedBox(height: 10,),
+                  PhoneNumberForm(context,outOfAppScreenState.phone_number),
+                  SizedBox(height: 10,),
+          
+                ],
+              )  :Container()
               ],
             ):Container(),
             SizedBox(key: poweredByKey, height: 25),

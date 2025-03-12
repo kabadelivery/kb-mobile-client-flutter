@@ -192,9 +192,9 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                     SizedBox(height: 10,),
                  Column(
                             children: [
-                              PhoneNumberForm(context),
+                              PhoneNumberForm(context,outOfAppScreenState.phone_number),
                               SizedBox(height: 10),
-                              PackageAmountForm(context),
+                              PackageAmountForm(context,outOfAppScreenState.package_amount),
                               SizedBox(height: 10,),
                             ],
                           ),

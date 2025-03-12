@@ -575,5 +575,6 @@
   "modify":"Modify",
   "package_order":"Package order",
   "fecthing_package_address":"Fetching package address",
-  "phone_number_to_contact":"Phone number to contact"
+  "phone_number_to_contact":"Phone number to contact",
+  "choose_address_where_to_deliver":"Choose the address where to deliver"
 }

@@ -195,7 +195,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                     SizedBox(height: 10,),
-                    PhoneNumberForm(context),
+                    PhoneNumberForm(context,outOfAppScreenState.phone_number),
                     SizedBox(height: 10),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?

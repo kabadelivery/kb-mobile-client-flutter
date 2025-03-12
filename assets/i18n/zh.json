@@ -573,5 +573,6 @@
   "modify":"修改",
   "package_order":"包裹订单",
   "fecthing_package_address":"取货包裹地址",
-  "phone_number_to_contact":"联系号码"
+  "phone_number_to_contact":"联系号码",
+  "choose_address_where_to_deliver":"选择送货地址"
 }

@@ -16,6 +16,7 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
       return Column(
         children: [
           Container(
+                margin: EdgeInsets.only(left: 10, right: 10),
             decoration: BoxDecoration(
               color: Color(0x42d2d2d2),
             ),

@@ -23,12 +23,12 @@ Widget OutOfAppProductForm(BuildContext context){
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   Size size = MediaQuery.of(context).size;
-
+  
   File imagePath=null;
   final _formKey = GlobalKey<FormState>();
   return Container(
     width: size.width,
-    height: 300,
+    height: 320,
     decoration: BoxDecoration(
         color: Color(0x42d2d2d2),
         borderRadius: BorderRadius.circular(5)
@@ -121,10 +121,11 @@ Widget OutOfAppProductForm(BuildContext context){
                     validator: (value){
                     if(value.isEmpty)
                     return "Entrez le prix du produit.";
-                    else if(int.parse(value)<=0){
-                      return "Le prix ne peut pas être zero.";
+                    else if(int.parse(value)<0){
+                      return "Le prix ne peut pas être inférieur à zero.";
                     }
-                    }
+                  }
+
                   ),
                   SizedBox(height: 10),
                   Consumer(
@@ -226,7 +227,7 @@ Widget OutOfAppProductForm(BuildContext context){
                         ),
                       ),
                       SizedBox(height: 10),
-                      InkWell(
+                   products.length>0? InkWell(
                         onTap: ()async{
 
                               if(locationState.is_shipping_address_picked){
@@ -274,7 +275,7 @@ Widget OutOfAppProductForm(BuildContext context){
                               ),
                             )
                         ),
-                      ),
+                      ):Container(),
                     ],
                   ):Container(
                         height: 60,
@@ -297,10 +298,13 @@ Widget OutOfAppProductForm(BuildContext context){
 );
 }
 
-Widget PackageAmountForm(BuildContext context) {
+Widget PackageAmountForm(BuildContext context,String amount) {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
-  
+  _amountController.text = amount;
+  _amountController.selection = TextSelection.fromPosition(
+    TextPosition(offset:amount.length),
+  );  
   return Consumer(
     builder: (context, ref, child) {
       final products = ref.watch(productListProvider);
@@ -341,60 +345,29 @@ Widget PackageAmountForm(BuildContext context) {
                       border: InputBorder.none,
                       labelText: "${AppLocalizations.of(context).translate('package_amount')}", 
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "${AppLocalizations.of(context).translate('please_enter_amount')}"; 
-                      }
-                      if (double.tryParse(value) == null) {
-                        return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () async {
-                  if (_formKey.currentState.validate()) {
-                    final amount = double.parse(_amountController.text);
-                
-                    
-                    if (existingPackage.isEmpty) {
-                      productsNotifier.clearProducts();
-                      productsNotifier.addProduct(
-                        {
-                          'name': "Livraison de colis",
-                          'price': amount,
-                          'quantity': 1,
-                          'image': null
-                        }
-                      );
-           
-                    } else {
-                      existingPackage.first['price'] = amount;
-                      productsNotifier.modifyProduct(
-                          existingPackage.first
-                      );  
-                    }
-
-                    if (products.length > 1) {
-                      productsNotifier.setProducts([products.last]);
-                    }
-
-                    if (locationState.is_shipping_address_picked && locationState.selectedOrderAddress.isNotEmpty) {
+                    onChanged: (value)async {
+                      ref.read(outOfAppScreenStateProvier.notifier).setPackageAmount(value);
+                      if(locationState.is_shipping_address_picked && locationState.selectedOrderAddress.isNotEmpty) {
                       await CustomerUtils.getCustomer().then((customer) async {
                         ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
                         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
                         outOfAppNotifier.setIsBillBuilt(false);
                         outOfAppNotifier.setShowLoading(true);
-
+                        final productsList = []; 
+                        productsList.add(
+                          {
+                            'name':"Livraison de colis",
+                            'price':value,
+                            'quantity':1,
+                            'image':""
+                          }
+                        );
                         try {
                           OrderBillConfiguration orderBillConfiguration = 
                               await api.computeBillingAction(
                                 customer,
                                 locationState.selectedOrderAddress,
-                                products,
+                                productsList,
                                 locationState.selectedShippingAddress,
                                 voucherState.selectedVoucher,
                                 false
@@ -410,36 +383,35 @@ Widget PackageAmountForm(BuildContext context) {
                         }
                       });
                     }
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: KColors.primaryColor,
-                    borderRadius: BorderRadius.circular(5)
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "${AppLocalizations.of(context).translate('please_enter_amount')}"; 
+                      }
+                      if (double.tryParse(value) == null) {
+                        return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                      }
+                      return null;
+                    },
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      existingPackage.isEmpty ? 
-                        "${AppLocalizations.of(context).translate('validate')}" : 
-                        "${AppLocalizations.of(context).translate('modify')}",
-                      style: TextStyle(color: Colors.white)
-                    ),
-                  )
                 ),
-              )
-            ],
+              ),
+           
+             ],
           ),
         ),
       );
     }
   );
 }
-Widget PhoneNumberForm(BuildContext context) {
+Widget PhoneNumberForm(BuildContext context,String phoneNumber) {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
   final FocusNode _phoneFocusNode = FocusNode();
-
+  _phoneController.text = phoneNumber;
+  _phoneController.selection = TextSelection.fromPosition(
+    TextPosition(offset:phoneNumber.length),
+  );  
   return Consumer(
     builder: (context, ref, child) {
       final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -471,6 +443,9 @@ Widget PhoneNumberForm(BuildContext context) {
                       border: InputBorder.none,
                       labelText: "${AppLocalizations.of(context).translate('phone_number_to_contact')}", 
                     ),
+                    onChanged: (value){
+                        outOfAppNotifier.setPhoneNumber(_phoneController.text);
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "${AppLocalizations.of(context).translate('please_enter_phone_number')}";
@@ -480,30 +455,7 @@ Widget PhoneNumberForm(BuildContext context) {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState.validate()) {
-                    outOfAppNotifier.setPhoneNumber(_phoneController.text);
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 22, 146, 204),
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      outOfAppScreenState.phone_number?.isNotEmpty == true ? 
-                        "${AppLocalizations.of(context).translate('modify')}" : 
-                        "${AppLocalizations.of(context).translate('validate')}",
-                      style: TextStyle(color: Colors.white)
-                    ),
-                  )
-                ),
-              )
-            ],
+          ],
           ),
         ),
       );

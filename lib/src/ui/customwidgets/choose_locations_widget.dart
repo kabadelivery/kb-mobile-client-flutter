@@ -55,7 +55,7 @@ Widget ChooseShippingAddress(
                 ]),
                 SizedBox(width: 10),
                 Text(
-                    "${AppLocalizations.of(context).translate(type==1?'choose_delivery_address':'choose_order_address')}",
+                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_order_address')}",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
