@@ -18,12 +18,14 @@ import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
+import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
 import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
+import '../../customwidgets/explanation_widgets.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
@@ -43,11 +45,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
   int out_of_app_order_type_without_address=4;
   int shipping_package_type = 5;
   int fetching_package_type = 6;
+  bool reset = true;
   GlobalKey poweredByKey = GlobalKey();
 
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context,WidgetRef ref) { 
+ 
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -185,17 +189,25 @@ class FecthingPackageOrderPage extends ConsumerWidget {
               SizedBox(
                 height: 10,
               ),
+
             Expanded(
               child: SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+            outOfAppScreenState.is_explanation_space_visible==true?
+            BuildExplanationSpace(
+              context,
+              ref,
+              AppLocalizations.of(context).translate('fetch_package_explanation'),
+              "https://lottie.host/3d2464c8-af6a-4d67-a85e-4deaf161f191/HOYpXSXAdg.json"
+              ):Container(),  
+              SizedBox(height: 10,),
                     Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-                    SizedBox(height: 10,),
-                    PhoneNumberForm(context,outOfAppScreenState.phone_number),
+                  
                     SizedBox(height: 10),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
@@ -206,27 +218,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                     ((outOfAppScreenState.order_type == fetching_package_type && additionnalInfoState.additionnal_info.isNotEmpty))
                     ? Column(
                       children: [
-                        SizedBox(height: 10,),
-                        locationState.is_shipping_address_picked==true  ?
-                        Column(
+                                  Column(
                           children: [
-                            Text(
-                                "${AppLocalizations.of(context).translate('shipping_address')}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: KColors.new_black)),
-                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
-                          ],
-                        ):
-                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
-                         Column(
-                          children: [
-                            SizedBox(height: 10,),
-                            locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress==null || locationState.selectedOrderAddress.isEmpty)?
+                          SizedBox(height: 10,),
+                           locationState.selectedOrderAddress.isEmpty?
                             Column(
                               children: [
-                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,fetching_package_type),
                                 SizedBox(height: 20,),
                                 additionnalInfoState.can_add_address_info==false?
                                 Column(
@@ -247,8 +245,8 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                                 SizedBox(height: 10,),
                               ],
                             ):Container(),
-                            (locationState.is_order_address_picked==true)?
-                            locationState.selectedOrderAddress != null && locationState.selectedOrderAddress.isNotEmpty ?
+                           
+                           locationState.selectedOrderAddress.isNotEmpty ?
                             Column(
                               children: [
                                 Text(
@@ -259,11 +257,27 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                                         color: KColors.new_black)),
                                 BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
                               ],
-                            ):Container():Container(),
+                            ):Container(),
                           ],
-                        ) 
-                      ],
+                        ),
+                        SizedBox(height: 10,),
+                        locationState.is_shipping_address_picked==true  ?
+                        Column(
+                          children: [
+                            Text(
+                                "${AppLocalizations.of(context).translate('shipping_address')}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: KColors.new_black)),
+                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+                          ],
+                        ):
+                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,fetching_package_type),
+                       ],
                     ) : Container(),
+                      SizedBox(height: 10,),
+                    PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
                     SizedBox(key: poweredByKey, height: 25),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
@@ -278,6 +292,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                       child: InkWell(
                         onTap: () {
                           int type_of_order = 6; 
+                          productsNotifier.clearProducts();
+                          productsNotifier.addProduct({
+                               'name':"Récupération de colis",
+                               'price':0,
+                               'quantity':1,
+                               'image':""
+                          });
                           payAtDelivery(
                               context,
                               ref,

@@ -23,7 +23,7 @@ Widget ChooseShippingAddress(
     WidgetRef ref,
     int type,
     GlobalKey poweredByKey,
-    int shipping_address_type
+    int shipping_address_type,int order_type
     ){
   return     InkWell(
       splashColor: Colors.white,
@@ -54,8 +54,14 @@ Widget ChooseShippingAddress(
                   ),
                 ]),
                 SizedBox(width: 10),
-                Text(
-                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_order_address')}",
+             Text( order_type==0?  
+                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_order_address')}"
+               
+              :order_type==6?
+                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_address_where_to_fetch')}"
+                  
+              :
+                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver_package':'choose_address_where_to_fetch')}",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,

@@ -106,13 +106,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
   @override
   Widget build(BuildContext context) {
     String restoName = "${command?.restaurant_entity?.name}";
-    if(command.order_type==null){
-      restoName = "${command?.restaurant_entity?.name}";
-    }else if(command.order_type==3 ||command.order_type==4){
-      restoName = "${AppLocalizations.of(context).translate('out_of_app_order')}";
-    }else if(command.order_type==5){
-      restoName = "${AppLocalizations.of(context).translate('package_shipping')}";
-    }
+  
     return Opacity(
       opacity: command?.state > 3 ? .7 : 1,
       child: InkWell(

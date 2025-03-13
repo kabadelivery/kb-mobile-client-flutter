@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../models/CustomerModel.dart';
@@ -101,10 +103,11 @@ Widget OutOfAppProductForm(BuildContext context){
               Column(
                 children: [
                   TextFormField(
+                    
                     controller: _nameController,
                     validator: (value){
                       if(value.isEmpty){
-                        return "Entrez le nom du produit";
+                        return "${AppLocalizations.of(context).translate('enter_product_name')}";
                       }
                     },
                     decoration: InputDecoration(
@@ -113,6 +116,7 @@ Widget OutOfAppProductForm(BuildContext context){
                   ),
                   SizedBox(height: 10),
                   TextFormField(
+                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     controller: _priceController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -120,9 +124,9 @@ Widget OutOfAppProductForm(BuildContext context){
                          style: TextStyle(fontSize: 13),
                     validator: (value){
                     if(value.isEmpty)
-                    return "Entrez le prix du produit.";
+                       return "${AppLocalizations.of(context).translate('enter_product_price')}";
                     else if(int.parse(value)<0){
-                      return "Le prix ne peut pas être inférieur à zero.";
+                        return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
                     }
                   }
 
@@ -298,15 +302,16 @@ Widget OutOfAppProductForm(BuildContext context){
 );
 }
 
-Widget PackageAmountForm(BuildContext context,String amount) {
-  final _formKey = GlobalKey<FormState>();
+Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
+
   final TextEditingController _amountController = TextEditingController();
   _amountController.text = amount;
   _amountController.selection = TextSelection.fromPosition(
     TextPosition(offset:amount.length),
   );  
-  return Consumer(
-    builder: (context, ref, child) {
+   Timer _typingTimer;
+
+ 
       final products = ref.watch(productListProvider);
       final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
       final productsNotifier = ref.read(productListProvider.notifier);
@@ -314,21 +319,10 @@ Widget PackageAmountForm(BuildContext context,String amount) {
       final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
       final voucherState = ref.watch(voucherStateProvider);
       
-      List<Map<String,dynamic>> existingPackage = [];
-      final packageType = outOfAppScreenState.order_type == 5 ? "shipping_package" : "fetch_package";
-      if(products!=null){ 
-       existingPackage = products.where((p) => p['name'] == packageType).toList();
-      } 
-     
-     
-      if (existingPackage.isNotEmpty && _amountController.text.isEmpty) {
-        _amountController.text = existingPackage.first['price'].toString();
-      }
 
       return Padding(
         padding: const EdgeInsets.all(0.0),
-        child: Form(
-          key: _formKey,
+      
           child: Column(
             children: [
               Container(
@@ -345,50 +339,56 @@ Widget PackageAmountForm(BuildContext context,String amount) {
                       border: InputBorder.none,
                       labelText: "${AppLocalizations.of(context).translate('package_amount')}", 
                     ),
+                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (value)async {
                       ref.read(outOfAppScreenStateProvier.notifier).setPackageAmount(value);
-                      if(locationState.is_shipping_address_picked && locationState.selectedOrderAddress.isNotEmpty) {
-                      await CustomerUtils.getCustomer().then((customer) async {
-                        ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
-                        OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                        outOfAppNotifier.setIsBillBuilt(false);
-                        outOfAppNotifier.setShowLoading(true);
-                        final productsList = []; 
-                        productsList.add(
-                          {
-                            'name':"Livraison de colis",
-                            'price':value,
-                            'quantity':1,
-                            'image':""
-                          }
-                        );
-                        try {
-                          OrderBillConfiguration orderBillConfiguration = 
-                              await api.computeBillingAction(
-                                customer,
-                                locationState.selectedOrderAddress,
-                                productsList,
-                                locationState.selectedShippingAddress,
-                                voucherState.selectedVoucher,
-                                false
-                              );
+                      _amountController.text = value;
+                  _typingTimer?.cancel();
+                   _typingTimer = Timer(Duration(seconds: 2), () async {
+                    if(locationState.is_shipping_address_picked && locationState.selectedOrderAddress.isNotEmpty) {
+                                await CustomerUtils.getCustomer().then((customer) async {
+                                  ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+                                  OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+                                  outOfAppNotifier.setIsBillBuilt(false);
+                                  outOfAppNotifier.setShowLoading(true);
+                                  productsNotifier.clearProducts();
+                                  productsNotifier.addProduct(
+                                    {
+                                      'name':"Livraison de colis",
+                                      'price':value,
+                                      'quantity':1,
+                                      'image':""
+                                    }
+                                  );
 
-                          ref.read(orderBillingStateProvider.notifier)
-                              .setOrderBillConfiguration(orderBillConfiguration);
-                          outOfAppNotifier.setIsBillBuilt(true);
-                          outOfAppNotifier.setShowLoading(false);
-                        } catch (e) {
-                          print("Error calculating billing: $e");
-                          outOfAppNotifier.setShowLoading(false);
-                        }
-                      });
-                    }
+                                  try {
+                                    OrderBillConfiguration orderBillConfiguration = 
+                                        await api.computeBillingAction(
+                                          customer,
+                                          locationState.selectedOrderAddress,
+                                          ref.watch(productListProvider),
+                                          locationState.selectedShippingAddress,
+                                          voucherState.selectedVoucher,
+                                          false
+                                        );
+
+                                    ref.read(orderBillingStateProvider.notifier)
+                                        .setOrderBillConfiguration(orderBillConfiguration);
+                                    outOfAppNotifier.setIsBillBuilt(true);
+                                    outOfAppNotifier.setShowLoading(false);
+                                  } catch (e) {
+                                    print("Error calculating billing: $e");
+                                    outOfAppNotifier.setShowLoading(false);
+                                  }
+                                });
+                              }
+    });
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "${AppLocalizations.of(context).translate('please_enter_amount')}"; 
                       }
-                      if (double.tryParse(value) == null) {
+                      if (double.tryParse(value) <0) {
                         return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
                       }
                       return null;
@@ -399,15 +399,13 @@ Widget PackageAmountForm(BuildContext context,String amount) {
            
              ],
           ),
-        ),
+      
       );
-    }
-  );
+
 }
-Widget PhoneNumberForm(BuildContext context,String phoneNumber) {
-  final _formKey = GlobalKey<FormState>();
+Widget PhoneNumberForm(BuildContext context,String phoneNumber,WidgetRef ref) {
+
   final TextEditingController _phoneController = TextEditingController();
-  final FocusNode _phoneFocusNode = FocusNode();
   _phoneController.text = phoneNumber;
   _phoneController.selection = TextSelection.fromPosition(
     TextPosition(offset:phoneNumber.length),
@@ -424,8 +422,7 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber) {
 
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Form(
-          key: _formKey,
+  
           child: Column(
           
             children: [
@@ -439,12 +436,14 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber) {
                   child: TextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       labelText: "${AppLocalizations.of(context).translate('phone_number_to_contact')}", 
                     ),
                     onChanged: (value){
-                        outOfAppNotifier.setPhoneNumber(_phoneController.text);
+                        outOfAppNotifier.setPhoneNumber(value);
+                        _phoneController.text = outOfAppScreenState.phone_number;
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -457,7 +456,7 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber) {
               ),
           ],
           ),
-        ),
+      
       );
     }
   );

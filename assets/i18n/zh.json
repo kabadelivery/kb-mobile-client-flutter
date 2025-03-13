@@ -553,7 +553,7 @@
   "quantity": "数量",
   "additionnal_info": "附加信息",
   "choose_order_address": "选择订单收货地址",
-  "add_product": "添加产品",
+  "add_product": "购买产品",
   "image_size_exceed": "图片太大。请选择 3MB 以下的图片",
   "finalize": "完成",
   "shipping_address": "送货地址",
@@ -574,5 +574,14 @@
   "package_order":"包裹订单",
   "fecthing_package_address":"取货包裹地址",
   "phone_number_to_contact":"联系号码",
-  "choose_address_where_to_deliver":"选择送货地址"
+  "choose_address_where_to_deliver":"选择送货地址",
+  "enter_product_name":"输入产品名称",
+  "enter_product_price":"输入产品价格",
+  "out_of_app_explanation":"在这里，您可以订购/购买您想要的一切，在药店、商店、普通食品、市场、超市、Kaba 上未列出的餐厅等。",
+  "shipping_package_explanation":"通过我们的包裹递送服务，您可以轻松地将包裹发送给朋友或客户，无论是个人还是专业包裹。",
+  "fetch_package_explanation":"通过我们的包裹取货服务，您可以轻松地从取货点取走包裹或物品。",
+  "choose_address_where_to_deliver":"选择送货地址",
+  "choose_address_where_to_fetch":"选择取货地址",
+  "choose_address_where_to_deliver_package":"选择包裹送货地址",
+  "contact_us_for_funds":"联系我们获取资金"
 }

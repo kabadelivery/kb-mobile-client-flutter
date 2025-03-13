@@ -2,9 +2,12 @@ import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
+import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
@@ -15,6 +18,7 @@ import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
+import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/BouncingWidget.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
@@ -22,6 +26,7 @@ import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
 import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
+import '../../customwidgets/explanation_widgets.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
@@ -35,6 +40,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
   int address_additionnal_info_type=2;
   int out_of_app_order_type=3;
   int out_of_app_order_type_without_address=4;
+  bool reset = true;
   GlobalKey poweredByKey = GlobalKey();
   void showOutOfAppProductForm(BuildContext context) {
     showDialog(
@@ -46,7 +52,11 @@ class OutOfAppOrderPage extends ConsumerWidget  {
   }
   
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context,WidgetRef ref) { 
+    if(reset){
+      resetProviders(ref);
+      reset = false;
+    }
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -54,13 +64,18 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     final locationState = ref.watch(locationStateProvider);
     final locationNotifier = ref.read(locationStateProvider.notifier);
     final voucherState = ref.watch(voucherStateProvider);
-    final additionnalInfoState = ref.watch(additionnalInfoProvider);
-    print("voucherState ${voucherState.selectedVoucher}");
-    print("selectedOrderAddress ${locationState.selectedOrderAddress}");
-    if(locationState.selectedOrderAddress==null){
+    final additionnalInfoState = ref.watch(additionnalInfoProvider); 
+
+   if(locationState.selectedOrderAddress==null){
      locationState.selectedOrderAddress = [];
 
-    }return  Scaffold(
+    }
+    //    outOfAppScreenState.order_type=3;
+    // outOfAppScreenState.isBillBuilt=false;
+    // outOfAppScreenState.showLoading=false;
+    print("shipping_address ${locationState.selectedShippingAddress}");
+    print("shipping_address order_address ${locationState.selectedOrderAddress}");
+    return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         brightness: Brightness.light,
@@ -88,6 +103,14 @@ class OutOfAppOrderPage extends ConsumerWidget  {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            outOfAppScreenState.is_explanation_space_visible==true?
+            BuildExplanationSpace(
+              context,
+              ref,
+              AppLocalizations.of(context).translate('out_of_app_explanation'),
+              "https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json"
+              ):Container(),  
+              SizedBox(height: 10,),
             Container(
                 width: size.width,
                 height: 105.0*products.length,
@@ -156,9 +179,9 @@ class OutOfAppOrderPage extends ConsumerWidget  {
               Column(
                 children: [
 
-                Column(
+                locationState.selectedOrderAddress.isEmpty ? Column(
                   children: [
-                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
                     SizedBox(height: 20,),
                     additionnalInfoState.can_add_address_info==false?
                     Column(
@@ -177,9 +200,9 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                     ):
                     AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
                     SizedBox(height: 10,),
-                  ],
-                ),
-                 locationState.selectedOrderAddress.length > 0 ?   Column(
+                  ],    
+                ):Container(),
+                 locationState.selectedOrderAddress.isNotEmpty ?   Column(
                   children: [
                     Text(
                         "${AppLocalizations.of(context).translate('order_address')}",
@@ -192,7 +215,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                   ],
                 ): Container()
                 ,
-                locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type):Container(),
+                 SizedBox(height: 10,),
+                locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0):Container(),
                 locationState.is_shipping_address_picked==true ?   Column(
                   children: [
                     Text(
@@ -209,7 +233,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                   SizedBox(height: 10,),
                   AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                   SizedBox(height: 10,),
-                  PhoneNumberForm(context,outOfAppScreenState.phone_number),
+                  PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
                   SizedBox(height: 10,),
           
                 ],

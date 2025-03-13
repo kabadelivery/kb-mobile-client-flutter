@@ -120,7 +120,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
-      InkWell(
+      widget.address_type==1?   InkWell(
       splashColor: Colors.white,
           child: Container(
               margin: EdgeInsets.only(left: 10, right: 10,top: 40),
@@ -147,15 +147,14 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       ),
                     ]),
                     SizedBox(width: 10),
-                  wi  Text(
+                 Text(
                         "${AppLocalizations.of(context).translate('choose_actual_location')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             color:
                             KColors.mBlue
-
-                        ))
+                        )) 
                   ])),
           onTap: () {
             CustomerUtils.getCustomer().then((customer)async {
@@ -184,7 +183,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               });
             });
 
-          }),
+          }):Container(),
           Container(
               height: MediaQuery.of(context).size.height,
               margin: EdgeInsets.only(top: 80),

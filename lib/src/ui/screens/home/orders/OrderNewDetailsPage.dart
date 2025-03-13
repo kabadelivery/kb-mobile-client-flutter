@@ -20,6 +20,8 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
+import '../../../customwidgets/whatsappMessageButton.dart';
+
 class OrderNewDetailsPage extends StatefulWidget {
   static var routeName = "/OrderNewDetailsPage";
 
@@ -620,10 +622,13 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                       decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                          image: new DecorationImage(
+                          image:widget.command.order_type==0? new DecorationImage(
                               fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(food.pic)))),
+                              image: 
+                              CachedNetworkImageProvider(
+                                  Utils.inflateLink(food.pic)))
+                                  :(food.pic==null?null:NetworkImage(food.pic))
+                    )
                     ),
                   ],
                 ),
@@ -1145,7 +1150,12 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
             ],
           ),
         ) : Container()
-      ]),
+    ,
+    widget.command.order_type==5 && widget.command.state==3 && widget.command.food_pricing>0?
+    WhatsappMessageButton("${AppLocalizations.of(context).translate("contact_us_for_funds")}",widget.command.restaurant_entity.main_contact)
+    :Container()
+      ]
+      ),
     );
   }
 

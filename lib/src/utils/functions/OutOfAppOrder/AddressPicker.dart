@@ -29,7 +29,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
   if(context.mounted){
   Map results = await Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
-          MyAddressesPage(pick: true, presenter: AddressPresenter()),
+          MyAddressesPage(pick: true, presenter: AddressPresenter(),address_type: address_type),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;
@@ -65,7 +65,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
       //get billing
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
          if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
-            if (address_type==2 || (address_type==1 && locationState.selectedOrderAddress.isNotEmpty)) 
+            if (shipping_address!=null&&order_address.isNotEmpty) 
             {
               outOfAppNotifier.setIsBillBuilt(false);
               outOfAppNotifier.setShowLoading(true); 
@@ -83,8 +83,10 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
            }
   
         }else{      
-          outOfAppNotifier.setIsBillBuilt(false);
-          outOfAppNotifier.setShowLoading(true);
+          if(shipping_address!=null){
+            outOfAppNotifier.setIsBillBuilt(false);
+            outOfAppNotifier.setShowLoading(true);
+          }
         }
         
         try{
@@ -100,7 +102,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
             );
           }
           if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
-            if (address_type==2 || (address_type==1 && locationState.selectedOrderAddress.isNotEmpty)) {
+            if (shipping_address!=null && order_address.isNotEmpty) {
               OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
                   customer,
                   order_address,
@@ -114,6 +116,9 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
               print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
             }
           } else {
+
+            if(shipping_address!=null){
+             
             OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
                 customer,
                 order_address,
@@ -126,6 +131,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
             outOfAppNotifier.setShowLoading(false);
             print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
           }
+        }
         }catch(e){
           print("ENRRRRRR $e");
         }

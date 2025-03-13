@@ -6,6 +6,7 @@ import 'package:KABA/src/state_management/out_of_app_order/location_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
+import 'package:KABA/src/utils/functions/OutOfAppOrder/resetProviders.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ Future<void> launchOrderFunc(
 void mToast(String message,BuildContext context) {
   Toast.show(message, context, duration: Toast.LENGTH_LONG);
 }
-void sorryDemoAccountAlert(BuildContext context) {
+void sorryDemoAccountAlert(BuildContext context, WidgetRef ref) {
   // show alert for demo-account saying how you can't order
 
   _showDialog(
@@ -74,7 +75,8 @@ void sorryDemoAccountAlert(BuildContext context) {
     message:
     "${AppLocalizations.of(context).translate('demo_account_alert')}",
     isYesOrNo: false,
-    context: context
+    context: context,
+    ref: ref
   );
 }
 void payAtDelivery(
@@ -96,6 +98,8 @@ void payAtDelivery(
       "Infos sur l'addresse de commande : \n\n"+ref.watch(additionnalInfoProvider).additionnal_address_info;
   var _selectedVoucher = ref.watch(voucherStateProvider).selectedVoucher;
   var _usePoint = ref.watch(voucherStateProvider).usePoint;
+
+  
   if (orderBillConfiguration?.trustful != 1) {
     if (Utils.isEmailValid(customer?.username)) {
       // email account
@@ -147,7 +151,7 @@ void payAtDelivery(
 
       if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) ==
           0) {
-        sorryDemoAccountAlert(context);
+        sorryDemoAccountAlert(context, ref);
       } else {
         ref.read(outOfAppScreenStateProvier.notifier).setIsPayAtDeliveryLoading(true);
         if (Utils.isCode(_mCode)) {
@@ -190,10 +194,11 @@ void _showDialog(
       bool isYesOrNo = false,
       Function actionIfYes,
       String asset_png = null,
-      BuildContext context
-    }) {
+      BuildContext context,
+      WidgetRef ref
+    })  {
 
-  showDialog(
+ showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -255,7 +260,13 @@ void _showDialog(
                   style: TextStyle(color: KColors.primaryColor)),
               onPressed: () {
                 if (!okBackToHome) {
-                  Navigator.of(context).pop();
+                 try{
+                  resetProviders(ref);
+                  print("Resetting providers successfully" );
+                 }catch(e){
+                  print("Error resetting providers: $e");
+                 }
+                   Navigator.of(context).pop();
                 } else {
                   StateContainer.of(context)
                       .updateTabPosition(tabPosition: 2);
@@ -272,6 +283,7 @@ void _showDialog(
             ),
           ]);
     },
+    barrierDismissible: false
   );
 }
 void launchOrderResponse(int errorCode,BuildContext context, WidgetRef ref) {
@@ -280,7 +292,7 @@ void launchOrderResponse(int errorCode,BuildContext context, WidgetRef ref) {
  print("ERROR CODE $errorCode");
   if (errorCode == 0) {
     CustomerUtils.unlockBestSellerVersion();
-    _showOrderSuccessDialog(context);
+    _showOrderSuccessDialog(context, ref);
   } else {
     String message = "";
     switch (errorCode) {
@@ -328,11 +340,12 @@ void launchOrderResponse(int errorCode,BuildContext context, WidgetRef ref) {
       icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
       message: message,
       isYesOrNo: false,
-      context: context
+      context: context,
+      ref: ref
     );
   }
 }
-void _showOrderSuccessDialog(BuildContext context) {
+void _showOrderSuccessDialog(BuildContext context, WidgetRef ref) {
   /* save the order, in spending ... */
   _playMusicForSuccess();
   _showDialog(
@@ -341,7 +354,8 @@ void _showOrderSuccessDialog(BuildContext context) {
     message:
     "${AppLocalizations.of(context).translate('order_congratz_praise')}",
     isYesOrNo: false,
-    context: context
+    context: context,
+    ref: ref
   );
 }
 Future<void> _playMusicForSuccess() async {

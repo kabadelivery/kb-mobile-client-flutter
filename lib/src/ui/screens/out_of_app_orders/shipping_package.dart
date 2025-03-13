@@ -17,12 +17,14 @@ import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
+import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
 import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
+import '../../customwidgets/explanation_widgets.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
@@ -42,11 +44,16 @@ class ShippingPackageOrderPage extends ConsumerWidget {
   int out_of_app_order_type_without_address=4;
   int shipping_package_type = 5;
   int fetching_package_type = 6;
+  bool reset = true;
   GlobalKey poweredByKey = GlobalKey();
 
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
+    if(reset){
+      resetProviders(ref);
+      reset = false;
+    }
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -186,48 +193,35 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+              outOfAppScreenState.is_explanation_space_visible==true?
+              BuildExplanationSpace(
+              context,
+              ref,
+              AppLocalizations.of(context).translate('shipping_package_explanation'),
+             "https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json"
+              ):Container(),  
+              SizedBox(height: 10,),
                     Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                     SizedBox(height: 10,),
-                 Column(
-                            children: [
-                              PhoneNumberForm(context,outOfAppScreenState.phone_number),
-                              SizedBox(height: 10),
-                              PackageAmountForm(context,outOfAppScreenState.package_amount),
-                              SizedBox(height: 10,),
-                            ],
-                          ),
+
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
                     ShowBilling(context,orderBillingState.orderBillConfiguration):
                     outOfAppScreenState.showLoading==true?
                     MyLoadingProgressWidget()
                         :Container(),
-                    ((outOfAppScreenState.order_type == shipping_package_type && products.isNotEmpty && additionnalInfoState.additionnal_info.isNotEmpty && outOfAppScreenState.showLoading==false))
+                    ((outOfAppScreenState.order_type == shipping_package_type && additionnalInfoState.additionnal_info.isNotEmpty && outOfAppScreenState.showLoading==false))
                     ? Column(
                       children: [
-                        SizedBox(height: 10,),
-                        locationState.is_shipping_address_picked==true ?
-                        Column(
-                          children: [
-                            Text(
-                                "${AppLocalizations.of(context).translate('shipping_address')}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: KColors.new_black)),
-                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
-                          ],
-                        ):
-                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type),
-                         Column(
+                      Column(
                           children: [
                             SizedBox(height: 10,),
-                            locationState.is_shipping_address_picked==true &&  (locationState.selectedOrderAddress.isEmpty)?
+                             (locationState.selectedOrderAddress.isEmpty)?
                             Column(
                               children: [
-                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type),
+                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,shipping_package_type),
                                 SizedBox(height: 20,),
                                 additionnalInfoState.can_add_address_info==false?
                                 Column(
@@ -249,7 +243,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                               ],
                             ):Container(),
                             (locationState.is_order_address_picked==true)?
-                            locationState.selectedOrderAddress != null && locationState.selectedOrderAddress.isNotEmpty ?
+                             locationState.selectedOrderAddress.isNotEmpty ?
                             Column(
                               children: [
                                 Text(
@@ -262,9 +256,36 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                               ],
                             ):Container():Container(),
                           ],
+                        
+                        
                         ) 
+                      
+                        ,SizedBox(height: 10,),
+                        locationState.is_shipping_address_picked==true ?
+                        Column(
+                          children: [
+                            Text(
+                                "${AppLocalizations.of(context).translate('shipping_address')}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: KColors.new_black)),
+                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+                          ],
+                        ):
+                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,shipping_package_type),
+                        
                       ],
                     ) : Container(),
+                additionnalInfoState.additionnal_info.isNotEmpty?
+                Column(
+                            children: [
+                              PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
+                              SizedBox(height: 10),
+                              PackageAmountForm(context,outOfAppScreenState.package_amount,ref),
+                              SizedBox(height: 10,),
+                            ],
+                          ):Container(),
                     SizedBox(key: poweredByKey, height: 25),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
