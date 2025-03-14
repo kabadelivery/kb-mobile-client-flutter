@@ -45,12 +45,13 @@ Future<void> launchOrderFunc(
     int order_type,
     BuildContext context,
     WidgetRef ref,
-    String phone_number
+    String phone_number,
+    String infos_image
     ) async {
   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
   try {
 
-    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint,order_type,phone_number);
+    int error = await api.launchOrder(true, customer, order_adress,foods, selectedAddress, mCode, infos, voucher, useKabaPoint,order_type,phone_number,infos_image);
     launchOrderResponse(error,context,ref);
   } catch (_) {
     /* login failure */
@@ -158,12 +159,28 @@ void payAtDelivery(
 
           try{
             OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-            print("Upload image : $foods");
-           final uploadedOrders = await api.uploadMultipleImages(foods, customer);
-            print("Uploaded orders response: $uploadedOrders"); // Debug print
+            final uploadedOrders = await api.uploadMultipleImages(foods, customer);
+            if(uploadedOrders.isNotEmpty){
+              foods = []; 
+              for(var order in uploadedOrders){
+                foods.add({
+                  "name":order["name"],
+                  "price":order["price"],
+                  "quantity":order["quantity"],
+                  "image":order["image"],  
+                });
+              }
+            }
+            final addInfoImage = [{
+              "name":"additionnal_info",
+              "price":0,
+              "quantity":1,
+              "image":ref.watch(additionnalInfoProvider).image,
+            }];
+            final uploadAdditionnalInfoImage = await api.uploadMultipleImages(addInfoImage, customer);
             await launchOrderFunc(
                 customer,
-                foods,//uploadedOrders, 
+                foods,//foods, 
                 order_address,
                 _selectedAddress,
                 _mCode,
@@ -173,7 +190,8 @@ void payAtDelivery(
                 order_type,
                 context,
                 ref,
-                phone_number
+                phone_number,
+                uploadAdditionnalInfoImage[0]["image"]
             );
           }catch(e){
             return e;

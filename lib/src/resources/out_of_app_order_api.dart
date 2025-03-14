@@ -81,7 +81,8 @@ class OutOfAppOrderApiProvider{
       VoucherModel voucher,
       bool useKabaPoint,
       int order_type,
-      String phone_number
+      String phone_number,
+      String infos_image
       )async{
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -137,7 +138,7 @@ class OutOfAppOrderApiProvider{
             {'name':  foods[i]['name'],
               'price': foods[i]['price'].toString(),
               'quantity': foods[i]['quantity'].toString(),
-              'image': ""
+              'image': foods[i]['image'].toString(),
             }
         );
       }
@@ -149,6 +150,7 @@ class OutOfAppOrderApiProvider{
         'shipping_address': selectedAddress.id,
         'transaction_password': '$mCode',
         'infos': '$infos',
+        "infos_image":infos_image,
         'device': device, // device informations
         'push_token': '$token', // push token
         "voucher_id": voucher?.id,

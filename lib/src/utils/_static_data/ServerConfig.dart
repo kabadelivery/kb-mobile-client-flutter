@@ -2,14 +2,14 @@ class ServerConfig {
   //static const String ip_address = "app.kaba-delivery.com"; // prod server
   //static const String pay_ip_address = "pay.kaba-delivery.com";
 
-   static const String ip_address = "acquisition-world-deemed-castle.trycloudflare.com"; // dev server
+   static const String ip_address = "sec-responded-elizabeth-causing.trycloudflare.com"; // dev server
   // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
 
   // static const String ip_address = "kaba-technology.com"; // dev server
 
   //static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
   //static const String stat_ip_address="stats.kaba-delivery.com"; //prod
-  static const String stat_ip_address="da1d-2c0f-f0f8-704-ec00-8827-35ba-29f2-f51a.ngrok-free.app"; //local
+  static const String stat_ip_address="1da9-2c0f-f0f8-704-ec00-10e1-9b08-47cb-3df7.ngrok-free.app"; //local
 
   static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;

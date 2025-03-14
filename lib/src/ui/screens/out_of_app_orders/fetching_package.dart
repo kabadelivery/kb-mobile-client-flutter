@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +35,8 @@ import '../../customwidgets/voucher_widgets.dart';
 class FecthingPackageOrderPage extends ConsumerWidget {
 
   final String additional_info;
-
-  FecthingPackageOrderPage({this.additional_info});
+  final File additionnal_info_image;
+  FecthingPackageOrderPage({this.additional_info,this.additionnal_info_image});
   static var routeName = "/FecthingPackageOrderPage";
 
   int shipping_address_type=1;
@@ -117,12 +119,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {
+                      onTap: () { 
                         resetAll(ref);
                         productsNotifier.setProducts([]);
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
+                            additionnal_info_image: additionnalInfoState.image,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(-1.0, 0.0);
@@ -207,7 +210,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                     Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-                  
+                    AdditionnalInfoImage(context,ref),
                     SizedBox(height: 10),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?

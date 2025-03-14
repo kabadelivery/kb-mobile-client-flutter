@@ -233,6 +233,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                   SizedBox(height: 10,),
                   AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                   SizedBox(height: 10,),
+                  AdditionnalInfoImage(context,ref),
+                  SizedBox(height: 10,),
                   PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
                   SizedBox(height: 10,),
           

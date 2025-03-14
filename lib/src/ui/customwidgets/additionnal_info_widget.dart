@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:KABA/src/state_management/out_of_app_order/additionnal_info_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../localizations/AppLocalizations.dart';
+import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
+import '../../state_management/out_of_app_order/products_state.dart';
+import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
+import 'BouncingWidget.dart';
 
 Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String text) {
   TextEditingController _infoController = TextEditingController();
@@ -59,4 +65,79 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
   );
 }
 
+
+Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
+
+
+    Size size = MediaQuery.of(context).size;
+    final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+    final File selectedImage = ref.watch(additionnalInfoProvider).image;
+    return GestureDetector(
+
+              onTap:outOfAppScreenState.showLoading==false? ()async{
+                try{
+                  await pickImage(context,ref).then((value){
+                    ref.read(additionnalInfoProvider.notifier).setImage(value);
+                  });
+
+                }catch(e){
+                  print("##Error in image picking, out of app order## $e");
+                }
+              }:null,
+            child: Container(
+  height: 70,
+  width: size.width * 0.92,
+  alignment: Alignment.center,
+  decoration: BoxDecoration(
+    color: Color.fromARGB(47, 202, 160, 67),
+    borderRadius: BorderRadius.circular(5),
+    image: selectedImage != null
+        ? DecorationImage(
+            image: FileImage(ref.watch(additionnalInfoProvider).image),
+            fit: BoxFit.cover,
+          )
+        : null,
+  ),
+  child: Stack(
+    alignment: Alignment.center,
+    children: [
+      // Dark overlay
+      if (selectedImage != null)
+        Container(
+          height: 70,
+          width: size.width * 0.92,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.5), // Adjust opacity as needed
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+
+      // Icon and Text
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          BouncingWidget(
+            duration: Duration(milliseconds: 400),
+            scaleFactor: 2,
+            child: Icon(Icons.camera_alt, color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(255, 255, 255, 255)),
+          ),
+          SizedBox(height: 5),
+          Text(
+            "${AppLocalizations.of(context).translate('choose_an_image')}",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(197, 255, 255, 255),
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+),
+  
+);
+      
+}
 

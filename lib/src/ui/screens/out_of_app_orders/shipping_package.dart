@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +35,8 @@ import 'fetching_package.dart';
 class ShippingPackageOrderPage extends ConsumerWidget {
 
   final String additional_info;
-  ShippingPackageOrderPage({this.additional_info});
+  final File additionnal_info_image;
+  ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image});
   static var routeName = "/ShippingPackageOrderPage";
 
   int shipping_address_type=1;
@@ -75,6 +78,9 @@ class ShippingPackageOrderPage extends ConsumerWidget {
     }else{
       locationState.is_order_address_picked=true;
     }
+  
+
+
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -144,6 +150,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) => FecthingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
+                            additionnal_info_image: additionnalInfoState.image,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(1.0, 0.0);
@@ -204,8 +211,10 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                     Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+                    
                     SizedBox(height: 10,),
-
+                    AdditionnalInfoImage(context,ref),
+                    SizedBox(height: 10,),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
                     ShowBilling(context,orderBillingState.orderBillConfiguration):

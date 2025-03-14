@@ -103,7 +103,7 @@ class CommandModel {
 
     restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
     l = json["food_list"];
-    if(json['order_type']==null || json['order_type']==0)
+    if(json['order_type']==0)
     food_list = l?.map((f) => OrderItemModel.fromJson(f))?.toList();
     else
       food_list = l?.map((f) => OrderItemModel(

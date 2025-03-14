@@ -627,7 +627,10 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                               image: 
                               CachedNetworkImageProvider(
                                   Utils.inflateLink(food.pic)))
-                                  :(food.pic==null?null:NetworkImage(food.pic))
+                                  :
+                                  food.pic==null?null:new DecorationImage(
+                                  fit: BoxFit.cover,
+                                   image:  NetworkImage(food.pic))
                     )
                     ),
                   ],
