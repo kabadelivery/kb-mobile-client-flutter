@@ -59,6 +59,7 @@ class CommandModel {
 
   int additionnal_fee;
   int order_type;
+  String start_date;
 
   CommandModel({this.id, this.restaurant_id, this.state,
     this.shipping_address, this.restaurant_entity, this.food_list,
@@ -70,7 +71,8 @@ class CommandModel {
     this.promotion_food_pricing, this.is_preorder, this.is_promotion,
     this.preorder_discount, this.preorder, this.preorder_hour, this.voucher_entity,
     this.kaba_point_used_amount,this.additionnal_fee, this.order_type,
-  });
+    this.start_date
+    });
 
 
   CommandModel.fromJson(Map<String, dynamic> json) {
@@ -144,7 +146,8 @@ class CommandModel {
       }
     } catch (_) {
       xrint(_.toString());
-    }
+    } 
+    start_date = json["start_date"];
   }
 
   Map toJson () => {
@@ -169,6 +172,7 @@ class CommandModel {
     "comment" : comment,
     "kaba_point_used_amount": kaba_point_used_amount,
     "order_type": order_type,
+    "start_date": start_date,
   };
 
 

@@ -295,12 +295,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                       child: InkWell(
                         onTap: () {
                           int type_of_order = 6; 
-                          productsNotifier.clearProducts();
-                          productsNotifier.addProduct({
-                               'name':"Récupération de colis",
-                               'price':0,
-                               'quantity':1,
-                               'image':""
+                        ref.read(productListProvider.notifier).clearProducts(); 
+                          File image= File(additionnalInfoState.image.path);
+                          ref.read(productListProvider.notifier).addProduct({
+                            "name": "Récupération de colis",
+                            "price": outOfAppScreenState.package_amount,
+                            "quantity": 1,
+                            "image": image,
                           });
                           payAtDelivery(
                               context,

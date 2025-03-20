@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-Widget WhatsappMessageButton(String text, String phoneNumber) {
+import '../../models/CommandModel.dart';
+
+Widget WhatsappMessageButton(String text, String message, String phoneNumber,CommandModel command) {
   void _sendMessage() async {
-    final url = "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(text)}";
+    final url = "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
     if (await canLaunch(url)) {
       await launch(url);
     } else {

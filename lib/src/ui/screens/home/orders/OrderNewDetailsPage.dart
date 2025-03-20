@@ -16,6 +16,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
@@ -67,7 +68,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context).settings.arguments; 
+
     if (args != null && args != 0) {
       widget.orderId = args;
       if (widget.customer != null && widget.command == null) {
@@ -139,6 +141,15 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
   // </string-array>
 
   Widget _inflateDetails() {
+        int foodPriceTotal = 0; 
+        print("Order type ${widget.command?.order_type}");
+        
+            if (widget.command?.food_list != null) {
+      for (var item in widget.command.food_list) {
+        item.price = item.price==""?"0":item.price;
+        foodPriceTotal += int.parse(item.price);
+      }
+    }
     return SingleChildScrollView(
         child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -597,7 +608,30 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     ? showKabaPointUsed()
                     : Container(),
                 _buildBill(),
-              ])));
+                SizedBox(height: 10),
+                widget.command.order_type==5 && widget.command?.state==3 && foodPriceTotal>0?
+                WhatsappMessageButton("${AppLocalizations.of(context).translate("contact_us_for_funds")}",
+"""
+*Récupération de fonds*
+
+Bonjour,
+
+Je souhaite récupérer les fonds de ma commande 
+
+*Détails de la commande*
+- *ID*: ${widget.command.id}
+- *Marchand*: ${widget.command.restaurant_entity.name}
+- *Client*: ${widget.customer.nickname}
+- *Numéro de téléphone*: ${widget.customer.phone_number}
+- *Total*: ${foodPriceTotal}
+- *Date*: ${widget.command.start_date}
+
+""",widget.command.restaurant_entity.main_contact,widget.command)
+                :Container(),
+                SizedBox(height: 30),
+              ]
+              
+              )));
   }
 
   Widget _buildBasketItem(OrderItemModel food, int quantity) {
@@ -1154,9 +1188,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           ),
         ) : Container()
     ,
-    widget.command.order_type==5 && widget.command.state==3 && widget.command.food_pricing>0?
-    WhatsappMessageButton("${AppLocalizations.of(context).translate("contact_us_for_funds")}",widget.command.restaurant_entity.main_contact)
-    :Container()
+   
+ 
       ]
       ),
     );

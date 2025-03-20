@@ -44,7 +44,12 @@ class OutOfAppOrderApiProvider{
       xrint(_data.toString());
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+      ..headers = {
+    ...Utils.getHeadersWithToken(customer?.token),
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0"
+       }
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -191,29 +196,44 @@ class OutOfAppOrderApiProvider{
   Future<dynamic> uploadMultipleImages(List<Map<String, dynamic>> formDataList,CustomerModel customer) async {
     try {
       Dio dio = Dio();
-      dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 90000;
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return validateSSL(cert, host, port);
-        };
-      };
+dio.options
+  ..headers = {
+    ...Utils.getHeadersWithToken(customer?.token),
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0"
+  }
+  ..connectTimeout = 10000;
+
+(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (HttpClient client) {
+  client.badCertificateCallback =
+      (X509Certificate cert, String host, int port) {
+    return validateSSL(cert, host, port);
+  };
+};
       String url = ServerRoutes.LINK_UPLOAD_PRODUCT_IMAGE;
       List<Map<String, dynamic>> orderDetailsWithImages = [];
       for (var i = 0; i < formDataList.length; i++) {
         var order = formDataList[i];
-        
-        Map<String, dynamic> orderDetail = {
-          'name': order['name'],
-          'price': order['price'].toString(),
-          'quantity': order['quantity'].toString(),
-          'image':await imageToBase64(order['image'])
-        };
+        if(order['image']!=null && order['image'] is File){
+          Map<String, dynamic> orderDetail = {
+            'name': order['name'],
+            'price': order['price'].toString(),
+            'quantity': order['quantity'].toString(),
+            'image':await imageToBase64(order['image'])
+          };
 
         orderDetailsWithImages.add(orderDetail);
+        }else{
+           Map<String, dynamic> orderDetail = {
+            'name': order['name'],
+            'price': order['price'].toString(),
+            'quantity': order['quantity'].toString(),
+            'image':""
+          };
+          orderDetailsWithImages.add(orderDetail);
+        }
       }
 
       xrint("FormData fields: ${orderDetailsWithImages}");

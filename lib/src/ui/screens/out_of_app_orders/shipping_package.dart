@@ -309,6 +309,19 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                       child: InkWell(
                         onTap: () {
                           int type_of_order = 5; 
+                          ref.read(productListProvider.notifier).clearProducts(); 
+                          File image; 
+                          if(additionnalInfoState.image!=null){
+                            image = File(additionnalInfoState.image.path);
+                          }else{
+                            image = null;
+                          }
+                          ref.read(productListProvider.notifier).addProduct({
+                            "name": "Livraison de colis",
+                            "price": outOfAppScreenState.package_amount,
+                            "quantity": 1,
+                            "image": image,
+                          });
                           payAtDelivery(
                               context,
                               ref,
