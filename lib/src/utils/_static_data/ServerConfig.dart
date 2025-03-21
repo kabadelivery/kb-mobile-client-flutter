@@ -3,15 +3,14 @@ class ServerConfig {
   //static const String pay_ip_address = "pay.kaba-delivery.com";
 
    static const String ip_address = "dev.kaba-delivery.com"; // dev server
-  // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+   static const String pay_ip_address = "dev.pay.kaba-delivery.com";
 
   // static const String ip_address = "kaba-technology.com"; // dev server
 
-  //static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
+   static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
   //static const String stat_ip_address="stats.kaba-delivery.com"; //prod
-  static const String stat_ip_address="dev.stats.kaba-delivery.com"; //local
 
-  static const String pay_ip_address = "pay.kaba-technology.com";
+  //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;
   static const String SERVER_ADDRESS = "https://" + ip_address;
   static const String STAT_SERVER_ADDRESS = "https://" + stat_ip_address;
