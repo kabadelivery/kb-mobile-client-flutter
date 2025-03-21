@@ -583,5 +583,7 @@
   "choose_address_where_to_deliver":"选择送货地址",
   "choose_address_where_to_fetch":"选择取货地址",
   "choose_address_where_to_deliver_package":"选择包裹送货地址",
-  "contact_us_for_funds":"联系我们获取资金"
+  "contact_us_for_funds":"联系我们获取资金",
+  "choose_actual_location":"选择实际位置",
+  "add_a_product": "添加产品"
 }

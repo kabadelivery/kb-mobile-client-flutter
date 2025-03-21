@@ -582,9 +582,11 @@
   "enter_product_price":"Enter the product price",
   "out_of_app_explanation":"Here, you can order/buy everything you want in pharmacies, shops, general food, markets, supermarkets, non-listed restaurants on Kaba, etc.",
   "shipping_package_explanation":"Thanks to our package delivery service, you can easily send a package to a friend or a client, whether it's a personal or professional shipment.",
+  "fetch_package_explanation":"With our package collection service, you can easily collect a package or item from a collection point at your location.",
   "choose_address_where_to_deliver":"Choose the address where to deliver",
   "choose_address_where_to_fetch":"Choose the address where to fetch",
   "choose_address_where_to_deliver_package":"Choose the address where to deliver the package",
-  "contact_us_for_funds":"Contact us for your funds"
+  "contact_us_for_funds":"Contact us for your funds",
+  "add_a_product": "Add a product"
   
 }

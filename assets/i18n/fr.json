@@ -585,5 +585,6 @@
   "choose_address_where_to_deliver":"Choisir l'addresse où vous livrer",
   "choose_address_where_to_fetch":"Choisir l'addresse où récupérer le colis",
   "choose_address_where_to_deliver_package":"Choisir l'addresse où  livrer le colis",
-  "contact_us_for_funds":"Contactez la comptabilité pour vos fonds"
+  "contact_us_for_funds":"Contactez la comptabilité pour vos fonds",
+  "add_a_product":"Ajouter un produit"
 }

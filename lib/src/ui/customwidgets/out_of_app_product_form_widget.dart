@@ -25,12 +25,11 @@ Widget OutOfAppProductForm(BuildContext context){
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   Size size = MediaQuery.of(context).size;
-  
   File imagePath=null;
   final _formKey = GlobalKey<FormState>();
   return Container(
     width: size.width,
-    height: 320,
+    height: 440,
     decoration: BoxDecoration(
         color: Color(0x42d2d2d2),
         borderRadius: BorderRadius.circular(5)
@@ -39,9 +38,9 @@ Widget OutOfAppProductForm(BuildContext context){
       padding: const EdgeInsets.all(12.0),
       child: Form(
         key: _formKey,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Consumer(
   builder: (context, ref,child) {
@@ -63,7 +62,7 @@ Widget OutOfAppProductForm(BuildContext context){
               }:null,
               child: Container(
                 height: 100,
-                width: 100,
+                width: size.width,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                     color: Color(0x64d2d2d2),
@@ -97,7 +96,7 @@ Widget OutOfAppProductForm(BuildContext context){
   },
 ),
             Container(
-              width: size.width*.5,
+              width: size.width,
               alignment: Alignment.center,
               child:
               Column(
@@ -143,7 +142,7 @@ Widget OutOfAppProductForm(BuildContext context){
                       final locationState = ref.watch(locationStateProvider);
                       final voucherState = ref.watch(voucherStateProvider);
                       final outOfAppNotifier =ref.read(outOfAppScreenStateProvier.notifier);
-
+                      bool productAdded = false;
                       return outOfAppScreenState.showLoading==false?
                       Column(
                     children: [
@@ -207,7 +206,7 @@ Widget OutOfAppProductForm(BuildContext context){
                               "quantity":int.parse(quantity.toString()),
                               "image":imagePath
                             };
-
+                            productAdded = true;
                             print("product $product");
                             ref.read(productListProvider.notifier).addProduct(product);
                             quantityNotifier.reset();
@@ -224,14 +223,14 @@ Widget OutOfAppProductForm(BuildContext context){
                             ),
                             child:Padding(
                               padding: const EdgeInsets.all(12.0),
-                              child: Text("${AppLocalizations.of(context).translate('add_product')}"
+                              child: Text("${AppLocalizations.of(context).translate('add_a_product')}"
                                   ,style:TextStyle(color: Colors.white)
                               ),
                             )
                         ),
                       ),
                       SizedBox(height: 10),
-                   products.length>0? InkWell(
+                      !productAdded? InkWell(
                         onTap: ()async{
 
                               if(locationState.is_shipping_address_picked){

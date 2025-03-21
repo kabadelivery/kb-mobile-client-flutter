@@ -47,7 +47,7 @@ Widget OutOfAppProduct(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment:size.width>700? MainAxisAlignment.spaceBetween: MainAxisAlignment.spaceEvenly,
                 children: [
                   //image
                   Row(
@@ -66,28 +66,29 @@ Widget OutOfAppProduct(
                       ),
                       SizedBox(width: 10,),
                       //Name
-                      Text(name.length>15?name.substring(0,15)+"..":name,),
+                      Text(name.length>15?name.substring(0,15)+"..":name,style: TextStyle(fontSize: size.width>700?15:12),),
 
                     ],
                   ),
-                  Text("${price.toInt()}x${quantity}",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text("${price.toInt()}x${quantity}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: size.width>700?15:12),),
                   Container(
-                    height: 40,
+
+                    height: size.width>700?40:30,
                     decoration: BoxDecoration(
                       color: Color(0xfff0dbe1),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text("${(price*quantity).toInt()} FCFA",style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold),),
+                      padding: const EdgeInsets.all(7.0),
+                      child: Text("${(price*quantity).toInt()} FCFA",style: TextStyle(fontSize:size.width>700?15:12,color: KColors.primaryColor,fontWeight: FontWeight.bold),),
                     ),
                   )
                 ],
               ),
             ),
           ),
-          SizedBox(width: 10,),
+      
           GestureDetector(
             onTap: ()async{
               var outOfAppNotifier =ref.read(outOfAppScreenStateProvier.notifier);

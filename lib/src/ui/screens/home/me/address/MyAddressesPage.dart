@@ -120,7 +120,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
-      widget.address_type==1?   InkWell(
+      widget.address_type==1 || widget.address_type==null ?InkWell(
       splashColor: Colors.white,
           child: Container(
               margin: EdgeInsets.only(left: 10, right: 10,top: 40),
@@ -269,12 +269,14 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     ? Column(
                         children: [
                           SizedBox(height: 10),
-                          widget.data[index].name!=AppLocalizations.of(context).translate('choose_actual_location').toString()?
-                          buildAddressListWidgetNew(address: widget.data[index]):Container()
+                          !_containsExcludedPhrase(widget.data[index].name)
+                              ? buildAddressListWidgetNew(address: widget.data[index])
+                              : Container(),
                         ],
                       )
-                    : widget.data[index].name!=AppLocalizations.of(context).translate('choose_actual_location').toString()?
-                buildAddressListWidgetNew(address: widget.data[index]):Container();
+                    : !_containsExcludedPhrase(widget.data[index].name)
+                    ? buildAddressListWidgetNew(address: widget.data[index])
+                    : Container();
               else
                 return Container(height: 100);
             }))),
@@ -761,4 +763,15 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       _reorderWithFavorite(List.from(widget.pureDeliveryAddresses));
     });
   }
+}
+bool _containsExcludedPhrase(String name) {
+  final normalizedName = name.replaceAll(' ', '').toLowerCase();
+
+  List<String> excludedPhrases = [
+    "chooseyouractualposition",
+    "choisirvotrepositionactuelle",
+    "选择实际位置"
+  ];
+
+  return excludedPhrases.any((phrase) => normalizedName.contains(phrase));
 }
