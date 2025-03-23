@@ -25,6 +25,7 @@ Widget OutOfAppProduct(
     int price,
     int quantity){
   Size size = MediaQuery.of(context).size;
+  print(size);
   bool isDeleted= false;
   return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -47,7 +48,7 @@ Widget OutOfAppProduct(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment:size.width>700? MainAxisAlignment.spaceBetween: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment:size.width>600? MainAxisAlignment.spaceBetween: MainAxisAlignment.spaceEvenly,
                 children: [
                   //image
                   Row(

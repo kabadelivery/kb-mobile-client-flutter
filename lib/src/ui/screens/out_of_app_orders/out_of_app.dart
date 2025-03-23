@@ -46,7 +46,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: OutOfAppProductForm(context),
+        child: OutOfAppProductForm(),
       ),
     );
   }
@@ -154,7 +154,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                 ),
                 child:Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text("${AppLocalizations.of(context).translate('add_a_product')}"
+                  child: Text("${AppLocalizations.of(context).translate('add_product')}"
                   ,style:TextStyle(color: Colors.white)
                   ),
                 )

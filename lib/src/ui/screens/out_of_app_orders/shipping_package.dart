@@ -238,7 +238,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
+                                        "${AppLocalizations.of(context).translate('add_fetching_address_additionnal_info')}",
                                         style: TextStyle(
 
                                             fontSize: 16,

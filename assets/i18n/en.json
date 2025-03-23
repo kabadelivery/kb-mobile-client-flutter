@@ -559,7 +559,7 @@
   "finalize": "Finalize",
   "shipping_address": "Shipping address",
   "order_address": "Purchase address",
-  "add_address_additionnal_info": "Or add the purchase address to the writing? ",
+  "add_address_additionnal_info": "Or add the purchase address to the writing?",
   "address_additionnal_info": "Address additionnal info...",
   "choose_actual_location": "Choose your actual position",
   "normal_orders": "Normal orders",
@@ -587,6 +587,6 @@
   "choose_address_where_to_fetch":"Choose the address where to fetch",
   "choose_address_where_to_deliver_package":"Choose the address where to deliver the package",
   "contact_us_for_funds":"Contact us for your funds",
-  "add_a_product": "Add a product"
-  
+  "add_a_product": "Add a product",
+  "add_fetching_address_additionnal_info": "Or add the fetching address to the writing?"
 }
