@@ -104,6 +104,8 @@ dependencies:
   flutter_riverpod: ^2.3.7
   path_provider: ^2.1.1
   mime: ^1.0.4
+  video_player: ^2.6.1
+
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0
@@ -237,6 +239,7 @@ flutter:
     - assets/new_message.mp3
     - assets/scan_catch.mp3
     - assets/voucher_subscribe_success.mp3
+    - assets/videos/
   # test splash screen
     - assets/images/jpg/flu_splash.jpeg
   #  - images/a_dot_ham.jpeg

@@ -54,6 +54,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       return;
     isWorking = true;
     try {
+      print("orderId: $orderId");
       CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId,is_out_of_app_order:is_out_of_app_order);
       _orderDetailsView.showLoading(false);
       if (commandModel != null) {

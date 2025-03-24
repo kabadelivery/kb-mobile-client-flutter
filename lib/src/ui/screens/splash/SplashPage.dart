@@ -34,6 +34,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:video_player/video_player.dart';
 import '../../../StateContainer.dart';
 
 // import 'package:android_intent/android_intent.dart';
@@ -73,19 +74,29 @@ class SplashPage extends StatefulWidget { // translated
 class _SplashPageState extends State<SplashPage> {
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
+  VideoPlayerController _controller;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    startTimeout();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
+        ..initialize().then((_) {
+          setState(() {});
+          _controller.play();
+        });
+
+
+      startTimeout();
     _listenToUniLinks();
+    });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _controller.dispose();
     // Exit full screen
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
@@ -131,12 +142,16 @@ class _SplashPageState extends State<SplashPage> {
           xrint(_);
         }
       }*/
+      _controller.addListener(() {
+        if (_controller.value.position.inSeconds >= 4) {
+          Navigator.of(context).pushReplacement(
+              new MaterialPageRoute(
+                  settings: RouteSettings(name: HomePage.routeName),
+                  builder: (BuildContext context) => launchPage)
+          );
+        }
+      });
 
-      Navigator.of(context).pushReplacement(
-          new MaterialPageRoute(
-            settings: RouteSettings(name: HomePage.routeName),
-              builder: (BuildContext context) => launchPage)
-      );
     }
   }
 
@@ -161,7 +176,36 @@ class _SplashPageState extends State<SplashPage> {
       StateContainer.of(context).updateAnalytics(analytics: widget.analytics);
       StateContainer.of(context).updateObserver(observer: widget.observer);
     }*/
-
+    return Scaffold(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Stack(
+          children: [
+            _controller==null?Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color:  Color(0xFFCD1F45),
+            ):
+            _controller.value.isInitialized
+                ? SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: VideoPlayer(_controller),
+                ),
+              ),
+            )
+                : Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color:  Color(0xFFCD1F45)), // fallback while loading
+          ],
+        ),
+      ),
+    );
+/*
     return Scaffold(
       body:  AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -211,7 +255,7 @@ class _SplashPageState extends State<SplashPage> {
                 ]
             )),
       ),
-    );
+    );*/
   }
 
   Future<bool> _getIsFirstTime() async {
