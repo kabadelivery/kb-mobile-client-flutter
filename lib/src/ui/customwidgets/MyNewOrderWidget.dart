@@ -106,7 +106,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
   @override
   Widget build(BuildContext context) {
     String restoName = "${command?.restaurant_entity?.name}";
-  
+
     return Opacity(
       opacity: command?.state > 3 ? .7 : 1,
       child: InkWell(
@@ -134,7 +134,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
-                                      command.order_type==null?
+                                      command.order_type==0?
                                       Utils.inflateLink(
                                           command.restaurant_entity.pic):
                                   "${command.restaurant_entity.pic}"

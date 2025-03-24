@@ -12,6 +12,8 @@ import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchStatelessWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -21,6 +23,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
     as Pp;
 import 'package:KABA/src/xrint.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +31,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../../utils/functions/NotLoggedInPopUp.dart';
+import '../../../out_of_app_orders/fetching_package.dart';
 
 class ServiceMainPage extends StatefulWidget {
   static var routeName = "/ServiceMainPage";
@@ -277,7 +283,98 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       childAspectRatio: 2.7,
                     ),
                     shrinkWrap: true,
-                    children: []..addAll(widget.available_services
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (StateContainer.of(context).loggingState == 0){
+                            NotLoggedInPopUp(context);
+                          }else{
+                            Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => OutOfAppOrderPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                  color: KColors.buy_category_button_bg,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                               Container(
+                                   width: 40,
+                                   height: 40,
+                                   child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
+                                SizedBox(width: 9),
+                                Text(
+                                    "${AppLocalizations.of(context).translate('out_of_app')}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: KColors.new_black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          if (StateContainer.of(context).loggingState == 0){
+                            NotLoggedInPopUp(context);
+                          }else{
+                            Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                  color: KColors.buy_category_button_bg,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                               Container(
+                                   width: 40,
+                                   height: 40,
+                                   child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
+                                SizedBox(width: 9),
+                                Text(
+                                    "${AppLocalizations.of(context).translate('package')}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: KColors.new_black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ]..addAll(widget.available_services
                         .map((e) => BuyCategoryWidget(e,
                             available: true,
                             mDialog: mDialog,

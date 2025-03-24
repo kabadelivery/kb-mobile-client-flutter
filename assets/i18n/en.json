@@ -82,7 +82,7 @@
   "not_far_from": "Popular Nearby Place",
   "address_details": "More Details",
   "confirm": "CONFIRM",
-  "address_modification_failure": "Address modification failure. Please try again",
+  "address_modification_failure": "Please fill up every field.",
   "address_modification_success": "Address modification success",
   "address_creation_success": "Address creation success",
   "address_creation_failure": "Address creation failure. Please try again",
@@ -588,5 +588,9 @@
   "choose_address_where_to_deliver_package":"Choose the address where to deliver the package",
   "contact_us_for_funds":"Contact us for your funds",
   "add_a_product": "Add a product",
-  "add_fetching_address_additionnal_info": "Or add the fetching address to the writing?"
+  "add_fetching_address_additionnal_info": "Or add the fetching address to the writing?",
+  "out_of_app": "Out of app",
+  "package": "Package",
+  "fecthing_contact": "Fetching contact",
+  "shipping_contact": "Shipping contact"
 }

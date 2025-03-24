@@ -82,7 +82,7 @@
   "not_far_from": "请输入大家知道的一个和你现在位置近的地方",
   "address_details": "地址详细信息（输入法语）",
   "confirm": "确认",
-  "address_modification_failure": "地址修改失败。请稍后再试试",
+  "address_modification_failure": "请填写所有字段。",
   "address_modification_success": "地址修改成功",
   "address_creation_success": "地址创建成功",
   "address_creation_failure": "地址创建失败。请稍后再试试",
@@ -183,7 +183,7 @@
   "km": "公里",
   "confirm_order": "确认订单",
   "processing_payment": "您好，我们正在处理您的付款。请耐心等待V (^_^) V",
-  "order_amount": "饭菜价",
+  "order_amount": "订单价格",
   "delivery_amount": "运费",
   "net_price": "总价",
   "discount": "优惠",
@@ -586,5 +586,9 @@
   "contact_us_for_funds":"联系我们获取资金",
   "choose_actual_location":"选择实际位置",
   "add_a_product": "添加产品",
-  "add_fetching_address_additionnal_info": "或者在文中加上取货地址？"
+  "add_fetching_address_additionnal_info": "或者在文中加上取货地址？",
+  "out_of_app": "退出应用程序",
+  "package": "包裹",
+  "fecthing_contact": "建立联系",
+  "shipping_contact": "发货联系方式"
 }

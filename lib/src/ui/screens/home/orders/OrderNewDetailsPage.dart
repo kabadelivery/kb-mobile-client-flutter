@@ -626,7 +626,7 @@ Je souhaite récupérer les fonds de ma commande
 - *Total*: ${foodPriceTotal}
 - *Date*: ${widget.command.start_date}
 
-""",widget.command.restaurant_entity.main_contact,widget.command)
+""","91215301",)
                 :Container(),
                 SizedBox(height: 30),
               ]

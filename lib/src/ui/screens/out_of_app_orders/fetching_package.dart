@@ -85,6 +85,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
         brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         centerTitle: true,
+
+      leading: IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
         title: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -295,8 +302,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                       child: InkWell(
                         onTap: () {
                           int type_of_order = 6; 
-                        ref.read(productListProvider.notifier).clearProducts(); 
-                          File image= File(additionnalInfoState.image.path);
+                        ref.read(productListProvider.notifier).clearProducts();
+                          File image;
+                          if(additionnalInfoState.image!=null){
+                            image = File(additionnalInfoState.image.path);
+                          }else{
+                            image = null;
+                          }
                           ref.read(productListProvider.notifier).addProduct({
                             "name": "Récupération de colis",
                             "price": outOfAppScreenState.package_amount,

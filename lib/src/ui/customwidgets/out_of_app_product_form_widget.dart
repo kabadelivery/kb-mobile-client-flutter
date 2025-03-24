@@ -468,7 +468,7 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber,WidgetRef ref) {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      labelText: "${AppLocalizations.of(context).translate('phone_number_to_contact')}",
+                      labelText: "${AppLocalizations.of(context).translate(outOfAppScreenState.order_type==6?'fecthing_contact':outOfAppScreenState.order_type==5?'shipping_contact':'phone_number_to_contact')}",
                     ),
                     onChanged: (value){
                         outOfAppNotifier.setPhoneNumber(value);

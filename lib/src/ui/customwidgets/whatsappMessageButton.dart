@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../models/CommandModel.dart';
 
-Widget WhatsappMessageButton(String text, String message, String phoneNumber,CommandModel command) {
+Widget WhatsappMessageButton(String text, String message, String phoneNumber) {
   void _sendMessage() async {
     final url = "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
     if (await canLaunch(url)) {

@@ -80,6 +80,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                     widget.mDialog(
                         "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
                   } else {
+                    
                     page =widget.entity.key=="packages"?ShippingPackageOrderPage():
                     widget.entity.key=="out of app"? OutOfAppOrderPage():
                     ShopListPageRefined(
