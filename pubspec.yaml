@@ -105,6 +105,7 @@ dependencies:
   path_provider: ^2.1.1
   mime: ^1.0.4
   video_player: ^2.6.1
+  animated_text_kit: ^2.5.0
 
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
@@ -228,6 +229,8 @@ flutter:
     - assets/images/vectors/balance.svg
     # icons
     - assets/images/vectors/prepaid.svg
+    - assets/images/png/splash_background.png
+    - assets/images/png/splash_logo.png
     - assets/images/vectors/agreement.svg
     - assets/images/vectors/out_of_range.svg
     - assets/images/vectors/notificiation_message_normal.svg
@@ -239,7 +242,6 @@ flutter:
     - assets/new_message.mp3
     - assets/scan_catch.mp3
     - assets/voucher_subscribe_success.mp3
-    - assets/videos/
   # test splash screen
     - assets/images/jpg/flu_splash.jpeg
   #  - images/a_dot_ham.jpeg

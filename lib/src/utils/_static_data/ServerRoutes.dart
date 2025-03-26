@@ -342,5 +342,6 @@ class ServerRoutes {
   /* upload image */
   static const String LINK_UPLOAD_PRODUCT_IMAGE =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/image/upload";
+  static const String FETCH_DISTRICTS = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/districts/get";
 
 }

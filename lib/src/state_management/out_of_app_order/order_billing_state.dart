@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/CustomerModel.dart';
 import '../../models/OrderBillConfiguration.dart';
+import '../../utils/functions/CustomerUtils.dart';
 
 class OrderBillingState{
   CustomerModel customer;
@@ -26,6 +27,10 @@ class OrderBillingStateNotifier extends StateNotifier<OrderBillingState>{
   }
   void setOrderBillConfiguration(OrderBillConfiguration orderBillConfiguration){
     state = state.copyWith(orderBillConfiguration:orderBillConfiguration);
+  }
+  void setAutoCustomer()async{
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
+    setCustomer(customerModel);
   }
   void reset(){
     state = state.copyWith(

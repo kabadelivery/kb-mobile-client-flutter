@@ -37,6 +37,7 @@ class ImageAssets {
   static final String filter_yellow = "assets/images/png/filter_yellow.png";
   static final String filter_red = "assets/images/png/filter_red.png";
   static final String opened = "assets/images/png/opened.png";
-
+  static final String splash_background = "assets/images/png/splash_background.png";
+  static final String splash_logo = "assets/images/png/splash_logo.png";
 
 }

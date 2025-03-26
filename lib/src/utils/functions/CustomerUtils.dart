@@ -361,4 +361,44 @@ class CustomerUtils {
       return Map<String, dynamic>();
     }
   }
+
+  static Future<void> setCachedDistricts(List<Map<String, dynamic>> districts) async {
+    const String _cacheKey = 'cached_districts';
+    const String _timestampKey = 'cache_timestamp';
+    const int _cacheDurationDays = 10;
+    final prefs = await SharedPreferences.getInstance();
+    String jsonData = jsonEncode(districts);
+    await prefs.setString(_cacheKey, jsonData);
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    await prefs.setInt(_timestampKey, timestamp);
+  }
+  static Future<List<Map<String, dynamic>>> getCachedDistricts() async {
+    const String _cacheKey = 'cached_districts';
+    const String _timestampKey = 'cache_timestamp';
+    const int _cacheDurationDays = 10;
+    final prefs = await SharedPreferences.getInstance();
+    String jsonData = prefs.getString(_cacheKey);
+    int timestamp = prefs.getInt(_timestampKey);
+
+    if (jsonData == null || timestamp == null) return [];
+
+    // Check if cache is expired
+    DateTime cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime expiryTime = cacheTime.add(Duration(days: _cacheDurationDays));
+
+    if (DateTime.now().isAfter(expiryTime)) {
+      await clearDistrictCache();
+      return [];
+    }
+    
+    List<dynamic> decodedList = jsonDecode(jsonData);
+    return List<Map<String, dynamic>>.from(decodedList);
+  }
+  static Future<void> clearDistrictCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    const String _cacheKey = 'cached_districts';
+    const String _timestampKey = 'cache_timestamp';
+    await prefs.remove(_cacheKey);
+    await prefs.remove(_timestampKey);
+  }
 }

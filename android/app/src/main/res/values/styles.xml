@@ -8,7 +8,7 @@
 
 
     <color name="colorPrimary">#cc1641</color>
-    <color name="colorPrimary2">#CD1F45</color>
+    <color name="colorPrimary2">#cd1f45</color>
     <color name="white">#ffffff</color>
 
     <integer name="google_play_services_version">12451000</integer>

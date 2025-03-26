@@ -25,6 +25,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:video_player/video_player.dart';
 import '../../../StateContainer.dart';
+import 'AnimatedSplash.dart';
 
 // import 'package:android_intent/android_intent.dart';
 
@@ -49,7 +50,7 @@ class SplashPage extends StatefulWidget { // translated
       FOOD = "FOOD",
       MENU = "MENU",
       REVIEW_ORDER = "REVIEW-ORDER",
-  CUSTOM_CARE = "CUSTOM-CARE",
+      CUSTOM_CARE = "CUSTOM-CARE",
       RESTAURANT_LIST = "RESTAURANT-LIST",
       ADDRESSES = "ADDRESSES",
       LOCATION_PICKED = "LOCATION_PICKED";
@@ -74,21 +75,20 @@ class SplashPage extends StatefulWidget { // translated
 class _SplashPageState extends State<SplashPage> {
 
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-  VideoPlayerController _controller;
+  bool _startAnimation = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
-        ..initialize().then((_) {
-          setState(() {});
-          _controller.play();
-        });
-
-
-      startTimeout();
+    startTimeout();
     _listenToUniLinks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      precacheImage(AssetImage(ImageAssets.splash_background), context);
+    });
+    Future.delayed(Duration(microseconds:3000), () {
+      setState(() {
+        _startAnimation = true;
+      });
     });
   }
 
@@ -96,7 +96,6 @@ class _SplashPageState extends State<SplashPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _controller.dispose();
     // Exit full screen
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
@@ -142,22 +141,18 @@ class _SplashPageState extends State<SplashPage> {
           xrint(_);
         }
       }*/
-      _controller.addListener(() {
-        if (_controller.value.position.inSeconds >= 4) {
-          Navigator.of(context).pushReplacement(
-              new MaterialPageRoute(
-                  settings: RouteSettings(name: HomePage.routeName),
-                  builder: (BuildContext context) => launchPage)
-          );
-        }
-      });
 
+      Navigator.of(context).pushReplacement(
+          new MaterialPageRoute(
+              settings: RouteSettings(name: HomePage.routeName),
+              builder: (BuildContext context) => launchPage)
+      );
     }
   }
 
   startTimeout() async {
 
-    var duration = const Duration(milliseconds: 2000);
+    var duration = const Duration(milliseconds: 3500);
     return new Timer(duration, handleTimeout);
   }
 
@@ -171,91 +166,51 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
 
-   /* if (StateContainer.of(context).analytics == null ||
+    /* if (StateContainer.of(context).analytics == null ||
         StateContainer.of(context).observer == null) {
       StateContainer.of(context).updateAnalytics(analytics: widget.analytics);
       StateContainer.of(context).updateObserver(observer: widget.observer);
     }*/
+
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Stack(
-          children: [
-            _controller==null?Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color:  Color(0xFFCD1F45),
-            ):
-            _controller.value.isInitialized
-                ? SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  child: VideoPlayer(_controller),
-                ),
-              ),
-            )
-                : Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color:  Color(0xFFCD1F45)), // fallback while loading
-          ],
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: Color(0xffcb1f44),
+        image: DecorationImage(
+
+          image: AssetImage(ImageAssets.splash_background),
+          fit: BoxFit.cover,
         ),
       ),
-    );
-/*
-    return Scaffold(
-      body:  AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  /* image */
-                  SizedBox(
-                      height: 50,
-                      width: 50,
-                      child:SvgPicture.asset(
-                        VectorsData.kaba_icon_svg,
-                        color: KColors.primaryColor,
-                        semanticsLabel: 'LOGO',
-                      )),
-                  /* text */
-                  SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate('app_title')}",
-                      style: TextStyle(color:KColors.new_black, fontWeight: FontWeight.bold, fontSize: 18)),
-
-              /* hide lottie stuffs */
-                  Visibility(
-                    visible: false,
-                    maintainSize: false,
-                    maintainState: true,
-                    maintainAnimation: false,
-                    maintainInteractivity: false,
-                    child: Row(
-                      children: [
-                       /* Lottie.asset("assets/lottie/books.json"),
-                        Lottie.asset("assets/lottie/drinks.json"),
-                        Lottie.asset("assets/lottie/flower.json"),
-                        Lottie.asset("assets/lottie/food.json"),
-                        Lottie.asset("assets/lottie/groceries.json"),
-                        Lottie.asset("assets/lottie/movie.json"),
-                        Lottie.asset("assets/lottie/package_delivery.json"),
-                        Lottie.asset("assets/lottie/shopping.json"),
-                        Lottie.asset("assets/lottie/ticket.json"),*/
-                        Lottie.asset("assets/lottie/fire.json"),
-                        Lottie.asset("assets/lottie/best_sales.json"),
-                        Lottie.asset("assets/lottie/new.json"),
-                        Lottie.asset("assets/lottie/sad_face.json"),
-                      ],
-                    ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedLogoSplash(),
+            SizedBox(height: 10,),
+            AnimatedOpacity(
+              opacity: _startAnimation ? 1.0 : 0.0, // Fade in after logo animation
+              duration: Duration(seconds: 1),
+              child: SizedBox(
+                width: 150,
+                height: 50,
+                child: ScaleAnimatedTextKit(
+                  textAlign: TextAlign.center,
+                  textStyle: TextStyle(
+                    fontSize: 30.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                ]
-            )),
-      ),
-    );*/
+                  text: ["KABA"],
+                  isRepeatingAnimation: true,
+                ),
+              ),
+            ),
+            ]
+      )
+    )
+    );
   }
 
   Future<bool> _getIsFirstTime() async {
@@ -356,7 +311,7 @@ class _SplashPageState extends State<SplashPage> {
       // we have a gps location
       xrint("path is gps location -> ${link}");
       /*6.33:3.44*/
-   /*   _checkIfLoggedInAndDoAction(() {
+      /*   _checkIfLoggedInAndDoAction(() {
         StateContainer
             .of(context)
             .tabPosition = 3;
@@ -367,91 +322,91 @@ class _SplashPageState extends State<SplashPage> {
       navigatorKey.currentState.pushNamed(MyAddressesPage.routeName, arguments: widget.argument);
     } else {
 
-    /*
+      /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
-    switch(pathSegments[0]) {
-      case "voucher":
-        if (pathSegments.length > 1) {
-          xrint("voucher id splash -> ${pathSegments[1]}");
-          widget.destination = SplashPage.VOUCHER;
+      switch(pathSegments[0]) {
+        case "voucher":
+          if (pathSegments.length > 1) {
+            xrint("voucher id splash -> ${pathSegments[1]}");
+            widget.destination = SplashPage.VOUCHER;
+            /* convert from hexadecimal to decimal */
+            widget.argument = "${pathSegments[1]}";
+            navigatorKey.currentState.pushNamed(AddVouchersPage.routeName, arguments: widget.argument);
+          }
+          break;
+        case "vouchers":
+          xrint("vouchers page");
+          widget.destination = SplashPage.VOUCHERS;
           /* convert from hexadecimal to decimal */
-          widget.argument = "${pathSegments[1]}";
-          navigatorKey.currentState.pushNamed(AddVouchersPage.routeName, arguments: widget.argument);
-        }
-        break;
-      case "vouchers":
-        xrint("vouchers page");
-        widget.destination = SplashPage.VOUCHERS;
-        /* convert from hexadecimal to decimal */
-        navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
-        break;
-      case "addresses":
-        xrint("addresses page");
-        widget.destination = SplashPage.ADDRESSES;
-        /* convert from hexadecimal to decimal */
-        navigatorKey.currentState.pushNamed(MyAddressesPage.routeName);
-        break;
-      case "transactions":
+          navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
+          break;
+        case "addresses":
+          xrint("addresses page");
+          widget.destination = SplashPage.ADDRESSES;
+          /* convert from hexadecimal to decimal */
+          navigatorKey.currentState.pushNamed(MyAddressesPage.routeName);
+          break;
+        case "transactions":
 //        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
-        widget.destination = SplashPage.TRANSACTIONS;
-        navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
-        break;
-      case "restaurants":
-        widget.destination = SplashPage.RESTAURANT_LIST;
-        break;
-      case "restaurant":
-        if (pathSegments.length > 1) {
-          xrint("restaurant id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.RESTAURANT;
-          widget.argument = int.parse("${pathSegments[1]}");
+          widget.destination = SplashPage.TRANSACTIONS;
+          navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+          break;
+        case "restaurants":
+          widget.destination = SplashPage.RESTAURANT_LIST;
+          break;
+        case "restaurant":
+          if (pathSegments.length > 1) {
+            xrint("restaurant id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.RESTAURANT;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "order":
-        if (pathSegments.length > 1) {
-          xrint("order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+            navigatorKey.currentState.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
+          }
+          break;
+        case "order":
+          if (pathSegments.length > 1) {
+            xrint("order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "food":
-        if (pathSegments.length > 1) {
-          xrint("food id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.FOOD;
-          widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context,
-              RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter())
-          );
-        }
-        break;
-      case "menu":
-        if (pathSegments.length > 1) {
-          xrint("menu id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.MENU;
-          widget.argument = int.parse("${pathSegments[1]}");
-          _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
-        }
-        break;
-      case "review-order":
-        if (pathSegments.length > 1) {
-          xrint("review-order id -> ${pathSegments[1]}");
-          widget.destination = SplashPage.REVIEW_ORDER;
-          widget.argument = int.parse("${pathSegments[1]}");
+            navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
+          }
+          break;
+        case "food":
+          if (pathSegments.length > 1) {
+            xrint("food id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.FOOD;
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context,
+                RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter())
+            );
+          }
+          break;
+        case "menu":
+          if (pathSegments.length > 1) {
+            xrint("menu id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.MENU;
+            widget.argument = int.parse("${pathSegments[1]}");
+            _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+          }
+          break;
+        case "review-order":
+          if (pathSegments.length > 1) {
+            xrint("review-order id -> ${pathSegments[1]}");
+            widget.destination = SplashPage.REVIEW_ORDER;
+            widget.argument = int.parse("${pathSegments[1]}");
 //          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-          navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
-        }
-        break;
-      case "customer-care-message":
-        widget.destination = SplashPage.CUSTOM_CARE;
-        navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
-        break;
+            navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
+          }
+          break;
+        case "customer-care-message":
+          widget.destination = SplashPage.CUSTOM_CARE;
+          navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
+          break;
+      }
     }
   }
-}
 
   void _handleLinks(String link) {
     // if you are logged in, we can just move to the activity.

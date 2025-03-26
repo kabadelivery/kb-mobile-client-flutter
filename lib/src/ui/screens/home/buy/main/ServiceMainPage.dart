@@ -33,6 +33,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
+import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -330,12 +331,25 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
+
+                            List<Map<String,dynamic>> districts = [];
+                            List<Map<String, dynamic>> cachedDistricts = await CustomerUtils.getCachedDistricts();
+                            if(cachedDistricts != null && cachedDistricts.isNotEmpty){
+                              districts = cachedDistricts;
+                            }else{
+                          try{
+                            districts  = await showLoadingDialog(context);
+                            print("districts $districts");
+                          }catch(e) {
+                            xrint("error $e");
+                          }
+                            }
                             Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(),
+                                pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(districts: districts),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   var begin = Offset(1.0, 0.0);
                                   var end = Offset.zero;
@@ -349,6 +363,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 }
                             ));
                           }
+
                         },
                         child: Container(
                           decoration: BoxDecoration(

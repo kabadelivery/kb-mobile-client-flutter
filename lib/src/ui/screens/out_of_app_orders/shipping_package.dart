@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
-import '../../../models/DeliveryAddressModel.dart';
-import '../../../models/OrderBillConfiguration.dart';
-import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/additionnal_info_state.dart';
+import '../../../state_management/out_of_app_order/district_state.dart';
 import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
@@ -17,10 +15,11 @@ import '../../../state_management/out_of_app_order/products_state.dart';
 import '../../../state_management/out_of_app_order/reset_states.dart';
 import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
-import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
+import '../../customwidgets/ChooseDistrict.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
@@ -28,7 +27,7 @@ import '../../customwidgets/billing_widget.dart';
 import '../../customwidgets/choose_locations_widget.dart';
 import '../../customwidgets/explanation_widgets.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
-import '../../customwidgets/out_of_app_product_widget.dart';
+
 import '../../customwidgets/voucher_widgets.dart';
 import 'fetching_package.dart';
 
@@ -36,7 +35,8 @@ class ShippingPackageOrderPage extends ConsumerWidget {
 
   final String additional_info;
   final File additionnal_info_image;
-  ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image});
+  final List<Map<String,dynamic>> districts;
+  ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
   static var routeName = "/ShippingPackageOrderPage";
 
   int shipping_address_type=1;
@@ -66,9 +66,8 @@ class ShippingPackageOrderPage extends ConsumerWidget {
     final voucherState = ref.watch(voucherStateProvider);
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
-    print("locationState ${locationState.is_order_address_picked}");
-    print("voucherState ${voucherState.selectedVoucher}");
-    print("products ${products}"); 
+    final districtState = ref.watch(districtProvider);
+
     outOfAppScreenState.order_type=5;
     if(locationState.selectedOrderAddress==null){
       locationState.selectedOrderAddress=[];
@@ -78,9 +77,9 @@ class ShippingPackageOrderPage extends ConsumerWidget {
     }else{
       locationState.is_order_address_picked=true;
     }
-  
 
-
+    districtState.districts=districts;
+    districtState.isLoading=false;
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -103,7 +102,8 @@ class ShippingPackageOrderPage extends ConsumerWidget {
       ),
       body:outOfAppScreenState.isPayAtDeliveryLoading==true?
       Center(child: MyLoadingProgressWidget(),)
-          :Padding(
+        :
+         Padding(
         padding: const EdgeInsets.all(8.0),
         child:Column(
           children: [
@@ -146,11 +146,12 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                     GestureDetector(
                       onTap: () {
                          resetAll(ref);
-                
+
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) => FecthingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
                             additionnal_info_image: additionnalInfoState.image,
+                            districts: districts
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(1.0, 0.0);
@@ -190,7 +191,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                 ),
               ),
             ),
-        
+
               SizedBox(
                 height: 10,
               ),
@@ -206,12 +207,12 @@ class ShippingPackageOrderPage extends ConsumerWidget {
               ref,
               AppLocalizations.of(context).translate('shipping_package_explanation'),
              "https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json"
-              ):Container(),  
+              ):Container(),
               SizedBox(height: 10,),
                     Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-                    
+
                     SizedBox(height: 10,),
                     AdditionnalInfoImage(context,ref),
                     SizedBox(height: 10,),
@@ -231,23 +232,6 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                             Column(
                               children: [
                                 ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,shipping_package_type),
-                                SizedBox(height: 20,),
-                                additionnalInfoState.can_add_address_info==false?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        "${AppLocalizations.of(context).translate('add_fetching_address_additionnal_info')}",
-                                        style: TextStyle(
-
-                                            fontSize: 16,
-                                            color: Colors.grey.shade700)),
-                                    SizedBox(height: 10,),
-                                    CanAddAdditionnInfo(context,ref),
-                                  ],
-                                ):
-                                AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
                                 SizedBox(height: 10,),
                               ],
                             ):Container(),
@@ -265,10 +249,10 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                               ],
                             ):Container():Container(),
                           ],
-                        
-                        
-                        ) 
-                      
+
+
+                        )
+
                         ,SizedBox(height: 10,),
                         locationState.is_shipping_address_picked==true ?
                         Column(
@@ -283,7 +267,31 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                           ],
                         ):
                         ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,shipping_package_type),
-                        
+                        SizedBox(height: 20,),
+                        additionnalInfoState.can_add_address_info==null?
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                                "${AppLocalizations.of(context).translate('add_district_info')}",
+                                style: TextStyle(
+
+                                    fontSize: 16,
+                                    color: Colors.grey.shade700)),
+                            SizedBox(height: 10,),
+                            CanAddAdditionnInfo(context,ref),
+                          ],
+                        ):
+                        additionnalInfoState.can_add_address_info==true && outOfAppScreenState.isBillBuilt==false?
+                        Column(
+                          children: [
+                            DistrictSelectionWidget(),
+                            SizedBox(height: 20,),
+                            AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
+                            SizedBox(height: 10,),
+                          ],
+                        ):Container(),
                       ],
                     ) : Container(),
                 additionnalInfoState.additionnal_info.isNotEmpty?
@@ -308,9 +316,9 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                       child: InkWell(
                         onTap: () {
-                          int type_of_order = 5; 
-                          ref.read(productListProvider.notifier).clearProducts(); 
-                          File image; 
+                          int type_of_order = 5;
+                          ref.read(productListProvider.notifier).clearProducts();
+                          File image;
                           if(additionnalInfoState.image!=null){
                             image = File(additionnalInfoState.image.path);
                           }else{

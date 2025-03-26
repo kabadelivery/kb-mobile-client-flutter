@@ -1,4 +1,5 @@
 
+import 'package:KABA/src/state_management/out_of_app_order/district_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../state_management/out_of_app_order/location_state.dart';
@@ -15,5 +16,6 @@ void resetProviders(WidgetRef ref){
   ref.invalidate(voucherStateProvider);
   ref.invalidate(additionnalInfoProvider);
   ref.invalidate(outOfAppScreenStateProvier);
+  ref.invalidate(districtProvider);
 }
 

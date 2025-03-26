@@ -560,7 +560,8 @@
   "shipping_address": "Shipping address",
   "order_address": "Purchase address",
   "add_address_additionnal_info": "Or add the purchase address to the writing?",
-  "address_additionnal_info": "Address additionnal info...",
+
+  "address_additionnal_info": "Address additionnal info (Optional)",
   "choose_actual_location": "Choose your actual position",
   "normal_orders": "Normal orders",
   "out_of_app_orders": "Out of app & Packages",
@@ -569,7 +570,7 @@
   "fetch_package":"Fetch package",
 
   "package_details":"Enter the package details",
-  "package_amount":"Amount to retrieve",
+  "package_amount":"Amount to retrieve (Optional)",
   "please_enter_amount":"Please enter the amount",
   "please_enter_valid_amount":"Please enter a valid amount",
   "validate":"Validate",
@@ -585,12 +586,15 @@
   "fetch_package_explanation":"With our package collection service, you can easily collect a package or item from a collection point at your location.",
   "choose_address_where_to_deliver":"Choose the address where to deliver",
   "choose_address_where_to_fetch":"Choose the address where to fetch",
-  "choose_address_where_to_deliver_package":"Choose the address where to deliver the package",
+  "choose_address_where_to_deliver_package":"Address where to deliver the package",
   "contact_us_for_funds":"Contact us for your funds",
   "add_a_product": "Add a product",
   "add_fetching_address_additionnal_info": "Or add the fetching address to the writing?",
   "out_of_app": "Out of app",
   "package": "Package",
-  "fecthing_contact": "Fetching contact",
-  "shipping_contact": "Shipping contact"
+  "fecthing_contact": "Fetching contact (Optional)",
+  "shipping_contact": "Shipping contact (Optional)",
+  "select_district": "Select district",
+  "search_district": "Search district (Ex: Agoè, Adidogomé, etc.)",
+  "add_district_info": "Or choose the district where to deliver the package ? "
 }

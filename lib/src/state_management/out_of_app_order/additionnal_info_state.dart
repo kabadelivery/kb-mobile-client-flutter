@@ -11,7 +11,7 @@ class AdditionnalInfoState {
     this.image,
     this.additionnal_info = '',
     this.additionnal_address_info = '',
-    this.can_add_address_info = false,
+    this.can_add_address_info,
   });
 
   // To copy the state with changes (immutable state)

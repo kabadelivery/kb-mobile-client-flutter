@@ -110,6 +110,7 @@ var generalRoutes = {
     return ShippingPackageOrderPage(
       additional_info: args == null ? '' : args['additional_info'] ?? '',
       additionnal_info_image: args == null ? null : args['additionnal_info_image'] ?? null,
+      districts: args == null ? [] : args['districts'] ?? [],
     );
   },
     FecthingPackageOrderPage.routeName : (BuildContext context) {
@@ -117,6 +118,7 @@ var generalRoutes = {
     return FecthingPackageOrderPage(
       additional_info: args == null ? '' : args['additional_info'] ?? '',
       additionnal_info_image: args == null ? null : args['additionnal_info_image'] ?? null,
+      districts: args == null ? [] : args['districts'] ?? [],
 
     );
   },

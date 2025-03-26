@@ -11,6 +11,7 @@ import '../../../models/DeliveryAddressModel.dart';
 import '../../../models/OrderBillConfiguration.dart';
 import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/additionnal_info_state.dart';
+import '../../../state_management/out_of_app_order/district_state.dart';
 import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
@@ -22,6 +23,7 @@ import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
+import '../../customwidgets/ChooseDistrict.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
@@ -36,7 +38,8 @@ class FecthingPackageOrderPage extends ConsumerWidget {
 
   final String additional_info;
   final File additionnal_info_image;
-  FecthingPackageOrderPage({this.additional_info,this.additionnal_info_image});
+  final List<Map<String,dynamic>> districts;
+  FecthingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
   static var routeName = "/FecthingPackageOrderPage";
 
   int shipping_address_type=1;
@@ -64,7 +67,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
     final additionnalInfoState = ref.watch(additionnalInfoProvider);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     final productsNotifier = ref.read(productListProvider.notifier);
-
+    final districtState = ref.watch(districtProvider);
     if(locationState.selectedOrderAddress.isEmpty){
       locationState.is_order_address_picked=false;
     }else{
@@ -73,7 +76,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
     if(locationState.selectedOrderAddress==null){
       locationState.selectedOrderAddress=[];
     }
-
+    districtState.districts = districts;
     outOfAppScreenState.order_type=6;
     print("locationState ${locationState.is_order_address_picked}");
     print("voucherState ${voucherState.selectedVoucher}");
@@ -133,6 +136,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                           pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
                             additionnal_info_image: additionnalInfoState.image,
+                            districts: districts,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(-1.0, 0.0);
@@ -236,13 +240,13 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                               children: [
                                 ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,fetching_package_type),
                                 SizedBox(height: 20,),
-                                additionnalInfoState.can_add_address_info==false?
+                                additionnalInfoState.can_add_address_info==null?
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
+                                        "${AppLocalizations.of(context).translate('add_district_info')}",
                                         style: TextStyle(
 
                                             fontSize: 16,
@@ -251,8 +255,15 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                                     CanAddAdditionnInfo(context,ref),
                                   ],
                                 ):
-                                AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
-                                SizedBox(height: 10,),
+                                additionnalInfoState.can_add_address_info==true && outOfAppScreenState.isBillBuilt==false?
+                                Column(
+                                  children: [
+                                    DistrictSelectionWidget(),
+                                    SizedBox(height: 20,),
+                                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
+                                    SizedBox(height: 10,),
+                                  ],
+                                ):Container(),
                               ],
                             ):Container(),
                            

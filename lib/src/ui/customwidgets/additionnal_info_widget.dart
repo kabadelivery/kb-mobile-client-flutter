@@ -22,7 +22,7 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
       return Column(
         children: [
           Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
+
             decoration: BoxDecoration(
               color: Color(0x42d2d2d2),
             ),
@@ -86,7 +86,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
               }:null,
             child: Container(
   height: 70,
-  width: size.width * 0.92,
+
   alignment: Alignment.center,
   decoration: BoxDecoration(
     color: Color.fromARGB(47, 202, 160, 67),

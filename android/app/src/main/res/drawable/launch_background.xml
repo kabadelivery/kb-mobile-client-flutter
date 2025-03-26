@@ -4,5 +4,11 @@
     <item
         android:drawable="@color/colorPrimary2"/>
 
-
+   <!--
+      <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/kaba_name_logo" />
+    </item>
+   -->
 </layer-list>

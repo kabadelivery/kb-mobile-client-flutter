@@ -252,7 +252,38 @@ dio.options
       return "Error: $e\nLine: ${stackTrace.toString().split("\n")[0]}";
     }
   }
+  Future<List<Map<String, dynamic>>> fetchDistricts(CustomerModel customer)async {
+        try{
+          Dio dio = Dio();
+          dio.options
+            ..headers = {
+              ...Utils.getHeadersWithToken(customer?.token),
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              "Pragma": "no-cache",
+              "Expires": "0"
+            }
+            ..connectTimeout = 10000;
 
+          (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+              (HttpClient client) {
+            client.badCertificateCallback =
+                (X509Certificate cert, String host, int port) {
+              return validateSSL(cert, host, port);
+            };
+          };
+          String url = ServerRoutes.FETCH_DISTRICTS;
+          Response response = await dio.post(url);
+
+          List<Map<String, dynamic>> districts = List<Map<String, dynamic>>.from(
+              response.data['districts'].map((item) => Map<String, dynamic>.from(item))
+          );
+          print("response.data ${districts}");
+          return districts;
+        }catch(e){
+          xrint("error $e");
+          return [{"name":""}];
+  }
+  }
   Future<String> imageToBase64(File imageFile) async {
     List<int> imageBytes = await imageFile.readAsBytes();
     String base64Image = base64Encode(imageBytes);

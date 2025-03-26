@@ -590,5 +590,6 @@
   "out_of_app": "退出应用程序",
   "package": "包裹",
   "fecthing_contact": "建立联系",
-  "shipping_contact": "发货联系方式"
+  "shipping_contact": "发货联系方式",
+  "add_district_info": "或者选择您将运送包裹的区域？"
 }
