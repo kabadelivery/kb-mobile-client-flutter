@@ -73,9 +73,9 @@ class SplashPage extends StatefulWidget { // translated
 }
 
 class _SplashPageState extends State<SplashPage> {
-
+  double _height = 80;
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-  bool _startAnimation = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -85,11 +85,8 @@ class _SplashPageState extends State<SplashPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       precacheImage(AssetImage(ImageAssets.splash_background), context);
     });
-    Future.delayed(Duration(microseconds:3000), () {
-      setState(() {
-        _startAnimation = true;
-      });
-    });
+
+
   }
 
   @override
@@ -151,7 +148,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   startTimeout() async {
-
     var duration = const Duration(milliseconds: 3500);
     return new Timer(duration, handleTimeout);
   }
@@ -188,27 +184,9 @@ class _SplashPageState extends State<SplashPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedLogoSplash(),
-            SizedBox(height: 10,),
-            AnimatedOpacity(
-              opacity: _startAnimation ? 1.0 : 0.0, // Fade in after logo animation
-              duration: Duration(seconds: 1),
-              child: SizedBox(
-                width: 150,
-                height: 50,
-                child: ScaleAnimatedTextKit(
-                  textAlign: TextAlign.center,
-                  textStyle: TextStyle(
-                    fontSize: 30.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  text: ["KABA"],
-                  isRepeatingAnimation: true,
-                ),
-              ),
-            ),
-            ]
-      )
+            SizedBox(height: _height,)
+          ],
+        )
     )
     );
   }

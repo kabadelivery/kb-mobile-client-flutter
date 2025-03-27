@@ -8,7 +8,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../localizations/AppLocalizations.dart';
 import '../../models/CustomerModel.dart';
 import '../../models/DeliveryAddressModel.dart';
 import '../../resources/out_of_app_order_api.dart';
@@ -117,12 +119,22 @@ Widget OutOfAppProduct(
 
                  outOfAppNotifier .setIsBillBuilt(false);
                  outOfAppNotifier.setShowLoading(true);
-
+                  try{
                  await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher, _usePoint).then((value){
                    ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(value);
                    outOfAppNotifier .setIsBillBuilt(true);
                    outOfAppNotifier.setShowLoading(false);
                  });
+                  }catch(e){
+                    Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+                    outOfAppNotifier .setIsBillBuilt(false);
+                    outOfAppNotifier.setShowLoading(false);
+                  }
                }else{
                  ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
                }

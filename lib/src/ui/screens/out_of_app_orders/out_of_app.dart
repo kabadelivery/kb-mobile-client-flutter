@@ -6,6 +6,7 @@ import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -75,6 +76,20 @@ class OutOfAppOrderPage extends ConsumerWidget  {
     // outOfAppScreenState.showLoading=false;
     print("shipping_address ${locationState.selectedShippingAddress}");
     print("shipping_address order_address ${locationState.selectedOrderAddress}");
+    if(locationState.selectedOrderAddress.isNotEmpty && locationState.selectedShippingAddress!=null){
+      if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
+
+        Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("same_address_cant_be_picked")+" 🚨");
+        outOfAppScreenState.isBillBuilt=false;
+        outOfAppScreenState.showLoading=false;
+
+      }
+    }
     return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -182,12 +197,13 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                 locationState.selectedOrderAddress.isEmpty ? Column(
                   children: [
                     ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
-                    SizedBox(height: 20,),
-                    additionnalInfoState.can_add_address_info==false?
+
+                    additionnalInfoState.can_add_address_info==null?
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        SizedBox(height: 20,),
                         Text(
                             "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
                             style: TextStyle(
@@ -197,8 +213,8 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                         SizedBox(height: 10,),
                         CanAddAdditionnInfo(context,ref),
                       ],
-                    ):
-                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
+                    ):  additionnalInfoState.can_add_address_info==true?
+                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info):Container(),
                     SizedBox(height: 10,),
                   ],    
                 ):Container(),
@@ -211,7 +227,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                             fontSize: 14,
                             color: KColors.new_black)),
                 
-                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]) 
+                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0])
                   ],
                 ): Container()
                 ,
@@ -226,7 +242,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                             fontSize: 14,
                             color: KColors.new_black)),
                 
-                    BuildOrderAddress(context,ref,locationState.selectedShippingAddress) 
+                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress)
                   ],
                 ): Container()
                 ,

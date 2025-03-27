@@ -106,6 +106,9 @@ dependencies:
   mime: ^1.0.4
   video_player: ^2.6.1
   animated_text_kit: ^2.5.0
+  flutter_native_splash: ^2.2.16
+  awesome_dialog: ^2.1.2
+  fluttertoast: ^8.2.5
 
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
@@ -153,6 +156,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Dosis-Bold.ttf
           weight: 600
+    - family: Poppins-Bold
+      fonts:
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 900
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
@@ -246,7 +253,10 @@ flutter:
     - assets/images/jpg/flu_splash.jpeg
   #  - images/a_dot_ham.jpeg
 
-
+flutter_native_splash:
+  color: "#FFFFFF"
+  android: false
+  ios: false
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

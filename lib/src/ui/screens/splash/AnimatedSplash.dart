@@ -34,7 +34,7 @@ class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTick
         .animate(_controller);
 
     // Define the position animation (moving the logo up)
-    _positionAnimation = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, -0.3))
+    _positionAnimation = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, 0.0))
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     // Start the animations after a delay
@@ -51,13 +51,13 @@ class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTick
   Widget build(BuildContext context) {
     return Center(
       child: SlideTransition(
-        position: _positionAnimation, // Move the logo up
+        position: _positionAnimation,
         child: ScaleTransition(
-          scale: _scaleAnimation, // Apply scaling/bounce effect
+          scale: _scaleAnimation,
           child: Image.asset(
             ImageAssets.splash_logo,
-            width: 70,
-            height: 70,
+            width: 60,
+            height: 60,
           ),
         ),
       ),

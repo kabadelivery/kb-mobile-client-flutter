@@ -294,7 +294,7 @@ void _showDialog(
                           settings:
                           RouteSettings(name: HomePage.routeName),
                           builder: (BuildContext context) =>
-                              HomePage()),
+                              HomePage(is_out_of_app_order: true,)),
                           (r) => false);
                 }
               },

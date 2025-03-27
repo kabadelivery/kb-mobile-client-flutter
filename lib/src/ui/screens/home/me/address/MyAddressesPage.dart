@@ -120,7 +120,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
-      widget.address_type==1 || widget.address_type==null ?InkWell(
+      widget.address_type==1 || widget.address_type==2|| widget.address_type==null ?InkWell(
       splashColor: Colors.white,
           child: Container(
               margin: EdgeInsets.only(left: 10, right: 10,top: 40),

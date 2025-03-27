@@ -4,6 +4,7 @@ import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../StateContainer.dart';
 import '../../../localizations/AppLocalizations.dart';
@@ -78,10 +79,20 @@ class FecthingPackageOrderPage extends ConsumerWidget {
     }
     districtState.districts = districts;
     outOfAppScreenState.order_type=6;
-    print("locationState ${locationState.is_order_address_picked}");
-    print("voucherState ${voucherState.selectedVoucher}");
-    print("isBillBuilt ${locationState.selectedOrderAddress}"); 
-    
+    if(locationState.is_order_address_picked && locationState.is_shipping_address_picked){
+      if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
+
+        Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("same_address_cant_be_picked")+" 🚨");
+        outOfAppScreenState.isBillBuilt=false;
+        outOfAppScreenState.showLoading=false;
+
+      }
+    }
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -260,13 +271,14 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                                   children: [
                                     DistrictSelectionWidget(),
                                     SizedBox(height: 20,),
-                                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info),
-                                    SizedBox(height: 10,),
                                   ],
                                 ):Container(),
                               ],
                             ):Container(),
-                           
+                           additionnalInfoState.can_add_address_info==true?
+                           AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info)
+                           :Container(),
+                           SizedBox(height: 10,),
                            locationState.selectedOrderAddress.isNotEmpty ?
                             Column(
                               children: [
@@ -312,27 +324,41 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                       child: InkWell(
                         onTap: () {
-                          int type_of_order = 6; 
-                        ref.read(productListProvider.notifier).clearProducts();
-                          File image;
-                          if(additionnalInfoState.image!=null){
-                            image = File(additionnalInfoState.image.path);
-                          }else{
-                            image = null;
+                          if(outOfAppScreenState.phone_number.isEmpty || outOfAppScreenState.phone_number.length<8){
+                                Fluttertoast.showToast(
+                                    backgroundColor: Colors.black87,
+                                    textColor: Colors.white,
+                                    fontSize: 14,
+                                    toastLength: Toast.LENGTH_LONG ,
+                                    msg: "🚨 "+AppLocalizations.of(context).translate("enter_correct_phone_number")+" 🚨");
                           }
-                          ref.read(productListProvider.notifier).addProduct({
-                            "name": "Récupération de colis",
-                            "price": outOfAppScreenState.package_amount,
-                            "quantity": 1,
-                            "image": image,
-                          });
-                          payAtDelivery(
-                              context,
-                              ref,
-                              type_of_order,
-                              true
-                          );
-                        },
+                          else{
+                                        int type_of_order = 6;
+                                        ref
+                                            .read(productListProvider.notifier)
+                                            .clearProducts();
+                                        File image;
+                                        if (additionnalInfoState.image !=
+                                            null) {
+                                          image = File(
+                                              additionnalInfoState.image.path);
+                                        } else {
+                                          image = null;
+                                        }
+                                        ref
+                                            .read(productListProvider.notifier)
+                                            .addProduct({
+                                          "name": "Récupération de colis",
+                                          "price": outOfAppScreenState
+                                              .package_amount,
+                                          "quantity": 1,
+                                          "image": image,
+                                        });
+
+                                        payAtDelivery(
+                                            context, ref, type_of_order, true);
+                                      }
+                                    },
                         child: Container(
                           padding: EdgeInsets.all(10),
                           child: Column(

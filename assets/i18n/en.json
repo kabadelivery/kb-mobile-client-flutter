@@ -561,7 +561,7 @@
   "order_address": "Purchase address",
   "add_address_additionnal_info": "Or add the purchase address to the writing?",
 
-  "address_additionnal_info": "Address additionnal info (Optional)",
+  "address_additionnal_info": "Please enter address details (Optional)",
   "choose_actual_location": "Choose your actual position",
   "normal_orders": "Normal orders",
   "out_of_app_orders": "Out of app & Packages",
@@ -577,7 +577,7 @@
   "modify":"Modify",
   "package_order":"Package order",
   "fecthing_package_address":"Fetching package address",
-  "phone_number_to_contact":"Phone number to contact",
+  "phone_number_to_contact":"Phone number to contact (Optional)",
   "choose_address_where_to_deliver":"Choose the address where to deliver",
   "enter_product_name":"Enter the product name",
   "enter_product_price":"Enter the product price",
@@ -592,9 +592,14 @@
   "add_fetching_address_additionnal_info": "Or add the fetching address to the writing?",
   "out_of_app": "Out of app",
   "package": "Package",
-  "fecthing_contact": "Fetching contact (Optional)",
-  "shipping_contact": "Shipping contact (Optional)",
+  "fecthing_contact": "Fetching contact ",
+  "shipping_contact": "Shipping contact ",
   "select_district": "Select district",
   "search_district": "Search district (Ex: Agoè, Adidogomé, etc.)",
-  "add_district_info": "Or choose the district where to deliver the package ? "
+  "add_district_info": "Or choose the district where to deliver the package ? ",
+  "package_info": "Describe the package please…",
+  "impossible_to_load_bill": "Error while loading the bill.",
+  "same_address_cant_be_picked": "The Addresses are the same",
+  "choose_additionnal_image": "Choose an additional image (Ex: The store, an ordonnance, etc.)",
+  "enter_correct_phone_number": "Please enter a correct phone number"
 }

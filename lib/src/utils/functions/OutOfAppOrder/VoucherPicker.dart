@@ -3,8 +3,10 @@ import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../contracts/vouchers_contract.dart';
+import '../../../localizations/AppLocalizations.dart';
 import '../../../models/OrderBillConfiguration.dart';
 import '../../../models/VoucherModel.dart';
 import '../../../resources/out_of_app_order_api.dart';
@@ -79,14 +81,26 @@ Future<OrderBillConfiguration> getBillingForVoucher(BuildContext context,WidgetR
       outOfAppNotifier.setIsBillBuilt(false);
       outOfAppNotifier.setShowLoading(true);
 
-      OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
-          customer,
-          locationState.selectedOrderAddress,
-          formData,
-          locationState.selectedShippingAddress,
-          voucher,
-          false);
-      return orderBillConfiguration;
+      try{
+        OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
+            customer,
+            locationState.selectedOrderAddress,
+            formData,
+            locationState.selectedShippingAddress,
+            voucher,
+            false);
+        return orderBillConfiguration;
+      }catch(e){
+        Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+        outOfAppNotifier.setShowLoading(false);
+        outOfAppNotifier.setIsBillBuilt(false);
+        return null;
+      }
   }catch(e){
     print("ERROR : $e");
     return null;

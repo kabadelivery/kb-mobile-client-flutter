@@ -27,7 +27,9 @@ class DailyOrdersPage extends StatefulWidget {
 
   List<CommandModel> orders;
 
-  DailyOrdersPage({Key key, this.presenter}) : super(key: key);
+  bool is_out_of_app_order = false;
+
+  DailyOrdersPage({Key key, this.presenter,this.is_out_of_app_order}) : super(key: key);
 
   @override
   _DailyOrdersPageState createState() => _DailyOrdersPageState();
@@ -41,15 +43,18 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   bool is_out_of_app_order = false;
   @override
   void initState() {
+    is_out_of_app_order = widget.is_out_of_app_order;
     widget.presenter.dailyOrderView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.loadDailyOrders(customer);
+      widget.presenter.loadDailyOrders(customer,is_out_of_app_order: is_out_of_app_order);
     });
     super.initState();
     Future.delayed(Duration.zero, () async {
       // last_update_timeout = getTimeOutLastTime();
     });
+
+
   }
 
   @override
@@ -61,7 +66,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   bool isLoading = true;
   bool hasNetworkError = false;
   bool hasSystemError = false;
-
+  bool charged = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,7 +174,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
             AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle.dark,
               child: Container(
-                height: MediaQuery.of(context).size.height*.77,
+                height: MediaQuery.of(context).size.height*.70,
                   child: isLoading
                       ? Center(child: MyLoadingProgressWidget())
                       : (hasNetworkError

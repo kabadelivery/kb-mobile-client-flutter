@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -157,7 +158,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                               outOfAppNotifier.setIsBillBuilt(false);
                               outOfAppNotifier.setShowLoading(true);
                               OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                              await api.computeBillingAction(
+                          try
+                              {await api.computeBillingAction(
                                   orderBillingState.customer,
                                   locationState.selectedOrderAddress,
                                   formData,
@@ -170,6 +172,16 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                 orderBillingNotifier.setOrderBillConfiguration(value);
 
                               });
+                              }catch(e){
+                            Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+                                outOfAppNotifier.setIsBillBuilt(false);
+                                outOfAppNotifier.setShowLoading(false);
+                                        }
                             }
                             ),
                       ),

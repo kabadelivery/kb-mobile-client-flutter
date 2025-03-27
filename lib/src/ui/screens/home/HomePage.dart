@@ -57,7 +57,7 @@ FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 class HomePage extends StatefulWidget {
   static var routeName = "/HomePage";
-
+  bool is_out_of_app_order ;
   var argument;
 
   var destination;
@@ -68,7 +68,7 @@ class HomePage extends StatefulWidget {
 
   bool hasGps = false;
 
-  HomePage({Key key, this.destination, this.argument}) : super(key: key);
+  HomePage({Key key, this.destination, this.argument,this.is_out_of_app_order=false}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
     serviceMainPage =
         ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter());
     dailyOrdersPage =
-        DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter());
+        DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter(),is_out_of_app_order: widget.is_out_of_app_order);
     meAccountPage = MeNewAccountPage(key: meKey);
     pages = [homeWelcomePage, serviceMainPage, dailyOrdersPage, meAccountPage];
     super.initState();

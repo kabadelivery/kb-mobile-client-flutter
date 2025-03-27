@@ -1,9 +1,12 @@
 import 'package:KABA/src/state_management/out_of_app_order/location_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../contracts/address_contract.dart';
+import '../../../localizations/AppLocalizations.dart';
 import '../../../models/DeliveryAddressModel.dart';
 import '../../../models/OrderBillConfiguration.dart';
 import '../../../resources/out_of_app_order_api.dart';
@@ -58,6 +61,7 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
         shipping_address = locationState.selectedShippingAddress;
       }
     }
+
       /* update / refresh this page */
     await CustomerUtils.getCustomer().then((customer) async {
      ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
@@ -65,10 +69,10 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
       //get billing
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
          if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
-            if (shipping_address!=null&&order_address.isNotEmpty) 
+            if (shipping_address!=null&&order_address.isNotEmpty)
             {
               outOfAppNotifier.setIsBillBuilt(false);
-              outOfAppNotifier.setShowLoading(true); 
+              outOfAppNotifier.setShowLoading(true);
 
               if(outOfAppScreenState.order_type==6){
                 var product = {
@@ -81,14 +85,14 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
                 productState.add(product);
               }
            }
-  
-        }else{      
+
+        }else{
           if(shipping_address!=null){
             outOfAppNotifier.setIsBillBuilt(false);
             outOfAppNotifier.setShowLoading(true);
           }
         }
-        
+
         try{
           List<Map<String, dynamic>> formData = [];
 
@@ -103,32 +107,55 @@ Future PickShippingAddress(BuildContext context,WidgetRef ref,GlobalKey poweredB
           }
           if (outOfAppScreenState.order_type == 5 || outOfAppScreenState.order_type == 6) {
             if (shipping_address!=null && order_address.isNotEmpty) {
-              OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                  customer,
-                  order_address,
-                  formData,
-                  shipping_address,
-                  voucherState.selectedVoucher,
-                  false);
-              ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-              outOfAppNotifier.setIsBillBuilt(true);
-              outOfAppNotifier.setShowLoading(false);
+             try{
+               OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
+                   customer,
+                   order_address,
+                   formData,
+                   shipping_address,
+                   voucherState.selectedVoucher,
+                   false);
+               ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+               outOfAppNotifier.setIsBillBuilt(true);
+               outOfAppNotifier.setShowLoading(false);
+             }catch(e){
+               Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+                outOfAppNotifier.setShowLoading(false);
+                outOfAppNotifier.setIsBillBuilt(false);
+             }
               print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
             }
           } else {
 
             if(shipping_address!=null){
-             
-            OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                customer,
-                order_address,
-                formData,
-                shipping_address,
-                voucherState.selectedVoucher,
-                false);
-            ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-            outOfAppNotifier.setIsBillBuilt(true);
-            outOfAppNotifier.setShowLoading(false);
+
+           try{
+             OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
+                 customer,
+                 order_address,
+                 formData,
+                 shipping_address,
+                 voucherState.selectedVoucher,
+                 false);
+             ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+             outOfAppNotifier.setIsBillBuilt(true);
+             outOfAppNotifier.setShowLoading(false);
+
+           }catch(e){
+             Fluttertoast.showToast(
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 14,
+            toastLength: Toast.LENGTH_LONG ,
+            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+              outOfAppNotifier.setShowLoading(false);
+              outOfAppNotifier.setIsBillBuilt(false);
+           }
             print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
           }
         }

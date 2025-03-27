@@ -13,6 +13,7 @@ import 'BouncingWidget.dart';
 
 Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String text) {
   TextEditingController _infoController = TextEditingController();
+  final outOfAppState = ref.watch(outOfAppScreenStateProvier);
   _infoController.text = text;
   _infoController.selection = TextSelection.fromPosition(
     TextPosition(offset:text.length),
@@ -49,7 +50,7 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
                   labelStyle: TextStyle(fontSize: 12),
                   labelText: "${AppLocalizations.of(context).translate(
                       type == 1
-                          ? 'additional_info'
+                          ?(outOfAppState.order_type!=5&&outOfAppState.order_type!=6?'additional_info':'package_info')
                           : type == 2
                           ? 'address_additionnal_info'
                           : 'additional_info')}...",
@@ -124,9 +125,11 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
           ),
           SizedBox(height: 5),
           Text(
-            "${AppLocalizations.of(context).translate('choose_an_image')}",
+
+            "${AppLocalizations.of(context).translate(outOfAppScreenState.order_type!=5&&outOfAppScreenState.order_type!=6?'choose_additionnal_image':'choose_an_image')}",
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: FontWeight.w400,
               color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(197, 255, 255, 255),
             ),

@@ -558,7 +558,7 @@
   "finalize": "完成",
   "shipping_address": "送货地址",
   "order_address": "购买地址",
-  "add_address_additionnal_info": "或者在文中加上购买地址？",
+  "add_address_additionnal_info": "请输入详细地址",
   "address_additionnal_info": "地址其他信息...",
   "normal_orders": "正常订单",
   "out_of_app_orders": "应用程序和套餐已售罄",
@@ -591,5 +591,10 @@
   "package": "包裹",
   "fecthing_contact": "建立联系",
   "shipping_contact": "发货联系方式",
-  "add_district_info": "或者选择您将运送包裹的区域？"
+  "add_district_info": "或者选择您将运送包裹的区域？",
+  "package_info": "请描述一下包裹……",
+  "impossible_to_load_bill": "无法加载账单",
+  "same_address_cant_be_picked": "取件地址和发货地址不能相同",
+  "choose_additionnal_image": "选择其他图片（例如：商店、处方等）",
+  "enter_correct_phone_number": "请输入正确的电话号码",
 }
