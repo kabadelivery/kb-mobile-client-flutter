@@ -18,6 +18,7 @@ import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../utils/_static_data/KTheme.dart';
+import '../../../utils/functions/OutOfAppOrder/dialogToFetchShippingPrice.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
@@ -270,7 +271,7 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   int type_of_order = 4; // Default
 
                   List<DeliveryAddressModel> adrs = [];
@@ -286,13 +287,16 @@ class OutOfAppOrderPage extends ConsumerWidget  {
                       type_of_order = out_of_app_order_type_without_address;
                     }
                   }
-
-                  payAtDelivery(
-                      context,
-                      ref,
-                      type_of_order,
-                      true
-                  );
+                 bool result = await showShippingPriceRangeInfo(context,ref, type_of_order);
+                  print("result $result");
+                  if(result==true){
+                    payAtDelivery(
+                        context,
+                        ref,
+                        type_of_order,
+                        true
+                    );
+                  }
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

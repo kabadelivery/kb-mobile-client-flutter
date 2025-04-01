@@ -601,5 +601,9 @@
   "impossible_to_load_bill": "Error while loading the bill.",
   "same_address_cant_be_picked": "The Addresses are the same",
   "choose_additionnal_image": "Choose an additional image (Ex: The store, an ordonnance, etc.)",
-  "enter_correct_phone_number": "Please enter a correct phone number"
+  "enter_correct_phone_number": "Please enter a correct phone number",
+  "the_shipping_price_can_change": "The shipping price can vary between",
+  "and": "and",
+  "depending_on_store_location": "depending on the store location",
+  "this_order_can_get_changes":  "This order may be subject to changes on the prices"
 }

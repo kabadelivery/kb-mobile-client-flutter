@@ -284,6 +284,36 @@ dio.options
           return [{"name":""}];
   }
   }
+  Future<Map<String, dynamic>> fetchShippingPriceRange(CustomerModel customer)async {
+    try{
+      Dio dio = Dio();
+      dio.options
+        ..headers = {
+          ...Utils.getHeadersWithToken(customer?.token),
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
+        ..connectTimeout = 10000;
+
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      String url = ServerRoutes.FETCH_SHIPPING_PRICE_RANGE;
+      Response response = await dio.post(url);
+
+      Map<String, dynamic> range =  response.data['range'];
+      print("response.data ${range}");
+      return range;
+    }catch(e){
+
+      xrint("XXX fetchShippingPriceRange error : $e");
+    }
+  }
   Future<String> imageToBase64(File imageFile) async {
     List<int> imageBytes = await imageFile.readAsBytes();
     String base64Image = base64Encode(imageBytes);

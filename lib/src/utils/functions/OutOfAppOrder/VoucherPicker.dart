@@ -17,7 +17,8 @@ import '../../../state_management/out_of_app_order/products_state.dart';
 import '../../../ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import '../CustomerUtils.dart';
 
-Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_voucher, VoucherModel voucher) async {
+Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
+    bool has_voucher, VoucherModel voucher) async {
   /* just like we pick and address, we pick a voucher. */
 
   /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
@@ -31,7 +32,7 @@ Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_v
 
   Map results;
   if (!has_voucher) {
-   ref.read(voucherStateProvider.notifier).setVoucher(null);
+    ref.read(voucherStateProvider.notifier).setVoucher(null);
     /* jump and get it */
     results = await Navigator.push(
       context,
@@ -39,9 +40,8 @@ Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_v
         builder: (context) => MyVouchersPage(
             pick: true,
             presenter: VoucherPresenter(),
-            restaurantId:-1,
-            foods: [33]
-        ),
+            restaurantId: -1,
+            foods: [33]),
       ),
     );
   } else {
@@ -50,60 +50,62 @@ Future<VoucherModel> SelectVoucher(BuildContext context,WidgetRef ref,bool has_v
   }
 
   if (results != null && results.containsKey('voucher')) {
-
     return results['voucher'];
-
   }
 }
-Future<OrderBillConfiguration> getBillingForVoucher(BuildContext context,WidgetRef ref,VoucherModel voucher)async{
-  final locationState= ref.watch(locationStateProvider);
-  final voucherState= ref.watch(voucherStateProvider);
-  final locationNotifier= ref.read(locationStateProvider.notifier);
+
+Future<OrderBillConfiguration> getBillingForVoucher(
+    BuildContext context, WidgetRef ref, VoucherModel voucher) async {
+  final locationState = ref.watch(locationStateProvider);
+  final voucherState = ref.watch(voucherStateProvider);
+  final locationNotifier = ref.read(locationStateProvider.notifier);
   final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
   final productState = ref.watch(productListProvider);
-  try{
+  try {
     ref.read(voucherStateProvider.notifier).setVoucher(voucher);
-      CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
-      ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
+    CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
+    ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
     List<Map<String, dynamic>> formData = [];
 
     for (int i = 0; i < productState.length; i++) {
-      formData.add(
-          { 'name': productState[i]['name'],
-            'price': productState[i]['price'].toString(),
-            'quantity': productState[i]['quantity'].toString(),
-            'image': ""
-          }
-      );
+      formData.add({
+        'name': productState[i]['name'],
+        'price': productState[i]['price'].toString(),
+        'quantity': productState[i]['quantity'].toString(),
+        'image': ""
+      });
     }
 
-      OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-      outOfAppNotifier.setIsBillBuilt(false);
-      outOfAppNotifier.setShowLoading(true);
+    OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+    outOfAppNotifier.setIsBillBuilt(false);
+    outOfAppNotifier.setShowLoading(true);
 
-      try{
-        OrderBillConfiguration orderBillConfiguration= await api.computeBillingAction(
-            customer,
-            locationState.selectedOrderAddress,
-            formData,
-            locationState.selectedShippingAddress,
-            voucher,
-            false);
-        return orderBillConfiguration;
-      }catch(e){
-        Fluttertoast.showToast(
-            backgroundColor: Colors.black87,
-            textColor: Colors.white,
-            fontSize: 14,
-            toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
-        outOfAppNotifier.setShowLoading(false);
-        outOfAppNotifier.setIsBillBuilt(false);
-        return null;
-      }
-  }catch(e){
+    try {
+      OrderBillConfiguration orderBillConfiguration =
+          await api.computeBillingAction(
+              customer,
+              locationState.selectedOrderAddress,
+              formData,
+              locationState.selectedShippingAddress,
+              voucher,
+              false);
+      return orderBillConfiguration;
+    } catch (e) {
+      Fluttertoast.showToast(
+          backgroundColor: Colors.black87,
+          textColor: Colors.white,
+          fontSize: 14,
+          toastLength: Toast.LENGTH_LONG,
+          msg: "🚨 " +
+              AppLocalizations.of(context)
+                  .translate("impossible_to_load_bill") +
+              " 🚨");
+      outOfAppNotifier.setShowLoading(false);
+      outOfAppNotifier.setIsBillBuilt(false);
+      return null;
+    }
+  } catch (e) {
     print("ERROR : $e");
     return null;
   }
-
 }

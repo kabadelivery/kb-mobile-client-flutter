@@ -609,6 +609,24 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     : Container(),
                 _buildBill(),
                 SizedBox(height: 10),
+                widget.command.order_type == 4 || widget.command.order_type == 3?
+                Container(
+                  decoration:BoxDecoration(
+                      color: Color(0xffcb1f44).withOpacity(0.1),
+                      borderRadius:BorderRadius.circular(5)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                        "${AppLocalizations.of(context).translate('this_order_can_get_changes')}",
+                        style: TextStyle(
+
+                            fontSize: 12,
+                            color: Color(0xffcb1f44))),
+                  ),
+
+                ):Container(),
+                SizedBox(height: 10),
                 widget.command.order_type==5 && widget.command?.state==3 && foodPriceTotal>0?
                 WhatsappMessageButton("${AppLocalizations.of(context).translate("contact_us_for_funds")}",
 """

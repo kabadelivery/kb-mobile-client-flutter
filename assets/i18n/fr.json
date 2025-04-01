@@ -599,5 +599,9 @@
   "impossible_to_load_bill": "Erreur lors de la récupération de la facture",
   "same_address_cant_be_picked": "Les adresses sont les mêmes",
   "choose_additionnal_image": "Choisir une image supplémentaire (Ex: Le magasin, une ordonnance, etc.)",
-  "enter_correct_phone_number": "Veuillez entrer un numéro de téléphone valide"
+  "enter_correct_phone_number": "Veuillez entrer un numéro de téléphone valide",
+  "the_shipping_price_can_change": "Le prix de la livraison peut varier entre",
+  "and": "et",
+  "depending_on_store_location": " en fonction de la localisation du magasin",
+  "this_order_can_get_changes": "Cette commande peut subir des modifications de prix"
 }

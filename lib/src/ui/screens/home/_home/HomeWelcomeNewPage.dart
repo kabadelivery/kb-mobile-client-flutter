@@ -66,6 +66,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../StateContainer.dart';
+import '../../../../resources/out_of_app_order_api.dart';
+import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
@@ -178,7 +180,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             .whenComplete(() => {prefs.setBool('has_subscribed', true)});
       }
     });
-
+    _getShippingPriceRange();
     Timer.run(() {
       if (!(DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context).lastTimeLinkMatchAction >
@@ -1383,20 +1385,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         if (force == 1) {
           /* show the dialog. */
           Future.delayed(new Duration(seconds: 1)).then((value) {
-            iShowDialog(code, 1, change_log: cl);
+            iShowDialog(context,code, 1, change_log: cl);
           });
         } else {
-          /* check if  already shown, if not then we show it again.*/
-          /* give a way to say no. */
-          /* and save it to the shared preferences not to bother the client in the future */
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          if (prefs.get("${code}") != 1) {
-            prefs.setInt("${code}", 1).then((value) {
-              Future.delayed(new Duration(seconds: 1)).then((value) {
-                iShowDialog(code, 0, change_log: cl);
+           Future.delayed(new Duration(seconds: 1)).then((value) {
+                iShowDialog(context,code, 0, change_log: cl);
               });
-            });
-          }
         }
       }
     });
@@ -1445,63 +1439,72 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 //  });
   }
 
-  void iShowDialog(String version, int force, {String change_log = null}) {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-              content:
-                  Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: Icon(Icons.settings,
-                        size: 80, color: KColors.primaryColor)),
-                SizedBox(height: 10),
-                Text(
-                    "$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: KColors.new_black, fontSize: 13))
-              ]),
-              actions: force == 1
-                  ? <Widget>[
-                      OutlinedButton(
-                        child: new Text(
-                            "${AppLocalizations.of(context).translate('update')} $version",
-                            style: TextStyle(color: KColors.primaryColor)),
-                        onPressed: () {
-                          _updateApp();
-                        },
-                      ),
-                    ]
-                  : <Widget>[
-                      OutlinedButton(
-                        style: ButtonStyle(
-                            side: MaterialStateProperty.all(
-                                BorderSide(color: Colors.grey, width: 1))),
-                        child: new Text(
-                            "${AppLocalizations.of(context).translate('refuse')}",
-                            style: TextStyle(color: Colors.grey)), // update
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      OutlinedButton(
-                        style: ButtonStyle(
-                            side: MaterialStateProperty.all(BorderSide(
-                                color: KColors.primaryColor, width: 1))),
-                        child: new Text(
-                            "${AppLocalizations.of(context).translate('update')} $version",
-                            style: TextStyle(color: KColors.primaryColor)),
-                        onPressed: () {
-                          _updateApp();
-                        },
-                      ),
-                    ]);
-        });
-//  });
-  }
+void iShowDialog(BuildContext context, String version, int force,{String change_log = null}) {
+  OverlayState overlayState = Overlay.of(context);
+  OverlayEntry overlayEntry;
+
+  overlayEntry = OverlayEntry(
+    builder: (context) => Stack(
+      children: [
+        // Full-screen image
+        Positioned.fill(
+          child: Container(
+            height: MediaQuery.of(context).size.height*.7,
+            width:MediaQuery.of(context).size.width*.95,
+            color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
+            child: Image.asset(
+              "assets/images/jpg/new_update.jpg",
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        // Update button at bottom right
+        Positioned(
+          bottom: 40,
+          right: 10,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // "Refuse" button (if force == 0)
+              if (force == 0)
+                OutlinedButton(
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(color: Colors.white, width: 1)),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).translate('refuse'),
+                    style: TextStyle(color: KColors.primaryColor),
+                  ),
+                  onPressed: () {
+                    overlayEntry.remove();
+                  },
+                ),
+              SizedBox(width: 10),
+              // "Update" button
+              OutlinedButton(
+                style: ButtonStyle(
+
+                  backgroundColor: MaterialStateProperty.all(KColors.primaryColor),
+                ),
+                child: Text(
+                  "${AppLocalizations.of(context).translate('update')} $version",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  overlayEntry.remove();
+                  _updateApp();
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+
+  overlayState.insert(overlayEntry);
+}
 
   void _updateApp() {
     if (Platform.isAndroid) {
@@ -1744,7 +1747,16 @@ Future<void> _playMusicForNewMessage() async {
     Vibration.vibrate(duration: 500);
   }*/
 }
-
+void _getShippingPriceRange()async{
+  OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
+  try{
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    Map<String,dynamic> range = await api.fetchShippingPriceRange(customer);
+    await OutOfAppSharedPrefs.saveStringMap(range);
+  }catch(e){
+    print(e);
+  }
+}
 void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
   /* Navigator.push(
     context,

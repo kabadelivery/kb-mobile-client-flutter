@@ -7,23 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/district_state.dart';
 import '../../../ui/customwidgets/MyLoadingProgressWidget.dart';
-Future<List<Map<String, dynamic>>> fetchDistricts() async {
 
+Future<List<Map<String, dynamic>>> fetchDistricts() async {
   CustomerModel customer = await CustomerUtils.getCustomer();
 
-    OutOfAppOrderApiProvider apiProvider = OutOfAppOrderApiProvider();
-    List<Map<String, dynamic>> response = await apiProvider.fetchDistricts(customer);
-    response.sort((a, b) => a["name"].compareTo(b["name"]));
+  OutOfAppOrderApiProvider apiProvider = OutOfAppOrderApiProvider();
+  List<Map<String, dynamic>> response =
+      await apiProvider.fetchDistricts(customer);
+  response.sort((a, b) => a["name"].compareTo(b["name"]));
 
-    // Save new data to cache
-    await CustomerUtils.setCachedDistricts(response);
+  // Save new data to cache
+  await CustomerUtils.setCachedDistricts(response);
 
-    return response;
+  return response;
 }
-Future<List<Map<String, dynamic>>> showLoadingDialog(BuildContext context) async {
+
+Future<List<Map<String, dynamic>>> showLoadingDialog(
+    BuildContext context) async {
   return showDialog<List<Map<String, dynamic>>>(
     context: context,
-
     barrierDismissible: false,
     builder: (context) {
       return FutureBuilder<List<Map<String, dynamic>>>(
@@ -31,7 +33,7 @@ Future<List<Map<String, dynamic>>> showLoadingDialog(BuildContext context) async
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return AlertDialog(
-                content: MyLoadingProgressWidget(),
+              content: MyLoadingProgressWidget(),
               backgroundColor: Colors.transparent,
               elevation: 0,
             );

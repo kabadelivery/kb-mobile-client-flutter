@@ -1,4 +1,3 @@
-
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +9,12 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../localizations/AppLocalizations.dart';
+
 Future<bool> _isImageSizeValid(File imageFile) async {
   final fileSize = await imageFile.length();
   return fileSize <= 3 * 1024 * 1024; // 3MB
 }
+
 Future<File> pickImage(BuildContext context, WidgetRef ref) async {
   final _picker = ImagePicker();
 
@@ -29,10 +30,10 @@ Future<File> pickImage(BuildContext context, WidgetRef ref) async {
     if (await _isImageSizeValid(imageFile)) {
       return imageFile;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-        content:  Text("${AppLocalizations.of(context).translate('image_size_exceed')}"
-            ,style:TextStyle(color: Colors.white)
-        ),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "${AppLocalizations.of(context).translate('image_size_exceed')}",
+            style: TextStyle(color: Colors.white)),
       ));
       return null;
     }

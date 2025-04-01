@@ -597,4 +597,8 @@
   "same_address_cant_be_picked": "取件地址和发货地址不能相同",
   "choose_additionnal_image": "选择其他图片（例如：商店、处方等）",
   "enter_correct_phone_number": "请输入正确的电话号码",
+  "the_shipping_price_can_change": "运费可能在",
+  "and":  "和",
+  "depending_on_store_location": "取决于商店的位置",
+  "this_order_can_get_changes": "此订单可能会有变更"
 }
