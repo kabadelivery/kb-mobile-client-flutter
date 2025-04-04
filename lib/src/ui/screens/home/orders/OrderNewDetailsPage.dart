@@ -141,13 +141,13 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
   // </string-array>
 
   Widget _inflateDetails() {
-        int foodPriceTotal = 0; 
+        double foodPriceTotal = 0; 
         print("Order type ${widget.command?.order_type}");
         
             if (widget.command?.food_list != null) {
       for (var item in widget.command.food_list) {
         item.price = item.price==""?"0":item.price;
-        foodPriceTotal += int.parse(item.price);
+        foodPriceTotal += double.parse(item.price);
       }
     }
     return SingleChildScrollView(
@@ -620,7 +620,6 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     child: Text(
                         "${AppLocalizations.of(context).translate('this_order_can_get_changes')}",
                         style: TextStyle(
-
                             fontSize: 12,
                             color: Color(0xffcb1f44))),
                   ),

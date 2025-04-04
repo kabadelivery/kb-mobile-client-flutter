@@ -1363,21 +1363,39 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> messageEntry) {
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
 
+
+  BigPictureStyleInformation bigPictureStyle;
+  if (notificationItem.image_link != null && notificationItem.image_link.isNotEmpty) {
+    bigPictureStyle = BigPictureStyleInformation(
+      FilePathAndroidBitmap(notificationItem.image_link),
+      contentTitle: notificationItem.title,
+      summaryText: notificationItem.body,
+    );
+  }
+
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
-      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.max,
-      priority: Priority.max,
-      groupKey: groupKey,
-      ticker: notificationItem?.title);
+    AppConfig.CHANNEL_ID,
+    AppConfig.CHANNEL_NAME,
+    channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+    importance: Importance.max,
+    priority: Priority.max,
+    groupKey: groupKey,
+    ticker: notificationItem.title,
+    styleInformation: bigPictureStyle, // Ajout de l’image
+  );
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics);
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
 
-  return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
-      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString());
+  return flutterLocalNotificationsPlugin.show(
+    notificationItem.hashCode,
+    notificationItem.title,
+    notificationItem.body,
+    platformChannelSpecifics,
+    payload: notificationItem.destination?.toSpecialString(),
+  );
 }
