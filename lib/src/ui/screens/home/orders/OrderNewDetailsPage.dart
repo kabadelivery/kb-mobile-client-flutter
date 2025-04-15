@@ -27,12 +27,11 @@ class OrderNewDetailsPage extends StatefulWidget {
   static var routeName = "/OrderNewDetailsPage";
 
   OrderDetailsPresenter presenter;
-
+  bool is_out_of_app_order;
   OrderNewDetailsPage({Key key, this.orderId, this.presenter,this.is_out_of_app_order=false})
       : super(key: key);
 
   int orderId;
-  bool is_out_of_app_order;
   CustomerModel customer;
   CommandModel command;
 

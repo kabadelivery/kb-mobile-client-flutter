@@ -478,6 +478,7 @@ class _HomePageState extends State<HomePage> {
       xrint(e);
     }
     int type = int.parse(notificationFDestination['type'].toString());
+    int is_out_of_app = int.parse(notificationFDestination['is_out_of_app'].toString());
     int productId =
         int.parse(notificationFDestination['product_id'].toString());
     switch (type) {
@@ -492,7 +493,7 @@ class _HomePageState extends State<HomePage> {
       case NotificationFDestination.COMMAND_END_SHIPPING:
       case NotificationFDestination.COMMAND_CANCELLED:
       case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(productId);
+        _jumpToOrderDetailsWithId(productId, is_out_of_app_order: is_out_of_app);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
         _jumpToTransactionHistory();
@@ -517,10 +518,11 @@ class _HomePageState extends State<HomePage> {
         RestaurantMenuPage(foodId: productId, presenter: MenuPresenter()));
   }
 
-  void _jumpToOrderDetailsWithId(int productId) {
+  void _jumpToOrderDetailsWithId(int productId, {int is_out_of_app_order = 0}) {
     _jumpToPage(
         context,
         OrderNewDetailsPage(
+            is_out_of_app_order: is_out_of_app_order==0?false:true,
             orderId: productId, presenter: OrderDetailsPresenter()));
   }
 
@@ -1352,50 +1354,33 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> messageEntry) {
         priority: destinationData['priority'].toString(),
         destination: NotificationFDestination(
             type: int.parse(destinationData['type'].toString()),
-            product_id: int.parse(destinationData["product_id"].toString())));
+            product_id: int.parse(destinationData["product_id"].toString()),
+            is_out_of_app: int.parse(destinationData['is_out_of_app'].toString())
+        ));
     return notificationItem;
   } catch (_) {
     xrint(_.toString());
   }
   return null;
 }
-
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
 
 
-  BigPictureStyleInformation bigPictureStyle;
-  if (notificationItem.image_link != null && notificationItem.image_link.isNotEmpty) {
-    bigPictureStyle = BigPictureStyleInformation(
-      FilePathAndroidBitmap(notificationItem.image_link),
-      contentTitle: notificationItem.title,
-      summaryText: notificationItem.body,
-    );
-  }
-
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    AppConfig.CHANNEL_ID,
-    AppConfig.CHANNEL_NAME,
-    channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-    importance: Importance.max,
-    priority: Priority.max,
-    groupKey: groupKey,
-    ticker: notificationItem.title,
-    styleInformation: bigPictureStyle, // Ajout de l’image
-  );
+      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
+      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.max,
+      groupKey: groupKey,
+      ticker: notificationItem?.title);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
   var platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-    iOS: iOSPlatformChannelSpecifics,
-  );
-
-  return flutterLocalNotificationsPlugin.show(
-    notificationItem.hashCode,
-    notificationItem.title,
-    notificationItem.body,
-    platformChannelSpecifics,
-    payload: notificationItem.destination?.toSpecialString(),
-  );
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
+  return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
+      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
+      payload: notificationItem?.destination?.toSpecialString());
 }

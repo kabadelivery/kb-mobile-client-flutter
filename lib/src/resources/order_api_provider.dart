@@ -143,7 +143,8 @@ class OrderApiProvider {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 90000;
+        ..connectTimeout = 90000
+        ..headers['Cache-Control'] = 'no-cache';
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -168,13 +169,14 @@ class OrderApiProvider {
     }
   }
 
-  loadOrderFromId(CustomerModel customer, int orderId,{bool is_out_of_app_order=false}) async {
+  loadOrderFromId(CustomerModel customer, int orderId, {bool is_out_of_app_order = false}) async {
     xrint("entered loadOrderFromId");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer?.token)
-        ..connectTimeout = 10000;
+        ..connectTimeout = 10000
+        ..headers['Cache-Control'] = 'no-cache';
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -182,12 +184,11 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      print('command_id ${json.encode({"command_id": orderId})}');
       var response = await dio.post(
           Uri.parse(
-              is_out_of_app_order==false?
-              ServerRoutes.LINK_GET_COMMAND_DETAILS
-          :ServerRoutes.LINK_OUT_OF_APP_GET_COMMAND_DETAILS
+              is_out_of_app_order == false
+                  ? ServerRoutes.LINK_GET_COMMAND_DETAILS
+                  : ServerRoutes.LINK_OUT_OF_APP_GET_COMMAND_DETAILS
           ).toString(),
           data: json.encode({"command_id": orderId}));
 
@@ -196,12 +197,14 @@ class OrderApiProvider {
       if (response.statusCode == 200) {
         return CommandModel.fromJson(
             mJsonDecode(response.data)["data"]["command"]);
-      } else
-        throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(-1);
+      }
     } else {
-      throw Exception(-2); // there is an error in your request
+      throw Exception(-2);
     }
   }
+
 
   Future<String> checkOpeningStateOfRestaurant(
       CustomerModel customer, ShopModel restaurant) async {

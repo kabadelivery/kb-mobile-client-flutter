@@ -35,20 +35,19 @@ class NotificationFDestination {
   /* meta data attached with it */
   int product_id; /* cn be product / restaurant */
 
-
-  NotificationFDestination({this.type, this.product_id});
+  int is_out_of_app;
+  NotificationFDestination({this.type, this.product_id,this.is_out_of_app});
 
   NotificationFDestination.fromJson(Map<String, dynamic> json) {
-
     type = json['type'];
     product_id = json['product_id'];
+    is_out_of_app = json['is_out_of_app'];
   }
-
   Map toJson () => {
     "type" : type,
     "product_id" : product_id,
+    "is_out_of_app" : is_out_of_app,
   };
-
   @override
   String toString() {
     return toJson().toString();
@@ -58,6 +57,7 @@ class NotificationFDestination {
   return {
    "\"type\"" : type,
    "\"product_id\"" : product_id,
+   "\"is_out_of_app\"" : is_out_of_app,
   }.toString();
  }
 
