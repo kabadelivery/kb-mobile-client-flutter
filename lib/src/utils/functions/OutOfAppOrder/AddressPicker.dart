@@ -53,10 +53,11 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         shipping_address = results['selection'];
         locationNotifier.pickShippingAddress(shipping_address);
         locationNotifier.setShippingAddressPicked(true);
-        if (locationState.is_order_address_picked) {
+        if (locationState.selectedOrderAddress.isNotEmpty) {
           order_address = locationState.selectedOrderAddress;
         }
-      } else if (address_type == 2) {
+      }
+      if (address_type == 2) {
         order_address = []; //change later for multiple address
         order_address.add(results['selection'] as DeliveryAddressModel);
         locationNotifier.pickOrderAddress(results['selection']);
