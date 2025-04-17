@@ -1378,8 +1378,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
       String appCode_ = packageInfo.version.replaceAll(new RegExp(r'\.'), "");
       int appCode = int.parse(appCode_);
-//     xrint("net-code = $code");
-//     xrint("app-code = $appCode");
+     xrint("net-code = $code");
+     xrint("app-code = $appCode");
+     xrint("app-cl = $cl");
       if (appCode < _code) {
         // 2.3.4 < 4.5.6
         if (force == 1) {
@@ -1391,6 +1392,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
            Future.delayed(new Duration(seconds: 1)).then((value) {
                 iShowDialog(context,code, 0, change_log: cl);
               });
+        }
+      }else {
+        CustomerUtils utils = CustomerUtils();
+        bool isUpdateSeen = await utils.getViewUpdate();
+        print("isUpdateSeen $isUpdateSeen");
+        if(!isUpdateSeen){
+          showNewFeature(context, code);
         }
       }
     });
@@ -1439,6 +1447,57 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 //  });
   }
 
+  void showNewFeature(BuildContext context, String version) {
+    OverlayState overlayState = Overlay.of(context);
+    OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Full-screen image
+          Positioned.fill(
+            child: Container(
+              height: MediaQuery.of(context).size.height*.7,
+              width:MediaQuery.of(context).size.width*.95,
+              color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
+              child: Image.asset(
+                "assets/images/jpg/new_update.jpg",
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          // Update button at bottom right
+          Positioned(
+            bottom: 40,
+            right: 10,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                  OutlinedButton(
+                    style: ButtonStyle(
+                      side: MaterialStateProperty.all(BorderSide(color: Colors.white, width: 1)),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context).translate('ok'),
+                      style: TextStyle(color: KColors.primaryColor),
+                    ),
+                    onPressed: () async{
+                      CustomerUtils utils = CustomerUtils();
+                      await utils.setViewUpdate(enable: true);
+                      overlayEntry.remove();
+                    },
+                  )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    overlayState.insert(overlayEntry);
+  }
+
 void iShowDialog(BuildContext context, String version, int force,{String change_log = null}) {
   OverlayState overlayState = Overlay.of(context);
   OverlayEntry overlayEntry;
@@ -1452,8 +1511,8 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
             height: MediaQuery.of(context).size.height*.7,
             width:MediaQuery.of(context).size.width*.95,
             color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
-            child: Image.asset(
-              "assets/images/jpg/new_update.jpg",
+            child: Image.network(
+              change_log,
               fit: BoxFit.contain,
             ),
           ),

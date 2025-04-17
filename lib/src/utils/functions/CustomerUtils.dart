@@ -401,4 +401,15 @@ class CustomerUtils {
     await prefs.remove(_cacheKey);
     await prefs.remove(_timestampKey);
   }
+  Future<void> setViewUpdate({ bool enable}) async {
+    const _keyViewUpdate = 'view_update';
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyViewUpdate, enable);
+  }
+  Future<bool> getViewUpdate()async{
+    const _keyViewUpdate = 'view_update';
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyViewUpdate) ?? false;
+
+  }
 }
