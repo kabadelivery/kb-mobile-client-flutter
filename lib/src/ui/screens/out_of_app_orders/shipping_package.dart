@@ -31,14 +31,19 @@ import '../../customwidgets/out_of_app_product_form_widget.dart';
 
 import '../../customwidgets/voucher_widgets.dart';
 import 'fetching_package.dart';
-
-class ShippingPackageOrderPage extends ConsumerWidget {
-
+class ShippingPackageOrderPage extends ConsumerStatefulWidget {
   final String additional_info;
   final File additionnal_info_image;
   final List<Map<String,dynamic>> districts;
-  ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
   static var routeName = "/ShippingPackageOrderPage";
+  ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
+
+  @override
+  ConsumerState<ShippingPackageOrderPage> createState() => _ShippingPackageOrderPageState();
+}
+
+class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderPage> {
+
 
   int shipping_address_type=1;
   int order_address_type=2;
@@ -51,13 +56,18 @@ class ShippingPackageOrderPage extends ConsumerWidget {
   bool reset = true;
   GlobalKey poweredByKey = GlobalKey();
 
-
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    if(reset){
-      resetProviders(ref);
-      reset = false;
-    }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (reset) {
+        resetProviders(ref);
+        reset = false;
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -79,7 +89,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
       locationState.is_order_address_picked=true;
     }
 
-    districtState.districts=districts;
+    districtState.districts=widget.districts;
     districtState.isLoading=false;
 
     if(locationState.is_order_address_picked && locationState.is_shipping_address_picked){
@@ -167,7 +177,7 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                           pageBuilder: (context, animation, secondaryAnimation) => FecthingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
                             additionnal_info_image: additionnalInfoState.image,
-                            districts: districts
+                            districts: widget.districts
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(1.0, 0.0);
@@ -342,6 +352,14 @@ class ShippingPackageOrderPage extends ConsumerWidget {
                       fontSize: 14,
                       toastLength: Toast.LENGTH_LONG ,
                       msg: "🚨 "+AppLocalizations.of(context).translate("enter_correct_phone_number")+" 🚨");
+                }
+               else if(int.parse(outOfAppScreenState.package_amount)>100000){
+                  Fluttertoast.showToast(
+                      backgroundColor: Colors.black87,
+                      textColor: Colors.white,
+                      fontSize: 14,
+                      toastLength: Toast.LENGTH_LONG ,
+                      msg: "🚨 "+AppLocalizations.of(context).translate("price_too_high")+" 🚨");
                 }
                   else{
                         int type_of_order = 5;

@@ -550,10 +550,10 @@
   "package_shipping": "Package shipping",
   "choose_an_image": "Choose an image",
   "product_name": "Product name",
-  "product_price": "Product price",
+  "product_price": "Product price (optional)",
   "quantity": "Quantity",
   "additionnal_info": "Additionnal informations",
-  "choose_order_address": "Choose the order collection address",
+  "choose_order_address": "Choose order address (optional)",
   "add_product": "Buy a product",
   "image_size_exceed": "Image is too large. Please pick an image under 3MB",
   "finalize": "Finalize",
@@ -604,6 +604,8 @@
   "enter_correct_phone_number": "Please enter a correct phone number",
   "the_shipping_price_can_change": "The shipping price can vary between",
   "and": "and",
-  "depending_on_store_location": "depending on the store location",
-  "this_order_can_get_changes":  "This order may be subject to changes on the prices"
+  "depending_on_store_location": "depending on the buying location",
+  "this_order_can_get_changes":  "This order may be subject to changes on the prices",
+  "name_too_long":  "Must be less than 30 characters",
+  "price_too_high":  "The price must be inferior to 100.000CFA"
 }

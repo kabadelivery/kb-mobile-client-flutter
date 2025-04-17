@@ -33,9 +33,14 @@ import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
 
-
-class OutOfAppOrderPage extends ConsumerWidget  {
+class OutOfAppOrderPage extends ConsumerStatefulWidget {
   static var routeName = "/OutOfAppOrderPage";
+
+  @override
+  ConsumerState<OutOfAppOrderPage> createState() => _OutOfAppOrderPageState();
+}
+
+class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
   int shipping_address_type=1;
   int order_address_type=2;
   int simple_additionnal_info_type =1;
@@ -52,13 +57,18 @@ class OutOfAppOrderPage extends ConsumerWidget  {
       ),
     );
   }
-  
   @override
-  Widget build(BuildContext context,WidgetRef ref) { 
-    if(reset){
-      resetProviders(ref);
-      reset = false;
-    }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (reset) {
+        resetProviders(ref);
+        reset = false;
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
@@ -273,22 +283,21 @@ class OutOfAppOrderPage extends ConsumerWidget  {
               child: InkWell(
                 onTap: () async {
                   int type_of_order = 4; // Default
-
+                  bool result = false;
                   List<DeliveryAddressModel> adrs = [];
 
-                  if (locationState.selectedOrderAddress == null) {
+                  if (locationState.selectedOrderAddress.isEmpty) {
                     type_of_order = out_of_app_order_type_without_address;
+                    result = await showShippingPriceRangeInfo(context,ref, type_of_order);
                   } else {
                     adrs = locationState.selectedOrderAddress;
-
                     if (adrs.isNotEmpty) {
                       type_of_order = out_of_app_order_type;
                     } else {
                       type_of_order = out_of_app_order_type_without_address;
                     }
+                     result = true;
                   }
-                 bool result = await showShippingPriceRangeInfo(context,ref, type_of_order);
-                  print("result $result");
                   if(result==true){
                     payAtDelivery(
                         context,

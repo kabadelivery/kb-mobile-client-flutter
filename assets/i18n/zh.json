@@ -549,10 +549,10 @@
   "package_shipping": "包裹递送",
   "choose_an_image": "选择图像",
   "product_name": "产品名称",
-  "product_price": "产品价格",
+  "product_price": "产品价格 （选修的）",
   "quantity": "数量",
   "additionnal_info": "附加信息",
-  "choose_order_address": "选择订单收货地址",
+  "choose_order_address": "选择订单收货地址 （选修的）",
   "add_product": "购买产品",
   "image_size_exceed": "图片太大。请选择 3MB 以下的图片",
   "finalize": "完成",
@@ -600,5 +600,8 @@
   "the_shipping_price_can_change": "运费可能在",
   "and":  "和",
   "depending_on_store_location": "取决于商店的位置",
-  "this_order_can_get_changes": "此订单可能会有变更"
+  "this_order_can_get_changes": "此订单可能会有变更",
+  "name_too_long":  "最多 30 个字符",
+  "price_too_high":  "必须低于100,000非洲金融共同体法郎"
+
 }

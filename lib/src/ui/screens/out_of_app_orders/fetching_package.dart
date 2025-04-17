@@ -35,14 +35,18 @@ import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
 
-class FecthingPackageOrderPage extends ConsumerWidget {
-
+class FecthingPackageOrderPage extends ConsumerStatefulWidget {
+  static var routeName = "/FecthingPackageOrderPage";
   final String additional_info;
   final File additionnal_info_image;
   final List<Map<String,dynamic>> districts;
   FecthingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
-  static var routeName = "/FecthingPackageOrderPage";
 
+  @override
+  ConsumerState<FecthingPackageOrderPage> createState() => _FecthingPackageOrderPageState();
+}
+
+class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrderPage> {
   int shipping_address_type=1;
   int order_address_type=2;
   int simple_additionnal_info_type =1;
@@ -53,10 +57,18 @@ class FecthingPackageOrderPage extends ConsumerWidget {
   int fetching_package_type = 6;
   bool reset = true;
   GlobalKey poweredByKey = GlobalKey();
-
-
   @override
-  Widget build(BuildContext context,WidgetRef ref) { 
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (reset) {
+        resetProviders(ref);
+        reset = false;
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
  
     Size size = MediaQuery.of(context).size;
     final products = ref.watch(productListProvider);
@@ -77,7 +89,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
     if(locationState.selectedOrderAddress==null){
       locationState.selectedOrderAddress=[];
     }
-    districtState.districts = districts;
+    districtState.districts = widget.districts;
     outOfAppScreenState.order_type=6;
     if(locationState.is_order_address_picked && locationState.is_shipping_address_picked){
       if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
@@ -147,7 +159,7 @@ class FecthingPackageOrderPage extends ConsumerWidget {
                           pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
                             additionnal_info_image: additionnalInfoState.image,
-                            districts: districts,
+                            districts: widget.districts,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(-1.0, 0.0);

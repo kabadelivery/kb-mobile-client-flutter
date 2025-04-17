@@ -69,12 +69,18 @@ Widget OutOfAppProduct(
                       ),
                       SizedBox(width: 10,),
                       //Name
-                      Text(name.length>15?name.substring(0,15)+"..":name,style: TextStyle(fontSize: size.width>700?15:12),),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(name.length>10?name.substring(0,10)+"..":name,style: TextStyle(fontSize: size.width>700?15:12),),
+                          Text("${price.toInt()}x${quantity}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: size.width>700?15:12),),
+
+                        ],
+                      ),
 
                     ],
                   ),
-                  Text("${price.toInt()}x${quantity}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: size.width>700?15:12),),
-                  Container(
+                   Container(
 
                     height: size.width>700?40:30,
                     decoration: BoxDecoration(

@@ -28,6 +28,7 @@ class OutOfAppProductForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _priceController = TextEditingController();
+    _priceController.text = "0";
     final Size size = MediaQuery.of(context).size;
     final FocusNode _nameFocusNode = FocusNode();
     final FocusNode _priceFocusNode = FocusNode();
@@ -125,6 +126,9 @@ class OutOfAppProductForm extends ConsumerWidget {
                         if (value.isEmpty) {
                           return "${AppLocalizations.of(context).translate('enter_product_name')}";
                         }
+                        if (value.length>30) {
+                          return "${AppLocalizations.of(context).translate('name_too_long')}";
+                        }
                       },
                       decoration: InputDecoration(
                         labelText: "${AppLocalizations.of(context).translate('product_name')}",
@@ -149,6 +153,8 @@ class OutOfAppProductForm extends ConsumerWidget {
                           return "${AppLocalizations.of(context).translate('enter_product_price')}";
                         } else if (int.parse(value) < 0) {
                           return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                        } else if(int.parse(value) >100000) {
+                          return "${AppLocalizations.of(context).translate('price_too_high')}";
                         }
                       },
                     ),
