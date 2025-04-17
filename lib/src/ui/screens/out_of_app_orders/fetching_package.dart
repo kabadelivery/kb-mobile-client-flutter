@@ -81,7 +81,8 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     final productsNotifier = ref.read(productListProvider.notifier);
     final districtState = ref.watch(districtProvider);
-    if(locationState.selectedOrderAddress.isEmpty){
+    if(locationState.selectedOrderAddress==null){
+      locationState.selectedOrderAddress=[];
       locationState.is_order_address_picked=false;
     }else{
       locationState.is_order_address_picked=true;
@@ -105,6 +106,8 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
 
       }
     }
+    print("order address : ${locationState.selectedOrderAddress}");
+    print("shipping address : ${locationState.selectedShippingAddress}");
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
