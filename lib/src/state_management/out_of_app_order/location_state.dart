@@ -1,6 +1,8 @@
 import '../../models/DeliveryAddressModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../xrint.dart';
+
 class PickingAdressState {
    bool is_shipping_address_picked;
    bool is_order_address_picked;
@@ -51,10 +53,10 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
           is_order_address_picked: true,
           selectedOrderAddress: [...currentAddresses, order_address],
         );
-        print("Order address added: ${state.selectedOrderAddress}");
+        xrint("Order address added: ${state.selectedOrderAddress}");
       }
     } catch (e) {
-      print('Error adding order_address: $e');
+      xrint('Error adding order_address: $e');
     }
   }
   deleteOrderAddress(DeliveryAddressModel order_address, bool is_order_address_picked) {
@@ -64,9 +66,9 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
         selectedOrderAddress: [],
         is_order_address_picked:false
       );
-      print("Order address removed: ${state.selectedOrderAddress}");
+      xrint("Order address removed: ${state.selectedOrderAddress}");
     } catch (e) {
-      print('Error removing order_address: $e'); 
+      xrint('Error removing order_address: $e'); 
     }
   }
 

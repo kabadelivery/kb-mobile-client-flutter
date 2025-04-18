@@ -1071,7 +1071,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 //    GlobalKey gk = _keyBox["${menuIndex}-${foodIndex}"];
 //    RenderBox renderBoxRed = gk.currentContext.findRenderObject();
 //    final position = renderBoxRed.localToGlobal(Offset.zero);
-//    print("POSITION of Red: $position ");
+//    xrint("POSITION of Red: $position ");
 
     if (_foodCount < FOOD_MAX) {
       if (food_selected.containsKey(food))
@@ -1109,7 +1109,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   Future<Null> _playAnimation() async {
     try {
       /*  _controller.addStatusListener((AnimationStatus status){
-        print(status);
+        xrint(status);
         if (status == AnimationStatus.completed) {
           if (_controller.upperBound == 1.3)
             _controller.reverse(from: _controller.upperBound);

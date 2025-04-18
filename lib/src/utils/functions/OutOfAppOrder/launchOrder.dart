@@ -303,9 +303,9 @@ void _showDialog(
                         if (!okBackToHome) {
                           try {
                             resetProviders(ref);
-                            print("Resetting providers successfully");
+                            xrint("Resetting providers successfully");
                           } catch (e) {
-                            print("Error resetting providers: $e");
+                            xrint("Error resetting providers: $e");
                           }
                           Navigator.of(context).pop();
                         } else {
@@ -332,7 +332,7 @@ void launchOrderResponse(int errorCode, BuildContext context, WidgetRef ref) {
   ref
       .read(outOfAppScreenStateProvier.notifier)
       .setIsPayAtDeliveryLoading(false);
-  print("ERROR CODE $errorCode");
+  xrint("ERROR CODE $errorCode");
   if (errorCode == 0) {
     CustomerUtils.unlockBestSellerVersion();
     _showOrderSuccessDialog(context, ref);

@@ -54,7 +54,7 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      print("customer?.token ${customer?.token}");
+      xrint("customer?.token ${customer?.token}");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING).toString(),
           data: _data);

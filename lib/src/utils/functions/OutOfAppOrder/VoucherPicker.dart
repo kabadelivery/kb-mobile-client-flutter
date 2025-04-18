@@ -15,6 +15,7 @@ import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../state_management/out_of_app_order/products_state.dart';
 import '../../../ui/screens/home/me/vouchers/MyVouchersPage.dart';
+import '../../../xrint.dart';
 import '../CustomerUtils.dart';
 
 Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
@@ -105,7 +106,7 @@ Future<OrderBillConfiguration> getBillingForVoucher(
       return null;
     }
   } catch (e) {
-    print("ERROR : $e");
+    xrint("ERROR : $e");
     return null;
   }
 }

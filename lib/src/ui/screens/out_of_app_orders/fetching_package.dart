@@ -24,6 +24,7 @@ import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
+import '../../../xrint.dart';
 import '../../customwidgets/ChooseDistrict.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
@@ -106,8 +107,8 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
 
       }
     }
-    print("order address : ${locationState.selectedOrderAddress}");
-    print("shipping address : ${locationState.selectedShippingAddress}");
+    xrint("order address : ${locationState.selectedOrderAddress}");
+    xrint("shipping address : ${locationState.selectedShippingAddress}");
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,

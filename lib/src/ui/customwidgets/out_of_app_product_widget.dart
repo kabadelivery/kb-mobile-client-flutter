@@ -17,6 +17,7 @@ import '../../resources/out_of_app_order_api.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
+import '../../xrint.dart';
 
 Widget OutOfAppProduct(
     BuildContext context,
@@ -27,7 +28,7 @@ Widget OutOfAppProduct(
     int price,
     int quantity){
   Size size = MediaQuery.of(context).size;
-  print(size);
+  xrint(size);
   bool isDeleted= false;
   return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0.0, end: 1.0),

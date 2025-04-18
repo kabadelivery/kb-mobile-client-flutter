@@ -17,6 +17,7 @@ import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/VoucherPicker.dart';
+import '../../xrint.dart';
 import 'MyVoucherMiniWidget.dart';
 
 Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
@@ -32,7 +33,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productListProvider);
     VoucherModel voucherSelected = voucherState.selectedVoucher;
 
-    print('VoucherModeler $voucherSelected');
+    xrint('VoucherModeler $voucherSelected');
     if (voucherSelected == null) {
       return Column(children: <Widget>[
         SizedBox(height: 10),
@@ -48,7 +49,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
 
               });
             }catch(e){
-              print("ERROR getBillingForVoucher : $e");
+              xrint("ERROR getBillingForVoucher : $e");
             }
 
           },

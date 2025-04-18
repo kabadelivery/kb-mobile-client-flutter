@@ -14,6 +14,8 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../xrint.dart';
+
 class BuyCategoryWidget extends StatefulWidget {
   ServiceMainEntity entity;
 
@@ -135,7 +137,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         widget.mDialog(
             "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
       } else {
-        print('key ${widget.key}');
+        xrint('key ${widget.key}');
         page =widget.entity.key=="packages"?ShippingPackageOrderPage():
         widget.entity.key=="out of app"? OutOfAppOrderPage():
         ShopListPageRefined(

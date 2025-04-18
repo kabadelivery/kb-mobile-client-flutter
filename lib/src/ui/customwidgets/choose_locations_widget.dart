@@ -17,6 +17,7 @@ import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 import '../../utils/functions/Utils.dart';
+import '../../xrint.dart';
 import 'BouncingWidget.dart';
 
 Widget ChooseShippingAddress(
@@ -239,9 +240,9 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                                   outOfAppNotifier.setShowLoading(false);
                                   outOfAppNotifier.setIsBillBuilt(false);
                                 }
-                                print("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
+                                xrint("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
                               }catch(e){
-                                print("ENRRRRRR $e");
+                                xrint("ENRRRRRR $e");
                               }
 
 

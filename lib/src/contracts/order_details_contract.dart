@@ -54,7 +54,6 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       return;
     isWorking = true;
     try {
-      print("orderId: $orderId");
       CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId,is_out_of_app_order:is_out_of_app_order);
       _orderDetailsView.showLoading(false);
       if (commandModel != null) {
@@ -66,7 +65,7 @@ class OrderDetailsPresenter implements OrderDetailsContract {
       /* Food failure */
       _orderDetailsView.showLoading(false);
       xrint("error ${_}");
-      print("StackTrace: $stackTrace");
+     
       if (_ == -2) {
         _orderDetailsView.systemError();
       } else {

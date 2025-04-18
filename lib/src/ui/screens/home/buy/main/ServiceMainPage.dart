@@ -343,7 +343,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             }else{
                           try{
                             districts  = await showLoadingDialog(context);
-                            print("districts $districts");
+                            xrint("districts $districts");
                           }catch(e) {
                             xrint("error $e");
                           }

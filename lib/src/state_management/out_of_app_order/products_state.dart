@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../xrint.dart';
+
 class OutOfAppProductNotifier extends StateNotifier<List<Map<String,dynamic>>>{
   OutOfAppProductNotifier():super([]);
 
@@ -39,12 +41,12 @@ class QuantityNotifier extends StateNotifier<int>{
   }
   void increase() {
     state++;
-    print("Quantity increased: $state");
+    xrint("Quantity increased: $state");
   }
   void decrease(){
     if(state>1){
       state--;
-      print("Quantity decreased: $state");
+      xrint("Quantity decreased: $state");
     }
   }
 }

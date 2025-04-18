@@ -1396,7 +1396,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       }else {
         CustomerUtils utils = CustomerUtils();
         bool isUpdateSeen = await utils.getViewUpdate();
-        print("isUpdateSeen $isUpdateSeen");
+        xrint("isUpdateSeen $isUpdateSeen");
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }
@@ -1813,7 +1813,7 @@ void _getShippingPriceRange()async{
     Map<String,dynamic> range = await api.fetchShippingPriceRange(customer);
     await OutOfAppSharedPrefs.saveStringMap(range);
   }catch(e){
-    print(e);
+    xrint(e);
   }
 }
 void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {

@@ -22,6 +22,7 @@ import '../../../utils/functions/OutOfAppOrder/dialogToFetchShippingPrice.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
+import '../../../xrint.dart';
 import '../../customwidgets/BouncingWidget.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
@@ -85,8 +86,8 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
     //    outOfAppScreenState.order_type=3;
     // outOfAppScreenState.isBillBuilt=false;
     // outOfAppScreenState.showLoading=false;
-    print("shipping_address ${locationState.selectedShippingAddress}");
-    print("shipping_address order_address ${locationState.selectedOrderAddress}");
+    xrint("shipping_address ${locationState.selectedShippingAddress}");
+    xrint("shipping_address order_address ${locationState.selectedOrderAddress}");
     if(locationState.selectedOrderAddress.isNotEmpty && locationState.selectedShippingAddress!=null){
       if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
 

@@ -9,6 +9,7 @@ import '../../localizations/AppLocalizations.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
+import '../../xrint.dart';
 import 'BouncingWidget.dart';
 
 Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String text) {
@@ -82,7 +83,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
                   });
 
                 }catch(e){
-                  print("##Error in image picking, out of app order## $e");
+                  xrint("##Error in image picking, out of app order## $e");
                 }
               }:null,
             child: Container(

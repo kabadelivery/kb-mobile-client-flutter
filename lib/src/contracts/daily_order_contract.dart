@@ -57,7 +57,6 @@ class DailyOrderPresenter implements DailyOrderContract {
       /* BestSeller failure */
       _dailyOrderView.showLoading(false);
       xrint("error ${_}");
-      print("StackTrace: $stackTrace");
       if (_ == -2) {
         _dailyOrderView.systemError();
       } else {

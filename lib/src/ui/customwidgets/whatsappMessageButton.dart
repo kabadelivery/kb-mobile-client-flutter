@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../models/CommandModel.dart';
+import '../../xrint.dart';
 
 Widget WhatsappMessageButton(String text, String message, String phoneNumber) {
   void _sendMessage() async {
@@ -10,7 +11,7 @@ Widget WhatsappMessageButton(String text, String message, String phoneNumber) {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print("Could not launch $url");
+      xrint("Could not launch $url");
     }
   }
 

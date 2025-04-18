@@ -14,6 +14,7 @@ import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../ui/screens/home/me/address/MyAddressesPage.dart';
+import '../../../xrint.dart';
 import '../CustomerUtils.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -138,7 +139,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);
               }
-              print(
+              xrint(
                   "setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
             }
           } else {
@@ -170,12 +171,12 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);
               }
-              print(
+              xrint(
                   "setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
             }
           }
         } catch (e) {
-          print("ENRRRRRR $e");
+          xrint("ENRRRRRR $e");
         }
       });
     }

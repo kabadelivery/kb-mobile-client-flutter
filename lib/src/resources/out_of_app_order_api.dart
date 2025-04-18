@@ -58,7 +58,7 @@ class OutOfAppOrderApiProvider{
           return validateSSL(cert, host, port);
         };
       };
-      print("customer?.token ${customer?.token}");
+      xrint("customer?.token ${customer?.token}");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_OUT_OF_APP_COMPUTE_BILLING).toString(),
           data: _data);
@@ -243,11 +243,11 @@ dio.options
         data: json.encode({"orderDetails":orderDetailsWithImages}),
       
       );
-      print("response.data ${response.data}");
+      xrint("response.data ${response.data}");
      return response.data['orders'];
     } catch (e, stackTrace) {
-      print("Error: $e");
-      print("StackTrace: $stackTrace");
+      xrint("Error: $e");
+      xrint("StackTrace: $stackTrace");
 
       return "Error: $e\nLine: ${stackTrace.toString().split("\n")[0]}";
     }
@@ -277,7 +277,7 @@ dio.options
           List<Map<String, dynamic>> districts = List<Map<String, dynamic>>.from(
               response.data['districts'].map((item) => Map<String, dynamic>.from(item))
           );
-          print("response.data ${districts}");
+          xrint("response.data ${districts}");
           return districts;
         }catch(e){
           xrint("error $e");
@@ -307,7 +307,7 @@ dio.options
       Response response = await dio.post(url);
 
       Map<String, dynamic> range =  response.data['range'];
-      print("response.data ${range}");
+      xrint("response.data ${range}");
       return range;
     }catch(e){
 

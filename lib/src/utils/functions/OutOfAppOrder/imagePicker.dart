@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../localizations/AppLocalizations.dart';
+import '../../../xrint.dart';
 
 Future<bool> _isImageSizeValid(File imageFile) async {
   final fileSize = await imageFile.length();
@@ -46,6 +47,6 @@ Future<void> removeImageFromCache(String imagePath) async {
   final file = File(imagePath);
   if (await file.exists()) {
     await file.delete();
-    print("Image deleted from cache: $imagePath");
+    xrint("Image deleted from cache: $imagePath");
   }
 }
