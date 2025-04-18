@@ -149,11 +149,12 @@ class OutOfAppProductForm extends ConsumerWidget {
                       ),
                       style: TextStyle(fontSize: 13),
                       validator: (value) {
-                        if (value.isEmpty) {
-                          return "${AppLocalizations.of(context).translate('enter_product_price')}";
-                        } else if (int.parse(value) < 0) {
+                         if (value.isEmpty) {
                           return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
-                        } else if(int.parse(value) >100000) {
+                        }else if (int.parse(value) < 0 ){
+                           return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+
+                         } else if(int.parse(value) >100000) {
                           return "${AppLocalizations.of(context).translate('price_too_high')}";
                         }
                       },
@@ -234,9 +235,10 @@ class OutOfAppProductForm extends ConsumerWidget {
                             InkWell(
                               onTap: () {
                                 if (_formKey.currentState.validate()) {
+
                                   final product = {
                                     "name": _nameController.text,
-                                    "price": int.parse(_priceController.text),
+                                    "price": int.parse(_priceController.text.isEmpty ? "0" : _priceController.text),
                                     "quantity": int.parse(quantity.toString()),
                                     "image": imagePath,
                                   };

@@ -26,6 +26,8 @@ import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
@@ -46,6 +48,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
+import '../../../utils/functions/NotLoggedInPopUp.dart';
+import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '_home/HomeWelcomeNewPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
@@ -57,7 +61,7 @@ FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 class HomePage extends StatefulWidget {
   static var routeName = "/HomePage";
-  bool is_out_of_app_order ;
+  bool is_out_of_app_order;
   var argument;
 
   var destination;
@@ -68,7 +72,12 @@ class HomePage extends StatefulWidget {
 
   bool hasGps = false;
 
-  HomePage({Key key, this.destination, this.argument,this.is_out_of_app_order=false}) : super(key: key);
+  HomePage(
+      {Key key,
+      this.destination,
+      this.argument,
+      this.is_out_of_app_order = false})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -166,7 +175,6 @@ class _HomePageState extends State<HomePage> {
   }
   //sharedPreferences to save messageId
 
-
   void _logout() {
     CustomerUtils.clearCustomerInformations().whenComplete(() {
       StateContainer.of(context).updateLoggingState(state: 0);
@@ -196,8 +204,10 @@ class _HomePageState extends State<HomePage> {
         argument: widget.argument);
     serviceMainPage =
         ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter());
-    dailyOrdersPage =
-        DailyOrdersPage(key: orderKey, presenter: DailyOrderPresenter(),is_out_of_app_order: widget.is_out_of_app_order);
+    dailyOrdersPage = DailyOrdersPage(
+        key: orderKey,
+        presenter: DailyOrderPresenter(),
+        is_out_of_app_order: widget.is_out_of_app_order);
     meAccountPage = MeNewAccountPage(key: meKey);
     pages = [homeWelcomePage, serviceMainPage, dailyOrdersPage, meAccountPage];
     super.initState();
@@ -280,19 +290,20 @@ class _HomePageState extends State<HomePage> {
         onSelectNotification: onSelectNotification);
 
     // new try
-    FirebaseMessaging.onMessage.listen((RemoteMessage message){
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
       if (message.notification != null) {
-        xrint('pnotif Message also contained a notification: ${message.notification.toString()}');
+        xrint(
+            'pnotif Message also contained a notification: ${message.notification.toString()}');
 
         NotificationItem notificationItem =
             _notificationFromMessage(message.data);
-          if(message.messageId!=messageId){
-            iLaunchNotifications(notificationItem);
-            messageId=message.messageId;
-          }
+        if (message.messageId != messageId) {
+          iLaunchNotifications(notificationItem);
+          messageId = message.messageId;
+        }
       }
     });
 
@@ -357,7 +368,7 @@ class _HomePageState extends State<HomePage> {
         StateContainer.of(context).customer = value;
       });
     });
-  //  _resetValue();
+    //  _resetValue();
   }
 
   void mDialog(String message) {
@@ -478,7 +489,8 @@ class _HomePageState extends State<HomePage> {
       xrint(e);
     }
     int type = int.parse(notificationFDestination['type'].toString());
-    int is_out_of_app = int.parse(notificationFDestination['is_out_of_app'].toString());
+    int is_out_of_app =
+        int.parse(notificationFDestination['is_out_of_app'].toString());
     int productId =
         int.parse(notificationFDestination['product_id'].toString());
     switch (type) {
@@ -493,7 +505,8 @@ class _HomePageState extends State<HomePage> {
       case NotificationFDestination.COMMAND_END_SHIPPING:
       case NotificationFDestination.COMMAND_CANCELLED:
       case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToOrderDetailsWithId(productId, is_out_of_app_order: is_out_of_app);
+        _jumpToOrderDetailsWithId(productId,
+            is_out_of_app_order: is_out_of_app);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
         _jumpToTransactionHistory();
@@ -522,8 +535,9 @@ class _HomePageState extends State<HomePage> {
     _jumpToPage(
         context,
         OrderNewDetailsPage(
-            is_out_of_app_order: is_out_of_app_order==0?false:true,
-            orderId: productId, presenter: OrderDetailsPresenter()));
+            is_out_of_app_order: is_out_of_app_order == 0 ? false : true,
+            orderId: productId,
+            presenter: OrderDetailsPresenter()));
   }
 
   void _jumpToTransactionHistory() {
@@ -748,7 +762,7 @@ class _HomePageState extends State<HomePage> {
     subscription.cancel();
   }
 
-  void _handleLinksImmediately(String link) {
+  void _handleLinksImmediately(String link) async {
     if (!(DateTime.now().millisecondsSinceEpoch -
             StateContainer.of(context).lastTimeLinkMatchAction >
         2000)) {
@@ -840,11 +854,43 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.RESTAURANT;
             /* convert from hexadecimal to decimal */
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(
-                context,
-                ShopDetailsPage(
-                    restaurant: ShopModel(id: widget.argument),
-                    presenter: RestaurantDetailsPresenter()));
+            // check if restaurant is out of app or colis
+            if (pathSegments[1] == "795") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, OutOfAppOrderPage());
+              }
+            } else if (pathSegments[1] == "794") {
+              List<Map<String, dynamic>> districts = [];
+              List<Map<String, dynamic>> cachedDistricts =
+                  await CustomerUtils.getCachedDistricts();
+              if (cachedDistricts != null && cachedDistricts.isNotEmpty) {
+                districts = cachedDistricts;
+              } else {
+                try {
+                  districts = await showLoadingDialog(context);
+                  print("districts $districts");
+                } catch (e) {
+                  xrint("error $e");
+                }
+              }
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(
+                    context,
+                    ShippingPackageOrderPage(
+                      districts: districts,
+                    ));
+              }
+            } else {
+              _jumpToPage(
+                  context,
+                  ShopDetailsPage(
+                      restaurant: ShopModel(id: widget.argument),
+                      presenter: RestaurantDetailsPresenter()));
+            }
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
@@ -1355,17 +1401,17 @@ NotificationItem _notificationFromMessage(Map<String, dynamic> messageEntry) {
         destination: NotificationFDestination(
             type: int.parse(destinationData['type'].toString()),
             product_id: int.parse(destinationData["product_id"].toString()),
-            is_out_of_app: int.parse(destinationData['is_out_of_app'].toString())
-        ));
+            is_out_of_app:
+                int.parse(destinationData['is_out_of_app'].toString())));
     return notificationItem;
   } catch (_) {
     xrint(_.toString());
   }
   return null;
 }
+
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
-
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,

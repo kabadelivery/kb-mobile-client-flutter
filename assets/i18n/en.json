@@ -572,7 +572,7 @@
   "package_details":"Enter the package details",
   "package_amount":"Amount to retrieve (Optional)",
   "please_enter_amount":"Please enter the amount",
-  "please_enter_valid_amount":"Please enter a valid amount",
+  "please_enter_valid_amount":"Enter 0 if you don't know the amount",
   "validate":"Validate",
   "modify":"Modify",
   "package_order":"Package order",
