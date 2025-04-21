@@ -37,10 +37,10 @@ class RestaurantApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo
+          List<RestaurantSubMenuModel>? restaurantSubModel = lo
               ?.map((comment) => RestaurantSubMenuModel.fromJson(comment))
               ?.toList();
-          return restaurantSubModel;
+          return restaurantSubModel!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {

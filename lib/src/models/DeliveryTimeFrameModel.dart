@@ -6,9 +6,9 @@ import 'package:KABA/src/models/ShopModel.dart';
 
 class DeliveryTimeFrameModel {
 
-  int id; // id of it
-  String start; // what time start delivery
-  String end;
+  int? id; // id of it
+  String? start; // what time start delivery
+  String? end;
 
   DeliveryTimeFrameModel({this.id, this.start, this.end});
 

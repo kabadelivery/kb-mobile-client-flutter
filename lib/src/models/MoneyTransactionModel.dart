@@ -1,14 +1,14 @@
 
 class MoneyTransactionModel {
 
-  int id;
-  String details;
-  String value;
-  int state;
-  int type;
-  int created_at;
-  bool payAtDelivery;
-  int command_id;
+  int? id;
+  String? details;
+  String? value;
+  int? state;
+  int? type;
+  int? created_at;
+  bool? payAtDelivery;
+  int? command_id;
 
   MoneyTransactionModel({
     this.id,
@@ -61,14 +61,14 @@ class MoneyTransactionModel {
   }
 
   MoneyTransactionModel copyWith({
-    int id,
-    String details,
-    String value,
-    int state,
-    int type,
-    int created_at,
-    bool payAtDelivery,
-    int command_id,
+    int? id,
+    String? details,
+    String? value,
+    int? state,
+    int? type,
+    int? created_at,
+    bool? payAtDelivery,
+    int? command_id,
   }) {
     return MoneyTransactionModel(
       id: id ?? this.id,

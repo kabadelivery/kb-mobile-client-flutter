@@ -31,7 +31,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
     final locationNotifier= ref.read(locationStateProvider.notifier);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     final productState = ref.watch(productListProvider);
-    VoucherModel voucherSelected = voucherState.selectedVoucher;
+    VoucherModel voucherSelected = voucherState.selectedVoucher!;
 
     xrint('VoucherModeler $voucherSelected');
     if (voucherSelected == null) {
@@ -41,8 +41,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
         InkWell(
           onTap: ()async {
             try{
-              VoucherModel voucher = await SelectVoucher(context, ref, false, null);
-              await getBillingForVoucher(context,ref,voucher).then((value)async {
+              VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
+              await getBillingForVoucher(context,ref,voucher!).then((value)async {
                 outOfAppNotifier.setIsBillBuilt(true);
                 outOfAppNotifier.setShowLoading(false);
                 orderBillingNotifier.setOrderBillConfiguration(value);
@@ -84,8 +84,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                           IconButton(
                               icon: Icon(Icons.add, color: KColors.white),
                               onPressed: ()async {
-                                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
-                                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+                                VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
+                                OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
                                 orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                                 outOfAppNotifier.setIsBillBuilt(true);
@@ -96,8 +96,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                               icon: Icon(FontAwesomeIcons.ticketAlt,
                                   color: Colors.white),
                               onPressed: ()async {
-                                VoucherModel voucher = await SelectVoucher(context, ref, false, null);
-                                OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+                                VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
+                                OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
                                 orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                                 outOfAppNotifier.setIsBillBuilt(true);
@@ -107,7 +107,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                         ],
                       ),
                       Text(
-                          "${AppLocalizations.of(context).translate('add_coupon')}",
+                          "${AppLocalizations.of(context)!.translate('add_coupon')}",
                           style: TextStyle(color: Colors.white, fontSize: 14)),
                     ])),
           ),
@@ -119,7 +119,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
       ]);
     }
     else {
-      OrderBillConfiguration orderBillConfiguration;
+      OrderBillConfiguration? orderBillConfiguration;
 //   _selectedVoucher
       return Column(
         children: [
@@ -161,10 +161,10 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                               OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
                           try
                               {await api.computeBillingAction(
-                                  orderBillingState.customer,
-                                  locationState.selectedOrderAddress,
+                                  orderBillingState.customer!,
+                                  locationState.selectedOrderAddress!,
                                   formData,
-                                  locationState.selectedShippingAddress,
+                                  locationState.selectedShippingAddress!,
                                   null,
                                   false).then((value){
                                 voucherNotifier.state.selectedVoucher=null;
@@ -179,7 +179,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                                 outOfAppNotifier.setIsBillBuilt(false);
                                 outOfAppNotifier.setShowLoading(false);
                                         }
@@ -198,9 +198,9 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
 
 }
 
-Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConfiguration orderBillConfiguration) {
+Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConfiguration? orderBillConfiguration) {
 
-  List<VoucherModel> eligible_vouchers = orderBillConfiguration!=null?orderBillConfiguration.eligible_vouchers:[];
+  List<VoucherModel>? eligible_vouchers = orderBillConfiguration!=null?orderBillConfiguration.eligible_vouchers:[];
   if(orderBillConfiguration!=null){
     ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
     var outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
@@ -226,8 +226,8 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
         child: Column(
             children: List.generate(eligible_vouchers.length, (index) {
               if (eligible_vouchers[index].id == voucherState.selectedVoucher?.id ||
-                  eligible_vouchers[index].use_count -
-                      eligible_vouchers[index].already_used_count ==
+                  eligible_vouchers[index].use_count! -
+                      eligible_vouchers[index].already_used_count! ==
                       0)
                 return Container(
                   /* padding: EdgeInsets.only(
@@ -266,20 +266,20 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
                                 width: 10,
                               ),
                               Text(
-                                  "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context).translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context).translate('voucher_type_delivery')}" : "${AppLocalizations.of(context).translate('voucher_type_all')}")}",
+                                  "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context)!.translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context)!.translate('voucher_type_delivery')}" : "${AppLocalizations.of(context)!.translate('voucher_type_all')}")}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
                                       color: KColors.new_black))
                             ]),
                             SizedBox(height: 5),
-                            Text(eligible_vouchers[index].trade_name,
+                            Text(eligible_vouchers[index].trade_name!,
                                 style: TextStyle(color: Colors.grey, fontSize: 12))
                           ]),
                       GestureDetector(
                         onTap: () async{
-                          VoucherModel voucher = await SelectVoucher(context,ref,true,eligible_vouchers[index]);
-                          OrderBillConfiguration orderBillConfiguration = await getBillingForVoucher(context,ref,voucher);
+                          VoucherModel? voucher = await SelectVoucher(context,ref,true,eligible_vouchers[index]);
+                          OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
                           ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
                           outOfAppNotifier.setIsBillBuilt(true);
@@ -287,7 +287,7 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
                         },
                         child: Container(
                           child: Text(
-                              "${AppLocalizations.of(context).translate('voucher_use')}",
+                              "${AppLocalizations.of(context)!.translate('voucher_use')}",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: KColors.primaryColor,

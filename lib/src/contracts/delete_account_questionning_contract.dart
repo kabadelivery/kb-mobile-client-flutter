@@ -27,11 +27,11 @@ class DeleteAccountQuestioningPresenter
     implements DeleteAccountQuestioningContract {
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   DeleteAccountQuestioningView _deleteAccountQuestioningView;
 
-  DeleteAccountQuestioningPresenter() {
+  DeleteAccountQuestioningPresenter(this._deleteAccountQuestioningView) {
     provider = new ClientPersonalApiProvider();
   }
 
@@ -49,13 +49,13 @@ class DeleteAccountQuestioningPresenter
     try {
       var res =
           await provider.postQuestioningResult(customer, reasons, message);
-      VoucherModel mVoucher = null;
+      VoucherModel? mVoucher = null;
       if (res["data"]["voucher"] != null)
         mVoucher = VoucherModel.fromJson(res["data"]["voucher"]);
       // also get the restaurant entity here.
       _deleteAccountQuestioningView.showLoading(false);
       _deleteAccountQuestioningView.showProposedReparation(
-          mVoucher, res["data"]["id"], res["data"]["balance"]);
+          mVoucher!, res["data"]["id"], res["data"]["balance"]);
     } catch (_) {
       /* BestSeller failure */
       _deleteAccountQuestioningView.showLoading(false);

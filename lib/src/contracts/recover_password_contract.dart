@@ -33,11 +33,11 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
 
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   RecoverPasswordView _recoverPasswordView;
 
-  RecoverPasswordPresenter() {
+  RecoverPasswordPresenter(this._recoverPasswordView) {
     provider = new ClientPersonalApiProvider();
   }
 

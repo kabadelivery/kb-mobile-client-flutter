@@ -32,9 +32,9 @@ class MoviePresenter implements MovieContract {
 
   MovieView _MovieView;
 
-  CinemaApiProvider provider;
+  late CinemaApiProvider provider;
 
-  MoviePresenter() {
+  MoviePresenter(this._MovieView) {
     provider = new CinemaApiProvider();
   }
 
@@ -48,7 +48,7 @@ class MoviePresenter implements MovieContract {
     isWorking = true;
     _MovieView.showLoading(true);
     try {
-      Map<String, dynamic> res =
+      Map? res =
           await provider.fetchMovieDetailsWithMovieId(MovieId);
       int menuId = 0;
       // also get the restaurant entity here.

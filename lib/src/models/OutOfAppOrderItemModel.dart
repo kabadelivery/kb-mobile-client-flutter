@@ -1,9 +1,9 @@
 
 class OutOfAppOrderItemModel {
-   String name;
-   String price;
-   String quantity;
-   String pic="";
+   String? name;
+   String? price;
+   String? quantity;
+   String? pic="";
 
   // Constructor
   OutOfAppOrderItemModel({

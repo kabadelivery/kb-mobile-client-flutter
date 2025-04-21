@@ -28,9 +28,9 @@ class BestSellerPresenter implements BestSellerContract {
 
   BestSellerView _bestSellerView;
 
-  MenuApiProvider provider;
+  late MenuApiProvider provider;
 
-  BestSellerPresenter() {
+  BestSellerPresenter(this._bestSellerView) {
     provider = new MenuApiProvider();
   }
 
@@ -50,10 +50,10 @@ class BestSellerPresenter implements BestSellerContract {
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
-          List<BestSellerModel> bestSellers =
+          List<BestSellerModel>? bestSellers =
               lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
           /* send these to json */
-          _bestSellerView.inflateBestSeller(bestSellers);
+          _bestSellerView.inflateBestSeller(bestSellers!);
           _bestSellerView.showLoading(false);
         } else {
           _bestSellerView.showLoading(true);
@@ -75,13 +75,13 @@ class BestSellerPresenter implements BestSellerContract {
         // save best seller json
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(bsellers_json)["data"];
-        List<BestSellerModel> bestSellers =
+        List<BestSellerModel>? bestSellers =
             lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
         /* send these to json */
         CustomerUtils.saveBestSellerPage(bsellers_json);
         CustomerUtils.saveBestSellerVersion(); // date
         _bestSellerView.showLoading(false);
-        _bestSellerView.inflateBestSeller(bestSellers);
+        _bestSellerView.inflateBestSeller(bestSellers!);
         isWorking = false;
       } catch (_) {
         /* BestSeller failure */

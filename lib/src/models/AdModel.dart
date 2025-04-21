@@ -11,14 +11,14 @@ class AdModel {
   static const int BEST_SELLER = 90;
   static const int EVENEMENT = 91;
 
-  int id;
-  String name;
-  String link;
-  String description;
-  String pic;
-  String food_json;
-  int type;
-  int entity_id;
+  int? id;
+  String? name;
+  String? link;
+  String? description;
+  String? pic;
+  String? food_json;
+  int? type;
+  int? entity_id;
 
   AdModel({this.id, this.name, this.link, this.description, this.pic,
     this.food_json, this.type, this.entity_id});

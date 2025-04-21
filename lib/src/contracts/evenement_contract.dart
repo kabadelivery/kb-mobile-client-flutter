@@ -25,9 +25,9 @@ class EvenementPresenter implements EvenementContract {
 
   EvenementView _evenementView;
 
-  AppApiProvider provider;
+  late AppApiProvider provider;
 
-  EvenementPresenter() {
+  EvenementPresenter(this._evenementView) {
     provider = new AppApiProvider();
   }
 

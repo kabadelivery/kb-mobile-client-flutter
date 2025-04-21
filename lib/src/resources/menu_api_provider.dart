@@ -36,7 +36,7 @@ class MenuApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo
+          List<RestaurantSubMenuModel>? restaurantSubModel = lo
               ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
               ?.toList();
           ShopModel restaurantModel =
@@ -82,7 +82,7 @@ class MenuApiProvider {
               mJsonDecode(response.data)["data"]["food"]);
 
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo
+          List<RestaurantSubMenuModel>? restaurantSubModel = lo
               ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
               ?.toList();
           ShopModel restaurantModel =
@@ -129,7 +129,7 @@ class MenuApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel> restaurantSubModel = lo
+          List<RestaurantSubMenuModel>? restaurantSubModel = lo
               ?.map((comment) => RestaurantSubMenuModel.fromJson(comment))
               ?.toList();
           ShopModel restaurantModel =
@@ -193,7 +193,7 @@ class MenuApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -263,7 +263,7 @@ class MenuApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -300,7 +300,7 @@ class MenuApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -338,7 +338,7 @@ class MenuApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -371,7 +371,7 @@ class MenuApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

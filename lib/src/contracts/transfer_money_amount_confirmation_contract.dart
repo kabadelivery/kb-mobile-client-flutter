@@ -28,9 +28,9 @@ class TransferMoneyAmountConfirmationPresenter implements TransferMoneyAmountCon
 
   TransferMoneyAmountConfirmationView _transferMoneyAmountConfirmationView;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
-  TransferMoneyAmountConfirmationPresenter() {
+  TransferMoneyAmountConfirmationPresenter(this._transferMoneyAmountConfirmationView) {
     provider = new ClientPersonalApiProvider();
   }
 

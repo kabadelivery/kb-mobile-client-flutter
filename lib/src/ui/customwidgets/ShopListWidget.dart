@@ -17,10 +17,10 @@ import 'package:lottie/lottie.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopListWidget extends StatefulWidget {
-  ShopModel shopModel;
+  ShopModel? shopModel;
 
   ShopListWidget({
-    Key key,
+    Key? key,
     this.shopModel,
   }) : super(key: key);
 
@@ -76,7 +76,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   fit: BoxFit.cover,
                                                   image: CachedNetworkImageProvider(
                                                       Utils.inflateLink(
-                                                          widget.shopModel?.pic))))),
+                                                          widget.shopModel!.pic!))))),
                                     ),
                                   ),
                                   Positioned(top: 0, right: 0, child: widget.shopModel?.is_promotion == 1 ? Container(width: 40, height: 40,child: LottieBuilder.network("https://app.kaba-delivery.com/lottie/promotion_lottie.json"),padding: EdgeInsets.all(0), margin: EdgeInsets.all(0),): Container())
@@ -102,7 +102,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500)),
                                         ),
-                                        widget?.shopModel?.stars != null && widget?.shopModel?.stars > 1 ?
+                                        widget?.shopModel?.stars != null && widget.shopModel!.stars! > 1 ?
                                         Row(mainAxisSize: MainAxisSize.min,children: [
                                           SizedBox(width: 5),
                                           Container(decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(20), borderRadius: BorderRadius.circular(20)),
@@ -149,7 +149,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     SizedBox(height: 10),
                                     /* kilometers and shipping fees */
                                     Row (children: <Widget>[
-                                      _getRestaurantStateTag(widget?.shopModel),
+                                      _getRestaurantStateTag(widget.shopModel!),
                                       SizedBox(width: 5),
                                       widget.shopModel?.distance == null
                                           ? Container()
@@ -168,7 +168,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                       color: KColors.mGreen,
                                                       size: 10),
                                                   Text(
-                                                      " ${widget.shopModel?.distance}${AppLocalizations.of(context).translate('km')}",
+                                                      " ${widget.shopModel?.distance}${AppLocalizations.of(context)!.translate('km')}",
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontWeight:
@@ -210,9 +210,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                           (widget.shopModel
                                                                       ?.delivery_pricing ==
                                                                   "~"
-                                                              ? "${AppLocalizations.of(context).translate('out_of_range')}"
-                                                              : widget?.shopModel
-                                                                      ?.delivery_pricing +
+                                                              ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
+                                                              : widget.shopModel
+                                                                      !.delivery_pricing! +
                                                                   " F"),
                                                           style: TextStyle(
                                                               fontWeight:
@@ -243,8 +243,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                       child: InkWell(
                         onTap: widget?.shopModel?.coming_soon == 0
                             ? () =>
-                                _jumpToShopDetails(context, widget.shopModel)
-                            : () => _comingSoon(context, widget.shopModel),
+                                _jumpToShopDetails(context, widget.shopModel!)
+                            : () => _comingSoon(context, widget.shopModel!),
                         child: Container(
                           child: Center(
                               child: Icon(
@@ -265,8 +265,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
         ),
         onTap: () {
           widget?.shopModel?.coming_soon == 0
-              ? _jumpToRestaurantMenu(context, widget.shopModel)
-              : _comingSoon(context, widget.shopModel);
+              ? _jumpToRestaurantMenu(context, widget.shopModel!)
+              : _comingSoon(context, widget.shopModel!);
         }));
   }
 
@@ -281,10 +281,10 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
-                distance: shopModel?.distance,
-                shipping_price: shopModel?.delivery_pricing,
+                distance: shopModel!.distance!,
+                shipping_price: shopModel!.delivery_pricing!,
                 restaurant: shopModel,
-                presenter: RestaurantDetailsPresenter()),
+                presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -302,9 +302,9 @@ class _ShopListWidgetState extends State<ShopListWidget> {
         pageBuilder: (context, animation, secondaryAnimation) =>
             shopModel?.category_id == "flower"
                 ? RestaurantMenuPage(
-                    restaurant: shopModel, presenter: MenuPresenter())
+                    restaurant: shopModel, presenter: MenuPresenter(MenuView()))
                 : RestaurantMenuPage(
-                    restaurant: shopModel, presenter: MenuPresenter()),
+                    restaurant: shopModel, presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -341,10 +341,10 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                           image: new DecorationImage(
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(shopModel?.pic))))),
+                                  Utils.inflateLink(shopModel.pic!))))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate('coming_soon_dialog')}",
+                      "${AppLocalizations.of(context)!.translate('coming_soon_dialog')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]),
@@ -352,7 +352,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                   //
                   OutlinedButton(
                     child: new Text(
-                        "${AppLocalizations.of(context).translate('ok')}",
+                        "${AppLocalizations.of(context)!.translate('ok')}",
                         style: TextStyle(color: KColors.primaryColor)),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -367,19 +367,19 @@ class _ShopListWidgetState extends State<ShopListWidget> {
 
     switch (shopModel?.open_type) {
       case 0: // closed
-        tagText = "${AppLocalizations.of(context).translate('t_closed')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
         tagTextColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_opened')}";
         tagTextColor = CommandStateColor.delivered;
         break;
       case 2: // paused
-        tagText = "${AppLocalizations.of(context).translate('t_paused')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_paused')}";
         tagTextColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "${AppLocalizations.of(context).translate('t_unavailable')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_unavailable')}";
         tagTextColor = KColors.mBlue;
         break;
     }
@@ -390,7 +390,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
-            child: Text(tagText?.toUpperCase(),
+            child: Text(tagText.toUpperCase(),
                 style: TextStyle(
                     color: tagTextColor,
                     fontSize: 12,
@@ -401,8 +401,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(
-                "${AppLocalizations.of(context).translate('coming_soon')}"
-                    ?.toUpperCase(),
+                "${AppLocalizations.of(context)!.translate('coming_soon')}"
+                    .toUpperCase(),
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: 12,

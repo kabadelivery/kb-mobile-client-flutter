@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:KABA/src/state_management/out_of_app_order/additionnal_info_state.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,6 @@ import '../../state_management/out_of_app_order/out_of_app_order_screen_state.da
 import '../../state_management/out_of_app_order/products_state.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import '../../xrint.dart';
-import 'BouncingWidget.dart';
 
 Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String text) {
   TextEditingController _infoController = TextEditingController();
@@ -49,7 +49,7 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
                 decoration: InputDecoration(
                   alignLabelWithHint: true,
                   labelStyle: TextStyle(fontSize: 12),
-                  labelText: "${AppLocalizations.of(context).translate(
+                  labelText: "${AppLocalizations.of(context)!.translate(
                       type == 1
                           ?(outOfAppState.order_type!=5&&outOfAppState.order_type!=6?'additional_info':'package_info')
                           : type == 2
@@ -73,13 +73,13 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
 
     Size size = MediaQuery.of(context).size;
     final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
-    final File selectedImage = ref.watch(additionnalInfoProvider).image;
+    final File? selectedImage = ref.watch(additionnalInfoProvider).image;
     return GestureDetector(
 
               onTap:outOfAppScreenState.showLoading==false? ()async{
                 try{
                   await pickImage(context,ref).then((value){
-                    ref.read(additionnalInfoProvider.notifier).setImage(value);
+                    ref.read(additionnalInfoProvider.notifier).setImage(value!);
                   });
 
                 }catch(e){
@@ -95,7 +95,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
     borderRadius: BorderRadius.circular(5),
     image: selectedImage != null
         ? DecorationImage(
-            image: FileImage(ref.watch(additionnalInfoProvider).image),
+            image: FileImage(ref.watch(additionnalInfoProvider).image!),
             fit: BoxFit.cover,
           )
         : null,
@@ -122,12 +122,13 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
           BouncingWidget(
             duration: Duration(milliseconds: 400),
             scaleFactor: 2,
+            onPressed: () {  },
             child: Icon(Icons.camera_alt, color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(255, 255, 255, 255)),
           ),
           SizedBox(height: 5),
           Text(
 
-            "${AppLocalizations.of(context).translate(outOfAppScreenState.order_type!=5&&outOfAppScreenState.order_type!=6?'choose_additionnal_image':'choose_an_image')}",
+            "${AppLocalizations.of(context)!.translate(outOfAppScreenState.order_type!=5&&outOfAppScreenState.order_type!=6?'choose_additionnal_image':'choose_an_image')}",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 11,

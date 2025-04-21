@@ -16,7 +16,7 @@ class FeedApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -38,11 +38,11 @@ class FeedApiProvider {
           Iterable lo =
               mJsonDecode(response.data)["data"]["notification_feeds"];
           if (lo == null || lo.isEmpty || lo.length == 0)
-            return List<FeedModel>();
+            return [];
           else {
-            List<FeedModel> feeds =
+            List<FeedModel>? feeds =
                 lo?.map((feed) => FeedModel.fromJson(feed))?.toList();
-            return feeds;
+            return feeds!;
           }
         } else
           throw Exception(-1); // there is an error in your request

@@ -32,9 +32,9 @@ class CustomerCareChatPresenter implements CustomerCareChatContract {
 
   CustomerCareChatView _customerCareChatView;
 
-  CustomerCareChatApiProvider provider;
+  late CustomerCareChatApiProvider provider;
 
-  CustomerCareChatPresenter() {
+  CustomerCareChatPresenter(this._customerCareChatView) {
     provider = new CustomerCareChatApiProvider();
   }
 
@@ -49,10 +49,10 @@ class CustomerCareChatPresenter implements CustomerCareChatContract {
     isWorking = true;
     _customerCareChatView.showLoading(true);
     try {
-      List<CustomerCareChatMessageModel> CustomerCareChats = await provider.fetchCustomerChatList(customer);
+      List<CustomerCareChatMessageModel>? CustomerCareChats = (await provider.fetchCustomerChatList(customer)) as List<CustomerCareChatMessageModel>?;
       // also get the restaurant entity here.
       _customerCareChatView.showLoading(false);
-      _customerCareChatView.inflateCustomerCareChat(CustomerCareChats);
+      _customerCareChatView.inflateCustomerCareChat(CustomerCareChats!);
     } catch (_) {
       /* CustomerCareChat failure */
       xrint("error ${_}");

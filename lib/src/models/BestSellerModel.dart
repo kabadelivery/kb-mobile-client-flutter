@@ -8,9 +8,9 @@ class BestSellerModel {
 //  int ranking;
 //  int rating_quantity;
 //  int rating_percentage;
-  List<int> history; /* yest, the day before, the day before before */
+  List<int>? history; /* yest, the day before, the day before before */
 //  ShopModel restaurant_entity;
-  ShopProductModel food_entity;
+  ShopProductModel? food_entity;
 
   BestSellerModel({/*this.restaurant_entity,*/ this.food_entity, /*this.ranking, this.rating_quantity, this.rating_percentage,*/ this.history});
 

@@ -28,11 +28,11 @@ class PersonnalPagePresenter implements PersonnalPageContract {
 
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   PersonnalPageView _personnalPageView;
 
-  PersonnalPagePresenter() {
+  PersonnalPagePresenter(this._personnalPageView) {
     provider = ClientPersonalApiProvider();
   }
 

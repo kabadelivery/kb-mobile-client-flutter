@@ -8,10 +8,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class GroupAdsNewWidget extends StatefulWidget {
-  GroupAdsModel groupAd;
+  GroupAdsModel? groupAd;
 
   GroupAdsNewWidget({
-    Key key,
+    required Key key,
     this.groupAd,
   }) : super(key: key);
 
@@ -32,7 +32,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              widget.groupAd.title,
+              widget.groupAd!.title!,
               style: TextStyle(
                   color: KColors.primaryColor,
                   fontWeight: FontWeight.bold,
@@ -46,7 +46,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
             child: Column(children: <Widget>[
           GestureDetector(
             onTap: () => _jumpToAdsList(
-                [widget.groupAd.big_pub, widget.groupAd.small_pub], 0),
+                [widget.groupAd!.big_pub!, widget.groupAd!.small_pub!], 0),
             child: Center(
               child: Container(
                 decoration: BoxDecoration(
@@ -54,7 +54,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                     image: new DecorationImage(
                         fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(
-                            Utils.inflateLink(widget.groupAd.big_pub.pic)))),
+                            Utils.inflateLink(widget.groupAd!.big_pub!.pic!)))),
                 width: MediaQuery.of(context).size.width,
                 height: 9 * MediaQuery.of(context).size.width / 16,
               ),
@@ -81,7 +81,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
                                   Utils.inflateLink(
-                                      widget?.groupAd?.small_pub?.pic))))),
+                                      widget.groupAd!.small_pub!.pic!))))),
                   SizedBox(
                     width: 10,
                   ),
@@ -107,7 +107,7 @@ class _GroupAdsNewWidgetState extends State<GroupAdsNewWidget> {
   _jumpToAdsList(List<AdModel> slider, int position) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

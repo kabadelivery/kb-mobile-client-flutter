@@ -4,14 +4,14 @@ import 'dart:core';
 
  class KabaShippingMan {
 
-   int id;
-   String name;
-   String current_location;
-   String vehicle_serial_code;
-   String last_update;
-   String workcontact;
-   String pic;
-   bool is_available = false; // 0 unchecked, 1 checked
+   int? id;
+   String? name;
+   String? current_location;
+   String? vehicle_serial_code;
+   String? last_update;
+   String? workcontact;
+   String? pic;
+   bool? is_available = false; // 0 unchecked, 1 checked
 
 
    KabaShippingMan({this.id, this.name, this.current_location, this.vehicle_serial_code, this.last_update,

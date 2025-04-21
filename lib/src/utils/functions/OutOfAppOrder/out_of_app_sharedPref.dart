@@ -12,7 +12,7 @@ class OutOfAppSharedPrefs {
 
   static Future<Map<String, dynamic>> getStringMap() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String encodedMap = prefs.getString(shipping_price_range);
+    String? encodedMap = prefs.getString(shipping_price_range);
     if (encodedMap == null) return {};
     Map<String, dynamic> decodedMap = jsonDecode(encodedMap);
     if (decodedMap == null) return {};

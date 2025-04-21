@@ -6,7 +6,7 @@ import 'package:KABA/src/xrint.dart';
 
 class VoucherContract {
 
-  void loadVoucherList ({CustomerModel customer, bool pick=false}){}
+  void loadVoucherList ({CustomerModel? customer, bool pick=false}){}
 }
 
 class VoucherView {
@@ -21,11 +21,11 @@ class VoucherPresenter implements VoucherContract {
 
   bool isWorking = false;
 
-  VoucherApiProvider provider;
+  late VoucherApiProvider provider;
 
   VoucherView _voucherView;
 
-  VoucherPresenter () {
+  VoucherPresenter (this._voucherView) {
     provider = new VoucherApiProvider();
   }
 
@@ -34,13 +34,13 @@ class VoucherPresenter implements VoucherContract {
   }
 
   @override
-  Future<void> loadVoucherList({CustomerModel customer, int restaurantId = -1, List<int> foodsId, bool pick=false}) async {
+  Future<void> loadVoucherList({CustomerModel? customer, int restaurantId = -1, List<int>? foodsId, bool pick=false}) async {
     if (isWorking)
       return;
     isWorking = true;
     _voucherView.showLoading(true);
     try {
-      List<VoucherModel> deliverVouchers = await provider.loadVouchers(customer:customer, restaurantId: restaurantId, foodsId: foodsId, pick:pick);
+      List<VoucherModel> deliverVouchers = await provider.loadVouchers(customer:customer!, restaurantId: restaurantId, foodsId: foodsId!, pick:pick);
       // also get the restaurant entity here.
       _voucherView.showLoading(false);
       _voucherView.inflateVouchers(deliverVouchers);

@@ -30,9 +30,9 @@ class DailyOrderPresenter implements DailyOrderContract {
 
   DailyOrderView _dailyOrderView;
 
-  CommandsApiProvider provider;
+  late CommandsApiProvider provider;
 
-  DailyOrderPresenter() {
+  DailyOrderPresenter(this._dailyOrderView) {
     provider = new CommandsApiProvider();
   }
 

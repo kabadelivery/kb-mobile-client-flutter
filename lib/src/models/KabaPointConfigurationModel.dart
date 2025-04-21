@@ -2,22 +2,22 @@
 
 class KabaPointConfigurationModel {
 
-  int balance;
-  bool is_eligible;
-  bool can_be_used;
-  bool is_new_beneficiary;
-  int can_use_amount;
-  int amount_to_reduce;
-  int client_command_count;
-  int month_transactions_amount;
-  int monthly_limit_amount;
-  int lower_balance_limit_amount;
-  int eligible_order_count;
+  int? balance;
+  bool? is_eligible;
+  bool? can_be_used;
+  bool? is_new_beneficiary;
+  int? can_use_amount;
+  int? amount_to_reduce;
+  int? client_command_count;
+  int? month_transactions_amount;
+  int? monthly_limit_amount;
+  int? lower_balance_limit_amount;
+  int? eligible_order_count;
 
 //<editor-fold desc="Data Methods">
 
   KabaPointConfigurationModel({
-       this.balance,
+      this.balance,
       this.is_eligible,
       this.can_be_used,
       this.is_new_beneficiary,
@@ -79,17 +79,17 @@ class KabaPointConfigurationModel {
   }
 
   KabaPointConfigurationModel copyWith({
-    String balance,
-    bool is_eligible,
-    bool can_be_used,
-    bool is_new_beneficiary,
-    int can_use_amount,
-    int amount_to_reduce,
-    int client_command_count,
-    int month_transactions_amount,
-    int monthly_limit_amount,
-    int lower_balance_limit_amount,
-    int eligible_order_count,
+    int? balance,
+    bool? is_eligible,
+    bool? can_be_used,
+    bool? is_new_beneficiary,
+    int? can_use_amount,
+    int? amount_to_reduce,
+    int? client_command_count,
+    int? month_transactions_amount,
+    int? monthly_limit_amount,
+    int? lower_balance_limit_amount,
+    int? eligible_order_count,
   }) {
     return KabaPointConfigurationModel(
       balance: balance ?? this.balance,

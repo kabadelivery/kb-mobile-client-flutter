@@ -26,9 +26,9 @@ class ServiceMainPresenter implements ServiceMainContract {
 
   ServiceMainView _serviceMainView;
 
-  AppApiProvider provider;
+  late AppApiProvider provider;
 
-  ServiceMainPresenter() {
+  ServiceMainPresenter(this._serviceMainView) {
     provider = new AppApiProvider();
   }
 
@@ -46,11 +46,11 @@ class ServiceMainPresenter implements ServiceMainContract {
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
-          List<ServiceMainEntity> res = lo
+          List<ServiceMainEntity>? res = lo
               ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
               ?.toList();
           /* order list by position */
-          res.sort((a, b) => (a.position - b.position));
+          res!.sort((a, b) => (a.position! - b.position!));
           // also get the restaurant entity here.
           if (!(res != null && res.length > 0)) {
             throw UnimplementedError();
@@ -69,13 +69,13 @@ class ServiceMainPresenter implements ServiceMainContract {
         String resJson =
             await provider.fetchServiceCategoryFromLocation(location);
         Iterable lo = mJsonDecode(resJson)["data"];
-        List<ServiceMainEntity> res = lo
+        List<ServiceMainEntity>? res = lo
             ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
             ?.toList();
         /* order list by position */
-        res.sort((a, b) => (a.position - b.position));
+        res!.sort((a, b) => (a.position! - b.position!));
         // also get the restaurant entity here.
-        if (!(res?.length > 0)) {
+        if (!(res!.length > 0)) {
           throw UnimplementedError();
         }
 

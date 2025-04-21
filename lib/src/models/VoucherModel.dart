@@ -6,27 +6,27 @@ import 'package:flutter/foundation.dart';
 import '../xrint.dart';
 
 class VoucherModel {
-  int id;
-  String restaurant_name;
-  String trade_name;
-  String details;
-  int value;
-  int state; //
-  int type; // type, % or F discount
-  int category; // category, food, delivery, category
-  List<ShopProductModel> products;
+  int? id;
+  String? restaurant_name;
+  String? trade_name;
+  String? details;
+  int? value;
+  int? state; //
+  int? type; // type, % or F discount
+  int? category; // category, food, delivery, category
+  List<ShopProductModel>? products;
 
 //  ShopModel restaurant_entity;
-  List<ShopModel> restaurants;
-  int use_count; // how much time can i use the voucher
-  int already_used_count;
+  List<ShopModel>? restaurants;
+  int? use_count; // how much time can i use the voucher
+  int? already_used_count;
 
-  int total_used_count; // how much time can you use in total
-  String subscription_code;
-  String qr_code;
-  String start_date, end_date; // timestamp
-  String tag;
-  String description;
+  int? total_used_count; // how much time can you use in total
+  String? subscription_code;
+  String? qr_code;
+  String? start_date, end_date; // timestamp
+  String? tag;
+  String? description;
 
   VoucherModel({
     this.id,
@@ -152,7 +152,7 @@ class VoucherModel {
     if (this.restaurants?.length == null)
       return null;
     else if (this.restaurants?.length == 1) {
-      return this.restaurants[0]?.name;
+      return this.restaurants![0]?.name;
     } else {
       return "-1";
     }

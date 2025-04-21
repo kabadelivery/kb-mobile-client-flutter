@@ -3,14 +3,14 @@
 
 class CommentModel {
 
-   int id;
-   String content = "Here is the content of the famous comment we've been talking about the whole time...";
-   double stars;
-   int created_at = 153787738928; // date
-   String date_string = "153787738928"; // date
-   String name_of_client = "Ruph Ruphinos"; // show it partially
-   bool hidden = false;
-   String pic;
+   int? id;
+   String? content = "Here is the content of the famous comment we've been talking about the whole time...";
+   double? stars;
+   int? created_at = 153787738928; // date
+   String? date_string = "153787738928"; // date
+   String? name_of_client = "Ruph Ruphinos"; // show it partially
+   bool? hidden = false;
+   String? pic;
 
    CommentModel(this.id, this.content, this.stars, this.created_at,
        this.date_string, this.name_of_client, this.hidden, this.pic);

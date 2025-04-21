@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 
 class _OperatorInfo {
 
-  String name;
-  String icon;
+  String? name;
+  String? icon;
   String type = FLOOZ;
   int is_available = 0;
 

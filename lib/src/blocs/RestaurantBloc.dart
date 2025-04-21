@@ -66,7 +66,7 @@ class RestaurantBloc {
       _commentListFetcher.sink.add(commentList);
       _isDisposedForComments = true;
     } catch (_) {
-      _commentListFetcher.sink.addError(_.message);
+      _commentListFetcher.sink.addError(_.toString());
     }
   }
 
@@ -78,7 +78,7 @@ class RestaurantBloc {
       _restaurantMenuFetcher.sink.add(restaurantMenu);
       _isDisposedForRestaurantMenu = true;
     } catch (_) {
-      _restaurantListFetcher.sink.addError(_.message);
+      _restaurantListFetcher.sink.addError(_.toString());
     }
   }
 

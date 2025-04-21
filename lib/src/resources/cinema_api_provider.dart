@@ -10,7 +10,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 
 class CinemaApiProvider {
-  Future<Map> fetchMovieScheduleWithCinemaId(cinemaId) async {
+  Future<Map?> fetchMovieScheduleWithCinemaId(cinemaId) async {
     xrint("entered fetchMovieScheduleWithCinemaId");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -37,5 +37,5 @@ class CinemaApiProvider {
     }
   }
 
-  Future<Map> fetchMovieDetailsWithMovieId(int movieId) {}
+  Future<Map>? fetchMovieDetailsWithMovieId(int movieId) {}
 }

@@ -1,6 +1,7 @@
 import 'package:KABA/src/state_management/out_of_app_order/location_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/order_billing_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/out_of_app_order_screen_state.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,8 +19,6 @@ import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 import '../../utils/functions/Utils.dart';
 import '../../xrint.dart';
-import 'BouncingWidget.dart';
-
 Widget ChooseShippingAddress(
     BuildContext context,
     WidgetRef ref,
@@ -48,6 +47,7 @@ Widget ChooseShippingAddress(
                   BouncingWidget(
                     duration: Duration(milliseconds: 400),
                     scaleFactor: 2,
+                    onPressed: (){},
                     child: Icon(Icons.location_on,
                         size: 28, color:type==1?
                         KColors.mBlue:
@@ -57,13 +57,13 @@ Widget ChooseShippingAddress(
                 ]),
                 SizedBox(width: 10),
              Text( order_type==0?  
-                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_order_address')}"
+                    "${AppLocalizations.of(context)!.translate(type==1?'choose_address_where_to_deliver':'choose_order_address')}"
                
               :order_type==6?
-                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver':'choose_address_where_to_fetch')}"
+                    "${AppLocalizations.of(context)!.translate(type==1?'choose_address_where_to_deliver':'choose_address_where_to_fetch')}"
                   
               :
-                    "${AppLocalizations.of(context).translate(type==1?'choose_address_where_to_deliver_package':'choose_address_where_to_fetch')}",
+                    "${AppLocalizations.of(context)!.translate(type==1?'choose_address_where_to_deliver_package':'choose_address_where_to_fetch')}",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -92,7 +92,7 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
               children: <Widget>[
                 Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Text(Utils.capitalize(selectedAddress.name),
+                    child: Text(Utils.capitalize(selectedAddress.name!),
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -104,7 +104,7 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
                   child: Row(children: <Widget>[
                     Expanded(
                         child: Text(
-                            Utils.capitalize(selectedAddress.description),
+                            Utils.capitalize(selectedAddress.description!),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.left,
@@ -155,7 +155,7 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
               children: <Widget>[
                 Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Text(Utils.capitalize(selectedAddress.name),
+                    child: Text(Utils.capitalize(selectedAddress.name!),
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -167,7 +167,7 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                   child: Row(children: <Widget>[
                     Expanded(
                         child: Text(
-                            Utils.capitalize(selectedAddress.description),
+                            Utils.capitalize(selectedAddress.description!),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.left,
@@ -195,7 +195,7 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                     ref.read(outOfAppScreenStateProvier.notifier).setShowLoading(false);
 
                   if (ref.read(outOfAppScreenStateProvier).order_type != 5 && ref.read(outOfAppScreenStateProvier).order_type != 6) {
-                          if(locationState.is_shipping_address_picked){
+                          if(locationState.is_shipping_address_picked!){
                             await CustomerUtils.getCustomer().then((customer) async {
                               ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
                               // launch request for retrieving the delivery prices and so on.
@@ -218,11 +218,11 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                                 try  {
                                   OrderBillConfiguration orderBillConfiguration =
                                   await api.computeBillingAction(
-                                      customer,
+                                      customer!,
                                       [],
                                       formData,
-                                      locationState.selectedShippingAddress,
-                                      voucherState.selectedVoucher,
+                                      locationState.selectedShippingAddress!,
+                                      voucherState.selectedVoucher!,
                                       false);
                                   ref
                                       .read(orderBillingStateProvider.notifier)
@@ -236,7 +236,7 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                                       textColor: Colors.white,
                                       fontSize: 14,
                                       toastLength: Toast.LENGTH_LONG ,
-                                      msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+                                      msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                                   outOfAppNotifier.setShowLoading(false);
                                   outOfAppNotifier.setIsBillBuilt(false);
                                 }

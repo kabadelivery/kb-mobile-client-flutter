@@ -5,8 +5,8 @@ import 'package:KABA/src/models/AdModel.dart';
 
 class EvenementModel extends AdModel {
 
- String category;
- int created_at;
+ String? category;
+ int? created_at;
 
  EvenementModel(int id, String name, String link, String description, String pic, String food_json, int type, int entity_id,this.category, this.created_at) :
        super(id:id, name:name, link:link, description:description, pic:pic, food_json:food_json, type:type, entity_id:entity_id);

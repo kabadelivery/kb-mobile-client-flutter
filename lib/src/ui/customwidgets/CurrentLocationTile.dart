@@ -6,13 +6,13 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/plus_code/open_location_code.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentLocationTile extends StatefulWidget {
-  CurrentLocationTile({Key key}) : super(key: key);
+  CurrentLocationTile({required Key key}) : super(key: key);
 
   @override
   _CurrentLocationTileState createState() {
@@ -21,16 +21,16 @@ class CurrentLocationTile extends StatefulWidget {
 }
 
 class _CurrentLocationTileState extends State<CurrentLocationTile> {
-  SharedPreferences prefs;
+  SharedPreferences? prefs;
 
-  bool isPickLocation;
+  bool? isPickLocation;
 
   @override
   void initState() {
     super.initState();
   }
 
-  Stream<Placemark> _geo_location;
+  Stream<Placemark>? _geo_location;
 
   @override
   void dispose() {
@@ -41,7 +41,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
   Widget build(BuildContext context) {
     if (_geo_location == null && StateContainer.of(context).location != null) {
       _geo_location = (() {
-        StreamController<Placemark> controller;
+        StreamController<Placemark>? controller;
         controller = StreamController<Placemark>(
           onListen: () async {
             List<Placemark> placemarks;
@@ -53,18 +53,18 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                         StateContainer.of(context).location.longitude),
                     country: "WORLD",
                     locality: "Africa");
-                controller.add(mPlaceMark);
+                controller!.add(mPlaceMark);
                 StateContainer.of(context).placemark = mPlaceMark;
               } else {
                 placemarks = await placemarkFromCoordinates(
                     StateContainer.of(context).location.latitude,
                     StateContainer.of(context).location.longitude);
                 // add local identifier
-                if (placemarks?.length > 0) {
+                if (placemarks.length > 0) {
                   int s = 0;
                   try {
                     placemarks.forEach((element) {
-                      if (element?.name?.contains("+"))
+                      if (element.name!.contains("+"))
                         throw "";
                       else
                         s++;
@@ -72,14 +72,14 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                   } catch (e) {}
                   if (s >= placemarks.length - 1) s = 0;
                   await Future.delayed(Duration(seconds: 2));
-                  controller.add(placemarks[s]);
+                  controller!.add(placemarks[s]);
                   StateContainer.of(context).placemark = placemarks[s];
                 } else {
-                  controller.addError({"message": "error"});
+                  controller!.addError({"message": "error"});
                 }
               }
             } else {
-              controller.add(StateContainer.of(context).placemark);
+              controller!.add(StateContainer.of(context).placemark);
             }
             await controller.close();
           },
@@ -115,7 +115,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                     width: MediaQuery.of(context).size.width * .6,
                     child: Text(
                         Utils.capitalize(
-                            "${AppLocalizations.of(context).translate("your_location")}"),
+                            "${AppLocalizations.of(context)!.translate("your_location")}"),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -139,7 +139,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                                       ConnectionState.done) {
                                 children = <Widget>[
                                   Text(
-                                      "${snapshot.data.name + ", " + snapshot.data.locality + ", " + snapshot.data.country}",
+                                      "${snapshot.data!.name! + ", " + snapshot.data!.locality! + ", " + snapshot.data!.country!}",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           color: Colors.grey,
@@ -195,7 +195,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                           child: Column(
                             children: [
                               Text(
-                                  "${StateContainer.of(context).placemark.name + ", " + StateContainer.of(context).placemark.locality + ", " + StateContainer.of(context).placemark.country}",
+                                  "${StateContainer.of(context).placemark.name! + ", " + StateContainer.of(context).placemark.locality! + ", " + StateContainer.of(context).placemark.country!}",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       color: Colors.grey,
@@ -209,7 +209,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
             ],
           ),
           Container(
-              child: Icon(FontAwesome.chevron_down,
+              child: Icon(FontAwesomeIcons.chevronDown,
                   color: KColors.primaryColor, size: 10),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,

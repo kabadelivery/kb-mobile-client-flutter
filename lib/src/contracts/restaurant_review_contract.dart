@@ -27,10 +27,10 @@ class RestaurantReviewPresenter implements RestaurantReviewContract {
 
   RestaurantReviewView _restaurantReviewView;
 
-  MenuApiProvider provider;
-  ClientPersonalApiProvider clientProvider;
+  late MenuApiProvider provider;
+  late ClientPersonalApiProvider clientProvider;
 
-  RestaurantReviewPresenter() {
+  RestaurantReviewPresenter(this._restaurantReviewView) {
     provider = new MenuApiProvider();
   }
 

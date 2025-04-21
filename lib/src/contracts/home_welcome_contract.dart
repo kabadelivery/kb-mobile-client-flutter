@@ -16,8 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWelcomeContract {
 
-  Future fetchHomePage (){}
-  Future updateToken (CustomerModel customer) {}
+  Future? fetchHomePage (){}
+  Future? updateToken (CustomerModel customer) {}
 }
 
 class HomeWelcomeView {
@@ -42,13 +42,13 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
   bool isWorking = false;
 
-  AppApiProvider provider;
+  late AppApiProvider provider;
 
   HomeWelcomeView _homeWelcomeView;
 
   bool isFetchBalanceWorking = false;
 
-  HomeWelcomePresenter() {
+  HomeWelcomePresenter(this._homeWelcomeView) {
     provider = AppApiProvider();
   }
 
@@ -172,7 +172,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
 
   Future<void> checkServiceMessage() async {
     try {
-      Map smessage = await provider.checkServiceMessage();
+      Map<String,dynamic> smessage = await provider.checkServiceMessage();
       _homeWelcomeView.checkServiceMessage(AlertMessageModel.fromMap(smessage));
     } catch (_) {
       /* RestaurantReview failure */

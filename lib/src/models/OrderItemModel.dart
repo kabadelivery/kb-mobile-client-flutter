@@ -5,19 +5,19 @@ import 'package:KABA/src/xrint.dart';
 
 class OrderItemModel {
 
-   int id;
-   String name;
-   String price;
-   int promotion;
-   String promotion_price;
-   String pic;
-   String details;
-   int quantity;
-   int menu_id;
-   int restaurant_id;
-   String food_description;
-   List<String> food_details_pictures;
-   double stars;
+   int?  id;
+   String?  name;
+   String?  price;
+   int?  promotion;
+   String?  promotion_price;
+   String?  pic;
+   String?  details;
+   int?  quantity;
+   int?  menu_id;
+   int?  restaurant_id;
+   String?  food_description;
+   List<String>? food_details_pictures;
+   double? stars;
 
    OrderItemModel({this.id, this.name, this.price, this.promotion,
       this.promotion_price, this.pic, this.details, this.quantity,
@@ -64,7 +64,7 @@ class OrderItemModel {
    };
 
    @override
-   String toString() {
+   String  toString() {
       return toJson().toString();
    }
 

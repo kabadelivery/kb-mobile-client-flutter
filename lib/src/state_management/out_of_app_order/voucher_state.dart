@@ -3,15 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/VoucherModel.dart';
 
 class VoucherState {
-  VoucherModel selectedVoucher;
-  VoucherModel oldSelectedVoucher;
-  bool usePoint ;
+  VoucherModel? selectedVoucher;
+  VoucherModel? oldSelectedVoucher;
+  bool? usePoint ;
   VoucherState({this.selectedVoucher = null, this.oldSelectedVoucher = null,this.usePoint=false});
 
   VoucherState copyWith({
-    VoucherModel selectedVoucher,
-    VoucherModel oldSelectedVoucher,
-    bool usePoint
+    VoucherModel? selectedVoucher,
+    VoucherModel? oldSelectedVoucher,
+    bool? usePoint
 }){
     return VoucherState(
         selectedVoucher:selectedVoucher??this.selectedVoucher,
@@ -23,11 +23,11 @@ class VoucherState {
 class VoucherStateNotifier extends StateNotifier<VoucherState>{
   VoucherStateNotifier():super(VoucherState());
 
-  void setVoucher(VoucherModel voucher){
-    state = state.copyWith(selectedVoucher: voucher);
+  void setVoucher(VoucherModel? voucher){
+    state = state.copyWith(selectedVoucher: voucher!);
   }
-  void setOldVoucher(VoucherModel voucher){
-    state = state.copyWith(oldSelectedVoucher: voucher);
+  void setOldVoucher(VoucherModel? voucher){
+    state = state.copyWith(oldSelectedVoucher: voucher!);
   }
   void setUsePoint(bool usePoint){
     state = state.copyWith(usePoint:usePoint);

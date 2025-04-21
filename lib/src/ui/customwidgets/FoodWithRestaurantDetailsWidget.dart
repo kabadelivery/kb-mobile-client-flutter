@@ -19,9 +19,9 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class FoodWithRestaurantDetailsWidget extends StatefulWidget {
-  ShopProductModel food;
+  ShopProductModel? food;
 
-  GlobalKey key;
+  GlobalKey? key;
 
   FoodWithRestaurantDetailsWidget({this.food, this.key});
 
@@ -70,7 +70,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(widget?.food?.pic)))),
+                                        Utils.inflateLink(widget.food!.pic!)))),
                           ),
                           Container(
                             height: 50,
@@ -80,7 +80,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(widget?.food.pic)))),
+                                        Utils.inflateLink(widget.food!.pic!)))),
                           )
                         ],
                       ),
@@ -88,7 +88,7 @@ class _FoodWithRestaurantDetailsWidgetState
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("${widget?.food?.name.toUpperCase()}",
+                          Text("${widget.food?.name!.toUpperCase()}",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                               textAlign: TextAlign.left,
@@ -100,7 +100,7 @@ class _FoodWithRestaurantDetailsWidgetState
                           Row(
                             children: <Widget>[
                               Row(children: <Widget>[
-                                Text("${widget?.food?.price}",
+                                Text("${widget.food?.price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     textAlign: TextAlign.center,
@@ -108,8 +108,8 @@ class _FoodWithRestaurantDetailsWidgetState
                                         color: KColors.primaryYellowColor,
                                         fontSize: 20,
                                         fontWeight: FontWeight.normal)),
-                                (widget?.food.promotion != 0
-                                    ? Text("${widget?.food?.promotion_price}",
+                                (widget.food!.promotion != 0
+                                    ? Text("${widget.food?.promotion_price}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
@@ -121,7 +121,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                                 TextDecoration.lineThrough))
                                     : Container()),
                                 Text(
-                                    "${AppLocalizations.of(context).translate("currency")}",
+                                    "${AppLocalizations.of(context)!.translate("currency")}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     textAlign: TextAlign.center,
@@ -159,10 +159,10 @@ class _FoodWithRestaurantDetailsWidgetState
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
                                         image: CachedNetworkImageProvider(
-                                            Utils.inflateLink(widget?.food
-                                                ?.restaurant_entity?.pic))))),
+                                            Utils.inflateLink(widget.food!
+                                                .restaurant_entity!.pic!))))),
                             trailing:
-                                widget?.food?.restaurant_entity?.coming_soon ==
+                                widget.food?.restaurant_entity?.coming_soon ==
                                         0
                                     ? IconButton(
                                         icon: Icon(Icons.home,
@@ -170,14 +170,14 @@ class _FoodWithRestaurantDetailsWidgetState
                                             color: KColors.primaryColor),
                                         onPressed: () {
                                           _jumpToRestaurantDetails(context,
-                                              widget?.food?.restaurant_entity);
+                                              widget.food!.restaurant_entity!);
                                         })
                                     : null,
                             title: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text("${widget?.food?.restaurant_entity?.name}",
+                                Text("${widget.food?.restaurant_entity?.name}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                     textAlign: TextAlign.left,
@@ -187,7 +187,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                         fontWeight: FontWeight.w500)),
                                 SizedBox(height: 10),
                                 Text(
-                                    "${widget?.food?.restaurant_entity?.address}",
+                                    "${widget.food?.restaurant_entity?.address}",
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,
@@ -212,9 +212,9 @@ class _FoodWithRestaurantDetailsWidgetState
                               children: <Widget>[
                                 Row(children: [
                                   _getRestaurantStateTag(
-                                      widget?.food?.restaurant_entity),
+                                      widget.food!.restaurant_entity!),
                                   SizedBox(width: 5),
-                                  widget?.food?.restaurant_entity
+                                  widget.food?.restaurant_entity
                                               ?.coming_soon ==
                                           1
                                       ? Container(
@@ -224,14 +224,14 @@ class _FoodWithRestaurantDetailsWidgetState
                                                   Radius.circular(5)),
                                               color: KColors.primaryColor),
                                           child: Text(
-                                              "${AppLocalizations.of(context).translate('coming_soon')}",
+                                              "${AppLocalizations.of(context)!.translate('coming_soon')}",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 12)))
                                       : Container(),
                                 ]),
                                 Row(children: <Widget>[
-                                  widget?.food?.restaurant_entity?.distance ==
+                                  widget.food?.restaurant_entity?.distance ==
                                           null
                                       ? Container()
                                       : Container(
@@ -248,18 +248,18 @@ class _FoodWithRestaurantDetailsWidgetState
                                                   size: 14),
                                               SizedBox(width: 5),
                                               Text(
-                                                  "${widget?.food?.restaurant_entity?.delivery_pricing == "0" ? "${AppLocalizations.of(context).translate('out_of_range')}" : widget?.food?.restaurant_entity?.delivery_pricing + " F"}",
+                                                  "${widget.food?.restaurant_entity?.delivery_pricing == "0" ? "${AppLocalizations.of(context)!.translate('out_of_range')}" : widget.food!.restaurant_entity!.delivery_pricing! + " F"}",
                                                   style: TextStyle(
                                                       color: KColors.new_black,
                                                       fontSize: 12)),
                                             ],
                                           )),
                                   SizedBox(width: 10),
-                                  widget?.food?.restaurant_entity?.distance ==
+                                  widget.food?.restaurant_entity?.distance ==
                                           null
                                       ? Container()
                                       : Text(
-                                          "${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
+                                          "${widget.food?.restaurant_entity?.distance}${AppLocalizations.of(context)!.translate('km')}",
                                           style: TextStyle(
                                               color: KColors.new_black,
                                               fontWeight: FontWeight.normal,
@@ -270,7 +270,7 @@ class _FoodWithRestaurantDetailsWidgetState
                             ))
                       ]))
                 ]))),
-        onTap: () => _jumpToFoodDetails(context, widget?.food)));
+        onTap: () => _jumpToFoodDetails(context, widget.food!)));
   }
 
   /* get position of icon */
@@ -289,9 +289,9 @@ class _FoodWithRestaurantDetailsWidgetState
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food!.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -317,7 +317,7 @@ class _FoodWithRestaurantDetailsWidgetState
       MaterialPageRoute(
         builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
-            presenter: RestaurantDetailsPresenter()),
+            presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       ),
     );
   }
@@ -330,21 +330,21 @@ class _FoodWithRestaurantDetailsWidgetState
     switch (restaurantModel.open_type) {
       case 0: // closed
         tagText =
-            "${AppLocalizations.of(context).translate('r_closed_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_closed_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('r_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('r_opened')}";
         tagColor = CommandStateColor.delivered;
         break;
       case 2: // paused
         tagText =
-            "${AppLocalizations.of(context).translate('r_pause_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_pause_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
         tagText =
-            "${AppLocalizations.of(context).translate('r_blocked_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_blocked_preorder')}";
         tagColor = KColors.primaryColor;
         break;
     }

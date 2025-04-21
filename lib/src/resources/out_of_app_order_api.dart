@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,7 +20,7 @@ class OutOfAppOrderApiProvider{
       List<DeliveryAddressModel> order_adress,
       List<Map<String,dynamic>> foods,
       DeliveryAddressModel shipping_adress,
-      VoucherModel voucher,
+      VoucherModel? voucher,
       bool useKabaPoints) async {
       xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -45,7 +44,7 @@ class OutOfAppOrderApiProvider{
       var dio = Dio();
       dio.options
       ..headers = {
-    ...Utils.getHeadersWithToken(customer?.token),
+    ...Utils.getHeadersWithToken(customer.token!),
       "Cache-Control": "no-cache, no-store, must-revalidate",
       "Pragma": "no-cache",
       "Expires": "0"
@@ -58,7 +57,7 @@ class OutOfAppOrderApiProvider{
           return validateSSL(cert, host, port);
         };
       };
-      xrint("customer?.token ${customer?.token}");
+      xrint("customer.token! ${customer.token!}");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_OUT_OF_APP_COMPUTE_BILLING).toString(),
           data: _data);
@@ -94,7 +93,7 @@ class OutOfAppOrderApiProvider{
 
     var device;
 
-    String token = "";
+    String? token = "";
     try {
       final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
       token = await firebaseMessaging.getToken();
@@ -167,7 +166,7 @@ class OutOfAppOrderApiProvider{
       xrint("000 _ " + _data.toString());
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 90000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -198,7 +197,7 @@ class OutOfAppOrderApiProvider{
       Dio dio = Dio();
 dio.options
   ..headers = {
-    ...Utils.getHeadersWithToken(customer?.token),
+    ...Utils.getHeadersWithToken(customer.token!),
     "Cache-Control": "no-cache, no-store, must-revalidate",
     "Pragma": "no-cache",
     "Expires": "0"
@@ -257,7 +256,7 @@ dio.options
           Dio dio = Dio();
           dio.options
             ..headers = {
-              ...Utils.getHeadersWithToken(customer?.token),
+              ...Utils.getHeadersWithToken(customer.token!),
               "Cache-Control": "no-cache, no-store, must-revalidate",
               "Pragma": "no-cache",
               "Expires": "0"
@@ -284,12 +283,12 @@ dio.options
           return [{"name":""}];
   }
   }
-  Future<Map<String, dynamic>> fetchShippingPriceRange(CustomerModel customer)async {
+  Future<Map<String, dynamic>?> fetchShippingPriceRange(CustomerModel customer)async {
     try{
       Dio dio = Dio();
       dio.options
         ..headers = {
-          ...Utils.getHeadersWithToken(customer?.token),
+          ...Utils.getHeadersWithToken(customer.token!),
           "Cache-Control": "no-cache, no-store, must-revalidate",
           "Pragma": "no-cache",
           "Expires": "0"

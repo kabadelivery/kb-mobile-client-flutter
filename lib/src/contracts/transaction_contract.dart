@@ -26,7 +26,7 @@ class TransactionView {
 
   void showPointloading(bool isLoading) {}
   void systemPointError () {}
-  void networkPointError ({int delay}) {}
+  void networkPointError ({int? delay}) {}
   void updateKabaPoints(String kabaPoints) {}
   void inflatePointModelObj(PointObjModel data) {}
 }
@@ -39,9 +39,9 @@ class TransactionPresenter implements TransactionContract {
 
   TransactionView _transactionView;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
-  TransactionPresenter() {
+  TransactionPresenter(this._transactionView) {
     provider = new ClientPersonalApiProvider();
   }
 

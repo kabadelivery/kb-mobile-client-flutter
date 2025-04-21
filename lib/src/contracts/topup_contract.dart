@@ -31,9 +31,9 @@ class TopUpPresenter implements TopUpContract {
 
   TopUpView _topUpView;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
-  TopUpPresenter() {
+  TopUpPresenter(this._topUpView) {
     provider = new ClientPersonalApiProvider();
   }
 

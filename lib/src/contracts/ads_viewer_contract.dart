@@ -31,11 +31,11 @@ class AdsViewerPresenter implements AdsViewerContract {
 
   bool isWorking = false;
 
-  RestaurantApiProvider provider;
+  late RestaurantApiProvider provider;
 
   AdsViewerView _adsViewerView;
 
-  AdsViewerPresenter () {
+  AdsViewerPresenter (this._adsViewerView) {
     provider = new RestaurantApiProvider();
   }
 

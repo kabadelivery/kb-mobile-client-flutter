@@ -23,7 +23,7 @@ Widget CanAddAdditionnInfo(BuildContext context,WidgetRef ref){
           ),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text("${AppLocalizations.of(context).translate('yes')}",),
+            child: Text("${AppLocalizations.of(context)!.translate('yes')}",),
           ),
         ),
       ),
@@ -40,7 +40,7 @@ Widget CanAddAdditionnInfo(BuildContext context,WidgetRef ref){
           ),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text("${AppLocalizations.of(context).translate('no')}",style: TextStyle(color: Colors.white),),
+            child: Text("${AppLocalizations.of(context)!.translate('no')}",style: TextStyle(color: Colors.white),),
           ),
         ),
       ),

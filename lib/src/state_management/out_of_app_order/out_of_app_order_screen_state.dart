@@ -18,13 +18,13 @@ class OutOfAppScreenState{
     this.is_explanation_space_visible = true,
     });
   OutOfAppScreenState copyWith({
-    bool showLoading,
-    bool isBillBuilt,
-    bool isPayAtDeliveryLoading,
-    int order_type,
-    String phone_number,
-    String package_amount,
-    bool is_explanation_space_visible,
+    bool? showLoading,
+    bool? isBillBuilt,
+    bool? isPayAtDeliveryLoading,
+    int?order_type,
+    String? phone_number,
+    String? package_amount,
+    bool? is_explanation_space_visible,
   }){
     return OutOfAppScreenState(
       showLoading: showLoading ?? this.showLoading,

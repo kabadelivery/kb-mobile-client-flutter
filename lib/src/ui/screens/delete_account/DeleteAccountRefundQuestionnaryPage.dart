@@ -15,13 +15,13 @@ import 'package:url_launcher/url_launcher.dart';
 class DeleteAccountRefundQuestionnaryPage extends StatefulWidget {
   static var routeName = "/DeleteAccountRefundQuestionnaryPage";
 
-  DeleteAccountRefundPresenter presenter;
+  DeleteAccountRefundPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  int fixId;
+  int? fixId;
 
-  int amountRefunded;
+  int? amountRefunded;
 
   DeleteAccountRefundQuestionnaryPage({@required this.presenter, @required this.fixId, @required this.amountRefunded});
 

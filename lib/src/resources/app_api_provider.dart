@@ -9,7 +9,7 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -55,7 +55,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -78,7 +78,7 @@ class AppApiProvider {
         if (errorCode == 0) {
           String description_details =
               mJsonDecode(response.data)["data"]["display_name"];
-          String quartier = DeliveryAddressModel.fromJson(
+          String? quartier = DeliveryAddressModel.fromJson(
                   mJsonDecode(response.data)["data"]["address"])
               .suburb;
           /* return only the content we need */
@@ -120,9 +120,9 @@ class AppApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"];
-          List<EvenementModel> restaurantSubModel =
+          List<EvenementModel>? restaurantSubModel =
               lo?.map((comment) => EvenementModel.fromJson(comment))?.toList();
-          return restaurantSubModel;
+          return restaurantSubModel!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -150,7 +150,7 @@ class AppApiProvider {
       sound: true,
     );
 
-    String token = await firebaseMessaging.getToken(
+    String? token = await firebaseMessaging.getToken(
         vapidKey:
             "BIGpDv3l5-XEgAyf9Y96gJ1vDTkQc0gH6v354UbR1flxhjl4UgRhKmqPaizF7ho4_rT5p2Pb8YBmUbAbwB0StY8");
 
@@ -184,7 +184,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -327,7 +327,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -362,7 +362,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

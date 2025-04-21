@@ -118,16 +118,16 @@ Widget OutOfAppProduct(
                    );
                  }
                  OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                 CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
-                 List<DeliveryAddressModel> order_address = ref.watch(locationStateProvider).selectedOrderAddress;
-                  DeliveryAddressModel shipping_adress =  ref.watch(locationStateProvider).selectedShippingAddress;
+                 CustomerModel customer = ref.watch(orderBillingStateProvider).customer!;
+                 List<DeliveryAddressModel> order_address = ref.watch(locationStateProvider).selectedOrderAddress!;
+                  DeliveryAddressModel shipping_adress =  ref.watch(locationStateProvider).selectedShippingAddress!;
                  var _selectedVoucher = ref.watch(voucherStateProvider).selectedVoucher;
                  var _usePoint = ref.watch(voucherStateProvider).usePoint;
 
                  outOfAppNotifier .setIsBillBuilt(false);
                  outOfAppNotifier.setShowLoading(true);
                   try{
-                 await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher, _usePoint).then((value){
+                 await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher!, _usePoint!).then((value){
                    ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(value);
                    outOfAppNotifier .setIsBillBuilt(true);
                    outOfAppNotifier.setShowLoading(false);
@@ -138,7 +138,7 @@ Widget OutOfAppProduct(
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                     outOfAppNotifier .setIsBillBuilt(false);
                     outOfAppNotifier.setShowLoading(false);
                   }

@@ -3,12 +3,12 @@
 class ProductAdvertItem {
 
 
-  int id;
-  String img_path;
-  int cloo;
-  String ad_code;
-  String ad_hash;
-  String expire_date;
+  int? id;
+  String? img_path;
+  int? cloo;
+  String? ad_code;
+  String? ad_hash;
+  String? expire_date;
 
   ProductAdvertItem({this.id, this.img_path, this.cloo, this.ad_code,
       this.ad_hash, this.expire_date});

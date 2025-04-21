@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AdditionnalInfoState {
-  File image;
+  File? image;
   String additionnal_info;
   String additionnal_address_info;
-  bool can_add_address_info;
+  bool? can_add_address_info;
   AdditionnalInfoState({
     this.image,
     this.additionnal_info = '',
@@ -16,10 +16,10 @@ class AdditionnalInfoState {
 
   // To copy the state with changes (immutable state)
   AdditionnalInfoState copyWith({
-    File image,
-    String additionnal_info,
-    String additionnal_address_info,
-    bool can_add_address_info,
+    File? image,
+    String? additionnal_info,
+    String? additionnal_address_info,
+    bool? can_add_address_info,
   }) {
     return AdditionnalInfoState(
       image: image ?? this.image,

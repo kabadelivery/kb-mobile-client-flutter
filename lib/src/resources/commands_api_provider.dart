@@ -17,7 +17,7 @@ class CommandsApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -41,9 +41,9 @@ class CommandsApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["commands"];
-          List<CommandModel> commandModel =
+          List<CommandModel>? commandModel =
               lo?.map((command) => CommandModel.fromJson(command))?.toList();
-          return commandModel;
+          return commandModel!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -61,7 +61,7 @@ class CommandsApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -93,12 +93,12 @@ class CommandsApiProvider {
   }
 
   /* all orders details */
-  Future<List<CommandModel>> fetchLastOrders(CustomerModel customer) async {
+  Future<List<CommandModel>?> fetchLastOrders(CustomerModel customer) async {
     xrint("entered fetchLastOrders");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -120,22 +120,22 @@ class CommandsApiProvider {
             try {
               Iterable lo = mJsonDecode(response.data)["data"]["commands"];
               if (lo == null || lo.isEmpty || lo.length == 0)
-                return List<CommandModel>();
+                return [];
 
               /// else
-              List<CommandModel> commandModel = lo
+              List<CommandModel>? commandModel = lo
                   ?.map((command) => CommandModel.fromJson(command))
                   ?.toList();
               return commandModel;
             } catch (_) {
-              return List<CommandModel>();
+              return [];
             }
           } else
             throw Exception(-1); // there is an error in your request
         }
       } catch (_) {
         xrint(_);
-        return List<CommandModel>();
+        return [];
       }
     } else {
       throw Exception(-2);

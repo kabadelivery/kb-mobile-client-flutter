@@ -25,11 +25,11 @@ class DeleteAccountRefundPresenter
 
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   DeleteAccountRefundView _deleteAccountRefundView;
 
-  DeleteAccountRefundPresenter() {
+  DeleteAccountRefundPresenter(this._deleteAccountRefundView) {
     provider = new ClientPersonalApiProvider();
   }
 

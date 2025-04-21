@@ -9,7 +9,7 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,14 +21,14 @@ class CustomerCareChatApiProvider {
       /*   final response = await client
           .post(Uri.parse(ServerRoutes.LINK_GET_CUSTOMER_SERVICE_ALL_MESSAGES),
           body: json.encode({}),
-          headers: Utils.getHeadersWithToken(customer?.token)
+          headers: Utils.getHeadersWithToken(customer.token!)
       )
           .timeout(const Duration(seconds: 30));
    */
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -49,13 +49,13 @@ class CustomerCareChatApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null || lo.isEmpty || lo.length == 0)
-            return List<CustomerCareChatMessageModel>();
+            return [];
           else {
-            List<CustomerCareChatMessageModel> messages = lo
+            List<CustomerCareChatMessageModel>? messages = lo
                 ?.map(
                     (message) => CustomerCareChatMessageModel.fromJson(message))
                 ?.toList();
-            return messages;
+            return messages!;
           }
         } else
           throw Exception(-1); // there is an error in your request
@@ -74,7 +74,7 @@ class CustomerCareChatApiProvider {
 
       var device;
 
-      String token = "";
+      String? token = "";
       try {
         final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
         token = await firebaseMessaging.getToken();
@@ -110,13 +110,13 @@ class CustomerCareChatApiProvider {
       final response = await client
           .post(Uri.parse(ServerRoutes.LINK_POST_SUGGESTION),
           body: json.encode({"message":message, 'device': device}),
-          headers: Utils.getHeadersWithToken(customer?.token)
+          headers: Utils.getHeadersWithToken(customer.token!)
       )
           .timeout(const Duration(seconds: 30));*/
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

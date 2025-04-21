@@ -22,9 +22,9 @@ class ServiceMainPresenter implements ServiceMainContract {
 
   ServiceMainView _serviceMainView;
 
-  ServiceMainApiProvider provider;
+  late ServiceMainApiProvider provider;
 
-  ServiceMainPresenter() {
+  ServiceMainPresenter(this._serviceMainView) {
     provider = new ServiceMainApiProvider();
   }
 

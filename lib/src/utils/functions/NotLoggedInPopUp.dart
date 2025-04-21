@@ -13,7 +13,7 @@ void NotLoggedInPopUp(BuildContext context){
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(
-            "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+            "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -31,7 +31,7 @@ void NotLoggedInPopUp(BuildContext context){
                       ))),
               SizedBox(height: 10),
               Text(
-                  "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_place_order")}",
+                  "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
                   textAlign: TextAlign.center)
             ],
           ),
@@ -39,14 +39,14 @@ void NotLoggedInPopUp(BuildContext context){
         actions: <Widget>[
           TextButton(
             child: Text(
-                "${AppLocalizations.of(context).translate('not_now')}"),
+                "${AppLocalizations.of(context)!.translate('not_now')}"),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
             child:
-            Text("${AppLocalizations.of(context).translate('login')}"),
+            Text("${AppLocalizations.of(context)!.translate('login')}"),
             onPressed: () {
               /* */
               /* jump to login page... */
@@ -54,7 +54,7 @@ void NotLoggedInPopUp(BuildContext context){
 
               Navigator.of(context).push(new MaterialPageRoute(
                   builder: (BuildContext context) => LoginPage(
-                      presenter: LoginPresenter(),
+                      presenter: LoginPresenter(LoginView()),
                       fromOrderingProcess: true)));
             },
           )

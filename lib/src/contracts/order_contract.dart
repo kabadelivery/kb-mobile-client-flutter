@@ -18,10 +18,10 @@ class OrderConfirmationContract {
 //  void login (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
   void checkOpeningStateOf(CustomerModel customer, ShopModel restaurant) {}
-  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) {}
+  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {}
   void computeBilling (ShopModel restaurant, CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint){}
-  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint){}
-  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end){}
+  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint)async{}
+  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end)async{}
 }
 
 class OrderConfirmationView {
@@ -49,9 +49,9 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
   OrderConfirmationView _orderConfirmationView;
 
-  OrderApiProvider provider;
+  late OrderApiProvider provider;
 
-  OrderConfirmationPresenter() {
+  OrderConfirmationPresenter(this._orderConfirmationView) {
     provider = new OrderApiProvider();
   }
 
@@ -180,12 +180,12 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 //can_preorder = 0;
 
       Iterable lo = json.decode(response)["data"]["preorder"]["hours"];
-      List<DeliveryTimeFrameModel> deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
+      List<DeliveryTimeFrameModel>? deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
 
       //    open_type = 0;
       //    can_preorder = 0;
 
-      configuration = OrderBillConfiguration(working_hour: working_hour, open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames, isBillBuilt: false);
+      configuration = OrderBillConfiguration(working_hour: working_hour, open_type: open_type, reason: reason, can_preorder:  can_preorder, discount: discount, deliveryFrames: deliveryFrames!, isBillBuilt: false);
       _orderConfirmationView.isRestaurantOpenConfigLoading(false);
       _orderConfirmationView.inflateBillingConfiguration1(configuration);
     } catch (_) {

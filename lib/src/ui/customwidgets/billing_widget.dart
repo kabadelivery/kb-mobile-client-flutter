@@ -1,16 +1,12 @@
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../localizations/AppLocalizations.dart';
 import '../../utils/_static_data/KTheme.dart';
-import '../../utils/_static_data/NetworkImages.dart';
-import '../../utils/functions/Utils.dart';
 
 Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfiguration){
   return Column(children: <Widget>[
-    (_orderBillConfiguration?.remise > 0
+    (_orderBillConfiguration.remise! > 0
         ? Container(
         height: 40.0,
         decoration: BoxDecoration(
@@ -29,7 +25,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
     /* content */
     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       Text(
-          "${AppLocalizations.of(context).translate('invoice_bill')}",
+          "${AppLocalizations.of(context)!.translate('invoice_bill')}",
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))
     ]),
     SizedBox(height: 10),
@@ -37,7 +33,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-              "${AppLocalizations.of(context).translate('order_amount')}",
+              "${AppLocalizations.of(context)!.translate('order_amount')}",
               style: TextStyle(
                   fontWeight: FontWeight.normal, fontSize: 12)),
           /* check if there is promotion on Commande */
@@ -45,8 +41,8 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
             children: <Widget>[
               /* montant commande normal */
               Text(
-                  _orderBillConfiguration?.command_pricing >
-                      _orderBillConfiguration?.promotion_pricing
+                  _orderBillConfiguration.command_pricing! >
+                      _orderBillConfiguration.promotion_pricing!
                       ? "(${_orderBillConfiguration?.command_pricing})"
                       : "",
                   style: TextStyle(
@@ -56,10 +52,10 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
               SizedBox(width: 5),
               /* montant commande promotion */
               Text(
-                  _orderBillConfiguration?.command_pricing >
-                      _orderBillConfiguration?.promotion_pricing
-                      ? "${_orderBillConfiguration?.promotion_pricing} ${AppLocalizations.of(context).translate('currency')}"
-                      : "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context).translate('currency')}",
+                  _orderBillConfiguration.command_pricing! >
+                      _orderBillConfiguration.promotion_pricing!
+                      ? "${_orderBillConfiguration?.promotion_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
+                      : "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 12)),
             ],
@@ -70,7 +66,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-              "${AppLocalizations.of(context).translate('delivery_amount')}",
+              "${AppLocalizations.of(context)!.translate('delivery_amount')}",
               style: TextStyle(
                   fontWeight: FontWeight.normal, fontSize: 12)),
           /* check if there is promotion on Livraison */
@@ -78,9 +74,9 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
             children: <Widget>[
               /* montant livraison normal */
               Text(
-                  _orderBillConfiguration?.shipping_pricing >
+                  _orderBillConfiguration.shipping_pricing! >
                       _orderBillConfiguration
-                          ?.promotion_shipping_pricing
+                          .promotion_shipping_pricing!
                       ? "(${_orderBillConfiguration?.shipping_pricing})"
                       : "",
                   style: TextStyle(
@@ -90,11 +86,11 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
               SizedBox(width: 5),
               /* montant livraison promotion */
               Text(
-                  _orderBillConfiguration?.shipping_pricing >
+                  _orderBillConfiguration.shipping_pricing! >
                       _orderBillConfiguration
-                          ?.promotion_shipping_pricing
-                      ? "${_orderBillConfiguration?.promotion_shipping_pricing} ${AppLocalizations.of(context).translate('currency')}"
-                      : "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context).translate('currency')}",
+                          .promotion_shipping_pricing!
+                      ? "${_orderBillConfiguration?.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
+                      : "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 12)),
             ],
@@ -107,7 +103,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-              "${AppLocalizations.of(context).translate('additional_fees')}",
+              "${AppLocalizations.of(context)!.translate('additional_fees')}",
               style: TextStyle(
                   fontWeight: FontWeight.normal, fontSize: 12)),
           /* check if there is promotion on Livraison */
@@ -115,7 +111,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
             children: <Widget>[
               /* montant livraison promotion */
               Text(
-                  "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context).translate('currency')}",
+                  "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 12)),
 
@@ -132,7 +128,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-            "${AppLocalizations.of(context).translate('additional_fees_description')}",
+            "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
             style: TextStyle(
 
                 fontSize: 12,
@@ -141,12 +137,12 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
 
     ),
     SizedBox(height: 10),
-    _orderBillConfiguration?.remise > 0
+    _orderBillConfiguration.remise! > 0
         ? Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-              "${AppLocalizations.of(context).translate('discount')}",
+              "${AppLocalizations.of(context)!.translate('discount')}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
@@ -170,12 +166,12 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-              "${AppLocalizations.of(context).translate('net_price')}",
+              "${AppLocalizations.of(context)!.translate('net_price')}",
               style: TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 14)),
           /* montant total a payer */
           Text(
-              "${_orderBillConfiguration?.total_pricing} ${AppLocalizations.of(context).translate('currency')}",
+              "${_orderBillConfiguration?.total_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: KColors.primaryColor,

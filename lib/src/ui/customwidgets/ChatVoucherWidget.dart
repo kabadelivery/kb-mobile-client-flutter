@@ -11,25 +11,25 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatVoucherWidget extends StatefulWidget {
 
-  String voucher_link;
+  String? voucher_link;
 
-  VoucherModel voucher;
+  VoucherModel? voucher;
 
-  String voucher_code;
+  String? voucher_code;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  ChatVoucherPresenter presenter;
+  ChatVoucherPresenter? presenter;
 
-  bool is_expired = false;
+  bool? is_expired = false;
 
   ChatVoucherWidget(
-      {Key key,
+      {required Key key,
       this.customer,
       this.voucher_link,
       this.voucher = null,
       this.presenter}) {
-    List<String> splits = voucher_link.split("/");
+    List<String> splits = voucher_link!.split("/");
     voucher_code = splits[splits.length - 1];
   }
 
@@ -49,8 +49,8 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
   void initState() {
     super.initState();
     // launch presenter to get voucher details
-    widget.presenter.chatVoucherView = this;
-    widget.presenter.fetchVoucherDetails(widget.customer, widget.voucher_code);
+    widget.presenter!.chatVoucherView = this;
+    widget.presenter!.fetchVoucherDetails(widget.customer!, widget.voucher_code!);
   }
 
   @override
@@ -86,7 +86,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
           Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
-                color: widget.is_expired ? Colors.black : KColors.primaryColor,
+                color: widget.is_expired! ? Colors.black : KColors.primaryColor,
                 borderRadius: BorderRadius.circular(5)),
             child: Column(
               children: [
@@ -110,7 +110,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                       children: [
                         SizedBox(width: 10),
                         Text(
-                          "${widget?.voucher?.type == 1 ? "${AppLocalizations.of(context).translate('voucher_type_shop')}" : (widget?.voucher?.type == 2 ? "${AppLocalizations.of(context).translate('voucher_type_delivery')}" : "${AppLocalizations.of(context).translate('voucher_type_all')}")}",
+                          "${widget?.voucher?.type == 1 ? "${AppLocalizations.of(context)!.translate('voucher_type_shop')}" : (widget?.voucher?.type == 2 ? "${AppLocalizations.of(context)!.translate('voucher_type_delivery')}" : "${AppLocalizations.of(context)!.translate('voucher_type_all')}")}",
                           style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,
@@ -119,7 +119,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                       ],
                     ),
                     Text(
-                      "${Utils.getExpiryDay(widget?.voucher?.end_date)}",
+                      "${Utils.getExpiryDay(widget.voucher!.end_date!)}",
                       style: TextStyle(
                           fontSize: 22,
                           color: KColors.primaryYellowColor,
@@ -138,14 +138,14 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                             fontSize: 12,
                             color: Colors.white,
                             fontWeight: FontWeight.normal)),
-                    widget.is_expired ? Text("${AppLocalizations.of(context).translate("expired")}",
+                    widget.is_expired! ? Text("${AppLocalizations.of(context)!.translate("expired")}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 10,
                             color: Colors.white,
                             fontWeight: FontWeight.w500)
                     ) :  Text(
-                        "${AppLocalizations.of(context).translate("expires_at")}\n${Utils.timeStampToDate(widget?.voucher?.end_date)}",
+                        "${AppLocalizations.of(context)!.translate("expires_at")}\n${Utils.timeStampToDate(widget.voucher!.end_date!)}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 10,
@@ -159,7 +159,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
           SizedBox(
             height: 5,
           ),
-          widget.voucher != null && !widget.is_expired
+          widget.voucher != null && !widget.is_expired!
               ? InkWell(
                   onTap: () {
                     _subscribeToVoucher();
@@ -167,8 +167,8 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
                   child: Container(
                     child: Center(
                         child: Text(
-                      "${AppLocalizations.of(context).translate("subscribe")}"
-                          ?.toUpperCase(),
+                      "${AppLocalizations.of(context)!.translate("subscribe")}"
+                          .toUpperCase(),
                       style: TextStyle(
                           color: KColors.primaryColor,
                           fontWeight: FontWeight.w500),
@@ -188,10 +188,10 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
     _jumpToPage(
         context,
         AddVouchersPage(
-            presenter: AddVoucherPresenter(),
+            presenter: AddVoucherPresenter(AddVoucherView()),
             qrCode: "${widget.voucher_code}".toUpperCase(),
             autoSubscribe: true,
-            customer: widget.customer));
+            customer: widget!.customer!));
   }
 
   void _jumpToPage(BuildContext context, page) {
@@ -215,7 +215,7 @@ class _ChatVoucherWidgetState extends State<ChatVoucherWidget>
       isLoading = false;
       hasError = false;
       widget.voucher = voucher;
-      widget.is_expired = Utils.isEndDateReached(widget?.voucher?.end_date);
+      widget.is_expired = Utils.isEndDateReached(widget.voucher!.end_date!);
     });
   }
 

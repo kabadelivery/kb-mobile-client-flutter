@@ -2,10 +2,10 @@ import 'package:KABA/src/models/ArticleContentModel.dart';
 
 class WebArticle {
 
-  int id;
-  int likeCount;
-  ArticleContentModel article;
-  String udpatedAt;
+  int? id;
+  int? likeCount;
+  ArticleContentModel? article;
+  String? udpatedAt;
 
   WebArticle.fromJson(Map<String, dynamic> json) {
 
@@ -18,7 +18,7 @@ class WebArticle {
   Map toJson () => {
     "id" : (id as int),
     "likeCount" : likeCount,
-    "article" : article.toJson(),
+    "article" : article!.toJson(),
     "udpatedAt" : udpatedAt,
   };
 
@@ -38,8 +38,8 @@ class WebBloc {
   static final int OPEN_MENU_ACTION = 90;
 
   /* type ? content ?  style ? */
-  int type;
-  String data;
+  int? type;
+  String? data;
 
   WebBloc.fromJson(Map<String, dynamic> json) {
     type = json['type'];

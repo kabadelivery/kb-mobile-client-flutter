@@ -132,12 +132,12 @@ class Utils {
       simpleDateFormat = new DateFormat(pattern_today);
       formattedDate = simpleDateFormat.format(commandTime);
       if (commandTime.day == currentTime.day) {
-        formattedDate = "${AppLocalizations.of(context).translate('today')}" +
+        formattedDate = "${AppLocalizations.of(context)!.translate('today')}" +
             " " +
             formattedDate;
       } else if (commandTime.day + 1 == currentTime.day) {
         formattedDate =
-            "${AppLocalizations.of(context).translate('yesterday')}" +
+            "${AppLocalizations.of(context)!.translate('yesterday')}" +
                 " " +
                 formattedDate;
       } else {
@@ -216,7 +216,7 @@ class Utils {
     return balance.split('').reversed.join('');
   }
 
-  static String hidePhoneNumber(String phoneNumberEmail) {
+  static String? hidePhoneNumber(String phoneNumberEmail) {
     if (phoneNumberEmail == null) return "********";
     if (Utils.isEmailValid(phoneNumberEmail)) {
       // hide email
@@ -238,7 +238,7 @@ class Utils {
     }
   }
 
-  static String timeStampToDayDate(String timeStamp, {List<String> dayz}) {
+  static String timeStampToDayDate(String timeStamp, {List<String>? dayz}) {
     try {
       int unixSeconds = int.parse(timeStamp);
       DateTime date =
@@ -268,7 +268,7 @@ class Utils {
           "${month})");
       return daY;
     } catch (e) {
-      e.xrintStackTrace();
+      e.toString();
     }
     return "-- --";
   }
@@ -280,7 +280,7 @@ class Utils {
           new DateTime.fromMillisecondsSinceEpoch(unixSeconds * 1000);
       return new DateFormat("Hm").format(date);
     } catch (e) {
-      e.xrintStackTrace();
+      e.toString();
     }
     return "-- --";
   }
@@ -317,8 +317,8 @@ class Utils {
     try {
       double lat1 = position.latitude;
       double long1 = position.longitude;
-      double lat2 = double.parse(restaurant.location.split(":")[0]);
-      double long2 = double.parse(restaurant.location.split(":")[1]);
+      double lat2 = double.parse(restaurant.location!.split(":")[0]);
+      double long2 = double.parse(restaurant.location!.split(":")[1]);
       double distance =
           Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
       distance = 1.15 /* error factor */ * distance / 1000; // distance meter

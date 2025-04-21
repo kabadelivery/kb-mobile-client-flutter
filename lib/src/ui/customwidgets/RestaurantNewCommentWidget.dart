@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:KABA/src/models/CommentModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 
 class RestaurantNewCommentWidget extends StatelessWidget {
 
-  CommentModel  comment;
+  CommentModel?  comment;
 
   RestaurantNewCommentWidget({
-    Key key,
+    Key? key,
     this.comment,
   }): super(key:key);
 
@@ -31,7 +30,7 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(Utils.inflateLink(comment.pic))
+                    image: CachedNetworkImageProvider(Utils.inflateLink(comment!.pic!))
                 )
             ),
             height:50, width: 50,
@@ -45,9 +44,9 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                       Flexible(
                         child:
                         RichText(text: TextSpan(
-                          text: comment.name_of_client.trim(), style: TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black, fontSize: 12)
+                          text: comment!.name_of_client!.trim(), style: TextStyle(fontWeight: FontWeight.bold, color: KColors.new_black, fontSize: 12)
                         , children: [
-                          TextSpan(text:"  "+ comment.content.trim(),  style: TextStyle(color:Colors.grey,  fontWeight: FontWeight.normal, fontSize: 12))
+                          TextSpan(text:"  "+ comment!.content!.trim(),  style: TextStyle(color:Colors.grey,  fontWeight: FontWeight.normal, fontSize: 12))
                         ])
                         ),
                       )
@@ -59,7 +58,7 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                   Row(children: <Widget>[]
                     ..addAll(
-                        List<Widget>.generate(comment.stars.toInt(), (int index) {
+                        List<Widget>.generate(comment!.stars!.toInt(), (int index) {
                           return Row(
                             children: [
                               Icon(FontAwesomeIcons.solidStar, color: KColors.primaryYellowColor, size: 14),
@@ -70,7 +69,7 @@ class RestaurantNewCommentWidget extends StatelessWidget {
                       // ..add((comment.stars*10)%10 != 0 ? Icon(Icons.star, color: KColors.primaryYellowColor, size: 16) : Container())
                     )),   Row(mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      Text("${Utils.readTimestamp(context, comment?.created_at)}",   style: TextStyle(color:Colors.grey, fontSize: 12)),
+                      Text("${Utils.readTimestamp(context, comment!.created_at!)}",   style: TextStyle(color:Colors.grey, fontSize: 12)),
                     ],
                   ),
                 ])

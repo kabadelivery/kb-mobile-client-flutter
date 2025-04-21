@@ -7,7 +7,7 @@ import 'package:KABA/src/models/EvenementModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 
 
-Iterable l;
+Iterable? l;
 
 class HomeScreenModel {
 
@@ -19,16 +19,16 @@ class HomeScreenModel {
 /* group ads */
 */
 
-  int serial_home;
-  String feed;
-  List<ShopModel> resto;
-  List<AdModel> slider;
+  int? serial_home;
+  String? feed;
+  List<ShopModel>? resto;
+  List<AdModel>? slider;
 //  List<AdModel> kaba_pub;
-  List<GroupAdsModel> groupad;
-  List<HomeScreenSubMenuModel> subMenus;
-  List<ShopProductModel> food_suggestions;
+  List<GroupAdsModel>? groupad;
+  List<HomeScreenSubMenuModel>? subMenus;
+  List<ShopProductModel>? food_suggestions;
 
-  AdModel event, promotion;
+  AdModel? event, promotion;
 
   HomeScreenModel({this.serial_home,
     this.feed,
@@ -77,8 +77,8 @@ class HomeScreenModel {
     "feed" : feed,
     "resto" : resto,
     "slider" : slider,
-    "promotion" : promotion.toJson(),
-    "event" : event.toJson(),
+    "promotion" : promotion!.toJson(),
+    "event" : event!.toJson(),
     "groupad" : groupad,
     "subMenus" : subMenus,
   };
@@ -95,10 +95,10 @@ class HomeScreenSubMenuModel {
   /* events */
   /* cinema */
   /* all kinds of other things. */
-  String title;
-  String img;
-  int destination;
-  String link;
+  String? title;
+  String? img;
+  int? destination;
+  String? link;
 
   HomeScreenSubMenuModel({this.title, this.img, this.destination, this.link});
 
@@ -125,19 +125,19 @@ class HomeScreenSubMenuModel {
 }
 
 class Destination {
-  int BEST_SELLER;
-  int EVENEMENTS;
-  int WEB;
+  int? BEST_SELLER;
+  int? EVENEMENTS;
+  int? WEB;
 }
 
 class GroupAdsModel {
 
-  String title;
-  String title_theme;
-  AdModel big_pub;
-  AdModel small_pub;
-  List<AdModel> level_one;
-  List<AdModel> level_two;
+  String? title;
+  String? title_theme;
+  AdModel? big_pub;
+  AdModel? small_pub;
+  List<AdModel>? level_one;
+  List<AdModel>? level_two;
 
 
   GroupAdsModel({this.title, this.title_theme, this.big_pub, this.small_pub, this.level_one, this.level_two});

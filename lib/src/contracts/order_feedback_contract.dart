@@ -33,9 +33,9 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
 
   OrderFeedbackView _orderFeedbackView;
 
-  OrderApiProvider provider;
+  late OrderApiProvider provider;
 
-  OrderFeedbackPresenter() {
+  OrderFeedbackPresenter(this._orderFeedbackView) {
     provider = new OrderApiProvider();
   }
 

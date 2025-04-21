@@ -1,9 +1,9 @@
 class ShopScheduleModel {
-  int day;
-  int open;
-  int pause;
-  String start;
-  String end;
+  int? day;
+  int? open;
+  int? pause;
+  String? start;
+  String? end;
 
   ShopScheduleModel({this.day, this.open, this.pause, this.start, this.end});
 

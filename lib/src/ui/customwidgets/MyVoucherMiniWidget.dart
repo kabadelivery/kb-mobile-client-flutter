@@ -9,15 +9,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class MyVoucherMiniWidget extends StatefulWidget {
-  VoucherModel voucher;
+  VoucherModel? voucher;
 
-  bool pick;
+  bool? pick;
 
-  bool subscribeSuccess;
+  bool? subscribeSuccess;
 
-  bool isForOrderConfirmation;
+  bool? isForOrderConfirmation;
 
-  bool isGift;
+  bool? isGift;
 
   MyVoucherMiniWidget(
       {this.voucher,
@@ -66,7 +66,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
     // restaurant ->  money_price:red, restaurant_name:dark, code:white
     // both ->  money_price:yellow, restaurant_name:black, code:red
 
-    switch (widget.voucher.type) {
+    switch (widget.voucher!.type!) {
       case 1: // restaurant (yellow background)
         restaurantNameColor = textColorWhite;
         priceColor = textColorRed;
@@ -106,14 +106,14 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
 //      color: Colors.grey,
 //      backgroundBlendMode: BlendMode.saturation,
 //    ),
-    if (widget.voucher.already_used_count == null) {
-      widget.voucher.already_used_count = 0;
-      widget.voucher.end_date =
+    if (widget.voucher!.already_used_count == null) {
+      widget.voucher!.already_used_count = 0;
+      widget.voucher!.end_date =
           "${DateTime.now().add(Duration(days: 30)).millisecondsSinceEpoch}";
     }
 
-    return widget.voucher.use_count - widget.voucher.already_used_count == 0 ||
-            Utils.isEndDateReached(widget?.voucher?.end_date)
+    return widget.voucher!.use_count! - widget.voucher!.already_used_count! == 0 ||
+            Utils.isEndDateReached(widget.voucher!.end_date!)
         ? Container(
             foregroundDecoration: BoxDecoration(
               color: Colors.grey,
@@ -131,9 +131,9 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                         begin: Alignment.topLeft,
                         end: Alignment(0.8, 0.0),
                         // 10% of the width, so there are ten blinds.
-                        colors: widget.voucher.type == 1
+                        colors: widget.voucher!.type == 1
                             ? restaurantVoucherBg
-                            : (widget.voucher.type == 2
+                            : (widget.voucher!.type == 2
                                 ? deliveryVoucherBg
                                 : bothVoucherBg),
                         tileMode: TileMode
@@ -162,7 +162,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                             MainAxisAlignment.start,
                                         children: <Widget>[
                                           /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
-                                          Text("${widget.voucher.trade_name}",
+                                          Text("${widget.voucher!.trade_name}",
                                               style: TextStyle(
                                                   color: restaurantNameColor,
                                                   fontSize: 15,
@@ -184,7 +184,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                                     size: 15),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                    "${widget.isGift ? AppLocalizations.of(context).translate("reparation_voucher") : widget.voucher.subscription_code}"
+                                                    "${widget.isGift! ? AppLocalizations.of(context)!.translate("reparation_voucher") : widget.voucher!.subscription_code!}"
                                                         .toUpperCase(),
                                                     style: TextStyle(
                                                         color: voucherCodeColor,
@@ -197,12 +197,12 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                           ]),
                                       SizedBox(height: 10),
                                       /* SHOW EXPIRY DATE */
-                                      widget.isGift
+                                      widget.isGift!
                                           ? Container(
                                               height: 15,
                                             )
                                           : Text(
-                                              "${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}",
+                                              "${AppLocalizations.of(context)!.translate('coupon_use_before')} ${Utils.timeStampToDate(widget.voucher!.end_date!)}",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: expiresDateColor,
@@ -214,9 +214,9 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                             Container(
                               padding: EdgeInsets.only(
                                   top: 5, bottom: 5, right: 5, left: 5),
-                              color: widget.voucher.type == 1
+                              color: widget.voucher!.type == 1
                                   ? restaurantVoucherBg[0]
-                                  : (widget.voucher.type == 2
+                                  : (widget.voucher!.type! == 2
                                       ? deliveryVoucherBg[0]
                                       : bothVoucherBg[0]), //.withAlpha(100),
                               child: Row(
@@ -224,12 +224,12 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('disponible')} (${widget.voucher.use_count - widget.voucher.already_used_count})",
+                                        "${AppLocalizations.of(context)!.translate('disponible')} (${widget.voucher!.use_count! - widget.voucher!.already_used_count!})",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: voucherCodeColor)),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})",
+                                        "${AppLocalizations.of(context)!.translate('utilisation')} (${widget.voucher!.already_used_count})",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: KColors.new_black)),
@@ -260,9 +260,9 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                         begin: Alignment.topLeft,
                         end: Alignment(0.8, 0.0),
                         // 10% of the width, so there are ten blinds.
-                        colors: widget.voucher.type == 1
+                        colors: widget.voucher!.type == 1
                             ? restaurantVoucherBg
-                            : (widget.voucher.type == 2
+                            : (widget.voucher!.type == 2
                                 ? deliveryVoucherBg
                                 : bothVoucherBg),
                         tileMode: TileMode
@@ -291,7 +291,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                             MainAxisAlignment.start,
                                         children: <Widget>[
                                           /* JUST IN CASE THE VOUCHER IS RESTAURANT BASED, WE SET UP THE NAME HERE. */
-                                          Text("${widget.voucher.trade_name}",
+                                          Text("${widget.voucher!.trade_name}",
                                               style: TextStyle(
                                                   color: restaurantNameColor,
                                                   fontSize: 18,
@@ -313,7 +313,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                                     size: 15),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                    "${widget.isGift ? AppLocalizations.of(context).translate("reparation_voucher") : widget.voucher.subscription_code}"
+                                                    "${widget.isGift! ? AppLocalizations.of(context)!.translate("reparation_voucher") : widget.voucher!.subscription_code}"
                                                         .toUpperCase(),
                                                     style: TextStyle(
                                                         color: voucherCodeColor,
@@ -327,12 +327,12 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                           ]),
                                       SizedBox(height: 10),
                                       /* SHOW EXPIRY DATE */
-                                      widget.isGift
+                                      widget.isGift!
                                           ? Container(
                                               height: 15,
                                             )
                                           : Text(
-                                              "${AppLocalizations.of(context).translate('coupon_use_before')} ${Utils.timeStampToDate(widget?.voucher?.end_date)}",
+                                              "${AppLocalizations.of(context)!.translate('coupon_use_before')} ${Utils.timeStampToDate(widget.voucher!.end_date!)}",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: expiresDateColor,
@@ -344,9 +344,9 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                             Container(
                               padding: EdgeInsets.only(
                                   top: 5, bottom: 5, right: 5, left: 5),
-                              color: widget.voucher.type == 1
+                              color: widget.voucher!.type == 1
                                   ? restaurantVoucherBg[0]
-                                  : (widget.voucher.type == 2
+                                  : (widget.voucher!.type == 2
                                       ? deliveryVoucherBg[0]
                                       : bothVoucherBg[0]), //.withAlpha(100),
                               child: Row(
@@ -354,12 +354,12 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('disponible')} (${widget.voucher.use_count - widget.voucher.already_used_count})",
+                                        "${AppLocalizations.of(context)!.translate('disponible')} (${widget.voucher!.use_count! - widget.voucher!.already_used_count!})",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: voucherCodeColor)),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('utilisation')} (${widget.voucher.already_used_count})",
+                                        "${AppLocalizations.of(context)!.translate('utilisation')} (${widget.voucher!.already_used_count})",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: KColors.new_black)),
@@ -382,7 +382,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            VoucherDetailsPage(voucher: widget.voucher),
+            VoucherDetailsPage(voucher: widget.voucher!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -396,23 +396,23 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   }
 
   _onLongPressVoucher() {
-    if (widget.isGift) return;
-    if (widget.pick || widget.isForOrderConfirmation) {
+    if (widget.isGift!) return;
+    if (widget.pick! || widget.isForOrderConfirmation!) {
       _jumpToVoucherDetails();
     }
   }
 
   _tapVoucher() {
-    if (widget.isGift) return;
+    if (widget.isGift!) return;
     if (widget?.isForOrderConfirmation == true) {
       return;
     }
 
-    if (widget.pick) {
+    if (widget.pick!) {
       // go back
       Navigator.of(context).pop({'voucher': widget.voucher});
     } else {
-      if (widget.subscribeSuccess) {
+      if (widget.subscribeSuccess!) {
         Navigator.of(context).pop();
       }
       _jumpToVoucherDetails();
@@ -420,14 +420,14 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
   }
 
   _buildCFAPriceWidget() {
-    return widget.voucher.category == 1
-        ? Text("-${widget.voucher.value}%",
+    return widget.voucher!.category! == 1
+        ? Text("-${widget.voucher!.value!}%",
             style: TextStyle(
                 fontSize: 28, fontWeight: FontWeight.bold, color: priceColor))
         : Column(
             children: [
               Text(
-                  "-${(widget.voucher.use_count - widget.voucher.already_used_count) * widget.voucher.value}F",
+                  "-${(widget.voucher!.use_count! - widget.voucher!.already_used_count!) * widget.voucher!.value!}F",
                   style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -446,7 +446,7 @@ class _MyVoucherMiniWidgetState extends State<MyVoucherMiniWidget> {
                           fontWeight: FontWeight.normal,
                           color: priceDetailsColor)),
                   Text(
-                      "-${widget.voucher.value}F X ${widget.voucher.use_count - widget.voucher.already_used_count}",
+                      "-${widget.voucher!.value!}F X ${widget.voucher!.use_count! - widget.voucher!.already_used_count!}",
                       style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.normal,

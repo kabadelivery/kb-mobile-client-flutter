@@ -4,24 +4,24 @@
 
 class CustomerModel {
 
-   int id;
-   String username;
-   String phone_number;
-   String whatsapp_number;
-   String email;
-   String nickname;
-   String birthday;
-   String job_title;
-   String district;
-   int gender; /* 1 female - 2 male - 3 dontwannasay - 0 notsetyet */
-   String profile_picture;
-   String theme_picture;
-   int isSet = 0;
-   String token;
+   int? id;
+   String? username;
+   String? phone_number;
+   String? whatsapp_number;
+   String? email;
+   String? nickname;
+   String? birthday;
+   String? job_title;
+   String? district;
+   int? gender; /* 1 female - 2 male - 3 dontwannasay - 0 notsetyet */
+   String? profile_picture;
+   String? theme_picture;
+   int? isSet = 0;
+   String? token;
 
 
    // just for local purposes
-  String created_at;
+  String? created_at;
 
 
    CustomerModel({this.id, this.username, this.email, this.phone_number, this.nickname,

@@ -39,9 +39,9 @@ class MenuPresenter implements MenuContract {
 
   MenuView _menuView;
 
-  MenuApiProvider provider;
+  late MenuApiProvider provider;
 
-  MenuPresenter() {
+  MenuPresenter(this._menuView) {
     provider = new MenuApiProvider();
   }
 
@@ -56,7 +56,7 @@ class MenuPresenter implements MenuContract {
     isWorking = true;
     _menuView.showLoading(true);
     try {
-      Map<String, dynamic> res = await provider.fetchRestaurantMenuList(restaurantId);
+      Map res = await provider.fetchRestaurantMenuList(restaurantId);
       // also get the restaurant entity here.
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
@@ -79,7 +79,7 @@ class MenuPresenter implements MenuContract {
     isWorking = true;
     _menuView.showLoading(true);
     try {
-      Map<String, dynamic> res = await provider.fetchRestaurantMenuListWithMenuId(menuId);
+      Map res = await provider.fetchRestaurantMenuListWithMenuId(menuId);
       // also get the restaurant entity here.
       _menuView.showLoading(false);
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
@@ -108,7 +108,7 @@ class MenuPresenter implements MenuContract {
       // also get the restaurant entity here.
       _menuView.showLoading(false);
       ShopProductModel food = res["food"];
-      _menuView.highLightFood(int.parse(food.menu_id),foodId);
+      _menuView.highLightFood(int.parse(food.menu_id??"0"),foodId);
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
     } catch (_) {
       /* login failure */

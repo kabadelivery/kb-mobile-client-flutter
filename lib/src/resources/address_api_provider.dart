@@ -35,7 +35,7 @@ class AddressApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer!.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -102,7 +102,7 @@ class AddressApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -150,7 +150,7 @@ class AddressApiProvider {
       */
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -170,10 +170,10 @@ class AddressApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["adresses"];
-          List<DeliveryAddressModel> addresses = lo
+          List<DeliveryAddressModel>? addresses = lo
               ?.map((address) => DeliveryAddressModel.fromJson(address))
               ?.toList();
-          return addresses;
+          return addresses!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -198,7 +198,7 @@ class AddressApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

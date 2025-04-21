@@ -4,11 +4,11 @@ import 'dart:core';
 class TopUpConfigurationModel {
 
   // 0 -> not authorized, 1 -> authorized
-  int tmoney = 0;
-  int flooz = 0;
-  int visa = 0;
-  int mobile_fees = 0;
-  int visa_fees = 0;
+  int? tmoney = 0;
+  int? flooz = 0;
+  int? visa = 0;
+  int? mobile_fees = 0;
+  int? visa_fees = 0;
 
   TopUpConfigurationModel({this.tmoney, this.flooz, this.visa, this.visa_fees, this.mobile_fees});
 

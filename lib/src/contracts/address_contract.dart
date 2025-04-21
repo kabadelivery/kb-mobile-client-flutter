@@ -30,11 +30,11 @@ class AddressPresenter implements AddressContract {
 
   bool isWorking = false;
 
-  AddressApiProvider provider;
+  late AddressApiProvider provider;
 
   AddressView _addressView;
 
-  AddressPresenter () {
+  AddressPresenter (this._addressView) {
     provider = new AddressApiProvider();
   }
 

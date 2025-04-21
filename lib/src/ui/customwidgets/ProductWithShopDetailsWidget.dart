@@ -14,9 +14,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ProductWithShopDetailsWidget extends StatefulWidget {
-  ShopProductModel food;
+  ShopProductModel? food;
 
-  GlobalKey key;
+  GlobalKey? key;
 
   ProductWithShopDetailsWidget({this.food, this.key});
 
@@ -66,7 +66,7 @@ class _ProductWithShopDetailsWidgetState
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(widget?.food?.pic)))),
+                                        Utils.inflateLink(widget.food!.pic!)))),
                           ),
                           SizedBox(width: 18),
                           Container(
@@ -89,7 +89,7 @@ class _ProductWithShopDetailsWidgetState
                                             Container(
                                               child: Text(
                                                   Utils.capitalize(
-                                                      "${widget?.food?.name}"),
+                                                      "${widget.food!.name}"),
                                                   maxLines: 1,overflow: TextOverflow.ellipsis,
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
@@ -101,22 +101,22 @@ class _ProductWithShopDetailsWidgetState
                                            SizedBox(height: 5,),
                                             Row(children: <Widget>[
                                               Text(
-                                                  "${widget?.food?.price}",
+                                                  "${widget.food!.price}",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                      color: widget?.food
-                                                                  .promotion ==
+                                                      color: widget.food!
+                                                                  .promotion! ==
                                                               1
                                                           ? KColors.new_black
                                                           : KColors.primaryColor,
-                                                      fontSize: widget?.food
+                                                      fontSize: widget.food!
                                                                   .promotion ==
                                                               1
                                                           ? 12
                                                           : 14,
-                                                      decoration: widget?.food
+                                                      decoration: widget.food!
                                                                   .promotion ==
                                                               1
                                                           ? TextDecoration
@@ -125,9 +125,9 @@ class _ProductWithShopDetailsWidgetState
                                                       fontWeight:
                                                           FontWeight.w600)),
                                               SizedBox(width: 3),
-                                              (widget?.food.promotion == 1
+                                              (widget.food!.promotion! == 1
                                                   ? Text(
-                                                      "${widget?.food?.promotion_price}",
+                                                      "${widget.food!.promotion_price}",
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 1,
@@ -141,7 +141,7 @@ class _ProductWithShopDetailsWidgetState
                                                       ))
                                                   : Container()),
                                               Text(
-                                                  "${AppLocalizations.of(context).translate("currency")}",
+                                                  "${AppLocalizations.of(context)!.translate("currency")}",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   textAlign: TextAlign.center,
@@ -162,7 +162,7 @@ class _ProductWithShopDetailsWidgetState
                                             children: [
                                               Text(
                                                   Utils.capitalize(
-                                                      "${widget?.food?.restaurant_entity?.name}"),
+                                                      "${widget.food!.restaurant_entity?.name}"),
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   // textAlign: TextAlign.left,
@@ -172,9 +172,9 @@ class _ProductWithShopDetailsWidgetState
                                               SizedBox(height: 5),
                                               Row(children: <Widget>[
                                                 _getRestaurantStateTag(widget
-                                                    ?.food?.restaurant_entity),
+                                                    .food!.restaurant_entity!),
                                                 SizedBox(width: 5),
-                                                widget?.food?.restaurant_entity
+                                                widget.food!.restaurant_entity
                                                             ?.distance ==
                                                         null
                                                     ? Container()
@@ -196,7 +196,7 @@ class _ProductWithShopDetailsWidgetState
                                                                 size: 10),
                                                             SizedBox(width: 5),
                                                             Text(
-                                                                "${widget?.food?.restaurant_entity?.distance}${AppLocalizations.of(context).translate('km')}",
+                                                                "${widget.food!.restaurant_entity?.distance}${AppLocalizations.of(context)!.translate('km')}",
                                                                 style: TextStyle(
                                                                     color:
                                                                         Colors.grey,
@@ -211,7 +211,7 @@ class _ProductWithShopDetailsWidgetState
                                                         ),
                                                       ),
                                                 SizedBox(width: 5),
-                                                widget?.food?.restaurant_entity
+                                                widget.food!.restaurant_entity
                                                             ?.distance ==
                                                         null
                                                     ? Container()
@@ -242,14 +242,14 @@ class _ProductWithShopDetailsWidgetState
                                                                     size: 12),
                                                                 SizedBox(width: 5),
                                                                 Text(
-                                                                    (widget?.food?.restaurant_entity
+                                                                    (widget.food!.restaurant_entity
                                                                                 ?.delivery_pricing ==
                                                                             "~"
-                                                                        ? "${AppLocalizations.of(context).translate('out_of_range')}"
+                                                                        ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
                                                                         : widget
-                                                                                ?.food
-                                                                                ?.restaurant_entity
-                                                                                ?.delivery_pricing +
+                                                                                !.food
+                                                                                !.restaurant_entity
+                                                                                !.delivery_pricing! +
                                                                             " F"),
                                                                     style: TextStyle(
                                                                         color: Colors
@@ -261,7 +261,7 @@ class _ProductWithShopDetailsWidgetState
                                               ]),
                                               SizedBox(height: 5),
                                               getRating(
-                                                  widget?.food?.restaurant_entity)
+                                                  widget.food!.restaurant_entity!)
                                             ],
                                           ),
                                         ),
@@ -280,7 +280,7 @@ class _ProductWithShopDetailsWidgetState
                     right: 0,
                     child: InkWell(
                       onTap: () => _jumpToShopDetails(
-                          context, widget?.food?.restaurant_entity),
+                          context, widget.food!.restaurant_entity!),
                       child: Container(
                         child: Center(
                             child: Icon(
@@ -297,7 +297,7 @@ class _ProductWithShopDetailsWidgetState
                     )),
               ],
             )),
-        onTap: () => _jumpToFoodDetails(context, widget?.food)));
+        onTap: () => _jumpToFoodDetails(context, widget.food!)));
   }
 
   /* get position of icon */
@@ -309,16 +309,16 @@ class _ProductWithShopDetailsWidgetState
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
+        builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food!.id),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food!.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -344,7 +344,7 @@ class _ProductWithShopDetailsWidgetState
       MaterialPageRoute(
         builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
-            presenter: RestaurantDetailsPresenter()),
+            presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       ),
     );
   }
@@ -355,19 +355,19 @@ class _ProductWithShopDetailsWidgetState
 
     switch (shopModel?.open_type) {
       case 0: // closed
-        tagText = "${AppLocalizations.of(context).translate('t_closed')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
         tagTextColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_opened')}";
         tagTextColor = CommandStateColor.delivered;
         break;
       case 2: // paused
-        tagText = "${AppLocalizations.of(context).translate('t_paused')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_paused')}";
         tagTextColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "${AppLocalizations.of(context).translate('t_unavailable')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_unavailable')}";
         tagTextColor = KColors.mBlue;
         break;
     }
@@ -378,7 +378,7 @@ class _ProductWithShopDetailsWidgetState
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
-            child: Text(tagText?.toUpperCase(),
+            child: Text(tagText.toUpperCase(),
                 style: TextStyle(color: tagTextColor, fontWeight: FontWeight.w600, fontSize: 12)))
         : Container(
             padding: EdgeInsets.all(5),
@@ -386,20 +386,20 @@ class _ProductWithShopDetailsWidgetState
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(
-                "${AppLocalizations.of(context).translate('coming_soon')}"
-                    ?.toUpperCase(),
+                "${AppLocalizations.of(context)!.translate('coming_soon')}"
+                    .toUpperCase(),
                 style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 11)));
   }
 
   getRating(ShopModel shopModel) {
-    if (shopModel?.stars?.toInt() != null && shopModel?.stars?.toInt() > 0)
+    if (shopModel?.stars?.toInt() != null && shopModel!.stars!.toInt() > 0)
       return Row(
           children: <Widget>[]..addAll(
-                List<Widget>.generate(shopModel?.stars?.toInt(), (int index) {
+                List<Widget>.generate(shopModel.stars!.toInt(), (int index) {
               return Icon(FontAwesomeIcons.solidStar,
                   color: KColors.primaryYellowColor, size: 15);
             })
-                  ..add((shopModel.stars * 10) % 10 != 0
+                  ..add((shopModel!.stars! * 10) % 10 != 0
                       ? Icon(FontAwesomeIcons.solidStarHalf,
                           color: KColors.primaryYellowColor, size: 15)
                       : Container())));
@@ -411,10 +411,10 @@ class _ProductWithShopDetailsWidgetState
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
-                distance: shopModel?.distance,
-                shipping_price: shopModel?.delivery_pricing,
+                distance: shopModel!.distance!,
+                shipping_price: shopModel!.delivery_pricing!,
                 restaurant: shopModel,
-                presenter: RestaurantDetailsPresenter()),
+                presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

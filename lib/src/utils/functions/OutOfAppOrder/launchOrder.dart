@@ -7,7 +7,7 @@ import 'package:KABA/src/state_management/out_of_app_order/out_of_app_order_scre
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
 import 'package:KABA/src/utils/functions/OutOfAppOrder/resetProviders.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,7 +77,7 @@ Future<void> launchOrderFunc(
 }
 
 void mToast(String message, BuildContext context) {
-  Toast.show(message, context, duration: Toast.LENGTH_LONG);
+  Toast.show(message,duration:5);
 }
 
 void sorryDemoAccountAlert(BuildContext context, WidgetRef ref) {
@@ -86,7 +86,7 @@ void sorryDemoAccountAlert(BuildContext context, WidgetRef ref) {
   _showDialog(
       asset_png: ImageAssets.demo_icon, // untrustful
       message:
-          "${AppLocalizations.of(context).translate('demo_account_alert')}",
+          "${AppLocalizations.of(context)!.translate('demo_account_alert')}",
       isYesOrNo: false,
       context: context,
       ref: ref);
@@ -100,12 +100,12 @@ void payAtDelivery(
 ) async {
   const String DEMO_ACCOUNT_USERNAME = "90000000";
 
-  OrderBillConfiguration orderBillConfiguration =
+  OrderBillConfiguration? orderBillConfiguration =
       ref.watch(orderBillingStateProvider).orderBillConfiguration;
-  CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
+  CustomerModel? customer = ref.watch(orderBillingStateProvider).customer;
   String phone_number = ref.watch(outOfAppScreenStateProvier).phone_number;
   var foods = ref.watch(productListProvider);
-  List<DeliveryAddressModel> order_address =
+  List<DeliveryAddressModel>? order_address =
       ref.watch(locationStateProvider).selectedOrderAddress;
   var _selectedAddress =
       ref.watch(locationStateProvider).selectedShippingAddress;
@@ -119,19 +119,19 @@ void payAtDelivery(
   var _usePoint = ref.watch(voucherStateProvider).usePoint;
 
   if (orderBillConfiguration?.trustful != 1) {
-    if (Utils.isEmailValid(customer?.username)) {
+    if (Utils.isEmailValid(customer!.username!)) {
       // email account
       _showDialog(
           iccon: VectorsData.questions, // untrustful
           message:
-              "${AppLocalizations.of(context).translate('sorry_email_account_no_pay_delivery')}",
+              "${AppLocalizations.of(context)!.translate('sorry_email_account_no_pay_delivery')}",
           isYesOrNo: false,
           context: context);
     } else {
       _showDialog(
           iccon: VectorsData.questions, // untrustful
           message:
-              "${AppLocalizations.of(context).translate('sorry_ongoing_order')}",
+              "${AppLocalizations.of(context)!.translate('sorry_ongoing_order')}",
           isYesOrNo: false,
           context: context);
     }
@@ -142,7 +142,7 @@ void payAtDelivery(
     _showDialog(
         iccon: VectorsData.questions,
         message:
-            "${AppLocalizations.of(context).translate('prevent_pay_at_delivery')}",
+            "${AppLocalizations.of(context)!.translate('prevent_pay_at_delivery')}",
         isYesOrNo: true,
         context: context,
         actionIfYes: () => payAtDelivery(
@@ -167,7 +167,7 @@ void payAtDelivery(
         results['code'] == null ||
         !Utils.isCode(results['code'])) {
       mToast(
-          "${AppLocalizations.of(context).translate('wrong_code')}", context);
+          "${AppLocalizations.of(context)!.translate('wrong_code')}", context);
     } else {
       String _mCode = results['code'];
 
@@ -181,7 +181,7 @@ void payAtDelivery(
           try {
             OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
             final uploadedOrders =
-                await api.uploadMultipleImages(foods, customer);
+                await api.uploadMultipleImages(foods, customer!);
             if (uploadedOrders.isNotEmpty) {
               foods = [];
               for (var order in uploadedOrders) {
@@ -206,22 +206,22 @@ void payAtDelivery(
             await launchOrderFunc(
                 customer,
                 foods, //foods,
-                order_address,
-                _selectedAddress,
+                order_address!,
+                _selectedAddress!,
                 _mCode,
                 addInfo,
-                _selectedVoucher,
-                _usePoint,
+                _selectedVoucher!,
+                _usePoint!,
                 order_type,
                 context,
                 ref,
                 phone_number,
                 uploadAdditionnalInfoImage[0]["image"]);
           } catch (e) {
-            return e;
+             xrint(e);
           }
         } else {
-          mToast("${AppLocalizations.of(context).translate('wrong_code')}",
+          mToast("${AppLocalizations.of(context)!.translate('wrong_code')}",
               context);
         }
       }
@@ -230,17 +230,17 @@ void payAtDelivery(
 }
 
 void _showDialog(
-    {String iccon,
-    Icon icon,
+    {String? iccon,
+    Icon? icon,
     var message,
     bool okBackToHome = false,
     bool isYesOrNo = false,
-    Function actionIfYes,
-    String asset_png = null,
-    BuildContext context,
-    WidgetRef ref}) {
+    Function? actionIfYes,
+    String? asset_png,
+    BuildContext? context,
+    WidgetRef? ref}) {
   showDialog(
-      context: context,
+      context: context!,
       builder: (BuildContext context) {
         return AlertDialog(
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -259,7 +259,7 @@ void _showDialog(
                           )))
                       : (icon == null
                           ? SvgPicture.asset(
-                              iccon,
+                              iccon!,
                             )
                           : icon)),
               SizedBox(height: 10),
@@ -274,7 +274,7 @@ void _showDialog(
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -285,11 +285,11 @@ void _showDialog(
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -297,12 +297,12 @@ void _showDialog(
                     //
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         if (!okBackToHome) {
                           try {
-                            resetProviders(ref);
+                            resetProviders(ref!);
                             xrint("Resetting providers successfully");
                           } catch (e) {
                             xrint("Error resetting providers: $e");
@@ -341,43 +341,43 @@ void launchOrderResponse(int errorCode, BuildContext context, WidgetRef ref) {
     switch (errorCode) {
       case 300:
         message =
-            "${AppLocalizations.of(context).translate('300_wrong_password')}";
+            "${AppLocalizations.of(context)!.translate('300_wrong_password')}";
         break;
       case 301: // restaurant doesnt exist
         message =
-            "${AppLocalizations.of(context).translate('301_server_issue')}";
+            "${AppLocalizations.of(context)!.translate('301_server_issue')}";
         break;
       case 302:
         message =
-            "${AppLocalizations.of(context).translate('302_unable_pay_at_arrival')}";
+            "${AppLocalizations.of(context)!.translate('302_unable_pay_at_arrival')}";
         break;
       case 303:
         message =
-            "${AppLocalizations.of(context).translate('303_unable_online_payment')}";
+            "${AppLocalizations.of(context)!.translate('303_unable_online_payment')}";
         break;
       case 304:
         message =
-            "${AppLocalizations.of(context).translate('304_address_error')}";
+            "${AppLocalizations.of(context)!.translate('304_address_error')}";
         break;
       case 305:
         message =
-            "${AppLocalizations.of(context).translate('305_308_balance_insufficient')}";
+            "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
         break;
       case 306:
         message =
-            "${AppLocalizations.of(context).translate('306_account_error')}";
+            "${AppLocalizations.of(context)!.translate('306_account_error')}";
         break;
       case 307:
         message =
-            "${AppLocalizations.of(context).translate('307_unable_preorder')}";
+            "${AppLocalizations.of(context)!.translate('307_unable_preorder')}";
         break;
       case 308:
         message =
-            "${AppLocalizations.of(context).translate('305_308_balance_insufficient')}";
+            "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
         break;
       default:
         message =
-            "${AppLocalizations.of(context).translate('309_system_error')}";
+            "${AppLocalizations.of(context)!.translate('309_system_error')}";
     }
     _showDialog(
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
@@ -395,7 +395,7 @@ void _showOrderSuccessDialog(BuildContext context, WidgetRef ref) {
       okBackToHome: true,
       iccon: VectorsData.delivery_nam,
       message:
-          "${AppLocalizations.of(context).translate('order_congratz_praise')}",
+          "${AppLocalizations.of(context)!.translate('order_congratz_praise')}",
       isYesOrNo: false,
       context: context,
       ref: ref);
@@ -404,8 +404,8 @@ void _showOrderSuccessDialog(BuildContext context, WidgetRef ref) {
 Future<void> _playMusicForSuccess() async {
   // play music
   final player = AudioPlayer();
-  player.play(MusicData.command_success_hold_on);
-  if (await Vibration.hasVibrator()) {
+  player.play(UrlSource(MusicData.command_success_hold_on));
+  if (await Vibration.hasVibrator() != null) {
     Vibration.vibrate(duration: 500);
   }
 }

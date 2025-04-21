@@ -9,7 +9,7 @@ class RegisterContract {
   void register(String phone_number, String password, String username, String requestId){}
   void sendVerificationCode(String phoneNumber){}
   void checkVerificationCode(String code, String requestId){}
-  void createAccount({String nickname, String password, String phone_number="", String email="", String request_id}) {}
+  void createAccount({String? nickname, String? password, String phone_number="", String email="", String? request_id}) {}
 }
 
 
@@ -43,11 +43,11 @@ class RegisterPresenter implements RegisterContract {
 
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   RegisterView _registerView;
 
-  RegisterPresenter () {
+  RegisterPresenter (this._registerView) {
     provider = new ClientPersonalApiProvider();
   }
 
@@ -116,13 +116,13 @@ class RegisterPresenter implements RegisterContract {
   }
 
   @override
-  Future createAccount({String nickname, String password, String whatsapp_number, String phone_number="", String email="", String request_id}) async {
+  Future createAccount({String? nickname, String? password, String? whatsapp_number, String phone_number="", String email="", String? request_id}) async {
 
     if (isWorking)
       return;
     isWorking = true;
 
-    var jsonContent = await provider.registerCreateAccountAction(nickname:nickname, password: password, whatsapp_number: whatsapp_number, phone_number: phone_number, email: email, request_id: request_id);
+    var jsonContent = await provider.registerCreateAccountAction(nickname:nickname!, password: password!, whatsapp_number: whatsapp_number!, phone_number: phone_number, email: email, request_id: request_id!);
     int error = mJsonDecode(jsonContent)["error"];
     if (error == 0) {
       /* successfully created account */

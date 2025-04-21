@@ -16,7 +16,7 @@ class HomeScreenBloc {
 //      HomeScreenModel homeScreenModel = await _repository.fetchHomeScreenModel();
 //      _homeScreenFetcher.sink.add(homeScreenModel);
     } catch (_) {
-      _homeScreenFetcher.sink.addError(_.message);
+      _homeScreenFetcher.sink.addError(_.toString());
     }
   }
 

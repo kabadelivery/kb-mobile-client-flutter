@@ -25,9 +25,9 @@ class TransferMoneyRequestPresenter implements TransferMoneyRequestContract {
 
   TransferMoneyRequestView _transferMoneyRequestView;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
-  TransferMoneyRequestPresenter() {
+  TransferMoneyRequestPresenter(this._transferMoneyRequestView) {
     provider = new ClientPersonalApiProvider();
   }
 

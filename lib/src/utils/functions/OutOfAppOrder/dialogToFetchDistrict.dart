@@ -9,11 +9,11 @@ import '../../../state_management/out_of_app_order/district_state.dart';
 import '../../../ui/customwidgets/MyLoadingProgressWidget.dart';
 
 Future<List<Map<String, dynamic>>> fetchDistricts() async {
-  CustomerModel customer = await CustomerUtils.getCustomer();
+  CustomerModel? customer = await CustomerUtils.getCustomer();
 
   OutOfAppOrderApiProvider apiProvider = OutOfAppOrderApiProvider();
   List<Map<String, dynamic>> response =
-      await apiProvider.fetchDistricts(customer);
+      await apiProvider.fetchDistricts(customer!);
   response.sort((a, b) => a["name"].compareTo(b["name"]));
 
   // Save new data to cache

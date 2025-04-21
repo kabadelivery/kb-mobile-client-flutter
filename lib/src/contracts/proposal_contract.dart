@@ -28,9 +28,9 @@ class ProposalPresenter implements ProposalContract {
 
   ProposalView _proposalView;
 
-  MenuApiProvider provider;
+  late MenuApiProvider provider;
 
-  ProposalPresenter() {
+  ProposalPresenter(this._proposalView) {
     provider = new MenuApiProvider();
   }
 
@@ -50,10 +50,10 @@ class ProposalPresenter implements ProposalContract {
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
-          List<ShopProductModel> proposals =
+          List<ShopProductModel>? proposals =
               lo?.map((bs) => ShopProductModel.fromJson(bs))?.toList();
           /* send these to json */
-          _proposalView.inflateProposal(proposals);
+          _proposalView.inflateProposal(proposals!);
           _proposalView.showLoading(false);
         } else {
           _proposalView.showLoading(true);
@@ -75,13 +75,13 @@ class ProposalPresenter implements ProposalContract {
         // save best seller json
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(proposals_json)["data"];
-        List<ShopProductModel> proposals =
+        List<ShopProductModel>? proposals =
             lo?.map((bs) => ShopProductModel.fromJson(bs))?.toList();
         /* send these to json */
         CustomerUtils.saveProposalPage(proposals_json);
         CustomerUtils.saveProposalVersion(); // date
         _proposalView.showLoading(false);
-        _proposalView.inflateProposal(proposals);
+        _proposalView.inflateProposal(proposals!);
         isWorking = false;
       } catch (_) {
         /* Proposal failure */

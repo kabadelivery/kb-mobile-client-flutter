@@ -3,22 +3,22 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 
 class ShopProductModel {
-  int id;
-  String name;
-  String price;
-  String pic;
-  String promotion_price;
-  String menu_id;
-  int restaurant_id; // we
-  String description;
-  List<String> food_details_pictures;
-  int is_favorite = 0;
-  double stars;
-  int promotion;
-  bool is_addon = false;
+  int? id;
+  String? name;
+  String? price;
+  String? pic;
+  String? promotion_price;
+  String? menu_id;
+  int? restaurant_id; // we
+  String? description;
+  List<String>? food_details_pictures;
+  int? is_favorite = 0;
+  double? stars;
+  int? promotion;
+  bool? is_addon = false;
 
   /* restaurant entity */
-  ShopModel restaurant_entity;
+  ShopModel? restaurant_entity;
 
   ShopProductModel(
       {this.id,

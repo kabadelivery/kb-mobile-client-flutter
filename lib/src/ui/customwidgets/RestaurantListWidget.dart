@@ -10,10 +10,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantListWidget extends StatefulWidget {
-  ShopModel restaurantModel;
+  ShopModel? restaurantModel;
 
   RestaurantListWidget({
-    Key key,
+    Key? key,
     this.restaurantModel,
   }) : super(key: key);
 
@@ -53,14 +53,14 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
                                       Utils.inflateLink(
-                                          widget?.restaurantModel?.pic))))),
-                      trailing: widget.restaurantModel.coming_soon == 0
+                                          widget!.restaurantModel!.pic!))))),
+                      trailing: widget.restaurantModel!.coming_soon! == 0
                           ? IconButton(
                               icon: Icon(Icons.home,
                                   size: 30, color: KColors.primaryColor),
                               onPressed: () {
                                 _jumpToRestaurantDetails(
-                                    context, widget.restaurantModel);
+                                    context, widget!.restaurantModel!);
                               })
                           : null,
                       title: Column(
@@ -99,7 +99,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Row(children: [
-                            _getRestaurantStateTag(widget?.restaurantModel),
+                            _getRestaurantStateTag(widget.restaurantModel!),
                             SizedBox(width: 5),
                             widget?.restaurantModel?.coming_soon == 1
                                 ? Container(
@@ -109,7 +109,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                             Radius.circular(5)),
                                         color: KColors.primaryColor),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('coming_soon')}",
+                                        "${AppLocalizations.of(context)!.translate('coming_soon')}",
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 12)))
                                 : Container()
@@ -137,9 +137,9 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                                                 (widget.restaurantModel
                                                             ?.delivery_pricing ==
                                                         "~"
-                                                    ? "${AppLocalizations.of(context).translate('out_of_range')}"
+                                                    ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
                                                     : widget.restaurantModel
-                                                            ?.delivery_pricing +
+                                                            !.delivery_pricing! +
                                                         " F"),
                                                 style: TextStyle(
                                                     color: KColors.new_black,
@@ -150,7 +150,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                             widget.restaurantModel?.distance == null
                                 ? Container()
                                 : Text(
-                                    "~${widget.restaurantModel?.distance}${AppLocalizations.of(context).translate('km')}",
+                                    "~${widget.restaurantModel?.distance}${AppLocalizations.of(context)!.translate('km')}",
                                     style: TextStyle(
                                         color: KColors.new_black,
                                         fontWeight: FontWeight.normal,
@@ -162,8 +162,8 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                 ]))),
         onTap: () {
           widget?.restaurantModel?.coming_soon == 0
-              ? _jumpToRestaurantMenu(context, widget.restaurantModel)
-              : _comingSoon(context, widget.restaurantModel);
+              ? _jumpToRestaurantMenu(context, widget.restaurantModel!)
+              : _comingSoon(context, widget.restaurantModel!);
         }));
   }
 
@@ -180,7 +180,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
                 restaurant: restaurantModel,
-                presenter: RestaurantDetailsPresenter()),
+                presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -197,7 +197,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter()),
+                restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -234,10 +234,10 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                           image: new DecorationImage(
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(restaurantModel?.pic))))),
+                                  Utils.inflateLink(restaurantModel!.pic!))))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate('coming_soon_dialog')}",
+                      "${AppLocalizations.of(context)!.translate('coming_soon_dialog')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]),
@@ -245,7 +245,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
                   //
                   OutlinedButton(
                     child: new Text(
-                        "${AppLocalizations.of(context).translate('ok')}",
+                        "${AppLocalizations.of(context)!.translate('ok')}",
                         style: TextStyle(color: KColors.primaryColor)),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -262,21 +262,21 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     switch (restaurantModel.open_type) {
       case 0: // closed
         tagText =
-            "${AppLocalizations.of(context).translate('r_closed_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_closed_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('r_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('r_opened')}";
         tagColor = CommandStateColor.delivered;
         break;
       case 2: // paused
         tagText =
-            "${AppLocalizations.of(context).translate('r_pause_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_pause_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
         tagText =
-            "${AppLocalizations.of(context).translate('r_blocked_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_blocked_preorder')}";
         tagColor = KColors.primaryColor;
         break;
     }

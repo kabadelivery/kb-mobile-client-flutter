@@ -7,12 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/functions/CustomerUtils.dart';
 
 class DistrictState {
-  List<Map<String, dynamic>> districts;
-  List<Map<String, dynamic>> old_districts;
+  List<Map<String, dynamic>>? districts;
+  List<Map<String, dynamic>>? old_districts;
   bool isLoading=true;
-  String errorMessage;
+  String? errorMessage;
   String SelectedDistrictName;
-  Map<String, dynamic> selectedDistrict;
+  Map<String, dynamic>? selectedDistrict;
   DistrictState({
      this.districts,
      this.isLoading=true,
@@ -22,12 +22,12 @@ class DistrictState {
     this.selectedDistrict
   });
   DistrictState copyWith({
-    List<Map<String, dynamic>> districts,
-    bool isLoading,
-    String errorMessage,
-    String SelectedDistrictName,
-    List<Map<String, dynamic>> old_districts,
-    Map<String, dynamic> selectedDistrict
+    List<Map<String, dynamic>>? districts,
+    bool? isLoading,
+    String? errorMessage,
+    String? SelectedDistrictName,
+    List<Map<String, dynamic>>? old_districts,
+    Map<String, dynamic>? selectedDistrict
   }) {
     return DistrictState(
       districts: districts ?? this.districts,
@@ -49,7 +49,7 @@ class DistrictNotifier extends StateNotifier<DistrictState> {
   }
   void filterDistricts(String query) {
 
-      final filteredList = state.districts
+      final filteredList = state.districts!
           .where((item) => item["name"].toLowerCase().contains(query.toLowerCase()))
           .toList();
       if (filteredList.isEmpty) {
@@ -61,7 +61,7 @@ class DistrictNotifier extends StateNotifier<DistrictState> {
       state = state.copyWith(districts: filteredList);
        state.districts = state.old_districts;
       setSelectedDistrict(
-          state.districts.firstWhere((element) => element["name"] == state.SelectedDistrictName));
+          state.districts!.firstWhere((element) => element["name"] == state.SelectedDistrictName));
 
   }
   void setSelectedDistrictName(String districtName) {

@@ -44,7 +44,7 @@ class UserDataBloc {
       List<CommandModel> mDailyOrders = await _repository.fetchDailyOrders(customer);
       _myDailyOrderFetcher.sink.add(mDailyOrders);
     } catch (_) {
-      _myDailyOrderFetcher.sink.addError(_.message);
+      _myDailyOrderFetcher.sink.addError(_.toString());
     }
   }
 
@@ -53,7 +53,7 @@ class UserDataBloc {
       List<CommandModel> mLastOrders = await _repository.fetchLastOrders(customer);
       _myLastOrderFetcher.sink.add(mLastOrders);
     } catch (_) {
-      _myLastOrderFetcher.sink.addError(_.message);
+      _myLastOrderFetcher.sink.addError(_.toString());
     }
   }
 
@@ -62,7 +62,7 @@ class UserDataBloc {
       List<DeliveryAddressModel> deliveryAddresses = await _repository.fetchMyAddresses(userToken);
       _deliveryAddressFetcher.sink.add(deliveryAddresses);
     } catch (_) {
-      _deliveryAddressFetcher.sink.addError(_.message);
+      _deliveryAddressFetcher.sink.addError(_.toString());
     }
   }
 
@@ -71,7 +71,7 @@ class UserDataBloc {
       CommandModel orderDetails = await _repository.fetchOrderDetails(customer, orderId);
       _orderDetailsFetcher.sink.add(orderDetails);
     } catch (_) {
-      _orderDetailsFetcher.sink.addError(_.message);
+      _orderDetailsFetcher.sink.addError(_.toString());
     }
   }
 

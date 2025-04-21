@@ -16,7 +16,7 @@ Future<bool> _isImageSizeValid(File imageFile) async {
   return fileSize <= 3 * 1024 * 1024; // 3MB
 }
 
-Future<File> pickImage(BuildContext context, WidgetRef ref) async {
+Future<File?> pickImage(BuildContext context, WidgetRef ref) async {
   final _picker = ImagePicker();
 
   PermissionStatus status = await Permission.photos.request();
@@ -33,7 +33,7 @@ Future<File> pickImage(BuildContext context, WidgetRef ref) async {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-            "${AppLocalizations.of(context).translate('image_size_exceed')}",
+            "${AppLocalizations.of(context)!.translate('image_size_exceed')}",
             style: TextStyle(color: Colors.white)),
       ));
       return null;

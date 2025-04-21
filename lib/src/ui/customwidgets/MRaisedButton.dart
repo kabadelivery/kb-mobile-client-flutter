@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
 class MRaisedButton extends StatelessWidget {
-  Color color;
+  Color? color;
 
-  Function onPressed;
+  Function? onPressed;
 
-  Widget child;
+  Widget? child;
 
-  double elevation;
+  double? elevation;
 
   EdgeInsets padding;
 
   BorderRadius borderRadius;
 
   MRaisedButton(
-      {Key key,
+
+      {
+        Key? key,
       this.color = Colors.white,
       this.elevation,
       this.child,
@@ -26,7 +28,7 @@ class MRaisedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onPressed,
+      onTap: onPressed!(),
       child: Container(
         decoration: BoxDecoration(
             shape: BoxShape.rectangle,

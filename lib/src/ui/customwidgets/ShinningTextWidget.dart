@@ -28,7 +28,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 class ShinningTextWidget extends StatefulWidget {
 
-  String text;
+  String? text;
   int timeOut;
 
   var backgroundColor;
@@ -63,7 +63,7 @@ class _ShinningTextWidgetState extends State<ShinningTextWidget> {
               padding: EdgeInsets.only(left:10,right: 10, top: 5,bottom: 5),
               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)), color: widget.backgroundColor),
               child:Text(
-                  widget.text,
+                  widget.text!,
                   style: TextStyle(color: widget.textColor, fontSize: 10)
               ), duration: Duration(milliseconds: (widget.timeOut/3).round())));
   }
@@ -71,8 +71,8 @@ class _ShinningTextWidgetState extends State<ShinningTextWidget> {
 //  final List<Color> textColorsMap = const [Colors.white, KColors.primaryColor];
 //  final List<Color> bgColorsMap = const [KColors.primaryColor, KColors.new_black12];
 
-  startTimeout([int milliseconds]) {
-    return new Timer(Duration(milliseconds: milliseconds), handleTimeout);
+  startTimeout([int? milliseconds]) {
+    return new Timer(Duration(milliseconds: milliseconds!), handleTimeout);
   }
 
   void handleTimeout() {

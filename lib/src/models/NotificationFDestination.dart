@@ -31,11 +31,11 @@ class NotificationFDestination {
 
 
   /* help to know which activity we're going in */
-  int type;
+  int? type;
   /* meta data attached with it */
-  int product_id; /* cn be product / restaurant */
+  int? product_id; /* cn be product / restaurant */
 
-  int is_out_of_app;
+  int? is_out_of_app;
   NotificationFDestination({this.type, this.product_id,this.is_out_of_app});
 
   NotificationFDestination.fromJson(Map<String, dynamic> json) {

@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 
 class NotificationItem {
-  String title;
-  String body;
-  String image_link;
-  NotificationFDestination destination;
-  String priority;
+  String? title;
+  String? body;
+  String? image_link;
+  NotificationFDestination? destination;
+  String? priority;
 
   NotificationItem(
       {this.title,

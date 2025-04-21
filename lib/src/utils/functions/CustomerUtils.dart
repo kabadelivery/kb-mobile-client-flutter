@@ -21,12 +21,12 @@ class CustomerUtils {
         "${ServerConfig.LOGIN_EXPIRATION}" + CustomerUtils.signature, expDate);
   }
 
-  static Future<CustomerModel> getCustomer() async {
+  static Future<CustomerModel?> getCustomer() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    CustomerModel customer;
+    CustomerModel? customer;
     try {
-      String jsonCustomer = prefs.getString("_loginResponse" + signature);
-      var obj = json.decode(jsonCustomer);
+      String? jsonCustomer = prefs.getString("_loginResponse" + signature);
+      var obj = json.decode(jsonCustomer!);
       customer = CustomerModel.fromJson(obj["data"]["customer"]);
       String token = obj["data"]["payload"]["token"];
       customer.token = token;
@@ -41,8 +41,8 @@ class CustomerUtils {
       CustomerModel customer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String jsonCustomer = prefs.getString("_loginResponse" + signature);
-      var obj = json.decode(jsonCustomer);
+      String? jsonCustomer = prefs.getString("_loginResponse" + signature);
+      var obj = json.decode(jsonCustomer!);
       String token = obj["data"]["payload"]["token"];
       customer.token = token;
       obj['data']['customer'] = customer.toJson();
@@ -66,12 +66,12 @@ class CustomerUtils {
 
   static Future<UserTokenModel> getUserToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonCustomer = prefs.getString("_loginResponse" + signature);
+    String? jsonCustomer = prefs.getString("_loginResponse" + signature);
 
     String tok = "";
 
     try {
-      var obj = json.decode(jsonCustomer);
+      var obj = json.decode(jsonCustomer!);
       tok = obj["data"]["payload"]["token"];
     } catch (_) {
       xrint(_);
@@ -85,8 +85,8 @@ class CustomerUtils {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String otp = ".";
     try {
-      String jsonCustomer = prefs.getString("_loginResponse" + signature);
-      var obj = json.decode(jsonCustomer);
+      String? jsonCustomer = prefs.getString("_loginResponse" + signature);
+      var obj = json.decode(jsonCustomer!);
       otp = obj["login_code"];
       xrint("getLoginOtpCode :: otp = $otp");
     } catch (_) {
@@ -102,7 +102,7 @@ class CustomerUtils {
 
   static getOldCategoryConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String categoryConfig = prefs.getString("_category" + signature);
+    String? categoryConfig = prefs.getString("_category" + signature);
     return categoryConfig;
   }
 
@@ -113,7 +113,7 @@ class CustomerUtils {
 
   static getOldWelcomePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_homepage_" + signature);
+    String? jsonContent = prefs.getString("_homepage_" + signature);
     return jsonContent;
   }
 
@@ -126,7 +126,7 @@ class CustomerUtils {
   static getBestSellerLockDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      int mls = prefs.getInt("_best_seller_version" + signature);
+      int? mls = prefs.getInt("_best_seller_version" + signature);
       if (mls == null) mls = 0;
       return mls;
     } catch (e) {
@@ -137,7 +137,7 @@ class CustomerUtils {
   static getProposalLockDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      int mls = prefs.getInt("_proposal_version" + signature);
+      int? mls = prefs.getInt("_proposal_version" + signature);
       if (mls == null) mls = 0;
       return mls;
     } catch (e) {
@@ -195,13 +195,13 @@ class CustomerUtils {
 
   static getOldBestSellerPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_b_seller" + signature);
+    String? jsonContent = prefs.getString("_b_seller" + signature);
     return jsonContent;
   }
 
   static getOldProposalPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent = prefs.getString("_proposal_" + signature);
+    String? jsonContent = prefs.getString("_proposal_" + signature);
     return jsonContent;
   }
 
@@ -217,7 +217,7 @@ class CustomerUtils {
 
   static getOldShopSchedulePage(int restaurantId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonContent =
+    String? jsonContent =
         prefs.getString("_restaurant_schedule_${restaurantId}_" + signature);
     return jsonContent;
   }
@@ -230,8 +230,8 @@ class CustomerUtils {
   static Future<List<int>> getFavoriteAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String favoriteList = prefs.get("_favorite_list" + signature);
-      List<dynamic> res = json.decode(favoriteList);
+      String? favoriteList = prefs.get("_favorite_list" + signature).toString();
+      List<dynamic> res = json.decode(favoriteList!);
       List<int> ress = [];
       res.forEach((element) {
         ress.add(element);
@@ -248,10 +248,10 @@ class CustomerUtils {
         "_selectedAddress" + signature, json.encode(selectedAddress.toJson()));
   }
 
-  static Future<Position> getSavedAddressLocally() async {
+  static Future<Position?> getSavedAddressLocally() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String address = prefs.get("_selectedAddress" + signature);
+      String? address = prefs.get("_selectedAddress" + signature).toString();
       var res = Position.fromMap(json.decode(address));
       return res;
     } catch (e) {
@@ -278,13 +278,13 @@ class CustomerUtils {
     }
   }
 
-  static Future<String> getLastValidOtp(
-      {String username, minLapsedSeconds = 60 * 5}) async {
+  static Future<String?> getLastValidOtp(
+      {String? username, minLapsedSeconds = 60 * 5}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String otpSavedTime =
+      String? otpSavedTime =
           prefs.getString("${username}_otp_saved_time" + signature);
-      if (int.parse(otpSavedTime) + minLapsedSeconds >
+      if (int.parse(otpSavedTime!) + minLapsedSeconds >
           (DateTime.now().millisecondsSinceEpoch / 1000)) {
         return prefs.getString("${username}_last_otp" + signature);
       } else {
@@ -295,12 +295,12 @@ class CustomerUtils {
     }
   }
 
-  static Future<String> getLastStoredBilling() async {
+  static Future<String?> getLastStoredBilling() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("_billing" + signature);
   }
 
-  static Future<String> getLastOtp(String username) async {
+  static Future<String?> getLastOtp(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("${username}_last_otp" + signature)) {
       return prefs.getString("${username}_last_otp" + signature);
@@ -355,8 +355,8 @@ class CustomerUtils {
   static Future<Map<String, dynamic>> getShopListFilterConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      String tmp = prefs.getString("_shop_list_filter" + signature);
-      return json.decode(tmp);
+      String? tmp = prefs.getString("_shop_list_filter" + signature);
+      return json.decode(tmp!);
     } catch (e) {
       return Map<String, dynamic>();
     }
@@ -377,8 +377,8 @@ class CustomerUtils {
     const String _timestampKey = 'cache_timestamp';
     const int _cacheDurationDays = 10;
     final prefs = await SharedPreferences.getInstance();
-    String jsonData = prefs.getString(_cacheKey);
-    int timestamp = prefs.getInt(_timestampKey);
+    String? jsonData = prefs.getString(_cacheKey);
+    int? timestamp = prefs.getInt(_timestampKey);
 
     if (jsonData == null || timestamp == null) return [];
 
@@ -401,10 +401,10 @@ class CustomerUtils {
     await prefs.remove(_cacheKey);
     await prefs.remove(_timestampKey);
   }
-  Future<void> setViewUpdate({ bool enable}) async {
+  Future<void> setViewUpdate({ bool? enable}) async {
     const _keyViewUpdate = 'view_update';
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyViewUpdate, enable);
+    await prefs.setBool(_keyViewUpdate, enable!);
   }
   Future<bool> getViewUpdate()async{
     const _keyViewUpdate = 'view_update';

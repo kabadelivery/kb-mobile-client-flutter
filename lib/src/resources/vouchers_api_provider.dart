@@ -12,15 +12,15 @@ import 'package:dio/dio.dart';
 
 class VoucherApiProvider {
   loadVouchers(
-      {CustomerModel customer,
+      {CustomerModel? customer,
       int restaurantId = -1,
-      List<int> foodsId,
+      List<int>? foodsId,
       bool pick = false}) async {
     xrint("entered loadVouchers");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer!.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -48,7 +48,7 @@ class VoucherApiProvider {
           if (lo == null) {
             return [];
           } else {
-            List<VoucherModel> vouchers =
+            List<VoucherModel>? vouchers =
                 lo?.map((voucher) => VoucherModel.fromJson(voucher))?.toList();
             return vouchers;
           }
@@ -69,7 +69,7 @@ class VoucherApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -105,7 +105,7 @@ class VoucherApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

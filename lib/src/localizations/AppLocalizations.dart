@@ -8,11 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppLocalizations {
   final Locale locale;
 
-  AppLocalizations(this.locale);
+  AppLocalizations(this.locale,this._localizedStrings);
 
   // Helper method to keep the code in the widgets concise
   // Localizations are accessed using an InheritedWidget "of" syntax
-  static AppLocalizations of(BuildContext context) {
+  static AppLocalizations? of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
@@ -37,7 +37,7 @@ class AppLocalizations {
 
   // This method will be called from every widget which needs a localized text
   String translate(String key) {
-    return _localizedStrings[key];
+    return _localizedStrings[key]!;
   }
 }
 
@@ -57,7 +57,7 @@ class _AppLocalizationsDelegate
   @override
   Future<AppLocalizations> load(Locale locale) async {
     // AppLocalizations class is where the JSON loading actually runs
-    AppLocalizations localizations = new AppLocalizations(locale);
+    AppLocalizations localizations = new AppLocalizations(locale,{});
     await localizations.load();
     return localizations;
   }
@@ -76,7 +76,7 @@ class AppLanguage extends ChangeNotifier {
       _appLocale = Locale('en');
       return Null;
     }
-    _appLocale = Locale(prefs.getString('language_code'));
+    _appLocale = Locale(prefs.getString('language_code')!);
     return Null;
   }
 

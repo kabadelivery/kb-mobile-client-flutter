@@ -9,9 +9,9 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 class MyAddressListWidget extends StatefulWidget {
 
-  DeliveryAddressModel address;
+  DeliveryAddressModel? address;
 
-  bool pick;
+  bool? pick;
 
   var parentContext;
 
@@ -58,7 +58,7 @@ class _MyAddressListWidgetState extends State<MyAddressListWidget> {
                       ),
                       Column(
                         children: <Widget>[
-                          IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(widget.address)),
+                          IconButton(icon: Icon(FontAwesomeIcons.penFancy, color: CommandStateColor.shipping), splashColor: Colors.grey, onPressed: ()=>_editAddress(widget.address!)),
                         ],
                       ),
                     ],

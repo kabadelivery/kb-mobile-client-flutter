@@ -8,43 +8,43 @@ import 'package:KABA/src/models/ShopModel.dart';
 
 class OrderBillConfiguration {
 
-  int shipping_pricing;
-  int promotion_shipping_pricing;
+  int?  shipping_pricing;
+  int?  promotion_shipping_pricing;
 
-  int promotion_pricing; // promotion food pricing.
-  int command_pricing; // command pricing
-  int remise;
+  int?  promotion_pricing; // promotion food pricing.
+  int?  command_pricing; // command pricing
+  int?  remise;
 
-  int total_pricing; // total current pricing
-  int total_normal_pricing; // total normal pricing to set difference between this and promotion time
+  int?  total_pricing; // total current pricing
+  int?  total_normal_pricing; // total normal pricing to set difference between this and promotion time
 
-  int account_balance;
-  bool out_of_range = true;
-  bool pay_at_delivery = false;
-  bool prepayed = false;
-  int trustful;
-  int max_pay;
-  int cooking_time;
+  int?  account_balance;
+  bool?  out_of_range = true;
+  bool?  pay_at_delivery = false;
+  bool?  prepayed = false;
+  int?  trustful;
+  int?  max_pay;
+  int?  cooking_time;
 
-  int can_preorder;
-  String discount;
-  int open_type = -1;
-  String working_hour = "";
-  String reason;
-  List<DeliveryTimeFrameModel> deliveryFrames;
+  int?  can_preorder;
+  String?  discount;
+  int?  open_type = -1;
+  String?  working_hour = "";
+  String?  reason;
+  List<DeliveryTimeFrameModel>? deliveryFrames;
 
-  bool isBillBuilt = false;
-  bool hasCheckedOpen = false;
+  bool?  isBillBuilt = false;
+  bool?  hasCheckedOpen = false;
 
-  int total_preorder_pricing;
+  int?  total_preorder_pricing;
   //
-  KabaPointConfigurationModel kaba_point;
+  KabaPointConfigurationModel? kaba_point;
 
   // eligible voucher
-  List<VoucherModel> eligible_vouchers;
+  List<VoucherModel>? eligible_vouchers;
 
-  Map<String,dynamic> additional_fees;
-  int  additional_fees_total_price;
+  Map<String,dynamic>? additional_fees;
+  int?   additional_fees_total_price;
 
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration.none();
@@ -104,7 +104,7 @@ class OrderBillConfiguration {
     total_pricing = json['total_pricing'];
     total_normal_pricing = json['total_normal_pricing'];
     promotion_shipping_pricing = json['promotion_shipping_pricing'];
-    remise = json['remise'] is int ? json['remise'] : int.parse(json['remise'].toString());
+    remise = json['remise'] is int?  ? json['remise'] : int.parse(json['remise'].toString());
     out_of_range = json['out_of_range'];
     pay_at_delivery = json['pay_at_delivery'];
     prepayed = json['prepayed'];
@@ -141,7 +141,7 @@ class OrderBillConfiguration {
   };
 
   @override
-  String toString() {
+  String  toString() {
     return toJson().toString();
   }
 

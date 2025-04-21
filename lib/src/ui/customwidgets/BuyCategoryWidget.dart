@@ -17,15 +17,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../xrint.dart';
 
 class BuyCategoryWidget extends StatefulWidget {
-  ServiceMainEntity entity;
+  ServiceMainEntity? entity;
 
-  bool available;
+  bool? available;
 
-  bool isNew;
+  bool? isNew;
 
-  Function mDialog;
+  Function? mDialog;
 
-  Function showPlacePicker;
+  Function? showPlacePicker;
 
   BuyCategoryWidget(ServiceMainEntity entity,
       {this.available = true, this.mDialog, this.showPlacePicker}) {
@@ -48,7 +48,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate('info')}"),
+            title: Text("${AppLocalizations.of(context)!.translate('info')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -63,7 +63,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate('request_location_permission')}",
+                      "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14))
                 ],
@@ -72,24 +72,24 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
             actions: <Widget>[
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('refuse')}"),
+                    Text("${AppLocalizations.of(context)!.translate('refuse')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   // if no, let me do my thing
                   var page;
-                  if (!widget.available) {
+                  if (!widget.available!) {
                     // dialog, this service is coming soon
-                    widget.mDialog(
-                        "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
+                    widget.mDialog!(
+                        "${AppLocalizations.of(context)!.translate('coming_soon_dialog')}");
                   } else {
                     
                     page =
                     ShopListPageRefined(
                         context: context,
-                        type: widget.entity?.key,
+                        type: widget.entity!.key!,
                         foodProposalPresenter:
-                            RestaurantFoodProposalPresenter(),
-                        restaurantListPresenter: RestaurantListPresenter());
+                            RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+                        restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
                     Navigator.of(context).push(PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
                             page,
@@ -110,18 +110,18 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('accept')}"),
+                    Text("${AppLocalizations.of(context)!.translate('accept')}"),
                 onPressed: () {
                   /* */
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
                   SharedPreferences.getInstance().then((value) async {
                     SharedPreferences prefs = value;
-                    String _has_accepted_gps =
+                    String? _has_accepted_gps =
                         prefs.getString("_has_accepted_gps");
                     prefs.setString("_has_accepted_gps", "ok");
                     Navigator.of(context).pop();
                     // call get location again...
-                    widget.showPlacePicker(context);
+                    widget.showPlacePicker!(context);
                   });
                 },
               )
@@ -132,19 +132,19 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     } else {
       // if no, let me do my thing
       var page;
-      if (!widget.available) {
+      if (!widget.available!) {
         // dialog, this service is coming soon
-        widget.mDialog(
-            "${AppLocalizations.of(context).translate('coming_soon_dialog')}");
+        widget.mDialog!(
+            "${AppLocalizations.of(context)!.translate('coming_soon_dialog')}");
       } else {
         xrint('key ${widget.key}');
-        page =widget.entity.key=="packages"?ShippingPackageOrderPage():
-        widget.entity.key=="out of app"? OutOfAppOrderPage():
+        page =widget.entity!.key=="packages"?ShippingPackageOrderPage():
+        widget.entity!.key=="out of app"? OutOfAppOrderPage():
         ShopListPageRefined(
             context: context,
-            type: widget.entity?.key,
-            foodProposalPresenter: RestaurantFoodProposalPresenter(),
-            restaurantListPresenter: RestaurantListPresenter());
+            type: widget.entity!.key!,
+            foodProposalPresenter: RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+            restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
         Navigator.of(context).push(PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) => page,
             transitionsBuilder:
@@ -209,7 +209,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
                   ),
                 ],
               ),
-              widget.isNew
+              widget.isNew!
                   ? Positioned(
                       right: 0,
                       top: 0,
@@ -234,7 +234,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     /* get language of phone */
     try {
       Locale myLocale = Localizations.localeOf(context);
-      String name = widget.entity.name[myLocale?.languageCode];
+      String name = widget.entity!.name![myLocale?.languageCode];
       if (name != null)
         return name;
       else
@@ -282,7 +282,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     if ("" == category_name_code) {
       category_name_code = "service_category_unknown";
     }
-    return "${AppLocalizations.of(context).translate(category_name_code)}";
+    return "${AppLocalizations.of(context)!.translate(category_name_code)}";
   }
 
   getCategoryIcon() {
@@ -325,26 +325,26 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     }
 */
 
-    return widget.entity.is_lottie_file == 1
-        ? Lottie.network(widget.entity.file_link)
+    return widget.entity!.is_lottie_file == 1
+        ? Lottie.network(widget.entity!.file_link!)
         : CachedNetworkImage(
-            imageUrl: widget.entity.file_link,
+            imageUrl: widget.entity!.file_link!,
             errorWidget: (context, url, error) => Icon(Icons.not_interested),
           );
   }
 }
 
 class MyLottie extends StatefulWidget {
-  String path;
+  String? path;
 
-  MyLottie({Key key, this.path}) : super(key: key);
+  MyLottie({required Key key, this.path}) : super(key: key);
 
   @override
   State<MyLottie> createState() => _MyLottieState();
 }
 
 class _MyLottieState extends State<MyLottie> {
-  Future<LottieComposition> _composition;
+  Future<LottieComposition>? _composition;
 
   @override
   void initState() {

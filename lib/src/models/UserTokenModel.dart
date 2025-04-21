@@ -6,7 +6,7 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 class UserTokenModel {
 
   /* feed is an entity */
-  String token;
+  String? token;
 
   UserTokenModel({this.token});
 

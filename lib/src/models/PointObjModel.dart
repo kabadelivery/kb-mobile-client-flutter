@@ -3,21 +3,21 @@
 
 class PointObjModel {
 
-  int balance;
-  int can_use;
-  bool can_be_used;
-  bool is_eligible;
+  int? balance;
+  int? can_use;
+  bool? can_be_used;
+  bool? is_eligible;
   // reasons
-  bool is_new_beneficiary;
-  int month_transactions_amount;
-  int month_transactions_amount_plus_amount_to_debit;
-  int client_command_count;
-  int client_ca_delivery;
-  List<PointTransactionModel> last_ten_transactions;
+  bool? is_new_beneficiary;
+  int? month_transactions_amount;
+  int? month_transactions_amount_plus_amount_to_debit;
+  int? client_command_count;
+  int? client_ca_delivery;
+  List<PointTransactionModel>? last_ten_transactions;
   
-  int eligible_order_count ; // 50
-  int monthly_limit_amount;
-  int amount_already_used;
+  int? eligible_order_count ; // 50
+  int? monthly_limit_amount;
+  int? amount_already_used;
 
 //<editor-fold desc="Data Methods">
 
@@ -38,7 +38,7 @@ class PointObjModel {
   });
 
 // 30@override
-  bool operator ==(Object other) =>
+  bool  operator ==(Object other) =>
       identical(this, other) ||
           (other is PointObjModel &&
               runtimeType == other.runtimeType &&
@@ -72,7 +72,7 @@ class PointObjModel {
       client_ca_delivery.hashCode ^
       last_ten_transactions.hashCode ^
       eligible_order_count.hashCode ^
-        amount_already_used^
+        amount_already_used!^
       monthly_limit_amount.hashCode;
 
 
@@ -97,19 +97,19 @@ class PointObjModel {
 
 
   PointObjModel copyWith({
-    int balance,
-    int can_use,
-    bool can_be_used,
-    bool is_eligible,
-    bool is_new_beneficiary,
-    int month_transactions_amount,
-    int month_transactions_amount_plus_amount_to_debit,
-    int client_command_count,
-    int client_ca_delivery,
-    List<PointTransactionModel> last_ten_transactions,
-    int eligible_order_count,
-    int monthly_limit_amount,
-    int amount_already_used
+    int?  balance,
+    int?  can_use,
+    bool?  can_be_used,
+    bool?  is_eligible,
+    bool?  is_new_beneficiary,
+    int?  month_transactions_amount,
+    int?  month_transactions_amount_plus_amount_to_debit,
+    int?  client_command_count,
+    int?  client_ca_delivery,
+    List<PointTransactionModel>? last_ten_transactions,
+    int?  eligible_order_count,
+    int?  monthly_limit_amount,
+    int?  amount_already_used
   }) {
     return PointObjModel(
         amount_already_used : amount_already_used ?? this.amount_already_used,
@@ -182,15 +182,15 @@ class PointObjModel {
 
 class PointTransactionModel {
 
-  int id;
-  int client_id;
-  int amount;
-  int before_balance;
-  int after_balance;
-  String type;
-  bool is_remboursed;
-  String created_at;
-  String updated_at;
+  int?  id;
+  int?  client_id;
+  int?  amount;
+  int?  before_balance;
+  int?  after_balance;
+  String?  type;
+  bool?  is_remboursed;
+  String?  created_at;
+  String?  updated_at;
 
 
 
@@ -207,7 +207,7 @@ class PointTransactionModel {
   });
 
   @override
-  bool operator ==(Object other) =>
+  bool  operator ==(Object other) =>
       identical(this, other) ||
           (other is PointTransactionModel &&
               runtimeType == other.runtimeType &&
@@ -222,7 +222,7 @@ class PointTransactionModel {
               updated_at == other.updated_at);
 
   @override
-  int get hashCode =>
+  int  get hashCode =>
       id.hashCode ^
       client_id.hashCode ^
       amount.hashCode ^
@@ -234,7 +234,7 @@ class PointTransactionModel {
       updated_at.hashCode;
 
   @override
-  String toString() {
+  String  toString() {
     return 'PointTransactionModel{' +
         ' id: $id,' +
         ' client_id: $client_id,' +
@@ -249,15 +249,15 @@ class PointTransactionModel {
   }
 
   PointTransactionModel copyWith({
-    int id,
-    int client_id,
-    int amount,
-    int before_balance,
-    int after_balance,
-    String type,
-    bool is_remboursed,
-    String created_at,
-    String updated_at,
+    int?  id,
+    int?  client_id,
+    int?  amount,
+    int?  before_balance,
+    int?  after_balance,
+    String?  type,
+    bool?  is_remboursed,
+    String?  created_at,
+    String?  updated_at,
   }) {
     return PointTransactionModel(
       id: id ?? this.id,

@@ -5,13 +5,13 @@ import '../../models/OrderBillConfiguration.dart';
 import '../../utils/functions/CustomerUtils.dart';
 
 class OrderBillingState{
-  CustomerModel customer;
-  OrderBillConfiguration orderBillConfiguration;
+  CustomerModel? customer;
+  OrderBillConfiguration? orderBillConfiguration;
   OrderBillingState({this.customer=null,this.orderBillConfiguration=null});
 
   OrderBillingState copyWith({
-    CustomerModel customer,
-    OrderBillConfiguration orderBillConfiguration
+    CustomerModel? customer,
+    OrderBillConfiguration? orderBillConfiguration
 }){
     return OrderBillingState(
     customer:customer??this.customer,
@@ -22,14 +22,14 @@ class OrderBillingState{
 class OrderBillingStateNotifier extends StateNotifier<OrderBillingState>{
   OrderBillingStateNotifier():super(OrderBillingState());
 
-  void setCustomer(CustomerModel customer){
+  void setCustomer(CustomerModel? customer){
     state = state.copyWith(customer:customer);
   }
-  void setOrderBillConfiguration(OrderBillConfiguration orderBillConfiguration){
+  void setOrderBillConfiguration(OrderBillConfiguration? orderBillConfiguration){
     state = state.copyWith(orderBillConfiguration:orderBillConfiguration);
   }
   void setAutoCustomer()async{
-    CustomerModel customerModel = await CustomerUtils.getCustomer();
+    CustomerModel? customerModel = await CustomerUtils.getCustomer();
     setCustomer(customerModel);
   }
   void reset(){

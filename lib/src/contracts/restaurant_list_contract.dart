@@ -15,15 +15,15 @@ class RestaurantListContract {
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
 //  void computeBilling (CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address){}
   void fetchShopList(CustomerModel customer, String type, Position position,
-      [bool silently = false, String filter_key]) async {}
+      [bool silently = false, String? filter_key]) async {}
 
   void filterShopList(List<ShopModel> shops, String filter_key) async {}
 }
 
 class RestaurantListView {
-  void systemError([bool silently]) {}
+  void systemError([bool? silently]) {}
 
-  void networkError([bool silently]) {}
+  void networkError([bool? silently]) {}
 
   void loadRestaurantListLoading(bool isLoading) {}
 
@@ -38,9 +38,9 @@ class RestaurantListPresenter implements RestaurantListContract {
 
   RestaurantListView _restaurantListView;
 
-  RestaurantApiProvider provider;
+  late RestaurantApiProvider provider;
 
-  RestaurantListPresenter() {
+  RestaurantListPresenter(this._restaurantListView) {
     provider = new RestaurantApiProvider();
   }
 
@@ -51,7 +51,7 @@ class RestaurantListPresenter implements RestaurantListContract {
   @override
   Future<void> fetchShopList(
       CustomerModel customer, String type, Position position,
-      [bool silently = false, String filter_key]) async {
+      [bool silently = false, String? filter_key]) async {
     if (isWorking && position == null) return;
     isWorking = true;
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
@@ -72,7 +72,7 @@ class RestaurantListPresenter implements RestaurantListContract {
           "position": position,
           "is_email_account": customer == null || customer?.username == null
               ? false
-              : (customer.username.contains("@") ? true : false),
+              : (customer.username!.contains("@") ? true : false),
           "filter_key": filter_key,
           "filter_configuration": configuration
         });
@@ -125,7 +125,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
   Iterable lo = data["data"]["data"] /*["resto"]*/;
 
-  List<ShopModel> tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
+  List<ShopModel>? tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
 
   // remove the 79 & 80
   List<ShopModel> tf = List.empty(growable: true);
@@ -167,7 +167,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       int indexOf80 = -1;
 
       // filter tmp with only restaurant that are opened or all
-      tmp = tmp.where((e) {
+      tmp = tmp!.where((e) {
         if (configuration["opened_filter"] == true)
           return e.is_open == 1 && e.coming_soon == 0;
         return true;
@@ -175,11 +175,11 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
 
       /* make sure the distances and shipping prices are computed */
       for (int s = 0; s < tmp.length; s++) {
-        tmp[s].distance = Utils.locationDistance(tmpPosition, tmp[s]) > 100
+        tmp[s].distance = (Utils.locationDistance(tmpPosition, tmp[s]) > 100
             ? "> 100"
-            : Utils.locationDistance(tmpPosition, tmp[s])?.toString();
+            : Utils.locationDistance(tmpPosition, tmp[s])?.toString())!;
         tmp[s].delivery_pricing =
-            _getShippingPrice(tmp[s].distance, myBillingArray);
+            _getShippingPrice(tmp[s].distance!, myBillingArray)!;
         if (tmp[s].id == 79) indexOf79 = s;
         if (tmp[s].id == 80) indexOf80 = s;
       }
@@ -199,27 +199,27 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
       // do the sort_out using the distances as well
       tf.sort((restA, restB) => (
               // try to put these 2 restaurants above
-              double.parse(restA.distance) * 1000 -
-                  double.parse(restB.distance) * 1000)
+              double.parse(restA.distance!) * 1000 -
+                  double.parse(restB.distance!) * 1000)
           .toInt());
       /* tmp =*/
       tmp.sort((restA, restB) => (
 // try to put these 2 restaurants above
-              double.parse(restA.distance) * 1000 -
-                  double.parse(restB.distance) * 1000)
+              double.parse(restA.distance!) * 1000 -
+                  double.parse(restB.distance!) * 1000)
           .toInt());
     }
 
-    tf.addAll(tmp);
+    tf.addAll(tmp!);
     return tf;
   } catch (_) {
     xrint(_.toString());
-    return tmp;
+    return tmp!;
   }
 }
 
 _filteredData(List<ShopModel> data, String filter_key) {
-  List<ShopModel> d = List();
+  List<ShopModel> d =[];
 
   for (var restaurant in data) {
     String sentence =
@@ -311,7 +311,7 @@ String removeAccentFromString(String sentence) {
   return sentence1;
 }
 
-String _getShippingPrice(String distance, Map<String, String> myBillingArray) {
+String? _getShippingPrice(String distance, Map<String, String> myBillingArray) {
   try {
     int distanceInt =
         int.parse(!distance.contains(".") ? distance : distance.split(".")[0]);

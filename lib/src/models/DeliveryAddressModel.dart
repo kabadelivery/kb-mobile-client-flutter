@@ -5,19 +5,19 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 
  class DeliveryAddressModel {
 
-  int id = 0;
-  String name;
-  String location = "";
-  String phone_number;
-  String user_id;
-  String description;
-  List<String> picture;
-  String district;
-  String quartier;
-  String suburb;
-  String near;
-  String updated_at;
-  bool is_favorite = false;
+  int? id = 0;
+  String? name;
+  String? location = "";
+  String? phone_number;
+  String? user_id;
+  String? description;
+  List<String>? picture;
+  String? district;
+  String? quartier;
+  String? suburb;
+  String? near;
+  String? updated_at;
+  bool? is_favorite = false;
 
 
   DeliveryAddressModel({this.id, this.name, this.location, this.phone_number,

@@ -36,12 +36,12 @@ class EditAddressPresenter implements EditAddressContract {
   bool isWorking = false;
   bool isAddressDetailsFetching = false;
 
-  AddressApiProvider provider;
-  AppApiProvider appProvider;
+  late AddressApiProvider provider;
+  late AppApiProvider appProvider;
 
   EditAddressView _editAddressView;
 
-  EditAddressPresenter () {
+  EditAddressPresenter (this._editAddressView) {
     provider = new AddressApiProvider();
     appProvider = new AppApiProvider();
   }
@@ -54,9 +54,9 @@ class EditAddressPresenter implements EditAddressContract {
     isWorking = true;
     _editAddressView.showUpdateOrCreatedAddressLoading(true);
     try {
-      Map res = await provider.updateOrCreateAddress(address, customer);
-      int error = res["error"];
-      address = res["address"];
+      Map? res = (await provider.updateOrCreateAddress(address, customer)) as Map?;
+      int error = res!["error"];
+      address = res!["address"];
       _editAddressView.showUpdateOrCreatedAddressLoading(false);
       if (error == 0)
         _editAddressView.createdSuccess(address);
@@ -81,18 +81,18 @@ class EditAddressPresenter implements EditAddressContract {
     _editAddressView = value;
   }
 
-  Future<void> checkLocationDetails(CustomerModel customer, {Position position}) async {
+  Future<void> checkLocationDetails(CustomerModel customer, {Position? position}) async {
 
     if (isAddressDetailsFetching)
       return;
     isAddressDetailsFetching = true;
     _editAddressView.showAddressDetailsLoading(true);
     try {
-      DeliveryAddressModel deliveryAddress = await appProvider.checkLocationDetails(customer, position);
-      String suburb = deliveryAddress?.quartier;
-      String description_details = deliveryAddress?.description;
+      DeliveryAddressModel deliveryAddress = await appProvider.checkLocationDetails(customer, position!);
+      String? suburb = deliveryAddress!.quartier;
+      String? description_details = deliveryAddress!.description;
       _editAddressView.showAddressDetailsLoading(false);
-      _editAddressView.inflateDescription(description_details, suburb);
+      _editAddressView.inflateDescription(description_details??"", suburb??"");
       isAddressDetailsFetching = false;
     } catch (_) {
       /* Transaction failure */

@@ -53,14 +53,14 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
 class MyApp extends StatefulWidget {
-  FirebaseAnalytics analytics;
-  FirebaseAnalyticsObserver observer;
+  FirebaseAnalytics? analytics;
+  FirebaseAnalyticsObserver? observer;
 
   var appLanguage;
 
   MyApp({this.appLanguage}) {
     analytics = FirebaseAnalytics.instance;
-    observer = FirebaseAnalyticsObserver(analytics: analytics);
+    observer = FirebaseAnalyticsObserver(analytics: analytics!);
   }
 
   @override
@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
                 Locale.fromSubtags(languageCode: 'zh')
               ],
               navigatorObservers: [
-                FirebaseAnalyticsObserver(analytics: widget.analytics),
+                FirebaseAnalyticsObserver(analytics: widget.analytics!),
               ],
               localizationsDelegates: [
                 AppLocalizations.delegate,

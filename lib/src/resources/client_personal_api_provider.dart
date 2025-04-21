@@ -13,7 +13,7 @@ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -33,7 +33,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(userToken?.token)
+        ..headers = Utils.getHeadersWithToken(userToken.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -54,7 +54,7 @@ class ClientPersonalApiProvider {
           String stars = mJsonDecode(response.data)["data"]["stars"];
           String votes = mJsonDecode(response.data)["data"]["votes"];
           Iterable lo = mJsonDecode(response.data)["data"]["comments"];
-          List<CommentModel> comments =
+          List<CommentModel>? comments =
               lo?.map((comment) => CommentModel.fromJson(comment))?.toList();
 
           Map<String, dynamic> res = Map();
@@ -83,7 +83,7 @@ class ClientPersonalApiProvider {
 */
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(userToken.token)
+        ..headers = Utils.getHeadersWithToken(userToken.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -102,10 +102,10 @@ class ClientPersonalApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"]["adresses"];
-          List<DeliveryAddressModel> addresses = lo
+          List<DeliveryAddressModel>? addresses = lo
               ?.map((address) => DeliveryAddressModel.fromJson(address))
               ?.toList();
-          return addresses;
+          return addresses!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -198,12 +198,12 @@ class ClientPersonalApiProvider {
   }
 
   Future<dynamic> registerCreateAccountAction(
-      {String nickname,
-      String password,
+      {String? nickname,
+      String? password,
       String phone_number = "",
       String email = "",
-      String request_id,
-      String whatsapp_number}) async {
+      String? request_id,
+      String? whatsapp_number}) async {
     xrint("entered registerCreateAccountAction");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
@@ -241,17 +241,18 @@ class ClientPersonalApiProvider {
   }
 
   Future<dynamic> loginAction(
-      {String login,
-      String password,
-      String app_version,
-      bool shouldSendOtpCode}) async {
+      {
+        String? login,
+      String? password,
+      String? app_version,
+      bool? shouldSendOtpCode}) async {
     xrint("entered loginAction");
     if (await Utils.hasNetwork()) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
       var device;
 
-      String token = "";
+      String? token = "";
       try {
         final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
         token = await firebaseMessaging.getToken();
@@ -296,7 +297,7 @@ class ClientPersonalApiProvider {
         };
       };
 
-      String link = !shouldSendOtpCode
+      String link = !shouldSendOtpCode!
           ? Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString()
           : Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString();
       var response = await dio.post(
@@ -340,7 +341,7 @@ class ClientPersonalApiProvider {
         'birthday': customer.birthday
       });
       if (customer?.profile_picture != null &&
-          customer.profile_picture.length > 50)
+          customer.profile_picture!.length > 50)
         _data = json.encode({
           'nickname': customer.nickname,
           'district': customer.district,
@@ -354,7 +355,7 @@ class ClientPersonalApiProvider {
 
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -392,7 +393,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 60000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -425,7 +426,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 60000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -446,10 +447,10 @@ class ClientPersonalApiProvider {
           Iterable lo = mJsonDecode(response.data)["data"];
           if (lo == null || lo.isEmpty || lo.length == 0)
             return List<MoneyTransactionModel>.empty();
-          List<MoneyTransactionModel> transactionModel = lo
+          List<MoneyTransactionModel>? transactionModel = lo
               ?.map((command) => MoneyTransactionModel.fromMap(command))
               ?.toList();
-          return transactionModel;
+          return transactionModel!;
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -465,7 +466,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 60000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -501,7 +502,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -544,7 +545,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -578,7 +579,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -620,7 +621,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -668,7 +669,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -796,7 +797,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -832,7 +833,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -866,7 +867,7 @@ class ClientPersonalApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer?.token)
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

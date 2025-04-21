@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,6 @@ import '../../state_management/out_of_app_order/out_of_app_order_screen_state.da
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
-import 'BouncingWidget.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OutOfAppProductForm extends ConsumerWidget {
@@ -32,7 +32,7 @@ class OutOfAppProductForm extends ConsumerWidget {
     final Size size = MediaQuery.of(context).size;
     final FocusNode _nameFocusNode = FocusNode();
     final FocusNode _priceFocusNode = FocusNode();
-    File imagePath;
+    File? imagePath;
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return Container(
@@ -73,14 +73,14 @@ class OutOfAppProductForm extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: Color(0x64d2d2d2),
                       borderRadius: BorderRadius.circular(5),
-                      image: imagePath != null
+                      image: imagePath! != null
                           ? DecorationImage(
-                        image: FileImage(imagePath),
+                        image: FileImage(imagePath!),
                         fit: BoxFit.cover,
                       )
                           : null,
                     ),
-                    child: imagePath == null
+                    child: imagePath! == null
                         ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,6 +88,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                         BouncingWidget(
                           duration: Duration(milliseconds: 400),
                           scaleFactor: 2,
+                          onPressed: () {  },
                           child: Icon(
                             Icons.camera_alt,
                             color: Color(0x868A8A8A),
@@ -95,7 +96,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          "${AppLocalizations.of(context).translate('choose_an_image')}",
+                          "${AppLocalizations.of(context)!.translate('choose_an_image')}",
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w400,
@@ -123,15 +124,15 @@ class OutOfAppProductForm extends ConsumerWidget {
                       },
                       controller: _nameController,
                       validator: (value) {
-                        if (value.isEmpty) {
-                          return "${AppLocalizations.of(context).translate('enter_product_name')}";
+                        if (value!.isEmpty) {
+                          return "${AppLocalizations.of(context)!.translate('enter_product_name')}";
                         }
-                        if (value.length>30) {
-                          return "${AppLocalizations.of(context).translate('name_too_long')}";
+                        if (value!.length>30) {
+                          return "${AppLocalizations.of(context)!.translate('name_too_long')}";
                         }
                       },
                       decoration: InputDecoration(
-                        labelText: "${AppLocalizations.of(context).translate('product_name')}",
+                        labelText: "${AppLocalizations.of(context)!.translate('product_name')}",
                       ),
                       style: TextStyle(fontSize: 13),
                     ),
@@ -145,17 +146,17 @@ class OutOfAppProductForm extends ConsumerWidget {
                       controller: _priceController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: "${AppLocalizations.of(context).translate('product_price')}",
+                        labelText: "${AppLocalizations.of(context)!.translate('product_price')}",
                       ),
                       style: TextStyle(fontSize: 13),
                       validator: (value) {
-                         if (value.isEmpty) {
-                          return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                         if (value!.isEmpty) {
+                          return "${AppLocalizations.of(context)!.translate('please_enter_valid_amount')}";
                         }else if (int.parse(value) < 0 ){
-                           return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                           return "${AppLocalizations.of(context)!.translate('please_enter_valid_amount')}";
 
                          } else if(int.parse(value) >100000) {
-                          return "${AppLocalizations.of(context).translate('price_too_high')}";
+                          return "${AppLocalizations.of(context)!.translate('price_too_high')}";
                         }
                       },
                     ),
@@ -177,7 +178,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                             Row(
                               children: [
                                 Text(
-                                  "${AppLocalizations.of(context).translate('quantity')}:",
+                                  "${AppLocalizations.of(context)!.translate('quantity')}:",
                                   style: TextStyle(fontSize: 13),
                                 ),
                                 SizedBox(width: 10),
@@ -234,13 +235,13 @@ class OutOfAppProductForm extends ConsumerWidget {
                             SizedBox(height: 10),
                             InkWell(
                               onTap: () {
-                                if (_formKey.currentState.validate()) {
+                                if (_formKey.currentState!.validate()) {
 
                                   final product = {
                                     "name": _nameController.text,
                                     "price": int.parse(_priceController.text.isEmpty ? "0" : _priceController.text),
                                     "quantity": int.parse(quantity.toString()),
-                                    "image": imagePath,
+                                    "image": imagePath!,
                                   };
 
                                   print("product $product");
@@ -262,7 +263,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Text(
-                                    "${AppLocalizations.of(context).translate('add_product')}",
+                                    "${AppLocalizations.of(context)!.translate('add_product')}",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -272,7 +273,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                             products.length > 0
                                 ? InkWell(
                               onTap: () async {
-                                if (locationState.is_shipping_address_picked) {
+                                if (locationState.is_shipping_address_picked!) {
                                   var foods = ref.watch(productListProvider);
                                   List<Map<String, dynamic>> formData = [];
 
@@ -285,15 +286,15 @@ class OutOfAppProductForm extends ConsumerWidget {
                                     });
                                   }
                                   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                                  CustomerModel customer = orderBillingState.customer;
-                                  List<DeliveryAddressModel> order_address = locationState.selectedOrderAddress;
-                                  DeliveryAddressModel shipping_adress = locationState.selectedShippingAddress;
+                                  CustomerModel customer = orderBillingState.customer!;
+                                  List<DeliveryAddressModel> order_address = locationState.selectedOrderAddress!;
+                                  DeliveryAddressModel shipping_adress = locationState.selectedShippingAddress!;
                                   var _selectedVoucher = voucherState.selectedVoucher;
                                   var _usePoint = voucherState.usePoint;
                                   outOfAppNotifier.setIsBillBuilt(false);
                                   outOfAppNotifier.setShowLoading(true);
                                   try{
-                                    await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher, _usePoint).then((value) {
+                                    await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher!, _usePoint!).then((value) {
                                       ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(value);
                                       outOfAppNotifier.setIsBillBuilt(true);
                                       outOfAppNotifier.setShowLoading(false);
@@ -304,7 +305,7 @@ class OutOfAppProductForm extends ConsumerWidget {
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                                     outOfAppNotifier.setShowLoading(false);
                                     outOfAppNotifier.setIsBillBuilt(false);
                                   }
@@ -321,7 +322,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Text(
-                                    "${AppLocalizations.of(context).translate('finalize')}",
+                                    "${AppLocalizations.of(context)!.translate('finalize')}",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -360,7 +361,7 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
   _amountController.selection = TextSelection.fromPosition(
     TextPosition(offset:amount.length),
   );
-   Timer _typingTimer;
+   Timer? _typingTimer;
 
 
       final products = ref.watch(productListProvider);
@@ -388,15 +389,15 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      labelText: "${AppLocalizations.of(context).translate('package_amount')}",
+                      labelText: "${AppLocalizations.of(context)!.translate('package_amount')}",
                     ),
                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (value)async {
                       ref.read(outOfAppScreenStateProvier.notifier).setPackageAmount(value);
                       _amountController.text = value;
-                  _typingTimer?.cancel();
+                  _typingTimer!.cancel();
                    _typingTimer = Timer(Duration(seconds: 2), () async {
-                    if(locationState.is_shipping_address_picked && locationState.selectedOrderAddress.isNotEmpty) {
+                    if(locationState.is_shipping_address_picked! && locationState.selectedOrderAddress!.isNotEmpty) {
                                 await CustomerUtils.getCustomer().then((customer) async {
                                   ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
                                   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
@@ -415,11 +416,11 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                                   try {
                                     OrderBillConfiguration orderBillConfiguration =
                                         await api.computeBillingAction(
-                                          customer,
-                                          locationState.selectedOrderAddress,
+                                          customer!,
+                                          locationState.selectedOrderAddress!,
                                           ref.watch(productListProvider),
-                                          locationState.selectedShippingAddress,
-                                          voucherState.selectedVoucher,
+                                          locationState.selectedShippingAddress!,
+                                          voucherState.selectedVoucher!,
                                           false
                                         );
 
@@ -433,7 +434,7 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                                     print("Error calculating billing: $e");
                                     outOfAppNotifier.setIsBillBuilt(true);
                                     outOfAppNotifier.setShowLoading(false);
@@ -444,10 +445,10 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "${AppLocalizations.of(context).translate('please_enter_amount')}";
+                        return "${AppLocalizations.of(context)!.translate('please_enter_amount')}";
                       }
-                      if (double.tryParse(value) <0) {
-                        return "${AppLocalizations.of(context).translate('please_enter_valid_amount')}";
+                      if (double.tryParse(value)! <0) {
+                        return "${AppLocalizations.of(context)!.translate('please_enter_valid_amount')}";
                       }
                       return null;
                     },
@@ -497,7 +498,7 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber,WidgetRef ref) {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      labelText: "${AppLocalizations.of(context).translate(outOfAppScreenState.order_type==6?'fecthing_contact':outOfAppScreenState.order_type==5?'shipping_contact':'phone_number_to_contact')}",
+                      labelText: "${AppLocalizations.of(context)!.translate(outOfAppScreenState.order_type==6?'fecthing_contact':outOfAppScreenState.order_type==5?'shipping_contact':'phone_number_to_contact')}",
                     ),
                     onChanged: (value){
                         outOfAppNotifier.setPhoneNumber(value);
@@ -505,7 +506,7 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber,WidgetRef ref) {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "${AppLocalizations.of(context).translate('please_enter_phone_number')}";
+                        return "${AppLocalizations.of(context)!.translate('please_enter_phone_number')}";
                       }
                       return null;
                     },

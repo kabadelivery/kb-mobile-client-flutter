@@ -35,10 +35,10 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
 
   RestaurantDetailsView _restaurantDetailsView;
 
-  MenuApiProvider provider;
-  ClientPersonalApiProvider clientProvider;
+  late MenuApiProvider provider;
+  late ClientPersonalApiProvider clientProvider;
 
-  RestaurantDetailsPresenter() {
+  RestaurantDetailsPresenter(this._restaurantDetailsView) {
     provider = new MenuApiProvider();
     clientProvider = new ClientPersonalApiProvider();
   }
@@ -79,7 +79,7 @@ class RestaurantDetailsPresenter implements RestaurantDetailsContract {
     isCommentWorking = true;
     _restaurantDetailsView.showCommentLoading(true);
     try {
-      Map res = await clientProvider.fetchRestaurantComment(restaurant, UserTokenModel(token: customer?.token));
+      Map res = await clientProvider.fetchRestaurantComment(restaurant, UserTokenModel(token: customer!.token));
       // also get the restaurant entity here.
       List<CommentModel> comments = res["comments"];
       String stars = res["stars"];

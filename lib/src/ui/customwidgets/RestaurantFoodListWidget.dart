@@ -6,12 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantFoodListWidget extends StatefulWidget {
-  String text;
+  String? text;
 
   // ignore: non_constant_identifier_names
-  Offset basket_offset;
+  Offset? basket_offset;
 
-  ShopProductModel food;
+  ShopProductModel? food;
 
   RestaurantFoodListWidget({this.text, this.basket_offset, this.food});
 
@@ -19,19 +19,19 @@ class RestaurantFoodListWidget extends StatefulWidget {
   _RestaurantFoodListWidgetState createState() {
     // TODO: implement createState
     return _RestaurantFoodListWidgetState(
-        basket_offset: basket_offset, food: food);
+        basket_offset: basket_offset!, food: food!);
   }
 }
 
 class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
+  AnimationController? controller;
 
-  Animation<Offset> animation;
+  Animation<Offset>? animation;
 
-  Offset basket_offset;
+  Offset? basket_offset;
 
-  ShopProductModel food;
+  ShopProductModel? food;
 
   _RestaurantFoodListWidgetState({this.basket_offset, this.food});
 
@@ -43,7 +43,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
     controller =
         AnimationController(duration: const Duration(seconds: 2), vsync: this);
     animation = Tween<Offset>(begin: Offset(0, 0), end: Offset(400, -400))
-        .animate(controller);
+        .animate(controller!);
 //    animation.drive(child)
   }
 
@@ -78,12 +78,12 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(food.pic)))),
+                                        Utils.inflateLink(food!.pic!)))),
                           ),
                           AnimatedBuilder(
-                              animation: animation,
+                              animation: animation!,
                               builder: (context, child) => Transform.translate(
-                                    offset: animation.value,
+                                    offset: animation!.value!,
                                     child: child,
                                   ),
                               child: Container(
@@ -94,7 +94,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
                                         image: CachedNetworkImageProvider(
-                                            Utils.inflateLink(food.pic)))),
+                                            Utils.inflateLink(food!.pic!)))),
                               )) // invisible view
                         ],
                       ),
@@ -108,7 +108,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("${food?.name.toUpperCase()}",
+                          Text("${food?.name!.toUpperCase()}",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                               textAlign: TextAlign.left,
@@ -128,7 +128,7 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
                                         color: KColors.primaryYellowColor,
                                         fontSize: 20,
                                         fontWeight: FontWeight.normal)),
-                                (food.promotion != 0
+                                (food!.promotion != 0
                                     ? Text("${food?.promotion_price}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -154,13 +154,13 @@ class _RestaurantFoodListWidgetState extends State<RestaurantFoodListWidget>
                         ],
                       ))
                 ]))),
-        onTap: () => _jumpToFoodDetails(context, food)));
+        onTap: () => _jumpToFoodDetails(context, food!)));
   }
 
   void _addFoodToChart() {
     /* besoin de la position de la vue et ensuite de la position de destination */
 //    print("basket_offset ${basket_offset}");
-    controller.forward();
+    controller!.forward();
   }
 
   /* get position of icon */

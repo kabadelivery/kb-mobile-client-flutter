@@ -4,12 +4,12 @@ import 'package:KABA/src/models/ShopProductModel.dart';
 
 class RestaurantSubMenuModel {
 
-   int id;
-   String name;
-   int restaurant_id;
-   String description;
-   int promotion = 0;
-   List<ShopProductModel> foods;
+   int? id;
+   String? name;
+   int? restaurant_id;
+   String? description;
+   int? promotion = 0;
+   List<ShopProductModel>? foods;
 
    RestaurantSubMenuModel({this.id, this.name, this.restaurant_id, this.description, this.promotion,
       this.foods});

@@ -7,7 +7,7 @@ import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/movies/shop_refined/ShopSimpleList.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flare_flutter/base/animation/actor_animation.dart';
 import 'package:flare_flutter/flare.dart';
@@ -31,14 +31,14 @@ class _TestPageState extends State<TestPage> {
 
   String searchKey = "mami";
 
-  ShopSimpleList shl;
+  ShopSimpleList? shl;
 
   get _shopSimpleList {
     if (shl == null)
       shl = ShopSimpleList(
           search_key: searchKey,
           type: "food",
-          restaurantListPresenter: RestaurantListPresenter());
+          restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
     return shl;
   }
 
@@ -86,7 +86,7 @@ class _TestPageState extends State<TestPage> {
                           textInputAction: TextInputAction.search,
                           decoration: InputDecoration.collapsed(
                               hintText:
-                                  "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                                  "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
                               hintStyle: TextStyle(
                                   fontSize: 14,
                                   color: KColors.new_black.withAlpha(150))),
@@ -122,9 +122,9 @@ class _TestPageState extends State<TestPage> {
 }
 
 class SearchObjectResultPage extends StatefulWidget {
-  String search_key;
+  String? search_key;
 
-  SearchObjectResultPage({Key key, this.search_key}) : super(key: key);
+  SearchObjectResultPage({Key? key, this.search_key}) : super(key: key);
 
   @override
   _SearchObjectResultPageState createState() {
@@ -172,7 +172,7 @@ Future<void> _playMusic() async {
 
   final player = AudioPlayer();
   player.play(
-      "https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3");
+      UrlSource("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3"));
   // player.setAudioSource(AudioSource.uri(Uri.parse(
   //     "${MusicData.command_success_hold_on}")));
   // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
@@ -181,7 +181,7 @@ Future<void> _playMusic() async {
   //      initialPosition: Duration.zero, preload: true);
   //
 
-  if (await Vibration.hasVibrator()) {
+  if (await Vibration.hasVibrator()!=null) {
     Vibration.vibrate(duration: 500);
   }
 }
@@ -198,7 +198,7 @@ class TrackingState extends State<TrackingInput> {
   double screenHeight = 0.0;
 
   ///this is the animation controller for the water and iceBoy
-  AnimationControls _flareController;
+  AnimationControls? _flareController;
 
   ///an example of how to set up individual controllers
   final FlareControls plusWaterControls = FlareControls();
@@ -352,7 +352,7 @@ class TrackingState extends State<TrackingInput> {
   void _resetDay() {
     setState(() {
       currentWaterCount = 0;
-      _flareController.resetWater();
+      _flareController!.resetWater();
     });
   }
 
@@ -386,7 +386,7 @@ class TrackingState extends State<TrackingInput> {
         currentWaterCount = currentWaterCount - 1;
         double diff = currentWaterCount / selectedGlasses;
 
-        _flareController.updateWaterPercent(diff);
+        _flareController!.updateWaterPercent(diff);
 
         // _flareController.playAnimation("ripple");
       } else {
@@ -457,13 +457,13 @@ class TrackingState extends State<TrackingInput> {
 
 class AnimationControls extends FlareController {
   ///so we can reference this any where once we declare it
-  FlutterActorArtboard _artboard;
+  FlutterActorArtboard? _artboard;
 
   ///our fill animation, so we can animate this each time we add/reduce water intake
-  ActorAnimation _fillAnimation;
+  ActorAnimation? _fillAnimation;
 
   ///our ice cube that moves on the Y Axis based on current water intake
-  ActorAnimation _iceboyMoveY;
+  ActorAnimation? _iceboyMoveY;
 
   ///used for mixing animations
   final List<FlareAnimationLayer> _baseAnimations = [];
@@ -490,17 +490,17 @@ class AnimationControls extends FlareController {
     if (artboard.name.compareTo("Artboard") == 0) {
       _currentWaterFill +=
           (_waterFill - _currentWaterFill) * min(1, elapsed * _smoothTime);
-      _fillAnimation.apply(
-          _currentWaterFill * _fillAnimation.duration, artboard, 1);
-      _iceboyMoveY.apply(
-          _currentWaterFill * _iceboyMoveY.duration, artboard, 1);
+      _fillAnimation!.apply(
+          _currentWaterFill * _fillAnimation!.duration, artboard, 1);
+      _iceboyMoveY!.apply(
+          _currentWaterFill * _iceboyMoveY!.duration, artboard, 1);
     }
     int len = _baseAnimations.length - 1;
     for (int i = len; i >= 0; i--) {
       FlareAnimationLayer layer = _baseAnimations[i];
       layer.time += elapsed;
       layer.mix = min(1.0, layer.time / 0.01);
-      layer.apply(_artboard);
+      layer.apply(_artboard!);
       if (layer.isDone) {
         _baseAnimations.removeAt(i);
       }
@@ -538,9 +538,9 @@ class AnimationControls extends FlareController {
 /// a Flare animation when pressed. Specify which animation
 /// via [pressAnimation] and the [artboard] it's in.
 class FlareWaterTrackButton extends StatefulWidget {
-  final String pressAnimation;
-  final String artboard;
-  final VoidCallback onPressed;
+  final String? pressAnimation;
+  final String? artboard;
+  final VoidCallback? onPressed;
 
   const FlareWaterTrackButton(
       {this.artboard, this.pressAnimation, this.onPressed});
@@ -557,7 +557,7 @@ class _FlareWaterTrackButtonState extends State<FlareWaterTrackButton> {
     return RawMaterialButton(
       constraints: BoxConstraints.tight(const Size(95, 85)),
       onPressed: () {
-        _controller.play(widget.pressAnimation);
+        _controller.play(widget.pressAnimation!);
         widget.onPressed?.call();
       },
       highlightColor: Colors.transparent,

@@ -10,10 +10,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Group2AdsWidget extends StatefulWidget {
-  GroupAdsModel groupAd;
+  GroupAdsModel? groupAd;
 
   Group2AdsWidget({
-    Key key,
+    required Key key,
     this.groupAd,
   }) : super(key: key);
 
@@ -89,7 +89,7 @@ class _Group2AdsWidgetState extends State<Group2AdsWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
       ),
     );
   }

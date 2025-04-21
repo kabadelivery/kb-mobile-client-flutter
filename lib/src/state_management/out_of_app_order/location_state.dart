@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../xrint.dart';
 
 class PickingAdressState {
-   bool is_shipping_address_picked;
-   bool is_order_address_picked;
-   DeliveryAddressModel selectedShippingAddress;
-   List<DeliveryAddressModel> selectedOrderAddress;
+   bool? is_shipping_address_picked;
+   bool? is_order_address_picked;
+   DeliveryAddressModel? selectedShippingAddress;
+   List<DeliveryAddressModel>? selectedOrderAddress;
 
   PickingAdressState(
   {
@@ -19,10 +19,10 @@ class PickingAdressState {
       );
 
   PickingAdressState copyWith({
-     bool is_shipping_address_picked,
-     bool is_order_address_picked,
-     DeliveryAddressModel selectedShippingAddress,
-     List<DeliveryAddressModel> selectedOrderAddress,
+     bool? is_shipping_address_picked,
+     bool? is_order_address_picked,
+     DeliveryAddressModel? selectedShippingAddress,
+     List<DeliveryAddressModel>? selectedOrderAddress,
 }){
   return  PickingAdressState(
       is_shipping_address_picked : is_shipping_address_picked??this.is_shipping_address_picked,
@@ -41,17 +41,17 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
   setOrderAddressPicked(bool is_order_address_picked){
     state = state.copyWith(is_order_address_picked:is_order_address_picked);
   }
-  pickShippingAddress(DeliveryAddressModel selectedShippingAddress){
+  pickShippingAddress(DeliveryAddressModel? selectedShippingAddress){
     state = state.copyWith(selectedShippingAddress:selectedShippingAddress);
   }
-  pickOrderAddress(DeliveryAddressModel order_address) {
+  pickOrderAddress(DeliveryAddressModel? order_address) {
     try {
       final currentAddresses = state.selectedOrderAddress ?? [];
-      bool exists = currentAddresses.any((address) => address.id == order_address.id);
+      bool exists = currentAddresses.any((address) => address.id == order_address!.id);
       if (!exists) {
         state = state.copyWith(
           is_order_address_picked: true,
-          selectedOrderAddress: [...currentAddresses, order_address],
+          selectedOrderAddress: [...currentAddresses, order_address!],
         );
         xrint("Order address added: ${state.selectedOrderAddress}");
       }
@@ -59,7 +59,7 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
       xrint('Error adding order_address: $e');
     }
   }
-  deleteOrderAddress(DeliveryAddressModel order_address, bool is_order_address_picked) {
+  deleteOrderAddress(DeliveryAddressModel? order_address, bool is_order_address_picked) {
     try {
     
       state = state.copyWith(

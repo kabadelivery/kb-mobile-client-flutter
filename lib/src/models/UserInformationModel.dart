@@ -2,17 +2,17 @@ import 'package:flutter/foundation.dart';
 
 class UserInformationModel {
 
-  int id;
-  String username;
-  String phone_number;
-  String nickname;
-  String birthday;
-  String job_title;
-  String district;
-  int gender; /* 1 female - 2 male - 3 dontwannasay - 0 notsetyet */
-  String profile_picture;
-  String theme_picture;
-  int isSet;
+  int? id;
+  String? username;
+  String? phone_number;
+  String? nickname;
+  String? birthday;
+  String? job_title;
+  String? district;
+  int? gender; /* 1 female - 2 male - 3 dontwannasay - 0 notsetyet */
+  String? profile_picture;
+  String? theme_picture;
+  int? isSet;
 
 
   UserInformationModel({this.id, this.username, this.phone_number, this.nickname, this.birthday,

@@ -3,27 +3,27 @@ import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 
 class MovieModel {
-  int id;
+  int? id;
 
-  String name;
-  String description;
-  String movie_type;
+  String?  name;
+  String?  description;
+  String?  movie_type;
 
-  String pic;
-  String adult_ticket_price;
-  String kid_ticket_price;
+  String?  pic;
+  String?  adult_ticket_price;
+  String?  kid_ticket_price;
 
-  int shop_id; // we
-  String age_limit;
-  int is_premiere;
+  int? shop_id; // we
+  String?  age_limit;
+  int? is_premiere;
 
-  int is_favorite = 0;
-  double stars;
-  int promotion;
-  bool is_addon = false;
+  int? is_favorite = 0;
+  double? stars;
+  int? promotion;
+  bool? is_addon = false;
 
   /* restaurant entity */
-  ShopModel shop_entity;
+  ShopModel? shop_entity;
 
   MovieModel(
       {this.id,
@@ -76,7 +76,7 @@ class MovieModel {
       };
 
   @override
-  String toString() {
+  String  toString() {
     return toJson().toString();
   }
 

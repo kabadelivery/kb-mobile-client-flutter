@@ -35,9 +35,9 @@ class OrderDetailsPresenter implements OrderDetailsContract {
 
   OrderDetailsView _orderDetailsView;
 
-  OrderApiProvider provider;
+  late OrderApiProvider provider;
 
-  OrderDetailsPresenter() {
+  OrderDetailsPresenter(this._orderDetailsView) {
     provider = new OrderApiProvider();
   }
 

@@ -23,9 +23,9 @@ class FoodPresenter implements FoodContract {
 
   FoodView _foodView;
 
-  MenuApiProvider provider;
+  late MenuApiProvider provider;
 
-  FoodPresenter() {
+  FoodPresenter(this._foodView) {
     provider = new MenuApiProvider();
   }
 

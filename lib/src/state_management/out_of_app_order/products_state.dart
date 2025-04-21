@@ -54,15 +54,15 @@ final quantityProvider = StateNotifierProvider<QuantityNotifier,int>((ref) {
   return QuantityNotifier();
 });
 
-class ImageCacheNotifier extends StateNotifier<File>{
+class ImageCacheNotifier extends StateNotifier<File?>{
   ImageCacheNotifier():super(null);
 
-  void saveImagePath(File path){
+  void saveImagePath(File? path){
     state = path;
   }
 }
 
-final imageCacheProvider = StateNotifierProvider<ImageCacheNotifier,File>((ref) {
+final imageCacheProvider = StateNotifierProvider<ImageCacheNotifier,File?>((ref) {
   return ImageCacheNotifier();
 });
 

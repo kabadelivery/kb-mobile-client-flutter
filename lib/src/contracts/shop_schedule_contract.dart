@@ -27,9 +27,9 @@ class ShopSchedulePresenter implements ShopScheduleContract {
 
   ShopScheduleView _shopScheduleView;
 
-  MenuApiProvider provider;
+  late MenuApiProvider provider;
 
-  ShopSchedulePresenter() {
+  ShopSchedulePresenter(this._shopScheduleView) {
     provider = new MenuApiProvider();
   }
 
@@ -49,10 +49,10 @@ class ShopSchedulePresenter implements ShopScheduleContract {
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"]["content"];
-          List<ShopScheduleModel> ShopSchedules =
+          List<ShopScheduleModel>? ShopSchedules =
               lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
           /* send these to json */
-          _shopScheduleView.inflateShopSchedule(ShopSchedules);
+          _shopScheduleView.inflateShopSchedule(ShopSchedules!);
           _shopScheduleView.showLoading(false);
         } else {
           _shopScheduleView.showLoading(true);
@@ -66,12 +66,12 @@ class ShopSchedulePresenter implements ShopScheduleContract {
         // save best seller json
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(schedule_json)["data"]["content"];
-        List<ShopScheduleModel> ShopSchedules =
+        List<ShopScheduleModel>? ShopSchedules =
             lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
         /* send these to json */
         CustomerUtils.saveShopSchedulePage(restaurant_id, schedule_json);
         _shopScheduleView.showLoading(false);
-        _shopScheduleView.inflateShopSchedule(ShopSchedules);
+        _shopScheduleView.inflateShopSchedule(ShopSchedules!);
         isWorking = false;
       } catch (_) {
         /* ShopSchedule failure */

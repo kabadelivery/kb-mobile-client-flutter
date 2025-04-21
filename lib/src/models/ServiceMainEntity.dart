@@ -1,15 +1,15 @@
 class ServiceMainEntity {
-  int id;
-  int category_id;
-  Map<String, dynamic> name;
-  int state;
-  String key;
-  int position;
-  int is_coming_soon;
-  int is_active;
-  int is_new;
-  int is_lottie_file;
-  String file_link;
+  int? id;
+  int? category_id;
+  Map<String, dynamic>? name;
+  int? state;
+  String? key;
+  int? position;
+  int? is_coming_soon;
+  int? is_active;
+  int? is_new;
+  int? is_lottie_file;
+  String? file_link;
 
   ServiceMainEntity(
       {

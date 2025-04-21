@@ -28,15 +28,15 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
   final voucherState = ref.watch(voucherStateProvider);
   // ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
 //  ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
-  List<DeliveryAddressModel> order_address = null;
-  DeliveryAddressModel shipping_address = null;
+  List<DeliveryAddressModel>? order_address = null;
+  DeliveryAddressModel? shipping_address = null;
   /* jump and get it */
   if (context.mounted) {
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             MyAddressesPage(
                 pick: true,
-                presenter: AddressPresenter(),
+                presenter: AddressPresenter(AddressView()),
                 address_type: address_type),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
@@ -54,7 +54,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         shipping_address = results['selection'];
         locationNotifier.pickShippingAddress(shipping_address);
         locationNotifier.setShippingAddressPicked(true);
-        if (locationState.selectedOrderAddress.isNotEmpty) {
+        if (locationState.selectedOrderAddress!.isNotEmpty) {
           order_address = locationState.selectedOrderAddress;
         }
       }
@@ -63,7 +63,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         order_address.add(results['selection'] as DeliveryAddressModel);
         locationNotifier.pickOrderAddress(results['selection']);
         locationNotifier.setOrderAddressPicked(true);
-        if (locationState.is_shipping_address_picked) {
+        if (locationState.is_shipping_address_picked!) {
           shipping_address = locationState.selectedShippingAddress;
         }
       }
@@ -76,7 +76,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
         if (outOfAppScreenState.order_type == 5 ||
             outOfAppScreenState.order_type == 6) {
-          if (shipping_address != null && order_address.isNotEmpty) {
+          if (shipping_address != null && order_address!.isNotEmpty) {
             outOfAppNotifier.setIsBillBuilt(false);
             outOfAppNotifier.setShowLoading(true);
 
@@ -111,15 +111,15 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
           }
           if (outOfAppScreenState.order_type == 5 ||
               outOfAppScreenState.order_type == 6) {
-            if (shipping_address != null && order_address.isNotEmpty) {
+            if (shipping_address != null && order_address!.isNotEmpty) {
               try {
                 OrderBillConfiguration orderBillConfiguration =
                     await api.computeBillingAction(
-                        customer,
+                        customer!,
                         order_address,
                         formData,
                         shipping_address,
-                        voucherState.selectedVoucher,
+                        voucherState.selectedVoucher!,
                         false);
                 ref
                     .read(orderBillingStateProvider.notifier)
@@ -134,7 +134,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                     toastLength: Toast.LENGTH_LONG,
                     msg: "🚨 " +
                         AppLocalizations.of(context)
-                            .translate("impossible_to_load_bill") +
+                            !.translate("impossible_to_load_bill") +
                         " 🚨");
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);
@@ -147,11 +147,11 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
               try {
                 OrderBillConfiguration orderBillConfiguration =
                     await api.computeBillingAction(
-                        customer,
-                        order_address,
+                        customer!,
+                        order_address!,
                         formData,
                         shipping_address,
-                        voucherState.selectedVoucher,
+                        voucherState.selectedVoucher!,
                         false);
                 ref
                     .read(orderBillingStateProvider.notifier)
@@ -166,7 +166,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                     toastLength: Toast.LENGTH_LONG,
                     msg: "🚨 " +
                         AppLocalizations.of(context)
-                            .translate("impossible_to_load_bill") +
+                            !.translate("impossible_to_load_bill") +
                         " 🚨");
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);

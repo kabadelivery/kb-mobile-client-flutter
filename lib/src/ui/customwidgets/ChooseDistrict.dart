@@ -32,7 +32,7 @@ class DistrictSelectionWidget extends ConsumerWidget {
         TextField(
           onChanged: districtNotifier.filterDistricts,
           decoration: InputDecoration(
-            labelText: AppLocalizations.of(context).translate("search_district"),
+            labelText: AppLocalizations.of(context)!.translate("search_district"),
             fillColor: Colors.grey[200],
             filled: true,
             border: OutlineInputBorder(
@@ -52,7 +52,7 @@ class DistrictSelectionWidget extends ConsumerWidget {
           value: districtState.SelectedDistrictName.isNotEmpty
               ? districtState.SelectedDistrictName
               : null,
-          items: districtState.districts.map((item) {
+          items: districtState.districts!.map((item) {
             return DropdownMenuItem<String>(
               value: item["name"],
               child: Text(item["name"]),
@@ -60,7 +60,7 @@ class DistrictSelectionWidget extends ConsumerWidget {
           }).toList(),
           onChanged: (value)async  {
             districtNotifier.setSelectedDistrictName(value ?? "");
-            Map<String, dynamic> selectedDistrict = districtState.districts.firstWhere((element) => element["name"] == value);
+            Map<String, dynamic> selectedDistrict = districtState.districts!.firstWhere((element) => element["name"] == value);
             districtNotifier.setSelectedDistrict(selectedDistrict);
             List<Map<String, dynamic>> formData = [];
             DeliveryAddressModel  address=   DeliveryAddressModel(
@@ -68,8 +68,8 @@ class DistrictSelectionWidget extends ConsumerWidget {
               name: selectedDistrict["name"],
               description: selectedDistrict["description"],
             );
-            DeliveryAddressModel shipping_address=locationState.selectedShippingAddress;
-            List<DeliveryAddressModel> order_address=locationState.selectedOrderAddress;
+            DeliveryAddressModel shipping_address=locationState.selectedShippingAddress!;
+            List<DeliveryAddressModel> order_address=locationState.selectedOrderAddress!;
 
             if(outofAppState.order_type==5){
               locationNotifier.pickShippingAddress(address);
@@ -100,13 +100,13 @@ class DistrictSelectionWidget extends ConsumerWidget {
               outOfAppNotifier.setShowLoading(true);
                 try{
                   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
-                  CustomerModel customer = await CustomerUtils.getCustomer();
+                  CustomerModel? customer = await CustomerUtils.getCustomer();
                   OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                      customer,
+                      customer!,
                       order_address,
                       formData,
                       shipping_address,
-                      voucherState.selectedVoucher,
+                      voucherState.selectedVoucher!,
                       false);
                   orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                   outOfAppNotifier.setIsBillBuilt(true);
@@ -117,7 +117,7 @@ class DistrictSelectionWidget extends ConsumerWidget {
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("impossible_to_load_bill")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                   outOfAppNotifier.setShowLoading(false);
                   outOfAppNotifier.setIsBillBuilt(false);
                 }

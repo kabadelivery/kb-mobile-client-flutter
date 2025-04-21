@@ -5,10 +5,10 @@ import 'package:KABA/src/models/ShopModel.dart';
 class PreOrderConfiguration {
 
 
-  bool is_preorder_allowed;
-  bool is_preorder_prepayed_allowed;
-  bool is_preorder_postpayed_allowed;
-  List<String> preorder_timeranges; // # 1100-1300 ; 1815-2045
+  bool? is_preorder_allowed;
+  bool? is_preorder_prepayed_allowed;
+  bool? is_preorder_postpayed_allowed;
+  List<String>? preorder_timeranges; // # 1100-1300 ; 1815-2045
 
   PreOrderConfiguration({this.is_preorder_allowed, this.is_preorder_prepayed_allowed, this.is_preorder_postpayed_allowed, this.preorder_timeranges});
 

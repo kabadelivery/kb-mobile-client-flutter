@@ -51,41 +51,41 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
 
   getCategoryTitle(BuildContext context) {
     var tmp = [
-      AppLocalizations.of(context).translate('service_shop_type_name'),
-      AppLocalizations.of(context).translate('service_shop_type_product')
+      AppLocalizations.of(context)!.translate('service_shop_type_name'),
+      AppLocalizations.of(context)!.translate('service_shop_type_product')
     ];
 
     switch (widget?.type) {
       case "food": // food
         tmp = [
           AppLocalizations.of(context)
-              .translate('service_restaurant_type_name'),
+              !.translate('service_restaurant_type_name'),
           AppLocalizations.of(context)
-              .translate('service_restaurant_type_product')
+              !.translate('service_restaurant_type_product')
         ];
         break;
       case "drink": // drinks
         tmp = [
-          AppLocalizations.of(context).translate('service_drink_type_name'),
-          AppLocalizations.of(context).translate('service_drink_type_product')
+          AppLocalizations.of(context)!.translate('service_drink_type_name'),
+          AppLocalizations.of(context)!.translate('service_drink_type_product')
         ];
         break;
       case "flower": // flowers
         tmp = [
-          AppLocalizations.of(context).translate('service_flower_type_name'),
-          AppLocalizations.of(context).translate('service_flower_type_product')
+          AppLocalizations.of(context)!.translate('service_flower_type_name'),
+          AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];
         break;
       case "book": // flowers
         tmp = [
-          AppLocalizations.of(context).translate('service_book_type_name'),
-          AppLocalizations.of(context).translate('service_book_type_product')
+          AppLocalizations.of(context)!.translate('service_book_type_name'),
+          AppLocalizations.of(context)!.translate('service_book_type_product')
         ];
         break;
         /*   case "supermarket": // flowers
         tmp = [
-          AppLocalizations.of(context).translate('service_flower_type_name'),
-          AppLocalizations.of(context).translate('service_flower_type_product')
+          AppLocalizations.of(context)!.translate('service_flower_type_name'),
+          AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];*/
         break;
       //   case 1005: // movies
@@ -96,20 +96,20 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
       //     break;
       case "shop": // shopping
         tmp = [
-          AppLocalizations.of(context).translate('service_shop_type_name'),
-          AppLocalizations.of(context).translate('service_shop_type_product')
+          AppLocalizations.of(context)!.translate('service_shop_type_name'),
+          AppLocalizations.of(context)!.translate('service_shop_type_product')
         ];
         break;
       case "ticket": // ticket
         tmp = [
-          AppLocalizations.of(context).translate('service_ticket_type_name'),
-          AppLocalizations.of(context).translate('service_ticket_product_name')
+          AppLocalizations.of(context)!.translate('service_ticket_type_name'),
+          AppLocalizations.of(context)!.translate('service_ticket_product_name')
         ];
         break;
       case "grocery": // ticket
         tmp = [
-          AppLocalizations.of(context).translate('service_grocery_type_name'),
-          AppLocalizations.of(context).translate('service_grocery_product_name')
+          AppLocalizations.of(context)!.translate('service_grocery_type_name'),
+          AppLocalizations.of(context)!.translate('service_grocery_product_name')
         ];
         break;
     }
@@ -149,7 +149,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                         EdgeInsets.symmetric(horizontal: 10),
                                     child: Center(
                                       child: Text(Utils.capitalize(
-                                              // "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                              // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
                                               _searchChoices[0]),
                                           style: TextStyle(
                                               fontSize: 14,
@@ -204,7 +204,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                 widget.selectedPosition == 1
                     ? GestureDetector(
                         onTap: widget
-                            .listContentFilter, //widget.scrollToTopFunction,
+                            .listContentFilter(), //widget.scrollToTopFunction,
                         child: Container(
                           padding: EdgeInsets.all(8),
                           width: 70,
@@ -256,14 +256,14 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                               child: DropdownButton<String>(
                                 value: _filterDropdownValue,
                                 /*hint: Text(
-                        "${AppLocalizations.of(context).translate('filter')}"
+                        "${AppLocalizations.of(context)!.translate('filter')}"
                             .toUpperCase(),
                         style: TextStyle(
                             fontSize: 14, color: KColors.primaryColor)),
                     */
 
                                 /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                                  child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
+                                  child: Text("${AppLocalizations.of(context)!.translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
                               */
                                 icon: Icon(
                                   FontAwesomeIcons.filter,
@@ -277,14 +277,14 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
 //                      height: 2,
 //                      color: Colors.deepPurpleAccent,
                                     ),
-                                onChanged: (String newValue) {
+                                onChanged: (String? newValue) {
                                   widget.filterFunction(newValue);
                                 },
                                 items: <String>[
-                                  '${AppLocalizations.of(context).translate('cheap_to_exp')}',
-                                  '${AppLocalizations.of(context).translate('exp_to_cheap')}',
-                                  '${AppLocalizations.of(context).translate('nearest')}',
-                                  '${AppLocalizations.of(context).translate('farest')}'
+                                  '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
+                                  '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
+                                  '${AppLocalizations.of(context)!.translate('nearest')}',
+                                  '${AppLocalizations.of(context)!.translate('farest')}'
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,

@@ -26,11 +26,11 @@ class LoginPresenter implements LoginContract {
 
   bool isWorking = false;
 
-  ClientPersonalApiProvider provider;
+  late ClientPersonalApiProvider provider;
 
   LoginView _loginView;
 
-  LoginPresenter () {
+  LoginPresenter (this._loginView) {
     provider = new ClientPersonalApiProvider();
   }
 

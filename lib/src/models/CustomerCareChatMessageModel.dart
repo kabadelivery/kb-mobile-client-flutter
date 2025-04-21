@@ -3,12 +3,12 @@
 
 class CustomerCareChatMessageModel {
 
-   int id;
-   String message;
-   int created_at;
-   bool state = true; /* deleted or not */
-   int viewed;
-   int user_id;
+   int? id;
+   String? message;
+   int? created_at;
+   bool? state = true; /* deleted or not */
+   int? viewed;
+   int? user_id;
 
    CustomerCareChatMessageModel({this.id, this.message, this.created_at,
      this.state, this.viewed, this.user_id});

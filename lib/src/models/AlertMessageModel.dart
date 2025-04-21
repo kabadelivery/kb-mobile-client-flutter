@@ -1,11 +1,11 @@
 class AlertMessageModel {
 
-  final int id;
-  final String title;
-  final int showAlert;
-  final Map messages;
-  final int error;
-  final String uuid;
+  final int? id;
+  final String? title;
+  final int? showAlert;
+  final Map? messages;
+  final int? error;
+  final String? uuid;
 
 //<editor-fold desc="Data Methods">
 
@@ -52,12 +52,12 @@ class AlertMessageModel {
   }
 
   AlertMessageModel copyWith({
-    int id,
-    String title,
-    int showAlert,
-    Map messages,
-    int error,
-    String uuid,
+    int? id,
+    String? title,
+    int? showAlert,
+    Map? messages,
+    int? error,
+    String? uuid,
   }) {
     return AlertMessageModel(
       id: id ?? this.id,

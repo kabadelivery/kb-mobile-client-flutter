@@ -20,7 +20,7 @@ import 'package:toast/toast.dart' as to;
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MyNewOrderWidget extends StatefulWidget {
-  CommandModel command;
+  CommandModel? command;
 
 //  VoucherModel voucher = VoucherModel(type: 1);
 
@@ -28,7 +28,7 @@ class MyNewOrderWidget extends StatefulWidget {
 
   @override
   _MyNewOrderWidgetState createState() {
-    return _MyNewOrderWidgetState(command);
+    return _MyNewOrderWidgetState(command!);
   }
 }
 
@@ -93,13 +93,13 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     dayz = [
-      "${AppLocalizations.of(context).translate('monday_long')}",
-      "${AppLocalizations.of(context).translate('tuesday_long')}",
-      "${AppLocalizations.of(context).translate('wednesday_long')}",
-      "${AppLocalizations.of(context).translate('thursday_long')}",
-      "${AppLocalizations.of(context).translate('friday_long')}",
-      "${AppLocalizations.of(context).translate('saturday_long')}",
-      "${AppLocalizations.of(context).translate('sunday_long')}",
+      "${AppLocalizations.of(context)!.translate('monday_long')}",
+      "${AppLocalizations.of(context)!.translate('tuesday_long')}",
+      "${AppLocalizations.of(context)!.translate('wednesday_long')}",
+      "${AppLocalizations.of(context)!.translate('thursday_long')}",
+      "${AppLocalizations.of(context)!.translate('friday_long')}",
+      "${AppLocalizations.of(context)!.translate('saturday_long')}",
+      "${AppLocalizations.of(context)!.translate('sunday_long')}",
     ];
   }
 
@@ -108,7 +108,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     String restoName = "${command?.restaurant_entity?.name}";
 
     return Opacity(
-      opacity: command?.state > 3 ? .7 : 1,
+      opacity: command.state! > 3 ? .7 : 1,
       child: InkWell(
         onTap: () => _jumpToCommandDetails(command),
         child: Stack(
@@ -136,8 +136,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                   image: CachedNetworkImageProvider(
                                       command.order_type==0?
                                       Utils.inflateLink(
-                                          command.restaurant_entity.pic):
-                                  "${command.restaurant_entity.pic}"
+                                          command.restaurant_entity!.pic!):
+                                  "${command.restaurant_entity!.pic!}"
                                   )
 
                               ))),
@@ -160,7 +160,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                         SizedBox(height: 5),
                           Container(width: MediaQuery.of(context).size.width-160,child: Text("${_getOrderFoodName()}", style: TextStyle(overflow: TextOverflow.ellipsis, fontSize: 12, color: Colors.grey),)),
                           SizedBox(height: 5),
-                          command?.is_payed_at_arrival ? Container(height: 20,) : Container(
+                          command!.is_payed_at_arrival! ? Container(height: 20,) : Container(
                               padding: EdgeInsets.symmetric(
                                   vertical: 6, horizontal: 10),
                               decoration: BoxDecoration(
@@ -168,7 +168,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                   borderRadius:
                                   BorderRadius.circular(5)),
                               child: Text(
-                                  "${AppLocalizations.of(context).translate("payed")}",
+                                  "${AppLocalizations.of(context)!.translate("payed")}",
                                   style: TextStyle(fontWeight: FontWeight.bold,
                                       color: KColors.primaryColor,
                                       fontSize: 12))),
@@ -186,7 +186,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                             borderRadius: BorderRadius.only(
                                 bottomRight: Radius.circular(5),
                                 bottomLeft: Radius.circular(5)),
-                            color: _getStateColor(command?.state)),
+                            color: _getStateColor(command.state!)),
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         child: Row(
@@ -199,7 +199,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                   crossAxisAlignment:
                                   CrossAxisAlignment.center,
                                   children: [
-                                    command?.state > 1 && command?.state <= 3
+                                    command.state! > 1 && command.state! <= 3
                                         ? Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
@@ -222,7 +222,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               children: [
                                 // SizedBox(width: 10),
                                 widget?.command?.state == 2 ||
-                                       ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget?.command?.rating < 1))
+                                       ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget.command!.rating! < 1))
                                     ? InkWell(
                                         child: Container(
                                             padding: EdgeInsets.symmetric(
@@ -245,7 +245,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                                     size: 16),
                                                 SizedBox(width: 5),
                                                 Text(
-                                                    "${AppLocalizations.of(context).translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
+                                                    "${AppLocalizations.of(context)!.translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12)),
@@ -275,7 +275,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                       RichText(
                           text: TextSpan(
                               text:
-                              "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context).translate('currency_short')}",
+                              "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context)!.translate('currency_short')}",
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
@@ -286,10 +286,10 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                               "${Utils.capitalize(_getStateLabel(command))}",
                               style: TextStyle(
                                   fontSize: 12,
-                                  color: _getStateColor(command?.state))),
+                                  color: _getStateColor(command.state!))),
                           decoration: BoxDecoration(
                               color:
-                                  _getStateColor(command?.state).withAlpha(30),
+                                  _getStateColor(command.state!).withAlpha(30),
                               borderRadius: BorderRadius.circular(10)),
                           padding:
                               EdgeInsets.symmetric(vertical: 6, horizontal: 6)),
@@ -308,8 +308,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     );
   }
 
-  List<Widget> _orderFoodList(List<OrderItemModel> food_list) {
-    return List.generate(food_list?.length, (int index) {
+  List<SingleOrderFoodWidget>? _orderFoodList(List<OrderItemModel> food_list) {
+    return List.generate(food_list.length!, (int index) {
       return SingleOrderFoodWidget(food_list[index]);
 //      return Container();
     })?.toList();
@@ -334,26 +334,26 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     // delivered ?
     switch (command.state) {
       case 0:
-        return "${AppLocalizations.of(context).translate('waiting')}"
+        return "${AppLocalizations.of(context)!.translate('waiting')}"
             .toUpperCase();
       case 1:
-        return "${AppLocalizations.of(context).translate('cooking')}"
+        return "${AppLocalizations.of(context)!.translate('cooking')}"
             .toUpperCase();
       case 2:
-        return "${AppLocalizations.of(context).translate('shipping')}"
+        return "${AppLocalizations.of(context)!.translate('shipping')}"
             .toUpperCase();
       case 3:
-        return "${AppLocalizations.of(context).translate('delivered')}"
+        return "${AppLocalizations.of(context)!.translate('delivered')}"
             .toUpperCase();
         break;
       default:
-        return "${AppLocalizations.of(context).translate('rejected')}"
+        return "${AppLocalizations.of(context)!.translate('rejected')}"
             .toUpperCase();
     }
   }
 
   String _getLastModifiedDate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(command?.last_update));
+    return Utils.readTimestamp(context, int.parse(command.last_update!));
   }
 
   _jumpToCommandDetails(CommandModel command) {
@@ -368,7 +368,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderNewDetailsPage(
                 is_out_of_app_order:widget.command?.order_type!=0?true:false,
-                orderId: command?.id, presenter: OrderDetailsPresenter()),
+                orderId: command.id!, presenter: OrderDetailsPresenter(OrderDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -388,7 +388,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
       await launch(url);
     } else {
       // ask launch.
-      to.Toast.show("Call error", context);
+      to.Toast.show("Call error");
     }
   }
 
@@ -396,8 +396,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderFeedbackPage(
-                orderId: widget?.command?.id,
-                presenter: OrderFeedbackPresenter()),
+                orderId: widget.command!.id!,
+                presenter: OrderFeedbackPresenter(OrderFeedbackView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -412,7 +412,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
 
   _getOrderFoodName() {
     String condensedName = "";
-    for (var value in widget.command.food_list) {
+    for (var value in widget.command!.food_list!) {
       condensedName += " ${value.name} /";
     }
     return condensedName.substring(0, condensedName.length-1);
@@ -472,7 +472,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                       image: new DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                              Utils.inflateLink(food.pic)))),
+                              Utils.inflateLink(food.pic!)))),
                 ),
                 SizedBox(width: 10),
 
@@ -525,7 +525,7 @@ class SingleOrderFoodWidget extends StatelessWidget {
                                             decoration: TextDecoration.none))
                                     : Container()),
                                 Text(
-                                    "${AppLocalizations.of(context).translate('currency')}",
+                                    "${AppLocalizations.of(context)!.translate('currency')}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     textAlign: TextAlign.center,

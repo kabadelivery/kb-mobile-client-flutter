@@ -36,7 +36,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
           bool is_email_account = StateContainer.of(context).customer == null ||
                   StateContainer.of(context).customer?.username == null
               ? false
-              : (StateContainer.of(context).customer.username.contains("@")
+              : (StateContainer.of(context).customer.username!.contains("@")
                   ? true
                   : false);
 
@@ -98,7 +98,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
             SizedBox(width: 5),
             Text(
                 (shipping_price == "~"
-                    ? "${AppLocalizations.of(context).translate('out_of_range')}"
+                    ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
                     : shipping_price + " F"),
                 style: TextStyle(color: Colors.grey, fontSize: 12)),
           ],
@@ -113,7 +113,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
       if (myBillingArray["$distanceInt"] == null) {
         return "~";
       } else {
-        return myBillingArray["$distanceInt"];
+        return myBillingArray["$distanceInt"]!;
       }
     } catch (_) {
       xrint(_);

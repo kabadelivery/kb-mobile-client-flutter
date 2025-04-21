@@ -4,11 +4,11 @@ import 'package:KABA/src/models/WebArticleModel.dart';
 
 class ArticleContentModel {
 
-  int id;
-  List<WebBloc> content;
-  String title;
-  List<String> image_title;
-  String udpatedAt;
+  int? id;
+  List<WebBloc>? content;
+  String? title;
+  List<String>? image_title;
+  String? udpatedAt;
 
   ArticleContentModel.fromJson(Map<String, dynamic> json) {
 

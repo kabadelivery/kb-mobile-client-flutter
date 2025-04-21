@@ -18,8 +18,8 @@ import '../../../ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import '../../../xrint.dart';
 import '../CustomerUtils.dart';
 
-Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
-    bool has_voucher, VoucherModel voucher) async {
+Future<VoucherModel?> SelectVoucher(BuildContext context, WidgetRef ref,
+    bool has_voucher, VoucherModel? voucher) async {
   /* just like we pick and address, we pick a voucher. */
 
   /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
@@ -40,7 +40,7 @@ Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
       MaterialPageRoute(
         builder: (context) => MyVouchersPage(
             pick: true,
-            presenter: VoucherPresenter(),
+            presenter: VoucherPresenter(VoucherView()),
             restaurantId: -1,
             foods: [33]),
       ),
@@ -55,7 +55,7 @@ Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
   }
 }
 
-Future<OrderBillConfiguration> getBillingForVoucher(
+Future<OrderBillConfiguration?> getBillingForVoucher(
     BuildContext context, WidgetRef ref, VoucherModel voucher) async {
   final locationState = ref.watch(locationStateProvider);
   final voucherState = ref.watch(voucherStateProvider);
@@ -64,7 +64,7 @@ Future<OrderBillConfiguration> getBillingForVoucher(
   final productState = ref.watch(productListProvider);
   try {
     ref.read(voucherStateProvider.notifier).setVoucher(voucher);
-    CustomerModel customer = ref.watch(orderBillingStateProvider).customer;
+    CustomerModel? customer = ref.watch(orderBillingStateProvider).customer;
     ref.read(orderBillingStateProvider.notifier).setCustomer(customer);
     List<Map<String, dynamic>> formData = [];
 
@@ -84,10 +84,10 @@ Future<OrderBillConfiguration> getBillingForVoucher(
     try {
       OrderBillConfiguration orderBillConfiguration =
           await api.computeBillingAction(
-              customer,
-              locationState.selectedOrderAddress,
+              customer!,
+              locationState.selectedOrderAddress!,
               formData,
-              locationState.selectedShippingAddress,
+              locationState.selectedShippingAddress!,
               voucher,
               false);
       return orderBillConfiguration;
@@ -99,7 +99,7 @@ Future<OrderBillConfiguration> getBillingForVoucher(
           toastLength: Toast.LENGTH_LONG,
           msg: "🚨 " +
               AppLocalizations.of(context)
-                  .translate("impossible_to_load_bill") +
+                  !.translate("impossible_to_load_bill") +
               " 🚨");
       outOfAppNotifier.setShowLoading(false);
       outOfAppNotifier.setIsBillBuilt(false);

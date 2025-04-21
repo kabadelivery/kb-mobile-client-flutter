@@ -6,12 +6,12 @@ import 'package:KABA/src/models/NotificationFDestination.dart';
 class FeedModel {
 
   /* feed is an entity */
-  int id;
-  String title;
-  String pic;
-  String content;
-  String created_at;
-  NotificationFDestination destination;
+  int? id;
+  String? title;
+  String? pic;
+  String? content;
+  String? created_at;
+  NotificationFDestination? destination;
 
   FeedModel({this.id, this.title, this.pic, this.content, this.created_at,
     this.destination});
@@ -32,7 +32,7 @@ class FeedModel {
     "pic" : pic,
     "content" : content,
     "created_at" : created_at,
-    "destination" : destination.toJson(),
+    "destination" : destination!.toJson(),
   };
 
   @override

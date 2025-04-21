@@ -28,9 +28,9 @@ class RestaurantFoodProposalPresenter implements RestaurantFoodProposalContract 
 
   RestaurantFoodProposalView _restaurantFoodProposalView;
 
-  RestaurantApiProvider provider;
+  late RestaurantApiProvider provider;
 
-  RestaurantFoodProposalPresenter() {
+  RestaurantFoodProposalPresenter(this._restaurantFoodProposalView) {
     provider = new RestaurantApiProvider();
   }
 

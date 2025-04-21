@@ -6,7 +6,7 @@ import 'package:KABA/src/l10n/messages_all.dart';
 
 class KabaLocalizations {
   static Future<KabaLocalizations> load(Locale locale) {
-    final String name = (locale.countryCode == null || locale.countryCode.isEmpty)
+    final String name = (locale.countryCode == null || locale.countryCode!.isEmpty)
         ? locale.languageCode
         : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
@@ -16,7 +16,7 @@ class KabaLocalizations {
     });
   }
 
-  static KabaLocalizations of(BuildContext context) {
+  static KabaLocalizations? of(BuildContext context) {
     return Localizations.of<KabaLocalizations>(context, KabaLocalizations);
   }
 

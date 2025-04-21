@@ -23,12 +23,12 @@ class AddVoucherPresenter implements AddVoucherContract {
 
   bool isWorking = false;
 
-  VoucherApiProvider provider;
+  late VoucherApiProvider provider;
 
   AddVoucherView _voucherView;
 
-  AddVoucherPresenter () {
-    provider = new VoucherApiProvider();
+  AddVoucherPresenter(this._voucherView) {
+    provider = VoucherApiProvider();
   }
 
   set addVoucherView(AddVoucherView value) {
@@ -89,7 +89,7 @@ class AddVoucherPresenter implements AddVoucherContract {
         _voucherView.networkError();
       }
       if (damage_id != -1){
-        _voucherView.subscribeSuccessError(null);
+        _voucherView.subscribeSuccessError(-1);
       }
     }
     isWorking = false;

@@ -10,56 +10,56 @@ import 'VoucherModel.dart';
 
 class CommandModel {
 
-  int id;
-  int restaurant_id;
-  int state;
+  int? id;
+  int? restaurant_id;
+  int? state;
   /* shipping address */
-  DeliveryAddressModel shipping_address;
-  ShopModel restaurant_entity;
-  List<OrderItemModel> food_list;
-  String last_update;
-  KabaShippingMan livreur;
-  bool is_payed_at_arrival = false;
+  DeliveryAddressModel? shipping_address;
+  ShopModel? restaurant_entity;
+  List<OrderItemModel>? food_list;
+  String? last_update;
+  KabaShippingMan? livreur;
+  bool? is_payed_at_arrival = false;
   /* clée de la commande */
-  String passphrase = "~";
-  String infos;
-  int reason;
-  int kaba_point_used_amount = 0;
+  String? passphrase = "~";
+  String? infos;
+  int? reason;
+  int? kaba_point_used_amount = 0;
 
-  String remise;
+  String? remise;
 
   // normal one
-  int total_pricing;
-  int shipping_pricing;
-  int food_pricing;
+  int? total_pricing;
+  int? shipping_pricing;
+  int? food_pricing;
 
   // preorder case
-  int preorder_total_pricing;
-  int preorder_shipping_pricing;
-  int preorder_food_pricing;
+  int? preorder_total_pricing;
+  int? preorder_shipping_pricing;
+  int? preorder_food_pricing;
 
   // promotion case
-  int promotion_total_pricing;
-  int promotion_shipping_pricing;
-  int promotion_food_pricing;
+  int? promotion_total_pricing;
+  int? promotion_shipping_pricing;
+  int? promotion_food_pricing;
 
   // differents cases
-  int is_preorder = 0;
-  int is_promotion = 0;
+  int? is_preorder = 0;
+  int? is_promotion = 0;
 
 
-  String preorder_discount;
-  int preorder = 0;///////
-  DeliveryTimeFrameModel preorder_hour;
+  String? preorder_discount;
+  int? preorder = 0;///////
+  DeliveryTimeFrameModel? preorder_hour;
 
-  VoucherModel voucher_entity;
+  VoucherModel? voucher_entity;
 
-  int rating;
-  String comment;
+  int? rating;
+  String? comment;
 
-  int additionnal_fee;
-  int order_type;
-  String start_date;
+  int? additionnal_fee;
+  int? order_type;
+  String? start_date;
 
   CommandModel({this.id, this.restaurant_id, this.state,
     this.shipping_address, this.restaurant_entity, this.food_list,
@@ -154,8 +154,8 @@ class CommandModel {
     "id" : id,
     "restaurant_id" : restaurant_id,
     "state" : state,
-    "shipping_address" : shipping_address.toJson(),
-    "restaurant_entity" : restaurant_entity.toJson(),
+    "shipping_address" : shipping_address!.toJson(),
+    "restaurant_entity" : restaurant_entity!.toJson(),
     "food_list" : food_list,
     "total_pricing" : total_pricing,
     "shipping_pricing" : shipping_pricing,
@@ -163,7 +163,7 @@ class CommandModel {
     "remise" : remise,
     "additionnal_fee":additionnal_fee,
     "last_update" : last_update,
-    "livreur" : livreur.toJson(),
+    "livreur" : livreur!.toJson(),
     "is_payed_at_arrival" : is_payed_at_arrival,
     "passphrase" : passphrase,
     "reason" : reason,
@@ -198,9 +198,9 @@ class CommandModel {
   static CommandModel fake () {
     CommandModel model = CommandModel();
     model.state = 3;
-    model.food_list = List();
-    for (int i = 0; i < 4; i++) {
-      model.food_list.add(OrderItemModel());
+    model.food_list = [];
+    for (int? i = 0; i! < 4; i++) {
+      model.food_list!.add(OrderItemModel());
     }
     return model;
   }
@@ -209,5 +209,5 @@ class CommandModel {
 
 
 class COMMAND_STATE {
-  static const int WAITING = 0, COOKING = 1, SHIPPING = 2, DELIVERED = 3, REJECTED = 4;
+  static const int? WAITING = 0, COOKING = 1, SHIPPING = 2, DELIVERED = 3, REJECTED = 4;
 }

@@ -23,11 +23,11 @@ class ChatVoucherView {
 class ChatVoucherPresenter implements ChatVoucherContract {
   bool isWorking = false;
 
-  ChatVoucherProvider provider;
+  late ChatVoucherProvider provider;
 
   ChatVoucherView _voucherView;
 
-  ChatVoucherPresenter() {
+  ChatVoucherPresenter(this._voucherView) {
     provider = new ChatVoucherProvider();
   }
 

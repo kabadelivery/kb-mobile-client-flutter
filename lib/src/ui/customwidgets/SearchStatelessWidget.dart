@@ -10,11 +10,11 @@ import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchStatelessWidget extends StatelessWidget {
-  String title;
+  String? title;
 
-  bool isFillAble;
+  bool? isFillAble;
 
-  Function callback;
+  Function? callback;
 
   TextEditingController _searchFieldController = new TextEditingController();
 
@@ -89,6 +89,7 @@ class SearchStatelessWidget extends StatelessWidget {
       ),
     );
 
+   /*
     return Container(
         margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 6),
         padding: EdgeInsets.only(left: 5, right: 5),
@@ -123,5 +124,6 @@ class SearchStatelessWidget extends StatelessWidget {
                   ),
                 ),
         ]));
+   */
   }
 }

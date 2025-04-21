@@ -8,10 +8,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class GroupAdsWidget extends StatefulWidget {
-  GroupAdsModel groupAd;
+  GroupAdsModel? groupAd;
 
   GroupAdsWidget({
-    Key key,
+    required Key key,
     this.groupAd,
   }) : super(key: key);
 
@@ -38,12 +38,12 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                     flex: 2,
                     child: GestureDetector(
                       onTap: () => _jumpToAdsList(
-                          [widget.groupAd.big_pub, widget.groupAd.small_pub],
+                          [widget.groupAd!.big_pub!, widget.groupAd!.small_pub!],
                           0),
                       child: CachedNetworkImage(
                           fit: BoxFit.cover,
                           imageUrl:
-                              Utils.inflateLink(widget.groupAd.big_pub.pic)),
+                              Utils.inflateLink(widget.groupAd!.big_pub!.pic!)),
                     ),
                   ),
                   Expanded(
@@ -51,14 +51,14 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                       flex: 1,
                       child: GestureDetector(
                           onTap: () => _jumpToAdsList([
-                                widget.groupAd.big_pub,
-                                widget.groupAd.small_pub
+                                widget.groupAd!.big_pub!,
+                                widget.groupAd!.small_pub!
                               ], 1),
                           child: Container(
                             child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl: Utils.inflateLink(
-                                    widget.groupAd.small_pub.pic)),
+                                    widget.groupAd!.small_pub!.pic!)),
                           ))),
                 ],
               ),
@@ -74,7 +74,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
                       topRight: Radius.circular(7),
                       bottomRight: Radius.circular(7)),
                   color: KColors.primaryColor),
-              child: Text(widget.groupAd.title?.toUpperCase(),
+              child: Text(widget.groupAd!.title!.toUpperCase(),
                   style: TextStyle(color: Colors.white, fontSize: 14)))),
     ]));
   }
@@ -82,7 +82,7 @@ class _GroupAdsWidgetState extends State<GroupAdsWidget> {
   _jumpToAdsList(List<AdModel> slider, int position) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
