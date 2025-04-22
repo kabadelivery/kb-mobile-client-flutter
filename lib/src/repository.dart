@@ -18,7 +18,7 @@ import 'models/CustomerModel.dart';
 class Repository {
 
   final appApiProvider = AppApiProvider();
-  Future<String> fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
+  Future fetchHomeScreenModel() => appApiProvider.fetchHomeScreenModel();
   // Future<List<ShopModel>> fetchRestaurantList(CustomerModel customer, Position position) => appApiProvider.fetchRestaurantList(customer, position);
   // Future<List<ShopModel>> fetchFoodFromRestaurantByName(String desc) => appApiProvider.fetchFoodFromRestaurantByName(desc);
 //Future<DeliveryAddressModel> checkLocationDetails (UserTokenModel userToken, Position position) => appApiProvider.checkLocationDetails(userToken, position);
@@ -39,7 +39,7 @@ class Repository {
   /* command api provider */
   final commandApiProvider = CommandsApiProvider();
   Future<List<CommandModel>> fetchDailyOrders(CustomerModel customer) => commandApiProvider.fetchDailyOrders(customer);
-  Future<List<CommandModel>> fetchLastOrders(CustomerModel customer) => commandApiProvider.fetchLastOrders(customer);
+  Future<List<CommandModel>?> fetchLastOrders(CustomerModel customer) => commandApiProvider.fetchLastOrders(customer);
 
 
   /* command details provider */

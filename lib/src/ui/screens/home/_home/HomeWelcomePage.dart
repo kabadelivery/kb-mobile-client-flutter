@@ -55,7 +55,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,23 +70,23 @@ import '../../../../StateContainer.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomePage extends StatefulWidget {
-  HomeScreenModel data;
+  HomeScreenModel? data;
 
   var argument;
 
   var destination;
 
-  static HomeScreenModel standardData;
+  static HomeScreenModel? standardData;
 
-  HomeWelcomePresenter presenter;
+  HomeWelcomePresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   HomeWelcomePage(
-      {Key key, this.title, this.presenter, this.destination, this.argument})
+      {Key? key, this.title, this.presenter, this.destination, this.argument})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _HomeWelcomePageState createState() => _HomeWelcomePageState();
@@ -94,9 +94,9 @@ class HomeWelcomePage extends StatefulWidget {
 
 class _HomeWelcomePageState extends State<HomeWelcomePage>
     implements HomeWelcomeView {
-  List<String> popupMenus;
+  List<String>? popupMenus;
 
-  List<String> _popupMenus() {
+  List<String>? _popupMenus() {
     if (StateContainer.of(context).loggingState == 0) {
       return null;
     } else {
@@ -125,34 +125,34 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
       "Logout"
     ]; // standard
 
-    this.widget.presenter.homeWelcomeView = this;
+    this.widget.presenter!.homeWelcomeView = this;
     showLoading(true);
 
     CustomerUtils.getCustomer().then((customer) async {
       if (!(await CustomerUtils.isPusTokenUploaded())) {
-        this.widget.presenter.updateToken(customer);
+        this.widget.presenter!.updateToken(customer!);
       }
       widget.customer = customer;
       /* check kaba points */
       Future.delayed(Duration(seconds: 1)).then((value) {
-        this.widget.presenter.checkBalance(customer);
+        this.widget.presenter!.checkBalance(customer!);
       });
     });
 
-    this.widget.presenter.fetchHomePage();
-    this.widget.presenter.checkVersion();
-    this.widget.presenter.checkServiceMessage();
+    this.widget.presenter!.fetchHomePage();
+    this.widget.presenter!.checkVersion();
+    this.widget.presenter!.checkServiceMessage();
     // check what type of account are you... if email...
     // we going to tell you only if you are just from creating
     // your account
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      this.widget.presenter.checkUnreadMessages(customer);
+      this.widget.presenter!.checkUnreadMessages(customer!);
       popupMenus = [
-        "${AppLocalizations.of(context).translate('add_voucher')}" /*,"${AppLocalizations.of(context).translate('scan')}"*/,
-        "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",
+        "${AppLocalizations.of(context)!.translate('add_voucher')}" /*,"${AppLocalizations.of(context)!.translate('scan')}"*/,
+        "${AppLocalizations.of(context)!.translate('settings')}",
+        "${AppLocalizations.of(context)!.translate('logout')}",
       ];
     });
 
@@ -174,7 +174,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
     Timer.run(() {
       if (!(DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context).lastTimeLinkMatchAction >
+              StateContainer.of(context).lastTimeLinkMatchAction! >
           2000)) {
         return;
       }
@@ -191,7 +191,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   settings: RouteSettings(
                       name: TransactionHistoryPage.routeName), // <----------
                   builder: (context) =>
-                      TransactionHistoryPage(presenter: TransactionPresenter()),
+                      TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
                 ),
               );
             });
@@ -204,30 +204,30 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: widget.argument),
-                    presenter: RestaurantDetailsPresenter()));
+                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
                   context,
                   AddVouchersPage(
-                      presenter: AddVoucherPresenter(),
+                      presenter: AddVoucherPresenter(AddVoucherView()),
                       qrCode: "${widget.argument}".toUpperCase(),
                       autoSubscribe: true,
-                      customer: widget.customer));
+                      customer: widget.customer!));
             });
             break;
           case SplashPage.VOUCHERS:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
-                  context, MyVouchersPage(presenter: VoucherPresenter()));
+                  context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
             });
             break;
           case SplashPage.ADDRESSES:
 //           xrint("voucher homewelcome -> ${widget.argument}");
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
-                  context, MyAddressesPage(presenter: AddressPresenter()));
+                  context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
             });
             break;
           case SplashPage.ORDER:
@@ -236,7 +236,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             });
             break;
           case SplashPage.FOOD:
@@ -245,7 +245,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 context,
                 MaterialPageRoute(
                   builder: (context) => RestaurantMenuPage(
-                      presenter: MenuPresenter(),
+                      presenter: MenuPresenter(MenuView()),
                       foodId: widget.argument,
                       highlightedFoodId: widget.argument),
                 ),
@@ -255,7 +255,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    menuId: widget.argument, presenter: MenuPresenter()));
+                    menuId: widget.argument, presenter: MenuPresenter(MenuView())));
             break;
           case SplashPage.REVIEW_ORDER:
             _checkIfLoggedInAndDoAction(() {
@@ -263,7 +263,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             });
             break;
           case SplashPage.LOCATION_PICKED:
@@ -272,7 +272,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
               _jumpToPage(
                   context,
                   MyAddressesPage(
-                      presenter: AddressPresenter(),
+                      presenter: AddressPresenter(AddressView()),
                       gps_location:
                           widget.argument.toString().replaceAll(",", ":")));
             });
@@ -327,7 +327,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                   : widget.data?.feed,
                               hintStyle: TextStyle(color: Colors.white)),
                           style: TextStyle(
-                              fontSize: _textSizeWithText(widget.data?.feed)),
+                              fontSize: _textSizeWithText(widget.data!.feed!)),
                           enabled: false)),
 //                child: TextField(decoration:InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, )),hintText: widget.data?.feed, hintStyle: TextStyle(color:Colors.white.withAlpha(200))), style: TextStyle(fontSize: 12), enabled: false,)),
                 ),
@@ -368,7 +368,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 : PopupMenuButton<String>(
                     onSelected: menuChoiceAction,
                     itemBuilder: (BuildContext context) {
-                      return _popupMenus().map((String menuName) {
+                      return _popupMenus()!.map((String menuName) {
                         return PopupMenuItem<String>(
                             value: menuName, child: Text(menuName));
                       }).toList();
@@ -379,13 +379,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child: _buildHomeScreen(widget.data),
+          child: _buildHomeScreen(widget.data!),
         ));
   }
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch (_popupMenus().indexOf(value)) {
+    switch (_popupMenus()!.indexOf(value)) {
       case 0:
         // scan
         _jumpToAddVoucherPage();
@@ -420,9 +420,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
     });
   }
 
-  _mainRestaurantWidget({ShopModel restaurant}) {
+  _mainRestaurantWidget({ShopModel? restaurant}) {
     return GestureDetector(
-      onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
+      onTap: () => {_jumpToRestaurantDetails(context, restaurant!)},
       child: Container(
         padding: EdgeInsets.only(top: 20, right: 15, left: 15),
         child: Column(
@@ -436,9 +436,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                       image: new DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                              Utils.inflateLink(restaurant.pic))))),
+                              Utils.inflateLink(restaurant!.pic!))))),
               SizedBox(height: 10),
-              Text(restaurant.name,
+              Text(restaurant.name!,
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                   textAlign: TextAlign.center),
               SizedBox(height: 10),
@@ -458,7 +458,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            BestSellersPage(presenter: BestSellerPresenter()),
+            BestSellersPage(presenter: BestSellerPresenter(BestSellerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -481,7 +481,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            EvenementPage(presenter: EvenementPresenter()),
+            EvenementPage(presenter: EvenementPresenter(EvenementView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -495,7 +495,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   }
 
   Future<void> _refresh() async {
-    widget.presenter.fetchHomePage();
+    widget.presenter!.fetchHomePage();
 //    homeScreenBloc.fetchHomeScreenModel();
 //    await Future.delayed(const Duration(seconds:1));
 //    return;
@@ -536,15 +536,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
               children: <Widget>[
                 ClipPath(
                     clipper: KabaRoundTopClipper(),
-                    child: data.slider.length > 1
+                    child: data.slider!.length > 1
                         ? CarouselSlider(
                             options: CarouselOptions(
                               onPageChanged: _carousselPageChanged,
                               viewportFraction: 1.0,
-                              autoPlay: data.slider.length > 1 ? true : false,
-                              reverse: data.slider.length > 1 ? true : false,
+                              autoPlay: data.slider!.length > 1 ? true : false,
+                              reverse: data.slider!.length > 1 ? true : false,
                               enableInfiniteScroll:
-                                  data.slider.length > 1 ? true : false,
+                                  data.slider!.length > 1 ? true : false,
                               autoPlayInterval: Duration(seconds: 5),
                               autoPlayAnimationDuration:
                                   Duration(milliseconds: 150),
@@ -552,12 +552,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                               height:
                                   9 * MediaQuery.of(context).size.width / 16,
                             ),
-                            items: data.slider.map((admodel) {
+                            items: data.slider!.map((admodel) {
                               return Builder(
                                 builder: (BuildContext context) {
                                   return GestureDetector(
-                                    onTap: () => _jumpToAdsList(data.slider,
-                                        data.slider.indexOf(admodel)),
+                                    onTap: () => _jumpToAdsList(data.slider!,
+                                        data.slider!.indexOf(admodel)),
                                     child: Container(
                                         height: 9 *
                                             MediaQuery.of(context).size.width /
@@ -566,7 +566,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                             MediaQuery.of(context).size.width,
                                         child: CachedNetworkImage(
                                             imageUrl:
-                                                Utils.inflateLink(admodel.pic),
+                                                Utils.inflateLink(admodel.pic!),
                                             fit: BoxFit.cover)),
                                   );
                                 },
@@ -574,14 +574,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                             }).toList(),
                           )
                         : GestureDetector(
-                            onTap: () => _jumpToAdsList(data.slider, 0),
+                            onTap: () => _jumpToAdsList(data.slider!, 0),
                             child: Container(
                                 height:
                                     9 * MediaQuery.of(context).size.width / 16,
                                 width: MediaQuery.of(context).size.width,
                                 child: CachedNetworkImage(
                                     imageUrl:
-                                        Utils.inflateLink(data.slider[0].pic),
+                                        Utils.inflateLink(data.slider![0].pic!),
                                     fit: BoxFit.cover)),
                           )),
                 Positioned(
@@ -591,7 +591,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                       padding: const EdgeInsets.only(right: 9.0),
                       child: Row(
                         children: <Widget>[]..addAll(List<Widget>.generate(
-                                  data.slider.length, (int index) {
+                                  data.slider!.length, (int index) {
                             return Container(
                                 margin: EdgeInsets.only(right: 2.5, top: 2.5),
                                 height: 9,
@@ -601,7 +601,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                         BorderRadius.all(Radius.circular(10)),
                                     border: new Border.all(color: Colors.white),
                                     color: (index == _carousselPageIndex ||
-                                            index == data.slider.length)
+                                            index == data.slider!.length)
                                         ? Colors.white
                                         : Colors.transparent));
                           })
@@ -617,7 +617,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
               children: <TableRow>[]..addAll(
                     // ignore: null_aware_before_operator
                     List<TableRow>.generate(
-                        _getRestaurantRowCount(data.resto.length),
+                        _getRestaurantRowCount(data.resto!.length),
                         (int rowIndex) {
                   return TableRow(
                       children: <TableCell>[]..addAll(
@@ -626,11 +626,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                       TableCell(child:_mainRestaurantWidget(restaurant:data.resto[cell_index]));
                                   })*/
                             List<TableCell>.generate(3, (int cell_index) {
-                          if (data.resto.length > rowIndex * 3 + cell_index) {
+                          if (data.resto!.length > rowIndex * 3 + cell_index) {
                             return TableCell(
                                 child: _mainRestaurantWidget(
                                     restaurant:
-                                        data.resto[rowIndex * 3 + cell_index]));
+                                        data.resto![rowIndex * 3 + cell_index]));
                           } else {
                             return TableCell(child: Container());
                           }
@@ -662,7 +662,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                             padding: EdgeInsets.only(left: 10),
                             child: Row(children: <Widget>[
                               Text(
-                                  "${AppLocalizations.of(context).translate('all_restaurants')}",
+                                  "${AppLocalizations.of(context)!.translate('all_restaurants')}",
                                   style: TextStyle(
                                       color: KColors.primaryColor,
                                       fontWeight: FontWeight.bold)),
@@ -707,7 +707,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                               ),
                               SizedBox(width: 5),
                               Text(
-                                  "${AppLocalizations.of(context).translate('call_us')}",
+                                  "${AppLocalizations.of(context)!.translate('call_us')}",
                                   style: TextStyle(
                                       color: KColors.mGreen,
                                       fontWeight: FontWeight.bold)),
@@ -735,7 +735,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                         child: Column(
                                       children: <Widget>[
                                         Text(
-                                            "${AppLocalizations.of(context).translate('best_seller')}",
+                                            "${AppLocalizations.of(context)!.translate('best_seller')}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
@@ -747,7 +747,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                           child: CachedNetworkImage(
                                               fit: BoxFit.fitHeight,
                                               imageUrl: Utils.inflateLink(
-                                                  widget.data.promotion.pic)),
+                                                  widget.data!.promotion!.pic!)
+                                          ),
                                         ),
                                       ],
                                     )),
@@ -758,7 +759,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                     child: Column(
                                       children: <Widget>[
                                         Text(
-                                            "${AppLocalizations.of(context).translate('events')}",
+                                            "${AppLocalizations.of(context)!.translate('events')}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
@@ -771,7 +772,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                           child: CachedNetworkImage(
                                               fit: BoxFit.fitHeight,
                                               imageUrl: Utils.inflateLink(
-                                                  widget.data.event.pic)),
+                                                  widget.data!.event!.pic!)),
                                         ),
                                       ],
                                     ),
@@ -823,8 +824,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
             /* groups ads */
             Column(
                 children: <Widget>[]..addAll(
-                      List<Widget>.generate(data.groupad.length, (int index) {
-                    return GroupAdsWidget(groupAd: data.groupad[index]);
+                      List<Widget>.generate(data.groupad!.length, (int index) {
+                    return GroupAdsWidget(groupAd: data.groupad![index]);
                   })))
           ]..add(InkWell(
                   onTap: () {
@@ -839,7 +840,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                             size: 20, color: KColors.primaryColor),
                         SizedBox(height: 5),
                         Text(
-                          "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                          "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         )
                       ],
@@ -847,7 +848,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   ),
                 ))));
     else {
-      data = HomeWelcomePage.standardData;
+      data = HomeWelcomePage.standardData!;
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
@@ -860,12 +861,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                         children: <Widget>[
                           IconButton(
                               icon: Icon(Icons.flight_takeoff,
-                                  color: Colors.grey)),
+                                  color: Colors.grey), onPressed: () {  },),
                           SizedBox(height: 5),
                           Container(
                               margin: EdgeInsets.only(left: 20, right: 20),
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('home_page_loading_error')}",
+                                  "${AppLocalizations.of(context)!.translate('home_page_loading_error')}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: Colors.grey))),
                           SizedBox(height: 5),
@@ -875,9 +876,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                     ),*/
                               color: Colors.yellow,
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('try_again')}"),
+                                  "${AppLocalizations.of(context)!.translate('try_again')}"),
                               onPressed: () {
-                                widget.presenter.fetchHomePage();
+                                widget.presenter!.fetchHomePage();
                               })
                         ],
                       ),
@@ -906,7 +907,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   void networkError() {
     // TODO: implement networkError
     showLoading(false);
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
     /* setState(() {
       hasNetworkError = true;
     });*/
@@ -917,7 +918,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
     // TODO: implement showErrorMessage
     //  hasSystemError = true;
     showLoading(false);
-    mToast("${AppLocalizations.of(context).translate('error_message')}");
+    mToast("${AppLocalizations.of(context)!.translate('error_message')}");
   }
 
   @override
@@ -945,13 +946,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   }
 
   void mToast(String message) {
-    to.Toast.show(message, context, duration: to.Toast.LENGTH_LONG);
+    to.Toast.show(message, duration: 5);
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -966,7 +967,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
   _textSizeWithText(String feed) {
     double ssize = 0;
-    if (feed != null) ssize = 1.0 * feed?.length;
+    if (feed != null) ssize = 1.0 * feed.length;
     // from 8 to 16 according to the size.
     // 8 for more than ...
     // to 16 as maximum.
@@ -980,7 +981,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
       await launch(url);
     } else {
       // ask launch.
-      to.Toast.show("Call error", context);
+      to.Toast.show("Call error");
     }
   }
 
@@ -1024,14 +1025,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
     if (restaurant.is_new == 1) {
       // new logo
       return ShinningTextWidget(
-          text: "${AppLocalizations.of(context).translate('new')}",
+          text: "${AppLocalizations.of(context)!.translate('new')}",
           backgroundColor: KColors.primaryYellowColor,
           textColor: Colors.white);
     } else {
       if (restaurant.is_promotion == 1) {
         // promotion
         return ShinningTextWidget(
-            text: "${AppLocalizations.of(context).translate('promo')}",
+            text: "${AppLocalizations.of(context)!.translate('promo')}",
             backgroundColor: KColors.primaryColor,
             textColor: Colors.white);
       } else {
@@ -1049,7 +1050,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            KabaScanPage(customer: widget.customer),
+            KabaScanPage(customer: widget.customer!),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -1080,7 +1081,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
       }
     } else {
       xrint("_handleLinksImmediately SCANNING WENT WRONG");
-      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+      mDialog("${AppLocalizations.of(context)!.translate('qr_code_wrong')}");
     }
   }
 */
@@ -1094,12 +1095,12 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1110,7 +1111,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -1125,7 +1126,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1136,18 +1137,18 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1162,7 +1163,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AddVouchersPage(
-                presenter: AddVoucherPresenter(), customer: widget.customer),
+                presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -1199,7 +1200,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 children: [
                   // {"message": smessage, "date": message_date};
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    Text("${AppLocalizations.of(context).translate('notice')}",
+                    Text("${AppLocalizations.of(context)!.translate('notice')}",
                         style: TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.none,
@@ -1222,11 +1223,11 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                         saveMessageAsRead(data);
                         setState(() {
                           OverlaySupportEntry.of(context)
-                              .dismiss(animate: true);
+                              !.dismiss(animate: true);
                         });
                       },
                       child: Text(
-                          "${AppLocalizations.of(context).translate('alert_message_received')}",
+                          "${AppLocalizations.of(context)!.translate('alert_message_received')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
@@ -1245,13 +1246,13 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 
   void inflateServiceMessage(AlertMessageModel data) {
     String defaultLocale = Platform.localeName;
-    String smessage = data.messages["fr"];
+    String smessage = data.messages!["fr"];
     if (defaultLocale.contains("en")) {
-      smessage = data.messages["en"];
+      smessage = data.messages!["en"];
     } else if (defaultLocale.contains("fr")) {
-      smessage = data.messages["fr"];
+      smessage = data.messages!["fr"];
     } else if (defaultLocale.contains("zh")) {
-      smessage = data.messages["zh"];
+      smessage = data.messages!["zh"];
     }
     StateContainer.of(context).service_message = {
       "message": smessage,
@@ -1333,7 +1334,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                       side: MaterialStateProperty.all(
                           BorderSide(color: Colors.grey, width: 1))),
                   child: new Text(
-                      "${AppLocalizations.of(context).translate('ok')}",
+                      "${AppLocalizations.of(context)!.translate('ok')}",
                       style: TextStyle(color: KColors.primaryColor)), // update
                   onPressed: () {
                     saveMessageAsRead(data);
@@ -1347,7 +1348,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
 //  });
   }
 
-  void iShowDialog(String version, int force, {String change_log = null}) {
+  void iShowDialog(String version, int force, {String? change_log = null}) {
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -1362,7 +1363,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                         size: 80, color: KColors.primaryColor)),
                 SizedBox(height: 10),
                 Text(
-                    "$version\n${change_log == null ? AppLocalizations.of(context).translate('new_version_available') : change_log} ",
+                    "$version\n${change_log == null ? AppLocalizations.of(context)!.translate('new_version_available') : change_log} ",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: KColors.new_black, fontSize: 13))
               ]),
@@ -1370,7 +1371,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   ? <Widget>[
                       OutlinedButton(
                         child: new Text(
-                            "${AppLocalizations.of(context).translate('update')} $version",
+                            "${AppLocalizations.of(context)!.translate('update')} $version",
                             style: TextStyle(color: KColors.primaryColor)),
                         onPressed: () {
                           _updateApp();
@@ -1383,7 +1384,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                             side: MaterialStateProperty.all(
                                 BorderSide(color: Colors.grey, width: 1))),
                         child: new Text(
-                            "${AppLocalizations.of(context).translate('refuse')}",
+                            "${AppLocalizations.of(context)!.translate('refuse')}",
                             style: TextStyle(color: Colors.grey)), // update
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -1394,7 +1395,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                             side: MaterialStateProperty.all(BorderSide(
                                 color: KColors.primaryColor, width: 1))),
                         child: new Text(
-                            "${AppLocalizations.of(context).translate('update')} $version",
+                            "${AppLocalizations.of(context)!.translate('update')} $version",
                             style: TextStyle(color: KColors.primaryColor)),
                         onPressed: () {
                           _updateApp();
@@ -1453,7 +1454,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   _jumpToWhatsapp() async {
     final link = WhatsAppUnilink(
       phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
-      text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
+      text: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}",
     );
     // Convert the WhatsAppUnilink instance to a string.
     // Use either Dart's string interpolation or the toString() method.
@@ -1470,7 +1471,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -1489,7 +1490,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_random")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -1497,21 +1498,21 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter())));
+                          LoginPage(presenter: LoginPresenter(LoginView()))));
                 },
               )
             ],
@@ -1526,14 +1527,14 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   Future<bool> isMessageSeenMessageAlert(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool val = false;
-    if (data?.uuid != null && prefs.containsKey(data?.uuid))
-      val = prefs.get(data?.uuid);
+    if (data.uuid != null && prefs.containsKey(data.uuid!))
+      val = prefs.get(data.uuid!) as bool;
     return val;
   }
 
   Future<void> saveMessageAsRead(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (data?.uuid != null) prefs.setBool(data?.uuid, true);
+    if (data?.uuid != null) prefs.setBool(data.uuid!, true);
   }
 }
 
@@ -1590,13 +1591,13 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     context,
     MaterialPageRoute(
       builder: (context) =>
-          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
     ),
   );*/
 
   Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
-          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;

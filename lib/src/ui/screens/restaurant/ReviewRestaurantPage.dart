@@ -13,18 +13,18 @@ import 'package:toast/toast.dart';
 class ReviewRestaurantPage extends StatefulWidget {
   static var routeName = "/ReviewRestaurantPage";
 
-  RestaurantReviewPresenter presenter;
+  RestaurantReviewPresenter? presenter;
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  int rate;
+  int? rate;
 
-  int max_rate = 5;
+  int? max_rate = 5;
 
   ReviewRestaurantPage(
-      {Key key, this.rate = 1, this.presenter, this.restaurant})
+      {Key? key, this.rate = 1, this.presenter, this.restaurant})
       : super(key: key);
 
   @override
@@ -40,7 +40,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
   @override
   void initState() {
     super.initState();
-    this.widget.presenter.restaurantReviewView = this;
+    this.widget.presenter!.restaurantReviewView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
     });
@@ -52,7 +52,6 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -65,7 +64,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('review')}"),
+                      "${AppLocalizations.of(context)!.translate('review')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -80,7 +79,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
             SizedBox(height: 30),
             Center(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('review_us')}",
+                    "${AppLocalizations.of(context)!.translate('review_us')}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: KColors.new_black,
@@ -90,7 +89,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               IconButton(
                   icon: Icon(
-                      widget.rate >= 1
+                      widget.rate! >= 1
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
                       color: KColors.primaryYellowColor,
@@ -98,7 +97,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                   onPressed: () => _starPressed(1)),
               IconButton(
                   icon: Icon(
-                      widget.rate >= 2
+                      widget.rate! >= 2
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
                       color: KColors.primaryYellowColor,
@@ -106,7 +105,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                   onPressed: () => _starPressed(2)),
               IconButton(
                   icon: Icon(
-                      widget.rate >= 3
+                      widget.rate! >= 3
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
                       color: KColors.primaryYellowColor,
@@ -114,7 +113,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                   onPressed: () => _starPressed(3)),
               IconButton(
                   icon: Icon(
-                      widget.rate >= 4
+                      widget.rate! >= 4
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
                       color: KColors.primaryYellowColor,
@@ -122,7 +121,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                   onPressed: () => _starPressed(4)),
               IconButton(
                   icon: Icon(
-                      widget.rate >= 5
+                      widget.rate! >= 5
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
                       color: KColors.primaryYellowColor,
@@ -148,7 +147,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                   decoration: InputDecoration.collapsed(
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
                       hintText:
-                          "${AppLocalizations.of(context).translate('please_give')} ${widget?.restaurant?.name?.toUpperCase()} ${AppLocalizations.of(context).translate('a_review')}"),
+                          "${AppLocalizations.of(context)!.translate('please_give')} ${widget?.restaurant?.name?.toUpperCase()} ${AppLocalizations.of(context)!.translate('a_review')}"),
                 )),
             SizedBox(height: 30),
 
@@ -165,7 +164,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                            Utils.capitalize("${AppLocalizations.of(context).translate('send_review')} ${widget.rate}/${widget.max_rate}"),
+                            Utils.capitalize("${AppLocalizations.of(context)!.translate('send_review')} ${widget.rate}/${widget.max_rate}"),
                             style: TextStyle(fontWeight: FontWeight.bold,
                                 fontSize: 12, color: Colors.white)),
                         _isReviewSendingLoading
@@ -195,7 +194,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
 
   @override
   void networkError() {
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
   }
 
   @override
@@ -207,11 +206,11 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
         Icons.check,
         color: Colors.blue,
       ),
-      message: "${AppLocalizations.of(context).translate('reviewing_success')}",
+      message: "${AppLocalizations.of(context)!.translate('reviewing_success')}",
     );
   }
 
-  void _showDialog({Icon icon, var message, bool okBackToHome = false}) {
+  void _showDialog({Icon? icon, var message, bool okBackToHome = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -226,7 +225,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
             actions: <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}",
+                    "${AppLocalizations.of(context)!.translate('ok')}",
                     style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop({'ok': true});
@@ -247,7 +246,7 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
 
   @override
   void systemError() {
-    mToast("${AppLocalizations.of(context).translate('system_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('system_error')}");
   }
 
   void _starPressed(int position) {
@@ -257,13 +256,13 @@ class _ReviewRestaurantPageState extends State<ReviewRestaurantPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: 5);
   }
 
   _sendReview() {
     String reviewMessage = _reviewTextController.text;
-    int reviewStars = widget.rate;
-    widget.presenter.reviewRestaurant(
-        widget.customer, widget.restaurant, reviewStars, reviewMessage);
+    int reviewStars = widget.rate!;
+    widget.presenter!.reviewRestaurant(
+        widget.customer!, widget.restaurant!, reviewStars, reviewMessage);
   }
 }

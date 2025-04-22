@@ -189,7 +189,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                        "${AppLocalizations.of(context).translate('opening_time')}",
+                                        "${AppLocalizations.of(context)!.translate('opening_time')}",
                                         style: TextStyle(
                                             color: KColors.new_black
                                                 .withAlpha(150),
@@ -263,7 +263,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                               color: KColors.primaryColor),
                                           SizedBox(width: 15),
                                           Text(
-                                              "${AppLocalizations.of(context).translate('see_menu')}"
+                                              "${AppLocalizations.of(context)!.translate('see_menu')}"
                                                   .toUpperCase(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                               MainAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                                "${AppLocalizations.of(context).translate('note_reviews')}",
+                                                "${AppLocalizations.of(context)!.translate('note_reviews')}",
                                                 style: TextStyle(
                                                     color: KColors.new_black,
                                                     fontWeight: FontWeight.bold,
@@ -345,7 +345,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                                                   left: 20,
                                                                   right: 20),
                                                           child: Text(
-                                                              "${AppLocalizations.of(context).translate('review_us')}",
+                                                              "${AppLocalizations.of(context)!.translate('review_us')}",
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -455,7 +455,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                               children: <Widget>[
 //                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
                                 Text(
-                                  "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                                  "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.grey),
                                 )
@@ -468,14 +468,14 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter()),
+                restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -502,7 +502,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
               .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
@@ -511,7 +511,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
               .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
@@ -521,7 +521,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
   _buildCommentSysErrorPage() {
     if (StateContainer.of(context).loggingState == 0) return Container();
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
               .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
@@ -531,7 +531,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
   _buildCommentNetworkErrorPage() {
     if (StateContainer.of(context).loggingState == 0) return Container();
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
               .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
@@ -629,7 +629,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
       children: <Widget>[
         SizedBox(height: 30),
         Text(
-            "- ${widget.restaurant?.name} ${AppLocalizations.of(context).translate('review')} -",
+            "- ${widget.restaurant?.name} ${AppLocalizations.of(context)!.translate('review')} -",
             textAlign: TextAlign.center,
             style: KStyles.hintTextStyle_gray),
         SizedBox(height: 10),
@@ -648,7 +648,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                     return Icon(Icons.star, color: KColors.primaryYellowColor);
                   })),
                   Text(
-                      "${widget.restaurant.votes} ${AppLocalizations.of(context).translate('votes')}",
+                      "${widget.restaurant.votes} ${AppLocalizations.of(context)!.translate('votes')}",
                       style: TextStyle(color: Colors.grey))
                 ])
           ],
@@ -666,20 +666,20 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     switch (restaurantModel.open_type) {
       case 0: // closed
         tagText =
-            "${AppLocalizations.of(context).translate('r_closed_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_closed_preorder')}";
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('r_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('r_opened')}";
         tagColor = KColors.mGreen;
         break;
       case 2: // paused
         tagText =
-            "${AppLocalizations.of(context).translate('r_pause_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_pause_preorder')}";
         tagColor = KColors.mBlue;
         break;
       case 3: // blocked
         tagText =
-            "${AppLocalizations.of(context).translate('r_blocked_preorder')}";
+            "${AppLocalizations.of(context)!.translate('r_blocked_preorder')}";
         tagColor = KColors.primaryColor;
         break;
     }
@@ -741,7 +741,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -760,7 +760,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_comment")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_comment")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -768,14 +768,14 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */

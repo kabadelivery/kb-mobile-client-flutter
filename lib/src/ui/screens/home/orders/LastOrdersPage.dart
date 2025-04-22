@@ -14,10 +14,10 @@ import 'package:flutter/material.dart';
 
 
 class LastOrdersPage extends StatefulWidget {
-  CustomerModel customer;
+  CustomerModel? customer;
 
 
-  LastOrdersPage({Key key}) : super(key: key);
+  LastOrdersPage({Key? key}) : super(key: key);
 
   @override
   _LastOrdersPageState createState() => _LastOrdersPageState();
@@ -30,7 +30,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
     // TODO: implement initState
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      userDataBloc.fetchLastOrders(widget.customer);
+      userDataBloc.fetchLastOrders(widget.customer!);
     });
     super.initState();
   }
@@ -40,7 +40,6 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
 
     return Scaffold( appBar: AppBar(
       toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-      brightness: Brightness.light,
       backgroundColor: KColors.primaryColor,
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -53,7 +52,7 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
         children: [
           Text(
               Utils.capitalize(
-                  "${AppLocalizations.of(context).translate('last_orders')}"),
+                  "${AppLocalizations.of(context)!.translate('last_orders')}"),
               style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -67,15 +66,15 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
             stream: userDataBloc.mLastOrders,
             builder: (context, AsyncSnapshot<List<CommandModel>> snapshot) {
               if (snapshot.hasData) {
-                return _buildOrderList(snapshot.data);
+                return _buildOrderList(snapshot.data!);
               } else if (snapshot.hasError) {
                 if (snapshot.connectionState == ConnectionState.none)
-                  return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
-                    userDataBloc.fetchLastOrders(widget.customer);
+                  return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){
+                    userDataBloc.fetchLastOrders(widget.customer!);
                   });
                 else
-                  return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){
-                    userDataBloc.fetchLastOrders(widget.customer);
+                  return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){
+                    userDataBloc.fetchLastOrders(widget.customer!);
                   });
               }
               return Center(child: MyLoadingProgressWidget());
@@ -94,16 +93,16 @@ class _LastOrdersPageState extends State<LastOrdersPage> {
               })
           )..add(
             Container(width: MediaQuery.of(context).size.width,margin: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-            child: Center(child: Text('${AppLocalizations.of(context).translate("only_3_months_order_history")}', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12),),),)
+            child: Center(child: Text('${AppLocalizations.of(context)!.translate("only_3_months_order_history")}', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12),),),)
           ),
       );
     else
       return Center(
           child:Column(mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
+              IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey), onPressed: () {},),
               SizedBox(height: 5),
-              Text("${AppLocalizations.of(context).translate('no_past_order')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+              Text("${AppLocalizations.of(context)!.translate('no_past_order')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
             ],
           ));
   }

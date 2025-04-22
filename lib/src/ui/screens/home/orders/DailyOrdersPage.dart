@@ -22,14 +22,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../xrint.dart';
 
 class DailyOrdersPage extends StatefulWidget {
-  CustomerModel customer;
-  DailyOrderPresenter presenter;
+  CustomerModel? customer;
+  DailyOrderPresenter? presenter;
 
-  List<CommandModel> orders;
+  List<CommandModel>? orders;
 
-  bool is_out_of_app_order = false;
+  bool? is_out_of_app_order = false;
 
-  DailyOrdersPage({Key key, this.presenter,this.is_out_of_app_order}) : super(key: key);
+  DailyOrdersPage({Key? key, this.presenter,this.is_out_of_app_order}) : super(key: key);
 
   @override
   _DailyOrdersPageState createState() => _DailyOrdersPageState();
@@ -43,11 +43,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   bool is_out_of_app_order = false;
   @override
   void initState() {
-    is_out_of_app_order = widget.is_out_of_app_order;
-    widget.presenter.dailyOrderView = this;
+    is_out_of_app_order = widget.is_out_of_app_order!;
+    widget.presenter!.dailyOrderView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.loadDailyOrders(customer,is_out_of_app_order: is_out_of_app_order);
+      widget.presenter!.loadDailyOrders(customer!,is_out_of_app_order: is_out_of_app_order);
     });
     super.initState();
     Future.delayed(Duration.zero, () async {
@@ -59,7 +59,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
 
   @override
   void dispose() {
-    mainTimer.cancel();
+    mainTimer!.cancel();
     super.dispose();
   }
 
@@ -73,7 +73,6 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
         backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
          centerTitle: true,
         title: Row(mainAxisSize: MainAxisSize.min,
@@ -81,7 +80,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('orders')}"),
+                    "${AppLocalizations.of(context)!.translate('orders')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -110,7 +109,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                     GestureDetector(
                       onTap: (){
                         if(is_out_of_app_order==true){
-                          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: false);
+                          widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: false);
                         }
                         setState(() {
                           is_out_of_app_order=false;
@@ -131,7 +130,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                             )
                         ),
                         child: Text(
-                            "${AppLocalizations.of(context).translate('normal_orders')}",
+                            "${AppLocalizations.of(context)!.translate('normal_orders')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:is_out_of_app_order==false? Colors.white :KColors.new_black)),
@@ -140,7 +139,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                     GestureDetector(
                       onTap: (){
                         if(is_out_of_app_order==false){
-                          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: true);
+                          widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: true);
                         }
                         setState(() {
                           is_out_of_app_order=true;
@@ -161,7 +160,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                             )
                         ),
                         child:  Text(
-                            "${AppLocalizations.of(context).translate('out_of_app_orders')}",
+                            "${AppLocalizations.of(context)!.translate('out_of_app_orders')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:is_out_of_app_order==true? Colors.white :Colors.grey)),
@@ -188,7 +187,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   }
 
   _buildOrderList() {
-    if (widget?.orders != null && widget?.orders?.length > 0)
+    if (widget?.orders != null && widget!.orders!.length! > 0)
       return SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -200,9 +199,9 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
               InkWell(
                 onTap: () {
                   if(is_out_of_app_order==true)
-                    widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: true);
+                    widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: true);
                   else
-                      widget.presenter.loadDailyOrders(widget.customer);
+                      widget.presenter!.loadDailyOrders(widget.customer!);
                 },
                 child: Container(
                   // width: 80,
@@ -222,7 +221,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                       // count down here
                       Text(
                           Utils.capitalize(
-                              "${AppLocalizations.of(context).translate('refresh')}"),
+                              "${AppLocalizations.of(context)!.translate('refresh')}"),
                           style: TextStyle(
                               color: KColors.primaryColor,
                               fontWeight: FontWeight.normal,
@@ -235,13 +234,13 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
             ]),
             SizedBox(height: 15),
           ]
-            ..add(widget?.orders?.length > 0
+            ..add(widget.orders!.length > 0
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
                           child: Text(
-                              "${AppLocalizations.of(context).translate('today')}",
+                              "${AppLocalizations.of(context)!.translate('today')}",
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
@@ -251,8 +250,8 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                     ],
                   )
                 : Container())
-            ..addAll(List<Widget>.generate(widget?.orders?.length, (int index) {
-              return MyNewOrderWidget(command: widget?.orders[index]);
+            ..addAll(List<Widget>.generate(widget!.orders!.length, (int index) {
+              return MyNewOrderWidget(command: widget?.orders![index]);
             }))
             ..add(GestureDetector(
               onTap: () => _jumpToPage(context, LastOrdersPage()),
@@ -266,7 +265,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                         Icon(Icons.rotate_left, color: KColors.mBlue),
                         SizedBox(width: 5),
                         Text(
-                            "${AppLocalizations.of(context).translate('see_order_history')}",
+                            "${AppLocalizations.of(context)!.translate('see_order_history')}",
                             style:
                                 TextStyle(color: KColors.mBlue, fontSize: 13))
                       ],
@@ -280,11 +279,11 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey)),
+          IconButton(icon: Icon(Icons.bookmark_border, color: Colors.grey,), onPressed: () {},),
           SizedBox(height: 5),
           Center(
               child: Text(
-                  "${AppLocalizations.of(context).translate('no_order_today')}",
+                  "${AppLocalizations.of(context)!.translate('no_order_today')}",
                   style: TextStyle(color: Colors.grey, fontSize: 14))),
         ],
       ));
@@ -328,21 +327,21 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
+          widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: is_out_of_app_order);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
+          widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: is_out_of_app_order);
         });
   }
 
-  Future<int> _setLastTimeDailyOrderToNow() async {
+  Future<int?> _setLastTimeDailyOrderToNow() async {
     StateContainer.of(context).last_time_get_daily_order =
         DateTime.now().millisecondsSinceEpoch;
   }
@@ -352,8 +351,8 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
       return "";
     } else {
       // time different since last time update
-      int diff = (DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context).last_time_get_daily_order) ~/
+      int? diff = (DateTime.now().millisecondsSinceEpoch -
+              StateContainer.of(context).last_time_get_daily_order!) ~/
           1000;
       // convert different in minute seconds
       int min = diff ~/ 60;
@@ -362,18 +361,18 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     }
   }
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
   void restartTimer() {
-    if (mainTimer != null) mainTimer.cancel();
+    if (mainTimer != null) mainTimer!.cancel();
 
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       xrint("dailyorder this page is --> " +
-          ModalRoute.of(context).settings.name);
-      xrint("dailyorder is_current is --> ${ModalRoute.of(context).isCurrent}");
+          ModalRoute.of(context)!.settings.name!);
+      xrint("dailyorder is_current is --> ${ModalRoute.of(context)!.isCurrent}");
 
-      if (!("/HomePage".compareTo(ModalRoute.of(context).settings.name) == 0 &&
-          ModalRoute.of(context).isCurrent)) {
+      if (!("/HomePage".compareTo(ModalRoute.of(context)!.settings.name!) == 0 &&
+          ModalRoute.of(context)!.isCurrent)) {
         // check if time is ok
         xrint("dailyorder NO exec timer ");
         return;
@@ -385,13 +384,13 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
 
       int POTENTIAL_EXECUTION_TIME = 3;
       int diff = (DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context).last_time_get_daily_order) ~/
+              StateContainer.of(context).last_time_get_daily_order!) ~/
           1000;
       // convert different in minute seconds
       int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
 
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD)
-        widget.presenter.loadDailyOrders(widget.customer,is_out_of_app_order: is_out_of_app_order);
+        widget.presenter!.loadDailyOrders(widget.customer!,is_out_of_app_order: is_out_of_app_order);
     });
   }
 

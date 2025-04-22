@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                         )),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('login_expired_please_login')}",
+                        "${AppLocalizations.of(context)!.translate('login_expired_please_login')}",
                         textAlign: TextAlign.center,
                         style:
                             TextStyle(color: KColors.new_black, fontSize: 13))
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -231,7 +231,7 @@ class _HomePageState extends State<HomePage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('welcome')}"),
+                    "${AppLocalizations.of(context)!.translate('welcome')}"),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                           )),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate("congrats_for_email_account")} 😊",
+                          "${AppLocalizations.of(context)!.translate("congrats_for_email_account")} 😊",
                           style: TextStyle(fontSize: 14),
                           textAlign: TextAlign.center)
                     ],
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                 actions: <Widget>[
                   TextButton(
                     child:
-                        Text("${AppLocalizations.of(context).translate('ok')}"),
+                        Text("${AppLocalizations.of(context)!.translate('ok')}"),
                     onPressed: () {
                       prefs.setString("_hasSeenEmailAccountNotification", "1");
                       Navigator.of(context).pop();
@@ -338,9 +338,9 @@ class _HomePageState extends State<HomePage> {
         if (!StateContainer.of(context).is_offline) {
           SnackBar snackBar = SnackBar(
             content: Text(
-                "${AppLocalizations.of(context).translate('offline_alert_description')}"),
+                "${AppLocalizations.of(context)!.translate('offline_alert_description')}"),
             action: SnackBarAction(
-              label: "${AppLocalizations.of(context).translate('ok')}"
+              label: "${AppLocalizations.of(context)!.translate('ok')}"
                   .toUpperCase(),
               onPressed: () {
                 // Some code to undo the change.
@@ -411,7 +411,7 @@ class _HomePageState extends State<HomePage> {
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -422,7 +422,7 @@ class _HomePageState extends State<HomePage> {
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -433,7 +433,7 @@ class _HomePageState extends State<HomePage> {
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -528,7 +528,7 @@ class _HomePageState extends State<HomePage> {
 
   void _jumpToFoodDetailsWithId(int productId) {
     _jumpToPage(context,
-        RestaurantMenuPage(foodId: productId, presenter: MenuPresenter()));
+        RestaurantMenuPage(foodId: productId, presenter: MenuPresenter(MenuView())));
   }
 
   void _jumpToOrderDetailsWithId(int productId, {int is_out_of_app_order = 0}) {
@@ -537,30 +537,30 @@ class _HomePageState extends State<HomePage> {
         OrderNewDetailsPage(
             is_out_of_app_order: is_out_of_app_order == 0 ? false : true,
             orderId: productId,
-            presenter: OrderDetailsPresenter()));
+            presenter: OrderDetailsPresenter(OrderDetailsView())));
   }
 
   void _jumpToTransactionHistory() {
     xrint("_jumpINGToTransactionHistory");
     _jumpToPage(
-        context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
   }
 
   void _jumpToRestaurantDetailsPage(int productId) {
     _jumpToPage(
         context,
         ShopDetailsPage(
-            restaurantId: productId, presenter: RestaurantDetailsPresenter()));
+            restaurantId: productId, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
   }
 
   void _jumpToRestaurantMenuPage(int productId) {
     _jumpToPage(context,
-        RestaurantMenuPage(menuId: productId, presenter: MenuPresenter()));
+        RestaurantMenuPage(menuId: productId, presenter: MenuPresenter(MenuView())));
   }
 
   void _jumpToServiceClient() {
     _jumpToPage(
-        context, CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+        context, CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
   }
 
   int loginStuffChecked = 0;
@@ -608,34 +608,34 @@ class _HomePageState extends State<HomePage> {
             icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
             activeIcon: SvgPicture.asset(VectorsData.home_selected),
             label: Utils.capitalize(
-                "${AppLocalizations.of(context).translate('home')}"),
+                "${AppLocalizations.of(context)!.translate('home')}"),
             tooltip: Utils.capitalize(
-                "${AppLocalizations.of(context).translate('home')}"),
+                "${AppLocalizations.of(context)!.translate('home')}"),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.buy),
             activeIcon: SvgPicture.asset(VectorsData.buy_selected),
             label: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('buy')}'),
+                '${AppLocalizations.of(context)!.translate('buy')}'),
             tooltip: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('buy')}'),
+                '${AppLocalizations.of(context)!.translate('buy')}'),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.orders),
             // Icon(Icons.view_list),
             activeIcon: SvgPicture.asset(VectorsData.orders_selected),
             label: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('orders')}'),
+                '${AppLocalizations.of(context)!.translate('orders')}'),
             tooltip: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('orders')}'),
+                '${AppLocalizations.of(context)!.translate('orders')}'),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
             activeIcon: SvgPicture.asset(VectorsData.me_selected),
             label: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('account')}'),
+                '${AppLocalizations.of(context)!.translate('account')}'),
             tooltip: Utils.capitalize(
-                '${AppLocalizations.of(context).translate('account')}'),
+                '${AppLocalizations.of(context)!.translate('account')}'),
           ),
         ],
         currentIndex: StateContainer.of(context).tabPosition,
@@ -667,7 +667,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                  "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                  "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -685,7 +685,7 @@ class _HomePageState extends State<HomePage> {
                         ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate(msg[value % 2])}",
+                        "${AppLocalizations.of(context)!.translate(msg[value % 2])}",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14))
                   ],
@@ -694,14 +694,14 @@ class _HomePageState extends State<HomePage> {
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('not_now')}"),
+                      "${AppLocalizations.of(context)!.translate('not_now')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('login')}"),
+                      "${AppLocalizations.of(context)!.translate('login')}"),
                   onPressed: () {
                     /* */
                     /* jump to login page... */
@@ -839,7 +839,7 @@ class _HomePageState extends State<HomePage> {
         case "transactions":
           _checkIfLoggedInAndDoAction(() {
             _jumpToPage(context,
-                TransactionHistoryPage(presenter: TransactionPresenter()));
+                TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
           });
           break;
         case "restaurants":
@@ -889,7 +889,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   ShopDetailsPage(
                       restaurant: ShopModel(id: widget.argument),
-                      presenter: RestaurantDetailsPresenter()));
+                      presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
             }
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
@@ -904,7 +904,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             }
           });
           break;
@@ -916,7 +916,7 @@ class _HomePageState extends State<HomePage> {
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    foodId: widget.argument, presenter: MenuPresenter()));
+                    foodId: widget.argument, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "menu":
@@ -928,7 +928,7 @@ class _HomePageState extends State<HomePage> {
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    menuId: widget.argument, presenter: MenuPresenter()));
+                    menuId: widget.argument, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -941,14 +941,14 @@ class _HomePageState extends State<HomePage> {
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             }
           });
           break;
         case "customer-care-message":
           _checkIfLoggedInAndDoAction(() {
             _jumpToPage(context,
-                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
           });
           break;
       }
@@ -1043,7 +1043,7 @@ class _HomePageState extends State<HomePage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -1059,7 +1059,7 @@ class _HomePageState extends State<HomePage> {
                       ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_random")}",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14))
                 ],
@@ -1068,14 +1068,14 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* jump to login page... */
                   Navigator.of(context).pop();
@@ -1107,7 +1107,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                  "${AppLocalizations.of(context).translate('request')}"
+                  "${AppLocalizations.of(context)!.translate('request')}"
                       .toUpperCase(),
                   style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
@@ -1123,7 +1123,7 @@ class _HomePageState extends State<HomePage> {
                         ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14))
                   ],
@@ -1132,14 +1132,14 @@ class _HomePageState extends State<HomePage> {
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
                     prefs.setString("_has_accepted_gps", "ok");
                     // call get location again...
@@ -1167,7 +1167,7 @@ class _HomePageState extends State<HomePage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -1185,7 +1185,7 @@ class _HomePageState extends State<HomePage> {
                           ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14))
                     ],
@@ -1194,14 +1194,14 @@ class _HomePageState extends State<HomePage> {
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       await Geolocator.openAppSettings();
@@ -1223,7 +1223,7 @@ class _HomePageState extends State<HomePage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -1241,7 +1241,7 @@ class _HomePageState extends State<HomePage> {
                           ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14))
                     ],
@@ -1250,14 +1250,14 @@ class _HomePageState extends State<HomePage> {
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       await Geolocator.requestPermission();
@@ -1285,7 +1285,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(
-                      "${AppLocalizations.of(context).translate('permission_')}"
+                      "${AppLocalizations.of(context)!.translate('permission_')}"
                           .toUpperCase(),
                       style: TextStyle(color: KColors.primaryColor)),
                   content: SingleChildScrollView(
@@ -1302,7 +1302,7 @@ class _HomePageState extends State<HomePage> {
                             ))),
                         SizedBox(height: 10),
                         Text(
-                            "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                            "${AppLocalizations.of(context)!.translate('request_location_activation_permission')}",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 14))
                       ],
@@ -1311,14 +1311,14 @@ class _HomePageState extends State<HomePage> {
                   actions: <Widget>[
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('refuse')}"),
+                          "${AppLocalizations.of(context)!.translate('refuse')}"),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('accept')}"),
+                          "${AppLocalizations.of(context)!.translate('accept')}"),
                       onPressed: () async {
                         /* */
                         Navigator.of(context).pop();

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 
 
@@ -49,11 +49,11 @@ class _InfoPageState extends State<InfoPage> {
              Positioned(left: 10, top:35, child: IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(FontAwesomeIcons.timesCircle, size: 40, color: KColors.new_black))),
               Column(
                 children: <Widget>[
-                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${AppLocalizations.of(context).translate('version')} ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: KColors.new_black))]), flex: 1, ),
+                  Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[Text("${AppLocalizations.of(context)!.translate('version')} ${version}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: KColors.new_black))]), flex: 1, ),
                   Expanded(child: Image(image: AssetImage(ImageAssets.kaba_copyright_presentation), width: MediaQuery.of(context).size.width), flex: 5),
                 ],
               ),
-              Positioned(bottom: 20, right:0, left:0,child: Text("${AppLocalizations.of(context).translate('info_page_informations')} ${widget.year}", style: TextStyle(fontSize: 15, color: KColors.primaryColor), textAlign: TextAlign.center)),
+              Positioned(bottom: 20, right:0, left:0,child: Text("${AppLocalizations.of(context)!.translate('info_page_informations')} ${widget.year}", style: TextStyle(fontSize: 15, color: KColors.primaryColor), textAlign: TextAlign.center)),
             ],
           ),
         )

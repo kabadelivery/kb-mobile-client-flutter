@@ -99,7 +99,7 @@ class _Personal2PageState extends State<Personal2Page>
 
   String _validateName(String value) {
     if (value.length < 2) {
-      return "${AppLocalizations.of(context).translate('field_more_2_chars')}";
+      return "${AppLocalizations.of(context)!.translate('field_more_2_chars')}";
 //      return 'This field must have more than 6 characters.';
     }
     return null;
@@ -125,7 +125,7 @@ class _Personal2PageState extends State<Personal2Page>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('my_profile')}"),
+                    "${AppLocalizations.of(context)!.translate('my_profile')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -197,7 +197,7 @@ class _Personal2PageState extends State<Personal2Page>
                             enabled: false,
                             decoration: InputDecoration(
                               labelText:
-                                  "${AppLocalizations.of(context).translate('phone_number')}",
+                                  "${AppLocalizations.of(context)!.translate('phone_number')}",
                               /* if  already sat, we cant put nothing else */
                               border: InputBorder.none,
                             )),
@@ -232,7 +232,7 @@ class _Personal2PageState extends State<Personal2Page>
                     controller: _nickNameFieldController,
                     decoration: InputDecoration(
                         labelText:
-                            "${AppLocalizations.of(context).translate('nickname')}",
+                            "${AppLocalizations.of(context)!.translate('nickname')}",
                         border: InputBorder.none),
                     validator: this._validateName,
                     onSaved: (String value) {
@@ -248,7 +248,7 @@ class _Personal2PageState extends State<Personal2Page>
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                         labelText:
-                            "${AppLocalizations.of(context).translate('whatsapp_number_hint_ex')}",
+                            "${AppLocalizations.of(context)!.translate('whatsapp_number_hint_ex')}",
                         border: InputBorder.none),
                     // validator: this._validateName,
                     onSaved: (String value) {
@@ -263,7 +263,7 @@ class _Personal2PageState extends State<Personal2Page>
                     controller: _jobTitleFieldController,
                     decoration: InputDecoration(
                         labelText:
-                            "${AppLocalizations.of(context).translate('job_title')}",
+                            "${AppLocalizations.of(context)!.translate('job_title')}",
                         border: InputBorder.none),
                     validator: _validateName,
                     onSaved: (String value) {
@@ -278,7 +278,7 @@ class _Personal2PageState extends State<Personal2Page>
                     controller: _districtFieldController,
                     decoration: InputDecoration(
                         labelText:
-                            "${AppLocalizations.of(context).translate('your_district')}",
+                            "${AppLocalizations.of(context)!.translate('your_district')}",
                         border: InputBorder.none),
                     validator: _validateName,
                     onSaved: (String value) {
@@ -295,7 +295,7 @@ class _Personal2PageState extends State<Personal2Page>
                         Container(
                             width: MediaQuery.of(context).size.width,
                             child: Text(
-                                "${AppLocalizations.of(context).translate('gender')}",
+                                "${AppLocalizations.of(context)!.translate('gender')}",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     color: KColors.primaryColor,
@@ -303,7 +303,7 @@ class _Personal2PageState extends State<Personal2Page>
                         /*  */
                         Row(children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context).translate('woman_gender')}",
+                              "${AppLocalizations.of(context)!.translate('woman_gender')}",
                               style:
                                   TextStyle(color: KColors.new_black, fontSize: 16)),
                           Radio(
@@ -311,7 +311,7 @@ class _Personal2PageState extends State<Personal2Page>
                               groupValue: widget.customer.gender,
                               onChanged: _handleGenderRadioValueChange),
                           Text(
-                              "${AppLocalizations.of(context).translate('man_gender')}"),
+                              "${AppLocalizations.of(context)!.translate('man_gender')}"),
                           Radio(
                               value: 2,
                               groupValue: widget.customer.gender,
@@ -340,7 +340,7 @@ class _Personal2PageState extends State<Personal2Page>
                   child: Row(
                     children: <Widget>[
                       Text(
-                          "${AppLocalizations.of(context).translate('birthday')}",
+                          "${AppLocalizations.of(context)!.translate('birthday')}",
                           style: TextStyle(color: KColors.new_black, fontSize: 16)),
                       Container(width: 20),
                       Text("${widget.customer.birthday}",
@@ -361,7 +361,7 @@ class _Personal2PageState extends State<Personal2Page>
                         child: Row(
                           children: <Widget>[
                             Text(
-                                "${AppLocalizations.of(context).translate('save')}",
+                                "${AppLocalizations.of(context)!.translate('save')}",
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.white)),
                             isUpdating
@@ -389,7 +389,7 @@ class _Personal2PageState extends State<Personal2Page>
                             top: 15, bottom: 15, left: 10, right: 10),
                         color: Colors.white,
                         child: Text(
-                            "${AppLocalizations.of(context).translate('cancel')}",
+                            "${AppLocalizations.of(context)!.translate('cancel')}",
                             style:
                                 TextStyle(fontSize: 14, color: KColors.new_black)),
                         onPressed: () {
@@ -436,7 +436,7 @@ class _Personal2PageState extends State<Personal2Page>
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
       mDialog(
-          "${AppLocalizations.of(context).translate('please_fill_all_fields')}");
+          "${AppLocalizations.of(context)!.translate('please_fill_all_fields')}");
     }
   }
 
@@ -480,7 +480,7 @@ class _Personal2PageState extends State<Personal2Page>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -491,7 +491,7 @@ class _Personal2PageState extends State<Personal2Page>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -503,7 +503,7 @@ class _Personal2PageState extends State<Personal2Page>
                     //
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();

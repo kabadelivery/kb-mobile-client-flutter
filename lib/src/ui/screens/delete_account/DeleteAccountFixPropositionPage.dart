@@ -20,16 +20,16 @@ import 'package:lottie/lottie.dart';
 class DeleteAccountFixPropositionPage extends StatefulWidget {
   static var routeName = "/DeleteAccountFixPropositionPage";
 
-  VoucherModel voucher;
+  VoucherModel? voucher;
 
-  int fixId;
+  int? fixId;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  int balance;
+  int? balance;
 
   DeleteAccountFixPropositionPage(
-      {Key key, this.fixId, this.voucher, this.balance})
+      {Key? key, this.fixId, this.voucher, this.balance})
       : super(key: key);
 
   @override
@@ -56,7 +56,7 @@ class DeleteAccountFixPropositionPageState
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
+
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -70,7 +70,7 @@ class DeleteAccountFixPropositionPageState
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('delete_account')}"),
+                      "${AppLocalizations.of(context)!.translate('delete_account')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class DeleteAccountFixPropositionPageState
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  "${AppLocalizations.of(context).translate('we_wish_to_keep_you')}",
+                  "${AppLocalizations.of(context)!.translate('we_wish_to_keep_you')}",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
@@ -112,7 +112,7 @@ class DeleteAccountFixPropositionPageState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "${AppLocalizations.of(context).translate('we_offer_you_voucher')}",
+                              "${AppLocalizations.of(context)!.translate('we_offer_you_voucher')}",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400),
                               textAlign: TextAlign.center,
@@ -152,7 +152,7 @@ class DeleteAccountFixPropositionPageState
                                       /*    Icon(Icons.add, color: Colors.white),
                             SizedBox(width: 10),*/
                                       Text(
-                                          "${AppLocalizations.of(context).translate('get_coupon')}"
+                                          "${AppLocalizations.of(context)!.translate('get_coupon')}"
                                               .toUpperCase(),
                                           style: TextStyle(
                                               color: Colors.white,
@@ -197,7 +197,7 @@ class DeleteAccountFixPropositionPageState
                             /*    Icon(Icons.add, color: Colors.white),
                             SizedBox(width: 10),*/
                             Text(
-                                "${AppLocalizations.of(context).translate('delete_anyway')}"
+                                "${AppLocalizations.of(context)!.translate('delete_anyway')}"
                                     .toUpperCase(),
                                 style: TextStyle(
                                     color: KColors.primaryColor,
@@ -221,7 +221,7 @@ class DeleteAccountFixPropositionPageState
       context,
       MaterialPageRoute(
         builder: (context) => DeleteAccountRefundQuestionnaryPage(
-          presenter: DeleteAccountRefundPresenter(),
+          presenter: DeleteAccountRefundPresenter(DeleteAccountRefundView()),
           fixId: widget.fixId,
           amountRefunded: widget.balance,
         ),
@@ -242,9 +242,9 @@ class DeleteAccountFixPropositionPageState
       context,
       MaterialPageRoute(
         builder: (context) => AddVouchersPage(
-          customer: widget.customer,
-          damage_id: widget.fixId,
-          presenter: AddVoucherPresenter(),
+          customer: widget.customer!,
+          damage_id: widget.fixId!,
+          presenter: AddVoucherPresenter(AddVoucherView()),
         ),
       ),
     );

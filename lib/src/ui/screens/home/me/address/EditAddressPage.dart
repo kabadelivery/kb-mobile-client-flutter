@@ -17,7 +17,7 @@ import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dar
 import 'package:KABA/src/xrint.dart';
 
 // import 'package:android_intent/android_intent.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -30,19 +30,19 @@ import 'package:toast/toast.dart';
 class EditAddressPage extends StatefulWidget {
   static var routeName = "/EditAddressPage";
 
-  DeliveryAddressModel address;
+  DeliveryAddressModel? address;
 
-  EditAddressPresenter presenter;
+  EditAddressPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  DeliveryAddressModel createdAddress = null;
+  DeliveryAddressModel? createdAddress = null;
 
-  String gps_location = "";
+  String? gps_location = "";
 
-  bool locationConfirmed = false;
+  bool? locationConfirmed = false;
 
-  EditAddressPage({Key key, this.address, this.presenter, this.gps_location})
+  EditAddressPage({Key? key, this.address, this.presenter, this.gps_location})
       : super(key: key) {
     if (this.address?.location != null)
       locationConfirmed = true;
@@ -51,14 +51,14 @@ class EditAddressPage extends StatefulWidget {
   }
 
   @override
-  _EditAddressPageState createState() => _EditAddressPageState(address);
+  _EditAddressPageState createState() => _EditAddressPageState(address!);
 }
 
 class _EditAddressPageState extends State<EditAddressPage>
     implements EditAddressView {
 //  String apiKey = "AIzaSyDttW16iZe-bhdBIQZFHYii3mdkH1-BsWs";
 
-  LatLng selectedLocation;
+  LatLng? selectedLocation;
   DeliveryAddressModel address;
 
   var _locationNameController = TextEditingController(),
@@ -71,8 +71,8 @@ class _EditAddressPageState extends State<EditAddressPage>
 
   _EditAddressPageState(this.address) {
     if (address != null && address.location != null) {
-      String latitude = address.location.split(":")[0];
-      String longitude = address.location.split(":")[1];
+      String latitude = address.location!.split(":")[0];
+      String longitude = address.location!.split(":")[1];
       selectedLocation =
           LatLng(double.parse(latitude), double.parse(longitude));
     }
@@ -81,21 +81,30 @@ class _EditAddressPageState extends State<EditAddressPage>
     }
   }
 
-  SharedPreferences prefs;
+  SharedPreferences? prefs;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.editAddressView = this;
+    widget.presenter!.editAddressView = this;
     // if we are coming here with a gps location from another app, let us know
-    if (widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
+    if (widget.gps_location != null && "".compareTo(widget.gps_location!) != 0) {
       address.location = widget.gps_location;
       Timer.run(() {
-        widget.presenter.checkLocationDetails(widget.customer,
+        widget.presenter!.checkLocationDetails(widget.customer!,
             position: Position(
-                longitude: double.parse(widget.gps_location.split(":")[1]),
-                latitude: double.parse(widget.gps_location.split(":")[0])));
+                longitude: double.parse(widget.gps_location!.split(":")[1]),
+                latitude: double.parse(widget.gps_location!.split(":")[0]),
+                timestamp: DateTime.now(),
+                accuracy: 5.0,
+                altitude: 0.0,
+                altitudeAccuracy: 0.0,
+                heading: 0.0,
+                headingAccuracy: 0.0,
+                speed: 0.0,
+                speedAccuracy: 0.0
+            ));
         xrint("editaddress -> ${address.toJson().toString()}");
       });
     }
@@ -104,10 +113,10 @@ class _EditAddressPageState extends State<EditAddressPage>
       widget.customer = customer;
       _getLastKnowLocation();
     });
-    _locationNameController.text = address?.name;
-    _phoneNumberController.text = address?.phone_number;
-    _nearController.text = address?.near;
-    _descriptionController.text = address?.description;
+    _locationNameController.text = address.name!;
+    _phoneNumberController.text = address.phone_number!;
+    _nearController.text = address.near!;
+    _descriptionController.text = address.description!;
   }
 
   @override
@@ -121,7 +130,6 @@ class _EditAddressPageState extends State<EditAddressPage>
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -135,7 +143,7 @@ class _EditAddressPageState extends State<EditAddressPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('edit_address')}"),
+                    "${AppLocalizations.of(context)!.translate('edit_address')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -156,7 +164,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                 style: TextStyle(fontSize: 13),
                 decoration: InputDecoration(
                   labelText:
-                      "${AppLocalizations.of(context).translate('location_name')}",
+                      "${AppLocalizations.of(context)!.translate('location_name')}",
                   hintMaxLines: 5,
                   border: InputBorder.none,
                 )),
@@ -174,7 +182,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                 style: TextStyle(fontSize: 13),
                 decoration: InputDecoration(
                   labelText:
-                      "${AppLocalizations.of(context).translate('phone_number')}",
+                      "${AppLocalizations.of(context)!.translate('phone_number')}",
                   border: InputBorder.none,
                   hintMaxLines: 5,
                 )),
@@ -191,7 +199,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                     children: <Widget>[
                       !_checkLocationLoading && address?.location != null
                           ? Text(
-                              "${AppLocalizations.of(context).translate('choose_location')}",
+                              "${AppLocalizations.of(context)!.translate('choose_location')}",
                               style: TextStyle(
                                   color: KColors.primaryColor, fontSize: 15))
                           : BouncingWidget(
@@ -199,7 +207,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                               scaleFactor: 2,
                               onPressed: () => showPlacePicker(context),
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('choose_location')}",
+                                  "${AppLocalizations.of(context)!.translate('choose_location')}",
                                   style: TextStyle(
                                       color: KColors.primaryColor,
                                       fontSize: 15)),
@@ -232,7 +240,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                               SizedBox(width: 5),
                               !_checkLocationLoading &&
                                       address?.location != null &&
-                                      widget.locationConfirmed
+                                      widget.locationConfirmed!
                                   ? Container(
                                       padding: EdgeInsets.all(5),
                                       decoration: BoxDecoration(
@@ -244,7 +252,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                              "${AppLocalizations.of(context).translate('gps_')} ",
+                                              "${AppLocalizations.of(context)!.translate('gps_')} ",
                                               style: TextStyle(
                                                   color: KColors.primaryColor)),
                                           Icon(Icons.check_circle,
@@ -286,7 +294,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                 style: TextStyle(fontSize: 13),
                 decoration: InputDecoration(
                   labelText:
-                      "${AppLocalizations.of(context).translate('not_far_from')}",
+                      "${AppLocalizations.of(context)!.translate('not_far_from')}",
                   border: InputBorder.none,
                 )),
           ),
@@ -301,7 +309,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                 style: TextStyle(fontSize: 13),
                 decoration: InputDecoration(
                   labelText:
-                      "${AppLocalizations.of(context).translate('address_details')}",
+                      "${AppLocalizations.of(context)!.translate('address_details')}",
                   border: InputBorder.none,
                 )),
           ),
@@ -317,7 +325,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                   child: Row(
                     children: <Widget>[
                       Text(
-                          "${AppLocalizations.of(context).translate('confirm')}",
+                          "${AppLocalizations.of(context)!.translate('confirm')}",
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                       _isUpdateOrCreateAddressLoading
                           ? Row(
@@ -344,7 +352,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(5.0)),
                   child: Text(
-                      "${AppLocalizations.of(context).translate('cancel')}",
+                      "${AppLocalizations.of(context)!.translate('cancel')}",
                       style:
                           TextStyle(fontSize: 16, color: KColors.primaryColor)),
                   color: Colors.white,
@@ -356,7 +364,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     );
   }
 
-  StreamSubscription<Position> positionStream;
+  StreamSubscription<Position>? positionStream;
 
   void showPlacePicker(BuildContext context) async {
     if (StateContainer.of(context).location != null)
@@ -364,7 +372,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     else
       SharedPreferences.getInstance().then((value) async {
         prefs = value;
-        String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+        String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
         /* no need to commit */
         /* expiration date in 3 months */
         if (_has_accepted_gps != "ok") {
@@ -374,7 +382,7 @@ class _EditAddressPageState extends State<EditAddressPage>
             builder: (BuildContext context) {
               return AlertDialog(
                 title:
-                    Text("${AppLocalizations.of(context).translate('info')}"),
+                    Text("${AppLocalizations.of(context)!.translate('info')}"),
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
@@ -392,7 +400,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14))
                     ],
@@ -401,18 +409,18 @@ class _EditAddressPageState extends State<EditAddressPage>
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () {
                       /* */
                       // SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setString("_has_accepted_gps", "ok");
+                      prefs!.setString("_has_accepted_gps", "ok");
                       // call get location again...
                       showPlacePicker(context);
                       Navigator.of(context).pop();
@@ -490,31 +498,41 @@ class _EditAddressPageState extends State<EditAddressPage>
       lo.LocationData location = await lo.Location().getLocation();
       StateContainer.of(context).updateLocation(
           location: Position(
-              latitude: location.latitude, longitude: location.longitude));
+              longitude: double.parse(widget.gps_location!.split(":")[1]),
+              latitude: double.parse(widget.gps_location!.split(":")[0]),
+              timestamp: DateTime.now(),
+              accuracy: 5.0,
+              altitude: 0.0,
+              altitudeAccuracy: 0.0,
+              heading: 0.0,
+              headingAccuracy: 0.0,
+              speed: 0.0,
+              speedAccuracy: 0.0
+          ));
     }
 
     xrint(widget.gps_location);
-    if (widget.locationConfirmed && widget.address?.location != null) {
+    if (widget.locationConfirmed! && widget.address?.location != null) {
       xrint("moving to pre-registered location");
       Pp.PlacePickerState.initialTarget = LatLng(
-        double.parse(widget.address?.location?.split(":")[0]),
-        double.parse(widget.address?.location?.split(":")[1]),
+        double.parse(widget.address!.location!.split(":")[0]),
+        double.parse(widget.address!.location!.split(":")[1]),
       );
     } else {
       xrint("moving to me");
       Pp.PlacePickerState.initialTarget = LatLng(
-          StateContainer.of(context).location.latitude,
-          StateContainer.of(context).location.longitude);
+          StateContainer.of(context).location!.latitude,
+          StateContainer.of(context).location!.longitude);
     }
     xrint("i pick address");
 
     /* get my position */
     LatLng result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
-            alreadyHasLocation: widget.locationConfirmed)));
+            alreadyHasLocation: widget.locationConfirmed!)));
     /* use this location to generate details about the place the user lives and so on. */
     widget.locationConfirmed = false;
-    widget.presenter.editAddressView = this;
+    widget.presenter!.editAddressView = this;
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -527,9 +545,19 @@ class _EditAddressPageState extends State<EditAddressPage>
         });
         xrint(address.location);
         // use mvp to launch a request and place the result here.
-        widget.presenter.checkLocationDetails(widget.customer,
+        widget.presenter!.checkLocationDetails(widget.customer!,
             position: Position(
-                longitude: result.longitude, latitude: result.latitude));
+            longitude: double.parse(widget.gps_location!.split(":")[1]),
+                      latitude: double.parse(widget.gps_location!.split(":")[0]),
+                      timestamp: DateTime.now(),
+                      accuracy: 5.0,
+                      altitude: 0.0,
+                      altitudeAccuracy: 0.0,
+                      heading: 0.0,
+                      headingAccuracy: 0.0,
+                      speed: 0.0,
+                      speedAccuracy: 0.0
+                    ));
       }
     }).whenComplete(() {
       setState(() {
@@ -549,7 +577,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     address.phone_number = _phoneNumberController.text;
 
     /* exces d'intelligence */
-    widget.presenter.editAddressView = this;
+    widget.presenter!.editAddressView = this;
 
     /*  */ /* validations ? */ /*
     if ("".compareTo(_locationNameController.text) == 0 || _locationNameController.text?.length < 3) {
@@ -583,7 +611,7 @@ class _EditAddressPageState extends State<EditAddressPage>
 */
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.updateOrCreateAddress(address, widget.customer);
+      widget.presenter!.updateOrCreateAddress(address, widget.customer!);
     });
   }
 
@@ -594,7 +622,7 @@ class _EditAddressPageState extends State<EditAddressPage>
 //      okBackToHome: true,
       icon: VectorsData.address_creation_error,
       message:
-          "${AppLocalizations.of(context).translate('address_modification_failure')}",
+          "${AppLocalizations.of(context)!.translate('address_modification_failure')}",
       isYesOrNo: false,
     );
   }
@@ -615,7 +643,7 @@ class _EditAddressPageState extends State<EditAddressPage>
       okBackToHome: true,
       icon: VectorsData.address_creation_success,
       message:
-          "${AppLocalizations.of(context).translate('address_creation_success')}",
+          "${AppLocalizations.of(context)!.translate('address_creation_success')}",
       isYesOrNo: false,
     );
   }
@@ -626,7 +654,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     _showDialog(
       icon: VectorsData.address_creation_error,
       message:
-          "${AppLocalizations.of(context).translate('address_modification_failure')}",
+          "${AppLocalizations.of(context)!.translate('address_modification_failure')}",
       isYesOrNo: false,
     );
   }
@@ -638,7 +666,7 @@ class _EditAddressPageState extends State<EditAddressPage>
       okBackToHome: true,
       icon: VectorsData.address_creation_success,
       message:
-          "${AppLocalizations.of(context).translate('address_modification_success')}",
+          "${AppLocalizations.of(context)!.translate('address_modification_success')}",
       isYesOrNo: false,
     );
   }
@@ -648,7 +676,7 @@ class _EditAddressPageState extends State<EditAddressPage>
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes,
+      Function? actionIfYes,
       bool isSvg = true}) {
     // flutter defined function
     showDialog(
@@ -680,7 +708,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -691,11 +719,11 @@ class _EditAddressPageState extends State<EditAddressPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -703,7 +731,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                     //
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         if (okBackToHome) {
@@ -739,7 +767,7 @@ class _EditAddressPageState extends State<EditAddressPage>
 
       /* if gps_location != null . then show a box to confirm the picking of the address */
       mDialog(
-          "${AppLocalizations.of(context).translate('gps_location_valid')}");
+          "${AppLocalizations.of(context)!.translate('gps_location_valid')}");
     });
   }
 
@@ -750,7 +778,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
       /* no need to commit */
       /* expiration date in 3months */
 
@@ -761,7 +789,7 @@ class _EditAddressPageState extends State<EditAddressPage>
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                  "${AppLocalizations.of(context).translate('info')}"
+                  "${AppLocalizations.of(context)!.translate('info')}"
                       .toUpperCase(),
                   style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
@@ -781,7 +809,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                         ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('location_explanation')}",
+                        "${AppLocalizations.of(context)!.translate('location_explanation')}",
                         textAlign: TextAlign.center)
                   ],
                 ),
@@ -789,18 +817,18 @@ class _EditAddressPageState extends State<EditAddressPage>
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
                     /* */
                     // SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setString("_has_accepted_gps", "ok");
+                    prefs!.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     _getLastKnowLocation();
                     Navigator.of(context).pop();
@@ -853,16 +881,16 @@ class _EditAddressPageState extends State<EditAddressPage>
     setState(() {
       address.location = null;
     });
-    mToast("${AppLocalizations.of(context).translate('gps_pick_again')}");
+    mToast("${AppLocalizations.of(context)!.translate('gps_pick_again')}");
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   @override
   void networkError() {
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
   }
 
   void mDialog(String message) {

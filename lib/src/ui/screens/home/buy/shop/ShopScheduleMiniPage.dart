@@ -16,13 +16,13 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 class ShopScheduleMiniPage extends StatefulWidget {
   static var routeName = "/ShopScheduleMiniPage";
 
-  ShopSchedulePresenter presenter;
+  ShopSchedulePresenter? presenter;
 
-  List<ShopScheduleModel> data;
+  List<ShopScheduleModel>? data;
 
-  int restaurant_id;
+  int? restaurant_id;
 
-  ShopScheduleMiniPage({Key key, this.restaurant_id, this.presenter})
+  ShopScheduleMiniPage({Key? key, this.restaurant_id, this.presenter})
       : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.shopScheduleView = this;
+    widget.presenter!.shopScheduleView = this;
   }
 
   bool isLoading = true;
@@ -45,10 +45,10 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
   @override
   Widget build(BuildContext context) {
     if (widget.data == null) {
-      widget.presenter.fetchShopSchedule(widget.restaurant_id);
+      widget.presenter!.fetchShopSchedule(widget.restaurant_id!);
     } else {
       if (!isDataInflated) {
-        inflateShopSchedule(widget.data);
+        inflateShopSchedule(widget.data!);
         isDataInflated = true;
       }
     }
@@ -96,20 +96,18 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
   }
 
   _buildSysErrorPage() {
-    return Container();
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchShopSchedule(widget.restaurant_id);
+          widget.presenter!.fetchShopSchedule(widget.restaurant_id!);
         });
   }
 
   _buildNetworkErrorPage() {
-    return Container();
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchShopSchedule(widget.restaurant_id);
+          widget.presenter!.fetchShopSchedule(widget.restaurant_id!);
         });
   }
 
@@ -135,8 +133,8 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
     //                 }))))),
     // );
     return Column(
-        children: []..addAll(List.generate(widget.data?.length, (index) {
-            ShopScheduleModel model = widget.data[index];
+        children: []..addAll(List.generate(widget.data!.length!, (index) {
+            ShopScheduleModel model = widget.data![index];
             return Container(
                 margin: EdgeInsets.only(bottom: 5),
                 child: Row(
@@ -155,7 +153,7 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
                         child: Text(
                             model.open == 1
                                 ? "${model.start} - ${model.end}"
-                                : "${AppLocalizations.of(context).translate('restaurant_closed')}",
+                                : "${AppLocalizations.of(context)!.translate('restaurant_closed')}",
                             style: TextStyle(
                                 color: dday == model.day
                                     ? KColors.primaryColor
@@ -174,8 +172,8 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
                 highlightedFoodId: food?.id),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
@@ -223,6 +221,6 @@ class _ShopScheduleMiniPageState extends State<ShopScheduleMiniPage>
         day = "sunday_short";
     }
 
-    return AppLocalizations.of(context).translate(day);
+    return AppLocalizations.of(context)!.translate(day);
   }
 }

@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,19 +33,19 @@ class LoginPage extends StatefulWidget {
 
   static var routeName = "/LoginPage";
 
-  LoginPresenter presenter;
+  LoginPresenter? presenter;
 
-  bool autoLogin = false;
+  bool? autoLogin = false;
 
-  String phone_number, password;
+  String? phone_number, password;
 
-  String version;
+  String? version;
 
-  bool fromOrderingProcess;
+  bool? fromOrderingProcess;
 
-  LoginPage({Key key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false, this.fromOrderingProcess = false}) : super(key: key);
+  LoginPage({Key? key, this.title, this.presenter, this.phone_number, this.password, this.autoLogin = false, this.fromOrderingProcess = false}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -64,13 +64,13 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    hint = "${AppLocalizations.of(context).translate('login_phonenumber_hint')}";
+    hint = "${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}";
   }
 
   @override
-  Future<void> initState() {
+  Future<void> initState() async {
     super.initState();
-    this.widget.presenter.loginView = this;
+    this.widget.presenter!.loginView = this;
 
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       setState(() {
@@ -86,9 +86,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     });
 
     if (widget?.autoLogin == true) {
-      _loginFieldController.text = widget.phone_number;
-      if ((Utils.isPhoneNumber_TGO(widget.phone_number) || Utils.isEmailValid(widget.phone_number)) && widget?.password?.length == 4)
-        widget.presenter.login(false/*bcs autologin*/, widget.phone_number, widget.password, widget.version);
+      _loginFieldController.text = widget.phone_number!;
+      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) && widget?.password?.length == 4)
+        widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version!);
     } else {
       // we dont do any another login here
     }
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 80),
-                    Text("${AppLocalizations.of(context).translate('connexion')}", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 100),
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
-                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('identifier')}"), style: TextStyle(color:KColors.new_black)),
+                            InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('identifier')}"), style: TextStyle(color:KColors.new_black)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
                     SizedBox(height: 30),
                     Row(
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         children:<Widget>[
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
                             children: <Widget>[
-                              Text("${AppLocalizations.of(context).translate('connexion')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+                              Text("${AppLocalizations.of(context)!.translate('connexion')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                               isConnecting ?  Row(
                                 children: <Widget>[
                                   SizedBox(width: 10),
@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                             ],
                           ), onPressed: () {_launchConnexion();}),
                           SizedBox(width:20),
-                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage(null);}),
+                          MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage(null);}),
                         ]),
                     SizedBox(height: 30),
                     Center(
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           children: [
                             Icon(FontAwesomeIcons.questionCircle, color: Colors.grey),
                             SizedBox(width: 5),
-                            Text("${AppLocalizations.of(context).translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
+                            Text("${AppLocalizations.of(context)!.translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
                           ],
                         ),
                         onTap: (){_moveToRecoverPasswordPage();},
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
   }
 
-  Future<void> _moveToRegisterPage(String login) async {
+  Future<void> _moveToRegisterPage(String? login) async {
 
     /*  Map results = await Navigator.push(
       context,
@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RegisterPage (presenter: RegisterPresenter(), login: login),
+            RegisterPage (presenter: RegisterPresenter(RegisterView()), login: login!),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       if (results['autologin'] == true){
         widget.autoLogin = true;
       }
-      widget.presenter.login(false, results['phone_number'], results['password'], widget.version);
+      widget.presenter!.login(false, results['phone_number'], results['password'], widget.version!);
     }
   }
 
@@ -197,7 +197,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
 //            RegisterPage (presenter: RegisterPresenter()),
-        RecoverPasswordPage(presenter: RecoverPasswordPresenter()),
+        RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView())),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     // control login stuff
     if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
-      mToast("${AppLocalizations.of(context).translate('login_error')}");
+      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
     }
 
@@ -239,16 +239,16 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       * 2. otherwise send
       *  */
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
-          if ("no".compareTo(otp) == 0) {
+          if ("no".compareTo(otp!) == 0) {
 
             if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
               widget.autoLogin = true;
-              this.widget.presenter.login(false, login, _mCode, widget.version);
+              this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
-              this.widget.presenter.login(true, login, _mCode, widget.version);
+              this.widget.presenter!.login(true, login, _mCode, widget.version!);
 
           } else {
-            this.widget.presenter.login(false, login, _mCode, widget.version);
+            this.widget.presenter!.login(false, login, _mCode, widget.version!);
           }
         });
       }
@@ -266,9 +266,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
 
-    String otp = null;
-
-    if (!widget?.autoLogin) {
+    String? otp = null;
+    if (!widget.autoLogin!) {
       /* retrieve the otp and save it for later use */
       try {
         if (obj["login_code"] != null)
@@ -278,18 +277,18 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       }
       /* save it to the shared preferences */
       if (otp != null) {
-        CustomerUtils.saveOtpToSharedPreference(customer?.username,otp);
+        CustomerUtils.saveOtpToSharedPreference(customer.username!,otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
       } else {
-        CustomerUtils.getLastOtp(customer?.username).then((mOtp) async {
+        CustomerUtils.getLastOtp(customer.username!).then((mOtp) async {
           // this is the otp
-          if ("no".compareTo(mOtp) == 0) {
+          if ("no".compareTo(mOtp!) == 0) {
             // login_failure
             showLoading(false);
           } else {
             /* if you are coming from another process like already making an order, then just pop */
             /* token must be saved by now. */
-            await nextStepWithOtpConfirmationPage(customer, mOtp, obj);
+            await nextStepWithOtpConfirmationPage(customer, mOtp!, obj);
           }
         });
       }
@@ -312,7 +311,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true)
       widget.autoLogin = true;
 
-    if (!widget.autoLogin) {
+    if (!widget.autoLogin!) {
       /* we make sure the login is a success */
       results = await Navigator.of(context).push(
           PageRouteBuilder(
@@ -343,9 +342,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       CustomerUtils.persistTokenAndUserdata(token, json.encode(obj));
 
       // remove all login informations
-      CustomerUtils.clearOtpLoginInfoFromSharedPreference(customer?.username);
+      CustomerUtils.clearOtpLoginInfoFromSharedPreference(customer.username!);
 
-      if (widget.fromOrderingProcess) {
+      if (widget.fromOrderingProcess!) {
         // pop
         Navigator.of(context).pop();
         StateContainer
@@ -403,7 +402,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -414,7 +413,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -425,7 +424,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -433,16 +432,16 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actionIfYes();
+                  actionIfYes!();
                 },
               ),
             ] : <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -459,7 +458,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     bool isOkWithTerms = false;
     try {
       // prove me it's not first time
-      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms")!;
     } catch(_){
       // is first time
       isOkWithTerms = false;
@@ -485,14 +484,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           VectorsData.terms_and_conditions
                       )),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate('accept_terms_and_conditions')}", textAlign: TextAlign.center,
+                  Text("${AppLocalizations.of(context)!.translate('accept_terms_and_conditions')}", textAlign: TextAlign.center,
                       style: TextStyle(color: KColors.new_black, fontSize: 13))
                 ]
             ),
             actions: <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('yes')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('yes')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () async {
                   //
                   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -504,7 +503,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               ),
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('see')}", style: TextStyle(color: KColors.mBlue)),
+                    "${AppLocalizations.of(context)!.translate('see')}", style: TextStyle(color: KColors.mBlue)),
                 onPressed: () {
                   _seeTermsAndConditions();
                 },
@@ -531,7 +530,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void accountNoExist(String login) {
     _showDialog(
         icon: Icon(Icons.pan_tool, color: Colors.red),
-        message: "${AppLocalizations.of(context).translate('sorry')}, ${_loginFieldController.text} ${AppLocalizations.of(context).translate('account_no_exists')} ?",
+        message: "${AppLocalizations.of(context)!.translate('sorry')}, ${_loginFieldController.text} ${AppLocalizations.of(context)!.translate('account_no_exists')} ?",
         isYesOrNo: true,
         actionIfYes: () => _moveToRegisterPage(login)
     );
@@ -541,24 +540,24 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void loginPasswordError() {
     _showDialog(
       icon: Icon(Icons.error, color: Colors.red),
-      message: "${AppLocalizations.of(context).translate('password_wrong')}",
+      message: "${AppLocalizations.of(context)!.translate('password_wrong')}",
       isYesOrNo: false,
     );
   }
 
   @override
   void networkError() {
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
   }
 
   @override
   void loginTimeOut() {
-    mToast("${AppLocalizations.of(context).translate('login_time_out')}");
+    mToast("${AppLocalizations.of(context)!.translate('login_time_out')}");
   }
 
   @override
   void systemError() {
-    mToast("${AppLocalizations.of(context).translate('system_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('system_error')}");
   }
 
 

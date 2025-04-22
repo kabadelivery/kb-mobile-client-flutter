@@ -35,19 +35,19 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 class ShopDetailsPage extends StatefulWidget {
   static var routeName = "/ShopDetailsPage";
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  RestaurantDetailsPresenter presenter;
+  RestaurantDetailsPresenter? presenter;
 
-  int restaurantId;
+  int? restaurantId;
 
-  List<CommentModel> commentList;
+  List<CommentModel>? commentList;
 
-  String shipping_price;
+  String? shipping_price;
 
-  String distance;
+  String? distance;
 
   var shopSchedule;
 
@@ -57,7 +57,6 @@ class ShopDetailsPage extends StatefulWidget {
       this.presenter,
       this.distance,
       this.shipping_price}) {
-//    restaurantId = restaurant.id;
     if (restaurant != null && restaurant?.id != null) {
       this.restaurantId = restaurant?.id;
     }
@@ -88,7 +87,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     super.initState();
 
     // check restaurant id and work with it.
-    widget.presenter.restaurantDetailsView = this;
+    widget.presenter!.restaurantDetailsView = this;
 
     CustomerUtils.getCustomer().then((customer) {
       setState(() {
@@ -97,9 +96,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
       if (widget.restaurant != null) {
         // fetch comments
         // we can accept to load the restaurant here if needed
-        widget.presenter.checkCanComment(customer, widget?.restaurant);
-        widget.presenter.fetchCommentList(
-            widget?.customer, ShopModel(id: widget?.restaurantId));
+        widget.presenter!.checkCanComment(customer!, widget!.restaurant!);
+        widget.presenter!.fetchCommentList(
+            widget.customer!, ShopModel(id: widget?.restaurantId));
         // fetch if the restaurant is open
       }
     });
@@ -111,17 +110,17 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         widget?.restaurant?.location != null &&
         StateContainer.of(context).location != null) {
       widget.distance = Utils.locationDistance(
-              StateContainer.of(context).location, widget?.restaurant)
+              StateContainer.of(context).location!, widget.restaurant!)
           .toString();
     }
 
     if (widget.shopSchedule == null) {
       widget.shopSchedule = ShopScheduleMiniPage(
           restaurant_id: widget.restaurantId,
-          presenter: ShopSchedulePresenter());
+          presenter: ShopSchedulePresenter(ShopScheduleView()));
     }
 
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context)!.settings.arguments! as int;
     if (args != null && args != 0) widget.restaurantId = args;
     if (widget.restaurant == null || widget.restaurant?.name == null) {
       showLoading(true);
@@ -129,14 +128,14 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
       if (widget.customer != null) {
         widget.restaurant = ShopModel(id: widget.restaurantId);
         widget.presenter
-            .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+            !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
       } else {
         showLoading(true);
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
           widget.restaurant = ShopModel(id: widget.restaurantId);
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
       }
     }
@@ -145,7 +144,6 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         appBar: AppBar(
           elevation: 0,
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -159,7 +157,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('shop_details')}"),
+                      "${AppLocalizations.of(context)!.translate('shop_details')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -196,7 +194,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                     width: MediaQuery.of(context).size.width,
                     child: CachedNetworkImage(
                         imageUrl:
-                            Utils.inflateLink(widget.restaurant?.theme_pic),
+                            Utils.inflateLink(widget.restaurant!.theme_pic!),
                         fit: BoxFit.cover)),
               ),
               SingleChildScrollView(
@@ -224,7 +222,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                     flex: 8,
                                     child: Text(
                                         "${widget?.restaurant?.name}"
-                                            ?.toUpperCase(),
+                                            .toUpperCase(),
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -236,7 +234,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         width: 40,
                                         height: 40,
                                         child: CircularProgressIndicator())
-                                    : _getRestaurantStateTag(widget.restaurant)
+                                    : _getRestaurantStateTag(widget.restaurant!)
                               ]),
                               SizedBox(
                                 height: 5,
@@ -276,7 +274,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   size: 10),
                                               SizedBox(width: 10),
                                               Text(
-                                                  "${widget.distance} ${AppLocalizations.of(context).translate('km')}",
+                                                  "${widget.distance} ${AppLocalizations.of(context)!.translate('km')}",
                                                   style: TextStyle(
                                                       color: Colors.grey,
                                                       fontWeight:
@@ -288,7 +286,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           ),
                                         ),
                                   SizedBox(width: 10),
-                                  ShippingFeeTag(widget.distance)
+                                  ShippingFeeTag(widget.distance!)
                                   /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
@@ -304,7 +302,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   size: 10),
                                               SizedBox(width: 10),
                                               Text(
-                                                  "--- ${AppLocalizations.of(context).translate('currency')}",
+                                                  "--- ${AppLocalizations.of(context)!.translate('currency')}",
                                                   style: TextStyle(
                                                       color: Colors.grey,
                                                       fontWeight:
@@ -320,7 +318,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                               SizedBox(height: 10),
                               GestureDetector(
                                 onTap: () => _jumpToRestaurantMenu(
-                                    context, widget.restaurant),
+                                    context, widget.restaurant!),
                                 child: Container(
                                     child: Row(
                                         crossAxisAlignment:
@@ -354,7 +352,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                         padding:
                                                             EdgeInsets.all(10),
                                                         child: Text(
-                                                            "${AppLocalizations.of(context).translate('see_menu')} >",
+                                                            "${AppLocalizations.of(context)!.translate('see_menu')} >",
                                                             style: TextStyle(
                                                                 fontSize: 12,
                                                                 fontWeight:
@@ -388,7 +386,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          "${AppLocalizations.of(context).translate('note_reviews')}",
+                                          "${AppLocalizations.of(context)!.translate('note_reviews')}",
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: KColors.new_black,
@@ -409,14 +407,14 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                       children: List<
                                                               Widget>.generate(
                                                           widget.restaurant
-                                                                  .stars
+                                                                  !.stars!
                                                                   .toInt() +
                                                               (widget.restaurant
-                                                                              .stars -
+                                                                              !.stars! -
                                                                           widget
                                                                               .restaurant
-                                                                              .stars
-                                                                              .toInt()
+                                                                              !.stars
+                                                                              !.toInt()
                                                                               .toDouble() >
                                                                       0.1
                                                                   ? 1
@@ -428,7 +426,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                           index ==
                                                                   widget
                                                                       .restaurant
-                                                                      .stars
+                                                                      !.stars!
                                                                       .toInt()
                                                               ? FontAwesomeIcons
                                                                   .solidStarHalf
@@ -446,7 +444,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   RichText(
                                                       text: TextSpan(
                                                           text:
-                                                              " ${widget.restaurant.votes} ",
+                                                              " ${widget.restaurant!.votes} ",
                                                           style: TextStyle(
                                                               fontSize: 12,
                                                               color: KColors
@@ -454,7 +452,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                           children: [
                                                         TextSpan(
                                                             text:
-                                                                "${AppLocalizations.of(context).translate('votes')}",
+                                                                "${AppLocalizations.of(context)!.translate('votes')}",
                                                             style: TextStyle(
                                                                 fontSize: 12,
                                                                 color: Colors
@@ -465,7 +463,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                  "${widget.restaurant.stars.toStringAsFixed(1)}",
+                                                  "${widget.restaurant!.stars!.toStringAsFixed(1)}",
                                                   style: TextStyle(
                                                       fontSize: 32,
                                                       fontWeight:
@@ -479,7 +477,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   onTap: () => _starPressed(3),
                                                   child: Container(
                                                     child: Text(
-                                                        "${AppLocalizations.of(context).translate('review_us')}",
+                                                        "${AppLocalizations.of(context)!.translate('review_us')}",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.w600,
@@ -565,7 +563,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
           background: Container(
             child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
+                imageUrl: Utils.inflateLink(widget.restaurant!.theme_pic!)),
           )),
     );
     return DefaultTabController(
@@ -597,7 +595,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                        "${AppLocalizations.of(context).translate('opening_time')}",
+                                        "${AppLocalizations.of(context)!.translate('opening_time')}",
                                         style: TextStyle(
                                             color: KColors.new_black
                                                 .withAlpha(150),
@@ -624,7 +622,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         width: 40,
                                         height: 40,
                                         child: CircularProgressIndicator())
-                                    : _getRestaurantStateTag(widget.restaurant),
+                                    : _getRestaurantStateTag(widget.restaurant!),
                               ],
                             ),
                           ),
@@ -633,7 +631,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                           /* rounded image - */
                           InkWell(
                             onTap: () =>
-                                _seeProfilePicture(widget?.restaurant?.pic),
+                                _seeProfilePicture(widget.restaurant!.pic!),
                             child: Container(
                                 height: 90,
                                 width: 90,
@@ -646,7 +644,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         fit: BoxFit.cover,
                                         image: CachedNetworkImageProvider(
                                             Utils.inflateLink(
-                                                widget?.restaurant?.pic))))),
+                                                widget.restaurant!.pic!))))),
                           ),
                           SizedBox(height: 20),
                           /* see the menu entry */
@@ -656,7 +654,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                             child: InkWell(
                                 onTap: () {
                                   _jumpToRestaurantMenu(
-                                      context, widget?.restaurant);
+                                      context, widget!.restaurant!);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(top: 5, bottom: 5),
@@ -670,7 +668,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                               color: KColors.primaryColor),
                                           SizedBox(width: 15),
                                           Text(
-                                              "${AppLocalizations.of(context).translate('see_menu')}"
+                                              "${AppLocalizations.of(context)!.translate('see_menu')}"
                                                   .toUpperCase(),
                                               style: TextStyle(
                                                   fontSize: 12,
@@ -724,7 +722,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                               MainAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                                "${AppLocalizations.of(context).translate('note_reviews')}",
+                                                "${AppLocalizations.of(context)!.translate('note_reviews')}",
                                                 style: TextStyle(
                                                     color: KColors.new_black,
                                                     fontWeight: FontWeight.bold,
@@ -749,7 +747,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                                   left: 20,
                                                                   right: 20),
                                                           child: Text(
-                                                              "${AppLocalizations.of(context).translate('review_us')}",
+                                                              "${AppLocalizations.of(context)!.translate('review_us')}",
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -859,7 +857,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                               children: <Widget>[
 //                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
                                 Text(
-                                  "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                                  "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.grey),
                                 )
@@ -872,14 +870,14 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter()),
+                restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -894,8 +892,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   _buildNewCommentsList(List<CommentModel> comments) {
     if (comments != null) {
-      List<Widget> list = List<Widget>.generate(comments?.length, (int index) {
-        if (!comments[index].hidden)
+      List<Widget>? list = List<Widget>.generate(comments.length!, (int index) {
+        if (!comments[index].hidden!)
           return RestaurantNewCommentWidget(comment: comments[index]);
         return Container();
       }).toList()?.reversed.toList();
@@ -911,8 +909,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   _buildCommentsList(List<CommentModel> comments) {
     if (comments != null) {
-      var list = List<Widget>.generate(comments?.length, (int index) {
-        if (!comments[index].hidden)
+      var list = List<Widget>.generate(comments.length, (int index) {
+        if (!comments[index].hidden!)
           return RestaurantCommentWidget(comment: comments[index]);
         return Container();
       })?.reversed;
@@ -926,19 +924,19 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -946,10 +944,10 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     if (StateContainer.of(context).loggingState == 0) return Container();
     return ErrorPage(
         error_text_font_size: 12,
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -957,10 +955,10 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     if (StateContainer.of(context).loggingState == 0) return Container();
     return ErrorPage(
         error_text_font_size: 12,
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -970,7 +968,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     setState(() {
       widget.restaurant = restaurant;
     });
-    widget.presenter.fetchCommentList(widget.customer, widget?.restaurant);
+    widget.presenter!.fetchCommentList(widget.customer!, widget.restaurant!);
   }
 
   @override
@@ -1025,12 +1023,12 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
       List<CommentModel> comments, String stars, String votes) {
     setState(() {
       if (widget?.restaurant != null) {
-        widget.restaurant.stars = double.parse(stars);
-        widget.restaurant.votes = int.parse(votes);
+        widget.restaurant!.stars = double.parse(stars);
+        widget.restaurant!.votes = int.parse(votes);
       }
       widget.commentList = comments;
     });
-    if (widget.commentList?.length > 0) {
+    if (widget.commentList!.length! > 0) {
       // scroll to bottom
       /*   Timer(Duration(milliseconds: 800), () {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
@@ -1052,7 +1050,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
   _buildNewCommentList() {
     if (widget.commentList == null) return Container();
     return Column(
-      children: _buildNewCommentsList(widget.commentList),
+      children: _buildNewCommentsList(widget!.commentList!),
     );
   }
 
@@ -1062,14 +1060,14 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
       children: <Widget>[
         SizedBox(height: 30),
         Text(
-            "- ${widget.restaurant?.name} ${AppLocalizations.of(context).translate('review')} -",
+            "- ${widget.restaurant?.name} ${AppLocalizations.of(context)!.translate('review')} -",
             textAlign: TextAlign.center,
             style: KStyles.hintTextStyle_gray),
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text("${widget.restaurant.stars.toStringAsFixed(1)}",
+            Text("${widget.restaurant!.stars!.toStringAsFixed(1)}",
                 style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
             /* stars */
             Column(
@@ -1077,18 +1075,18 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                 children: <Widget>[
                   Row(
                       children: List<Widget>.generate(
-                          widget.restaurant.stars.toInt(), (int index) {
+                          widget.restaurant!.stars!.toInt(), (int index) {
                     return Icon(FontAwesomeIcons.solidStar,
                         color: KColors.primaryYellowColor);
                   })),
                   Text(
-                      "${widget.restaurant.votes} ${AppLocalizations.of(context).translate('votes')}",
+                      "${widget.restaurant!.votes} ${AppLocalizations.of(context)!.translate('votes')}",
                       style: TextStyle(color: Colors.grey))
                 ])
           ],
         ),
         /* the list of comments */
-      ]..addAll(_buildCommentsList(widget.commentList)),
+      ]..addAll(_buildCommentsList(widget.commentList!)),
     );
   }
 
@@ -1098,19 +1096,19 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
     switch (shopModel?.open_type) {
       case 0: // closed
-        tagText = "${AppLocalizations.of(context).translate('t_closed')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
         tagTextColor = KColors.mBlue;
         break;
       case 1: // open
-        tagText = "${AppLocalizations.of(context).translate('t_opened')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_opened')}";
         tagTextColor = CommandStateColor.delivered;
         break;
       case 2: // paused
-        tagText = "${AppLocalizations.of(context).translate('t_paused')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_paused')}";
         tagTextColor = KColors.mBlue;
         break;
       case 3: // blocked
-        tagText = "${AppLocalizations.of(context).translate('t_unavailable')}";
+        tagText = "${AppLocalizations.of(context)!.translate('t_unavailable')}";
         tagTextColor = KColors.mBlue;
         break;
     }
@@ -1133,7 +1131,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         builder: (context) => ReviewRestaurantPage(
             restaurant: widget?.restaurant,
             rate: _latentRate,
-            presenter: RestaurantReviewPresenter()),
+            presenter: RestaurantReviewPresenter(RestaurantReviewView())),
       ),
     );
     if (results != null && results.containsKey('ok')) {
@@ -1144,8 +1142,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         });
         if (widget?.restaurant?.id != null)
           widget.restaurantId = widget?.restaurant?.id;
-        widget.presenter.fetchCommentList(
-            widget.customer, ShopModel(id: widget?.restaurantId));
+        widget.presenter!.fetchCommentList(
+            widget.customer!, ShopModel(id: widget?.restaurantId));
       }
     }
   }
@@ -1172,7 +1170,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -1191,7 +1189,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                    "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_comment")}",
+                    "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_comment")}",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12),
                   )
@@ -1201,14 +1199,14 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -1216,7 +1214,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(),
+                          presenter: LoginPresenter(LoginView()),
                           fromOrderingProcess: true)));
                 },
               )
@@ -1240,7 +1238,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

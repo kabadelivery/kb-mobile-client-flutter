@@ -14,16 +14,16 @@ import 'package:flutter/material.dart';
 class ProposalMiniPage extends StatefulWidget {
   static var routeName = "/ProposalMiniPage";
 
-  ProposalPresenter presenter;
+  ProposalPresenter? presenter;
 
-  List<ShopProductModel> data;
+  List<ShopProductModel>? data;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  List<ShopProductModel> food_suggestions;
+  List<ShopProductModel>? food_suggestions;
 
   ProposalMiniPage(
-      {Key key, this.presenter, this.customer, this.food_suggestions})
+      {Key? key, this.presenter, this.customer, this.food_suggestions})
       : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.proposalView = this;
+    widget.presenter!.proposalView = this;
   }
 
   bool isLoading = true;
@@ -48,10 +48,10 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
   @override
   Widget build(BuildContext context) {
     if (widget.data == null) {
-      widget.presenter.fetchProposal(widget.customer);
+      widget.presenter!.fetchProposal(widget.customer!);
     } else {
       if (!isDataInflated) {
-        inflateProposal(widget.data);
+        inflateProposal(widget.data!);
         isDataInflated = true;
       }
     }
@@ -110,18 +110,18 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
   _buildSysErrorPage() {
     return ErrorPage(
         message: "",
-        // "${AppLocalizations.of(context).translate('system_error')}",
+        // "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchProposal(widget?.customer);
+          widget.presenter!.fetchProposal(widget.customer!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
         message: "",
-        //"""${AppLocalizations.of(context).translate('network_error')}",
+        //"""${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchProposal(widget?.customer);
+          widget.presenter!.fetchProposal(widget.customer!);
         });
   }
 
@@ -143,7 +143,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                     onPageChanged: _carousselPageChanged,
                     autoPlay: true,
                     autoPlayInterval: Duration(seconds: 5)),
-                items: widget.data.map((position) {
+                items: widget.data!.map((position) {
                   return Builder(
                     builder: (BuildContext context) {
                       return _buildProposalListItem(position);
@@ -159,19 +159,19 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
             children: [
               Row(
                 children: <Widget>[]..addAll(
-                      List<Widget>.generate(widget.data.length, (int index) {
+                      List<Widget>.generate(widget.data!.length, (int index) {
                     return Container(
                         margin: EdgeInsets.only(right: 2.5, top: 2.5),
                         height: 7,
                         width: index == _carousselPageIndex ||
-                                index == widget.data.length
+                                index == widget.data!.length
                             ? 12
                             : 7,
                         decoration: new BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             border: new Border.all(color: KColors.primaryColor),
                             color: (index == _carousselPageIndex ||
-                                    index == widget.data.length)
+                                    index == widget.data!.length)
                                 ? KColors.primaryColor
                                 : Colors.transparent));
                   })
@@ -198,9 +198,9 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -245,7 +245,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      "${Utils.capitalize(product?.name?.trim())}",
+                                      "${Utils.capitalize(product.name!.trim())}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       textAlign: TextAlign.start,
@@ -255,7 +255,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                                           fontWeight: FontWeight.w500)),
                                   SizedBox(height: 5),
                                   Text(
-                                      "${Utils.capitalize(Utils.replaceNewLineBy(product?.description?.trim(), " / "))}",
+                                      "${Utils.capitalize(Utils.replaceNewLineBy(product.description!.trim(), " / "))}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       textAlign: TextAlign.start,
@@ -297,7 +297,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                                           : Container()),
                                       SizedBox(width: 2),
                                       Text(
-                                          "${AppLocalizations.of(context).translate('currency')}",
+                                          "${AppLocalizations.of(context)!.translate('currency')}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           textAlign: TextAlign.center,
@@ -323,7 +323,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                                             left: 8),
                                         child: Row(children: <Widget>[
                                           Text(
-                                              "${AppLocalizations.of(context).translate("buy")}",
+                                              "${AppLocalizations.of(context)!.translate("buy")}",
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: KColors.primaryColor)),
@@ -349,7 +349,7 @@ class _ProposalMiniPageState extends State<ProposalMiniPage>
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
-                                      Utils.inflateLink(product?.pic)))),
+                                      Utils.inflateLink(product.pic!)))),
                         ),
                       ),
                     ],

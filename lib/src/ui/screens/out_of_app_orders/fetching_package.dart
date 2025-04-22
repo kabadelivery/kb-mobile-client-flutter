@@ -38,9 +38,9 @@ import '../../customwidgets/voucher_widgets.dart';
 
 class FecthingPackageOrderPage extends ConsumerStatefulWidget {
   static var routeName = "/FecthingPackageOrderPage";
-  final String additional_info;
-  final File additionnal_info_image;
-  final List<Map<String,dynamic>> districts;
+  final String? additional_info;
+  final File? additionnal_info_image;
+  final List<Map<String,dynamic>>? districts;
   FecthingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
 
   @override
@@ -93,15 +93,15 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
     }
     districtState.districts = widget.districts;
     outOfAppScreenState.order_type=6;
-    if(locationState.is_order_address_picked && locationState.is_shipping_address_picked){
-      if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
+    if(locationState.is_order_address_picked! && locationState.is_shipping_address_picked!){
+      if(locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
 
         Fluttertoast.showToast(
             backgroundColor: Colors.black87,
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("same_address_cant_be_picked")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("same_address_cant_be_picked")+" 🚨");
         outOfAppScreenState.isBillBuilt=false;
         outOfAppScreenState.showLoading=false;
 
@@ -112,7 +112,6 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         centerTitle: true,
 
@@ -128,7 +127,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('package_order')}"),
+                    "${AppLocalizations.of(context)!.translate('package_order')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -162,8 +161,8 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
-                            additionnal_info_image: additionnalInfoState.image,
-                            districts: widget.districts,
+                            additionnal_info_image: additionnalInfoState.image!,
+                            districts: widget.districts!,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(-1.0, 0.0);
@@ -193,7 +192,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                             )
                         ),
                         child: Text(
-                            "${AppLocalizations.of(context).translate('shipping_package')}",
+                            "${AppLocalizations.of(context)!.translate('shipping_package')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:outOfAppScreenState.order_type==5? Colors.white :KColors.new_black)),
@@ -216,7 +215,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                             )
                         ),
                         child:  Text(
-                            "${AppLocalizations.of(context).translate('fetch_package')}",
+                            "${AppLocalizations.of(context)!.translate('fetch_package')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:outOfAppScreenState.order_type==6? Colors.white :Colors.grey)),
@@ -241,18 +240,18 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
             BuildExplanationSpace(
               context,
               ref,
-              AppLocalizations.of(context).translate('fetch_package_explanation'),
+              AppLocalizations.of(context)!.translate('fetch_package_explanation'),
               "https://lottie.host/3d2464c8-af6a-4d67-a85e-4deaf161f191/HOYpXSXAdg.json"
               ):Container(),  
               SizedBox(height: 10,),
-                    Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
+                    Text(AppLocalizations.of(context)!.translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
                     AdditionnalInfoImage(context,ref),
                     SizedBox(height: 10),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
-                    ShowBilling(context,orderBillingState.orderBillConfiguration):
+                    ShowBilling(context,orderBillingState.orderBillConfiguration!):
                     outOfAppScreenState.showLoading==true?
                     MyLoadingProgressWidget()
                         :Container(),
@@ -262,7 +261,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                                   Column(
                           children: [
                           SizedBox(height: 10,),
-                           locationState.selectedOrderAddress.isEmpty?
+                           locationState.selectedOrderAddress!.isEmpty?
                             Column(
                               children: [
                                 ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,fetching_package_type),
@@ -273,7 +272,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                        "${AppLocalizations.of(context).translate('add_district_info')}",
+                                        "${AppLocalizations.of(context)!.translate('add_district_info')}",
                                         style: TextStyle(
 
                                             fontSize: 16,
@@ -295,16 +294,16 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                            AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info)
                            :Container(),
                            SizedBox(height: 10,),
-                           locationState.selectedOrderAddress.isNotEmpty ?
+                           locationState.selectedOrderAddress!.isNotEmpty ?
                             Column(
                               children: [
                                 Text(
-                                    "${AppLocalizations.of(context).translate('fecthing_package_address')}",
+                                    "${AppLocalizations.of(context)!.translate('fecthing_package_address')}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                         color: KColors.new_black)),
-                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
+                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0]),
                               ],
                             ):Container(),
                           ],
@@ -314,12 +313,12 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                         Column(
                           children: [
                             Text(
-                                "${AppLocalizations.of(context).translate('shipping_address')}",
+                                "${AppLocalizations.of(context)!.translate('shipping_address')}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                     color: KColors.new_black)),
-                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress!),
                           ],
                         ):
                         ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,fetching_package_type),
@@ -346,18 +345,18 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                                     textColor: Colors.white,
                                     fontSize: 14,
                                     toastLength: Toast.LENGTH_LONG ,
-                                    msg: "🚨 "+AppLocalizations.of(context).translate("enter_correct_phone_number")+" 🚨");
+                                    msg: "🚨 "+AppLocalizations.of(context)!.translate("enter_correct_phone_number")+" 🚨");
                           }
                           else{
                                         int type_of_order = 6;
                                         ref
                                             .read(productListProvider.notifier)
                                             .clearProducts();
-                                        File image;
+                                        File? image;
                                         if (additionnalInfoState.image !=
                                             null) {
                                           image = File(
-                                              additionnalInfoState.image.path);
+                                              additionnalInfoState.image!.path);
                                         } else {
                                           image = null;
                                         }
@@ -387,7 +386,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                                         color: KColors.primaryColor),
                                     SizedBox(width: 5),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('pay_at_arrival')}",
+                                        "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: KColors.primaryColor,

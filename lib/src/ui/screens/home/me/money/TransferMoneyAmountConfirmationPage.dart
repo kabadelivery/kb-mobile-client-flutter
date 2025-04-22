@@ -77,7 +77,7 @@ class _TransferMoneyAmountConfirmationPageState
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('top_kaba_account')}"),
+                    "${AppLocalizations.of(context)!.translate('top_kaba_account')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -133,7 +133,7 @@ class _TransferMoneyAmountConfirmationPageState
                   RichText(
                       text: TextSpan(
                           text:
-                              "${AppLocalizations.of(context).translate('insert_transfer_amount')}",
+                              "${AppLocalizations.of(context)!.translate('insert_transfer_amount')}",
                           children: [
                             TextSpan(
                                 text: " *",
@@ -168,7 +168,7 @@ class _TransferMoneyAmountConfirmationPageState
                             padding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 20),
                             child: Text(
-                                "${AppLocalizations.of(context).translate('currency')}",
+                                "${AppLocalizations.of(context)!.translate('currency')}",
                                 style: TextStyle(color: KColors.primaryColor)),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
@@ -200,7 +200,7 @@ class _TransferMoneyAmountConfirmationPageState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                            "${AppLocalizations.of(context).translate('to_transfer')}"
+                            "${AppLocalizations.of(context)!.translate('to_transfer')}"
                                 .toUpperCase(),
                             textAlign: TextAlign.center,
                             style:
@@ -254,7 +254,7 @@ class _TransferMoneyAmountConfirmationPageState
     if (!_isAmountOk) {
       _showDialog(
           message:
-              "${AppLocalizations.of(context).translate('amount_greater_than_0')}",
+              "${AppLocalizations.of(context)!.translate('amount_greater_than_0')}",
           icon:
               Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
       return;
@@ -272,7 +272,7 @@ class _TransferMoneyAmountConfirmationPageState
       if (results == null ||
           results['code'] == null ||
           !Utils.isCode(results['code'])) {
-        mToast("${AppLocalizations.of(context).translate('code_wrong')}");
+        mToast("${AppLocalizations.of(context)!.translate('code_wrong')}");
       } else {
         String _mCode = results['code'];
         if (Utils.isCode(_mCode)) {
@@ -281,7 +281,7 @@ class _TransferMoneyAmountConfirmationPageState
             widget.presenter.launchTransferMoneyAction(
                 widget.mySelf, widget.moneyReceiver.id, _mCode, amount);
         } else {
-          mToast("${AppLocalizations.of(context).translate('code_wrong')}");
+          mToast("${AppLocalizations.of(context)!.translate('code_wrong')}");
         }
       }
     }
@@ -295,14 +295,14 @@ class _TransferMoneyAmountConfirmationPageState
   void balanceInsufficient() {
     _showDialog(
         message:
-            "${AppLocalizations.of(context).translate('balance_not_sufficient')}",
+            "${AppLocalizations.of(context)!.translate('balance_not_sufficient')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
   @override
   void passwordWrong() {
     _showDialog(
-        message: "${AppLocalizations.of(context).translate('password_wrong_')}",
+        message: "${AppLocalizations.of(context)!.translate('password_wrong_')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
@@ -310,7 +310,7 @@ class _TransferMoneyAmountConfirmationPageState
   void transactionError(CustomerModel customer) {
     _showDialog(
         message:
-            "${AppLocalizations.of(context).translate('transaction_error')}",
+            "${AppLocalizations.of(context)!.translate('transaction_error')}",
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
   }
 
@@ -368,7 +368,7 @@ class _TransferMoneyAmountConfirmationPageState
               //
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}",
+                    "${AppLocalizations.of(context)!.translate('ok')}",
                     style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   if (isSuccess) Navigator.of(context).pop();

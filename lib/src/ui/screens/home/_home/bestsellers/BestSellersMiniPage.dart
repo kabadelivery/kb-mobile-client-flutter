@@ -15,16 +15,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class BestSellersMiniPage extends StatefulWidget {
   static var routeName = "/BestSellersMiniPage";
 
-  BestSellerPresenter presenter;
+  BestSellerPresenter? presenter;
 
-  List<BestSellerModel> data;
+  List<BestSellerModel>? data;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  BestSellersMiniPage({Key key, this.title, this.presenter, this.customer})
+  BestSellersMiniPage({Key? key, this.title, this.presenter, this.customer})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _BestSellersMiniPageState createState() => _BestSellersMiniPageState();
@@ -35,7 +35,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.bestSellerView = this;
+    widget.presenter!.bestSellerView = this;
   }
 
   bool isLoading = true;
@@ -46,10 +46,10 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   @override
   Widget build(BuildContext context) {
     if (widget.data == null) {
-      widget.presenter.fetchBestSeller(widget.customer);
+      widget.presenter!.fetchBestSeller(widget.customer!);
     } else {
       if (!isDataInflated) {
-        inflateBestSeller(widget.data);
+        inflateBestSeller(widget.data!);
         isDataInflated = true;
       }
     }
@@ -108,18 +108,18 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   _buildSysErrorPage() {
     return ErrorPage(
         message:
-            "", // "${AppLocalizations.of(context).translate('system_error')}",
+            "", // "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller(widget?.customer);
+          widget.presenter!.fetchBestSeller(widget.customer!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
         message:
-            "", //"""${AppLocalizations.of(context).translate('network_error')}",
+            "", //"""${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller(widget?.customer);
+          widget.presenter!.fetchBestSeller(widget.customer!);
         });
   }
 
@@ -135,7 +135,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
             scrollDirection: Axis.horizontal,
             itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
-              return _buildBestSellerListItem(position, widget.data[position]);
+              return _buildBestSellerListItem(position, widget.data![position]);
             }));
   }
 
@@ -146,9 +146,9 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -164,7 +164,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   _buildBestSellerListItem(int position, BestSellerModel data) {
     return GestureDetector(
         child: InkWell(
-            onTap: () => _jumpToFoodDetails(data?.food_entity),
+            onTap: () => _jumpToFoodDetails(data.food_entity!),
             child: Container(
               width: 250,
               height: 84,
@@ -187,7 +187,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                       image: new DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                              Utils.inflateLink(data?.food_entity?.pic)))),
+                              Utils.inflateLink(data.food_entity!.pic!)))),
                 ),
                 Container(
                   height: 64,
@@ -265,7 +265,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                                           : Container(),
                                       SizedBox(width: 5),
                                       Text(
-                                          "${AppLocalizations.of(context).translate('currency')}",
+                                          "${AppLocalizations.of(context)!.translate('currency')}",
                                           style: TextStyle(
                                               color: KColors.primaryYellowColor,
                                               fontSize: 12))

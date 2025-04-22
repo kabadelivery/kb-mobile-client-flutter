@@ -23,13 +23,13 @@ class RecoverPasswordPage extends StatefulWidget {
 
   static var routeName = "/RecoverPasswordPage";
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  RecoverPasswordPresenter presenter;
+  RecoverPasswordPresenter? presenter;
 
-  bool is_a_process;
+  bool? is_a_process;
 
-  RecoverPasswordPage({Key key, this.presenter, this.is_a_process = false}) : super(key: key);
+  RecoverPasswordPage({Key? key, this.presenter, this.is_a_process = false}) : super(key: key);
 
   @override
   _RecoverPasswordPageState createState() => _RecoverPasswordPageState();
@@ -55,13 +55,13 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   int timeDiff = 0;
 
-  String _requestId;
+  String? _requestId;
 
   @override
   void initState() {
     super.initState();
 
-    this.widget.presenter.recoverPasswordView = this;
+    this.widget.presenter!.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null) {
         xrint("recoverpasswordPage : "+customer.toJson().toString());
@@ -80,10 +80,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                 Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
               });
             } else {
-              _loginFieldController.text = customer.email;
+              _loginFieldController.text = customer.email!;
             }
           } else
-            _loginFieldController.text = customer.phone_number;
+            _loginFieldController.text = customer.phone_number!;
         });
       }
     });
@@ -94,8 +94,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loginFieldHint = "${AppLocalizations.of(context).translate('phone_number_hint')}";
-    recoverModeHints = ["${AppLocalizations.of(context).translate('recover_password_hint')}",/*"Insert your E-mail address"*/];
+    _loginFieldHint = "${AppLocalizations.of(context)!.translate('phone_number_hint')}";
+    recoverModeHints = ["${AppLocalizations.of(context)!.translate('recover_password_hint')}",/*"Insert your E-mail address"*/];
   }
 
   @override
@@ -103,7 +103,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -116,7 +115,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('recover_password')}"),
+                      "${AppLocalizations.of(context)!.translate('recover_password')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -136,7 +135,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
                     SizedBox(height: 10),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context).translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
@@ -147,7 +146,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
                     SizedBox(height: 30),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context).translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +155,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('code')}"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
@@ -165,7 +164,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
                               child: Row(
                             children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context).translate('seconds')}" : "${AppLocalizations.of(context).translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
                               isCodeSent == false &&  isCodeSending ? Row(
                                 children: <Widget>[
@@ -179,7 +178,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        Text("${AppLocalizations.of(context)!.translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
@@ -208,11 +207,11 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     /* check the fields */
 
     if (Utils.isPhoneNumber_TGO(login)) {
-      this.widget.presenter.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
+      this.widget.presenter!.sendVerificationCode(login);
+      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
     } else if (Utils.isEmailValid(login)) {
-      this.widget.presenter.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}", is_code_confirmation: true);
+      this.widget.presenter!.sendVerificationCode(login);
+      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}", is_code_confirmation: true);
     } else {
       /* login error */
       setState(() {
@@ -253,8 +252,8 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     String login;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = prefs.getString("vlcst");
-    login = prefs.getString("vl");
+    String tmp = prefs.getString("vlcst")!;
+    login = prefs.getString("vl")!;
 
     DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -272,7 +271,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       /* if code sent, do something else,  */
       isCodeSent = true;
       this._requestId = prefs.getString("vri");
-      _loginFieldController.text = prefs.getString("vl");
+      _loginFieldController.text = prefs.getString("vl")!;
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
@@ -293,12 +292,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     }
   }
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
   @override
   void dispose() {
     try {
-      mainTimer.cancel();
+      mainTimer!.cancel();
     } catch(_) {
       xrint(_);
     }
@@ -326,7 +325,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     setState(() {
       isCodeSending = false;
     });
-    String _mCode1, _mCode2;
+    String? _mCode1, _mCode2;
     if (isOk) {
       /* clear shared preferences */
       _clearSharedPreferences();
@@ -353,7 +352,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       }
 
       /* launch create account request, and if success*/
-      widget.presenter.updatePassword(_loginFieldController.text, _mCode1, _requestId);
+      widget.presenter!.updatePassword(_loginFieldController.text, _mCode1!, _requestId!);
       /*this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
           phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
           email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
@@ -382,7 +381,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   @override
   void onNetworkError() {
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
   }
 
   @override
@@ -414,10 +413,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       setState(() {
         isCodeSending = false;
       });
-      this.widget.presenter.checkVerificationCode(
-          _codeFieldController.text, this._requestId);
+      this.widget.presenter!.checkVerificationCode(
+          _codeFieldController.text, this._requestId!);
     } else {
-      mToast("${AppLocalizations.of(context).translate('wrong_code')}");
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
 
@@ -430,16 +429,16 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   @override
   void recoverFails() {
-    mToast("${AppLocalizations.of(context).translate('password_recover_fails')}");
+    mToast("${AppLocalizations.of(context)!.translate('password_recover_fails')}");
   }
 
   @override
   void recoverSuccess(String phoneNumber, String newCode) {
     /* send to login page and */
-    mToast("${AppLocalizations.of(context).translate(
+    mToast("${AppLocalizations.of(context)!.translate(
         'password_updated_success')}");
 
-    if (!widget.is_a_process) {
+    if (!widget.is_a_process!) {
       // logout.
       StateContainer
           .of(context)
@@ -453,7 +452,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
         Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
             builder: (BuildContext context) =>
-                LoginPage(presenter: LoginPresenter(),
+                LoginPage(presenter: LoginPresenter(LoginView()),
                     phone_number: phoneNumber,
                     password: newCode,
                     autoLogin: true)), (r) => false);
@@ -472,7 +471,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool is_code_confirmation}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool? is_code_confirmation}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -483,7 +482,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -494,7 +493,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -502,7 +501,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -512,10 +511,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  if (widget.is_a_process && is_code_confirmation == false)
+                  if (widget.is_a_process! && is_code_confirmation == false)
                     Navigator.of(context).pop();
                 },
               ),

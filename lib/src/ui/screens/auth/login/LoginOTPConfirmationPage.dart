@@ -17,8 +17,8 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../StateContainer.dart';
@@ -28,15 +28,15 @@ class LoginOTPConfirmationPage extends StatefulWidget {
 
   static var routeName = "/LoginOTPConfirmationPage";
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  RecoverPasswordPresenter presenter;
+  RecoverPasswordPresenter? presenter;
 
-  String username;
+  String? username;
 
-  String otp_code;
+  String? otp_code;
 
-  LoginOTPConfirmationPage({Key key, this.username, this.otp_code}) : super(key: key);
+  LoginOTPConfirmationPage({Key? key, this.username, this.otp_code}) : super(key: key);
 
   @override
   _LoginOTPConfirmationPageState createState() => _LoginOTPConfirmationPageState();
@@ -48,27 +48,27 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
   int CODE_EXPIRATION_LAPSE = 2*60; /* minutes *  seconds */
 
-  int timeDiff = 0;
+  int? timeDiff = 0;
 
-  String _requestId;
+  String? _requestId;
 
-  int _inputCount = 4;
+  int? _inputCount = 4;
 
-  String pwd = "";
+  String? pwd = "";
 
   int tryCount = 0;
 
-  String username;
+  String? username;
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
-  DateTime lastCodeSentDatetime = DateTime.now();
+  DateTime? lastCodeSentDatetime = DateTime.now();
 
-  bool loadingToGoOut = false;
+  bool? loadingToGoOut = false;
 
-  bool showErrorMessage = false;
+  bool? showErrorMessage = false;
 
-  bool errorAnimated = false;
+  bool? errorAnimated = false;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
     // trigger counter ,
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
+      if (DateTime.now().isAfter(lastCodeSentDatetime!.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
         xrint("time has ellapsed;");
         timer.cancel();
         Navigator.of(context).pop({'otp_valid': "no"});
@@ -84,7 +84,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
         /* update text;;; if codeIsSent */
         setState(() {
           /* convert into minutes, and show it */
-          Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
+          Duration duration = lastCodeSentDatetime!.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
           timeDiff = duration.inSeconds;
         });
       }
@@ -95,7 +95,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   void dispose() {
     // TODO: implement dispose
     try {
-      mainTimer.cancel();
+      mainTimer!.cancel();
     } catch(_) {
       xrint(_);
     }
@@ -115,7 +115,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle.light,
           backgroundColor: KColors.primaryColor,
-          title: Text("${AppLocalizations.of(context).translate('identity_verify_page')}", style:TextStyle(color:KColors.white)),
+          title: Text("${AppLocalizations.of(context)!.translate('identity_verify_page')}", style:TextStyle(color:KColors.white)),
           leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.white), onPressed: (){Navigator.pop(context);}),
         ),
         body: Container(
@@ -141,13 +141,13 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                 children: [
                                   Image.asset(ImageAssets.smartphoneUnlock,height: 50, width: 50, alignment: Alignment.center,),
                                   SizedBox(height: 20),
-                                  Text("${AppLocalizations.of(context).translate('identity_verify_title')}", style: TextStyle(fontSize: 20)),
+                                  Text("${AppLocalizations.of(context)!.translate('identity_verify_title')}", style: TextStyle(fontSize: 20)),
                                   SizedBox(height:20),
-                                  Text("${Utils.isPhoneNumber_TGO(widget.username)? AppLocalizations.of(context).translate('identity_check_pn') : AppLocalizations.of(context).translate('identity_check_email')} "+( Utils.isPhoneNumber_TGO(widget.username)? "XXXX${widget.username.substring(4)}" : "${widget.username.substring(0,4)}****${widget.username.substring(widget.username.lastIndexOf("@")-1)}"), textAlign: TextAlign.center,
+                                  Text("${Utils.isPhoneNumber_TGO(widget.username!)? AppLocalizations.of(context)!.translate('identity_check_pn') : AppLocalizations.of(context)!.translate('identity_check_email')} "+( Utils.isPhoneNumber_TGO(widget.username!)? "XXXX${widget.username!.substring(4)}" : "${widget.username!.substring(0,4)}****${widget.username!.substring(widget.username!.lastIndexOf("@")-1)}"), textAlign: TextAlign.center,
                                       style: TextStyle(fontWeight: FontWeight.w100, fontSize: 13, color: Colors.grey)),
                                   SizedBox(height:10),
                                   /* code error */
-                                  showErrorMessage ?
+                                  showErrorMessage! ?
                                   Container(
                                       child: Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
@@ -156,7 +156,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                             AnimatedDefaultTextStyle(
                                               duration: const Duration(milliseconds: 300),
                                               curve: Curves.bounceOut,
-                                              style: errorAnimated ? TextStyle(
+                                              style: errorAnimated! ? TextStyle(
                                                 fontSize: 16,
                                                 color: KColors.primaryColor
                                               ) : TextStyle(
@@ -164,11 +164,11 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                                   color: Colors.orange
                                               ),
                                               child: Text(
-                                                '${AppLocalizations.of(context).translate("verification_code_wrong")}',
+                                                '${AppLocalizations.of(context)!.translate("verification_code_wrong")}',
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),
-                                            // Text("${AppLocalizations.of(context).translate("verification_code_wrong")}")
+                                            // Text("${AppLocalizations.of(context)!.translate("verification_code_wrong")}")
                                           ]
                                       )
                                   )
@@ -177,21 +177,21 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[]
                                         ..addAll(
-                                            List<Widget>.generate(_inputCount, (int index) {
+                                            List<Widget>.generate(_inputCount!, (int index) {
                                               return Container(
-                                                  margin: EdgeInsets.only(right: (index!=_inputCount-1?10:0)),
+                                                  margin: EdgeInsets.only(right: (index!=_inputCount!-1?10:0)),
                                                   decoration: new BoxDecoration(
                                                     border: new Border(bottom: BorderSide(color:KColors.new_black, width: 2)),
                                                   ),
                                                   child: SizedBox(width: 30, height:30,child:Center(child:
-                                                  Text(pwd.trim().length > index ? /*pwd[index]*/ "${pwd.substring(index,index+1)}" : "",
+                                                  Text(pwd!.trim().length > index ? /*pwd[index]*/ "${pwd!.substring(index,index+1)}" : "",
                                                       // TextField(decoration: new InputDecoration.collapsed(hintText: "*"),
                                                       style: TextStyle(fontSize: 30,color: KColors.new_black)))));
                                             })
                                         )
                                   ),/* rows for password */
                                   SizedBox(height:20),
-                                  loadingToGoOut ?
+                                  loadingToGoOut! ?
                                   Center(child: SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.new_black)), height: 15, width: 15))
                                       :
                                   Container(
@@ -206,9 +206,9 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              SizedBox(child: Icon(FontAwesome.clock_o, color: Colors.grey), height: 20, width: 20),
+                                              SizedBox(child: Icon(FontAwesomeIcons.clock, color: Colors.grey), height: 20, width: 20),
                                               SizedBox(width: 30),
-                                              Text("${timeDiff} ${AppLocalizations.of(context).translate('seconds')}", style: TextStyle(color: Colors.grey, fontSize: 12))
+                                              Text("${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}", style: TextStyle(color: Colors.grey, fontSize: 12))
                                             ]
                                         ),
                                       )
@@ -267,18 +267,18 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
   void _removeChar() {
     setState(() {
-      pwd = pwd.substring(0, pwd.length-1);
+      pwd = pwd!.substring(0, pwd!.length-1);
     });
   }
 
   void _passwordAppendChar(String char) {
 
-    if (showErrorMessage)
+    if (showErrorMessage!)
       return;
 
     xrint("appending -> ${char}");
 
-    if (pwd.length <= 4) {
+    if (pwd!.length <= 4) {
       setState(() {
         pwd = "${pwd}${char}";
       });
@@ -286,11 +286,11 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
     xrint("after appending -> ${pwd}");
 
-    if (pwd.length != 4)
+    if (pwd!.length != 4)
       return;
 
 
-    validateCodeAndConfirm(pwd).then((isOtpValid) {
+    validateCodeAndConfirm(pwd!).then((isOtpValid) {
       if (isOtpValid) {
         // move to home page,,, with pop
         setState(() {
@@ -348,7 +348,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool is_code_confirmation}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool? is_code_confirmation}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -359,7 +359,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -370,7 +370,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -378,7 +378,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -387,7 +387,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
               //
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -412,7 +412,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   void _showTDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -423,7 +423,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -434,7 +434,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -442,16 +442,16 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actionIfYes();
+                  actionIfYes!();
                 },
               ),
             ] : <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -463,7 +463,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   }
 
   Future<bool> validateCodeAndConfirm(String pwd) async {
-    String otp = widget.otp_code;
+    String otp = widget.otp_code!;
     return pwd.compareTo(otp) == 0;
   }
 

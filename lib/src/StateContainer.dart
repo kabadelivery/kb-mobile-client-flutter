@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
@@ -10,22 +7,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StateContainer extends StatefulWidget {
   final Widget child;
-  int last_time_get_daily_order = 0;
-  int last_time_get_restaurant_list_timeout = 0;
-  int tabPosition;
-  CustomerModel customer;
-  int balance;
-  int loggingState;
-  String kabaPoints;
-  bool isBalanceLoading = false;
-  bool hasUnreadMessage;
-  bool hasAskedLocation = false;
-  bool hasGotNewMessageOnce;
-  Position position;
+  int ?last_time_get_daily_order = 0;
+  int ?last_time_get_restaurant_list_timeout = 0;
+  int ?tabPosition;
+  CustomerModel? customer;
+  int ?balance;
+  int ?loggingState;
+  String? kabaPoints;
+  bool? isBalanceLoading = false;
+  bool? hasUnreadMessage;
+  bool? hasAskedLocation = false;
+  bool? hasGotNewMessageOnce;
+  Position? position;
   static const double ANDROID_APP_SIZE = 50;
 
   StateContainer(
-      {@required this.child,
+      {required this.child,
       this.balance,
       this.loggingState,
       this.hasGotNewMessageOnce,
@@ -38,12 +35,12 @@ class StateContainer extends StatefulWidget {
       this.isBalanceLoading = false,
       this.last_time_get_daily_order});
 
-  static BuildContext mContext;
+  static BuildContext? mContext;
 
   static StateContainerState of(BuildContext context) {
     final widget =
         context.dependOnInheritedWidgetOfExactType<InheritedStateContainer>();
-    return widget.data;
+    return widget!.data;
   }
 
   @override
@@ -51,29 +48,29 @@ class StateContainer extends StatefulWidget {
 }
 
 class StateContainerState extends State<StateContainer> {
-  int last_time_get_daily_order = 0;
-  int last_time_get_restaurant_list_timeout = 0;
-  int tabPosition = 0;
-  int balance;
-  int loggingState;
-  CustomerModel customer;
+  int ?last_time_get_daily_order = 0;
+  int ?last_time_get_restaurant_list_timeout = 0;
+  int ?tabPosition = 0;
+  int ?balance;
+  int ?loggingState;
+  CustomerModel? customer;
   // String kabaPoints;
   bool isBalanceLoading = false;
-  Position location;
-  Placemark placemark;
+  Position? location;
+  Placemark? placemark;
   // DeliveryAddressModel selectedAddress;
   bool hasUnreadMessage = false;
   bool hasAskedLocation = false;
 
   // firebase
-  FirebaseAnalytics analytics;
-  FirebaseAnalyticsObserver observer;
+  FirebaseAnalytics? analytics;
+  FirebaseAnalyticsObserver? observer;
   Map service_message = {"message": "", "show": 0};
 
-  int lastLocationPickingDate = 0;
-  int lastTimeLinkMatchAction = 0;
+  int ?lastLocationPickingDate = 0;
+  int ?lastTimeLinkMatchAction = 0;
 
-  Map<String, String> myBillingArray = null;
+  Map<String, String>? myBillingArray = null;
 
   bool is_offline = false;
 
@@ -166,7 +163,7 @@ class StateContainerState extends State<StateContainer> {
 
   Future<void> retrieveUnreadMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    this.hasUnreadMessage == true && prefs.getBool('hasUnreadMessage');
+    this.hasUnreadMessage == true && prefs.getBool('hasUnreadMessage')!;
   }
 
   @override
@@ -189,7 +186,7 @@ class StateContainerState extends State<StateContainer> {
     }
   }*/
 
-  Future<void> updateObserver({FirebaseAnalyticsObserver observer}) {
+  Future<void>? updateObserver({FirebaseAnalyticsObserver? observer}) {
     if (observer != null) {
       setState(() {
         this.observer = observer;
@@ -202,9 +199,9 @@ class InheritedStateContainer extends InheritedWidget {
   final StateContainerState data;
 
   InheritedStateContainer({
-    Key key,
-    @required this.data,
-    @required Widget child,
+    Key? key,
+    required this.data,
+    required Widget child,
   }) : super(key: key, child: child) {
     data.retrieveBalance();
     data.retrieveUnreadMessage();

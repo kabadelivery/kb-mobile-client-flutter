@@ -22,13 +22,13 @@ import 'package:url_launcher/url_launcher.dart';
 class AdsPreviewPage extends StatefulWidget {
   static var routeName = "/AdsPreviewPage";
 
-  AdsViewerPresenter presenter;
+  AdsViewerPresenter? presenter;
 
-  List<AdModel> ads;
+  List<AdModel>? ads;
 
-  int position;
+  int? position;
 
-  AdsPreviewPage({Key key, this.ads, this.presenter, this.position = 0})
+  AdsPreviewPage({Key? key, this.ads, this.presenter, this.position = 0})
       : super(key: key);
 
   @override
@@ -42,14 +42,13 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.adsViewerView = this;
+    widget.presenter!.adsViewerView = this;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          brightness: Brightness.dark,
           elevation: 0,
           backgroundColor: KColors.new_black,
           leading: IconButton(
@@ -57,7 +56,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                   height: 25,
                   width: 25,
                   child:
-                      IconButton(icon: Icon(Icons.close, color: Colors.white))),
+                      IconButton(icon: Icon(Icons.close, color: Colors.white), onPressed: () {  },)),
               onPressed: () {
                 Navigator.pop(context);
               }),
@@ -76,18 +75,18 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                         options: CarouselOptions(
                           onPageChanged: _carousselPageChanged,
                           viewportFraction: 1.0,
-                          initialPage: widget.position,
+                          initialPage: widget.position!!,
                           enableInfiniteScroll:
-                              widget.ads.length > 1 ? true : false,
+                              widget.ads!.length! > 1 ? true : false,
                           height: MediaQuery.of(context).size.width,
                         ),
-                        items: widget.ads.map((admodel) {
+                        items: widget.ads!.map((admodel) {
                           return Builder(
                             builder: (BuildContext context) {
                               return PinchZoom(
                                 child: Container(
                                     child: CachedNetworkImage(
-                                  imageUrl: Utils.inflateLink(admodel.pic),
+                                  imageUrl: Utils.inflateLink(admodel.pic!),
                                   fit: BoxFit.fitWidth,
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
@@ -104,7 +103,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                           );
                         }).toList(),
                       )),
-                      widget.ads.length > 1
+                      widget.ads!.length > 1
                           ? Positioned(
                               bottom: 10,
                               right: 0,
@@ -112,14 +111,14 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 padding: const EdgeInsets.only(right: 9.0),
                                 child: Row(
                                   children: <Widget>[]..addAll(
-                                        List<Widget>.generate(widget.ads.length,
+                                        List<Widget>.generate(widget.ads!.length,
                                             (int index) {
                                       return Container(
                                           margin: EdgeInsets.only(
                                               right: 2.5, top: 2.5),
                                           height: 9,
-                                          width: index == widget.position ||
-                                                  index == widget.ads.length
+                                          width: index == widget.position! ||
+                                                  index == widget.ads!.length
                                               ? 15
                                               : 9,
                                           decoration: new BoxDecoration(
@@ -128,9 +127,9 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                               border: new Border.all(
                                                   color: Colors.white),
                                               color:
-                                                  (index == widget.position ||
+                                                  (index == widget.position! ||
                                                           index ==
-                                                              widget.ads.length)
+                                                              widget.ads!.length)
                                                       ? Colors.white
                                                       : Colors.transparent));
                                     })),
@@ -142,7 +141,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                 ),
               ),
             ),
-            _getVoirMenuTextFromAd(widget.ads[widget.position]) != ""
+            _getVoirMenuTextFromAd(widget.ads![widget.position!]) != ""
                 ? Positioned(
                     top: 0,
                     right: 10,
@@ -152,7 +151,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 MaterialStateProperty.all(Colors.transparent),
                             side: MaterialStateProperty.all(
                                 BorderSide(color: Colors.white, width: 1))),
-                        onPressed: () => _selectAd(widget.ads[widget.position]),
+                        onPressed: () => _selectAd(widget.ads![widget.position!]),
                         child: Row(
                           children: <Widget>[
                             isLoading
@@ -169,7 +168,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                                 : Container(),
                             Text(
                                 _getVoirMenuTextFromAd(
-                                    widget.ads[widget.position]),
+                                    widget.ads![widget.position!]),
                                 style: TextStyle(color: Colors.white)),
                           ],
                         )))
@@ -183,7 +182,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
                       width: MediaQuery.of(context).size.width,
                       margin: EdgeInsets.all(4),
                       child: Text(
-                          "${widget.ads[widget.position]?.description == null ? "" : widget.ads[widget.position]?.description}",
+                          "${widget.ads![widget.position!]?.description == null ? "" : widget.ads![widget.position!]?.description}",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 7,
                           style: TextStyle(color: Colors.white))),
@@ -201,19 +200,19 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   String _getVoirMenuTextFromAd(AdModel data) {
     switch (data.type) {
       case AdModel.TYPE_REPAS:
-        return "${AppLocalizations.of(context).translate('ad_check_food')}";
+        return "${AppLocalizations.of(context)!.translate('ad_check_food')}";
         break;
       case AdModel.TYPE_ARTICLE:
-        return "${AppLocalizations.of(context).translate('ad_check_article')}";
+        return "${AppLocalizations.of(context)!.translate('ad_check_article')}";
         break;
       case AdModel.TYPE_ARTICLE_WEB:
-        return "${AppLocalizations.of(context).translate('ad_check_website')}";
+        return "${AppLocalizations.of(context)!.translate('ad_check_website')}";
         break;
       case AdModel.TYPE_MENU:
-        return "${AppLocalizations.of(context).translate('ad_check_menu')}";
+        return "${AppLocalizations.of(context)!.translate('ad_check_menu')}";
         break;
       case AdModel.TYPE_RESTAURANT:
-        return "${AppLocalizations.of(context).translate('ad_check_restaurant')}";
+        return "${AppLocalizations.of(context)!.translate('ad_check_restaurant')}";
         break;
       default:
         return "";
@@ -236,18 +235,18 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   _selectAd(AdModel ad) {
     switch (ad.type) {
       case AdModel.TYPE_REPAS:
-        widget.presenter.loadFoodFromId(ad.entity_id);
+        widget.presenter!.loadFoodFromId(ad.entity_id!);
         break;
       case AdModel.TYPE_ARTICLE_WEB:
         _launchURL(ServerConfig.SERVER_ADDRESS + "/api/link/${ad.link}");
         break;
       case AdModel.TYPE_RESTAURANT:
-        widget.presenter.loadRestaurantFromId(
-          ad.entity_id,
+        widget.presenter!.loadRestaurantFromId(
+          ad.entity_id!,
         );
         break;
       case AdModel.TYPE_MENU:
-        _jumpToRestaurantMenuPage(ad.entity_id);
+        _jumpToRestaurantMenuPage(ad.entity_id!);
         break;
     }
   }
@@ -256,7 +255,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
   void requestFailure(String message) {
     showLoading(false);
     // toast
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: 5);
   }
 
   @override
@@ -285,7 +284,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
       MaterialPageRoute(
         builder: (context) => ShopDetailsPage(
             restaurant: restaurantModel,
-            presenter: RestaurantDetailsPresenter()),
+            presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       ),
     );
   }
@@ -297,7 +296,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
       context,
       MaterialPageRoute(
         builder: (context) => RestaurantMenuPage(
-            restaurant: restaurantModel, presenter: MenuPresenter()),
+            restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
       ),
     );
   }
@@ -307,7 +306,7 @@ class _AdsPreviewPageState extends State<AdsPreviewPage>
       context,
       MaterialPageRoute(
         builder: (context) =>
-            RestaurantMenuPage(menuId: entityId, presenter: MenuPresenter()),
+            RestaurantMenuPage(menuId: entityId, presenter: MenuPresenter(MenuView())),
       ),
     );
   }

@@ -11,7 +11,7 @@ class GroupAdsNewWidget extends StatefulWidget {
   GroupAdsModel? groupAd;
 
   GroupAdsNewWidget({
-    required Key key,
+    Key? key,
     this.groupAd,
   }) : super(key: key);
 

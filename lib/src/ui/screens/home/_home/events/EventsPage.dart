@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 class EvenementPage extends StatefulWidget {
   static var routeName = "/EvenementPage";
 
-  EvenementPresenter presenter;
+  EvenementPresenter? presenter;
 
-  EvenementPage({Key key, this.title, this.presenter}) : super(key: key);
+  EvenementPage({Key? key, this.title, this.presenter}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _EvenementPageState createState() => _EvenementPageState();
@@ -22,13 +22,13 @@ class EvenementPage extends StatefulWidget {
 
 class _EvenementPageState extends State<EvenementPage>
     implements EvenementView {
-  List<EvenementModel> data;
+  List<EvenementModel>? data;
 
   @override
   void initState() {
     super.initState();
-    widget.presenter.evenementView = this;
-    widget.presenter.fetchEvenements();
+    widget.presenter!.evenementView = this;
+    widget.presenter!.fetchEvenements();
   }
 
   bool isLoading = false;
@@ -39,9 +39,8 @@ class _EvenementPageState extends State<EvenementPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('events')}",
+        title: Text("${AppLocalizations.of(context)!.translate('events')}",
             style: TextStyle(color: KColors.primaryColor)),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
@@ -98,22 +97,22 @@ class _EvenementPageState extends State<EvenementPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchEvenements();
+          widget.presenter!.fetchEvenements();
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchEvenements();
+          widget.presenter!.fetchEvenements();
         });
   }
 
   _buildEvenementsList() {
-    if (data == null || data.length == 0) {
+    if (data == null || data!.length == 0) {
       /* just show empty page. */
       return _buildEmptyEventsPage();
     }
@@ -132,7 +131,7 @@ class _EvenementPageState extends State<EvenementPage>
                         direction: Axis.vertical,
                         children: <Widget>[
                           CachedNetworkImage(
-                              imageUrl: Utils.inflateLink(data[position].pic),
+                              imageUrl: Utils.inflateLink(data![position].pic!),
                               fit: BoxFit.fill)
                         ],
                       ),
@@ -144,6 +143,7 @@ class _EvenementPageState extends State<EvenementPage>
                             style: ButtonStyle(
                                 side: MaterialStateProperty.all(BorderSide(
                                     color: KColors.new_black, width: 1))),
+                            onPressed: () {  },
                             child: Row(
                               children: <Widget>[
                                 /* circular progress */
@@ -162,7 +162,7 @@ class _EvenementPageState extends State<EvenementPage>
                                         ],
                                       )
                                     : Container(),
-                                Text(data[position].category?.toUpperCase(),
+                                Text(data![position].category!.toUpperCase(),
                                     style: TextStyle(color: KColors.new_black)),
                               ],
                             ),
@@ -174,7 +174,7 @@ class _EvenementPageState extends State<EvenementPage>
                       Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.all(10),
-                          child: Text(data[position]?.description,
+                          child: Text(data![position].description!,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
                               maxLines: 50,
@@ -191,9 +191,9 @@ class _EvenementPageState extends State<EvenementPage>
         child: Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        IconButton(icon: Icon(Icons.event, color: Colors.grey)),
+        IconButton(icon: Icon(Icons.event, color: Colors.grey), onPressed: () {},),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('no_upcoming_events')}",
+        Text("${AppLocalizations.of(context)!.translate('no_upcoming_events')}",
             textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
       ],
     ));

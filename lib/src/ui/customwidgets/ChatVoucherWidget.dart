@@ -24,7 +24,7 @@ class ChatVoucherWidget extends StatefulWidget {
   bool? is_expired = false;
 
   ChatVoucherWidget(
-      {required Key key,
+      {Key? key,
       this.customer,
       this.voucher_link,
       this.voucher = null,

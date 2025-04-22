@@ -99,7 +99,7 @@ class _Personal3PageState extends State<Personal3Page>
 
   String _validateName(String value) {
     if (value.length < 2) {
-      return "${AppLocalizations.of(context).translate('field_more_2_chars')}";
+      return "${AppLocalizations.of(context)!.translate('field_more_2_chars')}";
 //      return 'This field must have more than 6 characters.';
     }
     return null;
@@ -125,7 +125,7 @@ class _Personal3PageState extends State<Personal3Page>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('my_profile')}"),
+                      "${AppLocalizations.of(context)!.translate('my_profile')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('phone_number')}",
+                                        "${AppLocalizations.of(context)!.translate('phone_number')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -243,7 +243,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('nickname')}",
+                                        "${AppLocalizations.of(context)!.translate('nickname')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -280,7 +280,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('whatsapp_number_hint_ex')}",
+                                        "${AppLocalizations.of(context)!.translate('whatsapp_number_hint_ex')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -317,7 +317,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('job_title')}",
+                                        "${AppLocalizations.of(context)!.translate('job_title')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -349,7 +349,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('your_district')}",
+                                        "${AppLocalizations.of(context)!.translate('your_district')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -396,7 +396,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('gender')}",
+                                        "${AppLocalizations.of(context)!.translate('gender')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -411,7 +411,7 @@ class _Personal3PageState extends State<Personal3Page>
                                         onChanged:
                                             _handleGenderRadioValueChange),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('woman_gender')}",
+                                        "${AppLocalizations.of(context)!.translate('woman_gender')}",
                                         style: TextStyle(
                                             color: KColors.new_black, fontSize: 12)),
                                   ],
@@ -424,7 +424,7 @@ class _Personal3PageState extends State<Personal3Page>
                                         onChanged:
                                             _handleGenderRadioValueChange),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('man_gender')}",
+                                        "${AppLocalizations.of(context)!.translate('man_gender')}",
                                         style: TextStyle(
                                             color: KColors.new_black, fontSize: 12)),
                                   ],
@@ -445,7 +445,7 @@ class _Personal3PageState extends State<Personal3Page>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('birthday')}",
+                                        "${AppLocalizations.of(context)!.translate('birthday')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey)))),
@@ -506,7 +506,7 @@ class _Personal3PageState extends State<Personal3Page>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                      "${AppLocalizations.of(context).translate('save')}",
+                                      "${AppLocalizations.of(context)!.translate('save')}",
                                       style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w600,
@@ -549,7 +549,7 @@ class _Personal3PageState extends State<Personal3Page>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                    "${AppLocalizations.of(context).translate('cancel')}",
+                                    "${AppLocalizations.of(context)!.translate('cancel')}",
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -599,7 +599,7 @@ class _Personal3PageState extends State<Personal3Page>
       widget.presenter.updatePersonnalPage(widget.customer);
     } else {
       mDialog(
-          "${AppLocalizations.of(context).translate('please_fill_all_fields')}");
+          "${AppLocalizations.of(context)!.translate('please_fill_all_fields')}");
     }
   }
 
@@ -643,7 +643,7 @@ class _Personal3PageState extends State<Personal3Page>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -654,7 +654,7 @@ class _Personal3PageState extends State<Personal3Page>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -666,7 +666,7 @@ class _Personal3PageState extends State<Personal3Page>
                     //
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();

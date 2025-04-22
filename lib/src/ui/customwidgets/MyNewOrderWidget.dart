@@ -360,7 +360,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
+        builder: (context) => OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter(OrderDetailsView())),
       ),
     );*/
 

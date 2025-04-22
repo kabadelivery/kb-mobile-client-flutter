@@ -31,7 +31,7 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
 
-    Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
+    Future<Map<String, dynamic>?> sendAndRetrieveMessage() async {
 
       xrint ("On click");
 
@@ -40,7 +40,7 @@ class _NotificationTestPageState extends State<NotificationTestPage> {
 //      );
       Client http = Client();
 
-      String token = await firebaseMessaging.getToken();
+      String? token = await firebaseMessaging.getToken();
 
       final response = await http.post(
           Uri.parse('https://fcm.googleapis.com/fcm/send'),

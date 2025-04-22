@@ -13,30 +13,30 @@ import 'package:toast/toast.dart';
 class TopUpPage extends StatefulWidget {
   static var routeName = "/TopUpPage";
 
-  TopUpPresenter presenter;
+  TopUpPresenter? presenter;
 
   var total = 0;
 
   var fees = 0;
 
-  double fees_tmoney = 10.0;
+  double? fees_tmoney = 10.0;
 
-  double fees_flooz = 10.0;
+  double? fees_flooz = 10.0;
 
-  double fees_bankcard = 10.0;
+  double? fees_bankcard = 10.0;
 
-  TopUpPage({Key key, this.presenter}) : super(key: key);
+  TopUpPage({Key? key, this.presenter}) : super(key: key);
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   @override
   _TopUpPageState createState() => _TopUpPageState();
 }
 
 class _TopUpPageState extends State<TopUpPage> implements TopUpView {
-  TextEditingController _phoneNumberFieldController;
-  TextEditingController _amountFieldController;
-  TextEditingController _totalAmountFieldController;
+  TextEditingController? _phoneNumberFieldController;
+  TextEditingController? _amountFieldController;
+  TextEditingController? _totalAmountFieldController;
 
   String operator = "---";
 
@@ -48,29 +48,29 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   String feesDescription = "";
   bool isGetFeesLoading = false;
-  FocusNode _totalFocusNode, _amountFocusNode;
+  FocusNode? _totalFocusNode, _amountFocusNode;
 
   int selectedPaymentMode = 0; // 0 tmoney 1 bank card 2 flooz
 
-  TextEditingController _feesFieldController;
+  TextEditingController? _feesFieldController;
 
   int BANK_MIN_AMOUNT = 10000;
 
   @override
   void initState() {
     super.initState();
-    widget.presenter.topUpView = this;
+    widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
     _totalAmountFieldController = new TextEditingController();
     _amountFieldController = new TextEditingController();
     _feesFieldController = new TextEditingController();
 
-    _phoneNumberFieldController.addListener(_checkOperator);
-    _amountFieldController.addListener(_updateFromInitialAmountTotal);
-    _totalAmountFieldController.addListener(_updateFromTotal);
+    _phoneNumberFieldController!.addListener(_checkOperator);
+    _amountFieldController!.addListener(_updateFromInitialAmountTotal);
+    _totalAmountFieldController!.addListener(_updateFromTotal);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.fetchFees(widget.customer);
+      widget.presenter!.fetchFees(widget.customer!);
 //      widget.presenter.fetchTopUpConfiguration(widget.customer);
     });
 
@@ -82,7 +82,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void didChangeDependencies() {
     super.didChangeDependencies();
     feesDescription =
-        "${AppLocalizations.of(context).translate('why_top_up_fees')}";
+        "${AppLocalizations.of(context)!.translate('why_top_up_fees')}";
   }
 
   void _updateSelectedPaymentMode(int mode) {
@@ -96,14 +96,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        brightness: Brightness.light,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
             onPressed: () {
               Navigator.pop(context);
             }),
         title: Text(
-            "${AppLocalizations.of(context).translate('top_up')}".toUpperCase(),
+            "${AppLocalizations.of(context)!.translate('top_up')}".toUpperCase(),
             style: TextStyle(color: KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
@@ -172,7 +171,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                           Expanded(
                               flex: 3,
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('topup_phone_number')}")),
+                                  "${AppLocalizations.of(context)!.translate('topup_phone_number')}")),
                           Expanded(
                               flex: 3,
                               child: Container(
@@ -208,7 +207,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                     Expanded(
                         flex: 3,
                         child: Text(
-                            "${AppLocalizations.of(context).translate('amount_to_topup')}")),
+                            "${AppLocalizations.of(context)!.translate('amount_to_topup')}")),
                     Expanded(
                         flex: 3,
                         child: Container(
@@ -246,12 +245,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
           isGetFeesLoading
               ? Text(
-                  "${"${AppLocalizations.of(context).translate('please_wait_fees_percentage')}"}",
+                  "${"${AppLocalizations.of(context)!.translate('please_wait_fees_percentage')}"}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: KColors.mGreen, fontWeight: FontWeight.bold))
               : Text(
-                  "* ${"${AppLocalizations.of(context).translate('top_up_fees_are')}"}"
+                  "* ${"${AppLocalizations.of(context)!.translate('top_up_fees_are')}"}"
                   " ${_getFees()}%",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -269,7 +268,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                     Expanded(
                         flex: 3,
                         child: Text(
-                            "${AppLocalizations.of(context).translate('fees')}")),
+                            "${AppLocalizations.of(context)!.translate('fees')}")),
                     Expanded(
                         flex: 3,
                         child: Container(
@@ -305,7 +304,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                     Expanded(
                         flex: 3,
                         child: Text(
-                            "${AppLocalizations.of(context).translate('total_amount')}")),
+                            "${AppLocalizations.of(context)!.translate('total_amount')}")),
                     Expanded(
                         flex: 3,
                         child: Container(
@@ -332,7 +331,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
           SizedBox(height: 30),
           Center(
               child: Text(
-                  "${AppLocalizations.of(context).translate('total_amount')}: ${_getTotalAmountEuro()} €")),
+                  "${AppLocalizations.of(context)!.translate('total_amount')}: ${_getTotalAmountEuro()} €")),
           SizedBox(height: 30),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -347,12 +346,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                     child: Row(
                       children: <Widget>[
                         Text(
-                            "${AppLocalizations.of(context).translate('top_up')}"
+                            "${AppLocalizations.of(context)!.translate('top_up')}"
                                 .toUpperCase(),
                             style:
                                 TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
-                        Text("${_totalAmountFieldController.text} XOF",
+                        Text("${_totalAmountFieldController!.text} XOF",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 20)),
                         SizedBox(width: 8),
@@ -412,7 +411,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   bool _checkOperator() {
-    String number = "${_phoneNumberFieldController.text}";
+    String number = "${_phoneNumberFieldController!.text}";
 
     String mOperator = "---";
     isOperatorOk = true;
@@ -448,39 +447,39 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void iLaunchTransaction() {
     if (isGetFeesLoading) {
       mToast(
-          "${AppLocalizations.of(context).translate('please_wait_fees_percentage')}");
+          "${AppLocalizations.of(context)!.translate('please_wait_fees_percentage')}");
       return;
     }
 
     if (selectedPaymentMode != 1 &&
-        !Utils.isPhoneNumber_TGO(_phoneNumberFieldController.text)) {
-      mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
+        !Utils.isPhoneNumber_TGO(_phoneNumberFieldController!.text)) {
+      mToast("${AppLocalizations.of(context)!.translate('phone_number_wrong')}");
     } else {
       if (widget.customer != null) if (selectedPaymentMode == 0 ||
           selectedPaymentMode == 2)
-        widget.presenter.launchTopUp(
-            widget.customer,
-            "${_phoneNumberFieldController.text}",
-            "${_amountFieldController.text}",
+        widget.presenter!.launchTopUp(
+            widget.customer!,
+            "${_phoneNumberFieldController!.text}",
+            "${_amountFieldController!.text}",
             _getFees());
       else {
         // launch pay dunya
-        String amount = "${_amountFieldController.text}";
+        String amount = "${_amountFieldController!.text}";
         int _amount = int.parse(amount);
         if (_amount >= BANK_MIN_AMOUNT)
-          widget.presenter.launchPayDunya(
-              widget.customer, "${_amountFieldController.text}", _getFees());
+          widget.presenter!.launchPayDunya(
+              widget.customer!, "${_amountFieldController!.text}", _getFees());
         else
           mDialog(
-              "${AppLocalizations.of(context).translate('bank_card_top_up_min')} ${BANK_MIN_AMOUNT}");
+              "${AppLocalizations.of(context)!.translate('bank_card_top_up_min')} ${BANK_MIN_AMOUNT}");
       }
       else
-        mToast("${AppLocalizations.of(context).translate('system_error')}");
+        mToast("${AppLocalizations.of(context)!.translate('system_error')}");
     }
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   void mDialog(String message) {
@@ -492,12 +491,12 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -508,7 +507,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -523,7 +522,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -534,18 +533,18 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -559,14 +558,14 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void _updateFromTotal() {
     /* check which one has focus before updating */
     setState(() {
-      if (!_amountFocusNode.hasFocus) {
+      if (!_amountFocusNode!.hasFocus) {
         // update fees
         xrint("amount field doesnt have focus ");
-        _amountFieldController.removeListener(_updateFromInitialAmountTotal);
-        _amountFieldController.text = "${_getRealInitialAmountFromTotal()}";
-        _amountFieldController.addListener(_updateFromInitialAmountTotal);
+        _amountFieldController!.removeListener(_updateFromInitialAmountTotal);
+        _amountFieldController!.text = "${_getRealInitialAmountFromTotal()}";
+        _amountFieldController!.addListener(_updateFromInitialAmountTotal);
         widget.fees = _getFeesFromTotal();
-        _feesFieldController.text = "${widget.fees}";
+        _feesFieldController!.text = "${widget.fees}";
         // update amount
       } else {
         xrint("amount field has  focus ");
@@ -577,15 +576,15 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   void _updateFromInitialAmountTotal() {
     /* check which one has focus before updating */
     setState(() {
-      if (!_totalFocusNode.hasFocus) {
+      if (!_totalFocusNode!.hasFocus) {
         // update fees
         xrint("total field doesnt have  focus ");
         widget.fees = _getFeesFromAmount();
-        _feesFieldController.text = "${widget.fees}";
-        _totalAmountFieldController.removeListener(_updateFromTotal);
-        _totalAmountFieldController.text =
+        _feesFieldController!.text = "${widget.fees}";
+        _totalAmountFieldController!.removeListener(_updateFromTotal);
+        _totalAmountFieldController!.text =
             "${_getRealTotalAmountFromInitial()}";
-        _totalAmountFieldController.addListener(_updateFromTotal);
+        _totalAmountFieldController!.addListener(_updateFromTotal);
         // update amount
       } else {
         xrint("total field has  focus ");
@@ -594,7 +593,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   _getFeesFromAmount() {
-    String amount = _amountFieldController.text;
+    String amount = _amountFieldController!.text;
     double amount_;
     if (amount == null || "" == amount.trim())
       amount_ = 0;
@@ -605,20 +604,20 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   _getFeesFromTotal() {
-    String total = _totalAmountFieldController.text;
-    double total_;
+    String total = _totalAmountFieldController!.text;
+    double? total_;
     if (total_ == null || "" == total.trim())
       total_ = 0;
     else {
       total_ = double.parse(total);
     }
 
-    int fees = total_.toInt() - _getRealInitialAmountFromTotal();
+    int fees =( total_.toInt() - _getRealInitialAmountFromTotal()).toInt();
     return fees;
   }
 
   _getRealInitialAmountFromTotal() {
-    String _total = _totalAmountFieldController.text;
+    String _total = _totalAmountFieldController!.text;
     double total;
     if (_total == null || "" == _total.trim())
       total = 0;
@@ -631,7 +630,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
 
   _getRealTotalAmountFromInitial() {
     int fees = _getFeesFromAmount();
-    String _amount = _amountFieldController.text;
+    String _amount = _amountFieldController!.text;
     int amount;
     if (_amount == null || "" == _amount.trim())
       amount = 0;
@@ -668,13 +667,13 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   double _getFees() {
     switch (selectedPaymentMode) {
       case 0:
-        return widget.fees_tmoney;
+        return widget.fees_tmoney!;
         break;
       case 1:
-        return widget.fees_bankcard;
+        return widget.fees_bankcard!;
         break;
       case 2:
-        return widget.fees_flooz;
+        return widget.fees_flooz!;
     }
     return 10.toDouble();
   }

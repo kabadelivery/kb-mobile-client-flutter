@@ -1,25 +1,15 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/cinema_contract.dart';
-import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/MovieModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieWidgetItem.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,12 +20,12 @@ import 'package:toast/toast.dart';
 class MovieCatalogePage extends StatefulWidget {
   static var routeName = "/MovieCatalogePage";
 
-  ShopModel cinema;
+  ShopModel? cinema;
 
-  CinemaPresenter presenter;
+  CinemaPresenter? presenter;
 
   MovieCatalogePage({
-    Key key,
+    Key? key,
     this.presenter,
     this.cinema = null,
   }) : super(key: key);
@@ -48,7 +38,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
     with TickerProviderStateMixin
     implements CinemaView {
   /* add data */
-  List<RestaurantSubMenuModel> data;
+  List<RestaurantSubMenuModel>? data;
 
   /* create a presenter for menu page */
 
@@ -64,7 +54,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
   void initState() {
     super.initState();
 
-    widget.presenter.cinemaView = this;
+    widget.presenter!.cinemaView = this;
 
     _menuChoices = ["Up this week", "Today", "Tomorrow", "Thursday"];
   }
@@ -72,11 +62,10 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
-      brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(
           child: Row(children: <Widget>[
-        // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+        // Text("${AppLocalizations.of(context)!.translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
         // SizedBox(width: 10),
         Container(
             decoration: BoxDecoration(
@@ -141,12 +130,12 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                               : (hasNetworkError
                                   ? ErrorPage(
                                       message:
-                                          "${AppLocalizations.of(context).translate('network_error')}",
+                                          "${AppLocalizations.of(context)!.translate('network_error')}",
                                       onClickAction: () {})
                                   : hasSystemError
                                       ? ErrorPage(
                                           message:
-                                              "${AppLocalizations.of(context).translate('system_error')}",
+                                              "${AppLocalizations.of(context)!.translate('system_error')}",
                                           onClickAction: () {})
                                       : _buildCinemaCatalog()),
                         ]))),
@@ -160,7 +149,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
 
     if (data == null || data?.length == 0)
       return Center(
-          child: Text("${AppLocalizations.of(context).translate('no_data')}"));
+          child: Text("${AppLocalizations.of(context)!.translate('no_data')}"));
 
     this?.data = data;
 
@@ -191,8 +180,8 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
   }
 
   void showToast(String message) {
-    Toast.show(message, context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+    Toast.show(message,
+        duration:5, gravity: Toast.center);
   }
 
   void showLoading(bool isLoading) {
@@ -205,13 +194,13 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {});
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {});
   }
 
@@ -232,12 +221,12 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -248,7 +237,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -263,7 +252,7 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -274,18 +263,18 @@ class _MovieCatalogePageState extends State<MovieCatalogePage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();

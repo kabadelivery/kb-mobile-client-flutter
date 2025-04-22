@@ -32,9 +32,9 @@ import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/voucher_widgets.dart';
 import 'fetching_package.dart';
 class ShippingPackageOrderPage extends ConsumerStatefulWidget {
-  final String additional_info;
-  final File additionnal_info_image;
-  final List<Map<String,dynamic>> districts;
+  final String? additional_info;
+  final File? additionnal_info_image;
+  final List<Map<String,dynamic>>? districts;
   static var routeName = "/ShippingPackageOrderPage";
   ShippingPackageOrderPage({this.additional_info,this.additionnal_info_image,this.districts});
 
@@ -83,7 +83,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
     if(locationState.selectedOrderAddress==null){
       locationState.selectedOrderAddress=[];
     }
-    if(locationState.selectedOrderAddress.isEmpty){
+    if(locationState.selectedOrderAddress!.isEmpty){
       locationState.is_order_address_picked=false;
     }else{
       locationState.is_order_address_picked=true;
@@ -92,15 +92,15 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
     districtState.districts=widget.districts;
     districtState.isLoading=false;
 
-    if(locationState.is_order_address_picked && locationState.is_shipping_address_picked){
-      if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
+    if(locationState.is_order_address_picked! && locationState.is_shipping_address_picked!){
+      if(locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
 
         Fluttertoast.showToast(
             backgroundColor: Colors.black87,
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("same_address_cant_be_picked")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("same_address_cant_be_picked")+" 🚨");
         outOfAppScreenState.isBillBuilt=false;
         outOfAppScreenState.showLoading=false;
 
@@ -109,7 +109,6 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         centerTitle: true,
         title: Row(
@@ -118,7 +117,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('package_order')}"),
+                    "${AppLocalizations.of(context)!.translate('package_order')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -163,7 +162,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                             )
                         ),
                         child: Text(
-                            "${AppLocalizations.of(context).translate('shipping_package')}",
+                            "${AppLocalizations.of(context)!.translate('shipping_package')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:outOfAppScreenState.order_type==5? Colors.white :KColors.new_black)),
@@ -207,7 +206,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                             )
                         ),
                         child:  Text(
-                            "${AppLocalizations.of(context).translate('fetch_package')}",
+                            "${AppLocalizations.of(context)!.translate('fetch_package')}",
                             style: TextStyle(
                                 fontSize: 15,
                                 color:outOfAppScreenState.order_type==6? Colors.white :Colors.grey)),
@@ -231,11 +230,11 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
               BuildExplanationSpace(
               context,
               ref,
-              AppLocalizations.of(context).translate('shipping_package_explanation'),
+              AppLocalizations.of(context)!.translate('shipping_package_explanation'),
              "https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json"
               ):Container(),
               SizedBox(height: 10,),
-                    Text(AppLocalizations.of(context).translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
+                    Text(AppLocalizations.of(context)!.translate("package_details"),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: KColors.new_black),),
                     SizedBox(height: 10,),
                     AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
 
@@ -244,7 +243,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                     SizedBox(height: 10,),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
-                    ShowBilling(context,orderBillingState.orderBillConfiguration):
+                    ShowBilling(context,orderBillingState.orderBillConfiguration!):
                     outOfAppScreenState.showLoading==true?
                     MyLoadingProgressWidget()
                         :Container(),
@@ -254,7 +253,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                       Column(
                           children: [
                             SizedBox(height: 10,),
-                             (locationState.selectedOrderAddress.isEmpty)?
+                             (locationState.selectedOrderAddress!.isEmpty)?
                             Column(
                               children: [
                                 ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,shipping_package_type),
@@ -262,16 +261,16 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                               ],
                             ):Container(),
                             (locationState.is_order_address_picked==true)?
-                             locationState.selectedOrderAddress.isNotEmpty ?
+                             locationState.selectedOrderAddress!.isNotEmpty ?
                             Column(
                               children: [
                                 Text(
-                                    "${AppLocalizations.of(context).translate('fecthing_package_address')}",
+                                    "${AppLocalizations.of(context)!.translate('fecthing_package_address')}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                         color: KColors.new_black)),
-                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0]),
+                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0]),
                               ],
                             ):Container():Container(),
                           ],
@@ -284,12 +283,12 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                         Column(
                           children: [
                             Text(
-                                "${AppLocalizations.of(context).translate('shipping_address')}",
+                                "${AppLocalizations.of(context)!.translate('shipping_address')}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                     color: KColors.new_black)),
-                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress),
+                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress!),
                           ],
                         ):
                         ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,shipping_package_type),
@@ -300,7 +299,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                                "${AppLocalizations.of(context).translate('add_district_info')}",
+                                "${AppLocalizations.of(context)!.translate('add_district_info')}",
                                 style: TextStyle(
 
                                     fontSize: 16,
@@ -351,7 +350,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                       textColor: Colors.white,
                       fontSize: 14,
                       toastLength: Toast.LENGTH_LONG ,
-                      msg: "🚨 "+AppLocalizations.of(context).translate("enter_correct_phone_number")+" 🚨");
+                      msg: "🚨 "+AppLocalizations.of(context)!.translate("enter_correct_phone_number")+" 🚨");
                 }
                else if(int.parse(outOfAppScreenState.package_amount)>100000){
                   Fluttertoast.showToast(
@@ -359,14 +358,14 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                       textColor: Colors.white,
                       fontSize: 14,
                       toastLength: Toast.LENGTH_LONG ,
-                      msg: "🚨 "+AppLocalizations.of(context).translate("price_too_high")+" 🚨");
+                      msg: "🚨 "+AppLocalizations.of(context)!.translate("price_too_high")+" 🚨");
                 }
                   else{
                         int type_of_order = 5;
                         ref.read(productListProvider.notifier).clearProducts();
-                        File image;
+                        File? image;
                         if(additionnalInfoState.image!=null){
-                          image = File(additionnalInfoState.image.path);
+                          image = File(additionnalInfoState.image!.path);
                         }else{
                           image = null;
                         }
@@ -396,7 +395,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                                         color: KColors.primaryColor),
                                     SizedBox(width: 5),
                                     Text(
-                                        "${AppLocalizations.of(context).translate('pay_at_arrival')}",
+                                        "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: KColors.primaryColor,

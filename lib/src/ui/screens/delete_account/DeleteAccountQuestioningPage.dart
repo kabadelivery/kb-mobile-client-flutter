@@ -16,9 +16,9 @@ import 'package:lottie/lottie.dart';
 class DeleteAccountQuestioningPage extends StatefulWidget {
   static var routeName = "/DeleteAccountQuestioningPage";
 
-  DeleteAccountQuestioningPresenter presenter;
+  DeleteAccountQuestioningPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   DeleteAccountQuestioningPage({this.presenter});
 
@@ -48,7 +48,7 @@ class DeleteAccountQuestioningPageState
   @override
   void initState() {
     super.initState();
-    widget.presenter.addDeleteAccountQuestioningView = this;
+    widget.presenter!.addDeleteAccountQuestioningView = this;
 
     CustomerUtils.getCustomer().then((customer) {
       setState(() {
@@ -63,7 +63,6 @@ class DeleteAccountQuestioningPageState
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -77,7 +76,7 @@ class DeleteAccountQuestioningPageState
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('delete_account')}"),
+                      "${AppLocalizations.of(context)!.translate('delete_account')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -102,7 +101,7 @@ class DeleteAccountQuestioningPageState
                 height: 30,
               ),
               Text(
-                "${AppLocalizations.of(context).translate('delete_account')}",
+                "${AppLocalizations.of(context)!.translate('delete_account')}",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
@@ -114,7 +113,7 @@ class DeleteAccountQuestioningPageState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "${AppLocalizations.of(context).translate('why_delete_account')}",
+                    "${AppLocalizations.of(context)!.translate('why_delete_account')}",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     textAlign: TextAlign.center,
                   ),
@@ -136,7 +135,7 @@ class DeleteAccountQuestioningPageState
                 height: 20,
               ),
               Text(
-                  "${AppLocalizations.of(context).translate("anything_else_to_say")}",
+                  "${AppLocalizations.of(context)!.translate("anything_else_to_say")}",
                   style: TextStyle(
                       color: KColors.new_black,
                       fontWeight: FontWeight.bold,
@@ -200,7 +199,7 @@ class DeleteAccountQuestioningPageState
                           children: <Widget>[
                             /* loading something eventually */
                             Text(
-                                "${AppLocalizations.of(context).translate('confirm')}"
+                                "${AppLocalizations.of(context)!.translate('confirm')}"
                                     .toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.white,
@@ -241,9 +240,9 @@ class DeleteAccountQuestioningPageState
   void systemError() {
     SnackBar snackBar = SnackBar(
       content:
-          Text("${AppLocalizations.of(context).translate('system_error')}"),
+          Text("${AppLocalizations.of(context)!.translate('system_error')}"),
       action: SnackBarAction(
-        label: "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+        label: "${AppLocalizations.of(context)!.translate('ok')}".toUpperCase(),
         onPressed: () {
           // Some code to undo the change.
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -274,21 +273,21 @@ class DeleteAccountQuestioningPageState
         reasons.add(accountQuestioning.keys.elementAt(i));
       }
     }
-    widget.presenter.postQuestioningResult(
-        widget.customer, reasons, _messageFieldController.text);
+    widget.presenter!.postQuestioningResult(
+        widget.customer!, reasons, _messageFieldController.text);
   }
 
 
 }
 
 class InformationCheckBox extends StatefulWidget {
-  String question;
+  String? question;
 
-  String tag;
+  String? tag;
 
-  Function onChanged;
+  Function? onChanged;
 
-  InformationCheckBox({Key key, this.tag, this.onChanged}) : super(key: key);
+  InformationCheckBox({Key? key, this.tag, this.onChanged}) : super(key: key);
 
   @override
   State<InformationCheckBox> createState() => _InformationCheckBoxState();
@@ -309,7 +308,7 @@ class _InformationCheckBoxState extends State<InformationCheckBox> {
               SizedBox(width: 5),
               Expanded(
                 child: Text(
-                    "${AppLocalizations.of(context).translate(widget.tag)}",
+                    "${AppLocalizations.of(context)!.translate(widget.tag!)}",
                     style: TextStyle(fontSize: 14, color: KColors.new_black)),
               )
             ]),
@@ -318,10 +317,10 @@ class _InformationCheckBoxState extends State<InformationCheckBox> {
     );
   }
 
-  void _onChanged(bool value) {
+  void _onChanged(bool? value) {
     setState(() {
       this.is_checked = !this.is_checked;
     });
-    widget.onChanged(this.is_checked, widget.tag);
+    widget.onChanged!(this.is_checked, widget.tag);
   }
 }

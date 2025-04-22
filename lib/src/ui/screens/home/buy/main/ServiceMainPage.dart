@@ -43,17 +43,17 @@ class ServiceMainPage extends StatefulWidget {
 
   var destination;
 
-  ServiceMainPresenter presenter;
+  ServiceMainPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  List<ServiceMainEntity> available_services = [];
+  List<ServiceMainEntity>? available_services = [];
 
-  List<ServiceMainEntity> coming_soon_services = [];
+  List<ServiceMainEntity>? coming_soon_services = [];
 
-  Position initialLocation;
+  Position? initialLocation;
 
-  ServiceMainPage({Key key, this.presenter}) : super(key: key);
+  ServiceMainPage({Key? key, this.presenter}) : super(key: key);
 
   @override
   ServiceMainPageState createState() => ServiceMainPageState();
@@ -61,25 +61,25 @@ class ServiceMainPage extends StatefulWidget {
 
 class ServiceMainPageState extends State<ServiceMainPage>
     implements ServiceMainView {
-  bool isLoading;
+  bool? isLoading;
 
-  bool hasNetworkError;
+  bool? hasNetworkError;
 
-  bool hasSystemError;
+  bool? hasSystemError;
 
-  DeliveryAddressModel _selectedAddress;
+  DeliveryAddressModel? _selectedAddress;
 
-  SharedPreferences prefs;
+  SharedPreferences? prefs;
 
   bool isPickLocation = false;
 
-  CurrentLocationTile _myCurrentTile;
+  CurrentLocationTile? _myCurrentTile;
 
   @override
   void initState() {
     super.initState();
 
-    widget.presenter.serviceMainView = this;
+    widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
 
@@ -95,10 +95,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
     super.didChangeDependencies();
     if (widget.available_services?.length == 0 &&
         widget.coming_soon_services?.length == 0) {
-      widget.presenter.fetchServiceCategoryFromLocation(
-          StateContainer.of(context).location);
+      widget.presenter?.fetchServiceCategoryFromLocation(
+          StateContainer.of(context).location!);
     }
-    widget.presenter.fetchBilling();
+    widget.presenter?.fetchBilling();
   }
 
   @override
@@ -106,7 +106,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           centerTitle: true,
           title: Row(
@@ -115,7 +114,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('buy')}"),
+                      "${AppLocalizations.of(context)!.translate('buy')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -130,11 +129,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 top: true,
                 child: Container(
                   child: Container(
-                      child: isLoading
+                      child: isLoading!
                           ? Center(child: MyLoadingProgressWidget())
-                          : (hasNetworkError
+                          : (hasNetworkError!
                               ? _buildNetworkErrorPage()
-                              : hasSystemError
+                              : hasSystemError!
                                   ? _buildSysErrorPage()
                                   : _buildServicePage())),
                 ))));
@@ -142,19 +141,19 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchServiceCategoryFromLocation(
-              StateContainer.of(context).location);
+          widget.presenter!.fetchServiceCategoryFromLocation(
+              StateContainer.of(context).location!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchServiceCategoryFromLocation(
-              StateContainer.of(context).location);
+          widget.presenter!.fetchServiceCategoryFromLocation(
+              StateContainer.of(context).location!);
         });
   }
 
@@ -181,7 +180,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                               ),
                               Expanded(
                                   child: Text(
-                                "${AppLocalizations.of(context).translate("current_address_tile_hint")}",
+                                "${AppLocalizations.of(context)!.translate("current_address_tile_hint")}",
                                 textAlign: TextAlign.center,
                                 style:
                                     TextStyle(color: Colors.grey, fontSize: 12),
@@ -232,7 +231,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                         SizedBox(width: 10),
                                         Text(
                                             Utils.capitalize(
-                                                "${AppLocalizations.of(context).translate('please_select_main_location')}"),
+                                                "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,
@@ -270,7 +269,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   InkWell(
                       child: SearchStatelessWidget(
                           title:
-                              "${AppLocalizations.of(context).translate("what_want_buy")}"),
+                              "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
                       onTap: () {
                         _jumpToSearchPage("all");
                       }),
@@ -320,7 +319,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                    child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
                                 SizedBox(width: 9),
                                 Text(
-                                    "${AppLocalizations.of(context).translate('out_of_app')}",
+                                    "${AppLocalizations.of(context)!.translate('out_of_app')}",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
@@ -379,7 +378,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                    child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
                                 SizedBox(width: 9),
                                 Text(
-                                    "${AppLocalizations.of(context).translate('package')}",
+                                    "${AppLocalizations.of(context)!.translate('package')}",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
@@ -390,14 +389,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
                       )
                     ]..addAll(widget.available_services
-                        .map((e) => BuyCategoryWidget(e,
+                        !.map((e) => BuyCategoryWidget(e,
                             available: true,
                             mDialog: mDialog,
                             showPlacePicker: showPlacePicker))
                         .toList()),
                   ),
                   SizedBox(height: 30),
-                  widget.coming_soon_services?.length > 0
+                  widget.coming_soon_services!.length! > 0
                       ? Opacity(
                           opacity: 0.5,
                           child: Container(
@@ -408,7 +407,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                   Container(
                                       padding: EdgeInsets.only(left: 30),
                                       child: Text(
-                                          "${AppLocalizations.of(context).translate('coming_soon')}")),
+                                          "${AppLocalizations.of(context)!.translate('coming_soon')}")),
                                 ],
                               ),
                               GridView(
@@ -423,7 +422,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 ),
                                 shrinkWrap: true,
                                 children: []..addAll(widget.coming_soon_services
-                                    .map((e) => BuyCategoryWidget(e,
+                                    !.map((e) => BuyCategoryWidget(e,
                                         available: false, mDialog: mDialog))
                                     .toList()),
                               ),
@@ -445,7 +444,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
                         width: 160,
                         height: 160, errorBuilder: (BuildContext context,
-                            Object error, StackTrace st) {
+                            Object error, StackTrace? stackTrace) {
                       return Container();
                     }),
                   ),
@@ -463,7 +462,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate('info')}"),
+            title: Text("${AppLocalizations.of(context)!.translate('info')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -478,7 +477,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate('request_location_permission')}",
+                      "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14))
                 ],
@@ -487,7 +486,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             actions: <Widget>[
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('refuse')}"),
+                    Text("${AppLocalizations.of(context)!.translate('refuse')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(
@@ -496,16 +495,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           context: context,
                           type: type,
                           foodProposalPresenter:
-                              RestaurantFoodProposalPresenter(),
-                          restaurantListPresenter: RestaurantListPresenter()));
+                              RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+                          restaurantListPresenter: RestaurantListPresenter(RestaurantListView())));
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('accept')}"),
+                    Text("${AppLocalizations.of(context)!.translate('accept')}"),
                 onPressed: () {
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setString("_has_accepted_gps", "ok");
+                  prefs!.setString("_has_accepted_gps", "ok");
                   Navigator.of(context).pop();
                   // call get location again...
                   showPlacePicker(context);
@@ -521,8 +520,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
           ShopListPageRefined(
               context: context,
               type: type,
-              foodProposalPresenter: RestaurantFoodProposalPresenter(),
-              restaurantListPresenter: RestaurantListPresenter()));
+              foodProposalPresenter: RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+              restaurantListPresenter: RestaurantListPresenter(RestaurantListView())));
     }
   }
 
@@ -546,12 +545,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
     setState(() {
       widget.available_services = [];
       widget.coming_soon_services = [];
-      for (int i = 0; i < data?.length; i++) {
+      for (int i = 0; i < data.length; i++) {
         if (data[i].is_active == 1) {
-          widget.available_services.add(data[i]);
+          widget.available_services!.add(data[i]);
         }
         if (data[i].is_coming_soon == 1) {
-          widget.coming_soon_services.add(data[i]);
+          widget.coming_soon_services!.add(data[i]);
         }
       }
     });
@@ -593,11 +592,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -608,7 +607,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -623,7 +622,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -634,18 +633,18 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -660,7 +659,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      String? _has_accepted_gps = prefs!.getString("_has_accepted_gps");
       /* no need to commit */
       /* expiration date in 3 months */
       if (_has_accepted_gps != "ok") {
@@ -669,7 +668,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('info')}"),
+              title: Text("${AppLocalizations.of(context)!.translate('info')}"),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -685,7 +684,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('request_location_permission')}",
+                        "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14))
                   ],
@@ -694,17 +693,17 @@ class ServiceMainPageState extends State<ServiceMainPage>
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
                     /* */
-                    prefs.setString("_has_accepted_gps", "ok");
+                    prefs!.setString("_has_accepted_gps", "ok");
                     showPlacePicker(context);
                     Navigator.of(context).pop();
                   },
@@ -769,8 +768,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
     if (StateContainer.of(context)?.location != null) {
       xrint("moving to me");
       Pp.PlacePickerState.initialTarget = LatLng(
-          StateContainer.of(context).location.latitude,
-          StateContainer.of(context).location.longitude);
+          StateContainer.of(context).location!.latitude,
+          StateContainer.of(context).location!.longitude);
     }
 
     xrint("i pick address");
@@ -780,13 +779,25 @@ class ServiceMainPageState extends State<ServiceMainPage>
         builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
             alreadyHasLocation: StateContainer.of(context)?.location != null)));
     /* use this location to generate details about the place the user lives and so on. */
-
+    Position pos = await Geolocator.getCurrentPosition();
     if (result?.longitude != null) {
       setState(() {
         _myCurrentTile = null;
         StateContainer.of(context).placemark = null;
         StateContainer.of(context).location =
-            Position(latitude: result.latitude, longitude: result.longitude);
+            Position(
+              latitude: result.latitude,
+              longitude: result.longitude,
+              timestamp: DateTime.now(),
+              accuracy: pos.accuracy,
+              altitude: pos.altitude,
+              altitudeAccuracy: pos.altitudeAccuracy,
+              heading: pos.heading,
+              headingAccuracy: pos.headingAccuracy,
+              speed: pos.speed,
+              speedAccuracy: pos.speedAccuracy,
+            );
+
       });
     } else {
       if (widget.initialLocation != null) {
@@ -798,7 +809,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     }
 
     /* location is saved locally */
-    CustomerUtils.saveAddressLocally(StateContainer.of(context).location);
+    CustomerUtils.saveAddressLocally(StateContainer.of(context).location!);
 
     setState(() {
       isPickLocation = false;
@@ -806,7 +817,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   getCurrentTile() {
-    if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile();
+    if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile(key: null,);
     return _myCurrentTile;
   }
 }

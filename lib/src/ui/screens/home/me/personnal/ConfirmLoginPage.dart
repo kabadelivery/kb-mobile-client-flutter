@@ -43,13 +43,13 @@ class _ConfirmLoginPageState extends State<ConfirmLoginPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    hint = "${AppLocalizations.of(context).translate('_confirm')} ${widget.type == 1 ? "${AppLocalizations.of(context).translate('phone_number')}" : "${AppLocalizations.of(context).translate('email')}" }";
+    hint = "${AppLocalizations.of(context)!.translate('_confirm')} ${widget.type == 1 ? "${AppLocalizations.of(context)!.translate('phone_number')}" : "${AppLocalizations.of(context)!.translate('email')}" }";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, title: Text("${AppLocalizations.of(context).translate('_confirm')}", style:TextStyle(color:KColors.primaryColor))),
+      appBar: AppBar(backgroundColor: Colors.white, title: Text("${AppLocalizations.of(context)!.translate('_confirm')}", style:TextStyle(color:KColors.primaryColor))),
       body: Container(
         child: SingleChildScrollView(
             child:Column(

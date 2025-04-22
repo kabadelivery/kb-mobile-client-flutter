@@ -22,16 +22,16 @@ import 'package:flutter_svg/svg.dart';
 class TransactionHistoryPage extends StatefulWidget {
   static var routeName = "/TransactionHistoryPage";
 
-  TransactionPresenter presenter;
+  TransactionPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   var selectedPosition = 1;
 
-  TransactionHistoryPage({Key key, this.title, this.presenter})
+  TransactionHistoryPage({Key? key, this.title, this.presenter})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _TransactionHistoryPageState createState() => _TransactionHistoryPageState();
@@ -39,12 +39,12 @@ class TransactionHistoryPage extends StatefulWidget {
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     with TransactionView, SingleTickerProviderStateMixin {
-  List<MoneyTransactionModel> moneyData;
-  PointObjModel pointData = null;
+  List<MoneyTransactionModel>? moneyData;
+  PointObjModel? pointData = null;
 
-  String balance, kaba_points;
+  String? balance, kaba_points;
 
-  TabController _tabController;
+  TabController? _tabController;
 
   var TABS_LENGTH = 2;
 
@@ -62,9 +62,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     // TODO: implement initState
     super.initState();
 
-    widget.presenter.transactionView = this;
+    widget.presenter!.transactionView = this;
     _tabController = TabController(vsync: this, length: TABS_LENGTH);
-    /*  _tabController.addListener(() {
+    /*  _tabController!.addListener(() {
       _handleTabSelection();
     });*/
 
@@ -72,22 +72,22 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       widget.customer = customer;
 
       // fetch transaction as the first page
-      widget.presenter.fetchMoneyTransaction(customer);
+      widget.presenter!.fetchMoneyTransaction(customer!);
       // only fetch point when we press on the other button
-      widget.presenter.checkBalance(customer);
+      widget.presenter!.checkBalance(customer!);
     });
-    _tabController.addListener(_handleTabSelection);
+    _tabController!.addListener(_handleTabSelection);
   }
 
   void _handleTabSelection() {
-    if (_tabController.indexIsChanging) {
-      switch (_tabController.index) {
+    if (_tabController!.indexIsChanging) {
+      switch (_tabController!.index) {
         case 0:
           /* we know that we have to init / load data from specific page */
           break;
         case 1:
           if (pointData == null) {
-            widget.presenter.fetchPointTransaction(widget.customer);
+            widget.presenter!.fetchPointTransaction(widget.customer!);
           }
           /* we know that we have to init / load data from specific page */
           break;
@@ -108,7 +108,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 
@@ -138,7 +138,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -185,7 +184,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         padding: EdgeInsets.all(10),
                                         child: Center(
                                           child: Text(Utils.capitalize(
-                                                  // "${AppLocalizations.of(context).translate('search_restaurant')}"),
+                                                  // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
                                                   _searchChoices[0]),
                                               style: TextStyle(
                                                   fontSize: 12,
@@ -281,10 +280,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   @override
-  void networkPointError({int delay = 0}) {
+  void networkPointError({int? delay = 0}) {
     // showPointloading(false);
     /* show a page of network error. */
-    Future.delayed(Duration(seconds: delay), () {
+    Future.delayed(Duration(seconds: delay!), () {
       setState(() {
         this.isPointPageLoading = false;
         this.isPointTopLoading = false;
@@ -355,7 +354,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   _buildPointTransactionHistoryList() {
     if (pointData == null ||
         !pointData
-            ?.is_eligible /* || pointData?.last_ten_transactions?.length == 0*/)
+            !.is_eligible! /* || pointData!.last_ten_transactions!.length! == 0*/)
       return Column(
         children: [
           SizedBox(height: 15),
@@ -363,10 +362,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
               child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-                pointData?.is_eligible
+                pointData!.is_eligible!
                     ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                         .replaceAll(
-                            "XXX_XXX", "${pointData?.monthly_limit_amount}")
+                            "XXX_XXX", "${pointData!.monthly_limit_amount}")
                     : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: KColors.new_black, fontSize: 11)),
@@ -409,7 +408,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                           Row(
                                             children: [
                                               Text(
-                                                  "${pointData?.balance == null ? "---" : pointData?.balance}",
+                                                  "${pointData!.balance == null ? "---" : pointData!.balance}",
                                                   style: TextStyle(
                                                       fontSize: 24,
                                                       fontWeight: FontWeight.bold,
@@ -443,7 +442,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                           Row(
                                             children: [
                                               Text(
-                                                  "${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}",
+                                                  "${pointData!.balance == null || pointData!.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData!)}",
                                                   style: TextStyle(
                                                       fontSize: 24,
                                                       fontWeight: FontWeight.bold,
@@ -476,7 +475,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                           Row(
                                             children: [
                                               Text(
-                                                  "${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}",
+                                                  "${pointData!.amount_already_used == null ? "---" : pointData!.amount_already_used}",
                                                   style: TextStyle(
                                                       fontSize: 24,
                                                       fontWeight: FontWeight.bold,
@@ -494,13 +493,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                       ),
                     ),
                     // SizedBox(height: 20),
-                    pointData?.is_eligible
+                    pointData!.is_eligible!
                         ? Container()
                         : RawMaterialButton(
                             onPressed: () => mToast(
                                 "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                                     .replaceAll("XXX_XXX",
-                                        "${pointData?.monthly_limit_amount}")),
+                                        "${pointData!.monthly_limit_amount}")),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
@@ -541,7 +540,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                   Icon(Icons.discount, color:  KColors.primaryColor),
                   SizedBox(height: 5),
                   Text(
-                      "${AppLocalizations.of(context)?.translate('non_eligible_reason')}".replaceAll("XXX", pointData?.eligible_order_count?.toString()).replaceAll("YYY", pointData?.monthly_limit_amount?.toString()),
+                      "${AppLocalizations.of(context)?.translate('non_eligible_reason')}".replaceAll("XXX", pointData!.eligible_order_count!.toString()).replaceAll("YYY", pointData!.monthly_limit_amount!.toString()),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: KColors.primaryColor)),
                 ],
@@ -553,7 +552,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
         margin: EdgeInsets.only(bottom: 20),
         child: Column(
             children: <Widget>[]..addAll(List.generate(
-                  pointData?.last_ten_transactions?.length, (index) {
+                  pointData!.last_ten_transactions!.length!, (index) {
                 return Column(
                   children: <Widget>[
                     index == 0 ? SizedBox(height: 15) : Container(),
@@ -562,10 +561,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                             child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                                pointData?.is_eligible
+                                pointData!.is_eligible!
                                     ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                                         .replaceAll("XXX_XXX",
-                                            "${pointData?.monthly_limit_amount}")
+                                            "${pointData!.monthly_limit_amount}")
                                     : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -618,7 +617,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                         Row(
                                                           children: [
                                                             Text(
-                                                                "${pointData?.balance == null ? "---" : pointData?.balance}",
+                                                                "${pointData!.balance == null ? "---" : pointData!.balance}",
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         24,
@@ -660,7 +659,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                         Row(
                                                           children: [
                                                             Text(
-                                                                "${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}",
+                                                                "${pointData!.balance == null || pointData!.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData!)}",
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         24,
@@ -700,7 +699,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                         Row(
                                                           children: [
                                                             Text(
-                                                                "${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}",
+                                                                "${pointData!.amount_already_used == null ? "---" : pointData!.amount_already_used}",
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         24,
@@ -721,13 +720,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     ),
                                   ),
                                   // SizedBox(height: 20),
-                                  pointData?.is_eligible
+                                  pointData!.is_eligible!
                                       ? Container()
                                       : RawMaterialButton(
                                           onPressed: () => mToast(
                                               "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                                                   .replaceAll("XXX_XXX",
-                                                      "${pointData?.monthly_limit_amount}")),
+                                                      "${pointData!.monthly_limit_amount}")),
                                           child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -767,7 +766,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           )
                         : Container(),
                     index == 0 ? SizedBox(height: 15) : Container(),
-                    pointData?.last_ten_transactions?.length > 0
+                    pointData!.last_ten_transactions!.length! > 0
                         ? Container(
                             padding: EdgeInsets.symmetric(vertical: 10),
                             margin: EdgeInsets.symmetric(horizontal: 10),
@@ -776,8 +775,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               border: Border(
                                 bottom: BorderSide(
                                     width: index ==
-                                            pointData?.last_ten_transactions
-                                                    ?.length -
+                                            pointData!.last_ten_transactions
+                                                    !.length! -
                                                 1
                                         ? 0
                                         : 0.8,
@@ -788,14 +787,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               children: [
                                 ListTile(
                                   leading: pointData
-                                              ?.last_ten_transactions[index]
+                                              ?.last_ten_transactions![index]
                                               ?.type ==
                                           "D"
                                       ? Icon(
                                           Icons.trending_down,
                                           color: Colors.red,
                                         )
-                                      : (pointData?.last_ten_transactions[index]
+                                      : (pointData!.last_ten_transactions![index]
                                                   .type ==
                                               "C"
                                           ? Icon(
@@ -808,7 +807,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     children: <Widget>[
                                       Expanded(
                                           child: Text(
-                                              "${pointData?.last_ten_transactions[index]?.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}",
+                                              "${pointData!.last_ten_transactions![index]!.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}",
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
@@ -823,7 +822,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: (pointData
-                                                        ?.last_ten_transactions[
+                                                        ?.last_ten_transactions![
                                                             index]
                                                         ?.type !=
                                                     "D"
@@ -836,7 +835,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         SizedBox(width: 5),
                                         Icon(
                                             pointData
-                                                        ?.last_ten_transactions[
+                                                        ?.last_ten_transactions![
                                                             index]
                                                         ?.type !=
                                                     "D"
@@ -844,7 +843,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 : Icons.arrow_downward,
                                             size: 12,
                                             color: pointData
-                                                        ?.last_ten_transactions[
+                                                        ?.last_ten_transactions![
                                                             index]
                                                         ?.type !=
                                                     "D"
@@ -852,10 +851,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 : KColors.primaryColor),
                                         SizedBox(width: 5),
                                         Text(
-                                            "${pointData?.last_ten_transactions[index]?.amount}",
+                                            "${pointData!.last_ten_transactions![index]!.amount}",
                                             style: TextStyle(
                                                 color: pointData
-                                                            ?.last_ten_transactions[
+                                                            ?.last_ten_transactions![
                                                                 index]
                                                             ?.type !=
                                                         "D"
@@ -869,7 +868,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                             "${AppLocalizations.of(context)?.translate('currency')}",
                                             style: TextStyle(
                                                 color: pointData
-                                                            ?.last_ten_transactions[
+                                                            ?.last_ten_transactions![
                                                                 index]
                                                             ?.type !=
                                                         "D"
@@ -894,7 +893,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                          "${pointData?.last_ten_transactions[index]?.created_at}",
+                                          "${pointData!.last_ten_transactions![index]!.created_at}",
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 10,
@@ -915,9 +914,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
         separatorBuilder: (context, index) => Divider(
               color: Colors.grey.withAlpha(50),
             ),
-        itemCount: pointData?.last_ten_transactions?.length == 0
+        itemCount: pointData!.last_ten_transactions!.length! == 0
             ? 1
-            : pointData?.last_ten_transactions?.length,
+            : pointData!.last_ten_transactions!.length!,
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: <Widget>[
@@ -937,10 +936,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                   SizedBox(height: 5),
                                   Center(
                                       child: Text(
-                                          pointData?.is_eligible
+                                          pointData!.is_eligible!
                                               ? "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                                                   .replaceAll("XXX_XXX",
-                                                      "${pointData?.monthly_limit_amount}")
+                                                      "${pointData!.monthly_limit_amount}")
                                               : "${AppLocalizations.of(context)?.translate("use_of_kaba_points_not_eligible")}",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -1001,7 +1000,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 Row(
                                                   children: [
                                                     Text(
-                                                        "${pointData?.balance == null ? "---" : pointData?.balance}",
+                                                        "${pointData!.balance == null ? "---" : pointData!.balance}",
                                                         style: TextStyle(
                                                             fontSize: 24,
                                                             color: KColors
@@ -1017,7 +1016,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 Row(
                                                   children: [
                                                     Text(
-                                                        "${pointData?.amount_already_used == null ? "---" : pointData?.amount_already_used}",
+                                                        "${pointData!.amount_already_used == null ? "---" : pointData!.amount_already_used}",
                                                         style: TextStyle(
                                                             fontSize: 18,
                                                             color: KColors
@@ -1033,7 +1032,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                                 Row(
                                                   children: [
                                                     Text(
-                                                        "${pointData?.balance == null || pointData?.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData)}",
+                                                        "${pointData!.balance == null || pointData!.amount_already_used == null ? "---" : _getRemainingPointToUse(pointData!)}",
                                                         style: TextStyle(
                                                             fontSize: 18,
                                                             color:
@@ -1050,13 +1049,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                               ),
                             ),
                             // SizedBox(height: 20),
-                            pointData?.is_eligible
+                            pointData!.is_eligible!
                                 ? Container()
                                 : RawMaterialButton(
                                     onPressed: () => mToast(
                                         "${AppLocalizations.of(context)?.translate('kaba_point_description')}"
                                             .replaceAll("XXX_XXX",
-                                                "${pointData?.monthly_limit_amount}")),
+                                                "${pointData!.monthly_limit_amount}")),
                                     child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -1095,18 +1094,18 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                       ),
                     )
                   : Container(),
-              pointData?.last_ten_transactions?.length > 0
+              pointData!.last_ten_transactions!.length! > 0
                   ? Column(
                       children: [
                         ListTile(
                           leading: pointData
-                                      ?.last_ten_transactions[index]?.type ==
+                                      ?.last_ten_transactions![index]!.type ==
                                   "D"
                               ? Icon(
                                   Icons.trending_down,
                                   color: Colors.red,
                                 )
-                              : (pointData?.last_ten_transactions[index].type ==
+                              : (pointData!.last_ten_transactions![index].type ==
                                       "C"
                                   ? Icon(
                                       Icons.trending_up,
@@ -1118,7 +1117,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                             children: <Widget>[
                               Expanded(
                                   child: Text(
-                                      "${pointData?.last_ten_transactions[index]?.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}",
+                                      "${pointData!.last_ten_transactions![index]!.type == "D" ? "${AppLocalizations.of(context)?.translate('debit_points_kaba')}" : "${AppLocalizations.of(context)?.translate('credit_points_kaba')}"}",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -1128,9 +1127,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           ),
                           // subtitle: Text("${pointData[index].details}", style: TextStyle(fontSize: 12)),
                           trailing: Text(
-                              "${(pointData?.last_ten_transactions[index]?.type == "D" ? "-" : "+")} ${pointData?.last_ten_transactions[index]?.amount}",
+                              "${(pointData!.last_ten_transactions![index]!.type == "D" ? "-" : "+")} ${pointData!.last_ten_transactions![index]!.amount}",
                               style: TextStyle(
-                                  color: pointData?.last_ten_transactions[index]
+                                  color: pointData!.last_ten_transactions![index]
                                               ?.type ==
                                           "D"
                                       ? Colors.red
@@ -1149,7 +1148,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               Text(
-                                  "${pointData?.last_ten_transactions[index]?.created_at}",
+                                  "${pointData!.last_ten_transactions![index]!.created_at}",
                                   style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 10,
@@ -1166,7 +1165,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   _buildMoneyTransactionHistoryList() {
-    if (moneyData == null || moneyData?.length == 0)
+    if (moneyData == null || moneyData!.length == 0)
       return Column(
         children: [
           Center(
@@ -1229,7 +1228,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     return Container(
         child: Column(
             children: <Widget>[]
-              ..addAll(List.generate(moneyData?.length, (index) {
+              ..addAll(List.generate(moneyData!.length, (index) {
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 5),
                   child: Column(
@@ -1300,14 +1299,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           children: [
                             InkWell(
                               onTap: () {
-                                _onMoneyTransactionTap(moneyData[index]);
+                                _onMoneyTransactionTap(moneyData![index]);
                               },
                               child: ListTile(
                                 title: Row(
                                   children: <Widget>[
                                     Expanded(
                                         child: Text(
-                                            "${moneyData[index].details}",
+                                            "${moneyData![index].details}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -1318,7 +1317,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 ),
                                 subtitle: Container(
                                   margin: EdgeInsets.only(top: 5),
-                                  child: Text("${moneyData[index].details}",
+                                  child: Text("${moneyData![index].details}",
                                       style: TextStyle(
                                           fontSize: 12, color: Colors.grey)),
                                 ),
@@ -1327,7 +1326,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       vertical: 5, horizontal: 5),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: (moneyData[index].type != -1
+                                      color: (moneyData![index].type != -1
                                               ? CommandStateColor.delivered
                                               : KColors.primaryColor)
                                           .withAlpha(30)),
@@ -1337,27 +1336,27 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      /*   moneyData[index].payAtDelivery == true
+                                      /*   moneyData![index].payAtDelivery == true
                                           ? Container(width: 0, height: 0,) : Icon(
                                               Icons.monetization_on,
-                                              color: moneyData[index].type != -1
+                                              color: moneyData![index].type != -1
                                                   ? CommandStateColor.delivered
                                                   : KColors.primaryColor,
                                               size: 15,
                                             )
                                       ,*/
                                       Icon(
-                                          moneyData[index].type != -1
+                                          moneyData![index].type != -1
                                               ? Icons.arrow_upward
                                               : Icons.arrow_downward,
                                           size: 12,
-                                          color: moneyData[index].type != -1
+                                          color: moneyData![index].type != -1
                                               ? CommandStateColor.delivered
                                               : KColors.primaryColor),
                                       SizedBox(width: 5),
-                                      Text("${moneyData[index].value}",
+                                      Text("${moneyData![index].value}",
                                           style: TextStyle(
-                                              color: moneyData[index].type != -1
+                                              color: moneyData![index].type != -1
                                                   ? CommandStateColor.delivered
                                                   : KColors.primaryColor,
                                               fontWeight: FontWeight.bold,
@@ -1366,7 +1365,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                       Text(
                                           "${AppLocalizations.of(context)?.translate('currency_short')}",
                                           style: TextStyle(
-                                              color: moneyData[index].type != -1
+                                              color: moneyData![index].type != -1
                                                   ? CommandStateColor.delivered
                                                   : KColors.primaryColor,
                                               fontWeight: FontWeight.bold,
@@ -1377,8 +1376,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 ),
                                 /*Row(
                               children: <Widget>[
-                                Text(moneyData[index].value, style: TextStyle(color: moneyData[index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
-                                SizedBox(width: 5), Icon(moneyData[index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
+                                Text(moneyData![index].value, style: TextStyle(color: moneyData![index].type == -1 ? Colors.red : Colors.green,fontWeight: FontWeight.bold, fontSize: 18)),
+                                SizedBox(width: 5), Icon(moneyData![index].payAtDelivery == true ? Icons.money_off : Icons.attach_money, color: Colors.grey),SizedBox(width: 10)
                               ],
                             ),*/
                               ),
@@ -1389,7 +1388,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                 children: <Widget>[
                                   Text(
                                       Utils.readTimestamp(context,
-                                          moneyData[index]?.created_at),
+                                          moneyData![index]!.created_at!),
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 12)),
                                   SizedBox(width: 20)
@@ -1397,12 +1396,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           ],
                         ),
                       ),
-                      index == moneyData?.length - 1
+                      index == moneyData!.length - 1
                           ? Container(
                               height: 90,
                               child: Center(
                                 child: Text(
-                                  '${AppLocalizations.of(context).translate("only_3_months_transaction_history")}',
+                                  '${AppLocalizations.of(context)!.translate("only_3_months_transaction_history")}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12),
@@ -1420,8 +1419,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)?.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchMoneyTransaction(widget.customer);
-          widget.presenter.checkBalance(widget.customer);
+          widget.presenter!.fetchMoneyTransaction(widget.customer!);
+          widget.presenter!.checkBalance(widget.customer!);
         });
   }
 
@@ -1429,8 +1428,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)?.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchMoneyTransaction(widget.customer);
-          widget.presenter.checkBalance(widget.customer);
+          widget.presenter!.fetchMoneyTransaction(widget.customer!);
+          widget.presenter!.checkBalance(widget.customer!);
         });
   }
 
@@ -1438,7 +1437,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)?.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchPointTransaction(widget.customer);
+          widget.presenter!.fetchPointTransaction(widget.customer!);
         });
   }
 
@@ -1446,7 +1445,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)?.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchPointTransaction(widget.customer);
+          widget.presenter!.fetchPointTransaction(widget.customer!);
         });
   }
 
@@ -1486,12 +1485,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1502,7 +1501,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -1517,7 +1516,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1528,18 +1527,18 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1560,22 +1559,22 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
   }
 
   void _onMoneyTransactionTap(MoneyTransactionModel moneyData) {
-    if (moneyData?.command_id != null && moneyData?.command_id > 1) {
+    if (moneyData!.command_id != null && moneyData!.command_id! > 1) {
       // jump to order details page
       _jumpToPage(
           context,
           OrderNewDetailsPage(
-              orderId: moneyData?.command_id,
-              presenter: OrderDetailsPresenter()));
+              orderId: moneyData!.command_id!,
+              presenter: OrderDetailsPresenter(OrderDetailsView())));
     }
   }
 
   _getRemainingPointToUse(PointObjModel pointData) {
     try {
       int diff =
-          pointData?.monthly_limit_amount - pointData?.amount_already_used;
-      if (diff >= pointData?.balance) {
-        return pointData?.balance;
+          pointData!.monthly_limit_amount! - pointData!.amount_already_used!;
+      if (diff >= pointData!.balance!) {
+        return pointData!.balance;
       } else {
         return diff;
       }
@@ -1590,7 +1589,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       widget.selectedPosition = i;
       if (widget.selectedPosition == 2) {
         if (pointData == null)
-          widget.presenter.fetchPointTransaction(widget.customer);
+          widget.presenter!.fetchPointTransaction(widget.customer!);
       }
     });
   }

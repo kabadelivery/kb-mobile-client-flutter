@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PresentationPage extends StatefulWidget {
   static var routeName = "/PresentationPage";
 
-  PresentationPage({Key key}) : super(key: key);
+  PresentationPage({Key? key}) : super(key: key);
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -43,10 +43,10 @@ class _SplashPageState extends State<PresentationPage> {
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
-                  "${AppLocalizations.of(context).translate('choice_desc')}",
+                  "${AppLocalizations.of(context)!.translate('choice_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('choice')}"
+                  "${AppLocalizations.of(context)!.translate('choice')}"
                       .toUpperCase(),
                 ),
                 titleTextStyle: TextStyle(
@@ -69,10 +69,10 @@ class _SplashPageState extends State<PresentationPage> {
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
-                  "${AppLocalizations.of(context).translate('payment_desc')}",
+                  "${AppLocalizations.of(context)!.translate('payment_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('payment')}"
+                  "${AppLocalizations.of(context)!.translate('payment')}"
                       .toUpperCase(),
                 ),
                 titleTextStyle: TextStyle(
@@ -95,10 +95,10 @@ class _SplashPageState extends State<PresentationPage> {
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
-                  "${AppLocalizations.of(context).translate('address_desc')}",
+                  "${AppLocalizations.of(context)!.translate('address_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('address')}"
+                  "${AppLocalizations.of(context)!.translate('address')}"
                       .toUpperCase(),
                 ),
                 titleTextStyle: TextStyle(
@@ -121,10 +121,10 @@ class _SplashPageState extends State<PresentationPage> {
                 // iconImageAssetPath: 'assets/air-hostess.png',
                 bubble: Image.asset(ImageAssets.kaba_main),
                 body: Text(
-                  "${AppLocalizations.of(context).translate('enjoy_desc')}",
+                  "${AppLocalizations.of(context)!.translate('enjoy_desc')}",
                 ),
                 title: Text(
-                  "${AppLocalizations.of(context).translate('enjoy')}"
+                  "${AppLocalizations.of(context)!.translate('enjoy')}"
                       .toUpperCase(),
                 ),
                 titleTextStyle: TextStyle(
@@ -154,21 +154,21 @@ class _SplashPageState extends State<PresentationPage> {
             },
             doneText: Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('done_text')}"),
+                    "${AppLocalizations.of(context)!.translate('done_text')}"),
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: KColors.primaryColor)),
             skipText: Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('skip_text')}"),
+                    "${AppLocalizations.of(context)!.translate('skip_text')}"),
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: KColors.primaryColor)),
             nextText: Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('next_text')} >"),
+                    "${AppLocalizations.of(context)!.translate('next_text')} >"),
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -176,7 +176,7 @@ class _SplashPageState extends State<PresentationPage> {
             backText: Text(
                 "< " +
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('previous_text')}"),
+                        "${AppLocalizations.of(context)!.translate('previous_text')}"),
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,

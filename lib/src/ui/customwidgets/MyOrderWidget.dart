@@ -242,7 +242,7 @@ class _MyOrderWidgetState extends State<MyOrderWidget> {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter()),
+        builder: (context) => OrderDetailsPage(orderId: command?.id, presenter: OrderDetailsPresenter(OrderDetailsView())),
       ),
     );*/
 

@@ -91,7 +91,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('subscribe')}"),
+                    "${AppLocalizations.of(context)!.translate('subscribe')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                                 width: 40),
                             Container(
                               child: Text(
-                                "${AppLocalizations.of(context).translate("fix_please_wait")}",
+                                "${AppLocalizations.of(context)!.translate("fix_please_wait")}",
                                 style: TextStyle(
                                     color: KColors.new_black, fontSize: 14),
                               ),
@@ -131,7 +131,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           children: [
                             Container(
                               child: Text(
-                                "${AppLocalizations.of(context).translate("system_error")}",
+                                "${AppLocalizations.of(context)!.translate("system_error")}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: KColors.new_black, fontSize: 14),
@@ -154,7 +154,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                                           MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
-                                            "${AppLocalizations.of(context).translate('try_again')}"
+                                            "${AppLocalizations.of(context)!.translate('try_again')}"
                                                 .toUpperCase(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -199,7 +199,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                 Container(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        "${AppLocalizations.of(context).translate('insert_voucher_hint')}",
+                        "${AppLocalizations.of(context)!.translate('insert_voucher_hint')}",
                         style: TextStyle(
                             fontSize: 14,
                             color: KColors.new_black.withAlpha(150)),
@@ -212,7 +212,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                       EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
                   child: Row(children: <Widget>[
                     Text(
-                        "${AppLocalizations.of(context).translate('PROMO_CODE')}"),
+                        "${AppLocalizations.of(context)!.translate('PROMO_CODE')}"),
                     SizedBox(width: 20),
                     Expanded(
                         flex: 7,
@@ -241,7 +241,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                                "${AppLocalizations.of(context).translate('subscribe')}"
+                                "${AppLocalizations.of(context)!.translate('subscribe')}"
                                     .toUpperCase(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -312,39 +312,39 @@ class _AddVouchersPageState extends State<AddVouchersPage>
     switch (error) {
       case -1: // no voucher
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_no_exist')}";
+            "${AppLocalizations.of(context)!.translate('voucher_no_exist')}";
         break;
       case 400: // invalid parameters
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_invalid_params')}";
+            "${AppLocalizations.of(context)!.translate('voucher_invalid_params')}";
         break;
       case -2: // cannot self subscribe
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_no_self_subscribe')}";
+            "${AppLocalizations.of(context)!.translate('voucher_no_self_subscribe')}";
         break;
       case -3: // expired
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_expired')}";
+            "${AppLocalizations.of(context)!.translate('voucher_expired')}";
         break;
       case -7: // expired
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_not_yet_available')}";
+            "${AppLocalizations.of(context)!.translate('voucher_not_yet_available')}";
         break;
       case -4: // deactivate
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_disabled')}";
+            "${AppLocalizations.of(context)!.translate('voucher_disabled')}";
         break;
       case -5: // already subscribe
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_already_subscribed')}";
+            "${AppLocalizations.of(context)!.translate('voucher_already_subscribed')}";
         break;
       case -6: // max people
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_max_count_reached')}";
+            "${AppLocalizations.of(context)!.translate('voucher_max_count_reached')}";
         break;
       default:
         errorMessage =
-            "${AppLocalizations.of(context).translate('voucher_invalid_params')}";
+            "${AppLocalizations.of(context)!.translate('voucher_invalid_params')}";
     }
     mDialog(errorMessage);
   }
@@ -419,7 +419,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -430,7 +430,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -441,7 +441,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();

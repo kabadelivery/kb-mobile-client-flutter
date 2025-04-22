@@ -8,16 +8,16 @@ class ErrorPage extends StatelessWidget {
   static const TYPE_NO_NETWORK = -20;
   static const TYPE_SYSTEM_BROKEN = -21;
 
-  int type = TYPE_SYSTEM_BROKEN;
+  int? type = TYPE_SYSTEM_BROKEN;
 
   var onClickAction;
 
-  String message;
+  String? message;
 
-  double error_text_font_size;
+  double? error_text_font_size;
 
   ErrorPage({
-    Key key,
+    Key? key,
     this.type,
     this.error_text_font_size = 14,
     this.onClickAction,
@@ -37,12 +37,12 @@ class ErrorPage extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: IconButton(
-                    icon: Icon(Icons.error, color: KColors.primaryColor))),
+                    icon: Icon(Icons.error, color: KColors.primaryColor), onPressed: () {  },)),
             message != "" ? SizedBox(height: 5) : Container(),
             message != ""
                 ? Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
-                    child: Text(message,
+                    child: Text(message!,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: error_text_font_size)))
                 : Container(),

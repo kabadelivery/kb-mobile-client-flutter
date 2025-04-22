@@ -50,8 +50,8 @@ class UserDataBloc {
 
   fetchLastOrders(CustomerModel customer) async {
     try {
-      List<CommandModel> mLastOrders = await _repository.fetchLastOrders(customer);
-      _myLastOrderFetcher.sink.add(mLastOrders);
+      List<CommandModel>? mLastOrders = await _repository.fetchLastOrders(customer);
+      _myLastOrderFetcher.sink.add(mLastOrders!);
     } catch (_) {
       _myLastOrderFetcher.sink.addError(_.toString());
     }

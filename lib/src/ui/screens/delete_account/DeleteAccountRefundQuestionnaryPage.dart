@@ -46,7 +46,7 @@ class DeleteAccountRefundQuestionnaryPageState
   @override
   void initState() {
     super.initState();
-    widget.presenter.addDeleteAccountRefundView = this;
+    widget.presenter!.addDeleteAccountRefundView = this;
 
     CustomerUtils.getCustomer().then((customer) {
       setState(() {
@@ -61,7 +61,6 @@ class DeleteAccountRefundQuestionnaryPageState
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -75,7 +74,7 @@ class DeleteAccountRefundQuestionnaryPageState
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('delete_account')}"),
+                      "${AppLocalizations.of(context)!.translate('delete_account')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -105,7 +104,7 @@ class DeleteAccountRefundQuestionnaryPageState
                           children: [
                             Expanded(
                               child: Text(
-                                "${AppLocalizations.of(context).translate('please_fill_in_this_form')}",
+                                "${AppLocalizations.of(context)!.translate('please_fill_in_this_form')}",
                                 style: TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.w700),
                                 textAlign: TextAlign.center,
@@ -122,7 +121,7 @@ class DeleteAccountRefundQuestionnaryPageState
                           children: [
                             Expanded(
                               child: Text(
-                                "${AppLocalizations.of(context).translate('needed_to_send_remaining_balance')}",
+                                "${AppLocalizations.of(context)!.translate('needed_to_send_remaining_balance')}",
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w400),
                                 textAlign: TextAlign.center,
@@ -140,7 +139,7 @@ class DeleteAccountRefundQuestionnaryPageState
                               RichText(
                                   text: TextSpan(
                                       text:
-                                          "${AppLocalizations.of(context).translate('beneficiary_last_name')}",
+                                          "${AppLocalizations.of(context)!.translate('beneficiary_last_name')}",
                                       style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w400),
                                       children: [
                                     TextSpan(
@@ -165,11 +164,11 @@ class DeleteAccountRefundQuestionnaryPageState
                                         if (value == null ||
                                             value.isEmpty ||
                                             value.length < 2) {
-                                          return "${AppLocalizations.of(context).translate("name_field_error")}";
+                                          return "${AppLocalizations.of(context)!.translate("name_field_error")}";
                                         }
                                         return null;
                                       },
-                                      decoration: InputDecoration.collapsed(),
+                                      decoration: InputDecoration.collapsed(hintText: ''),
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 14,
@@ -189,7 +188,7 @@ class DeleteAccountRefundQuestionnaryPageState
                               RichText(
                                   text: TextSpan(
                                       text:
-                                          "${AppLocalizations.of(context).translate('beneficiary_first_name')}",
+                                          "${AppLocalizations.of(context)!.translate('beneficiary_first_name')}",
                                       style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w400),
                                       children: [
                                     TextSpan(
@@ -214,11 +213,11 @@ class DeleteAccountRefundQuestionnaryPageState
                                         if (value == null ||
                                             value.isEmpty ||
                                             value.length < 2) {
-                                          return "${AppLocalizations.of(context).translate("name_field_error")}";
+                                          return "${AppLocalizations.of(context)!.translate("name_field_error")}";
                                         }
                                         return null;
                                       },
-                                      decoration: InputDecoration.collapsed(),
+                                      decoration: InputDecoration.collapsed(hintText: ''),
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 14,
@@ -238,7 +237,7 @@ class DeleteAccountRefundQuestionnaryPageState
                               RichText(
                                   text: TextSpan(
                                       text:
-                                          "${AppLocalizations.of(context).translate('beneficiary_mobile_money_account')}",
+                                          "${AppLocalizations.of(context)!.translate('beneficiary_mobile_money_account')}",
                                       style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w400),
                                       children: [
                                     TextSpan(
@@ -280,11 +279,11 @@ class DeleteAccountRefundQuestionnaryPageState
                                         if (value == null ||
                                             value.isEmpty ||
                                             !Utils.isPhoneNumber_TGO(value)) {
-                                          return "${AppLocalizations.of(context).translate("phone_number_wrong")}";
+                                          return "${AppLocalizations.of(context)!.translate("phone_number_wrong")}";
                                         }
                                         return null;
                                       },
-                                      decoration: InputDecoration.collapsed(),
+                                      decoration: InputDecoration.collapsed(hintText: ''),
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 14,
@@ -299,7 +298,7 @@ class DeleteAccountRefundQuestionnaryPageState
                           children: [
                             Expanded(
                                 child: Text(
-                              "${AppLocalizations.of(context).translate('mobile_money_only_notice')}",
+                              "${AppLocalizations.of(context)!.translate('mobile_money_only_notice')}",
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: 10, color: KColors.primaryColor),
@@ -321,7 +320,7 @@ class DeleteAccountRefundQuestionnaryPageState
                                   child: RichText(
                                       text: TextSpan(
                                           text:
-                                              "${AppLocalizations.of(context).translate('i_agree_to')}",
+                                              "${AppLocalizations.of(context)!.translate('i_agree_to')}",
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.grey,
@@ -329,21 +328,21 @@ class DeleteAccountRefundQuestionnaryPageState
                                           children: [
                                     TextSpan(
                                         text:
-                                            "${AppLocalizations.of(context).translate('terms_n_conditions')}",
+                                            "${AppLocalizations.of(context)!.translate('terms_n_conditions')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: KColors.new_black,
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
                                         text:
-                                            "${AppLocalizations.of(context).translate('_and_')}",
+                                            "${AppLocalizations.of(context)!.translate('_and_')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey,
                                             fontWeight: FontWeight.w400)),
                                     TextSpan(
                                         text:
-                                            "${AppLocalizations.of(context).translate('ppolicy')}",
+                                            "${AppLocalizations.of(context)!.translate('ppolicy')}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: KColors.new_black,
@@ -389,7 +388,7 @@ class DeleteAccountRefundQuestionnaryPageState
                                       /*    Icon(Icons.add, color: Colors.white),
                           SizedBox(width: 10),*/
                                       Text(
-                                          "${AppLocalizations.of(context).translate('delete_account_button')}"
+                                          "${AppLocalizations.of(context)!.translate('delete_account_button')}"
                                               .toUpperCase(),
                                           style: TextStyle(
                                               color: Colors.white,
@@ -413,16 +412,16 @@ class DeleteAccountRefundQuestionnaryPageState
   }
 
   _deleteAccount() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       if (!this._isAgreed)
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  '${AppLocalizations.of(context).translate("pls_agree_to_terms")}')),
+                  '${AppLocalizations.of(context)!.translate("pls_agree_to_terms")}')),
         );
       else {
-      widget.presenter.deleteAndRefund(widget.customer, _firstNameController.text, _lastNameController.text, _phoneNumberController.text,
-          widget.fixId);
+      widget.presenter!.deleteAndRefund(widget.customer!, _firstNameController.text, _lastNameController.text, _phoneNumberController.text,
+          widget.fixId!);
       }
     }
   }
@@ -459,7 +458,7 @@ class DeleteAccountRefundQuestionnaryPageState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeleteAccountSuccessfulPage(refundedBalance: widget.amountRefunded),
+        builder: (context) => DeleteAccountSuccessfulPage(refundedBalance: widget.amountRefunded!),
       ),
     );
     });
@@ -482,9 +481,9 @@ class DeleteAccountRefundQuestionnaryPageState
   void systemError() {
     SnackBar snackBar = SnackBar(
       content:
-      Text("${AppLocalizations.of(context).translate('system_error')}"),
+      Text("${AppLocalizations.of(context)!.translate('system_error')}"),
       action: SnackBarAction(
-        label: "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+        label: "${AppLocalizations.of(context)!.translate('ok')}".toUpperCase(),
         onPressed: () {
           // Some code to undo the change.
           ScaffoldMessenger.of(context).clearSnackBars();

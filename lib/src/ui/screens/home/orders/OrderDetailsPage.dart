@@ -100,7 +100,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('order_details')}"),
+                      "${AppLocalizations.of(context)!.translate('order_details')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -173,7 +173,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                           Container(
                               width: 300,
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('reason')}: ${_getReason()}",
+                                  "${AppLocalizations.of(context)!.translate('reason')}: ${_getReason()}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 14,
@@ -197,7 +197,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           child: RichText(
             text: new TextSpan(
               text:
-                  '${AppLocalizations.of(context).translate('latest_update')}: ',
+                  '${AppLocalizations.of(context)!.translate('latest_update')}: ',
               style: new TextStyle(
                   fontWeight: FontWeight.bold, color: KColors.new_black),
               children: <TextSpan>[
@@ -228,7 +228,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                     children: <Widget>[
                       Center(
                           child: Text(
-                              "${AppLocalizations.of(context).translate('rating')}"
+                              "${AppLocalizations.of(context)!.translate('rating')}"
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -271,7 +271,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             children: <Widget>[
               Flexible(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('your_contact')}:",
+                      "${AppLocalizations.of(context)!.translate('your_contact')}:",
                       style:
                           TextStyle(color: KColors.new_black, fontSize: 16))),
               Flexible(
@@ -291,7 +291,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             children: <Widget>[
               Flexible(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('command_key')}",
+                      "${AppLocalizations.of(context)!.translate('command_key')}",
                       style:
                           TextStyle(color: KColors.new_black, fontSize: 16))),
               Flexible(
@@ -318,7 +318,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                             children: <Widget>[
                               Flexible(
                                   child: Text(
-                                      "${AppLocalizations.of(context).translate('kaba_man_name')}",
+                                      "${AppLocalizations.of(context)!.translate('kaba_man_name')}",
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 16))),
@@ -342,7 +342,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                             children: <Widget>[
                               Flexible(
                                   child: Text(
-                                      "${AppLocalizations.of(context).translate('kaba_man_phone')}",
+                                      "${AppLocalizations.of(context)!.translate('kaba_man_phone')}",
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 16))),
@@ -385,7 +385,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context).translate('not_far_from')}",
+                              "${AppLocalizations.of(context)!.translate('not_far_from')}",
                               style: TextStyle(
                                   color: KColors.new_black,
                                   fontSize: 16,
@@ -409,7 +409,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context).translate('description')}",
+                              "${AppLocalizations.of(context)!.translate('description')}",
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   color: KColors.new_black,
@@ -435,7 +435,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                           children: <Widget>[
                             Expanded(
                                 child: Text(
-                                    "${AppLocalizations.of(context).translate('informations')}: ${widget.command.infos}",
+                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command.infos}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -467,20 +467,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   String _orderTopLabel(CommandModel command) {
     switch (widget?.command?.state) {
       case 0:
-        return "${AppLocalizations.of(context).translate('order_waiting')}"
+        return "${AppLocalizations.of(context)!.translate('order_waiting')}"
             .toUpperCase();
       case 1:
-        return "${AppLocalizations.of(context).translate('order_cooking')}"
+        return "${AppLocalizations.of(context)!.translate('order_cooking')}"
             .toUpperCase();
       case 2:
-        return "${AppLocalizations.of(context).translate('order_deliverying')}"
+        return "${AppLocalizations.of(context)!.translate('order_deliverying')}"
             .toUpperCase();
       case 3:
-        return "${AppLocalizations.of(context).translate('order_delivered')}"
+        return "${AppLocalizations.of(context)!.translate('order_delivered')}"
             .toUpperCase();
         break;
       default:
-        return "${AppLocalizations.of(context).translate('order_rejected')}"
+        return "${AppLocalizations.of(context)!.translate('order_rejected')}"
             .toUpperCase();
     }
   }
@@ -511,7 +511,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5))),
                           child: Text(
-                              "${AppLocalizations.of(context).translate('waiting')}",
+                              "${AppLocalizations.of(context)!.translate('waiting')}",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
@@ -582,7 +582,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5))),
                           child: Text(
-                              "${AppLocalizations.of(context).translate('cooking')}",
+                              "${AppLocalizations.of(context)!.translate('cooking')}",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
@@ -614,7 +614,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5))),
                           child: Text(
-                              "${AppLocalizations.of(context).translate('shipping')}",
+                              "${AppLocalizations.of(context)!.translate('shipping')}",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
@@ -669,7 +669,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5))),
                           child: Text(
-                              "${AppLocalizations.of(context).translate('delivered')}",
+                              "${AppLocalizations.of(context)!.translate('delivered')}",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
@@ -764,7 +764,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
               .fetchOrderDetailsWithId(widget.customer, widget.orderId);
@@ -773,7 +773,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
               .fetchOrderDetailsWithId(widget.customer, widget.orderId);
@@ -836,7 +836,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("${AppLocalizations.of(context).translate('order_amount')}",
+              Text("${AppLocalizations.of(context)!.translate('order_amount')}",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               /* check if there is promotion on Commande */
               Row(
@@ -863,7 +863,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                  "${AppLocalizations.of(context).translate('delivery_amount')}",
+                  "${AppLocalizations.of(context)!.translate('delivery_amount')}",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               /* check if there is promotion on Livraison */
               Row(
@@ -894,7 +894,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                     Text(
-                        "${AppLocalizations.of(context).translate('discount')}:",
+                        "${AppLocalizations.of(context)!.translate('discount')}:",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -918,7 +918,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("${AppLocalizations.of(context).translate('net_price')}",
+              Text("${AppLocalizations.of(context)!.translate('net_price')}",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               Text(
                   "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
@@ -964,8 +964,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
 
   _getReason() {
     if (widget.command.reason >= reasonsArray.length)
-      return "${AppLocalizations.of(context).translate('reason_beyond_control')}";
-    return "${AppLocalizations.of(context).translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
+      return "${AppLocalizations.of(context)!.translate('reason_beyond_control')}";
+    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
   }
 
   showKabaPointUsed() {
@@ -974,7 +974,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         child: RichText(
             text: TextSpan(
                 text:
-                    "${AppLocalizations.of(context).translate("kaba_point_used_amount")}",
+                    "${AppLocalizations.of(context)!.translate("kaba_point_used_amount")}",
                 style: TextStyle(color: Colors.white, fontSize: 12),
                 children: <TextSpan>[
               TextSpan(

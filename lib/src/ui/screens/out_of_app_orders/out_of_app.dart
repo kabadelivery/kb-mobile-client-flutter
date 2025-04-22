@@ -23,7 +23,6 @@ import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../../xrint.dart';
-import '../../customwidgets/BouncingWidget.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
 import '../../customwidgets/address_additionnal_info_widget.dart';
@@ -88,15 +87,15 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
     // outOfAppScreenState.showLoading=false;
     xrint("shipping_address ${locationState.selectedShippingAddress}");
     xrint("shipping_address order_address ${locationState.selectedOrderAddress}");
-    if(locationState.selectedOrderAddress.isNotEmpty && locationState.selectedShippingAddress!=null){
-      if(locationState.selectedOrderAddress[0].id==(locationState.selectedShippingAddress.id)){
+    if(locationState.selectedOrderAddress!.isNotEmpty && locationState.selectedShippingAddress!=null){
+      if(locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
 
         Fluttertoast.showToast(
             backgroundColor: Colors.black87,
             textColor: Colors.white,
             fontSize: 14,
             toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context).translate("same_address_cant_be_picked")+" 🚨");
+            msg: "🚨 "+AppLocalizations.of(context)!.translate("same_address_cant_be_picked")+" 🚨");
         outOfAppScreenState.isBillBuilt=false;
         outOfAppScreenState.showLoading=false;
 
@@ -105,7 +104,6 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
     return  Scaffold(
         appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         centerTitle: true,
         title: Row(
@@ -114,7 +112,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
         children: [
         Text(
         Utils.capitalize(
-        "${AppLocalizations.of(context).translate('out_of_app_order')}"),
+        "${AppLocalizations.of(context)!.translate('out_of_app_order')}"),
     style: TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.bold,
@@ -134,7 +132,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
             BuildExplanationSpace(
               context,
               ref,
-              AppLocalizations.of(context).translate('out_of_app_explanation'),
+              AppLocalizations.of(context)!.translate('out_of_app_explanation'),
               "https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json"
               ):Container(),  
               SizedBox(height: 10,),
@@ -181,7 +179,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                 ),
                 child:Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text("${AppLocalizations.of(context).translate('add_product')}"
+                  child: Text("${AppLocalizations.of(context)!.translate('add_product')}"
                   ,style:TextStyle(color: Colors.white)
                   ),
                 )
@@ -196,7 +194,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               children: [
                   outOfAppScreenState.isBillBuilt==true &&
             outOfAppScreenState.showLoading==false?
-            ShowBilling(context,orderBillingState.orderBillConfiguration):
+            ShowBilling(context,orderBillingState.orderBillConfiguration!):
             outOfAppScreenState.showLoading==true?
             MyLoadingProgressWidget()
                 :Container()
@@ -206,7 +204,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               Column(
                 children: [
 
-                locationState.selectedOrderAddress.isEmpty ? Column(
+                locationState.selectedOrderAddress!.isEmpty ? Column(
                   children: [
                     ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
 
@@ -217,7 +215,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                       children: [
                         SizedBox(height: 20,),
                         Text(
-                            "${AppLocalizations.of(context).translate('add_address_additionnal_info')}",
+                            "${AppLocalizations.of(context)!.translate('add_address_additionnal_info')}",
                             style: TextStyle(
 
                                 fontSize: 16,
@@ -230,16 +228,16 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                     SizedBox(height: 10,),
                   ],    
                 ):Container(),
-                 locationState.selectedOrderAddress.isNotEmpty ?   Column(
+                 locationState.selectedOrderAddress!.isNotEmpty ?   Column(
                   children: [
                     Text(
-                        "${AppLocalizations.of(context).translate('order_address')}",
+                        "${AppLocalizations.of(context)!.translate('order_address')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: KColors.new_black)),
                 
-                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress[0])
+                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0])
                   ],
                 ): Container()
                 ,
@@ -248,13 +246,13 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                 locationState.is_shipping_address_picked==true ?   Column(
                   children: [
                     Text(
-                        "${AppLocalizations.of(context).translate('shipping_address')}",
+                        "${AppLocalizations.of(context)!.translate('shipping_address')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: KColors.new_black)),
                 
-                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress)
+                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress!)
                   ],
                 ): Container()
                 ,
@@ -284,15 +282,15 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               child: InkWell(
                 onTap: () async {
                   int type_of_order = 4; // Default
-                  bool result = false;
-                  List<DeliveryAddressModel> adrs = [];
+                  bool? result = false;
+                  List<DeliveryAddressModel>? adrs = [];
 
-                  if (locationState.selectedOrderAddress.isEmpty) {
+                  if (locationState.selectedOrderAddress!.isEmpty) {
                     type_of_order = out_of_app_order_type_without_address;
                     result = await showShippingPriceRangeInfo(context,ref, type_of_order);
                   } else {
                     adrs = locationState.selectedOrderAddress;
-                    if (adrs.isNotEmpty) {
+                    if (adrs!.isNotEmpty) {
                       type_of_order = out_of_app_order_type;
                     } else {
                       type_of_order = out_of_app_order_type_without_address;
@@ -320,7 +318,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                                 color: KColors.primaryColor),
                             SizedBox(width: 5),
                             Text(
-                                "${AppLocalizations.of(context).translate('pay_at_arrival')}",
+                                "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: KColors.primaryColor,

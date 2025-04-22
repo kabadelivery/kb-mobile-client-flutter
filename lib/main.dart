@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
               onGenerateTitle: (BuildContext context) => "KABA",
               theme: ThemeData(
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
-              // home: RestaurantMenuPage(presenter: MenuPresenter(), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
+              // home: RestaurantMenuPage(presenter: MenuPresenter(MenuView()), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
               /*  home: ShopSimpleList(
 
@@ -139,13 +139,13 @@ class _MyAppState extends State<MyApp> {
 //               home: MovieDetailsPage(presenter: MoviePresenter()),
 //             home: SearchProductPage(),
 //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
-              // home: FlowerCatalogPage(presenter: MenuPresenter(), menuId: 800),
+              // home: FlowerCatalogPage(presenter: MenuPresenter(MenuView()), menuId: 800),
               //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
               /*home: RestaurantListPage (
                   context: context,
                   foodProposalPresenter: RestaurantFoodProposalPresenter(),
                   restaurantListPresenter: RestaurantListPresenter()),*/
-              // home: TransactionHistoryPage(presenter: TransactionPresenter()),
+              // home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
               // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
               //   home: TestPage(),
 //          home: RegisterPage(presenter: RegisterPresenter()),
@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> {
 //          home: EditAddressPage(presenter: EditAddressPresenter()),
 //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
 //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
-//      home: TransactionHistoryPage(presenter: TransactionPresenter()),
+//      home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
 //      home: TopUpPage(presenter: TopUpPresenter()),
 //      home: FeedsPage(presenter: FeedPresenter(),),
 //      home: EvenementPage(presenter: EvenementPresenter(),),

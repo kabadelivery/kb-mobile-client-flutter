@@ -63,15 +63,15 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                 )
                             )
                         ),
-                        Container(child:Text("${AppLocalizations.of(context).translate('success')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey))),
+                        Container(child:Text("${AppLocalizations.of(context)!.translate('success')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey))),
                         SizedBox(height: 30),
                         Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                           Text("${widget.amount}", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
                           SizedBox(width: 5),
-                          Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+                          Text("${AppLocalizations.of(context)!.translate('currency')}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
                         ]),
                         SizedBox(height: 30),
-                        Container(child:Text("${AppLocalizations.of(context).translate('payee')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
+                        Container(child:Text("${AppLocalizations.of(context)!.translate('payee')}", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey))),
                         SizedBox(height: 30),
                         Center(
                           child: Column(children: <Widget>[
@@ -109,7 +109,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                             SizedBox(
                               child: OutlinedButton(
                                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryYellowColor, width: 1))),
-                                child: new Text("${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryYellowColor)),
+                                child: new Text("${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryYellowColor)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },

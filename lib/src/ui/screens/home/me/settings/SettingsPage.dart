@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('settings')}"),
+                    "${AppLocalizations.of(context)!.translate('settings')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('change_password')}"),
+                        "${AppLocalizations.of(context)!.translate('change_password')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
@@ -102,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('delete_account')}"),
+                        "${AppLocalizations.of(context)!.translate('delete_account')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('app_info')}"),
+                        "${AppLocalizations.of(context)!.translate('app_info')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('cgu')}"),
+                        "${AppLocalizations.of(context)!.translate('cgu')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),
@@ -167,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Text(
                     Utils.capitalize(
-                        "${AppLocalizations.of(context).translate('faq')}"),
+                        "${AppLocalizations.of(context)!.translate('faq')}"),
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
               ]),
             ),

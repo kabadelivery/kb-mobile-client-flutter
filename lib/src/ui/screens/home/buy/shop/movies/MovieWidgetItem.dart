@@ -19,14 +19,14 @@ class MovieWidgetItem extends StatelessWidget {
           "The Last of Us, est le nom d'une série de jeux vidéo, développée par Naughty Dog et éditée par Sony Computer Entertainment, de type action-aventure et survie, ayant comme thème principal un univers post-apocalyptique après une pandémie provoquée par un champignon appelé le cordyceps.",
       age_limit: "17+");
 
-  Function jumpToMovieDetails;
+  Function? jumpToMovieDetails;
 
   MovieWidgetItem({this.jumpToMovieDetails});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => jumpToMovieDetails(context, movie),
+      onTap: () => jumpToMovieDetails!(context, movie),
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 5, top: 10, bottom: 10),
         child: Row(
@@ -43,7 +43,7 @@ class MovieWidgetItem extends StatelessWidget {
                   image: new DecorationImage(
                       fit: BoxFit.cover, image: CachedNetworkImageProvider(
                           // Utils.inflateLink(movie?.pic)
-                          movie?.pic))
+                          movie.pic!))
               ),
             ),
             SizedBox(width: 10),

@@ -191,7 +191,7 @@ class PlacePickerState extends State<PlacePicker> {
                 ),*/
                       Padding(
                         child: Text(
-                          "${AppLocalizations.of(context).translate('nearby_places')}",
+                          "${AppLocalizations.of(context)!.translate('nearby_places')}",
                           style: TextStyle(
                             fontSize: 16,
                           ),
@@ -411,7 +411,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// then the road name returned is used instead.
   String getLocationName() {
     if (this.locationResult == null) {
-      return "${AppLocalizations.of(context).translate('this_location')}";
+      return "${AppLocalizations.of(context)!.translate('this_location')}";
     }
 
     for (NearbyPlace np in this.nearbyPlaces) {
@@ -602,7 +602,7 @@ class SearchInputState extends State<SearchInput> {
             child: TextField(
               decoration: InputDecoration(
                 hintText:
-                    "${AppLocalizations.of(context).translate('search_place')}",
+                    "${AppLocalizations.of(context)!.translate('search_place')}",
                 border: InputBorder.none,
               ),
               controller: this.editController,
@@ -691,7 +691,7 @@ class SelectPlaceAction extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${AppLocalizations.of(context).translate('tap_location')}",
+                      "${AppLocalizations.of(context)!.translate('tap_location')}",
                       style: TextStyle(
                         color: KColors.new_black,
                         fontSize: 15,

@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 class ProposalMiniWithPreloadedDataPage extends StatefulWidget {
   static var routeName = "/ProposalMiniWithPreloadedDataPage";
 
-  List<ShopProductModel> data = [];
+  List<ShopProductModel>? data = [];
 
-  ProposalMiniWithPreloadedDataPage({Key key, this.data}) : super(key: key);
+  ProposalMiniWithPreloadedDataPage({Key? key, this.data}) : super(key: key);
 
   @override
   _ProposalMiniWithPreloadedDataPageState createState() =>
@@ -44,13 +44,13 @@ class _ProposalMiniWithPreloadedDataPageState
                     autoPlayAnimationDuration: Duration(seconds: 2),
                     viewportFraction: 1,
                     enableInfiniteScroll: widget?.data?.length != null &&
-                        widget?.data?.length > 1,
+                        widget.data!.length! > 1,
                     onPageChanged: _carousselPageChanged,
                     autoPlay: true,
                     autoPlayInterval: Duration(seconds: 5)),
                 items: widget?.data?.length == null
                     ? []
-                    : widget.data.map((position) {
+                    : widget.data!.map((position) {
                         return Builder(
                           builder: (BuildContext context) {
                             return _buildProposalListItem(position);
@@ -66,20 +66,20 @@ class _ProposalMiniWithPreloadedDataPageState
             children: [
               Row(
                 children: <Widget>[]..addAll(List<Widget>.generate(
-                      widget?.data?.length == null ? 0 : widget.data.length,
+                      widget?.data?.length == null ? 0 : widget.data!.length,
                       (int index) {
                     return Container(
                         margin: EdgeInsets.only(right: 2.5, top: 2.5),
                         height: 7,
                         width: index == _carousselPageIndex ||
-                                index == widget.data.length
+                                index == widget.data!.length
                             ? 12
                             : 7,
                         decoration: new BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             border: new Border.all(color: KColors.primaryColor),
                             color: (index == _carousselPageIndex ||
-                                    index == widget.data.length)
+                                    index == widget.data!.length)
                                 ? KColors.primaryColor
                                 : Colors.transparent));
                   })),
@@ -104,9 +104,9 @@ class _ProposalMiniWithPreloadedDataPageState
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -151,7 +151,7 @@ class _ProposalMiniWithPreloadedDataPageState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      "${Utils.capitalize(product?.name?.trim())}",
+                                      "${Utils.capitalize(product!.name!.trim())}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       textAlign: TextAlign.start,
@@ -161,7 +161,7 @@ class _ProposalMiniWithPreloadedDataPageState
                                           fontWeight: FontWeight.w500)),
                                   SizedBox(height: 5),
                                   Text(
-                                      "${Utils.capitalize(Utils.replaceNewLineBy(product?.description?.trim(), " / "))}",
+                                      "${Utils.capitalize(Utils.replaceNewLineBy(product!.description!.trim(), " / "))}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       textAlign: TextAlign.start,
@@ -203,7 +203,7 @@ class _ProposalMiniWithPreloadedDataPageState
                                           : Container()),
                                       SizedBox(width: 2),
                                       Text(
-                                          "${AppLocalizations.of(context).translate('currency')}",
+                                          "${AppLocalizations.of(context)!.translate('currency')}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           textAlign: TextAlign.center,
@@ -229,7 +229,7 @@ class _ProposalMiniWithPreloadedDataPageState
                                             left: 8),
                                         child: Row(children: <Widget>[
                                           Text(
-                                              "${AppLocalizations.of(context).translate("buy")}",
+                                              "${AppLocalizations.of(context)!.translate("buy")}",
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: KColors.primaryColor)),
@@ -255,7 +255,7 @@ class _ProposalMiniWithPreloadedDataPageState
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
-                                      Utils.inflateLink(product?.pic)))),
+                                      Utils.inflateLink(product.pic!)))),
                         ),
                       ),
                     ],

@@ -50,7 +50,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 
   @override
   Future<void> fetchShopList(
-      CustomerModel customer, String type, Position position,
+      CustomerModel customer, String type, Position? position,
       [bool silently = false, String? filter_key]) async {
     if (isWorking && position == null) return;
     isWorking = true;
@@ -60,7 +60,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 
     try {
       Map<String, dynamic> data =
-          await provider.fetchShopList(customer, type, position);
+          await provider.fetchShopList(customer, type, position!);
       // save data if it contains restaurants, then the filtering will be done on it
       List<ShopModel> restaurants = [];
 

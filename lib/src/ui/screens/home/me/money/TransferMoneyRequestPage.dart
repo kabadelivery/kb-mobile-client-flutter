@@ -73,7 +73,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('transfer')}"),
+                    "${AppLocalizations.of(context)!.translate('transfer')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
                   RichText(
                       text: TextSpan(
                           text:
-                              "${AppLocalizations.of(context).translate('account')}",
+                              "${AppLocalizations.of(context)!.translate('account')}",
                           children: [
                             TextSpan(
                                 text: " *",
@@ -136,7 +136,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
 
           Container(
             child: Text(
-                "${AppLocalizations.of(context).translate('real_time_transfer_no_refunded')}",
+                "${AppLocalizations.of(context)!.translate('real_time_transfer_no_refunded')}",
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 12, color: Colors.grey)),
             margin: EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -162,7 +162,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                            "${AppLocalizations.of(context).translate('next')}"
+                            "${AppLocalizations.of(context)!.translate('next')}"
                                 .toUpperCase(),
                             textAlign: TextAlign.center,
                             style:
@@ -222,13 +222,13 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
       else
         _showDialog(
             message:
-                "${AppLocalizations.of(context).translate('cant_transfer_own_account')}",
+                "${AppLocalizations.of(context)!.translate('cant_transfer_own_account')}",
             icon: Icon(FontAwesomeIcons.user, color: KColors.primaryColor));
     } else
-      mToast("${AppLocalizations.of(context).translate('system_error')}");
+      mToast("${AppLocalizations.of(context)!.translate('system_error')}");
     /* } else {
       // can't launch
-      mToast("${AppLocalizations.of(context).translate('phone_number_wrong')}");
+      mToast("${AppLocalizations.of(context)!.translate('phone_number_wrong')}");
     }*/
   }
 
@@ -242,7 +242,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
     if (customer == null) {
       _showDialog(
           message:
-              "${AppLocalizations.of(context).translate('user_no_exists_in_db')}",
+              "${AppLocalizations.of(context)!.translate('user_no_exists_in_db')}",
           icon: Icon(FontAwesomeIcons.user, color: Colors.grey));
     } else {
       /* jump to next activity with this information */
@@ -280,7 +280,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
               //
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}",
+                    "${AppLocalizations.of(context)!.translate('ok')}",
                     style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();

@@ -9,7 +9,7 @@ import '../../../utils/_static_data/KTheme.dart';
 class GoogleMapsPage extends StatefulWidget {
   static var routeName = "/GoogleMapsPage";
 
-  GoogleMapsPage({Key key}) : super(key: key);
+  GoogleMapsPage({Key? key}) : super(key: key);
 
   @override
   _GoogleMapsPageState createState() => _GoogleMapsPageState();
@@ -30,9 +30,9 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
   var locationOptions =
       LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
-  StreamSubscription<Position> positionStream;
+  StreamSubscription<Position>? positionStream;
 
-  Position _myPosition;
+  Position? _myPosition;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
     }
     final GoogleMapController controller = await _controller.future;
     if (_myPosition != null)
-      controller.animateCamera(_getCamerationPosition(_myPosition));
+      controller.animateCamera(_getCamerationPosition(_myPosition!));
   }
 
   _onPositionChanged(Position position) {

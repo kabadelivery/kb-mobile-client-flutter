@@ -172,7 +172,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+        builder: (context) => RestaurantDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       ),
     );*/
 
@@ -212,7 +212,7 @@ class _RestaurantListWidgetState extends State<RestaurantListWidget> {
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
       ),
     );*/
   }

@@ -8,9 +8,9 @@ class MySoldePage extends StatefulWidget {
 
   static var routeName = "/MySoldePage";
 
-  MySoldePage({Key key, this.title}) : super(key: key);
+  MySoldePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MySoldePageState createState() => _MySoldePageState();
@@ -23,7 +23,7 @@ class _MySoldePageState extends State<MySoldePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('balance')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
+        title: Text("${AppLocalizations.of(context)!.translate('balance')}".toUpperCase(), style:TextStyle(color:KColors.primaryColor)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -32,8 +32,8 @@ class _MySoldePageState extends State<MySoldePage> {
               Card(color: KColors.primaryColor,
                   child: Container(margin: EdgeInsets.all(15), decoration: BoxDecoration(border: Border.all(color: KColors.primaryYellowColor, width: 3)),
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('balance')}", style: TextStyle(color: Colors.white, fontSize: 16)),
-                        Text("${AppLocalizations.of(context).translate('currency')} 0", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+                        Text("${AppLocalizations.of(context)!.translate('balance')}", style: TextStyle(color: Colors.white, fontSize: 16)),
+                        Text("${AppLocalizations.of(context)!.translate('currency')} 0", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
                       ])))),
               SizedBox(height: 60),
               /* leave some space, then have the topup option and credit kaba option */
@@ -41,7 +41,7 @@ class _MySoldePageState extends State<MySoldePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('top_up')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                      Text("${AppLocalizations.of(context)!.translate('top_up')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                       IconButton(icon: Icon(Icons.chevron_right, color: KColors.primaryColor), onPressed: () {})],
                   )),
               SizedBox(height: 1),
@@ -49,7 +49,7 @@ class _MySoldePageState extends State<MySoldePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('kaba_points')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
+                      Text("${AppLocalizations.of(context)!.translate('kaba_points')}", style: TextStyle(color: KColors.primaryColor, fontSize: 16)),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[

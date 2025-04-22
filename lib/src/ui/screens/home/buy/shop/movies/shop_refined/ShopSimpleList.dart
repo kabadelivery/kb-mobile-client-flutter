@@ -13,14 +13,14 @@ import 'package:flutter/services.dart';
 class ShopSimpleList extends StatefulWidget {
   static var routeName = "/ShopSimpleList";
 
-  List<ShopModel> data;
-  RestaurantListPresenter restaurantListPresenter;
-  CustomerModel customer;
-  String type;
-  String search_key;
+  List<ShopModel>? data;
+  RestaurantListPresenter? restaurantListPresenter;
+  CustomerModel? customer;
+  String? type;
+  String? search_key;
 
   ShopSimpleList(
-      {Key key,
+      {Key? key,
       this.customer,
       this.type,
       this.restaurantListPresenter,
@@ -51,7 +51,7 @@ class _ShopSimpleListState extends State<ShopSimpleList>
     _controller.addListener(_onScroll);
     super.initState();
     //   launch the presenter here
-    widget.restaurantListPresenter.restaurantListView = this;
+    widget.restaurantListPresenter!.restaurantListView = this;
   }
 
   @override
@@ -80,9 +80,9 @@ class _ShopSimpleListState extends State<ShopSimpleList>
   void didChangeDependencies() {
     super.didChangeDependencies();
     // if (mounted) {
-    widget.restaurantListPresenter.fetchShopList(
-        widget.customer,
-        widget.type,
+    widget.restaurantListPresenter!.fetchShopList(
+        widget.customer!,
+        widget.type!,
         StateContainer.of(context).location,
         false, // silently
         widget.search_key);
@@ -100,7 +100,7 @@ class _ShopSimpleListState extends State<ShopSimpleList>
                   ? _buildNetworkErrorPage()
                   : hasSystemError
                       ? _buildSysErrorPage()
-                      : _buildRestaurantList(widget.data))),
+                      : _buildRestaurantList(widget.data!))),
     );
   }
 
@@ -109,9 +109,9 @@ class _ShopSimpleListState extends State<ShopSimpleList>
     setState(() {
       widget.data = restaurants;
       visibleItems =
-          (widget?.data?.length != null && widget?.data?.length > PAGE_SIZE
-              ? widget.data.sublist(0, PAGE_SIZE)
-              : widget.data);
+          (widget?.data?.length != null && widget.data!.length! > PAGE_SIZE
+              ? widget.data!.sublist(0, PAGE_SIZE)
+              : widget.data)!;
     });
   }
 
@@ -125,10 +125,10 @@ class _ShopSimpleListState extends State<ShopSimpleList>
       } else {
         // append
         setState(() {
-          visibleItems.addAll(widget.data.sublist(
+          visibleItems.addAll(widget.data!.sublist(
               visibleItems.length,
-              visibleItems.length + PAGE_SIZE >= widget.data.length
-                  ? widget.data.length
+              visibleItems.length + PAGE_SIZE >= widget.data!.length
+                  ? widget.data!.length
                   : visibleItems.length + PAGE_SIZE));
         });
         PAGE_SIZE+=10;
@@ -140,7 +140,7 @@ class _ShopSimpleListState extends State<ShopSimpleList>
   }
 
   bool hasMoreData() {
-    return visibleItems?.length < widget?.data?.length &&
+    return visibleItems.length! < widget.data!.length &&
         widget?.data?.length != null;
   }
 
@@ -154,17 +154,17 @@ class _ShopSimpleListState extends State<ShopSimpleList>
   }
 
   @override
-  void networkError([bool silently]) {
+  void networkError([bool? silently]) {
     // if (!silently && widget.restaurantList?.length != null && widget.restaurantList.length>0)
-    if (!silently || widget?.data?.length == 0)
+    if (!silently! || widget?.data?.length == 0)
       setState(() {
         hasNetworkError = true;
       });
   }
 
   @override
-  void systemError([bool silently]) {
-    if (!silently || widget?.data?.length == 0)
+  void systemError([bool? silently]) {
+    if (!silently! || widget?.data?.length == 0)
       setState(() {
         hasSystemError = true;
       });
@@ -201,19 +201,19 @@ class _ShopSimpleListState extends State<ShopSimpleList>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(widget.customer,
-              widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+              widget.type!, StateContainer.of(context).location);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(widget.customer,
-              widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+              widget.type!, StateContainer.of(context).location);
         });
   }
 

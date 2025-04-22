@@ -13,11 +13,11 @@ import 'package:flutter/material.dart';
 class BestSellersPage extends StatefulWidget {
   static var routeName = "/BestSellersPage";
 
-  BestSellerPresenter presenter;
+  BestSellerPresenter? presenter;
 
-  BestSellersPage({Key key, this.title, this.presenter}) : super(key: key);
+  BestSellersPage({Key? key, this.title, this.presenter}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _BestSellersPageState createState() => _BestSellersPageState();
@@ -25,13 +25,13 @@ class BestSellersPage extends StatefulWidget {
 
 class _BestSellersPageState extends State<BestSellersPage>
     implements BestSellerView {
-  List<BestSellerModel> data;
+  List<BestSellerModel>? data;
 
   @override
   void initState() {
     super.initState();
-    widget.presenter.bestSellerView = this;
-    widget.presenter.fetchBestSeller(null);
+    widget.presenter!.bestSellerView = this;
+    widget.presenter!.fetchBestSeller(null);
   }
 
   bool isLoading = false;
@@ -42,9 +42,8 @@ class _BestSellersPageState extends State<BestSellersPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title: Text("${AppLocalizations.of(context).translate('best_seller')}",
+        title: Text("${AppLocalizations.of(context)!.translate('best_seller')}",
             style: TextStyle(color: KColors.primaryColor)),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
@@ -101,17 +100,17 @@ class _BestSellersPageState extends State<BestSellersPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller(null);
+          widget.presenter!.fetchBestSeller(null);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchBestSeller(null);
+          widget.presenter!.fetchBestSeller(null);
         });
   }
 
@@ -124,7 +123,7 @@ class _BestSellersPageState extends State<BestSellersPage>
         child: ListView.builder(
             itemCount: data?.length,
             itemBuilder: (BuildContext context, int position) {
-              return _buildBestSellerListItem(position, data[position]);
+              return _buildBestSellerListItem(position, data![position]);
             }));
   }
 
@@ -135,9 +134,9 @@ class _BestSellersPageState extends State<BestSellersPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                presenter: MenuPresenter(),
-                menuId: int.parse(food.menu_id),
-                highlightedFoodId: food?.id),
+                presenter: MenuPresenter(MenuView()),
+                menuId: int.parse(food.menu_id!),
+                highlightedFoodId: food.id!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -153,21 +152,21 @@ class _BestSellersPageState extends State<BestSellersPage>
   _buildBestSellerListItem(int position, BestSellerModel data) {
     //history is yesterday, y-1, y-2
     var dayz = [
-      "${AppLocalizations.of(context).translate('monday_short')}",
-      "${AppLocalizations.of(context).translate('tuesday_short')}",
-      "${AppLocalizations.of(context).translate('wednesday_short')}",
-      "${AppLocalizations.of(context).translate('thursday_short')}",
-      "${AppLocalizations.of(context).translate('friday_short')}",
-      "${AppLocalizations.of(context).translate('saturday_short')}",
-      "${AppLocalizations.of(context).translate('sunday_short')}",
+      "${AppLocalizations.of(context)!.translate('monday_short')}",
+      "${AppLocalizations.of(context)!.translate('tuesday_short')}",
+      "${AppLocalizations.of(context)!.translate('wednesday_short')}",
+      "${AppLocalizations.of(context)!.translate('thursday_short')}",
+      "${AppLocalizations.of(context)!.translate('friday_short')}",
+      "${AppLocalizations.of(context)!.translate('saturday_short')}",
+      "${AppLocalizations.of(context)!.translate('sunday_short')}",
     ];
 
     DateTime date = new DateTime.now();
-    int dayOfWeek = date?.weekday;
+    int dayOfWeek = date.weekday;
 
     return Card(
         child: InkWell(
-            onTap: () => _jumpToFoodDetails(data?.food_entity),
+            onTap: () => _jumpToFoodDetails(data.food_entity!),
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.all(10),
@@ -189,7 +188,7 @@ class _BestSellersPageState extends State<BestSellersPage>
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                                Utils.inflateLink(data?.food_entity?.pic)))),
+                                Utils.inflateLink(data.food_entity!.pic!)))),
                   ),
                   Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -219,7 +218,7 @@ class _BestSellersPageState extends State<BestSellersPage>
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                        "${data?.food_entity?.name?.length > 20 ? data?.food_entity?.name?.substring(0, 20) : data?.food_entity?.name}${data?.food_entity?.name?.length > 20 ? "..." : ""}",
+                                        "${data.food_entity!.name!.length! > 20 ? data?.food_entity?.name?.substring(0, 20) : data?.food_entity?.name}${data.food_entity!.name!.length > 20 ? "..." : ""}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
                                         textAlign: TextAlign.center,
@@ -259,7 +258,7 @@ class _BestSellersPageState extends State<BestSellersPage>
                                   : Container(),
                               SizedBox(width: 10),
                               Text(
-                                  "${AppLocalizations.of(context).translate('currency')}",
+                                  "${AppLocalizations.of(context)!.translate('currency')}",
                                   style: TextStyle(
                                       color: KColors.primaryYellowColor,
                                       fontSize: 12))
@@ -276,19 +275,19 @@ class _BestSellersPageState extends State<BestSellersPage>
                                       "${dayz[((dayOfWeek - 1 - 3 + index) < 0 ? (dayOfWeek - 1 - 3 + index + 7) : (dayOfWeek - 1 - 3 + index)) % 7]}",
                                       style: TextStyle(
                                           color: Colors.black.withAlpha(150))),
-                                  data?.history[index] == -1
+                                  data?.history![index] == -1
                                       ? IconButton(
                                           iconSize: 40,
                                           icon: Icon(Icons.trending_down,
                                               color: Colors.red),
                                           onPressed: null)
-                                      : data?.history[index] == 0
+                                      : data?.history![index] == 0
                                           ? IconButton(
                                               iconSize: 40,
                                               icon: Icon(Icons.trending_flat,
                                                   color: Colors.blue),
                                               onPressed: null)
-                                          : data?.history[index] == 1
+                                          : data?.history![index] == 1
                                               ? IconButton(
                                                   iconSize: 40,
                                                   icon: Icon(Icons.trending_up,

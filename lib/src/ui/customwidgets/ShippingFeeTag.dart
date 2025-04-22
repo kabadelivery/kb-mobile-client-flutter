@@ -36,7 +36,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
           bool is_email_account = StateContainer.of(context).customer == null ||
                   StateContainer.of(context).customer?.username == null
               ? false
-              : (StateContainer.of(context).customer.username!.contains("@")
+              : (StateContainer.of(context).customer!.username!.contains("@")
                   ? true
                   : false);
 
@@ -84,7 +84,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
     if (StateContainer.of(context).location == null) return Container();
 
     var shipping_price = _getShippingPrice(
-        widget.distance, StateContainer.of(context).myBillingArray);
+        widget.distance, StateContainer.of(context).myBillingArray!);
 
     return Container(
         padding: EdgeInsets.all(5),

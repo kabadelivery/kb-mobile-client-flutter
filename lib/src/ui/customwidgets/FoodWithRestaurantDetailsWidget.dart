@@ -282,7 +282,7 @@ class _FoodWithRestaurantDetailsWidgetState
     /* Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
+        builder: (context) => RestaurantMenuPage (presenter: MenuPresenter(MenuView()), menuId: int.parse(food.menu_id), highlightedFoodId: food?.id),
       ),
     );*/
 

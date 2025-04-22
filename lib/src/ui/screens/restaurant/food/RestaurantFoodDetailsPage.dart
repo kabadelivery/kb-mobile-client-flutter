@@ -67,7 +67,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
+    popupMenus = ["${AppLocalizations.of(context)!.translate('share')}"];
   }
 
   @override
@@ -113,11 +113,11 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
   }
 
 
@@ -161,7 +161,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                             ]) : Container(),
 
                                             SizedBox(width: 10),
-                                            Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
+                                            Text("${AppLocalizations.of(context)!.translate('currency')}", style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12))
 
                                           ]),
                                       SizedBox(height: 10),
@@ -194,7 +194,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 //                                                    padding: EdgeInsets.all(10),
                                                 child:Column(
                                                   children: <Widget>[
-                                                    Text("${AppLocalizations.of(context).translate('restaurant')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
+                                                    Text("${AppLocalizations.of(context)!.translate('restaurant')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor, fontSize: 14)),
                                                     SizedBox(height: 5),
                                                     SizedBox(width: 2*MediaQuery.of(context).size.width/5, child:
                                                     Text("${widget?.food?.restaurant_entity?.name}",textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryYellowColor, fontSize: 12)),
@@ -215,7 +215,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                             children: [
                                               Row(mainAxisAlignment : MainAxisAlignment.end,
                                                 children: [
-                                                  Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor)),
+                                                  Text("${AppLocalizations.of(context)!.translate('currency')}", style: TextStyle(fontSize: 12, color: KColors.primaryYellowColor)),
                                                 ],
                                               ),
                                               SizedBox(height: 5),
@@ -256,7 +256,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                   )),
                   MRaisedButton(onPressed: () {_continuePurchase();}, elevation: 0, color: Colors.white, child: Row(
                     children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('buy')}", style: TextStyle(color: KColors.primaryColor)),
+                      Text("${AppLocalizations.of(context)!.translate('buy')}", style: TextStyle(color: KColors.primaryColor)),
                       IconButton(icon: Icon(Icons.arrow_forward_ios,color: KColors.primaryColor), onPressed: null),
                     ],
                   ))
@@ -288,7 +288,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
   void menuChoiceAction(String value) {
    /* share a link */
-    Share.share('${AppLocalizations.of(context).translate('share_food_1')}${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} ${AppLocalizations.of(context).translate('share_food_2')}', subject: '');
+    Share.share('${AppLocalizations.of(context)!.translate('share_food_1')}${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} ${AppLocalizations.of(context)!.translate('share_food_2')}', subject: '');
   }
 
   void _continuePurchase() {
@@ -320,7 +320,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("${AppLocalizations.of(context).translate(
+            title: Text("${AppLocalizations.of(context)!.translate(
                 'please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
@@ -340,7 +340,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                       )
                   ),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate(
+                  Text("${AppLocalizations.of(context)!.translate(
                       "please_login_before_going_forward_description_place_order")}",
                       textAlign: TextAlign.center)
                 ],
@@ -349,14 +349,14 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('login')}"),
+                    "${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */

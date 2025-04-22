@@ -21,20 +21,20 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ShopFlowerDetailsPage extends StatefulWidget {
   static var routeName = "/ShopFlowerDetailsPage";
 
-  ShopProductModel food;
+  ShopProductModel? food;
 
-  FoodPresenter presenter;
+  FoodPresenter? presenter;
 
-  int foodId;
+  int? foodId;
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  ShopFlowerDetailsPage({Key key, this.food, this.foodId, this.presenter})
+  ShopFlowerDetailsPage({Key? key, this.food, this.foodId, this.presenter})
       : super(key: key) {
     this.restaurant = food?.restaurant_entity;
   }
@@ -46,7 +46,7 @@ class ShopFlowerDetailsPage extends StatefulWidget {
 class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
     implements FoodView {
 //  SliverAppBar flexibleSpaceWidget;
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   int _carousselPageIndex = 0;
 
@@ -63,17 +63,17 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    popupMenus = ["${AppLocalizations.of(context).translate('share')}"];
+    popupMenus = ["${AppLocalizations.of(context)!.translate('share')}"];
     if (widget.food != null) {
       expandedHeight = 2 * MediaQuery.of(context).size.width / 3 + 20;
       images = widget.food?.food_details_pictures;
       if (images == null) {
-        images = [widget.food.pic];
+        images = [widget.food!.pic!];
       }
     }
   }
 
-  double expandedHeight;
+  double? expandedHeight;
   var images;
 
   @override
@@ -84,8 +84,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
     if (widget.food == null) {
       // there must be a food id.
-      widget.presenter.foodView = this;
-      widget.presenter.fetchFoodById(widget.foodId);
+      widget.presenter!.foodView = this;
+      widget.presenter!.fetchFoodById(widget.foodId!);
     }
   }
 
@@ -97,18 +97,17 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context)!.settings.arguments as int ;
     if (args != null && args != 0) widget.foodId = args;
     if (widget.food == null) {
       // there must be a food id.
-      widget.presenter.fetchFoodById(widget.foodId);
+      widget.presenter!.fetchFoodById(widget.foodId!);
     }
 
     /* use silver-app-bar first */
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -131,7 +130,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('product_details')}"),
+                    "${AppLocalizations.of(context)!.translate('product_details')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -156,17 +155,17 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchFoodById(widget.foodId);
+          widget.presenter!.fetchFoodById(widget.foodId!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchFoodById(widget.foodId);
+          widget.presenter!.fetchFoodById(widget.foodId!);
         });
   }
 
@@ -272,7 +271,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox(width: 20,),
-                                      widget.food.promotion == 0
+                                      widget.food!.promotion == 0
                                           ? Text("${widget.food?.price}",
                                               style: TextStyle(
                                                   color: KColors.primaryColor,
@@ -285,7 +284,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                                       .lineThrough,
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold)),
-                                      widget.food.promotion != 0
+                                      widget.food!.promotion != 0
                                           ? Row(children: <Widget>[
                                               SizedBox(width: 5),
                                               Text(
@@ -300,9 +299,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                           : Container(),
                                       SizedBox(width: 5),
                                       Text(
-                                          "${AppLocalizations.of(context).translate('currency')}",
+                                          "${AppLocalizations.of(context)!.translate('currency')}",
                                           style: TextStyle(
-                                              color:  widget.food.promotion == 0 ? KColors.primaryColor : KColors.primaryYellowColor,
+                                              color:  widget.food!.promotion == 0 ? KColors.primaryColor : KColors.primaryYellowColor,
                                               fontSize: 12))
                                     ]),
                               ],
@@ -310,7 +309,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                             SizedBox(height: 20),
                             Row(children: [
                               Text(
-                                  "${AppLocalizations.of(context).translate('product_description_section_title')}",
+                                  "${AppLocalizations.of(context)!.translate('product_description_section_title')}",
                                   style: TextStyle(color: KColors.new_black,  fontSize: 14, fontWeight: FontWeight.w600))
                             ]),
                             SizedBox(height: 5),
@@ -376,7 +375,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                             ])),
                         SizedBox(height: 10),
                         Text(
-                            "${_getTotalPrice()}${AppLocalizations.of(context).translate('currency')}",
+                            "${_getTotalPrice()}${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey)),
                         SizedBox(height: 15),
                         Container(margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -389,8 +388,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                      "${AppLocalizations.of(context).translate('buy')}"
-                                          ?.toUpperCase(),
+                                      "${AppLocalizations.of(context)!.translate('buy')}"
+                                          !.toUpperCase(),
                                       style: TextStyle(
                                           color: KColors.white, fontSize: 15)),
                                 ],
@@ -429,7 +428,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
   void menuChoiceAction(String value) {
     /* share a link */
     Share.share(
-        '${AppLocalizations.of(context).translate('share_food_1')}${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} ${AppLocalizations.of(context).translate('share_food_2')}',
+        '${AppLocalizations.of(context)!.translate('share_food_1')}${ServerConfig.SERVER_ADDRESS_SECURE}/food/${widget.food?.id} ${AppLocalizations.of(context)!.translate('share_food_2')}',
         subject: '');
   }
 
@@ -439,10 +438,10 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
     int totalPrice = 0;
 
     /* init */
-    food_selected.putIfAbsent(widget.food, () => quantity);
-    totalPrice = int.parse(widget.food.promotion == 0 /* no promotion */
-            ? widget.food.price
-            : widget.food.promotion_price) *
+    food_selected.putIfAbsent(widget.food!, () => quantity);
+    totalPrice = int.parse(widget.food!.promotion! == 0 /* no promotion */
+            ? widget.food!.price.toString()
+            : widget.food!.promotion_price.toString()) *
         quantity;
 
     /* data */
@@ -462,7 +461,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -480,7 +479,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_place_order")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -488,14 +487,14 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -503,7 +502,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(),
+                          presenter: LoginPresenter(LoginView()),
                           fromOrderingProcess: true)));
                 },
               )
@@ -515,8 +514,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
       Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               OrderConfirmationPage2(
-                  restaurant: widget.restaurant,
-                  presenter: OrderConfirmationPresenter(),
+                  restaurant: widget.restaurant!,
+                  presenter: OrderConfirmationPresenter(OrderConfirmationView()),
                   foods: food_selected,
                   addons: adds_on_selected),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -574,7 +573,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   _getTotalPrice() {
     return Utils.inflatePrice(
-        "${int.parse(widget.food.promotion == 0 /* no promotion */
-            ? widget.food.price : widget.food.promotion_price) * quantity}");
+        "${int.parse(widget.food!.promotion == 0 /* no promotion */
+            ? widget.food!.price.toString() : widget.food!.promotion_price.toString()) * quantity}");
   }
 }

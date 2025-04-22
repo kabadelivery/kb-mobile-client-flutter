@@ -12,7 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentLocationTile extends StatefulWidget {
-  CurrentLocationTile({required Key key}) : super(key: key);
+  CurrentLocationTile({Key? key}) : super(key: key);
 
   @override
   _CurrentLocationTileState createState() {
@@ -49,16 +49,16 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
               if (StateContainer.of(context).is_offline) {
                 // open_location_code
                 Placemark mPlaceMark = Placemark(
-                    name: encode(StateContainer.of(context).location.latitude,
-                        StateContainer.of(context).location.longitude),
+                    name: encode(StateContainer.of(context).location!.latitude!,
+                        StateContainer.of(context).location!.longitude),
                     country: "WORLD",
                     locality: "Africa");
                 controller!.add(mPlaceMark);
                 StateContainer.of(context).placemark = mPlaceMark;
               } else {
                 placemarks = await placemarkFromCoordinates(
-                    StateContainer.of(context).location.latitude,
-                    StateContainer.of(context).location.longitude);
+                    StateContainer.of(context).location!.latitude,
+                    StateContainer.of(context).location!.longitude);
                 // add local identifier
                 if (placemarks.length > 0) {
                   int s = 0;
@@ -79,7 +79,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                 }
               }
             } else {
-              controller!.add(StateContainer.of(context).placemark);
+              controller!.add(StateContainer.of(context).placemark!);
             }
             await controller.close();
           },
@@ -156,7 +156,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                                   Row(
                                     children: [
                                       Text(
-                                          "${encode(StateContainer.of(context).location.latitude, StateContainer.of(context).location.longitude)}",
+                                          "${encode(StateContainer.of(context).location!.latitude, StateContainer.of(context).location!.longitude)}",
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: Colors.grey,
@@ -195,7 +195,7 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                           child: Column(
                             children: [
                               Text(
-                                  "${StateContainer.of(context).placemark.name! + ", " + StateContainer.of(context).placemark.locality! + ", " + StateContainer.of(context).placemark.country!}",
+                                  "${StateContainer.of(context).placemark!.name! + ", " + StateContainer.of(context).placemark!.locality! + ", " + StateContainer.of(context).placemark!.country!}",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       color: Colors.grey,

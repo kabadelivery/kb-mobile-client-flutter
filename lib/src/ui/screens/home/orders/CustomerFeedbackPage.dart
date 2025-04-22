@@ -12,25 +12,24 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderFeedbackPage extends StatefulWidget {
   static var routeName = "/OrderFeedbackPage";
 
-  OrderFeedbackPresenter presenter;
+  OrderFeedbackPresenter? presenter;
 
-  int rate = 3;
+  int? rate = 3;
 
-  int max_rate = 5;
+  int? max_rate = 5;
 
-  OrderFeedbackPage({Key key, this.orderId, this.presenter}) : super(key: key);
+  OrderFeedbackPage({Key? key, this.orderId, this.presenter}) : super(key: key);
 
-  int orderId; // = 8744;
+  int? orderId; // = 8744;
 
-  CustomerModel customer;
-  CommandModel command;
+  CustomerModel? customer;
+  CommandModel? command;
 
   @override
   _OrderFeedbackPageState createState() => _OrderFeedbackPageState();
@@ -50,14 +49,14 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.orderFeedbackView = this;
+    widget.presenter!.orderFeedbackView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
       if (widget.orderId != null &&
           widget.orderId != 0 &&
           widget.customer != null) {
-        widget.presenter.loadOrderDetailsForFeedback(customer, widget.orderId);
+        widget.presenter!.loadOrderDetailsForFeedback(customer!, widget.orderId!);
       }
     });
   }
@@ -68,7 +67,6 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 20),
@@ -82,7 +80,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('note_and_review')}"),
+                    "${AppLocalizations.of(context)!.translate('note_and_review')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -96,8 +94,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
               ? ErrorPage(
                   message: "Network error, please try again.",
                   onClickAction: () => widget.presenter
-                      .loadOrderDetailsForFeedback(
-                          widget.customer, widget.orderId))
+                      ?.loadOrderDetailsForFeedback(
+                          widget.customer!, widget.orderId!))
               : SingleChildScrollView(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -132,12 +130,12 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                       fontSize: 14)),
                               SizedBox(height: 5),
                               Text(
-                                  "${AppLocalizations.of(context).translate('shipper')}",
+                                  "${AppLocalizations.of(context)!.translate('shipper')}",
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12)),
                               SizedBox(height: 30),
                               Text(
-                                  "${AppLocalizations.of(context).translate('please_give_rating')}",
+                                  "${AppLocalizations.of(context)!.translate('please_give_rating')}",
                                   style: TextStyle(
                                       color: KColors.new_black,
                                       fontWeight: FontWeight.w600,
@@ -154,7 +152,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                             children: <Widget>[
                               IconButton(
                                   icon: Icon(
-                                      widget.rate >= 1
+                                      widget.rate! >= 1
                                           ? FontAwesomeIcons.solidStar
                                           : FontAwesomeIcons.star,
                                       color: Colors.yellow,
@@ -162,7 +160,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                   onPressed: () => _starPressed(1)),
                               IconButton(
                                   icon: Icon(
-                                      widget.rate >= 2
+                                      widget.rate! >= 2
                                           ? FontAwesomeIcons.solidStar
                                           : FontAwesomeIcons.star,
                                       color: Colors.yellow,
@@ -170,7 +168,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                   onPressed: () => _starPressed(2)),
                               IconButton(
                                   icon: Icon(
-                                      widget.rate >= 3
+                                      widget.rate! >= 3
                                           ? FontAwesomeIcons.solidStar
                                           : FontAwesomeIcons.star,
                                       color: Colors.yellow,
@@ -178,7 +176,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                   onPressed: () => _starPressed(3)),
                               IconButton(
                                   icon: Icon(
-                                      widget.rate >= 4
+                                      widget.rate! >= 4
                                           ? FontAwesomeIcons.solidStar
                                           : FontAwesomeIcons.star,
                                       color: Colors.yellow,
@@ -186,7 +184,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                                   onPressed: () => _starPressed(4)),
                               IconButton(
                                   icon: Icon(
-                                      widget.rate >= 5
+                                      widget.rate! >= 5
                                           ? FontAwesomeIcons.solidStar
                                           : FontAwesomeIcons.star,
                                       color: Colors.yellow,
@@ -209,7 +207,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                               width: 20,
                             ),
                             Text(
-                                "${AppLocalizations.of(context).translate('anything_to_say_about_the_service')}",
+                                "${AppLocalizations.of(context)!.translate('anything_to_say_about_the_service')}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
@@ -254,8 +252,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "${AppLocalizations.of(context).translate('submit')}"
-                                      ?.toUpperCase(),
+                                  "${AppLocalizations.of(context)!.translate('submit')}"
+                                      !.toUpperCase(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15,
@@ -295,9 +293,9 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
 
   _sendReview() {
     String reviewMessage = _feedbackTextController.text;
-    int reviewStars = widget.rate;
-    widget.presenter.sendFeedback(
-        widget.customer, widget.orderId, reviewStars, reviewMessage);
+    int reviewStars = widget.rate!;
+    widget.presenter?.sendFeedback(
+        widget.customer!, widget.orderId!, reviewStars, reviewMessage);
   }
 
   @override
@@ -343,7 +341,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
     );
   }
 
-  void _showDialog({Icon icon, var message, bool okBackToHome = false}) {
+  void _showDialog({Icon? icon, var message, bool okBackToHome = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -88,10 +88,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     CustomerUtils.getCustomer().then((customer) async {
       widget.customer = customer;
       popupMenus = [
-        "${AppLocalizations.of(context).translate('add_voucher')}",
-        // "${AppLocalizations.of(context).translate('scan')}",
-        "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",
+        "${AppLocalizations.of(context)!.translate('add_voucher')}",
+        // "${AppLocalizations.of(context)!.translate('scan')}",
+        "${AppLocalizations.of(context)!.translate('settings')}",
+        "${AppLocalizations.of(context)!.translate('logout')}",
       ];
     });
   }
@@ -101,10 +101,10 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     super.didChangeDependencies();
     setState(() {
       popupMenus = [
-        "${AppLocalizations.of(context).translate('add_voucher')}",
-        // "${AppLocalizations.of(context).translate('scan')}",
-        "${AppLocalizations.of(context).translate('settings')}",
-        "${AppLocalizations.of(context).translate('logout')}",
+        "${AppLocalizations.of(context)!.translate('add_voucher')}",
+        // "${AppLocalizations.of(context)!.translate('scan')}",
+        "${AppLocalizations.of(context)!.translate('settings')}",
+        "${AppLocalizations.of(context)!.translate('logout')}",
       ];
     });
   }
@@ -181,7 +181,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('account')}"),
+                      "${AppLocalizations.of(context)!.translate('account')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -319,7 +319,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     onTap: () => _jumpToPage(
                         context,
                         TransactionHistoryPage(
-                            presenter: TransactionPresenter())),
+                            presenter: TransactionPresenter(TransactionView()))),
                     child: Container(
                       padding: EdgeInsets.all(10),
                       child: Column(
@@ -334,7 +334,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "${AppLocalizations.of(context).translate('balance')}",
+                                    "${AppLocalizations.of(context)!.translate('balance')}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 13),
@@ -365,7 +365,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               )),
                           SizedBox(height: 10),
                           Text(
-                            "${AppLocalizations.of(context).translate('top_up')}",
+                            "${AppLocalizations.of(context)!.translate('top_up')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500, fontSize: 13),
                           )
@@ -393,7 +393,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               )),
                           SizedBox(height: 10),
                           Text(
-                            "${AppLocalizations.of(context).translate('transfer')}",
+                            "${AppLocalizations.of(context)!.translate('transfer')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500, fontSize: 13),
                           )
@@ -417,7 +417,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           onTap: () => _jumpToPage(
                               context,
                               CustomerCareChatPage(
-                                  presenter: CustomerCareChatPresenter())),
+                                  presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
                           child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.white,
@@ -431,7 +431,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        "${AppLocalizations.of(context).translate('suggestions')}",
+                                        "${AppLocalizations.of(context)!.translate('suggestions')}",
                                         style: TextStyle(
                                             color: KColors.primaryYellowColor)),
                                     IconButton(
@@ -445,7 +445,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
         InkWell(
           onTap: () => _jumpToPage(context,
-              CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+              CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
           child: Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(vertical: 20),
@@ -462,7 +462,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   SizedBox(width: 20),
                   Text(
-                      "${AppLocalizations.of(context).translate('customer_care')}",
+                      "${AppLocalizations.of(context)!.translate('customer_care')}",
                       style: TextStyle(
                           color: KColors.mBlue,
                           fontSize: 14,
@@ -516,7 +516,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   Text(
                       Utils.capitalize(
-                          "${AppLocalizations.of(context).translate('addresses')}"),
+                          "${AppLocalizations.of(context)!.translate('addresses')}"),
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
@@ -539,7 +539,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   Text(
                       Utils.capitalize(
-                          "${AppLocalizations.of(context).translate('orders')}"),
+                          "${AppLocalizations.of(context)!.translate('orders')}"),
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
@@ -563,7 +563,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   Text(
                       Utils.capitalize(
-                          "${AppLocalizations.of(context).translate('feeds')}"),
+                          "${AppLocalizations.of(context)!.translate('feeds')}"),
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
@@ -588,7 +588,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   Text(
                       Utils.capitalize(
-                          "${AppLocalizations.of(context).translate('coupon')}"),
+                          "${AppLocalizations.of(context)!.translate('coupon')}"),
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
@@ -606,7 +606,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   ),
                   Text(
                       Utils.capitalize(
-                          "${AppLocalizations.of(context).translate('settings')}"),
+                          "${AppLocalizations.of(context)!.translate('settings')}"),
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
@@ -627,7 +627,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             child: Center(
               child: Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('logout')}"),
+                    "${AppLocalizations.of(context)!.translate('logout')}"),
                 style: TextStyle(
                     color: KColors.primaryColor, fontWeight: FontWeight.w500),
               ),
@@ -647,7 +647,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
                 SizedBox(height: 5),
                 Text(
-                  "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                  "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 )
               ],
@@ -666,7 +666,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       actions: <Widget>[
         InkWell(
           onTap: () => _jumpToPage(context,
-              CustomerCareChatPage(presenter: CustomerCareChatPresenter())),
+              CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
           child: Container(
             width: 60,
             height: 60,
@@ -774,11 +774,11 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 //               ),
                 //             ),
                 //             padding: EdgeInsets.all(10), child: Row(children: [
-                //           Text("${AppLocalizations.of(context).translate('your_kaba_points')}"),
+                //           Text("${AppLocalizations.of(context)!.translate('your_kaba_points')}"),
                 //           SizedBox(width:20),
                 //           Text("${StateContainer.of(context).kabaPoints == null ? "???" : StateContainer.of(context).kabaPoints}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
                 //         ])),
-                //         onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter())),
+                //         onTap:()=> _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView()))),
                 //       ),
                 //     ],
                 //   ),
@@ -821,7 +821,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           onTap: () => _jumpToPage(
                               context,
                               TransactionHistoryPage(
-                                  presenter: TransactionPresenter())),
+                                  presenter: TransactionPresenter(TransactionView()))),
                           child: Container(
                             padding: EdgeInsets.all(10),
                             child: Column(
@@ -840,12 +840,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          "${AppLocalizations.of(context).translate('balance')}",
+                                          "${AppLocalizations.of(context)!.translate('balance')}",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15),
                                         )
-                                        // Text("${AppLocalizations.of(context).translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                        // Text("${AppLocalizations.of(context)!.translate('currency')}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
                                         // SizedBox(width:5),
                                         // Text("${StateContainer.of(context).balance == null ? "0" : StateContainer.of(context).balance}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
                                         /*  SizedBox(width:10),
@@ -880,7 +880,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     )),
                                 SizedBox(height: 5),
                                 Text(
-                                  "${AppLocalizations.of(context).translate('top_up')}",
+                                  "${AppLocalizations.of(context)!.translate('top_up')}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15),
@@ -909,7 +909,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     )),
                                 SizedBox(height: 5),
                                 Text(
-                                  "${AppLocalizations.of(context).translate('transfer')}",
+                                  "${AppLocalizations.of(context)!.translate('transfer')}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15),
@@ -933,7 +933,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                             onTap: () => _jumpToPage(
                                 context,
                                 CustomerCareChatPage(
-                                    presenter: CustomerCareChatPresenter())),
+                                    presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
                             child: Container(
                                 decoration: BoxDecoration(
                                     color: Colors.white,
@@ -947,7 +947,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                          "${AppLocalizations.of(context).translate('suggestions')}",
+                                          "${AppLocalizations.of(context)!.translate('suggestions')}",
                                           style: TextStyle(
                                               color:
                                                   KColors.primaryYellowColor)),
@@ -996,7 +996,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                        "${AppLocalizations.of(context).translate('profile')}"
+                                        "${AppLocalizations.of(context)!.translate('profile')}"
                                             .toUpperCase(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -1045,7 +1045,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                        "${AppLocalizations.of(context).translate('addresses')}"
+                                        "${AppLocalizations.of(context)!.translate('addresses')}"
                                             .toUpperCase(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -1072,7 +1072,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                        "${AppLocalizations.of(context).translate('orders')}"
+                                        "${AppLocalizations.of(context)!.translate('orders')}"
                                             .toUpperCase(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -1103,7 +1103,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                        "${AppLocalizations.of(context).translate('feeds')}"
+                                        "${AppLocalizations.of(context)!.translate('feeds')}"
                                             .toUpperCase(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -1135,7 +1135,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                              "${AppLocalizations.of(context).translate('coupon')}"
+                                              "${AppLocalizations.of(context)!.translate('coupon')}"
                                                   .toUpperCase(),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -1162,7 +1162,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
-                                        "${AppLocalizations.of(context).translate('settings')}"
+                                        "${AppLocalizations.of(context)!.translate('settings')}"
                                             .toUpperCase(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -1183,7 +1183,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                       children: <Widget>[
 //                                Icon(Icons.te, size: 20, color: KColors.primaryColor),
                         Text(
-                          "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                          "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         )
                       ],
@@ -1195,7 +1195,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
   void _jumpToTransactionHistory() {
     _jumpToPage(
-        context, TransactionHistoryPage(presenter: TransactionPresenter()));
+        context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
   }
 
   _jumpToTopUpPage() async {
@@ -1219,7 +1219,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
         }
         _showDialog(
             message:
-                "${AppLocalizations.of(context).translate('please_check_balance')}",
+                "${AppLocalizations.of(context)!.translate('please_check_balance')}",
             svgIcon: VectorsData.account_balance);
       }
     }
@@ -1263,7 +1263,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       }
     } else {
       xrint("_handleLinksImmediately SCANNING WENT WRONG");
-      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+      mDialog("${AppLocalizations.of(context)!.translate('qr_code_wrong')}");
     }
   }
 */
@@ -1310,7 +1310,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
           break;
         case "transactions":
           _jumpToPage(context,
-              TransactionHistoryPage(presenter: TransactionPresenter()));
+              TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
           break;
         case "restaurants":
           StateContainer.of(context).updateTabPosition(tabPosition: 1);
@@ -1329,7 +1329,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: arg),
-                    presenter: RestaurantDetailsPresenter()));
+                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
           }
           break;
         case "order":
@@ -1339,7 +1339,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter()));
+                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         case "food":
@@ -1347,7 +1347,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             xrint("food id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context,
-                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter()));
+                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "menu":
@@ -1355,7 +1355,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             xrint("menu id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context,
-                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter()));
+                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -1365,7 +1365,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter()));
+                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         default:
@@ -1415,7 +1415,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1426,7 +1426,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1437,7 +1437,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1482,7 +1482,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     side: MaterialStateProperty.all(
                         BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('refuse')}",
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
                     style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -1493,14 +1493,14 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     side: MaterialStateProperty.all(
                         BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}",
+                    "${AppLocalizations.of(context)!.translate('accept')}",
                     style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(
                       context,
                       TransactionHistoryPage(
-                          presenter: TransactionPresenter()));
+                          presenter: TransactionPresenter(TransactionView())));
                 },
               ),
             ]);

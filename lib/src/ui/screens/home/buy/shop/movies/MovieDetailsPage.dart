@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MovieDetailsPage extends StatefulWidget {
-  MovieModel movie = MovieModel(
+  MovieModel? movie = MovieModel(
       id: 3,
       movie_type: "Adventure, Fiction, Thrilling",
       name: "Last of us",
@@ -19,7 +19,7 @@ class MovieDetailsPage extends StatefulWidget {
           "The Last of Us, est le nom d'une série de jeux vidéo, développée par Naughty Dog et éditée par Sony Computer Entertainment, de type action-aventure et survie, ayant comme thème principal un univers post-apocalyptique après une pandémie provoquée par un champignon appelé le cordyceps.",
       age_limit: "17+");
 
-  MoviePresenter presenter;
+  MoviePresenter? presenter;
 
   MovieDetailsPage({this.movie, this.presenter});
 
@@ -38,7 +38,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.movieView = this;
+    widget.presenter!.movieView = this;
   }
 
   @override
@@ -57,14 +57,13 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.pop(context)),
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('movie_details')}"),
+                      "${AppLocalizations.of(context)!.translate('movie_details')}"),
                   style: TextStyle(fontSize: 16, color: Colors.white)),
             ],
           ),
@@ -92,7 +91,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
                                         // Utils.inflateLink(movie?.pic)
-                                        widget?.movie?.pic)))),
+                                        widget.movie!.pic!)))),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -116,7 +115,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                       child: RichText(
                         text: TextSpan(
                             text:
-                                "${_cutShortedDescription(widget?.movie?.description, descriptionIsShorted)}",
+                                "${_cutShortedDescription(widget.movie!.description!, descriptionIsShorted)}",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 color: Colors.grey,
@@ -124,9 +123,9 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                             children: [
                               TextSpan(
                                   text: (descriptionIsShorted &&
-                                          widget?.movie?.description?.length >
+                                          widget.movie!.description!.length! >
                                               DESCRIPTION_MAX_CHAR_LENGTH)
-                                      ? "  ${AppLocalizations.of(context).translate("see_more")}"
+                                      ? "  ${AppLocalizations.of(context)!.translate("see_more")}"
                                       : "",
                                   style: TextStyle(
                                       fontSize: 13,
@@ -214,8 +213,8 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
 
   _cutShortedDescription(String description, bool descriptionIsShorted) {
     if (descriptionIsShorted &&
-        description?.length > DESCRIPTION_MAX_CHAR_LENGTH)
-      return description?.substring(0, DESCRIPTION_MAX_CHAR_LENGTH) + "...";
+        description!.length > DESCRIPTION_MAX_CHAR_LENGTH)
+      return description!.substring(0, DESCRIPTION_MAX_CHAR_LENGTH) + "...";
     else
       return description;
   }

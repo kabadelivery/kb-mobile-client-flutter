@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class MessagePage extends StatelessWidget {
 
-  String message;
+  String? message;
 
   MessagePage({
-    Key key, this.message
+    Key? key, this.message
   }): super(key:key);
 
 
@@ -17,7 +17,7 @@ class MessagePage extends StatelessWidget {
     return Center(
       child: (Column(mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(message)])
+                Text(message!)])
       ),
     );
   }

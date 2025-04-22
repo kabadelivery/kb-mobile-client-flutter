@@ -7,7 +7,6 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
@@ -15,6 +14,7 @@ import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuDetails.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
  import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -24,20 +24,20 @@ import 'package:toast/toast.dart';
 class FlowerCatalogPage extends StatefulWidget {
   static var routeName = "/FlowerCatalogPage";
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  MenuPresenter presenter;
+  MenuPresenter? presenter;
 
-  int menuId;
+  int? menuId;
 
-  bool fromNotification;
+  bool? fromNotification;
 
-  int highlightedFoodId;
+  int? highlightedFoodId;
 
-  int foodId;
+  int? foodId;
 
   FlowerCatalogPage(
-      {Key key,
+      {Key? key,
       this.presenter,
       this.restaurant = null,
       this.menuId = -1,
@@ -56,13 +56,13 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   var _firstTime = true;
 
   /* app config */
-  GlobalKey _menuBasketKey;
-  Offset _menuBasketOffset;
+  GlobalKey? _menuBasketKey;
+  Offset? _menuBasketOffset;
 
   final dataKey = new GlobalKey();
 
   /* add data */
-  List<RestaurantSubMenuModel> data;
+  List<RestaurantSubMenuModel>? data;
 
   // int currentIndex = 0;
 
@@ -71,7 +71,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
   int ALL = 3, FOOD = 1, ADDONS = 2;
 
-  AnimationController _controller;
+  AnimationController? _controller;
 
   /* selected foods */
   Map<ShopProductModel, int> food_selected = Map();
@@ -88,7 +88,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
   Map<String, GlobalKey> _keyBox = Map();
 
-  Animation foodAddAnimation;
+  Animation? foodAddAnimation;
 
   var _menuChipCurrentIndex = 0;
 
@@ -99,46 +99,45 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
     WidgetsBinding.instance.addPostFrameCallback((_) => _computeBasketOffset());
     super.initState();
     _menuBasketKey = GlobalKey();
-    widget.presenter.menuView = this;
+    widget.presenter!.menuView = this;
 
-    if (!widget.fromNotification) {
+    if (!widget.fromNotification!!) {
       if (widget.menuId != -1) {
-        widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+        widget.presenter!.fetchMenuWithMenuId(widget!.menuId!);
       } else if (widget.foodId != -1) {
-        widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+        widget.presenter!.fetchMenuWithFoodId(widget!.foodId!);
       } else {
-        widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+        widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
       }
     }
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
 //    foodAddAnimation = Tween(begin: 1.5, end: 1.0).animate(_controller);
-    foodAddAnimation = Tween(begin: 0.0, end: 2 * pi).animate(_controller);
+    foodAddAnimation = Tween(begin: 0.0, end: 2 * pi).animate(_controller!);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.fromNotification) {
-      final int args = ModalRoute.of(context).settings.arguments;
+    if (widget.fromNotification!) {
+      final int args = ModalRoute.of(context)!.settings!.arguments! as int;
       if (args != null && args != 0) {
         if (args < 0) {
           widget.foodId = -1 * args;
           widget.highlightedFoodId = widget.foodId;
-          widget.presenter.fetchMenuWithFoodId(widget.foodId);
+          widget.presenter!.fetchMenuWithFoodId(widget.foodId!);
         } else {
           widget.menuId = args;
-          widget.presenter.fetchMenuWithMenuId(widget.menuId);
+          widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
         }
       }
     }
 
     var appBar = AppBar(
-      brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(
           child: Row(children: <Widget>[
-        // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+        // Text("${AppLocalizations.of(context)!.translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
         // SizedBox(width: 10),
         Container(
             decoration: BoxDecoration(
@@ -146,7 +145,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
             child: Text(
-                widget?.restaurant == null ? "" : widget?.restaurant?.name,
+                widget.restaurant! == null ? "" : widget.restaurant!.name!,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.white)))
       ])),
@@ -160,12 +159,13 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
           children: <Widget>[
             RotatedBox(
                 child: AnimatedBuilder(
-                  animation: foodAddAnimation,
+                  animation: foodAddAnimation!,
                   child: Text("${_foodCount}/${FOOD_MAX}",
                       style: TextStyle(color: Colors.white, fontSize: 18)),
-                  builder: (BuildContext context, Widget child) {
+                  builder: (BuildContext context, Widget? child) {
                     return Transform.rotate(
-                        angle: foodAddAnimation.value, child: child);
+                        angle: foodAddAnimation!.value, child: child
+                    );
                   },
                 ),
                 quarterTurns: 0),
@@ -205,7 +205,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                        "${Utils.capitalize(AppLocalizations.of(context).translate('categories'))}",
+                                        "${Utils.capitalize(AppLocalizations.of(context)!.translate('categories'))}",
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 12,
@@ -240,40 +240,40 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                               : (hasNetworkError
                                   ? ErrorPage(
                                       message:
-                                          "${AppLocalizations.of(context).translate('network_error')}",
+                                          "${AppLocalizations.of(context)!.translate('network_error')}",
                                       onClickAction: () {
-                                        if (!widget.fromNotification) {
+                                        if (!widget.fromNotification!) {
                                           if (widget.menuId == -1)
                                             widget.presenter
-                                                .fetchMenuWithRestaurantId(
-                                                    widget.restaurant.id);
+                                                !.fetchMenuWithRestaurantId(
+                                                    widget.restaurant!.id!);
                                           else
                                             widget.presenter
-                                                .fetchMenuWithMenuId(
-                                                    widget.menuId);
+                                                !.fetchMenuWithMenuId(
+                                                    widget.menuId!);
                                         } else
                                           restaurantBloc
                                               .fetchRestaurantMenuList(
-                                                  widget?.restaurant);
+                                                  widget.restaurant!);
                                       })
                                   : hasSystemError
                                       ? ErrorPage(
                                           message:
-                                              "${AppLocalizations.of(context).translate('system_error')}",
+                                              "${AppLocalizations.of(context)!.translate('system_error')}",
                                           onClickAction: () {
-                                            if (!widget.fromNotification) {
+                                            if (!widget.fromNotification!) {
                                               if (widget.menuId == -1)
                                                 widget.presenter
-                                                    .fetchMenuWithRestaurantId(
-                                                        widget.restaurant.id);
+                                                    !.fetchMenuWithRestaurantId(
+                                                        widget.restaurant!.id!);
                                               else
                                                 widget.presenter
-                                                    .fetchMenuWithMenuId(
-                                                        widget.menuId);
+                                                    !.fetchMenuWithMenuId(
+                                                        widget.menuId!);
                                             } else
                                               restaurantBloc
                                                   .fetchRestaurantMenuList(
-                                                      widget?.restaurant);
+                                                      widget.restaurant!);
                                           })
                                       : _buildFlowerCatalog()),
                         ]..add(SizedBox(
@@ -284,7 +284,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
   _computeBasketOffset() {
     final RenderBox renderBox =
-        _menuBasketKey.currentContext.findRenderObject();
+        _menuBasketKey!.currentContext!.findRenderObject() as RenderBox;
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
@@ -295,7 +295,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
     if (data == null || data?.length == 0)
       return Center(
-          child: Text("${AppLocalizations.of(context).translate('no_data')}"));
+          child: Text("${AppLocalizations.of(context)!.translate('no_data')}"));
 
     if (_firstTime) {
 //      _openDrawer();
@@ -326,13 +326,13 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
     return Expanded(
       child: GridView.builder(
-        itemCount: data[_menuChipCurrentIndex]?.foods?.length,
+        itemCount: data![_menuChipCurrentIndex]?.foods?.length,
         itemBuilder: (context, index) => FlowerWidgetItem(
             dataKey: dataKey,
             jumpToFoodDetails: _jumpToFoodDetails,
             showDetails: _showDetails,
             addFoodToChart: _addFoodToChart,
-            food: data[_menuChipCurrentIndex]?.foods[index],
+            food: data![_menuChipCurrentIndex]?.foods![index],
             foodIndex: index,
             menuIndex: _menuChipCurrentIndex,
             highlightedFoodId: widget.highlightedFoodId),
@@ -382,7 +382,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
       if (food_selected.containsKey(food))
         setState(() {
           food_selected.update(
-              food, (int val) => 1 + food_selected[food].toInt());
+              food, (int val) => 1 + food_selected[food]!.toInt());
         });
       else {
         setState(() {
@@ -390,7 +390,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
         });
       }
     } else {
-      showToast("${AppLocalizations.of(context).translate('max_reached')}");
+      showToast("${AppLocalizations.of(context)!.translate('max_reached')}");
     }
     _updateCounts();
   }
@@ -421,7 +421,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
         }
       });*/
 
-      await _controller.forward(from: 0.0).orCancel;
+      await _controller!.forward(from: 0.0).orCancel;
     } on TickerCanceled {}
   }
 /*
@@ -430,20 +430,20 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   }*/
 
   void showToast(String message) {
-    Toast.show(message, context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+    Toast.show(message,
+        duration:5, gravity: Toast.center);
   }
 
   int _getQuantity(ShopProductModel food) {
-    if (!food.is_addon) {
+    if (!food.is_addon!) {
       if (food_selected.containsKey(food)) {
-        return food_selected[food].toInt();
+        return food_selected[food]!.toInt();
       } else {
         return 0;
       }
     } else {
       if (adds_on_selected.containsKey(food)) {
-        return adds_on_selected[food].toInt();
+        return adds_on_selected[food]!.toInt();
       } else {
         return 0;
       }
@@ -501,21 +501,21 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
     setState(() {
       _menuChoices = [];
       data.forEach((element) {
-        _menuChoices.add(Utils.capitalize(element.name));
+        _menuChoices.add(Utils.capitalize(element.name!));
       });
 
-      if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
-        FOOD_MAX = int.parse(restaurant.max_food);
+      if (restaurant.max_food != null || int.parse(restaurant.max_food!) > 0)
+        FOOD_MAX = int.parse(restaurant.max_food!);
       widget.restaurant = restaurant;
       /* make sure, the menu_id is selected. */
       this.data = data;
 
-      _menuChipCurrentIndex = this.data.indexWhere((subMenu) {
+      _menuChipCurrentIndex = this.data!.indexWhere((subMenu) {
         if (subMenu?.id == widget.menuId) return true;
         return false;
       });
       if (_menuChipCurrentIndex < 0 ||
-          _menuChipCurrentIndex > this.data.length) {
+          _menuChipCurrentIndex > this.data!.length!) {
         _menuChipCurrentIndex = 0;
       }
     });
@@ -544,38 +544,38 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           /*  if (widget.menuId == -1)
-        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+        widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
-        widget.presenter.fetchMenuWithMenuId(widget.menuId);
+        widget.presenter!.fetchMenuWithMenuId(widget.menuId);
 */
           if (widget.menuId != -1) {
-            widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+            widget.presenter!.fetchMenuWithMenuId(widget!.menuId!);
           } else if (widget.foodId != -1) {
-            widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+            widget.presenter!.fetchMenuWithFoodId(widget!.foodId!);
           } else {
-            widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
           }
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           /*   if (widget.menuId == -1)
-        widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
+        widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
-        widget.presenter.fetchMenuWithMenuId(widget.menuId);*/
+        widget.presenter!.fetchMenuWithMenuId(widget.menuId);*/
 
           if (widget.menuId != -1) {
-            widget.presenter.fetchMenuWithMenuId(widget?.menuId);
+            widget.presenter!.fetchMenuWithMenuId(widget!.menuId!);
           } else if (widget.foodId != -1) {
-            widget.presenter.fetchMenuWithFoodId(widget?.foodId);
+            widget.presenter!.fetchMenuWithFoodId(widget!.foodId!);
           } else {
-            widget.presenter.fetchMenuWithRestaurantId(widget?.restaurant?.id);
+            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
           }
         });
   }
@@ -587,7 +587,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   }
 
   _showDetails(ShopProductModel food) {
-    mDialog(food?.description);
+    mDialog(food.description!);
   }
 
   void mDialog(String message) {
@@ -599,12 +599,12 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -615,7 +615,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -630,7 +630,7 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -641,18 +641,18 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -665,13 +665,13 @@ class _FlowerCatalogPageState extends State<FlowerCatalogPage>
 }
 
 class CustomAnimatedPosition extends AnimatedPositioned {
-  var child;
-  double left;
-  double top;
-  double right;
-  double bottom;
+  Widget child;
+  double? left;
+  double? top;
+  double? right;
+  double? bottom;
   Duration duration;
-  int serial;
+  int? serial;
   var context;
 
   CustomAnimatedPosition(
@@ -680,15 +680,16 @@ class CustomAnimatedPosition extends AnimatedPositioned {
       this.bottom,
       this.left,
       this.top,
-      this.duration,
-      this.child})
+      required this.duration,
+      required this.child
+      })
       : super(
-            child: child,
+            child: child!,
             right: right,
             bottom: bottom,
             left: left,
             top: top,
-            duration: duration);
+            duration: duration!);
 
   bool isAdded = false;
 

@@ -18,13 +18,13 @@ class RegisterPage extends StatefulWidget {
 
   static var routeName = "/RegisterPage";
 
-  final RegisterPresenter presenter;
+  final RegisterPresenter? presenter;
 
-  final String login;
+  final String? login;
 
-  RegisterPage({Key key, this.presenter, this.title, this.login}) : super(key: key);
+  RegisterPage({Key? key, this.presenter, this.title, this.login}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -37,10 +37,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
-  List<String> _loginFieldHint;
+  List<String>? _loginFieldHint;
 
-  String _nicknameFieldHint;
-  String _whatsappPhoneNumberHint;
+  String? _nicknameFieldHint;
+  String? _whatsappPhoneNumberHint;
 
   List<TextInputType> _loginFieldInputType = [TextInputType.emailAddress, TextInputType.emailAddress];
 
@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
   int timeDiff = 0;
 
-  String _requestId;
+  String? _requestId;
 
   bool isAccountRegistering = false;
 
@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "";
     _whatsappPhoneNumberHint = "";
 
-    this.widget.presenter.registerView = this;
+    this.widget.presenter!.registerView = this;
     /* retrieve state of the app */
     _retrieveRequestParams();
   }
@@ -89,18 +89,18 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    recoverModeHints = ["${AppLocalizations.of(context).translate('new_account_phonenumber_hint')}", "${AppLocalizations.of(context).translate('new_account_email_hint')}"];
-    _loginFieldHint = ["${AppLocalizations.of(context).translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
-    _nicknameFieldHint = "${AppLocalizations.of(context).translate('nickname')}";
-    _whatsappPhoneNumberHint = "${AppLocalizations.of(context).translate('whatsapp_number_hint')}";
+    recoverModeHints = ["${AppLocalizations.of(context)!.translate('new_account_phonenumber_hint')}", "${AppLocalizations.of(context)!.translate('new_account_email_hint')}"];
+    _loginFieldHint = ["${AppLocalizations.of(context)!.translate('phone_number_hint')}", "xxxxxx@yyy.zzz"];
+    _nicknameFieldHint = "${AppLocalizations.of(context)!.translate('nickname')}";
+    _whatsappPhoneNumberHint = "${AppLocalizations.of(context)!.translate('whatsapp_number_hint')}";
 
     if (widget.login != null && _loginFieldController != null) {
-      if (Utils.isEmailValid(widget.login)) {
+      if (Utils.isEmailValid(widget.login!)) {
           _handleRadioValueChange(1);
       } else {
         _handleRadioValueChange(0);
       }
-      _loginFieldController?.text = widget.login;
+      _loginFieldController?.text = widget.login!;
     }
   }
 
@@ -109,7 +109,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -122,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('register')}"),
+                      "${AppLocalizations.of(context)!.translate('register')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -150,14 +149,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              "${AppLocalizations.of(context).translate('phone_number')}",
+                              "${AppLocalizations.of(context)!.translate('phone_number')}",
                               style: new TextStyle(fontSize: 14.0)),
                           new Radio(
                             value: 1,
                             groupValue: _registerModeRadioValue,
                             onChanged: _handleRadioValueChange,
                           ), new Text(
-                              "${AppLocalizations.of(context).translate('email')}",
+                              "${AppLocalizations.of(context)!.translate('email')}",
                               style: new TextStyle(fontSize: 14.0)),
                         ]) : Container(),
                     SizedBox(height: 10),
@@ -169,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController,
                                 enabled: !isCodeSent,
-                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint[_registerModeRadioValue]), style: TextStyle(color:KColors.new_black)),
+                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint![_registerModeRadioValue]), style: TextStyle(color:KColors.new_black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                         )),
 
@@ -188,7 +187,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     _registerModeRadioValue == 1 ? SizedBox(height: 20) : Container(),
 
                     _registerModeRadioValue == 1 ? Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context).translate('please_enter_whatsapp_no')}",
+                        "${AppLocalizations.of(context)!.translate('please_enter_whatsapp_no')}",
                         textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)) : Container(),
                     _registerModeRadioValue == 1 ?  SizedBox(height: 10) : Container(),
 
@@ -230,7 +229,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context).translate('press_code_hint')}",
+                        "${AppLocalizations.of(context)!.translate('press_code_hint')}",
                         textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
@@ -240,7 +239,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context).translate('code')}"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('code')}"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
@@ -249,7 +248,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
                               child: Row(
                             children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context).translate('seconds')}" : "${AppLocalizations.of(context).translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
                               isCodeSent == false &&  isCodeSending ? Row(
                                 children: <Widget>[
@@ -263,7 +262,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context).translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
@@ -276,12 +275,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         ));
   }
 
-  void _handleRadioValueChange (int value) {
+  void _handleRadioValueChange (int? value) {
     setState(() {
       /* clean the content */
       if (isCodeSent)
         return;
-      this._registerModeRadioValue = value;
+      this._registerModeRadioValue = value!;
       this._loginFieldController.text = "";
       this._codeFieldController.text = "";
     });
@@ -327,18 +326,18 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
     /* send request, to the server, and if ok, save request params and update fields. */
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-    this.widget.presenter.sendVerificationCode(login);
+    this.widget.presenter!.sendVerificationCode(login);
 
 
    /*
     if (_registerModeRadioValue == 0) {
       // phone number
-      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}");
     } else if (_registerModeRadioValue == 1) {
       // email...
       *//* if email, tell customer that the message could hide into the spams. *//*
       // mailbox
-      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}");
     }*/
   }
 
@@ -391,7 +390,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     /* get start-time */
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = prefs.getString("last_code_sent_time");
+    String tmp = prefs.getString("last_code_sent_time")!;
 
 //    if (!(registerType != null && registerType >= 0 && registerType < recoverModeHints.length))
 //      return;
@@ -410,23 +409,23 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
 
 
-      int register_type = prefs.getInt("register_type");
+      int register_type = prefs.getInt("register_type")!;
 
       setState(() {
         /* if code sent, do something else,  */
         isCodeSent = true;
         this._requestId = prefs.getString("request_id");
-        _loginFieldController.text = prefs.getString("login");
-        _nicknameFieldController.text = prefs.getString("nickname");
+        _loginFieldController.text = prefs.getString("login")!;
+        _nicknameFieldController.text = prefs.getString("nickname")!;
         _registerModeRadioValue = register_type;
       });
 
 
       if (register_type == 1) {
 
-        String whatsapp_number_id = prefs.getString("whatsapp_number_id"); // FR
-        String whatsapp_number_no = prefs.getString("whatsapp_number_no");
-        String whatsapp_number_area_code = prefs.getString("whatsapp_number_area_code"); // 33
+        String whatsapp_number_id = prefs.getString("whatsapp_number_id")!; // FR
+        String whatsapp_number_no = prefs.getString("whatsapp_number_no")!;
+        String whatsapp_number_area_code = prefs.getString("whatsapp_number_area_code")!; // 33
 
         countryDialCode = CountryCode(code: whatsapp_number_id, dialCode: whatsapp_number_area_code);
 
@@ -461,12 +460,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     }
   }
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
   @override
   void dispose() {
     try {
-      mainTimer.cancel();
+      mainTimer!.cancel();
     } catch(_) {
       xrint(_);
     }
@@ -504,7 +503,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     setState(() {
       isCodeSending = false;
     });
-    String _mCode1, _mCode2;
+    String? _mCode1, _mCode2;
     if (isOk) {
       /* clear shared preferences */
       _clearSharedPreferences();
@@ -539,7 +538,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       xrint("whatsappNo ${whatsapp_number}");
 
       /* launch create account request, and if success*/
-      this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
+      this.widget.presenter!.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
           phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
           email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
           request_id: this._requestId, whatsapp_number: whatsapp_number
@@ -563,18 +562,18 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     // inform the client to remain patient until he gets the code
     if (_registerModeRadioValue == 0) {
       // phone number
-      mDialog("${AppLocalizations.of(context).translate('pnumber_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}");
     } else if (_registerModeRadioValue == 1) {
       // email...
       /* if email, tell customer that the message could hide into the spams. */
       // mailbox
-      mDialog("${AppLocalizations.of(context).translate('email_registration_code_too_long')}");
+      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}");
     }
   }
 
   @override
   void onNetworkError() {
-    mToast("${AppLocalizations.of(context).translate('network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
   }
 
   @override
@@ -585,7 +584,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void registerSuccess(String phone_number, String password) {
     /*  */
-    Toast.show("${AppLocalizations.of(context).translate('account_created_successfully')}", context, duration: Toast.LENGTH_LONG);
+    Toast.show("${AppLocalizations.of(context)!.translate('account_created_successfully')}", duration: 5);
     Navigator.of(context).pop({'phone_number':phone_number, 'password':password, 'autologin': true});
   }
 
@@ -603,7 +602,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   @override
   void userExistsAlready() {
-    mDialog("${AppLocalizations.of(context).translate('user_exists')}");
+    mDialog("${AppLocalizations.of(context)!.translate('user_exists')}");
   }
 
   @override
@@ -621,17 +620,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       setState(() {
         isCodeSending = false;
       });
-      this.widget.presenter.checkVerificationCode(
-          _codeFieldController.text, this._requestId);
+      this.widget.presenter!.checkVerificationCode(
+          _codeFieldController.text, this._requestId??"");
     } else {
-      mToast("${AppLocalizations.of(context).translate('wrong_code')}");
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
 
 
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -642,7 +641,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -653,7 +652,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -661,17 +660,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                   child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actionIfYes();
+                  actionIfYes!();
                 },
               ),
             ] : <Widget>[
               //
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -684,7 +683,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   @override
   void codeError() {
-    mToast("${AppLocalizations.of(context).translate('register_code_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('register_code_error')}");
   }
 
 
@@ -692,7 +691,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   void _onCountryChanged(CountryCode value) {
      countryDialCode = value;
-     _initialSelection = value.code;
+     _initialSelection = value.code!;
   }
 
 

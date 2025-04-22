@@ -61,7 +61,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
         appBar: AppBar( brightness: Brightness.light,
             leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
             backgroundColor: Colors.white,
-            title: Text("${AppLocalizations.of(context).translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),
+            title: Text("${AppLocalizations.of(context)!.translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),
         body:  _buildVoucherDetailsPage(null)
     );
   }
@@ -78,7 +78,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
             child: Column(
                 children: <Widget>[
                   SizedBox(height:10),
-                  Text("${AppLocalizations.of(context).translate('voucher_')}", style: KStyles.hintTextStyle_gray),
+                  Text("${AppLocalizations.of(context)!.translate('voucher_')}", style: KStyles.hintTextStyle_gray),
                   SizedBox(height:10),
                   /* code qr; s'il est possible de partager cela */
                   Stack(
@@ -108,7 +108,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
                  /* Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('-${widget.voucher.value}',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 24)),
-                    Text(" ${widget.voucher.category == 1 ?  "%" : "${AppLocalizations.of(context).translate('currency')}"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                    Text(" ${widget.voucher.category == 1 ?  "%" : "${AppLocalizations.of(context)!.translate('currency')}"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   ]),*/
           _buildCFAPriceWidget(),
 
@@ -125,9 +125,9 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                     children: <Widget>[
 //                       SizedBox(height: 10),
 //                       widget.voucher.products?.length == null || widget.voucher.products?.length == 0 ?
-//                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
+//                       Text("${AppLocalizations.of(context)!.translate('voucher_for_spec_foods_all')}".toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor),)
 //                           :
-//                       Text("${AppLocalizations.of(context).translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
+//                       Text("${AppLocalizations.of(context)!.translate('voucher_for_spec_foods')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray_11),
 //                       /* start a mini food list .. */
 // //                      Text("WING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATEWING'S 10PCS / RIZ CURRY / WINGS' 5PCS / CUSTOM PLATE", textAlign: TextAlign.center, style: TextStyle(fontSize: 12,color: KColors.primaryYellowColor)),
 //                       //  _miniFoodWidget(ShopProductModel.randomFood())
@@ -149,7 +149,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   SizedBox(height: 20),
                   Column(
                     children: <Widget>[
-                      Text("${AppLocalizations.of(context).translate('voucher_code')}", style: KStyles.hintTextStyle_gray),
+                      Text("${AppLocalizations.of(context)!.translate('voucher_code')}", style: KStyles.hintTextStyle_gray),
                     ],
                   ),
                   SizedBox(height:10),
@@ -171,20 +171,20 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                       children: <Widget>[
                         Column(
                             children: <Widget>[
-                              Text("${AppLocalizations.of(context).translate('available_since')}", style: TextStyle(color: Colors.green, fontSize: 13)),
+                              Text("${AppLocalizations.of(context)!.translate('available_since')}", style: TextStyle(color: Colors.green, fontSize: 13)),
                               Text("${Utils.timeStampToDate(widget.voucher.start_date)}",style: TextStyle(fontSize: 13))
                             ]
                         ),
                         Column(
                             children: <Widget>[
-                              Text("${AppLocalizations.of(context).translate('expiry_date')}",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
+                              Text("${AppLocalizations.of(context)!.translate('expiry_date')}",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
                               Text("${Utils.timeStampToDate(widget.voucher.end_date)}",style: TextStyle(fontSize: 13))
                             ]
                         )
                       ]),
                   /* powered by */
                   SizedBox(height: 20),
-                  Text('${AppLocalizations.of(context).translate('powered_by_kaba_tech')}', style: TextStyle(color: Colors.grey, fontSize: 10)),
+                  Text('${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}', style: TextStyle(color: Colors.grey, fontSize: 10)),
                 ]
             ),
           ),
@@ -218,11 +218,11 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   void _copyIntoClipboard(String codePromo) {
     // ClipboardManager.copyToClipBoard(codePromo).then((result) {
-    //   mToast("${codePromo} ${AppLocalizations.of(context).translate('copied_c')}");
+    //   mToast("${codePromo} ${AppLocalizations.of(context)!.translate('copied_c')}");
     // });
 
     FlutterClipboard.copy(codePromo).then((value) {
-      mToast("${codePromo} ${AppLocalizations.of(context).translate('copied_c')}");
+      mToast("${codePromo} ${AppLocalizations.of(context)!.translate('copied_c')}");
     });
   }
 
@@ -246,7 +246,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                   /*prix*/
                   Row(children: <Widget>[
                     Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12, fontWeight: FontWeight.normal)),
-                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 8, fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context)!.translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 8, fontWeight: FontWeight.normal)),
                   ]),
                 ],
               ),
@@ -261,7 +261,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   _miniFoodsText(List<ShopProductModel> products) {
 
     if (products?.length > 20 && widget.food_see_more == false) {
-      return "${products?.length} ${AppLocalizations.of(context).translate('foods_')}\n\n> See More <";
+      return "${products?.length} ${AppLocalizations.of(context)!.translate('foods_')}\n\n> See More <";
     } else {
       String res = "";
       for (int i = 0; i < products?.length; i++) {

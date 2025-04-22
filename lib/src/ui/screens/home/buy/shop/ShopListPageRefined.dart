@@ -32,29 +32,29 @@ import 'package:toast/toast.dart';
 // import 'package:android_intent/android_intent.dart';
 
 class ShopListPageRefined extends StatefulWidget {
-  Position location;
+  Position? location;
 
-  RestaurantFoodProposalPresenter foodProposalPresenter;
+  RestaurantFoodProposalPresenter? foodProposalPresenter;
 
-  RestaurantListPresenter restaurantListPresenter;
+  RestaurantListPresenter? restaurantListPresenter;
 
   bool hasGps = false;
 
-  PageStorageKey key;
+  PageStorageKey? key;
 
-  BuildContext context;
+  BuildContext? context;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  List<ShopModel> restaurantList = null;
+  List<ShopModel>? restaurantList = null;
 
-  int samePositionCount = 0;
+  int? samePositionCount = 0;
 
-  String type;
+  String? type;
 
   static var routeName = "/ShopListPageRefined";
 
-  List<ShopModel> finalRestaurantList;
+  List<ShopModel>? finalRestaurantList;
 
   ShopListPageRefined(
       {this.key,
@@ -75,7 +75,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   var _filterEditController = TextEditingController();
 
   // List<ShopModel> data;
-  List<ShopModel> visibleItems;
+  List<ShopModel>? visibleItems;
 
   bool _searchMode = false;
   bool _searchAutoFocus = false;
@@ -85,15 +85,15 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   bool searchMenuHasSystemError = false, searchMenuHasNetworkError = false;
   bool isSearchingMenus = false;
 
-  List<ShopProductModel> foodProposals = null;
+  List<ShopProductModel>? foodProposals = null;
 
-  String _filterDropdownValue;
+  String? _filterDropdownValue;
 
   // GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
-  SharedPreferences prefs;
+  SharedPreferences? prefs;
 
   bool isLoading = false;
   bool hasNetworkError = false;
@@ -112,17 +112,17 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   String searchKey = "";
   String previousSearchKey = "";
 
-  bool _open_filter_value;
+  bool? _open_filter_value;
 
-  Map<String, dynamic> filterConfiguration;
+  Map<String, dynamic>? filterConfiguration;
 
   @override
   void initState() {
     _restaurantListScrollController.addListener(_onScroll);
     super.initState();
-//    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
-    widget.foodProposalPresenter.restaurantFoodProposalView = this;
-    widget.restaurantListPresenter.restaurantListView = this;
+//    _filterDropdownValue = "${AppLocalizations.of(context)!.translate('cheap_to_exp')}";
+    widget.foodProposalPresenter!.restaurantFoodProposalView = this;
+    widget.restaurantListPresenter!.restaurantListView = this;
 
     _filterEditController.addListener(_filterEditContent);
 
@@ -164,25 +164,25 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           //   widget.restaurantListPresenter.fetchShopList(widget.customer, null);
           // } else
           xrint("init -- 1");
-          widget.restaurantListPresenter.fetchShopList(widget.customer,
-              widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+              widget.type!, StateContainer.of(context)!.location!);
         } else {
           if (widget.hasGps &&
               (widget.restaurantList != null &&
-                  widget.restaurantList.length > 0 &&
-                  widget.restaurantList[0].distance != null &&
-                  "".compareTo(widget.restaurantList[0].distance) != 0)) {
+                  widget.restaurantList!.length > 0 &&
+                  widget.restaurantList![0].distance != null &&
+                  "".compareTo(widget.restaurantList![0].distance!) != 0)) {
             xrint("init -- 2");
             return; // no need to fetch automatically
           } else {
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  .fetchShopList(widget.customer, widget.type, null);
+                  !.fetchShopList(widget.customer!, widget.type!, null);
             } else {
               xrint("init -- 4");
-              widget.restaurantListPresenter.fetchShopList(widget.customer,
-                  widget.type, StateContainer?.of(context)?.location);
+              widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+                  widget.type!, StateContainer?.of(context)?.location);
             }
           }
         }
@@ -195,7 +195,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   @override
   void dispose() {
     // restaurantBloc.dispose();
-    mainTimer.cancel();
+    mainTimer!.cancel();
     _filterEditController.dispose();
     _focus.dispose();
     super.dispose();
@@ -221,7 +221,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         appBar: AppBar(
           titleSpacing: 0,
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -257,7 +256,7 @@ _searchAction();
           ],
           title: AnimatedSwitcher(
             duration: Duration(milliseconds: 300),
-            layoutBuilder: (currentChild, _) => currentChild,
+            layoutBuilder: (currentChild, _) => currentChild!,
             transitionBuilder: (child, animation) {
               return SlideTransition(
                 position:
@@ -321,7 +320,7 @@ _searchAction();
                                         textInputAction: TextInputAction.search,
                                         decoration: InputDecoration.collapsed(
                                             hintText:
-                                                "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                                                "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
                                             hintStyle: TextStyle(
                                                 fontSize: 14,
                                                 color: KColors.new_black
@@ -376,7 +375,7 @@ _searchAction();
                     children: [
                       Text(
                           Utils.capitalize(getCategoryTitle(context)[0]
-                              //    "${AppLocalizations.of(context).translate('search')}"
+                              //    "${AppLocalizations.of(context)!.translate('search')}"
                               ),
                           style: TextStyle(
                               fontSize: 15,
@@ -395,7 +394,7 @@ _searchAction();
                       ? _buildNetworkErrorPage()
                       : hasSystemError
                           ? _buildSysErrorPage()
-                          : _buildRestaurantList(widget.restaurantList))),
+                          : _buildRestaurantList(widget.restaurantList!))),
         ));
 
     /* return Scaffold(
@@ -408,7 +407,7 @@ _searchAction();
                   if (snapshot.hasData) {
                     return _buildRestaurantList(snapshot.data);
                   } else if (pageError) {
-                    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
+                    return ErrorPage(message:"${AppLocalizations.of(context)!.translate('network_error')}", onClickAction: (){
                       setState(() {
                         restaurantBloc.fetchShopList(customer: widget.customer, position: StateContainer.of(context).location);
                       });
@@ -446,7 +445,7 @@ _searchAction();
           children: <Widget>[
             SizedBox(height: 10),
             SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                _listContentFilter, _scrollToTopFunction, widget?.type, filterConfiguration),
+                _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration!),
             SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
@@ -474,7 +473,7 @@ _searchAction();
                                                 color: Colors.grey),
                                             SizedBox(height: 10),
                                             Text(
-                                                "${AppLocalizations.of(context).translate('no_content_to_show')}")
+                                                "${AppLocalizations.of(context)!.translate('no_content_to_show')}")
                                           ])))
                                         : RefreshIndicator(
                                             onRefresh: () async {
@@ -482,22 +481,22 @@ _searchAction();
                                                       ?.location ==
                                                   null) {
                                                 widget.restaurantListPresenter
-                                                    .fetchShopList(
-                                                        widget.customer,
-                                                        widget.type,
+                                                    !.fetchShopList(
+                                                        widget.customer!,
+                                                        widget.type!,
                                                         null);
                                               } else
                                                 widget.restaurantListPresenter
-                                                    .fetchShopList(
-                                                        widget.customer,
-                                                        widget.type,
+                                                    !.fetchShopList(
+                                                        widget.customer!,
+                                                        widget.type!,
                                                         StateContainer.of(
                                                                 context)
                                                             .location);
                                             },
                                             color: Colors.purple,
                                             child: Scrollbar(
-                                              isAlwaysShown: true,
+                                              thumbVisibility: true,
                                               controller:
                                                   _restaurantListScrollController,
                                               child: ListView.builder(
@@ -505,7 +504,7 @@ _searchAction();
                                                     _restaurantListScrollController,
                                                 itemCount:
                                                     visibleItems?.length != null
-                                                        ? visibleItems.length +
+                                                        ? visibleItems!.length +
                                                             1
                                                         : 0,
                                                 itemBuilder:
@@ -531,7 +530,7 @@ _searchAction();
                                                           height: 100,
                                                           child: Center(
                                                               child: Text(
-                                                            "${AppLocalizations.of(context).translate("the_end")}",
+                                                            "${AppLocalizations.of(context)!.translate("the_end")}",
                                                             style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
@@ -543,7 +542,7 @@ _searchAction();
                                                     }
                                                   } else {
                                                     return ShopListWidget(
-                                                        shopModel: visibleItems[
+                                                        shopModel: visibleItems![
                                                             position]);
                                                   }
                                                 },
@@ -572,12 +571,12 @@ _searchAction();
   void onSearchButtonTap() {
     if (searchTypePosition == 2) {
       if (_filterEditController.text?.trim()?.length != null &&
-          _filterEditController.text?.trim()?.length >= 3)
-        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
-            widget.type, _filterEditController.text);
+          _filterEditController.text!.trim()!.length! >= 3)
+        widget.foodProposalPresenter!.fetchRestaurantFoodProposalFromTag(
+            widget.type!, _filterEditController.text);
       else
         mDialog(
-            "${AppLocalizations.of(context).translate('search_too_short')}");
+            "${AppLocalizations.of(context)!.translate('search_too_short')}");
     }
   }
 
@@ -596,12 +595,12 @@ _searchAction();
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -612,7 +611,7 @@ _searchAction();
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -627,7 +626,7 @@ _searchAction();
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -638,18 +637,18 @@ _searchAction();
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -668,11 +667,11 @@ _searchAction();
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
-              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
+              title: Text("${AppLocalizations.of(context)!.translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context)!.translate('please_enable_gps')}"),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
+                  child: Text('${AppLocalizations.of(context)!.translate('ok')}'),
                   onPressed: () {
                     final AndroidIntent intent = AndroidIntent(
                         action: 'android.settings.LOCATION_SOURCE_SETTINGS');
@@ -688,8 +687,8 @@ _searchAction();
     }
   }*/
 
-  StreamSubscription<Position> positionStream;
-  Position tmpLocation;
+  StreamSubscription<Position>? positionStream;
+  Position? tmpLocation;
 
   Future _getLastKnowLocation() async {
     /* show a dialog describing that we are going to need to use permissions
@@ -699,7 +698,7 @@ _searchAction();
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
       /* no need to commit */
       /* expiration date in 3months */
 
@@ -710,7 +709,7 @@ _searchAction();
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                  "${AppLocalizations.of(context).translate('request')}"
+                  "${AppLocalizations.of(context)!.translate('request')}"
                       .toUpperCase(),
                   style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
@@ -730,7 +729,7 @@ _searchAction();
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
                         textAlign: TextAlign.center)
                   ],
                 ),
@@ -738,18 +737,18 @@ _searchAction();
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
                     /* */
                     // SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setString("_has_accepted_gps", "ok");
+                    prefs!.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     _getLastKnowLocation();
                     Navigator.of(context).pop();
@@ -772,7 +771,7 @@ _searchAction();
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -792,7 +791,7 @@ _searchAction();
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center)
                     ],
                   ),
@@ -800,14 +799,14 @@ _searchAction();
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       await Geolocator.openAppSettings();
@@ -829,7 +828,7 @@ _searchAction();
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -849,7 +848,7 @@ _searchAction();
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center)
                     ],
                   ),
@@ -857,14 +856,14 @@ _searchAction();
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       Geolocator.requestPermission();
@@ -890,7 +889,7 @@ _searchAction();
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(
-                      "${AppLocalizations.of(context).translate('permission_')}"
+                      "${AppLocalizations.of(context)!.translate('permission_')}"
                           .toUpperCase(),
                       style: TextStyle(color: KColors.primaryColor)),
                   content: SingleChildScrollView(
@@ -911,7 +910,7 @@ _searchAction();
                                 ))),
                         SizedBox(height: 10),
                         Text(
-                            "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                            "${AppLocalizations.of(context)!.translate('request_location_activation_permission')}",
                             textAlign: TextAlign.center)
                       ],
                     ),
@@ -919,14 +918,14 @@ _searchAction();
                   actions: <Widget>[
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('refuse')}"),
+                          "${AppLocalizations.of(context)!.translate('refuse')}"),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('accept')}"),
+                          "${AppLocalizations.of(context)!.translate('accept')}"),
                       onPressed: () async {
                         /* */
                         Navigator.of(context).pop();
@@ -945,22 +944,22 @@ _searchAction();
               if (position?.latitude != null &&
                   tmpLocation?.latitude != null &&
                   (position.latitude * 100).round() ==
-                      (tmpLocation.latitude * 100).round() &&
+                      (tmpLocation!.latitude * 100).round() &&
                   (position.longitude * 100).round() ==
-                      (tmpLocation.longitude * 100).round()) {
-                widget.samePositionCount++;
+                      (tmpLocation!.longitude * 100).round()) {
+                widget.samePositionCount = (widget.samePositionCount ?? 0) + 1;
                 // return;
               } else {
                 widget.samePositionCount = 0;
-                tmpLocation = StateContainer.of(widget.context).location;
+                tmpLocation = StateContainer.of(widget.context!).location;
                 if (position != null && mounted) {
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
-                  widget.restaurantListPresenter.fetchShopList(widget.customer,
-                      widget.type, StateContainer.of(context).location);
+                  widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+                      widget.type!, StateContainer.of(context).location);
                 }
               }
-              if (widget.samePositionCount >= 3 || widget.hasGps)
+              if (widget.samePositionCount! >= 3 || widget.hasGps)
                 positionStream?.cancel();
             });
           }
@@ -972,20 +971,20 @@ _searchAction();
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
-              widget.type, _filterEditController.text);
+          widget.foodProposalPresenter!.fetchRestaurantFoodProposalFromTag(
+              widget.type!, _filterEditController.text);
         });
   }
 
   _buildSearchMenuSysErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
-              widget.type, _filterEditController.text);
+          widget.foodProposalPresenter!.fetchRestaurantFoodProposalFromTag(
+              widget.type!, _filterEditController.text);
         });
   }
 
@@ -997,7 +996,7 @@ _searchAction();
         SizedBox(height: 20),
         Icon(Icons.search, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('please_search_item')}")
+        Text("${AppLocalizations.of(context)!.translate('please_search_item')}")
       ])));
 
     if (foodProposals?.length == 0) {
@@ -1011,14 +1010,14 @@ _searchAction();
                 Icon(Icons.search, color: Colors.grey),
                 SizedBox(height: 10),
                 Text(
-                    "${AppLocalizations.of(context).translate('sorry_cant_find_item')}",
+                    "${AppLocalizations.of(context)!.translate('sorry_cant_find_item')}",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12))
               ])));
     }
 
     var filteredResult =
-        _filteredFoodProposal(_filterDropdownValue, foodProposals);
+        _filteredFoodProposal(_filterDropdownValue!, foodProposals!);
 
     if (justInflatedFoodProposal) {
       // firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
@@ -1050,7 +1049,7 @@ _searchAction();
     );
   }
 
-  List<ShopModel> _filterEditContent() {
+  List<ShopModel>? _filterEditContent() {
     // check if has focus
     setState(() {});
     /* launching request to look for food, but at the same moment, we need to cancel previous links. */
@@ -1059,7 +1058,7 @@ _searchAction();
   remove_filteredData(List<ShopModel> data) {
     /* we just filter based on the string that is entered */
     String content = _filterEditController.text;
-    List<ShopModel> d = List();
+    List<ShopModel> d = [];
 
     for (var restaurant in data) {
       String sentence =
@@ -1162,7 +1161,7 @@ _searchAction();
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: 5);
   }
 
   _showSearchPage() {
@@ -1173,7 +1172,7 @@ _searchAction();
         SizedBox(height: 20),
         Icon(Icons.shopping_cart_sharp, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('no_content_to_show')}")
+        Text("${AppLocalizations.of(context)!.translate('no_content_to_show')}")
       ])));
 
     return Container(
@@ -1181,11 +1180,11 @@ _searchAction();
       height: MediaQuery.of(context).size.height - 150,
       // padding: EdgeInsets.only(bottom: 230),
       child: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: _restaurantListScrollController,
         child: ListView.builder(
           controller: _restaurantListScrollController,
-          itemCount: visibleItems?.length != null ? visibleItems.length + 1 : 0,
+          itemCount: visibleItems?.length != null ? visibleItems!.length + 1 : 0,
           itemBuilder: (context, position) {
             if (position == visibleItems?.length) {
               if (hasMoreData()) {
@@ -1199,7 +1198,7 @@ _searchAction();
                     height: 100,
                     child: Center(
                         child: Text(
-                      "${AppLocalizations.of(context).translate("the_end")}",
+                      "${AppLocalizations.of(context)!.translate("the_end")}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -1207,7 +1206,7 @@ _searchAction();
                     )));
               }
             } else {
-              return ShopListWidget(shopModel: visibleItems[position]);
+              return ShopListWidget(shopModel: visibleItems![position]);
             }
           },
         ),
@@ -1226,7 +1225,7 @@ _searchAction();
 
   List<ShopProductModel> inflateFoodProposalWorker(
       List<ShopProductModel> foods) {
-    for (var i = 0; i < foods?.length; i++) {
+    for (var i = 0; i < foods!.length; i++) {
       if (foods[i]?.restaurant_entity?.id != null &&
           pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
         // we get the restaurant and we switch it.
@@ -1273,7 +1272,7 @@ _searchAction();
   _filteredFoodProposal(
       String filterDropdownValue, List<ShopProductModel> foodProposals) {
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('cheap_to_exp')}")) {
+        ("${AppLocalizations.of(context)!.translate('cheap_to_exp')}")) {
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
@@ -1281,7 +1280,7 @@ _searchAction();
             (fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));*/
         fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
           try {
-            return int.parse(fd1.price).compareTo(int.parse(fd2.price));
+            return int.parse(fd1.price.toString()).compareTo(int.parse(fd2.price.toString()));
           } catch (e) {
             print(fd1.toString() + fd2.toString());
             return 0;
@@ -1294,13 +1293,13 @@ _searchAction();
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('exp_to_cheap')}")) {
+        ("${AppLocalizations.of(context)!.translate('exp_to_cheap')}")) {
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
         fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
           try {
-            return int.parse(fd2.price).compareTo(int.parse(fd1.price));
+            return int.parse(fd2.price.toString()).compareTo(int.parse(fd1.price.toString()));
           } catch (e) {
             print(fd1.toString() + fd2.toString());
             return 0;
@@ -1313,7 +1312,7 @@ _searchAction();
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('farest')}")) {
+        ("${AppLocalizations.of(context)!.translate('farest')}")) {
       // farest
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
@@ -1326,9 +1325,9 @@ _searchAction();
 
           fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
             try {
-              return int.parse(fd2.restaurant_entity?.delivery_pricing)
+              return int.parse(fd2.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                      int.parse(fd1.restaurant_entity?.delivery_pricing));
+                      int.parse(fd1.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1341,7 +1340,7 @@ _searchAction();
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('nearest')}")) {
+        ("${AppLocalizations.of(context)!.translate('nearest')}")) {
       // nearest
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
@@ -1350,9 +1349,9 @@ _searchAction();
         try {
           fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
             try {
-              return int.parse(fd1.restaurant_entity?.delivery_pricing)
+              return int.parse(fd1.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                      int.parse(fd2.restaurant_entity?.delivery_pricing));
+                      int.parse(fd2.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1379,8 +1378,8 @@ _searchAction();
       widget.restaurantList = restaurants;
       _setLastTimeRestaurantListRequestToNow();
       visibleItems = (widget?.restaurantList?.length != null &&
-              widget?.restaurantList?.length > PAGE_SIZE
-          ? widget.restaurantList.sublist(0, PAGE_SIZE)
+              widget!.restaurantList!.length > PAGE_SIZE
+          ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
     restartTimer();
@@ -1404,17 +1403,17 @@ _searchAction();
   }
 
   @override
-  void networkError([bool silently]) {
+  void networkError([bool? silently]) {
     // if (!silently && widget.restaurantList?.length != null && widget.restaurantList.length>0)
-    if (!silently || widget?.restaurantList?.length == 0)
+    if (!silently! || widget?.restaurantList?.length == 0)
       setState(() {
         hasNetworkError = true;
       });
   }
 
   @override
-  void systemError([bool silently]) {
-    if (!silently || widget?.restaurantList?.length == 0)
+  void systemError([bool? silently]) {
+    if (!silently! || widget?.restaurantList?.length == 0)
       setState(() {
         hasSystemError = true;
       });
@@ -1422,40 +1421,40 @@ _searchAction();
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(widget.customer,
-              widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+              widget.type!, StateContainer.of(context).location);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(widget.customer,
-              widget.type, StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+              widget.type!, StateContainer.of(context).location);
         });
   }
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
   void restartTimer() {
-    if (mainTimer != null) mainTimer.cancel();
+    if (mainTimer != null) mainTimer!.cancel();
 
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (ModalRoute.of(context)?.settings?.name == null ||
-          !("/HomePage".compareTo(ModalRoute.of(context)?.settings?.name) ==
+          !("/HomePage".compareTo(ModalRoute.of(context)!.settings!.name!) ==
                   0 &&
-              ModalRoute.of(context).isCurrent)) {
+              ModalRoute.of(context)!.isCurrent)) {
         // check if time is ok
         return;
       }
 
       int POTENTIAL_EXECUTION_TIME = 3;
-      int diff = (DateTime.now().millisecondsSinceEpoch -
+      int? diff = (DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout) ~/
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
 
       // convert different in minute seconds
@@ -1464,8 +1463,8 @@ _searchAction();
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
-        widget.restaurantListPresenter.fetchShopList(widget.customer,
-            widget.type, StateContainer.of(context).location, true);
+        widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+            widget.type!, StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);
@@ -1487,9 +1486,9 @@ _searchAction();
     CustomerUtils.getShopListFilterConfiguration().then((configuration) {
       filterConfiguration = configuration;
 
-      _open_filter_value = filterConfiguration["opened_filter"] == null
+      _open_filter_value = filterConfiguration!["opened_filter"] == null
           ? false
-          : filterConfiguration["opened_filter"];
+          : filterConfiguration!["opened_filter"];
 
       showDialog(
           context: context,
@@ -1497,7 +1496,7 @@ _searchAction();
             return StatefulBuilder(builder: (context, setState) {
               return AlertDialog(
                 title: Text(
-                  "${AppLocalizations.of(context).translate("filter_settings")}",
+                  "${AppLocalizations.of(context)!.translate("filter_settings")}",
                 ),
                 content: Column(mainAxisSize: MainAxisSize.min, children: [
                   Row(
@@ -1511,8 +1510,8 @@ _searchAction();
                                     BorderRadius.all(Radius.circular(10)),
                                 color: Colors.grey.withAlpha(30)),
                             child: Text(
-                                "${AppLocalizations.of(context).translate('t_opened')}"
-                                    ?.toUpperCase(),
+                                "${AppLocalizations.of(context)!.translate('t_opened')}"
+                                    .toUpperCase(),
                                 style: TextStyle(
                                     color: CommandStateColor.delivered,
                                     fontSize: 12,
@@ -1522,7 +1521,7 @@ _searchAction();
                           height: 30.0,
                           valueFontSize: 14.0,
                           toggleSize: 20.0,
-                          value: _open_filter_value,
+                          value: _open_filter_value!,
                           borderRadius: 10.0,
                           padding: 5.0,
                           activeColor: KColors.primaryColor,
@@ -1541,14 +1540,14 @@ _searchAction();
                       // trigger the update of the page
                       setState(() {
                         /* update filter */
-                        filterConfiguration["opened_filter"] =
+                        filterConfiguration!["opened_filter"] =
                             _open_filter_value;
                       });
                       CustomerUtils.updateShopListFilterConfiguration(
-                          filterConfiguration);
-                      widget.restaurantListPresenter.fetchShopList(
-                          widget.customer,
-                          widget.type,
+                          filterConfiguration!);
+                      widget.restaurantListPresenter!.fetchShopList(
+                          widget.customer!,
+                          widget.type!,
                           StateContainer.of(context).location);
                       Navigator.of(ctx).pop();
                     },
@@ -1560,7 +1559,7 @@ _searchAction();
                         padding: EdgeInsets.only(
                             left: 15, right: 15, top: 10, bottom: 10),
                         child: Text(
-                          "${AppLocalizations.of(context).translate("ok")}"
+                          "${AppLocalizations.of(context)!.translate("ok")}"
                               .toUpperCase(),
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         )),
@@ -1579,7 +1578,7 @@ _searchAction();
         curve: Curves.fastOutSlowIn);
   }
 
-  Future<int> _setLastTimeRestaurantListRequestToNow() async {
+  Future<int?> _setLastTimeRestaurantListRequestToNow() async {
     StateContainer.of(context).last_time_get_restaurant_list_timeout =
         DateTime.now().millisecondsSinceEpoch;
   }
@@ -1591,7 +1590,7 @@ _searchAction();
       // time different since last time update
       int diff = (DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout) ~/
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
       // convert different in minute seconds
       int min = diff ~/ 60;
@@ -1612,35 +1611,35 @@ _searchAction();
 
   getCategoryTitle(BuildContext context) {
     var tmp = [
-      AppLocalizations.of(context).translate('service_shop_type_name'),
-      AppLocalizations.of(context).translate('service_shop_type_product')
+      AppLocalizations.of(context)!.translate('service_shop_type_name'),
+      AppLocalizations.of(context)!.translate('service_shop_type_product')
     ];
 
     switch (widget?.type) {
       case "food": // food
         tmp = [
           AppLocalizations.of(context)
-              .translate('service_restaurant_type_name'),
+              !.translate('service_restaurant_type_name'),
           AppLocalizations.of(context)
-              .translate('service_restaurant_type_product')
+              !.translate('service_restaurant_type_product')
         ];
         break;
       case "drink": // drinks
         tmp = [
-          AppLocalizations.of(context).translate('service_drink_type_name'),
-          AppLocalizations.of(context).translate('service_drink_type_product')
+          AppLocalizations.of(context)!.translate('service_drink_type_name'),
+          AppLocalizations.of(context)!.translate('service_drink_type_product')
         ];
         break;
       case "flower": // flowers
         tmp = [
-          AppLocalizations.of(context).translate('service_flower_type_name'),
-          AppLocalizations.of(context).translate('service_flower_type_product')
+          AppLocalizations.of(context)!.translate('service_flower_type_name'),
+          AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];
         break;
         /*   case "supermarket": // flowers
         tmp = [
-          AppLocalizations.of(context).translate('service_flower_type_name'),
-          AppLocalizations.of(context).translate('service_flower_type_product')
+          AppLocalizations.of(context)!.translate('service_flower_type_name'),
+          AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];*/
         break;
       //   case 1005: // movies
@@ -1651,40 +1650,40 @@ _searchAction();
       //     break;
       case "shop": // shopping
         tmp = [
-          AppLocalizations.of(context).translate('service_shop_type_name'),
-          AppLocalizations.of(context).translate('service_shop_type_product')
+          AppLocalizations.of(context)!.translate('service_shop_type_name'),
+          AppLocalizations.of(context)!.translate('service_shop_type_product')
         ];
         break;
       case "drugstore": // shopping
         tmp = [
-          AppLocalizations.of(context).translate('service_drugstore_type_name'),
+          AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-              .translate('service_drugstore_type_product')
+              !.translate('service_drugstore_type_product')
         ];
         break;
       case "book": // shopping
         tmp = [
-          AppLocalizations.of(context).translate('service_book_type_name'),
-          AppLocalizations.of(context).translate('service_book_type_product')
+          AppLocalizations.of(context)!.translate('service_book_type_name'),
+          AppLocalizations.of(context)!.translate('service_book_type_product')
         ];
         break;
       case "ticket": // ticket
         tmp = [
-          AppLocalizations.of(context).translate('service_ticket_type_name'),
-          AppLocalizations.of(context).translate('service_ticket_product_name')
+          AppLocalizations.of(context)!.translate('service_ticket_type_name'),
+          AppLocalizations.of(context)!.translate('service_ticket_product_name')
         ];
         break;
       case "grocery": // ticket
         tmp = [
-          AppLocalizations.of(context).translate('service_grocery_type_name'),
-          AppLocalizations.of(context).translate('service_grocery_product_name')
+          AppLocalizations.of(context)!.translate('service_grocery_type_name'),
+          AppLocalizations.of(context)!.translate('service_grocery_product_name')
         ];
         break;
       case "drugstore": // ticket
         tmp = [
-          AppLocalizations.of(context).translate('service_drugstore_type_name'),
+          AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-              .translate('service_drugstore_product_name')
+              !.translate('service_drugstore_product_name')
         ];
         break;
     }
@@ -1694,20 +1693,20 @@ _searchAction();
   void _searchAction({bool pressButton = false}) {
     if (searchTypePosition == 2) {
       if (_filterEditController.text?.trim()?.length != null &&
-          _filterEditController.text?.trim()?.length >= 2)
-        widget.foodProposalPresenter.fetchRestaurantFoodProposalFromTag(
-            widget.type, _filterEditController.text);
+          _filterEditController.text!.trim().length! >= 2)
+        widget.foodProposalPresenter!.fetchRestaurantFoodProposalFromTag(
+            widget.type!, _filterEditController.text);
       else {
         if (pressButton)
           mDialog(
-              "${AppLocalizations.of(context).translate('search_too_short')}");
+              "${AppLocalizations.of(context)!.translate('search_too_short')}");
       }
     } else {
       // send the filter request to
       if (previousSearchKey == _filterEditController.text) return;
-      searchKey = _filterEditController.text?.trim();
+      searchKey = _filterEditController.text!.trim();
       widget.restaurantListPresenter
-          .filterShopList(widget.finalRestaurantList, searchKey);
+          !.filterShopList(widget.finalRestaurantList!, searchKey);
     }
   }
 
@@ -1731,8 +1730,8 @@ _searchAction();
     setState(() {
       widget.restaurantList = shops;
       visibleItems = (widget?.restaurantList?.length != null &&
-              widget.restaurantList?.length > PAGE_SIZE
-          ? widget.restaurantList.sublist(0, PAGE_SIZE)
+              widget.restaurantList!.length > PAGE_SIZE
+          ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
   }
@@ -1755,7 +1754,7 @@ _searchAction();
   }
 
   bool hasMoreData() {
-    return visibleItems?.length < widget?.restaurantList?.length &&
+    return visibleItems!.length < widget.restaurantList!.length &&
         widget?.restaurantList?.length != null;
   }
 
@@ -1769,11 +1768,11 @@ _searchAction();
       } else {
         // append
         setState(() {
-          visibleItems.addAll(widget.restaurantList.sublist(
-              visibleItems.length,
-              visibleItems.length + PAGE_SIZE >= widget.restaurantList.length
-                  ? widget.restaurantList.length
-                  : visibleItems.length + PAGE_SIZE));
+          visibleItems!.addAll(widget.restaurantList!.sublist(
+              visibleItems!.length,
+              visibleItems!.length + PAGE_SIZE >= widget.restaurantList!.length
+                  ? widget.restaurantList!.length
+                  : visibleItems!.length + PAGE_SIZE));
         });
         PAGE_SIZE += 10;
       }

@@ -9,9 +9,9 @@ class AnimatedLogoSplash extends StatefulWidget {
 }
 
 class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _scaleAnimation;
-  Animation<Offset> _positionAnimation;
+  AnimationController? _controller;
+  Animation<double>? _scaleAnimation;
+  Animation<Offset>? _positionAnimation;
 
   @override
   void initState() {
@@ -31,19 +31,19 @@ class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTick
     // Define the scaling animation (bounce effect)
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.2)
         .chain(CurveTween(curve: Curves.elasticOut)) // Bounce effect
-        .animate(_controller);
+        .animate(_controller!);
 
     // Define the position animation (moving the logo up)
     _positionAnimation = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, 0.0))
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+        .animate(CurvedAnimation(parent: _controller!, curve: Curves.easeOut));
 
     // Start the animations after a delay
     Future.delayed(Duration(seconds: 1), () async {
       for (int i = 0; i < 3; i++) {
-        await _controller.forward();
-        await _controller.reverse();
+        await _controller!.forward();
+        await _controller!.reverse();
       }
-      _controller.forward();
+      _controller!.forward();
     });
   }
 
@@ -51,9 +51,9 @@ class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTick
   Widget build(BuildContext context) {
     return Center(
       child: SlideTransition(
-        position: _positionAnimation,
+        position: _positionAnimation!,
         child: ScaleTransition(
-          scale: _scaleAnimation,
+          scale: _scaleAnimation!,
           child: Image.asset(
             ImageAssets.splash_logo,
             width: 60,
@@ -66,7 +66,7 @@ class _AnimatedLogoSplashState extends State<AnimatedLogoSplash> with SingleTick
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 }

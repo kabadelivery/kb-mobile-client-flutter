@@ -33,7 +33,6 @@ class DeleteAccountSuccessfulPageState
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -47,7 +46,7 @@ class DeleteAccountSuccessfulPageState
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('delete_account')}"),
+                      "${AppLocalizations.of(context)!.translate('delete_account')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -74,7 +73,7 @@ class DeleteAccountSuccessfulPageState
                   height: 30,
                 ),
                 Text(
-                  "${AppLocalizations.of(context).translate("account_deleted")}",
+                  "${AppLocalizations.of(context)!.translate("account_deleted")}",
                   style: TextStyle(
                       fontSize: 25,
                       color: KColors.new_black,
@@ -87,7 +86,7 @@ class DeleteAccountSuccessfulPageState
                     ? Column(
                         children: [
                           Text(
-                              "${AppLocalizations.of(context).translate("balance_dued")}"
+                              "${AppLocalizations.of(context)!.translate("balance_dued")}"
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontSize: 12,
@@ -119,7 +118,7 @@ class DeleteAccountSuccessfulPageState
                                 width: 10,
                               ),
                               Text(
-                                  "${AppLocalizations.of(context).translate("currency")}",
+                                  "${AppLocalizations.of(context)!.translate("currency")}",
                                   style: TextStyle(
                                       color: KColors.primaryYellowColor,
                                       fontSize: 12,
@@ -130,7 +129,7 @@ class DeleteAccountSuccessfulPageState
                             height: 20,
                           ),
                           Text(
-                            "${AppLocalizations.of(context).translate("refund_within_72_hrs_description")}",
+                            "${AppLocalizations.of(context)!.translate("refund_within_72_hrs_description")}",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Colors.grey,
@@ -155,7 +154,7 @@ class DeleteAccountSuccessfulPageState
                         padding:
                             EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                         child: Text(
-                          "${AppLocalizations.of(context).translate("back_to_home")}"
+                          "${AppLocalizations.of(context)!.translate("back_to_home")}"
                               .toUpperCase(),
                           textAlign: TextAlign.center,
                           style: TextStyle(

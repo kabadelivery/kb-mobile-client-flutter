@@ -12,9 +12,9 @@ import 'package:toast/toast.dart' as to;
 class SearchProductPage extends StatefulWidget {
   static var routeName = "/SearchProductPage";
 
-  int searchType;
+  int? searchType;
 
-  Key key;
+  Key? key;
 
   SearchProductPage({this.key, this.searchType}) : super(key: key);
 
@@ -25,11 +25,11 @@ class SearchProductPage extends StatefulWidget {
 /* we show categories */
 
 class SearchProductPageState extends State<SearchProductPage> {
-  bool isLoading;
+  bool? isLoading;
 
-  bool hasNetworkError;
+  bool? hasNetworkError;
 
-  bool hasSystemError;
+  bool? hasSystemError;
 
   int _chipCurrentIndex = 0;
 
@@ -48,7 +48,7 @@ class SearchProductPageState extends State<SearchProductPage> {
       case 0:
         // all : shop , product
         // _searchChoices = ["Shop", "Product"];
-        // "${AppLocalizations.of(context).translate("what_want_buy")}");
+        // "${AppLocalizations.of(context)!.translate("what_want_buy")}");
         break;
       case 1:
       // food: restaurant, food
@@ -84,11 +84,11 @@ class SearchProductPageState extends State<SearchProductPage> {
               top: true,
               child: Container(
                 child: Container(
-                    child: isLoading
+                    child: isLoading!
                         ? Center(child: MyLoadingProgressWidget())
-                        : (hasNetworkError
+                        : (hasNetworkError!
                             ? _buildNetworkErrorPage()
-                            : hasSystemError
+                            : hasSystemError!
                                 ? _buildSysErrorPage()
                                 : _buildSearchPage())),
               ),
@@ -113,7 +113,7 @@ class SearchProductPageState extends State<SearchProductPage> {
             // input a function that will be triggered if if
             // the customer presses on search
             title:
-                "${AppLocalizations.of(context).translate("what_want_buy")}"),
+                "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
         // chips
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -148,7 +148,7 @@ class SearchProductPageState extends State<SearchProductPage> {
   }
 
   void mToast(String message) {
-    to.Toast.show(message, context, duration: to.Toast.LENGTH_LONG);
+    to.Toast.show(message, duration: 5);
   }
 
 }

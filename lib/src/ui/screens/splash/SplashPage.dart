@@ -34,7 +34,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:uni_links3/uni_links.dart';
 import '../../../StateContainer.dart';
 import 'AnimatedSplash.dart';
 
@@ -66,7 +66,7 @@ class SplashPage extends StatefulWidget { // translated
   var analytics;
 
 
-  SplashPage({Key key, this.destination = 0, this.argument = 0, this.observer, this.analytics}) : super(key: key);
+  SplashPage({Key? key, this.destination = 0, this.argument = 0, this.observer, this.analytics}) : super(key: key);
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -111,7 +111,7 @@ class _SplashPageState extends State<SplashPage> {
 
       // if logged in, go directly to home page
 
-      StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
+      StatefulWidget launchPage = LoginPage(presenter: LoginPresenter(LoginView()));
       launchPage = HomePage(
           destination: widget.destination, argument: widget.argument);
 
@@ -197,7 +197,7 @@ class _SplashPageState extends State<SplashPage> {
     bool isFirstTime = true;
     try {
       // prove me it's not first time
-      isFirstTime = prefs.getBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP);
+      isFirstTime = prefs.getBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP)!;
     } catch(_){
       // is first time
       isFirstTime = true;
@@ -213,7 +213,7 @@ class _SplashPageState extends State<SplashPage> {
     bool isOkWithTerms = false;
     try {
       // prove me it's not first time
-      isOkWithTerms = prefs.getBool("_is_ok_with_terms");
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms")!;
     } catch(_){
       // is first time
       isOkWithTerms = false;
@@ -241,11 +241,11 @@ class _SplashPageState extends State<SplashPage> {
   Future<Null> initUniLinks() async {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      String initialLink = await getInitialLink();
+      String? initialLink = await getInitialLink();
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
       xrint("initialLink ${initialLink}");
-      _handleLinks(initialLink);
+      _handleLinks(initialLink!);
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
@@ -253,12 +253,12 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
-  StreamSubscription _sub;
+  StreamSubscription? _sub;
 
   Future<Null> initUniLinksStream() async {
 
     // Attach a listener to the stream
-    _sub = getLinksStream().listen((String link) {
+    _sub = getLinksStream().listen((String? link) {
       // Parse the link and warn the user, if it is not correct
       if (link == null)
         return;
@@ -297,7 +297,7 @@ class _SplashPageState extends State<SplashPage> {
             gps_location: "${mUri.path}".replaceAll(",", ":")));*/
       widget.destination = SplashPage.LOCATION_PICKED;
       widget.argument = "${mUri.path}";
-      navigatorKey.currentState.pushNamed(MyAddressesPage.routeName, arguments: widget.argument);
+      navigatorKey.currentState!.pushNamed(MyAddressesPage.routeName, arguments: widget.argument);
     } else {
 
       /*
@@ -310,25 +310,25 @@ class _SplashPageState extends State<SplashPage> {
             widget.destination = SplashPage.VOUCHER;
             /* convert from hexadecimal to decimal */
             widget.argument = "${pathSegments[1]}";
-            navigatorKey.currentState.pushNamed(AddVouchersPage.routeName, arguments: widget.argument);
+            navigatorKey.currentState!.pushNamed(AddVouchersPage.routeName, arguments: widget.argument);
           }
           break;
         case "vouchers":
           xrint("vouchers page");
           widget.destination = SplashPage.VOUCHERS;
           /* convert from hexadecimal to decimal */
-          navigatorKey.currentState.pushNamed(MyVouchersPage.routeName);
+          navigatorKey.currentState!.pushNamed(MyVouchersPage.routeName);
           break;
         case "addresses":
           xrint("addresses page");
           widget.destination = SplashPage.ADDRESSES;
           /* convert from hexadecimal to decimal */
-          navigatorKey.currentState.pushNamed(MyAddressesPage.routeName);
+          navigatorKey.currentState!.pushNamed(MyAddressesPage.routeName);
           break;
         case "transactions":
-//        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter()));
+//        _jumpToPage(context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
           widget.destination = SplashPage.TRANSACTIONS;
-          navigatorKey.currentState.pushNamed(TransactionHistoryPage.routeName);
+          navigatorKey.currentState!.pushNamed(TransactionHistoryPage.routeName);
           break;
         case "restaurants":
           widget.destination = SplashPage.RESTAURANT_LIST;
@@ -338,8 +338,8 @@ class _SplashPageState extends State<SplashPage> {
             xrint("restaurant id -> ${pathSegments[1]}");
             widget.destination = SplashPage.RESTAURANT;
             widget.argument = int.parse("${pathSegments[1]}");
-//          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter()));
-            navigatorKey.currentState.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
+//          _jumpToPage(context, RestaurantDetailsPage(restaurant: ShopModel(id: widget.argument),presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
+            navigatorKey.currentState!.pushNamed(ShopDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
         case "order":
@@ -347,8 +347,8 @@ class _SplashPageState extends State<SplashPage> {
             xrint("order id -> ${pathSegments[1]}");
             widget.destination = SplashPage.ORDER;
             widget.argument = int.parse("${pathSegments[1]}");
-//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-            navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
+//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter(OrderDetailsView())));
+            navigatorKey.currentState!.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
         case "food":
@@ -357,7 +357,7 @@ class _SplashPageState extends State<SplashPage> {
             widget.destination = SplashPage.FOOD;
             widget.argument = int.parse("${pathSegments[1]}");
             _jumpToPage(context,
-                RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter())
+                RestaurantMenuPage(foodId: widget.argument, presenter: MenuPresenter(MenuView()))
             );
           }
           break;
@@ -366,7 +366,7 @@ class _SplashPageState extends State<SplashPage> {
             xrint("menu id -> ${pathSegments[1]}");
             widget.destination = SplashPage.MENU;
             widget.argument = int.parse("${pathSegments[1]}");
-            _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter()));
+            _jumpToPage(context, RestaurantMenuPage(menuId: widget.argument, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -374,13 +374,13 @@ class _SplashPageState extends State<SplashPage> {
             xrint("review-order id -> ${pathSegments[1]}");
             widget.destination = SplashPage.REVIEW_ORDER;
             widget.argument = int.parse("${pathSegments[1]}");
-//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter()));
-            navigatorKey.currentState.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
+//          _jumpToPage(context, OrderDetailsPage(orderId: widget.argument, presenter: OrderDetailsPresenter(OrderDetailsView())));
+            navigatorKey.currentState!.pushNamed(OrderNewDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
         case "customer-care-message":
           widget.destination = SplashPage.CUSTOM_CARE;
-          navigatorKey.currentState.pushNamed(CustomerCareChatPage.routeName);
+          navigatorKey.currentState!.pushNamed(CustomerCareChatPage.routeName);
           break;
       }
     }
@@ -423,7 +423,7 @@ class _SplashPageState extends State<SplashPage> {
             gps_location: "${mUri.path}".replaceAll(",", ":")));*/
       widget.destination = SplashPage.LOCATION_PICKED;
       widget.argument = "${mUri.path}";
-      // navigatorKey.currentState.pushNamed(
+      // navigatorKey.currentState!.pushNamed(
       //     MyAddressesPage.routeName, arguments: widget.argument);
     } else {
 //    if (pathSegments[0])

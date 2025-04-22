@@ -59,7 +59,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
@@ -71,28 +71,28 @@ import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
-  HomeScreenModel data;
+  HomeScreenModel? data;
 
   var argument;
 
   var destination;
 
-  static HomeScreenModel standardData;
+  static HomeScreenModel? standardData;
 
-  HomeWelcomePresenter presenter;
+  HomeWelcomePresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   static var routeName = "/HomeWelcomeNewPage";
 
-  BestSellersMiniPage bestSellerMini = null;
-  ProposalMiniWithPreloadedDataPage proposalMini = null;
+  BestSellersMiniPage? bestSellerMini = null;
+  ProposalMiniWithPreloadedDataPage? proposalMini = null;
 
   HomeWelcomeNewPage(
-      {Key key, this.title, this.presenter, this.destination, this.argument})
+      {Key? key, this.title, this.presenter, this.destination, this.argument})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _HomeWelcomeNewPageState createState() => _HomeWelcomeNewPageState();
@@ -100,13 +100,13 @@ class HomeWelcomeNewPage extends StatefulWidget {
 
 class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     implements HomeWelcomeView {
-  List<String> popupMenus;
+  List<String>? popupMenus;
 
-  List<String> _popupMenus() {
+  List<String>? _popupMenus() {
     if (StateContainer.of(context).loggingState == 0) {
       return null;
     } else {
-      return popupMenus;
+      return popupMenus!;
     }
   }
 
@@ -130,25 +130,25 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       "Logout"
     ]; // standard
 
-    this.widget.presenter.homeWelcomeView = this;
+    this.widget.presenter!.homeWelcomeView = this;
     showLoading(true);
 
     CustomerUtils.getCustomer().then((customer) async {
       if (!(await CustomerUtils.isPusTokenUploaded())) {
-        this.widget.presenter.updateToken(customer);
+        this.widget.presenter!.updateToken(customer!);
       }
       setState(() {
         widget.customer = customer;
       });
       /* check kaba points */
       Future.delayed(Duration(seconds: 1)).then((value) {
-        this.widget.presenter.checkBalance(customer);
+        this.widget.presenter!.checkBalance(customer!);
       });
     });
 
-    this.widget.presenter.fetchHomePage();
-    this.widget.presenter.checkVersion();
-    this.widget.presenter.checkServiceMessage();
+    this.widget.presenter!.fetchHomePage();
+    this.widget.presenter!.checkVersion();
+    this.widget.presenter!.checkServiceMessage();
     // check what type of account are you... if email...
     // we going to tell you only if you are just from creating
     // your account
@@ -156,11 +156,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null) {
         widget.customer = customer;
-        this.widget.presenter.checkUnreadMessages(customer);
+        this.widget.presenter!.checkUnreadMessages(customer);
         popupMenus = [
-          "${AppLocalizations.of(context).translate('add_voucher')}",
-          "${AppLocalizations.of(context).translate('settings')}",
-          "${AppLocalizations.of(context).translate('logout')}",
+          "${AppLocalizations.of(context)!.translate('add_voucher')}",
+          "${AppLocalizations.of(context)!.translate('settings')}",
+          "${AppLocalizations.of(context)!.translate('logout')}",
         ];
       }
     });
@@ -183,7 +183,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     _getShippingPriceRange();
     Timer.run(() {
       if (!(DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context).lastTimeLinkMatchAction >
+              StateContainer.of(context).lastTimeLinkMatchAction! >
           2000)) {
         return;
       }
@@ -200,7 +200,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   settings: RouteSettings(
                       name: TransactionHistoryPage.routeName), // <----------
                   builder: (context) =>
-                      TransactionHistoryPage(presenter: TransactionPresenter()),
+                      TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
                 ),
               );
             });
@@ -213,29 +213,29 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: widget.argument),
-                    presenter: RestaurantDetailsPresenter()));
+                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
                   context,
                   AddVouchersPage(
-                      presenter: AddVoucherPresenter(),
+                      presenter: AddVoucherPresenter(AddVoucherView()),
                       qrCode: "${widget.argument}".toUpperCase(),
                       autoSubscribe: true,
-                      customer: widget.customer));
+                      customer: widget.customer!));
             });
             break;
           case SplashPage.VOUCHERS:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
-                  context, MyVouchersPage(presenter: VoucherPresenter()));
+                  context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
             });
             break;
           case SplashPage.ADDRESSES:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(
-                  context, MyAddressesPage(presenter: AddressPresenter()));
+                  context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
             });
             break;
           case SplashPage.ORDER:
@@ -244,7 +244,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             });
             break;
           case SplashPage.FOOD:
@@ -253,7 +253,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 context,
                 MaterialPageRoute(
                   builder: (context) => RestaurantMenuPage(
-                      presenter: MenuPresenter(),
+                      presenter: MenuPresenter(MenuView()),
                       foodId: widget.argument,
                       highlightedFoodId: widget.argument),
                 ),
@@ -263,7 +263,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    menuId: widget.argument, presenter: MenuPresenter()));
+                    menuId: widget.argument, presenter: MenuPresenter(MenuView())));
             break;
           case SplashPage.REVIEW_ORDER:
             _checkIfLoggedInAndDoAction(() {
@@ -271,7 +271,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   context,
                   OrderNewDetailsPage(
                       orderId: widget.argument,
-                      presenter: OrderDetailsPresenter()));
+                      presenter: OrderDetailsPresenter(OrderDetailsView())));
             });
             break;
           case SplashPage.LOCATION_PICKED:
@@ -279,7 +279,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               _jumpToPage(
                   context,
                   MyAddressesPage(
-                      presenter: AddressPresenter(),
+                      presenter: AddressPresenter(AddressView()),
                       gps_location:
                           widget.argument.toString().replaceAll(",", ":")));
             });
@@ -287,7 +287,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
           case SplashPage.CUSTOM_CARE:
             _checkIfLoggedInAndDoAction(() {
               _jumpToPage(context,
-                  CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+                  CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
             });
             break;
         }
@@ -307,10 +307,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   Widget build(BuildContext context) {
     if (widget.bestSellerMini == null)
       widget.bestSellerMini = BestSellersMiniPage(
-          presenter: BestSellerPresenter(), customer: widget.customer);
+          presenter: BestSellerPresenter(BestSellerView()), customer: widget.customer);
     if (widget.proposalMini == null &&
         widget?.data?.food_suggestions != null &&
-        widget?.data?.food_suggestions?.length > 0)
+        widget.data!.food_suggestions!.length > 0)
       widget.proposalMini = ProposalMiniWithPreloadedDataPage(
           data: widget?.data?.food_suggestions);
     /* init fetch data bloc */
@@ -318,14 +318,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           title: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('home')}"),
+                      "${AppLocalizations.of(context)!.translate('home')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -362,7 +361,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 : PopupMenuButton<String>(
                     onSelected: menuChoiceAction,
                     itemBuilder: (BuildContext context) {
-                      return _popupMenus().map((String menuName) {
+                      return _popupMenus()!.map((String menuName) {
                         return PopupMenuItem<String>(
                             value: menuName, child: Text(menuName));
                       }).toList();
@@ -373,13 +372,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child: _buildHomeScreen(widget.data),
+          child: _buildHomeScreen(widget.data!),
         ));
   }
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch (_popupMenus().indexOf(value)) {
+    switch (_popupMenus()!.indexOf(value)) {
       case 0:
         _jumpToAddVoucherPage();
         break;
@@ -415,7 +414,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   _mainRestaurantWidget(
-      {ShopModel restaurant, bool isInHorizontalScrollviewMode = false}) {
+      {ShopModel? restaurant, bool isInHorizontalScrollviewMode = false}) {
     return GestureDetector(
       onTap: () => {_jumpToRestaurantDetails(context, restaurant)},
       child: Center(
@@ -440,7 +439,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                                Utils.inflateLink(restaurant.pic))))),
+                                Utils.inflateLink(restaurant!.pic!))))),
                 SizedBox(height: 10),
                 Container(
                   color: Colors.white,
@@ -448,7 +447,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       height: 35,
                       width: MediaQuery.of(context).size.width /
                           (isInHorizontalScrollviewMode ? 5 : 3),
-                      child: Text(restaurant?.name,
+                      child: Text(restaurant.name!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -470,7 +469,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   void _jumpToBestSeller() {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            BestSellersPage(presenter: BestSellerPresenter()),
+            BestSellersPage(presenter: BestSellerPresenter(BestSellerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -486,7 +485,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   void _jumpToEvents() {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            EvenementPage(presenter: EvenementPresenter()),
+            EvenementPage(presenter: EvenementPresenter(EvenementView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -500,7 +499,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   Future<void> _refresh() async {
-    widget.presenter.fetchHomePage();
+    widget.presenter!.fetchHomePage();
   }
 
   void _jumpToInfoPage() {
@@ -536,16 +535,16 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       margin: EdgeInsets.only(bottom: 10, top: 15),
                       child: ClipPath(
                           // clipper: KabaRoundTopClipper(),
-                          child: data.slider.length > 1
+                          child: data.slider!.length > 1
                               ? CarouselSlider(
                                   options: CarouselOptions(
                                     onPageChanged: _carousselPageChanged,
                                     enlargeCenterPage: true,
                                     viewportFraction: 0.825,
                                     autoPlay:
-                                        data.slider.length > 1 ? true : false,
+                                        data.slider!.length > 1 ? true : false,
                                     reverse:
-                                        data.slider.length > 1 ? true : false,
+                                        data.slider!.length > 1 ? true : false,
                                     enableInfiniteScroll: false,
                                     // data.slider.length > 1 ? true : false,
                                     autoPlayInterval: Duration(seconds: 5),
@@ -557,13 +556,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                         MediaQuery.of(context).size.width /
                                         16,
                                   ),
-                                  items: data.slider.map((admodel) {
+                                  items: data.slider!.map((admodel) {
                                     return Builder(
                                       builder: (BuildContext context) {
                                         return GestureDetector(
                                           onTap: () => _jumpToAdsList(
-                                              data.slider,
-                                              data.slider.indexOf(admodel)),
+                                              data.slider!,
+                                              data.slider!.indexOf(admodel)),
                                           child: Container(
                                               height: 0.825 *
                                                   9 *
@@ -580,7 +579,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                                     BorderRadius.circular(5),
                                                 child: CachedNetworkImage(
                                                     imageUrl: Utils.inflateLink(
-                                                        admodel.pic),
+                                                        admodel.pic!),
                                                     fit: BoxFit.cover),
                                               )),
                                         );
@@ -589,7 +588,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   }).toList(),
                                 )
                               : GestureDetector(
-                                  onTap: () => _jumpToAdsList(data.slider, 0),
+                                  onTap: () => _jumpToAdsList(data.slider!, 0),
                                   child: Container(
                                       height: 9 *
                                           MediaQuery.of(context).size.width /
@@ -597,7 +596,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                       width: MediaQuery.of(context).size.width,
                                       child: CachedNetworkImage(
                                           imageUrl: Utils.inflateLink(
-                                              data.slider[0].pic),
+                                              data.slider![0].pic!),
                                           fit: BoxFit.cover)),
                                 )),
                     ),
@@ -612,14 +611,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             children: [
                               Row(
                                 children: <Widget>[]..addAll(
-                                      List<Widget>.generate(data.slider.length,
+                                      List<Widget>.generate(data.slider!.length,
                                           (int index) {
                                     return Container(
                                         margin: EdgeInsets.only(
                                             right: 2.5, top: 2.5),
                                         height: 7,
                                         width: index ==
-                                                data.slider.length -
+                                                data.slider!.length -
                                                     _carousselPageIndex -
                                                     1
                                             ? 12
@@ -630,7 +629,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                             border: new Border.all(
                                                 color: KColors.primaryColor),
                                             color: (index ==
-                                                    data.slider.length -
+                                                    data.slider!.length -
                                                         _carousselPageIndex -
                                                         1)
                                                 ? KColors.primaryColor
@@ -650,17 +649,17 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: <TableRow>[]..addAll(
                         // ignore: null_aware_before_operator
                         List<TableRow>.generate(
-                            _getRestaurantRowCount(data.resto.length),
+                            _getRestaurantRowCount(data.resto!.length),
                             (int rowIndex) {
                       return TableRow(
                           children: <TableCell>[]..addAll(
                                 List<TableCell>.generate(3, (int cell_index) {
-                              if (data.resto.length >
+                              if (data.resto!.length >
                                   rowIndex * 3 + cell_index) {
                                 return TableCell(
                                     child: _mainRestaurantWidget(
                                         restaurant: data
-                                            .resto[rowIndex * 3 + cell_index]));
+                                            .resto![rowIndex * 3 + cell_index]));
                               } else {
                                 return TableCell(child: Container());
                               }
@@ -683,7 +682,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             children: [
                               SizedBox(width: 10),
                               Text(
-                                "${AppLocalizations.of(context).translate('our_propositions')}"
+                                "${AppLocalizations.of(context)!.translate('our_propositions')}"
                                     .toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.grey,
@@ -707,7 +706,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         ],
                       ),
                 /* horizontal scrolling bar */
-                data?.resto?.length > 6
+                data.resto!.length > 6
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -723,7 +722,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   children: [
                                     SizedBox(width: 10),
                                     Text(
-                                      "${AppLocalizations.of(context).translate('new')}"
+                                      "${AppLocalizations.of(context)!.translate('new')}"
                                           .toUpperCase(),
                                       style: TextStyle(
                                           color: Colors.grey,
@@ -748,10 +747,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             width: MediaQuery.of(context).size.width,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
-                              children: List.generate(data?.resto?.length - 6,
+                              children: List.generate(data.resto!.length - 6,
                                   (index) {
                                 return _mainRestaurantWidget(
-                                    restaurant: data.resto[6 + index],
+                                    restaurant: data.resto![6 + index],
                                     isInHorizontalScrollviewMode: true);
                               }),
                             ),
@@ -766,7 +765,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: [
                     SizedBox(width: 10),
                     Text(
-                      "${AppLocalizations.of(context).translate('best_seller')}"
+                      "${AppLocalizations.of(context)!.translate('best_seller')}"
                           .toUpperCase(),
                       style: TextStyle(
                           color: Colors.grey,
@@ -801,7 +800,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: [
                     SizedBox(width: 10),
                     Text(
-                      "${AppLocalizations.of(context).translate('events')}"
+                      "${AppLocalizations.of(context)!.translate('events')}"
                           .toUpperCase(),
                       style: TextStyle(
                           color: Colors.grey,
@@ -817,8 +816,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 ),
                 Column(
                     children: <Widget>[]..addAll(List<Widget>.generate(
-                          data.groupad.length, (int index) {
-                        return GroupAdsNewWidget(groupAd: data.groupad[index]);
+                          data.groupad!.length, (int index) {
+                        return GroupAdsNewWidget(groupAd: data.groupad![index]);
                       })))
               ]..add(InkWell(
                   onTap: () {
@@ -833,7 +832,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             size: 20, color: KColors.primaryColor),
                         SizedBox(height: 5),
                         Text(
-                          "${AppLocalizations.of(context).translate('powered_by_kaba_tech')}",
+                          "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         )
                       ],
@@ -841,7 +840,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   ),
                 ))));
     else {
-      data = HomeWelcomeNewPage.standardData;
+      data = HomeWelcomeNewPage.standardData!;
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
@@ -854,12 +853,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                         children: <Widget>[
                           IconButton(
                               icon: Icon(Icons.flight_takeoff,
-                                  color: Colors.grey)),
+                                  color: Colors.grey), onPressed: () {  },),
                           SizedBox(height: 5),
                           Container(
                               margin: EdgeInsets.only(left: 20, right: 20),
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('home_page_loading_error')}",
+                                  "${AppLocalizations.of(context)!.translate('home_page_loading_error')}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: Colors.grey))),
                           SizedBox(height: 5),
@@ -868,9 +867,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                                   vertical: 10, horizontal: 15),
                               color: Colors.yellow,
                               child: Text(
-                                  "${AppLocalizations.of(context).translate('try_again')}"),
+                                  "${AppLocalizations.of(context)!.translate('try_again')}"),
                               onPressed: () {
-                                widget.presenter.fetchHomePage();
+                                widget.presenter!.fetchHomePage();
                               })
                         ],
                       ),
@@ -889,7 +888,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   @override
   void networkError() {
      showLoading(false);
-    mToast("${AppLocalizations.of(context).translate('network_error')}"); 
+    mToast("${AppLocalizations.of(context)!.translate('network_error')}"); 
   }
 
   @override
@@ -920,14 +919,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void mToast(String message) {
-    to.Toast.show(message, context, duration: to.Toast.LENGTH_LONG);
+    to.Toast.show(message, duration:5);
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) { 
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter()),
+            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -942,7 +941,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   _textSizeWithText(String feed) {
     double ssize = 0;
-    if (feed != null) ssize = 1.0 * feed?.length;
+    if (feed != null) ssize = 1.0 * feed.length;
     // from 8 to 16 according to the size.
     // 8 for more than ...
     // to 16 as maximum.
@@ -956,7 +955,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       await launch(url);
     } else {
       // ask launch.
-      to.Toast.show("Call error", context);
+      to.Toast.show("Call error");
     }
   }
 
@@ -978,18 +977,18 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         backgroundColor: KColors.primaryColor,
         duration: Duration(seconds: 10),
         content: Text(
-          "${AppLocalizations.of(context).translate('you_have_unread_message')}",
+          "${AppLocalizations.of(context)!.translate('you_have_unread_message')}",
           style: TextStyle(color: Colors.white),
         ),
         action: SnackBarAction(
           label:
-              "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+              "${AppLocalizations.of(context)!.translate('ok')}".toUpperCase(),
           textColor: Colors.white,
           onPressed: () {
             // Some code to undo the change.
             ScaffoldMessenger.of(context).clearSnackBars();
             _jumpToPage(context,
-                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
           },
         ),
       );
@@ -1009,14 +1008,14 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     if (restaurant.is_new == 1) {
       // new logo
       return ShinningTextWidget(
-          text: "${AppLocalizations.of(context).translate('new')}",
+          text: "${AppLocalizations.of(context)!.translate('new')}",
           backgroundColor: KColors.primaryYellowColor,
           textColor: Colors.white);
     } else {
       if (restaurant.is_promotion == 1) {
         // promotion
         return ShinningTextWidget(
-            text: "${AppLocalizations.of(context).translate('promo')}",
+            text: "${AppLocalizations.of(context)!.translate('promo')}",
             backgroundColor: KColors.primaryColor,
             textColor: Colors.white);
       } else {
@@ -1066,11 +1065,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       }
     } else {
       xrint("_handleLinksImmediately SCANNING WENT WRONG");
-      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+      mDialog("${AppLocalizations.of(context)!.translate('qr_code_wrong')}");
     }
   }
 */
-  String _handleLinksImmediately(String data) {
+  String? _handleLinksImmediately(String data) {
     /* streams */
 
     // if you are logged in, we can just move to the activity.
@@ -1096,24 +1095,24 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _jumpToPage(
                 context,
                 AddVouchersPage(
-                    presenter: AddVoucherPresenter(),
+                    presenter: AddVoucherPresenter(AddVoucherView()),
                     qrCode: "${arg}".toUpperCase(),
-                    customer: widget.customer));
+                    customer: widget.customer!));
           }
           break;
         case "vouchers":
           xrint("vouchers page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
           break;
         case "addresses":
           xrint("addresses page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
           break;
         case "transactions":
           _jumpToPage(context,
-              TransactionHistoryPage(presenter: TransactionPresenter()));
+              TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
           break;
         case "restaurants":
           StateContainer.of(context).updateTabPosition(tabPosition: 1);
@@ -1132,7 +1131,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: arg),
-                    presenter: RestaurantDetailsPresenter()));
+                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
           }
           break;
         case "order":
@@ -1142,7 +1141,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter()));
+                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         case "food":
@@ -1150,7 +1149,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             xrint("food id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context,
-                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter()));
+                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "menu":
@@ -1158,7 +1157,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             xrint("menu id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
             _jumpToPage(context,
-                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter()));
+                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -1168,13 +1167,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter()));
+                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         case "customer-care-message":
           _checkIfLoggedInAndDoAction(() {
             _jumpToPage(context,
-                CustomerCareChatPage(presenter: CustomerCareChatPresenter()));
+                CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
           });
           break;
         default:
@@ -1193,12 +1192,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1209,7 +1208,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -1224,7 +1223,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1235,18 +1234,18 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -1261,7 +1260,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AddVouchersPage(
-                presenter: AddVoucherPresenter(), customer: widget.customer),
+                presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -1298,7 +1297,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                 children: [
                   // {"message": smessage, "date": message_date};
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    Text("${AppLocalizations.of(context).translate('notice')}",
+                    Text("${AppLocalizations.of(context)!.translate('notice')}",
                         style: TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.none,
@@ -1320,12 +1319,12 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       onPressed: () {
                         saveMessageAsRead(data);
                         setState(() {
-                          OverlaySupportEntry.of(context)
+                          OverlaySupportEntry.of(context)!
                               .dismiss(animate: true);
                         });
                       },
                       child: Text(
-                          "${AppLocalizations.of(context).translate('alert_message_received')}",
+                          "${AppLocalizations.of(context)!.translate('alert_message_received')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
@@ -1344,13 +1343,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   void inflateServiceMessage(AlertMessageModel data) {
     String defaultLocale = Platform.localeName;
-    String smessage = data.messages["fr"];
+    String smessage = data.messages!["fr"];
     if (defaultLocale.contains("en")) {
-      smessage = data.messages["en"];
+      smessage = data.messages!["en"];
     } else if (defaultLocale.contains("fr")) {
-      smessage = data.messages["fr"];
+      smessage = data.messages!["fr"];
     } else if (defaultLocale.contains("zh")) {
-      smessage = data.messages["zh"];
+      smessage = data.messages!["zh"];
     }
     StateContainer.of(context).service_message = {
       "message": smessage,
@@ -1432,7 +1431,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       side: MaterialStateProperty.all(
                           BorderSide(color: Colors.grey, width: 1))),
                   child: new Text(
-                      "${AppLocalizations.of(context).translate('ok')}",
+                      "${AppLocalizations.of(context)!.translate('ok')}",
                       style: TextStyle(color: KColors.primaryColor)),
                   // update
                   onPressed: () {
@@ -1449,7 +1448,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   void showNewFeature(BuildContext context, String version) {
     OverlayState overlayState = Overlay.of(context);
-    OverlayEntry overlayEntry;
+    OverlayEntry? overlayEntry;
 
     overlayEntry = OverlayEntry(
       builder: (context) => Stack(
@@ -1479,13 +1478,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       backgroundColor: MaterialStateProperty.all(Colors.white),
                     ),
                     child: Text(
-                      AppLocalizations.of(context).translate('ok'),
+                      AppLocalizations.of(context)!.translate('ok'),
                       style: TextStyle(color: KColors.primaryColor),
                     ),
                     onPressed: () async{
                       CustomerUtils utils = CustomerUtils();
                       await utils.setViewUpdate(enable: true);
-                      overlayEntry.remove();
+                      overlayEntry!.remove();
                     },
                   )
               ],
@@ -1498,9 +1497,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     overlayState.insert(overlayEntry);
   }
 
-void iShowDialog(BuildContext context, String version, int force,{String change_log = null}) {
+void iShowDialog(BuildContext context, String version, int force,{String? change_log = null}) {
   OverlayState overlayState = Overlay.of(context);
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
 
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
@@ -1512,7 +1511,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
             width:MediaQuery.of(context).size.width*.95,
             color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
             child: Image.network(
-              change_log,
+              change_log!,
               fit: BoxFit.contain,
             ),
           ),
@@ -1532,11 +1531,11 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
                     backgroundColor: MaterialStateProperty.all(Colors.white),
                   ),
                   child: Text(
-                    AppLocalizations.of(context).translate('refuse'),
+                    AppLocalizations.of(context)!.translate('refuse'),
                     style: TextStyle(color: KColors.primaryColor),
                   ),
                   onPressed: () {
-                    overlayEntry.remove();
+                    overlayEntry!.remove();
                   },
                 ),
               SizedBox(width: 10),
@@ -1547,11 +1546,11 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
                   backgroundColor: MaterialStateProperty.all(KColors.primaryColor),
                 ),
                 child: Text(
-                  "${AppLocalizations.of(context).translate('update')} $version",
+                  "${AppLocalizations.of(context)!.translate('update')} $version",
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  overlayEntry.remove();
+                  overlayEntry!.remove();
                   _updateApp();
                 },
               ),
@@ -1613,7 +1612,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
   _jumpToWhatsapp() async {
     final link = WhatsAppUnilink(
       phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
-      text: "${AppLocalizations.of(context).translate('i_have_an_inquiry')}",
+      text: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}",
     );
     // Convert the WhatsAppUnilink instance to a string.
     // Use either Dart's string interpolation or the toString() method.
@@ -1630,7 +1629,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -1649,7 +1648,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
                           ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_random")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_random")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -1657,21 +1656,21 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter())));
+                          LoginPage(presenter: LoginPresenter(LoginView()))));
                 },
               )
             ],
@@ -1686,14 +1685,14 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
   Future<bool> isMessageSeenMessageAlert(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool val = false;
-    if (data?.uuid != null && prefs.containsKey(data?.uuid))
-      val = prefs.get(data?.uuid);
+    if (data.uuid != null && prefs.containsKey(data.uuid!))
+      val = prefs.get(data.uuid!) as bool;
     return val;
   }
 
   Future<void> saveMessageAsRead(AlertMessageModel data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (data?.uuid != null) prefs.setBool(data?.uuid, true);
+    if (data?.uuid != null) prefs.setBool(data.uuid!, true);
   }
 
   _showBottomContactSheet() {
@@ -1718,7 +1717,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                            "${AppLocalizations.of(context).translate('phone_call')}",
+                            "${AppLocalizations.of(context)!.translate('phone_call')}",
                             style: TextStyle(
                                 fontSize: 14,
                                 color: KColors.new_black,
@@ -1740,7 +1739,7 @@ void iShowDialog(BuildContext context, String version, int force,{String change_
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                            "${AppLocalizations.of(context).translate('whatsapp')}",
+                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
                             style: TextStyle(
                                 fontSize: 14,
                                 color: KColors.new_black,
@@ -1809,9 +1808,9 @@ Future<void> _playMusicForNewMessage() async {
 void _getShippingPriceRange()async{
   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
   try{
-    CustomerModel customer = await CustomerUtils.getCustomer();
-    Map<String,dynamic> range = await api.fetchShippingPriceRange(customer);
-    await OutOfAppSharedPrefs.saveStringMap(range);
+    CustomerModel? customer = await CustomerUtils.getCustomer();
+    Map<String,dynamic>? range = await api.fetchShippingPriceRange(customer!);
+    await OutOfAppSharedPrefs.saveStringMap(range!);
   }catch(e){
     xrint(e);
   }
@@ -1821,13 +1820,13 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
     context,
     MaterialPageRoute(
       builder: (context) =>
-          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
     ),
   );*/
 
   Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
-          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter()),
+          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;

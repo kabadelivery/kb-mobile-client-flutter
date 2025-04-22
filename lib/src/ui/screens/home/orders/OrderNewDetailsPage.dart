@@ -108,7 +108,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('order_details')}"),
+                      "${AppLocalizations.of(context)!.translate('order_details')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                   Container(
                                       width: 300,
                                       child: Text(
-                                          "${AppLocalizations.of(context).translate('reason')}: ${_getReason()}",
+                                          "${AppLocalizations.of(context)!.translate('reason')}: ${_getReason()}",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: 14,
@@ -334,7 +334,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                           width: 10,
                                         ),
                                         Text(
-                                            "${AppLocalizations.of(context).translate("review_us")}",
+                                            "${AppLocalizations.of(context)!.translate("review_us")}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
@@ -377,7 +377,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 color: KColors.new_gray,
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                    "${AppLocalizations.of(context).translate('your_contact')}",
+                                    "${AppLocalizations.of(context)!.translate('your_contact')}",
                                     style: TextStyle(
                                         fontSize: 13, color: Colors.grey)))),
                         Expanded(
@@ -414,7 +414,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 color: KColors.new_gray,
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                    "${AppLocalizations.of(context).translate('command_key')}",
+                                    "${AppLocalizations.of(context)!.translate('command_key')}",
                                     style: TextStyle(
                                         fontSize: 13, color: Colors.grey)))),
                         Expanded(
@@ -454,7 +454,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                     color: KColors.new_gray,
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('kaba_man_name')}",
+                                        "${AppLocalizations.of(context)!.translate('kaba_man_name')}",
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Colors.grey)))),
@@ -505,7 +505,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context).translate('not_far_from')}",
+                              "${AppLocalizations.of(context)!.translate('not_far_from')}",
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 14,
@@ -538,7 +538,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context).translate('description')}",
+                              "${AppLocalizations.of(context)!.translate('description')}",
                               style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   color: Colors.grey,
@@ -575,7 +575,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                           children: <Widget>[
                             Expanded(
                                 child: Text(
-                                    "${AppLocalizations.of(context).translate('informations')}: ${widget.command.infos}",
+                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command.infos}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -617,7 +617,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
-                        "${AppLocalizations.of(context).translate('this_order_can_get_changes')}",
+                        "${AppLocalizations.of(context)!.translate('this_order_can_get_changes')}",
                         style: TextStyle(
                             fontSize: 12,
                             color: Color(0xffcb1f44))),
@@ -626,7 +626,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                 ):Container(),
                 SizedBox(height: 10),
                 widget.command.order_type==5 && widget.command?.state==3 && foodPriceTotal>0?
-                WhatsappMessageButton("${AppLocalizations.of(context).translate("contact_us_for_funds")}",
+                WhatsappMessageButton("${AppLocalizations.of(context)!.translate("contact_us_for_funds")}",
 """
 *Récupération de fonds*
 
@@ -733,7 +733,7 @@ Je souhaite récupérer les fonds de ma commande
                                 : Container()),
                             SizedBox(width: 1),
                             Text(
-                                "${AppLocalizations.of(context).translate('currency')}",
+                                "${AppLocalizations.of(context)!.translate('currency')}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -778,20 +778,20 @@ Je souhaite récupérer les fonds de ma commande
   String _orderTopLabel(CommandModel command) {
     switch (widget?.command?.state) {
       case 0:
-        return "${AppLocalizations.of(context).translate('order_waiting')}"
+        return "${AppLocalizations.of(context)!.translate('order_waiting')}"
             .toUpperCase();
       case 1:
-        return "${AppLocalizations.of(context).translate('order_cooking')}"
+        return "${AppLocalizations.of(context)!.translate('order_cooking')}"
             .toUpperCase();
       case 2:
-        return "${AppLocalizations.of(context).translate('order_deliverying')}"
+        return "${AppLocalizations.of(context)!.translate('order_deliverying')}"
             .toUpperCase();
       case 3:
-        return "${AppLocalizations.of(context).translate('order_delivered')}"
+        return "${AppLocalizations.of(context)!.translate('order_delivered')}"
             .toUpperCase();
         break;
       default:
-        return "${AppLocalizations.of(context).translate('order_rejected')}"
+        return "${AppLocalizations.of(context)!.translate('order_rejected')}"
             .toUpperCase();
     }
   }
@@ -804,20 +804,20 @@ Je souhaite récupérer les fonds de ma commande
     // delivered ?
     switch (command.state) {
       case 0:
-        return "${AppLocalizations.of(context).translate('waiting')}"
+        return "${AppLocalizations.of(context)!.translate('waiting')}"
             .toUpperCase();
       case 1:
-        return "${AppLocalizations.of(context).translate('cooking')}"
+        return "${AppLocalizations.of(context)!.translate('cooking')}"
             .toUpperCase();
       case 2:
-        return "${AppLocalizations.of(context).translate('shipping')}"
+        return "${AppLocalizations.of(context)!.translate('shipping')}"
             .toUpperCase();
       case 3:
-        return "${AppLocalizations.of(context).translate('delivered')}"
+        return "${AppLocalizations.of(context)!.translate('delivered')}"
             .toUpperCase();
         break;
       default:
-        return "${AppLocalizations.of(context).translate('rejected')}"
+        return "${AppLocalizations.of(context)!.translate('rejected')}"
             .toUpperCase();
     }
   }
@@ -996,7 +996,7 @@ Je souhaite récupérer les fonds de ma commande
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
               .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
@@ -1005,7 +1005,7 @@ Je souhaite récupérer les fonds de ma commande
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
               .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
@@ -1074,7 +1074,7 @@ Je souhaite récupérer les fonds de ma commande
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("${AppLocalizations.of(context).translate('order_amount')}",
+              Text("${AppLocalizations.of(context)!.translate('order_amount')}",
                   style: TextStyle(fontSize: 14)),
               /* check if there is promotion on Commande */
               Row(
@@ -1094,7 +1094,7 @@ Je souhaite récupérer les fonds de ma commande
         SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
             Widget>[
-          Text("${AppLocalizations.of(context).translate('delivery_amount')}",
+          Text("${AppLocalizations.of(context)!.translate('delivery_amount')}",
               style: TextStyle(fontSize: 15)),
           /* check if there is promotion on Livraison */
           Row(
@@ -1118,7 +1118,7 @@ Je souhaite récupérer les fonds de ma commande
         ]),
         SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:[
-          Text("${AppLocalizations.of(context).translate('additional_fees')}",
+          Text("${AppLocalizations.of(context)!.translate('additional_fees')}",
               style: TextStyle(fontSize: 15)),
           Text("${additionnalFee}", style: TextStyle(fontSize: 15)),
         ]),
@@ -1131,7 +1131,7 @@ Je souhaite récupérer les fonds de ma commande
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                     Text(
-                        "${AppLocalizations.of(context).translate('discount')}:",
+                        "${AppLocalizations.of(context)!.translate('discount')}:",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -1155,7 +1155,7 @@ Je souhaite récupérer les fonds de ma commande
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("${AppLocalizations.of(context).translate('net_price')}",
+              Text("${AppLocalizations.of(context)!.translate('net_price')}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -1194,7 +1194,7 @@ Je souhaite récupérer les fonds de ma commande
                 width: 10,
               ),
               Text(
-                "${AppLocalizations.of(context).translate("payed")}".toUpperCase(),
+                "${AppLocalizations.of(context)!.translate("payed")}".toUpperCase(),
                 style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -1233,8 +1233,8 @@ Je souhaite récupérer les fonds de ma commande
 
   _getReason() {
     if (widget.command.reason >= reasonsArray.length)
-      return "${AppLocalizations.of(context).translate('reason_beyond_control')}";
-    return "${AppLocalizations.of(context).translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
+      return "${AppLocalizations.of(context)!.translate('reason_beyond_control')}";
+    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
   }
 
   showKabaPointUsed() {
@@ -1243,7 +1243,7 @@ Je souhaite récupérer les fonds de ma commande
         child: RichText(
             text: TextSpan(
                 text:
-                    "${AppLocalizations.of(context).translate("kaba_point_used_amount")}",
+                    "${AppLocalizations.of(context)!.translate("kaba_point_used_amount")}",
                 style: TextStyle(color: Colors.white, fontSize: 12),
                 children: <TextSpan>[
               TextSpan(

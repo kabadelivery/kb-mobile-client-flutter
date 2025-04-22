@@ -76,7 +76,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('my_vouchers')}"),
+                    "${AppLocalizations.of(context)!.translate('my_vouchers')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -106,7 +106,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                     children: <Widget>[
                       Icon(Icons.add, color: KColors.primaryColor),
                       SizedBox(width: 10),
-                      Text("${AppLocalizations.of(context).translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
+                      Text("${AppLocalizations.of(context)!.translate('create_new_address')}", style: TextStyle(color: KColors.primaryColor))
                     ],
                   ),
                 ), color: KColors.primaryColorTransparentADDTOBASKETBUTTON, onPressed: () => _createAddress()),*/
@@ -119,11 +119,11 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){  widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){  widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){
       widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
     });
   }
@@ -154,14 +154,14 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
       /* continue transaction with this*/
       _jumpToAddNewVoucher_Code(qrCode: qrCode?.toUpperCase());
     } else
-      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+      mDialog("${AppLocalizations.of(context)!.translate('qr_code_wrong')}");
 
 
     /* check if this code could be a code */
 //    if (_checkPromoCode(promoCode)) {
 //      _jumpToAddNewVoucher_Code(qrCode: promoCode);
 //    } else {
-//      mDialog("${AppLocalizations.of(context).translate('qr_code_wrong')}");
+//      mDialog("${AppLocalizations.of(context)!.translate('qr_code_wrong')}");
 //    }
   }
 */
@@ -257,7 +257,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context).translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 15)),
+                  Text("${AppLocalizations.of(context)!.translate('sorry_no_coupon')}", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 15)),
                 ],
               ),
             ),
@@ -310,7 +310,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -318,7 +318,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -327,7 +327,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
             ] : <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

@@ -62,7 +62,7 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
                       ),
 
                       SizedBox(height: 10),
-                      Container(margin: EdgeInsets.only(left:10,right:10),child: Text("${AppLocalizations.of(context).translate('congrats_subscribe')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                      Container(margin: EdgeInsets.only(left:10,right:10),child: Text("${AppLocalizations.of(context)!.translate('congrats_subscribe')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
 
                       SizedBox(height: 20),
 
@@ -80,7 +80,7 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
                             SizedBox(
                               child:      OutlinedButton(
                                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                                child: new Text("${AppLocalizations.of(context).translate('ok')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
+                                child: new Text("${AppLocalizations.of(context)!.translate('ok')}".toUpperCase(), style: TextStyle(color: KColors.primaryColor)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },

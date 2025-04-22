@@ -24,13 +24,13 @@ class CustomerCareChatPage extends StatefulWidget {
 
   static var routeName = "/CustomerCareChatPage";
 
-  CustomerCareChatPresenter presenter;
+  CustomerCareChatPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  CustomerCareChatPage({Key key, this.presenter}) : super(key: key);
+  CustomerCareChatPage({Key? key, this.presenter}) : super(key: key);
 
-  List<CustomerCareChatMessageModel> messages = null;
+  List<CustomerCareChatMessageModel>? messages = null;
 
   @override
   _CustomerCareChatPageState createState() => _CustomerCareChatPageState();
@@ -51,10 +51,10 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.customerCareChatView = this;
+    widget.presenter!.customerCareChatView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.fetchCustomerCareChat(widget.customer);
+      widget.presenter!.fetchCustomerCareChat(widget.customer!);
       // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
     });
   }
@@ -78,7 +78,6 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -92,7 +91,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('customer_care')}"),
+                    "${AppLocalizations.of(context)!.translate('customer_care')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -126,7 +125,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
               children: <Widget>[
                 Expanded(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('system_error')}",
+                        "${AppLocalizations.of(context)!.translate('system_error')}",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white))),
                 SizedBox(width: 10)
@@ -134,7 +133,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
           SizedBox(height: 10),
           MRaisedButton(
               onPressed: () =>
-                  widget.presenter.fetchCustomerCareChat(widget.customer),
+                  widget.presenter!.fetchCustomerCareChat(widget.customer!),
               color: Colors.white,
               child:
                   Text("Reload", style: TextStyle(color: KColors.new_black))),
@@ -159,7 +158,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
               children: <Widget>[
                 Expanded(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('network_error')}",
+                        "${AppLocalizations.of(context)!.translate('network_error')}",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white))),
                 SizedBox(width: 10)
@@ -167,7 +166,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
           SizedBox(height: 10),
           MRaisedButton(
               onPressed: () =>
-                  widget.presenter.fetchCustomerCareChat(widget.customer),
+                  widget.presenter!.fetchCustomerCareChat(widget.customer!),
               color: Colors.white,
               child:
                   Text("Reload", style: TextStyle(color: KColors.new_black))),
@@ -187,10 +186,10 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 ? _buildEmptyPage()
                 : ListView(
                     children: <Widget>[]..addAll(List.generate(
-                          widget.messages?.length, (int position) {
+                          widget.messages!.length!, (int position) {
                         return ChatBubbleWidget(
-                            customer: widget.customer,
-                            message: widget.messages[position]);
+                            customer: widget.customer!,
+                            message: widget.messages![position]);
                       })),
                     controller: _scrollController,
                     reverse: true),
@@ -226,7 +225,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                                   hintStyle: TextStyle(
                                       fontSize: 12, color: Colors.grey),
                                   hintText:
-                                      "${AppLocalizations.of(context).translate('insert_message')}")),
+                                      "${AppLocalizations.of(context)!.translate('insert_message')}")),
                           decoration: BoxDecoration(
                               color: KColors.new_gray,
                               borderRadius:
@@ -298,7 +297,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
                 child: SvgPicture.asset(VectorsData.customer_care)),
             SizedBox(height: 10),
             Text(
-                "${AppLocalizations.of(context).translate('any_feedback_right_here')}",
+                "${AppLocalizations.of(context)!.translate('any_feedback_right_here')}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: KColors.new_black.withAlpha(150), fontSize: 13))
@@ -338,22 +337,22 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
   @override
   void sendMessagenetworkError() {
     mToast(
-        "${AppLocalizations.of(context).translate('send_message_network_error')}");
+        "${AppLocalizations.of(context)!.translate('send_message_network_error')}");
   }
 
   @override
   void sendMessagesystemError() {
     mToast(
-        "${AppLocalizations.of(context).translate('send_message_system_error')}");
+        "${AppLocalizations.of(context)!.translate('send_message_system_error')}");
   }
 
   _sendMessage() {
     String message = _messageController.text;
-    if (message.trim()?.length <= 5) {
+    if (message.trim()!.length! <= 5) {
       // show a dialog telling the guy that message is to short.
-      mToast("${AppLocalizations.of(context).translate('message_too_short')}");
+      mToast("${AppLocalizations.of(context)!.translate('message_too_short')}");
     } else
-      widget.presenter.sendMessageToCustomerCareChat(widget.customer, message);
+      widget.presenter!.sendMessageToCustomerCareChat(widget.customer!, message);
   }
 
   @override
@@ -370,12 +369,12 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
     CustomerCareChatMessageModel careChatMessageModel =
         CustomerCareChatMessageModel();
     careChatMessageModel.message = message;
-    careChatMessageModel.user_id = widget.customer.id;
+    careChatMessageModel.user_id = widget.customer!.id!;
     careChatMessageModel.created_at =
         (DateTime.now().millisecondsSinceEpoch.toInt() / 1000).toInt();
 
     setState(() {
-      var tmp = widget.messages.reversed.toList();
+      var tmp = widget.messages!.reversed.toList();
       tmp.add(careChatMessageModel);
       widget.messages = tmp.reversed.toList();
     });
@@ -384,14 +383,14 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, gravity: 2);
+    Toast.show(message, gravity: 2);
   }
 
   _pickAddress() async {
     /* jump and get it */
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(pick: true, presenter: AddressPresenter()),
+            MyAddressesPage(pick: true, presenter: AddressPresenter(AddressView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -413,7 +412,7 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
       message += "Description: ${_selectedAddress.description}\n";
 //     message+="Suburb: ${_selectedAddress.suburb}\n";
       message +=
-          "Gps location: https://www.google.com/maps/search/?api=1&query=${_selectedAddress.location.replaceAll(":", ",")}\n";
+          "Gps location: https://www.google.com/maps/search/?api=1&query=${_selectedAddress.location!.replaceAll(":", ",")}\n";
 
       _messageController.text = message;
     }
@@ -421,13 +420,13 @@ class _CustomerCareChatPageState extends State<CustomerCareChatPage>
 }
 
 class ChatBubbleWidget extends StatefulWidget {
-  CustomerCareChatMessageModel message;
-  bool hasVoucherOffer = false;
+  CustomerCareChatMessageModel? message;
+  bool? hasVoucherOffer = false;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  ChatBubbleWidget({Key key, this.message, this.customer}) {
-    hasVoucherOffer = _checkHasVoucherOffer(message);
+  ChatBubbleWidget({Key? key, this.message, this.customer}) {
+    hasVoucherOffer = _checkHasVoucherOffer(message!);
   }
 
   bool _checkHasVoucherOffer(CustomerCareChatMessageModel chatMessage) {
@@ -490,7 +489,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                             children: <Widget>[
                               Expanded(
                                   child: Text(
-                                "${Utils.readTimestamp(context, widget.message?.created_at)}",
+                                "${Utils.readTimestamp(context, widget.message!.created_at!)}",
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 11,
@@ -502,12 +501,15 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                       ],
                     ),
                   ),
-                  widget.hasVoucherOffer
+                  widget.hasVoucherOffer!
                       ? ChatVoucherWidget(
-                          presenter: ChatVoucherPresenter(),
+                          presenter: ChatVoucherPresenter(ChatVoucherView()),
                           customer: widget.customer,
                           voucher_link:
-                              extractVoucherFromMessage(widget.message))
+                              extractVoucherFromMessage(widget.message!),
+
+
+                  )
                       : Container()
                 ],
               ),
@@ -523,7 +525,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   }
 }
 
-String extractVoucherFromMessage(CustomerCareChatMessageModel chatMessage) {
+String? extractVoucherFromMessage(CustomerCareChatMessageModel chatMessage) {
   final message = '${chatMessage?.message}';
   final subscriptionLink = RegExp(r'https://\S+/\S+').firstMatch(message);
   if (subscriptionLink != null) {

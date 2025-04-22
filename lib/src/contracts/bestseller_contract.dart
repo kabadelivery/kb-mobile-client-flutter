@@ -39,7 +39,7 @@ class BestSellerPresenter implements BestSellerContract {
   }
 
   @override
-  Future fetchBestSeller(CustomerModel customer) async {
+  Future fetchBestSeller(CustomerModel? customer) async {
     /* fetch the one store in the local file first */
 
     if (isWorking) return;
@@ -71,7 +71,7 @@ class BestSellerPresenter implements BestSellerContract {
       }
 
       try {
-        String bsellers_json = await provider.fetchBestSellerList(customer);
+        String bsellers_json = await provider.fetchBestSellerList(customer!);
         // save best seller json
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(bsellers_json)["data"];

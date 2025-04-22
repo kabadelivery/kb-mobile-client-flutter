@@ -14,10 +14,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
-
-import 'package:elegant_notification/elegant_notification.dart';
-import 'package:elegant_notification/resources/arrays.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,22 +26,22 @@ import '../../../../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 class MyAddressesPage extends StatefulWidget {
   static var routeName = "/MyAddressesPage";
 
-  bool pick;
+  bool? pick;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  AddressPresenter presenter;
+  AddressPresenter? presenter;
 
-  List<DeliveryAddressModel> data;
+  List<DeliveryAddressModel>? data;
 
-  String gps_location = "";
+  String? gps_location = "";
 
-  List<int> favoriteAddress = [];
+  List<int>? favoriteAddress = [];
 
   List<DeliveryAddressModel> pureDeliveryAddresses = [];
-  int address_type;
+  int? address_type;
   MyAddressesPage(
-      {Key key,
+      {Key? key,
       this.presenter,
       this.pick = false,
       this.gps_location /*6.33:3.44*/,
@@ -65,10 +62,10 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
   @override
   void initState() {
-    widget.presenter.addressView = this;
+    widget.presenter!.addressView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter.loadAddressList(customer);
+      widget.presenter!.loadAddressList(customer!);
       CustomerUtils.getFavoriteAddress().then((value) {
         var favAddresses = value;
         setState(() {
@@ -77,7 +74,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       });
     });
     super.initState();
-    if (widget.gps_location != null && "".compareTo(widget.gps_location) != 0) {
+    if (widget.gps_location != null && "".compareTo(widget.gps_location!) != 0) {
       Timer.run(() {
         _createAddress().then((value) {
           widget.gps_location = "";
@@ -92,7 +89,6 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -110,7 +106,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('my_addresses')}"),
+                    "${AppLocalizations.of(context)!.translate('my_addresses')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -140,6 +136,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                   children: <Widget>[
                     Row(children: <Widget>[
                       BouncingWidget(
+                        onPressed:(){},
                         duration: Duration(milliseconds: 400),
                         scaleFactor: 2,
                         child: Icon(Icons.location_on,
@@ -151,7 +148,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     ]),
                     SizedBox(width: 10),
                  Text(
-                        "${AppLocalizations.of(context).translate('choose_actual_location')}",
+                        "${AppLocalizations.of(context)!.translate('choose_actual_location')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -166,24 +163,24 @@ class _MyAddressesPageState extends State<MyAddressesPage>
             CustomerUtils.getCustomer().then((customer)async {
               await determinePosition().then((value)async{
                 DeliveryAddressModel old_address  =DeliveryAddressModel();
-                for(DeliveryAddressModel adr in widget?.data){
-                  if(adr.name==AppLocalizations.of(context).translate('choose_actual_location').toString()){
+                for(DeliveryAddressModel adr in widget.data!){
+                  if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
                     old_address=adr;
                     break;
                   }
                 }
                 DeliveryAddressModel address = DeliveryAddressModel(
                   id: old_address.id,
-                  name:"${AppLocalizations.of(context).translate('choose_actual_location')}",
+                  name:"${AppLocalizations.of(context)!.translate('choose_actual_location')}",
                   location: "${value.latitude}:${value.longitude}",
-                  phone_number:customer.phone_number.toString(),
+                  phone_number:customer!.phone_number.toString(),
                   user_id: customer.id.toString(),
-                  description: "${AppLocalizations.of(context).translate('this_location')}",
+                  description: "${AppLocalizations.of(context)!.translate('this_location')}",
                   quartier: "unknown",
                   near: "near unknown",
                 );
                 AddressApiProvider api = AddressApiProvider();
-                Map jsonData = await api.updateOrCreateAddress(address,customer);
+                Map jsonData = await api.updateOrCreateAddress(address,customer) as Map;
                 DeliveryAddressModel choosedAddres = jsonData["address"];
                 _pickedAddress(choosedAddres);
               });
@@ -229,7 +226,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                               /*    Icon(Icons.add, color: Colors.white),
                               SizedBox(width: 10),*/
                               Text(
-                                  "${AppLocalizations.of(context).translate('create_new_address')}",
+                                  "${AppLocalizations.of(context)!.translate('create_new_address')}",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 14))
                             ],
@@ -253,10 +250,10 @@ class _MyAddressesPageState extends State<MyAddressesPage>
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          IconButton(icon: Icon(Icons.location_on, color: Colors.grey)),
+          IconButton(icon: Icon(Icons.location_on, color: Colors.grey), onPressed: () {  },),
           SizedBox(height: 10),
           Text(
-              "${AppLocalizations.of(context).translate('sorry_no_location_yet')}",
+              "${AppLocalizations.of(context)!.translate('sorry_no_location_yet')}",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey)),
         ],
@@ -269,19 +266,19 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         /*
             SwitchListTile(title: const Text("Bunch of interesting test that im not going to talk too much about.", style: TextStyle(fontSize: 14,color: Colors.grey), textAlign: TextAlign.center), onChanged: (bool value) {setState(() {_canReceiveSharedAddress=(!_canReceiveSharedAddress);});}, value: _canReceiveSharedAddress)
             */
-      ]..addAll(List<Widget>.generate(widget.data?.length + 1, (int index) {
-              if (index < widget.data?.length)
+      ]..addAll(List<Widget>.generate(widget.data!.length! + 1, (int index) {
+              if (index < widget.data!.length!)
                 return index == 0
                     ? Column(
                         children: [
                           SizedBox(height: 10),
-                          !_containsExcludedPhrase(widget.data[index].name)
-                              ? buildAddressListWidgetNew(address: widget.data[index])
+                          !_containsExcludedPhrase(widget.data![index].name!)
+                              ? buildAddressListWidgetNew(address: widget.data![index])
                               : Container(),
                         ],
                       )
-                    : !_containsExcludedPhrase(widget.data[index].name)
-                    ? buildAddressListWidgetNew(address: widget.data[index])
+                    : !_containsExcludedPhrase(widget.data![index].name!)
+                    ? buildAddressListWidgetNew(address: widget.data![index])
                     : Container();
               else
                 return Container(height: 100);
@@ -289,19 +286,19 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     );
   }
 
-  buildAddressListWidgetNew({DeliveryAddressModel address}) {
+  buildAddressListWidgetNew({DeliveryAddressModel? address}) {
     return Stack(
       children: [
         Column(
           children: [
             SizedBox(height: 10),
             InkWell(
-              onTap: () => _pickedAddress(address),
-              onLongPress: () => _startDeleteAddress(address),
+              onTap: () => _pickedAddress(address!),
+              onLongPress: () => _startDeleteAddress(address!),
               child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: address?.is_favorite
+                    color: address!.is_favorite!
                         ? Colors.yellow.withAlpha(50)
                         : KColors.new_gray,
                   ),
@@ -314,7 +311,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(Utils.capitalize(address?.name),
+                            Text(Utils.capitalize(address!.name!),
                                 style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
@@ -323,7 +320,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                             Container(
                               width: MediaQuery.of(context).size.width * 0.65,
                               child: Text(
-                                  Utils.capitalize(address?.description),
+                                  Utils.capitalize(address.description!),
                                   maxLines: 3,
                                   style: TextStyle(
                                       fontSize: 13,
@@ -337,13 +334,13 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                                   color: KColors.primaryColor, size: 18),
                               SizedBox(width: 6),
                               Text(
-                                address?.phone_number,
+                                address!.phone_number!,
                                 style:
                                     TextStyle(color: Colors.grey, fontSize: 14),
                               )
                             ])
                           ]),
-                      !widget.pick
+                      !widget.pick!
                           ? GestureDetector(
                               onTap: () => _addToFavorite(address),
                               child: Container(
@@ -353,7 +350,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                                 padding: EdgeInsets.all(10),
                                 margin: EdgeInsets.only(right: 10),
                                 child: Icon(
-                                    address.is_favorite
+                                    address.is_favorite!
                                         ? Icons.bookmark
                                         : Icons.bookmark_border_outlined,
                                     color: KColors.primaryYellowColor,
@@ -382,7 +379,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     );
   }
 
-  buildAddressListWidget({DeliveryAddressModel address}) {
+  buildAddressListWidget({DeliveryAddressModel? address}) {
     return Card(
         child: InkWell(
       child: Container(
@@ -404,7 +401,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     icon: Icon(FontAwesomeIcons.edit,
                         color: CommandStateColor.shipping),
                     splashColor: Colors.grey,
-                    onPressed: () => _editAddress(address)),
+                    onPressed: () => _editAddress(address!)),
               ],
             ),
             Row(
@@ -425,7 +422,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(children: <Widget>[
-                    Text("${AppLocalizations.of(context).translate('contact')}",
+                    Text("${AppLocalizations.of(context)!.translate('contact')}",
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 16,
@@ -443,7 +440,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                    "${AppLocalizations.of(context).translate('address_last_update').toUpperCase()} ${DateTime.fromMillisecondsSinceEpoch(int.parse(address?.updated_at) * 1000).toIso8601String().split(".")[0].replaceAll("T", " ")}",
+                    "${AppLocalizations.of(context)!.translate('address_last_update').toUpperCase()} ${DateTime.fromMillisecondsSinceEpoch(int.parse(address!.updated_at!) * 1000).toIso8601String().split(".")[0].replaceAll("T", " ")}",
                     style: TextStyle(color: Colors.grey)),
               ],
             )
@@ -459,7 +456,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             EditAddressPage(
-                address: address, presenter: EditAddressPresenter()),
+                address: address, presenter: EditAddressPresenter(EditAddressView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -480,21 +477,21 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
       if (results.containsKey("createdAddress") != null) {
-        if (widget.pick) {
+        if (widget.pick!) {
           DeliveryAddressModel tmp = results["createdAddress"];
           Navigator.of(context).pop({'selection': tmp});
         } else {
-          widget.presenter.loadAddressList(widget.customer); // maj
+          widget.presenter!.loadAddressList(widget.customer!); // maj
         }
       } else {
         // update
-        widget.presenter.loadAddressList(widget.customer);
+        widget.presenter!.loadAddressList(widget.customer!);
       }
     }
   }
 
   _pickedAddress(DeliveryAddressModel address) {
-    if (widget.pick) Navigator.of(context).pop({'selection': address});
+    if (widget.pick!) Navigator.of(context).pop({'selection': address});
   }
 
   Future<void> _createAddress() async {
@@ -502,7 +499,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             EditAddressPage(
-                presenter: EditAddressPresenter(),
+                presenter: EditAddressPresenter(EditAddressView()),
                 gps_location: widget.gps_location),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
@@ -517,24 +514,24 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
     if (results != null && results.containsKey('ok') && results['ok'] == true) {
       if (results.containsKey("createdAddress") != null) {
-        if (widget.pick) {
+        if (widget.pick!) {
           DeliveryAddressModel tmp = results["createdAddress"];
           Navigator.of(context).pop({'selection': tmp});
         } else {
           if (widget.customer != null)
-            widget.presenter.loadAddressList(widget.customer);
+            widget.presenter!.loadAddressList(widget.customer!);
         }
       } else {
         // update
         if (widget.customer != null)
-          widget.presenter.loadAddressList(widget.customer);
+          widget.presenter!.loadAddressList(widget.customer!);
       }
     }
   }
 
   _deleteAddress(DeliveryAddressModel address) {
     if (widget.customer != null) {
-      widget.presenter.deleteAddress(widget.customer, address);
+      widget.presenter!.deleteAddress(widget.customer!, address);
     }
   }
 
@@ -553,7 +550,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     _showDialog(
         icon: VectorsData.questions,
         message:
-            "${AppLocalizations.of(context).translate('are_you_sure_to_delete_address')} (${address?.name?.toUpperCase()})",
+            "${AppLocalizations.of(context)!.translate('are_you_sure_to_delete_address')} (${address?.name?.toUpperCase()})",
         isYesOrNo: true,
         actionIfYes: () => _deleteAddress(address));
   }
@@ -586,17 +583,17 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.loadAddressList(widget.customer);
+          widget.presenter!.loadAddressList(widget.customer!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.loadAddressList(widget.customer);
+          widget.presenter!.loadAddressList(widget.customer!);
         });
   }
 
@@ -605,7 +602,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     // flutter defined function
     showDialog(
       context: context,
@@ -634,7 +631,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -645,11 +642,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -657,7 +654,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                     //
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         if (okBackToHome) {
@@ -675,20 +672,20 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
   @override
   void deleteError() {
-    mToast("${AppLocalizations.of(context).translate('delete_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('delete_error')}");
   }
 
   @override
   void deleteNetworkError() {
-    mToast("${AppLocalizations.of(context).translate('delete_network_error')}");
+    mToast("${AppLocalizations.of(context)!.translate('delete_network_error')}");
   }
 
   @override
   void deleteSuccess(DeliveryAddressModel address) {
-    if (widget.data != null && widget.data?.length > 0)
-      for (int i = 0; i < widget.data?.length; i++) {
-        if (widget.data[i].id == address.id) {
-          widget.data.removeAt(i);
+    if (widget.data != null && widget.data!.length! > 0)
+      for (int i = 0; i < widget.data!.length!; i++) {
+        if (widget.data![i].id == address.id) {
+          widget.data!.removeAt(i);
         }
       }
     if (mounted)
@@ -698,7 +695,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   void _reorderWithFavorite(List<DeliveryAddressModel> deliveryAddresses) {
@@ -709,7 +706,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
 
     coo?.forEach((element) {
       if (widget.favoriteAddress != null &&
-          widget.favoriteAddress.contains(element.id)) {
+          widget.favoriteAddress!.contains(element.id)) {
         deliveryAddresses.remove(element);
         var tmp = element;
         tmp.is_favorite = true;
@@ -731,28 +728,28 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     widget.favoriteAddress = await CustomerUtils.getFavoriteAddress();
 
     // if address is contained, delete it
-    if (widget.favoriteAddress.contains(address.id)) {
-      widget.favoriteAddress.remove(address.id);
-      await CustomerUtils.saveFavoriteAddress(widget.favoriteAddress);
+    if (widget.favoriteAddress!.contains(address.id)) {
+      widget.favoriteAddress!.remove(address.id);
+      await CustomerUtils.saveFavoriteAddress(widget.favoriteAddress!);
     } else {
       await CustomerUtils.saveFavoriteAddress([
-        address.id,
-        ...widget.favoriteAddress
+        address.id!,
+        ...widget.favoriteAddress!
       ]); /* notification to show that notification has been pinned on top */
       /*    ElegantNotification.info(
               toastDuration: Duration(seconds: 5),
               title: Text(
-                  "${AppLocalizations.of(context).translate('address_pinned_successfully_short')}"),
+                  "${AppLocalizations.of(context)!.translate('address_pinned_successfully_short')}"),
               notificationPosition: NotificationPosition.center,
               description: Text(
-                  "${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"))
+                  "${AppLocalizations.of(context)!.translate('address_pinned_successfully_long')}"))
           .show(context);*/
       final snackBar = SnackBar(
         content: Text(
-            "${AppLocalizations.of(context).translate('address_pinned_successfully_long')}"),
+            "${AppLocalizations.of(context)!.translate('address_pinned_successfully_long')}"),
         action: SnackBarAction(
           label:
-              "${AppLocalizations.of(context).translate('ok')}".toUpperCase(),
+              "${AppLocalizations.of(context)!.translate('ok')}".toUpperCase(),
           onPressed: () {
             // Some code to undo the change.
             ScaffoldMessenger.of(context).clearSnackBars();

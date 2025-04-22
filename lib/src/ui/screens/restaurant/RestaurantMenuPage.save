@@ -142,7 +142,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
       brightness: Brightness.dark,
       backgroundColor: KColors.primaryColor,
       title: GestureDetector(child: Row(children: <Widget>[
-        // Text("${AppLocalizations.of(context).translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+        // Text("${AppLocalizations.of(context)!.translate('menu')}", style: TextStyle(fontSize: 14, color: Colors.white)),
         // SizedBox(width: 10),
         Container(decoration: BoxDecoration(color: Colors.white.withAlpha(100),
             borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -241,7 +241,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             isLoading
                 ? Center(child: MyLoadingProgressWidget())
                 : (hasNetworkError ? ErrorPage(
-                message: "${AppLocalizations.of(context).translate('network_error')}", onClickAction: () {
+                message: "${AppLocalizations.of(context)!.translate('network_error')}", onClickAction: () {
               if (!widget.fromNotification) {
                 if (widget.menuId == -1)
                   widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
@@ -252,7 +252,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                     widget?.restaurant);
             })
                 : hasSystemError ? ErrorPage(
-                message: "${AppLocalizations.of(context).translate('system_error')}", onClickAction: () {
+                message: "${AppLocalizations.of(context)!.translate('system_error')}", onClickAction: () {
               if (!widget.fromNotification) {
                 if (widget.menuId == -1)
                   widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
@@ -283,7 +283,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
     }
 
     if (data == null || data?.length == 0)
-      return Center(child:Text("${AppLocalizations.of(context).translate('no_data')}"));
+      return Center(child:Text("${AppLocalizations.of(context)!.translate('no_data')}"));
 
     if (_firstTime) {
 //      _openDrawer();
@@ -387,7 +387,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                 : Container()),
                             SizedBox(width: 5),
 
-                            Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,
+                            Text("${AppLocalizations.of(context)!.translate('currency')}", overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -402,7 +402,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                 ),
                 SizedBox(height: 20),
                 // add-up the buttons at the right side of it
-                InkWell(onTap: () {Toast.show("${AppLocalizations.of(context).translate('add_to_chart')}", context);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
+                InkWell(onTap: () {Toast.show("${AppLocalizations.of(context)!.translate('add_to_chart')}", context);}, // () => _addFoodToChart(food, foodIndex, menuIndex),
                   child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Container(
@@ -414,7 +414,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                           child: InkWell(onTap: () => _addFoodToChart(food, foodIndex, menuIndex),
                             child: Container(child: Row(children: <Widget>[Container(height: 50, padding: EdgeInsets.all(2),
                                 child: Icon(Icons.add_shopping_cart, color: KColors.primaryColor)),
-                              Text("${AppLocalizations.of(context).translate('add_to_basket')}", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
+                              Text("${AppLocalizations.of(context)!.translate('add_to_basket')}", style: TextStyle(fontSize: 14, color: KColors.primaryColor))]),
                               color: KColors.primaryColorTransparentADDTOBASKETBUTTON,
                             ),
                           ),
@@ -521,7 +521,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                           fontWeight: FontWeight.normal))
                                       : Container()),
                                   SizedBox(width: 5),
-                                  Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,
+                                  Text("${AppLocalizations.of(context)!.translate('currency')}", overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -542,7 +542,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
                                               child: Row(
                                                 children: <Widget>[
                                                   Icon(Icons.add_shopping_cart, color: KColors.primaryColor, size: 20),
-                                                  Text("${AppLocalizations.of(context).translate('basket')}", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
+                                                  Text("${AppLocalizations.of(context)!.translate('basket')}", style: TextStyle(fontSize: 12, color: KColors.primaryColor)),
                                                 ],
                                               )),
                                           ])
@@ -612,7 +612,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
         });
       }
     } else {
-      showToast("${AppLocalizations.of(context).translate('max_reached')}");
+      showToast("${AppLocalizations.of(context)!.translate('max_reached')}");
     }
     _updateCounts();
   }
@@ -764,7 +764,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('system_error')}",onClickAction: (){
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){
       /*  if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
@@ -781,7 +781,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context).translate('network_error')}",onClickAction: (){
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){
       /*   if (widget.menuId == -1)
         widget.presenter.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
@@ -839,7 +839,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             isYesOrNo ? <Widget>[
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context).translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -847,7 +847,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
               OutlinedButton(
                 style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   actionIfYes();
@@ -856,7 +856,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>  with TickerPro
             ] : <Widget>[
               OutlinedButton(
                 child: new Text(
-                    "${AppLocalizations.of(context).translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

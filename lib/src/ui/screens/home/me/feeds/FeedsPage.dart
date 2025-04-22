@@ -29,13 +29,13 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 class FeedsPage extends StatefulWidget {
   static var routeName = "/FeedsPage";
 
-  FeedPresenter presenter;
+  FeedPresenter? presenter;
 
-  List<FeedModel> data;
+  List<FeedModel>? data;
 
-  FeedsPage({Key key, this.title, this.presenter}) : super(key: key);
+  FeedsPage({Key? key, this.title, this.presenter}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _FeedsPageState createState() => _FeedsPageState();
@@ -43,17 +43,17 @@ class FeedsPage extends StatefulWidget {
 
 class _FeedsPageState extends State<FeedsPage> implements FeedView {
   /* week days names */
-  CustomerModel customer;
+  CustomerModel? customer;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.feedView = this;
+    widget.presenter!.feedView = this;
     /* customer */
     CustomerUtils.getCustomer().then((customer) {
       this.customer = customer;
-      widget.presenter.fetchFeed(customer);
+      widget.presenter!.fetchFeed(customer!);
     });
   }
 
@@ -66,7 +66,6 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
         centerTitle: true,
         title: Row(mainAxisSize: MainAxisSize.min,
@@ -74,7 +73,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context).translate('feeds')}"),
+                      "${AppLocalizations.of(context)!.translate('feeds')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -138,17 +137,17 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter.fetchFeed(customer);
+          widget.presenter!.fetchFeed(customer!);
         });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter.fetchFeed(customer);
+          widget.presenter!.fetchFeed(customer!);
         });
   }
 
@@ -163,7 +162,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
             itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
               return InkWell(
-                onTap: () => _jumpToAdd(widget.data[position].destination),
+                onTap: () => _jumpToAdd(widget.data![position].destination!),
                 child: Container(decoration: BoxDecoration(color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               margin: EdgeInsets.symmetric(vertical: 5),
@@ -171,7 +170,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
                 Row(children: <Widget>[
                   Expanded(
                       child: Text(
-                   Utils.capitalize( "${widget.data[position]?.title}"),
+                   Utils.capitalize( "${widget.data![position]?.title}"),
                     style: TextStyle(
                         color: KColors.primaryColor,
                         fontSize: 14,
@@ -182,7 +181,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
                 Row(
                   children: <Widget>[
                     Expanded(
-                        child: Text(Utils.capitalize("${widget.data[position].content}"),
+                        child: Text(Utils.capitalize("${widget.data![position].content}"),
                             style: TextStyle(color: Colors.grey,fontSize: 12))),
                   ],
                 ),
@@ -191,7 +190,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                        "${widget.data[position].created_at}",
+                        "${widget.data![position].created_at}",
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey),
@@ -209,7 +208,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     switch (notificationFDestination.type) {
       /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
-        _jumpToFoodDetailsWithId(notificationFDestination.product_id);
+        _jumpToFoodDetailsWithId(notificationFDestination.product_id!);
         break;
       case NotificationFDestination.COMMAND_PAGE:
       case NotificationFDestination.COMMAND_DETAILS:
@@ -218,7 +217,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
       case NotificationFDestination.COMMAND_END_SHIPPING:
       case NotificationFDestination.COMMAND_CANCELLED:
       case NotificationFDestination.COMMAND_REJECTED:
-        _jumpToCommandDetails(notificationFDestination.product_id);
+        _jumpToCommandDetails(notificationFDestination.product_id!);
         break;
       case NotificationFDestination.MONEY_MOVMENT:
         _jumpToTransactionHistory();
@@ -230,10 +229,10 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
 //        _jumpToArticleInterface(notificationFDestination.product_id);
         break;
       case NotificationFDestination.RESTAURANT_PAGE:
-        _jumpToRestaurantDetailsPage(notificationFDestination.product_id);
+        _jumpToRestaurantDetailsPage(notificationFDestination.product_id!);
         break;
       case NotificationFDestination.RESTAURANT_MENU:
-        _jumpToRestaurantMenuPage(notificationFDestination.product_id);
+        _jumpToRestaurantMenuPage(notificationFDestination.product_id!);
         break;
       case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
         _jumpToServiceClient();
@@ -245,14 +244,14 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter()),
+        builder: (context) => OrderDetailsPage(orderId: orderId, presenter: OrderDetailsPresenter(OrderDetailsView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderNewDetailsPage(
-                orderId: orderId, presenter: OrderDetailsPresenter()),
+                orderId: orderId, presenter: OrderDetailsPresenter(OrderDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -269,13 +268,13 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter()),
+        builder: (context) => TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TransactionHistoryPage(presenter: TransactionPresenter()),
+            TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -297,7 +296,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
                 restaurantId: product_id,
-                presenter: RestaurantDetailsPresenter()),
+                presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -314,13 +313,13 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter(MenuView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter()),
+            RestaurantMenuPage(menuId: product_id, presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -337,7 +336,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     /*  Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter()),
+        builder: (context) => RestaurantMenuPage(foodId: food_id, highlightedFoodId: food_id, presenter: MenuPresenter(MenuView())),
       ),
     );*/
 
@@ -346,7 +345,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
             RestaurantMenuPage(
                 foodId: food_id,
                 highlightedFoodId: food_id,
-                presenter: MenuPresenter()),
+                presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -363,13 +362,13 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
     /*Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
+        builder: (context) => CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())),
       ),
     );*/
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            CustomerCareChatPage(presenter: CustomerCareChatPresenter()),
+            CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

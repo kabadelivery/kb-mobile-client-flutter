@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class RetrievePasswordPage extends StatefulWidget {
   static var routeName = "/RetrievePasswordPage";
 
-  RetrievePasswordPage({Key key, this.type = 0}) : super(key: key);
+  RetrievePasswordPage({Key? key, this.type = 0}) : super(key: key);
 
   final int type;
 
@@ -24,7 +24,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   String pwd = "";
 
   /* create - confirm - insert */
-  List<String> retrievePasswordTitle;
+  List<String>? retrievePasswordTitle;
 
   @override
   void initState() {
@@ -37,10 +37,10 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     retrievePasswordTitle = [
-      "${AppLocalizations.of(context).translate('enter_password')}",
-      "${AppLocalizations.of(context).translate('setup_password')}",
-      "${AppLocalizations.of(context).translate('confirm_password')}",
-      "${AppLocalizations.of(context).translate('confirm_password_launch_order')}"
+      "${AppLocalizations.of(context)!.translate('enter_password')}",
+      "${AppLocalizations.of(context)!.translate('setup_password')}",
+      "${AppLocalizations.of(context)!.translate('confirm_password')}",
+      "${AppLocalizations.of(context)!.translate('confirm_password_launch_order')}"
     ];
   }
 
@@ -49,7 +49,6 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         centerTitle: true,
         leading: IconButton(
@@ -63,7 +62,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('input_password')}"),
+                    "${AppLocalizations.of(context)!.translate('input_password')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -79,8 +78,8 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     text: "* ",
                     children: [
                       TextSpan(
-                          text:retrievePasswordTitle[this.widget.type],
-                              // "${AppLocalizations.of(context).translate('insert_transfer_amount')}",
+                          text:retrievePasswordTitle![this.widget.type],
+                              // "${AppLocalizations.of(context)!.translate('insert_transfer_amount')}",
                           style: TextStyle(fontSize: 12, color: Colors.grey))
                     ],
                     style: TextStyle(color: KColors.primaryColor))),
@@ -195,7 +194,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                           child: MaterialButton(
                               child: Icon(Icons.delete, color: KColors.primaryColor, size: 20),
                               /*Text(
-                                  "${AppLocalizations.of(context).translate('delete')}",
+                                  "${AppLocalizations.of(context)!.translate('delete')}",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 14)),*/
                               color: Colors.grey.shade50,
@@ -225,7 +224,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                                     color: Colors.grey),
                                 SizedBox(width: 5),
                                 Text(
-                                    "${AppLocalizations.of(context).translate('lost_your_password')}",
+                                    "${AppLocalizations.of(context)!.translate('lost_your_password')}",
                                     style: TextStyle(
                                         fontSize: 12, color: Colors.grey)),
                               ],
@@ -247,7 +246,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       context,
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(), is_a_process: true),
+            presenter: RecoverPasswordPresenter(RecoverPasswordView()), is_a_process: true),
       ),
     );
   }

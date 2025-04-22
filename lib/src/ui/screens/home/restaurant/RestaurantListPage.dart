@@ -105,7 +105,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   void initState() {
     super.initState();
 
-//    _filterDropdownValue = "${AppLocalizations.of(context).translate('cheap_to_exp')}";
+//    _filterDropdownValue = "${AppLocalizations.of(context)!.translate('cheap_to_exp')}";
     widget.foodProposalPresenter.restaurantFoodProposalView = this;
     widget.restaurantListPresenter.restaurantListView = this;
 
@@ -215,7 +215,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   if (snapshot.hasData) {
                     return _buildRestaurantList(snapshot.data);
                   } else if (pageError) {
-                    return ErrorPage(message:"${AppLocalizations.of(context).translate('network_error')}", onClickAction: (){
+                    return ErrorPage(message:"${AppLocalizations.of(context)!.translate('network_error')}", onClickAction: (){
                       setState(() {
                         restaurantBloc.fetchShopList(customer: widget.customer, position: StateContainer.of(context).location);
                       });
@@ -282,14 +282,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                     _filterEditController.text);
                           else
                             mDialog(
-                                "${AppLocalizations.of(context).translate('search_too_short')}");
+                                "${AppLocalizations.of(context)!.translate('search_too_short')}");
                         }
                       },
                       style: TextStyle(color: KColors.new_black, fontSize: 16),
                       textInputAction: TextInputAction.search,
                       decoration: InputDecoration.collapsed(
                           hintText:
-                              "${AppLocalizations.of(context).translate('find_menu_or_restaurant')}",
+                              "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
                           hintStyle:
                               TextStyle(fontSize: 15, color: Colors.grey)),
                       enabled: true),
@@ -317,7 +317,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                         _filterEditController.text);
                               else
                                 mDialog(
-                                    "${AppLocalizations.of(context).translate('search_too_short')}");
+                                    "${AppLocalizations.of(context)!.translate('search_too_short')}");
                             }
                           })
                       : Container(),
@@ -363,7 +363,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                 child: Container(
                                     padding: EdgeInsets.all(10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('search_restaurant')}",
+                                        "${AppLocalizations.of(context)!.translate('search_restaurant')}",
                                         style: TextStyle(
                                             fontSize: 10,
                                             color: searchTypePosition == 1
@@ -382,7 +382,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                 child: Container(
                                     padding: EdgeInsets.all(10),
                                     child: Text(
-                                        "${AppLocalizations.of(context).translate('search_food')}",
+                                        "${AppLocalizations.of(context)!.translate('search_food')}",
                                         style: TextStyle(
                                             fontSize: 10,
                                             color: searchTypePosition == 1
@@ -406,12 +406,12 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                         : DropdownButton<String>(
                             value: _filterDropdownValue,
                             hint: Text(
-                                "${AppLocalizations.of(context).translate('filter')}"
+                                "${AppLocalizations.of(context)!.translate('filter')}"
                                     .toUpperCase(),
                                 style: TextStyle(
                                     fontSize: 14, color: KColors.primaryColor)),
                             /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                          child: Text("${AppLocalizations.of(context).translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
+                          child: Text("${AppLocalizations.of(context)!.translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
                       */
                             icon: Icon(
                               FontAwesomeIcons.filter,
@@ -431,10 +431,10 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                               });
                             },
                             items: <String>[
-                              '${AppLocalizations.of(context).translate('cheap_to_exp')}',
-                              '${AppLocalizations.of(context).translate('exp_to_cheap')}',
-                              '${AppLocalizations.of(context).translate('nearest')}',
-                              '${AppLocalizations.of(context).translate('farest')}'
+                              '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
+                              '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
+                              '${AppLocalizations.of(context)!.translate('nearest')}',
+                              '${AppLocalizations.of(context)!.translate('farest')}'
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -561,7 +561,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                           side: MaterialStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('refuse')}",
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
                           style: TextStyle(color: Colors.grey)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -572,7 +572,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                           side: MaterialStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('accept')}",
+                          "${AppLocalizations.of(context)!.translate('accept')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -583,7 +583,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                 : <Widget>[
                     OutlinedButton(
                       child: new Text(
-                          "${AppLocalizations.of(context).translate('ok')}",
+                          "${AppLocalizations.of(context)!.translate('ok')}",
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -602,11 +602,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("${AppLocalizations.of(context).translate('cant_get_location')}"),
-              content: Text("${AppLocalizations.of(context).translate('please_enable_gps')}"),
+              title: Text("${AppLocalizations.of(context)!.translate('cant_get_location')}"),
+              content: Text("${AppLocalizations.of(context)!.translate('please_enable_gps')}"),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('${AppLocalizations.of(context).translate('ok')}'),
+                  child: Text('${AppLocalizations.of(context)!.translate('ok')}'),
                   onPressed: () {
                     final AndroidIntent intent = AndroidIntent(
                         action: 'android.settings.LOCATION_SOURCE_SETTINGS');
@@ -644,7 +644,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(
-                  "${AppLocalizations.of(context).translate('request')}"
+                  "${AppLocalizations.of(context)!.translate('request')}"
                       .toUpperCase(),
                   style: TextStyle(color: KColors.primaryColor)),
               content: SingleChildScrollView(
@@ -664,7 +664,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                             ))),
                     SizedBox(height: 10),
                     Text(
-                        "${AppLocalizations.of(context).translate('location_explanation_pricing')}",
+                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
                         textAlign: TextAlign.center)
                   ],
                 ),
@@ -672,14 +672,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
               actions: <Widget>[
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('refuse')}"),
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text(
-                      "${AppLocalizations.of(context).translate('accept')}"),
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
                     /* */
                     // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -706,7 +706,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -726,7 +726,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center)
                     ],
                   ),
@@ -734,14 +734,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       await Geolocator.openAppSettings();
@@ -763,7 +763,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                    "${AppLocalizations.of(context).translate('permission_')}"
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
                         .toUpperCase(),
                     style: TextStyle(color: KColors.primaryColor)),
                 content: SingleChildScrollView(
@@ -783,7 +783,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                               ))),
                       SizedBox(height: 10),
                       Text(
-                          "${AppLocalizations.of(context).translate('request_location_permission')}",
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
                           textAlign: TextAlign.center)
                     ],
                   ),
@@ -791,14 +791,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('refuse')}"),
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text(
-                        "${AppLocalizations.of(context).translate('accept')}"),
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
                       Geolocator.requestPermission();
@@ -824,7 +824,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(
-                      "${AppLocalizations.of(context).translate('permission_')}"
+                      "${AppLocalizations.of(context)!.translate('permission_')}"
                           .toUpperCase(),
                       style: TextStyle(color: KColors.primaryColor)),
                   content: SingleChildScrollView(
@@ -845,7 +845,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                 ))),
                         SizedBox(height: 10),
                         Text(
-                            "${AppLocalizations.of(context).translate('request_location_activation_permission')}",
+                            "${AppLocalizations.of(context)!.translate('request_location_activation_permission')}",
                             textAlign: TextAlign.center)
                       ],
                     ),
@@ -853,14 +853,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   actions: <Widget>[
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('refuse')}"),
+                          "${AppLocalizations.of(context)!.translate('refuse')}"),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                     TextButton(
                       child: Text(
-                          "${AppLocalizations.of(context).translate('accept')}"),
+                          "${AppLocalizations.of(context)!.translate('accept')}"),
                       onPressed: () async {
                         /* */
                         await Geolocator.openLocationSettings();
@@ -906,7 +906,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   _buildSearchMenuNetworkErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
               .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
@@ -916,7 +916,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   _buildSearchMenuSysErrorPage() {
     /* show a page that will help us search more back. */
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
               .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
@@ -931,7 +931,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         SizedBox(height: 20),
         Icon(Icons.restaurant, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context).translate('please_search_item')}")
+        Text("${AppLocalizations.of(context)!.translate('please_search_item')}")
       ])));
 
     if (foodProposals?.length == 0) {
@@ -942,7 +942,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         Icon(Icons.restaurant, color: Colors.grey),
         SizedBox(height: 10),
         Text(
-            "${AppLocalizations.of(context).translate('sorry_cant_find_food')}")
+            "${AppLocalizations.of(context)!.translate('sorry_cant_find_food')}")
       ])));
     }
 
@@ -1171,7 +1171,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   _filteredFoodProposal(
       String filterDropdownValue, List<ShopProductModel> foodProposals) {
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('cheap_to_exp')}")) {
+        ("${AppLocalizations.of(context)!.translate('cheap_to_exp')}")) {
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
@@ -1184,7 +1184,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('exp_to_cheap')}")) {
+        ("${AppLocalizations.of(context)!.translate('exp_to_cheap')}")) {
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
@@ -1197,7 +1197,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('farest')}")) {
+        ("${AppLocalizations.of(context)!.translate('farest')}")) {
       // farest
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
@@ -1214,7 +1214,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     }
 
     if (filterDropdownValue ==
-        ("${AppLocalizations.of(context).translate('nearest')}")) {
+        ("${AppLocalizations.of(context)!.translate('nearest')}")) {
       // nearest
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
@@ -1281,7 +1281,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
 
   _buildSysErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('system_error')}",
+        message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchShopList(
               widget.customer, "food", StateContainer.of(context).location);
@@ -1290,7 +1290,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
 
   _buildNetworkErrorPage() {
     return ErrorPage(
-        message: "${AppLocalizations.of(context).translate('network_error')}",
+        message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.restaurantListPresenter.fetchShopList(
               widget.customer,"food", StateContainer.of(context).location);

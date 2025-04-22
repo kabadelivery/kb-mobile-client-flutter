@@ -8,21 +8,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class FlowerWidgetItem extends StatelessWidget {
-  ShopProductModel food;
-  Function jumpToFoodDetails;
+  ShopProductModel? food;
+  Function? jumpToFoodDetails;
 
   var foodIndex;
 
-  int menuIndex;
+  int? menuIndex;
 
-  int highlightedFoodId;
+  int? highlightedFoodId;
 
-  GlobalKey dataKey;
-  Map<String, GlobalKey> _keyBox = Map();
+  GlobalKey? dataKey;
+  Map<String, GlobalKey>? _keyBox = Map();
 
-  Function showDetails;
+  Function? showDetails;
 
-  Function addFoodToChart;
+  Function? addFoodToChart;
 
   FlowerWidgetItem({this.dataKey,
     this.food,
@@ -36,7 +36,7 @@ class FlowerWidgetItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () => jumpToFoodDetails(context, food),
+        onTap: () => jumpToFoodDetails!(context, food),
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5), color:
@@ -58,7 +58,7 @@ class FlowerWidgetItem extends StatelessWidget {
                           Positioned(
                               child: InkWell(
                                 onTap: () =>
-                                    addFoodToChart(
+                                    addFoodToChart!(
                                         food, foodIndex, menuIndex),
                                 child: Container(
                                     decoration: BoxDecoration(
@@ -81,7 +81,7 @@ class FlowerWidgetItem extends StatelessWidget {
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
                                 image: CachedNetworkImageProvider(
-                                    Utils.inflateLink(food?.pic)))),
+                                    Utils.inflateLink(food!.pic!)))),
                       ),
                     ),
                   ],
@@ -103,7 +103,7 @@ class FlowerWidgetItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Flexible(
-                        child: Text("${Utils.capitalize(food?.name)}",
+                        child: Text("${Utils.capitalize(food!.name!)}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             textAlign: TextAlign.start,
@@ -123,13 +123,13 @@ class FlowerWidgetItem extends StatelessWidget {
                             maxLines: 2,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                decoration: food.promotion != 0
+                                decoration: food!.promotion != 0
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                                 color: KColors.new_black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700)),
-                        (food.promotion != 0
+                        (food!.promotion != 0
                             ? Text("${food?.promotion_price}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -141,7 +141,7 @@ class FlowerWidgetItem extends StatelessWidget {
                             : Container()),
                         SizedBox(width: 2),
                         Text(
-                            "${AppLocalizations.of(context).translate(
+                            "${AppLocalizations.of(context)!.translate(
                                 'currency')}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,

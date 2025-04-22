@@ -12,23 +12,23 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 
 class RestaurantMenuDetails extends StatefulWidget {
   static var routeName = "/RestaurantMenuDetails";
 
-  Map<ShopProductModel, int> food_selected, adds_on_selected;
+  Map<ShopProductModel, int>? food_selected, adds_on_selected;
 
   /* 1 - food, 2- addons, 3 - all */
-  int type;
+  int? type;
 
-  int FOOD_MAX;
+  int? FOOD_MAX;
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
   RestaurantMenuDetails(
-      {Key key,
+      {Key? key,
       this.FOOD_MAX = 5,
       this.type,
       this.food_selected,
@@ -38,7 +38,7 @@ class RestaurantMenuDetails extends StatefulWidget {
 
   @override
   _RestaurantMenuDetailsState createState() =>
-      _RestaurantMenuDetailsState(type, food_selected, adds_on_selected);
+      _RestaurantMenuDetailsState(type!, food_selected!, adds_on_selected!);
 }
 
 class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
@@ -67,7 +67,6 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -81,7 +80,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           children: [
             Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context).translate('my_basket')}"),
+                    "${AppLocalizations.of(context)!.translate('my_basket')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -108,7 +107,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)),
+            Text("${food.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 14, fontWeight: FontWeight.w500)),
             SizedBox(height: 5),
             Container(
               child: Row(
@@ -116,10 +115,10 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                 children: <Widget>[
                   */ /*prix*/ /*
                   Row(children: <Widget>[
-                    Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                    (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                    Text("${food.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                    (food.promotion!=0 ? Text("${food.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
                         : Container()),
-                    Text("${AppLocalizations.of(context).translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
+                    Text("${AppLocalizations.of(context)!.translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 10, fontWeight: FontWeight.normal)),
                   ]),
                   */ /* add buttons */ /*
                   Row(
@@ -141,9 +140,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     );
   }  */
 
-  Widget _buildBottomSheetFoodListWidget({ShopProductModel food}) {
+  Widget _buildBottomSheetFoodListWidget({ShopProductModel? food}) {
     return GestureDetector(
-      onTap: () => _jumpToFoodDetails(context, food),
+      onTap: () => _jumpToFoodDetails(context, food!),
       child: Container(
           decoration: BoxDecoration(
               color: KColors.new_gray,
@@ -165,7 +164,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                                Utils.inflateLink(food?.pic)))),
+                                Utils.inflateLink(food!.pic!)))),
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -173,7 +172,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width - 160,
-                          child: Text("${Utils.capitalize(food?.name)}",
+                          child: Text("${Utils.capitalize(food!.name!)}",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.start,
@@ -185,7 +184,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         SizedBox(height: 2),
                         Container(
                           width: 1 * MediaQuery.of(context).size.width / 2,
-                          child: Text("${Utils.capitalize(food?.description)}",
+                          child: Text("${Utils.capitalize(food!.description!)}",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                               textAlign: TextAlign.start,
@@ -215,7 +214,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                 Container(
                                     margin: EdgeInsets.only(left: 5, right: 5),
                                     child: Text(
-                                        "${food.is_addon ? adds_on_selected[food].toInt() : food_selected[food].toInt()}",
+                                        "${food.is_addon! ? adds_on_selected[food]!.toInt() : food_selected[food]!.toInt()}",
                                         style: TextStyle(
                                             color: KColors.new_black,
                                             fontWeight: FontWeight.w600,
@@ -234,7 +233,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                   top: 0,
                   child: InkWell(
                       child: Container(
-                          child: Icon(FontAwesome.remove,
+                          child: Icon(FontAwesomeIcons.remove,
                               size: 15, color: KColors.new_black),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle, color: Colors.white),
@@ -253,7 +252,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                   child: Row(children: <Widget>[
                     SizedBox(width: 2),
-                    Text("${food?.price}",
+                    Text("${food.price}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -266,7 +265,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                 : TextDecoration.none)),
                     SizedBox(width: 2),
                     (food.promotion != 0
-                        ? Text("${food?.promotion_price}",
+                        ? Text("${food.promotion_price}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             textAlign: TextAlign.center,
@@ -277,7 +276,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         : Container()),
                     SizedBox(width: 3),
                     Text(
-                        "${AppLocalizations.of(context).translate('currency')}",
+                        "${AppLocalizations.of(context)!.translate('currency')}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -307,7 +306,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                   padding:
                       EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                   child: Text(
-                      "${AppLocalizations.of(context).translate('all')}"
+                      "${AppLocalizations.of(context)!.translate('all')}"
                           .toUpperCase(),
                       style: TextStyle(color: Colors.white),
                       textAlign: TextAlign.center)))
@@ -366,7 +365,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "${AppLocalizations.of(context).translate('total')}"
+                              "${AppLocalizations.of(context)!.translate('total')}"
                                   .toUpperCase(),
                               style: TextStyle(color: Colors.grey)),
                           Row(
@@ -380,7 +379,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                       color: KColors.primaryColor)),
                               SizedBox(width: 5),
                               Text(
-                                  "${AppLocalizations.of(context).translate('currency')}",
+                                  "${AppLocalizations.of(context)!.translate('currency')}",
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       fontSize: 12,
@@ -410,8 +409,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                                       BorderRadius.all(Radius.circular(5))),
                               child: Center(
                                 child: Text(
-                                    "${AppLocalizations.of(context).translate('buy')}"
-                                        ?.toUpperCase(),
+                                    "${AppLocalizations.of(context)!.translate('buy')}"
+                                        !.toUpperCase(),
                                     style: TextStyle(color: Colors.white)),
                               ),
                             ),
@@ -426,26 +425,26 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   _decreaseQuantity(ShopProductModel food) {
-    if (!food.is_addon) {
+    if (!food.is_addon!) {
       if (food_selected.containsKey(food)) {
-        if (food_selected[food].toInt() > 1)
+        if (food_selected[food]!.toInt() > 1)
           food_selected.update(
-              food, (int val) => food_selected[food].toInt() - 1);
+              food, (int val) => food_selected[food]!.toInt() - 1);
         else {
-          showToast("${AppLocalizations.of(context).translate('min_reached')}");
+          showToast("${AppLocalizations.of(context)!.translate('min_reached')}");
         }
       } else {
         food_selected.putIfAbsent(food, () => 1);
       }
     } else {
-      if (!food.is_addon) {
+      if (!food.is_addon!) {
         if (adds_on_selected.containsKey(food)) {
-          if (adds_on_selected[food].toInt() > 1)
+          if (adds_on_selected[food]!.toInt() > 1)
             adds_on_selected.update(
-                food, (int val) => adds_on_selected[food].toInt() - 1);
+                food, (int val) => adds_on_selected[food]!.toInt() - 1);
           else {
             showToast(
-                "${AppLocalizations.of(context).translate('min_reached')}");
+                "${AppLocalizations.of(context)!.translate('min_reached')}");
           }
         } else {
           adds_on_selected.putIfAbsent(food, () => 1);
@@ -456,23 +455,23 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   _increaseQuantity(ShopProductModel food) {
-    if (_foodCount >= widget.FOOD_MAX) {
-      showToast("${AppLocalizations.of(context).translate('max_reached')}");
+    if (_foodCount >= widget.FOOD_MAX!) {
+      showToast("${AppLocalizations.of(context)!.translate('max_reached')}");
       return;
     } else {
       /* if max is reached, we dont increase */
-      if (!food.is_addon) {
+      if (!food.is_addon!) {
         if (food_selected.containsKey(food)) {
           food_selected.update(
-              food, (int val) => 1 + food_selected[food].toInt());
+              food, (int val) => 1 + food_selected[food]!.toInt());
         } else {
           food_selected.putIfAbsent(food, () => 1);
         }
       } else {
-        if (!food.is_addon) {
+        if (!food.is_addon!) {
           if (adds_on_selected.containsKey(food)) {
             adds_on_selected.update(
-                food, (int val) => 1 + adds_on_selected[food].toInt());
+                food, (int val) => 1 + adds_on_selected[food]!.toInt());
           } else {
             adds_on_selected.putIfAbsent(food, () => 1);
           }
@@ -488,14 +487,14 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
     food_selected.forEach((ShopProductModel food, int quantity) {
       fc += quantity;
       tp +=
-          (int.parse(food.promotion == 0 ? food.price : food.promotion_price) *
+          (int.parse(food.promotion! == 0 ? food.price! : food.promotion_price!) *
               quantity);
     });
     int adc = 0;
     adds_on_selected.forEach((ShopProductModel food, int quantity) {
       adc += quantity;
       tp +=
-          (int.parse(food.promotion == 0 ? food.price : food.promotion_price) *
+          (int.parse(food.promotion! == 0 ? food.price! : food.promotion_price!) *
               quantity);
     });
     setState(() {
@@ -506,19 +505,19 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
   }
 
   void showToast(String message) {
-    Toast.show(message, context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+    Toast.show(message,
+        duration: 5, gravity:Toast.center);
   }
 
   void _removeFood(ShopProductModel food) {
-    if (!food.is_addon) {
+    if (!food.is_addon!) {
       if (food_selected.containsKey(food)) {
         food_selected.removeWhere((ShopProductModel mFood, int value) {
           return (mFood == food);
         });
       }
     } else {
-      if (!food.is_addon) {
+      if (!food.is_addon!) {
         if (adds_on_selected.containsKey(food)) {
           adds_on_selected.removeWhere((ShopProductModel mFood, int value) {
             return (mFood == food);
@@ -546,7 +545,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                "${AppLocalizations.of(context).translate('please_login_before_going_forward_title')}"),
+                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -562,7 +561,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                       ))),
                   SizedBox(height: 10),
                   Text(
-                      "${AppLocalizations.of(context).translate("please_login_before_going_forward_description_place_order")}",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
                       textAlign: TextAlign.center)
                 ],
               ),
@@ -570,14 +569,14 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
             actions: <Widget>[
               TextButton(
                 child: Text(
-                    "${AppLocalizations.of(context).translate('not_now')}"),
+                    "${AppLocalizations.of(context)!.translate('not_now')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context).translate('login')}"),
+                    Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* */
                   /* jump to login page... */
@@ -585,7 +584,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
 
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(),
+                          presenter: LoginPresenter(LoginView()),
                           fromOrderingProcess: true)));
                 },
               )
@@ -597,8 +596,8 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
       Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               OrderConfirmationPage2(
-                  restaurant: widget.restaurant,
-                  presenter: OrderConfirmationPresenter(),
+                  restaurant: widget.restaurant!,
+                  presenter: OrderConfirmationPresenter(OrderConfirmationView()),
                   foods: food_selected,
                   addons: adds_on_selected),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
