@@ -71,7 +71,7 @@ import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
-  HomeScreenModel? data;
+  HomeScreenModel data = HomeScreenModel();
 
   var argument;
 
@@ -309,7 +309,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
       widget.bestSellerMini = BestSellersMiniPage(
           presenter: BestSellerPresenter(BestSellerView()), customer: widget.customer);
     if (widget.proposalMini == null &&
-        widget?.data?.food_suggestions != null &&
+        widget.data!.food_suggestions != null &&
         widget.data!.food_suggestions!.length > 0)
       widget.proposalMini = ProposalMiniWithPreloadedDataPage(
           data: widget?.data?.food_suggestions);
@@ -519,6 +519,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   Widget _buildHomeScreen(HomeScreenModel data) {
     if (data != null) widget.data = data;
+    xrint("building data $data");
     if (widget.data != null)
       return RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -915,6 +916,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     // TODO: implement updateHomeWelcomeNewPage
     setState(() {
       if (data != null) widget.data = data;
+      xrint("UPDATING HOMEPAGE");
     });
   }
 

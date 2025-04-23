@@ -25,21 +25,21 @@ class MyVouchersPage extends StatefulWidget {
 
   static var routeName = "/MyVouchersPage";
 
-  VoucherPresenter presenter;
+  VoucherPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  List<VoucherModel> data;
+  List<VoucherModel>? data;
 
-  bool pick;
+  bool? pick;
 
-  List<int> foods;
+  List<int>? foods;
 
-  int restaurantId;
+  int? restaurantId;
 
-  MyVouchersPage({Key key, this.presenter, this.pick = false, this.restaurantId = -1, this.foods, this.title}) : super(key: key);
+  MyVouchersPage({Key? key, this.presenter, this.pick = false, this.restaurantId = -1, this.foods, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyVouchersPageState createState() => _MyVouchersPageState();
@@ -55,11 +55,11 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
   @override
   void initState() {
-    widget.presenter.voucherView = this;
+    widget.presenter!.voucherView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // according to if we are picking something, we can just request stuffs differently
-      widget.presenter.loadVoucherList(customer: customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
+      widget.presenter!.loadVoucherList(customer: customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
     });
     super.initState();
   }
@@ -69,7 +69,6 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -119,12 +118,12 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){  widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){  widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods); });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){
-      widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
+      widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
     });
   }
 
@@ -167,7 +166,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 */
 
   bool _checkPromoCode(String promoCode) {
-    if (promoCode?.length < 3 || promoCode?.length>15 || promoCode.contains(":") || promoCode.contains(".")) {
+    if (promoCode.length < 3 || promoCode.length>15 || promoCode.contains(":") || promoCode.contains(".")) {
       return false;
     }
     return true;
@@ -177,7 +176,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   Future _jumpToAddNewVoucher_Code({String qrCode = ""}) async {
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AddVouchersPage(presenter: AddVoucherPresenter(), customer: widget.customer, qrCode: qrCode),
+            AddVouchersPage(presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer, qrCode: qrCode),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -188,7 +187,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
             }
         ));
     // when you come back,
-    widget.presenter.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId, foodsId: widget.foods);
+    widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
   }
 
 
@@ -199,7 +198,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   ///  - if can't just, tell the customer that you cant subscribe to this because ....
   ///  - if already subscribe, just show the details of the voucher to the client
   kk(Map results) {
-    Toast.show(results['data'], context, duration: Toast.LENGTH_LONG);
+    Toast.show(results['data'], duration: Toast.lengthLong);
   }
 
   @override
@@ -251,9 +250,9 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                 children: <Widget>[
                   Row(mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(icon: Icon(Icons.add, color: Colors.grey)),
+                      IconButton(icon: Icon(Icons.add, color: Colors.grey), onPressed: () {  },),
                       SizedBox(width: 10),
-                      IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey)),
+                      IconButton(icon: Icon(Icons.card_giftcard, color: Colors.grey), onPressed: () {  },),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -268,9 +267,9 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
       child: Column(
           children: <Widget>[
           ]..addAll(
-              List<Widget>.generate(widget.data?.length+1, (int index) {
-                if (index < widget.data?.length)
-                  return MyVoucherMiniWidget(voucher: widget.data[index], pick: widget.pick);
+              List<Widget>.generate(widget.data!.length!+1, (int index) {
+                if (index < widget.data!.length)
+                  return MyVoucherMiniWidget(voucher: widget.data![index], pick: widget.pick);
                 else
                   return Container(height: 100);
               })
@@ -288,7 +287,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
   }
 
   void _showDialog(
-      {String svgIcons, Icon icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -299,7 +298,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                       height: 80,
                       width: 80,
                       child: icon == null ? SvgPicture.asset(
-                        svgIcons,
+                        svgIcons!,
                       ) : icon),
                   SizedBox(height: 10),
                   Text(message, textAlign: TextAlign.center,
@@ -321,7 +320,7 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
                     "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actionIfYes();
+                  actionIfYes!();
                 },
               ),
             ] : <Widget>[

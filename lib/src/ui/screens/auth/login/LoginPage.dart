@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
     this.widget.presenter!.loginView = this;
 

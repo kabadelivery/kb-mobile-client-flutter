@@ -11,15 +11,14 @@ import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   static var routeName = "/SettingsPage";
 
-  SettingsPage({Key key, this.title}) : super(key: key);
+  SettingsPage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -32,7 +31,6 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -222,7 +220,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context,
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(), is_a_process: true),
+            presenter: RecoverPasswordPresenter(RecoverPasswordView()), is_a_process: true),
       ),
     );
   }
@@ -233,7 +231,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context,
       MaterialPageRoute(
         builder: (context) => DeleteAccountQuestioningPage(
-            presenter: DeleteAccountQuestioningPresenter()),
+            presenter: DeleteAccountQuestioningPresenter(DeleteAccountQuestioningView())),
       ),
     );
   }

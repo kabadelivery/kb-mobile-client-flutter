@@ -38,7 +38,13 @@ class TransactionHistoryPage extends StatefulWidget {
 }
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage>
-    with TransactionView, SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
+  late final TransactionView transactionView;
+
+  _TransactionHistoryPageState() {
+    transactionView = TransactionView();
+  }
+
   List<MoneyTransactionModel>? moneyData;
   PointObjModel? pointData = null;
 
@@ -56,13 +62,12 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       filter_active_text_color = Colors.white;
 
   var _searchChoices = null;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    widget.presenter!.transactionView = this;
+    widget.presenter!.transactionView = TransactionView();
     _tabController = TabController(vsync: this, length: TABS_LENGTH);
     /*  _tabController!.addListener(() {
       _handleTabSelection();

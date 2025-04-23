@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
@@ -152,7 +154,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                               context,
                               ref,
                               index,
-                              product['image'],
+                              product['image']??File(''),
                               product['name'],
                               product['price'],
                               product['quantity']));

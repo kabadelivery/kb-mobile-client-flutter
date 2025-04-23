@@ -21,7 +21,7 @@ class CurrentLocationTile extends StatefulWidget {
 }
 
 class _CurrentLocationTileState extends State<CurrentLocationTile> {
-  SharedPreferences? prefs;
+  late SharedPreferences prefs;
 
   bool? isPickLocation;
 

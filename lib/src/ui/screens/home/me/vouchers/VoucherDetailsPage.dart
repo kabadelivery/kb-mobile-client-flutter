@@ -15,13 +15,13 @@ class VoucherDetailsPage extends StatefulWidget {
 
   static var routeName = "/VoucherDetailsPage";
 
-  VoucherModel voucher;
+  VoucherModel? voucher;
 
-  bool food_see_more;
+  bool? food_see_more;
 
-  VoucherDetailsPage({Key key, this.title, this.voucher, this.food_see_more = false}) : super(key: key);
+  VoucherDetailsPage({Key? key, this.title, this.voucher, this.food_see_more = false}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _VoucherDetailsPageState createState() => _VoucherDetailsPageState();
@@ -39,7 +39,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    switch(widget.voucher.type){
+    switch(widget.voucher!.type){
       case 1: // restaurant (yellow background)
         voucherIcon = FontAwesomeIcons.hamburger;
         scaffoldColor = KColors.primaryYellowColor;
@@ -58,7 +58,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: scaffoldColor,  key: _scaffoldGlobalKey,
-        appBar: AppBar( brightness: Brightness.light,
+        appBar: AppBar(
             leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
             backgroundColor: Colors.white,
             title: Text("${AppLocalizations.of(context)!.translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),
@@ -66,7 +66,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     );
   }
 
-  Widget _buildVoucherDetailsPage(VoucherDetailsPage data) {
+  Widget _buildVoucherDetailsPage(VoucherDetailsPage? data) {
     return SingleChildScrollView(
       child:   ClipPath(
         clipper: VoucherClipper(),
@@ -160,8 +160,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                     padding: EdgeInsets.only(top:20, bottom:20),
                     child:
                     InkWell(
-                        onTap: ()=>_copyIntoClipboard("${widget.voucher.subscription_code}".toUpperCase()),
-                        child: Text('${widget.voucher.subscription_code}'.toUpperCase(),textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
+                        onTap: ()=>_copyIntoClipboard("${widget.voucher!.subscription_code!}".toUpperCase()),
+                        child: Text('${widget.voucher!.subscription_code}'.toUpperCase(),textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
                   ),
                   Container(height: 1, color: Colors.grey.withAlpha(100)),
                   /* debut d'utilisation */
@@ -172,13 +172,13 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
                         Column(
                             children: <Widget>[
                               Text("${AppLocalizations.of(context)!.translate('available_since')}", style: TextStyle(color: Colors.green, fontSize: 13)),
-                              Text("${Utils.timeStampToDate(widget.voucher.start_date)}",style: TextStyle(fontSize: 13))
+                              Text("${Utils.timeStampToDate(widget.voucher!.start_date!)}",style: TextStyle(fontSize: 13))
                             ]
                         ),
                         Column(
                             children: <Widget>[
                               Text("${AppLocalizations.of(context)!.translate('expiry_date')}",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
-                              Text("${Utils.timeStampToDate(widget.voucher.end_date)}",style: TextStyle(fontSize: 13))
+                              Text("${Utils.timeStampToDate(widget.voucher!.end_date!)}",style: TextStyle(fontSize: 13))
                             ]
                         )
                       ]),
@@ -195,17 +195,17 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   _buildCFAPriceWidget() {
     return
-      widget.voucher.category == 1 ?
-      Text("-${widget.voucher.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor))
+      widget.voucher!.category == 1 ?
+      Text("-${widget.voucher!.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor))
           :
       Column(crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("-${(widget.voucher.use_count-widget.voucher.already_used_count)*widget.voucher.value}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
+          Text("-${(widget.voucher!.use_count!-widget.voucher!.already_used_count!)*widget.voucher!.value!}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
           Container(width:110, height: 2, color: KColors.new_black, margin: EdgeInsets.only(bottom:1),),
           Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: KColors.new_black)),
-              Text("-${widget.voucher.value}F X ${widget.voucher.use_count-widget.voucher.already_used_count}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: KColors.new_black)),
+              Text("-${widget.voucher!.value}F X ${widget.voucher!.use_count!-widget.voucher!.already_used_count!}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: KColors.new_black)),
             ],
           ),
         ],
@@ -213,7 +213,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   }
 
   String _getVoucherShareLink (){
-    return ServerConfig.APP_SERVer+"/voucher/"+widget.voucher.qr_code;
+    return ServerConfig.APP_SERVer+"/voucher/"+widget.voucher!.qr_code!;
   }
 
   void _copyIntoClipboard(String codePromo) {
@@ -227,7 +227,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   _miniFoodWidget(ShopProductModel food) {
@@ -238,7 +238,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
       children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("${food?.name.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
+            Text("${food?.name!.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,13 +260,13 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   _miniFoodsText(List<ShopProductModel> products) {
 
-    if (products?.length > 20 && widget.food_see_more == false) {
+    if (products!.length! > 20 && widget.food_see_more == false) {
       return "${products?.length} ${AppLocalizations.of(context)!.translate('foods_')}\n\n> See More <";
     } else {
       String res = "";
-      for (int i = 0; i < products?.length; i++) {
+      for (int i = 0; i < products!.length; i++) {
         res += "${products[i]?.name}(${products[i]?.price})";
-        if (i != products?.length - 1) {
+        if (i != products!.length - 1) {
           res += "\n";
         }
       }

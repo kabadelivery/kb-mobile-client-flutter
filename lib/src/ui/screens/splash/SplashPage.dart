@@ -25,7 +25,6 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -293,7 +292,7 @@ class _SplashPageState extends State<SplashPage> {
         StateContainer
             .of(context)
             .tabPosition = 3;
-        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(AddressView()),
             gps_location: "${mUri.path}".replaceAll(",", ":")));*/
       widget.destination = SplashPage.LOCATION_PICKED;
       widget.argument = "${mUri.path}";
@@ -419,7 +418,7 @@ class _SplashPageState extends State<SplashPage> {
         StateContainer
             .of(context)
             .tabPosition = 3;
-        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(),
+        _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(AddressView()),
             gps_location: "${mUri.path}".replaceAll(",", ":")));*/
       widget.destination = SplashPage.LOCATION_PICKED;
       widget.argument = "${mUri.path}";

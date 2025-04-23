@@ -81,7 +81,7 @@ class _EditAddressPageState extends State<EditAddressPage>
     }
   }
 
-  SharedPreferences? prefs;
+  late SharedPreferences prefs;
 
   @override
   void initState() {

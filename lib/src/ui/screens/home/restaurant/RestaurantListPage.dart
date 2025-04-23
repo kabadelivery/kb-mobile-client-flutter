@@ -33,20 +33,20 @@ import 'package:toast/toast.dart';
 
 class RestaurantListPage extends StatefulWidget {
 
-  Position location;
+  Position? location;
 
-  RestaurantFoodProposalPresenter foodProposalPresenter;
-  RestaurantListPresenter restaurantListPresenter;
+  RestaurantFoodProposalPresenter? foodProposalPresenter;
+  RestaurantListPresenter? restaurantListPresenter;
 
   bool hasGps = false;
 
-  PageStorageKey key;
+  PageStorageKey? key;
 
-  BuildContext context;
+  BuildContext? context;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  List<ShopModel> restaurantList = null;
+  List<ShopModel>? restaurantList = null;
 
   int samePositionCount = 0;
 
@@ -67,7 +67,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     implements RestaurantFoodProposalView, RestaurantListView {
   var _filterEditController = TextEditingController();
 
-  List<ShopModel> data;
+  List<ShopModel>? data;
 
   bool _searchMode = false;
 
@@ -81,15 +81,15 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   bool searchMenuHasSystemError = false, searchMenuHasNetworkError = false;
   bool isSearchingMenus = false;
 
-  List<ShopProductModel> foodProposals = null;
+  List<ShopProductModel>? foodProposals = null;
 
-  String _filterDropdownValue;
+  String? _filterDropdownValue;
 
   GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   bool isLoading = false;
   bool hasNetworkError = false;
@@ -106,8 +106,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     super.initState();
 
 //    _filterDropdownValue = "${AppLocalizations.of(context)!.translate('cheap_to_exp')}";
-    widget.foodProposalPresenter.restaurantFoodProposalView = this;
-    widget.restaurantListPresenter.restaurantListView = this;
+    widget.foodProposalPresenter!.restaurantFoodProposalView = this;
+    widget.restaurantListPresenter!.restaurantListView = this;
 
     _filterEditController.addListener(_filterEditContent);
 
@@ -141,28 +141,28 @@ class _RestaurantListPageState extends State<RestaurantListPage>
           // if (StateContainer
           //     ?.of(context)
           //     ?.location == null) {
-          //   widget.restaurantListPresenter.fetchShopList(widget.customer, null);
+          //   widget.restaurantListPresenter!.fetchShopList(widget.customer!, null);
           // } else
           xrint("init -- 1");
-          widget.restaurantListPresenter.fetchShopList(
-              widget.customer,"food", StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(
+              widget.customer!,"food", StateContainer.of(context).location);
         } else {
           if (widget.hasGps &&
               (widget.restaurantList != null &&
-                  widget.restaurantList.length > 0 &&
-                  widget.restaurantList[0].distance != null &&
-                  "".compareTo(widget.restaurantList[0].distance) != 0)) {
+                  widget.restaurantList!.length! > 0 &&
+                  widget.restaurantList![0].distance != null &&
+                  "".compareTo(widget.restaurantList![0].distance!) != 0)) {
             xrint("init -- 2");
             return; // no need to fetch automatically
           } else {
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  .fetchShopList(widget.customer,"food", null);
+                  !.fetchShopList(widget.customer!,"food", null);
             } else {
               xrint("init -- 4");
-              widget.restaurantListPresenter.fetchShopList(
-                  widget.customer, "food",StateContainer?.of(context)?.location);
+              widget.restaurantListPresenter!.fetchShopList(
+                  widget.customer!, "food",StateContainer?.of(context)?.location);
             }
           }
         }
@@ -184,7 +184,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   @override
   void dispose() {
     // restaurantBloc.dispose();
-    mainTimer.cancel();
+    mainTimer!.cancel();
     _filterEditController.dispose();
     super.dispose();
   }
@@ -202,7 +202,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                       ? _buildNetworkErrorPage()
                       : hasSystemError
                           ? _buildSysErrorPage()
-                          : _buildRestaurantList(widget.restaurantList))),
+                          : _buildRestaurantList(widget.restaurantList!))),
         ));
 
     /* return Scaffold(
@@ -217,7 +217,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   } else if (pageError) {
                     return ErrorPage(message:"${AppLocalizations.of(context)!.translate('network_error')}", onClickAction: (){
                       setState(() {
-                        restaurantBloc.fetchShopList(customer: widget.customer, position: StateContainer.of(context).location);
+                        restaurantBloc!.fetchShopList(customer: widget.customer!, position: StateContainer.of(context).location);
                       });
                     });
                   }
@@ -234,7 +234,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     if (data?.length == null || data?.length == 0) {
       this.data = d;
     } else {
-      if (data[0]?.distance == null || data[0]?.distance == "") {
+      if (data![0]?.distance == null || data![0]?.distance == "") {
         this.data = d;
       }
     }
@@ -246,7 +246,6 @@ class _RestaurantListPageState extends State<RestaurantListPage>
 
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.light,
         //    leading: null,
         backgroundColor: Colors.grey.shade100,
         title: Container(
@@ -276,9 +275,9 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                         if (searchTypePosition == 2) {
                           if (_filterEditController.text?.trim()?.length !=
                                   null &&
-                              _filterEditController.text?.trim()?.length >= 1)
+                              _filterEditController.text.trim()!.length! >= 1)
                             widget.foodProposalPresenter
-                                .fetchRestaurantFoodProposalFromTag("food",
+                                !.fetchRestaurantFoodProposalFromTag("food",
                                     _filterEditController.text);
                           else
                             mDialog(
@@ -310,10 +309,10 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                             if (searchTypePosition == 2) {
                               if (_filterEditController.text?.trim()?.length !=
                                       null &&
-                                  _filterEditController.text?.trim()?.length >=
+                                  _filterEditController.text.trim().length >=
                                       3)
                                 widget.foodProposalPresenter
-                                    .fetchRestaurantFoodProposalFromTag("food",
+                                    !.fetchRestaurantFoodProposalFromTag("food",
                                         _filterEditController.text);
                               else
                                 mDialog(
@@ -425,7 +424,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
 //                      height: 2,
 //                      color: Colors.deepPurpleAccent,
                                 ),
-                            onChanged: (String newValue) {
+                            onChanged: (String? newValue) {
                               setState(() {
                                 _filterDropdownValue = newValue;
                               });
@@ -466,31 +465,31 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                                                   ?.location ==
                                               null) {
                                             widget.restaurantListPresenter
-                                                .fetchShopList(
-                                                    widget.customer,"food", null);
+                                                !.fetchShopList(
+                                                    widget.customer!,"food", null);
                                           } else
                                             widget.restaurantListPresenter
-                                                .fetchShopList(
-                                                    widget.customer,"food",
+                                                !.fetchShopList(
+                                                    widget.customer!,"food",
                                                     StateContainer.of(context)
                                                         .location);
                                         },
                                         color: Colors.purple,
                                         child: Scrollbar(
-                                          isAlwaysShown: true,
+                                          thumbVisibility: true,
                                           controller:
                                               _restaurantListScrollController,
                                           child: ListView.builder(
                                             controller:
                                                 _restaurantListScrollController,
                                             itemCount: data?.length != null
-                                                ? data.length + 1
+                                                ? data!.length! + 1
                                                 : 0,
                                             itemBuilder: (context, index) {
                                               if (index == data?.length)
                                                 return Container(height: 100);
                                               return ShopListWidget(
-                                                  shopModel: data[index]);
+                                                  shopModel: data![index]);
                                             },
                                           ),
                                         ),
@@ -530,12 +529,12 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -546,7 +545,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -576,7 +575,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -622,8 +621,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     }
   }*/
 
-  StreamSubscription<Position> positionStream;
-  Position tmpLocation;
+  StreamSubscription<Position>? positionStream;
+  Position? tmpLocation;
 
   Future _getLastKnowLocation() async {
     /* show a dialog describing that we are going to need to use permissions
@@ -633,7 +632,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
       /* no need to commit */
       /* expiration date in 3months */
 
@@ -683,7 +682,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
                   onPressed: () {
                     /* */
                     // SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setString("_has_accepted_gps", "ok");
+                    prefs!.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     _getLastKnowLocation();
                     Navigator.of(context).pop();
@@ -879,19 +878,19 @@ class _RestaurantListPageState extends State<RestaurantListPage>
               if (position?.latitude != null &&
                   tmpLocation?.latitude != null &&
                   (position.latitude * 100).round() ==
-                      (tmpLocation.latitude * 100).round() &&
+                      (tmpLocation!.latitude * 100).round() &&
                   (position.longitude * 100).round() ==
-                      (tmpLocation.longitude * 100).round()) {
+                      (tmpLocation!.longitude * 100).round()) {
                 widget.samePositionCount++;
                 // return;
               } else {
                 widget.samePositionCount = 0;
-                tmpLocation = StateContainer.of(widget.context).location;
+                tmpLocation = StateContainer.of(widget.context!).location;
                 if (position != null && mounted) {
                   widget.hasGps = true;
                   StateContainer.of(context).updateLocation(location: position);
-                  widget.restaurantListPresenter.fetchShopList(
-                      widget.customer, "food", StateContainer.of(context).location);
+                  widget.restaurantListPresenter!.fetchShopList(
+                      widget.customer!, "food", StateContainer.of(context).location);
                 }
               }
               if (widget.samePositionCount >= 3 || widget.hasGps)
@@ -909,7 +908,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
+              !.fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
         });
   }
 
@@ -919,7 +918,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.foodProposalPresenter
-              .fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
+              !.fetchRestaurantFoodProposalFromTag("food",_filterEditController.text);
         });
   }
 
@@ -952,7 +951,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
         return FoodWithRestaurantDetailsWidget(food: foodProposals[index]);
       }).toList()));*/
     var filteredResult =
-        _filteredFoodProposal(_filterDropdownValue, foodProposals);
+        _filteredFoodProposal(_filterDropdownValue!, foodProposals!);
 
     if (justInflatedFoodProposal) {
       firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
@@ -972,7 +971,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       height: MediaQuery.of(context).size.height,
 //      padding: EdgeInsets.only(bottom:230),
       child: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: _searchListScrollController,
         child: ListView.builder(
           controller: _searchListScrollController,
@@ -989,14 +988,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     );
   }
 
-  List<ShopModel> _filterEditContent() {
+  List<ShopModel>? _filterEditContent() {
     setState(() {});
     /* launching request to look for food, but at the same moment, we need to cancel previous links. */
   }
 
   _filteredData(List<ShopModel> data) {
     String content = _filterEditController.text;
-    List<ShopModel> d = List();
+    List<ShopModel> d = [];
 
     for (var restaurant in data) {
       String sentence =
@@ -1094,14 +1093,14 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   _showSearchPage() {
     /* show first few restaurants with a show more button, */
     /*  return <Widget>[]
-      ..addAll(List<Widget>.generate(_filteredData(data).length, (int index) {
-        return RestaurantListWidget(restaurantModel: _filteredData(data)[index]);
+      ..addAll(List<Widget>.generate(_filteredData(data!).length, (int index) {
+        return RestaurantListWidget(restaurantModel: _filteredData(data!)[index]);
       }).toList())*/
     ;
     return Container(
@@ -1109,13 +1108,13 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.only(bottom: 230),
       child: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: _restaurantListScrollController,
         child: ListView.builder(
           controller: _restaurantListScrollController,
-          itemCount: _filteredData(data).length,
+          itemCount: _filteredData(data!).length,
           itemBuilder: (context, index) {
-            return ShopListWidget(shopModel: _filteredData(data)[index]);
+            return ShopListWidget(shopModel: _filteredData(data!)[index]);
           },
         ),
       ),
@@ -1124,7 +1123,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
 
   List<ShopProductModel> inflateFoodProposalWorker(
       List<ShopProductModel> foods) {
-    for (var i = 0; i < foods?.length; i++) {
+    for (var i = 0; i < foods.length; i++) {
       if (foods[i]?.restaurant_entity?.id != null &&
           pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
         // we get the restaurant and we switch it.
@@ -1176,7 +1175,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       List<ShopProductModel> fd = foodProposals;
       try {
         fd.sort(
-            (fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));
+            (fd1, fd2) => int.parse(fd1.price!).compareTo(int.parse(fd2.price!)));
       } catch (_) {
         xrint("error here - cheap_to_exp");
       }
@@ -1189,7 +1188,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       List<ShopProductModel> fd = foodProposals;
       try {
         fd.sort(
-            (fd1, fd2) => int.parse(fd2.price).compareTo(int.parse(fd1.price)));
+            (fd1, fd2) => int.parse(fd2.price!).compareTo(int.parse(fd1.price!)));
       } catch (_) {
         xrint("error here - exp_to_cheap");
       }
@@ -1202,11 +1201,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
           fd.length > 0 &&
-          fd[0]?.restaurant_entity?.delivery_pricing != null)
+          fd[0]?.restaurant_entity!.delivery_pricing! != null)
         try {
           fd.sort((fd1, fd2) =>
-              int.parse(fd2.restaurant_entity?.delivery_pricing).compareTo(
-                  int.parse(fd1.restaurant_entity?.delivery_pricing)));
+              int.parse(fd2.restaurant_entity!.delivery_pricing!).compareTo(
+                  int.parse(fd1.restaurant_entity!.delivery_pricing!)));
         } catch (_) {
           xrint("error here - farest");
         }
@@ -1219,11 +1218,11 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       List<ShopProductModel> fd = foodProposals;
       if (fd != null &&
           fd.length > 0 &&
-          fd[0]?.restaurant_entity?.delivery_pricing != null)
+          fd[0]?.restaurant_entity!.delivery_pricing! != null)
         try {
           fd.sort((fd1, fd2) =>
-              int.parse(fd1?.restaurant_entity?.delivery_pricing).compareTo(
-                  int.parse(fd2?.restaurant_entity?.delivery_pricing)));
+              int.parse(fd1!.restaurant_entity!.delivery_pricing!).compareTo(
+                  int.parse(fd2!.restaurant_entity!.delivery_pricing!)));
         } catch (_) {
           xrint("error here - nearest");
         }
@@ -1263,17 +1262,17 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   }
 
   @override
-  void networkError([bool silently]) {
+  void networkError([bool? silently]) {
     // if (!silently && widget.restaurantList?.length != null && widget.restaurantList.length>0)
-    if (!silently || widget?.restaurantList?.length == 0)
+    if (!silently! || widget?.restaurantList?.length == 0)
       setState(() {
         hasNetworkError = true;
       });
   }
 
   @override
-  void systemError([bool silently]) {
-    if (!silently || widget?.restaurantList?.length == 0)
+  void systemError([bool? silently]) {
+    if (!silently! || widget?.restaurantList?.length == 0)
       setState(() {
         hasSystemError = true;
       });
@@ -1283,8 +1282,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(
-              widget.customer, "food", StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(
+              widget.customer!, "food", StateContainer.of(context).location);
         });
   }
 
@@ -1292,8 +1291,8 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.restaurantListPresenter.fetchShopList(
-              widget.customer,"food", StateContainer.of(context).location);
+          widget.restaurantListPresenter!.fetchShopList(
+              widget.customer!,"food", StateContainer.of(context).location);
         });
   }
 
@@ -1301,7 +1300,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     return Container();
     // return nothing
     /*  return Row(mainAxisAlignment: MainAxisAlignment.end,children: <Widget>[
-      InkWell(onTap: ()=> {widget.restaurantListPresenter.fetchShopList(widget.customer, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer)*/},
+      InkWell(onTap: ()=> {widget.restaurantListPresenter!.fetchShopList(widget.customer!, StateContainer.of(context).location)/*widget.presenter.loadDailyOrders(widget.customer!)*/},
         child: Container(
           width: 65,
           height: 35,
@@ -1323,20 +1322,20 @@ class _RestaurantListPageState extends State<RestaurantListPage>
     ]); */
   }
 
-  Timer mainTimer;
+  Timer? mainTimer;
 
   void restartTimer() {
-    if (mainTimer != null) mainTimer.cancel();
+    if (mainTimer != null) mainTimer!.cancel();
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       xrint("restaurantlist this page is --> " +
-          ModalRoute.of(context)?.settings?.name);
+          ModalRoute.of(context)!.settings.name!);
       xrint(
           "restaurantlist is_current is --> ${ModalRoute.of(context)?.isCurrent}");
 
       if (ModalRoute.of(context)?.settings?.name == null ||
-          !("/HomePage".compareTo(ModalRoute.of(context)?.settings?.name) ==
+          !("/HomePage".compareTo(ModalRoute.of(context)!.settings.name!) ==
                   0 &&
-              ModalRoute.of(context).isCurrent)) {
+              ModalRoute.of(context)!.isCurrent)) {
         // check if time is ok
         xrint("restaurantlist NO exec timer ");
         return;
@@ -1350,7 +1349,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       int POTENTIAL_EXECUTION_TIME = 3;
       int diff = (DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout) ~/
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
       // convert different in minute seconds
       int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
@@ -1358,15 +1357,15 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))
-        widget.restaurantListPresenter.fetchShopList(
-            widget.customer, "food",StateContainer.of(context).location, true);
+        widget.restaurantListPresenter!.fetchShopList(
+            widget.customer!, "food",StateContainer.of(context).location, true);
 
       if (!widget.hasGps)
         widget.hasGps = (StateContainer.of(context).location != null);
     });
   }
 
-  Future<int> _setLastTimeRestaurantListRequestToNow() async {
+  Future<int?> _setLastTimeRestaurantListRequestToNow() async {
     StateContainer.of(context).last_time_get_restaurant_list_timeout =
         DateTime.now().millisecondsSinceEpoch;
   }
@@ -1378,7 +1377,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
       // time different since last time update
       int diff = (DateTime.now().millisecondsSinceEpoch -
               StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout) ~/
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
       // convert different in minute seconds
       int min = diff ~/ 60;

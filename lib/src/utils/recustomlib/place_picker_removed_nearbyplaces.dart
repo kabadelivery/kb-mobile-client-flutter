@@ -4,8 +4,7 @@ import 'dart:math';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
-
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,49 +16,49 @@ class LocationResult {
   /// The human readable name of the location. This is primarily the
   /// name of the road. But in cases where the place was selected from Nearby
   /// places list, we use the <b>name</b> provided on the list item.
-  String name; // or road
+  String? name; // or road
 
   /// The human readable locality of the location.
-  String locality;
+  String? locality;
 
   /// Latitude/Longitude of the selected location.
-  LatLng latLng;
+  LatLng? latLng;
 
   /// Formatted address suggested by Google
-  String formattedAddress;
+  String? formattedAdress;
 
-  String placeId;
+  String? placeId;
 }
 
 /// Nearby place data will be deserialized into this model.
 class NearbyPlace {
   /// The human-readable name of the location provided. This value is provided
   /// for [LocationResult.name] when the user selects this nearby place.
-  String name;
+  String? name;
 
   /// The icon identifying the kind of place provided. Eg. lodging, chapel,
   /// hospital, etc.
-  String icon;
+  String? icon;
 
   // Latitude/Longitude of the provided location.
-  LatLng latLng;
+  LatLng? latLng;
 }
 
 /// Autocomplete results item returned from Google will be deserialized
 /// into this model.
 class AutoCompleteItem {
   /// The id of the place. This helps to fetch the lat,lng of the place.
-  String id;
+  String? id;
 
   /// The text (name of place) displayed in the autocomplete suggestions list.
-  String text;
+  String? text;
 
   /// Assistive index to begin highlight of matched part of the [text] with
   /// the original query
-  int offset;
+  int? offset;
 
   /// Length of matched part of the [text]
-  int length;
+  int? length;
 }
 
 /// Place picker widget made with map widget from
@@ -104,12 +103,12 @@ class PlacePickerState extends State<PlacePicker> {
     );
 
   /// Result returned after user completes selection
-  LocationResult locationResult;
+  LocationResult? locationResult;
 
   /// Overlay to display autocomplete suggestions
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
 
-  List<NearbyPlace> nearbyPlaces = List();
+  List<NearbyPlace>? nearbyPlaces =[];
 
   /// Session token required for autocomplete API call
   String sessionToken = Uuid().generateV4();
@@ -201,7 +200,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// Hides the autocomplete overlay
   void clearOverlay() {
     if (this.overlayEntry != null) {
-      this.overlayEntry.remove();
+      this.overlayEntry!.remove();
       this.overlayEntry = null;
     }
   }
@@ -233,11 +232,11 @@ class PlacePickerState extends State<PlacePicker> {
       return;
     }
 
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-        this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext!.findRenderObject() as RenderBox;
 
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -276,7 +275,7 @@ class PlacePickerState extends State<PlacePicker> {
       ),
     );
 
-    Overlay.of(context).insert(this.overlayEntry);
+    Overlay.of(context).insert(this.overlayEntry!);
 
     autoCompleteSearch(place);
   }
@@ -326,7 +325,7 @@ class PlacePickerState extends State<PlacePicker> {
 
             suggestions.add(RichSuggestion(aci, () {
               FocusScope.of(context).requestFocus(FocusNode());
-              decodeAndSelectPlace(aci.id);
+              decodeAndSelectPlace(aci.id!);
             }));
           }
         }
@@ -364,11 +363,11 @@ class PlacePickerState extends State<PlacePicker> {
 
   /// Display autocomplete suggestions with the overlay.
   void displayAutoCompleteSuggestions(List<RichSuggestion> suggestions) {
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     Size size = renderBox.size;
 
     final RenderBox appBarBox =
-        this.appBarKey.currentContext.findRenderObject();
+        this.appBarKey.currentContext!.findRenderObject() as RenderBox;
 
     clearOverlay();
 
@@ -386,7 +385,7 @@ class PlacePickerState extends State<PlacePicker> {
       ),
     );
 
-    Overlay.of(context).insert(this.overlayEntry);
+    Overlay.of(context).insert(this.overlayEntry!);
   }
 
   /// Utility function to get clean readable name of a location. First checks
@@ -399,15 +398,15 @@ class PlacePickerState extends State<PlacePicker> {
       return "${AppLocalizations.of(context)!.translate('this_location')}";
     }
 
-    for (NearbyPlace np in this.nearbyPlaces) {
-      if (np.latLng == this.locationResult.latLng &&
-          np.name != this.locationResult.locality) {
-        this.locationResult.name = np.name;
-        return "${np.name}, ${this.locationResult.locality}";
+    for (NearbyPlace np in this.nearbyPlaces!) {
+      if (np.latLng == this.locationResult!.latLng &&
+          np.name != this.locationResult!.locality) {
+        this.locationResult!.name = np.name;
+        return "${np.name}, ${this.locationResult!.locality}";
       }
     }
 
-    return "${this.locationResult.name}, ${this.locationResult.locality}";
+    return "${this.locationResult!.name}, ${this.locationResult!.locality}";
   }
 
   /// Moves the marker to the indicated lat,lng
@@ -442,11 +441,11 @@ class PlacePickerState extends State<PlacePicker> {
 
         setState(() {
           this.locationResult = LocationResult();
-          this.locationResult.name = road;
-          this.locationResult.locality = locality;
-          this.locationResult.latLng = latLng;
-          this.locationResult.formattedAddress = result['formatted_address'];
-          this.locationResult.placeId = result['place_id'];
+          this.locationResult!.name = road;
+          this.locationResult!.locality = locality;
+          this.locationResult!.latLng = latLng;
+          this.locationResult!.formattedAdress = result['formatted_address'];
+          this.locationResult!.placeId = result['place_id'];
         });
       }
     }).catchError((error) {
@@ -475,13 +474,13 @@ class PlacePickerState extends State<PlacePicker> {
     // getNearbyPlaces(latLng);
   }
 
-  LatLng target;
+  LatLng? target;
 
   void moveToCurrentUserLocation() {
     var location = Location();
     location.getLocation().then((locationData) {
-      target = LatLng(locationData.latitude, locationData.longitude);
-      moveToLocation(target);
+      target = LatLng(locationData.latitude!, locationData.longitude!);
+      moveToLocation(target!);
     }).catchError((error) {
       xrint(error);
     });
@@ -503,7 +502,7 @@ class SearchInput extends StatefulWidget {
 class SearchInputState extends State<SearchInput> {
   TextEditingController editController = TextEditingController();
 
-  Timer debouncer;
+  Timer? debouncer;
 
   bool hasSearchEntry = false;
 
@@ -531,7 +530,7 @@ class SearchInputState extends State<SearchInput> {
     }
 
     if (this.debouncer?.isActive ?? false) {
-      this.debouncer.cancel();
+      this.debouncer!.cancel();
     }
 
     this.debouncer = Timer(Duration(milliseconds: 500), () {
@@ -657,8 +656,10 @@ class SelectPlaceAction extends StatelessWidget {
                 ),
               ),
               BouncingWidget(
+
                 duration: Duration(milliseconds: 200),
                 scaleFactor: 3,
+                onPressed: () {  },
                 child: Icon(
                   Icons.arrow_forward,
                 ),
@@ -691,7 +692,7 @@ class NearbyPlaceItem extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Image.network(
-                  nearbyPlace.icon,
+                  nearbyPlace.icon!,
                   width: 16,
                 ),
                 SizedBox(
@@ -750,7 +751,7 @@ class RichSuggestion extends StatelessWidget {
       TextSpan(text: "   ")
     ]));
     String startText =
-        this.autoCompleteItem.text.substring(0, this.autoCompleteItem.offset);
+        this.autoCompleteItem.text!.substring(0, this.autoCompleteItem.offset);
     if (startText.isNotEmpty) {
       result.add(
         TextSpan(
@@ -763,9 +764,9 @@ class RichSuggestion extends StatelessWidget {
       );
     }
 
-    String boldText = this.autoCompleteItem.text.substring(
-        this.autoCompleteItem.offset,
-        this.autoCompleteItem.offset + this.autoCompleteItem.length);
+    String boldText = this.autoCompleteItem.text!.substring(
+        this.autoCompleteItem.offset!,
+        this.autoCompleteItem.offset! + this.autoCompleteItem.length!);
 
     result.add(TextSpan(
       text: boldText,
@@ -778,7 +779,7 @@ class RichSuggestion extends StatelessWidget {
     String remainingText = this
         .autoCompleteItem
         .text
-        .substring(this.autoCompleteItem.offset + this.autoCompleteItem.length);
+        !.substring(this.autoCompleteItem.offset! + this.autoCompleteItem.length!);
     result.add(
       TextSpan(
         text: remainingText,

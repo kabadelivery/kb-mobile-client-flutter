@@ -31,7 +31,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
     final locationNotifier= ref.read(locationStateProvider.notifier);
     final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     final productState = ref.watch(productListProvider);
-    VoucherModel voucherSelected = voucherState.selectedVoucher!;
+    VoucherModel? voucherSelected = voucherState.selectedVoucher;
 
     xrint('VoucherModeler $voucherSelected');
     if (voucherSelected == null) {
@@ -41,8 +41,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
         InkWell(
           onTap: ()async {
             try{
-              VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
-              await getBillingForVoucher(context,ref,voucher!).then((value)async {
+              VoucherModel voucher = await SelectVoucher(context, ref, false, null);
+              await getBillingForVoucher(context,ref,voucher).then((value)async {
                 outOfAppNotifier.setIsBillBuilt(true);
                 outOfAppNotifier.setShowLoading(false);
                 orderBillingNotifier.setOrderBillConfiguration(value);

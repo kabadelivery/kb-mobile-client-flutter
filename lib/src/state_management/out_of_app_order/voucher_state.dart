@@ -24,7 +24,7 @@ class VoucherStateNotifier extends StateNotifier<VoucherState>{
   VoucherStateNotifier():super(VoucherState());
 
   void setVoucher(VoucherModel? voucher){
-    state = state.copyWith(selectedVoucher: voucher!);
+    state = state.copyWith(selectedVoucher: voucher);
   }
   void setOldVoucher(VoucherModel? voucher){
     state = state.copyWith(oldSelectedVoucher: voucher!);

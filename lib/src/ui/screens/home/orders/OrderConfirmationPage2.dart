@@ -34,11 +34,10 @@ import 'package:KABA/src/utils/_static_data/NetworkImages.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/utils/recustomlib/flutter_switch.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:KABA/src/xrint.dart';
-import 'package:audioplayer/audioplayer.dart';
-import 'package:KABA/src/ui/customwidgets/BouncingWidget.dart';
-
+import 'package:audioplayers/audioplayers.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -54,22 +53,22 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
 
-  Map<ShopProductModel, int> addons, foods;
+  Map<ShopProductModel, int>? addons, foods;
 
 //  int totalPrice;
 
-  OrderConfirmationPresenter presenter;
+  OrderConfirmationPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  int orderOrPreorderChoice = 0;
+  int? orderOrPreorderChoice = 0;
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  int orderTimeRangeSelected = 0;
+  int? orderTimeRangeSelected = 0;
 
   OrderConfirmationPage2(
-      {Key key, this.presenter, this.foods, this.addons, this.restaurant})
+      {Key? key, this.presenter, this.foods, this.addons, this.restaurant})
       : super(key: key);
 
   @override
@@ -78,8 +77,8 @@ class OrderConfirmationPage2 extends StatefulWidget {
 
 class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     implements OrderConfirmationView {
-  DeliveryAddressModel _selectedAddress;
-  VoucherModel _selectedVoucher;
+  DeliveryAddressModel? _selectedAddress;
+  VoucherModel? _selectedVoucher;
 
   /* pricing configuration */
   OrderBillConfiguration _orderBillConfiguration = OrderBillConfiguration();
@@ -91,11 +90,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   bool checkIsRestaurantOpenConfigIsLoading = true;
 
-  TextEditingController _addInfoController;
+  TextEditingController? _addInfoController;
 
   bool _checkOpenStateError = false;
 
-  VoucherModel _oldSelectedVoucher = null;
+  VoucherModel? _oldSelectedVoucher = null;
 
   _OrderConfirmationPage2State();
 
@@ -109,11 +108,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     super.initState();
 //    _listController = new ScrollController();
     _addInfoController = new TextEditingController();
-    this.widget.presenter.orderConfirmationView = this;
+    this.widget.presenter!.orderConfirmationView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // check opening state of the restaurant
-      widget.presenter.checkOpeningStateOf(customer, widget.restaurant);
+      widget.presenter!.checkOpeningStateOf(customer!, widget.restaurant!);
     });
 
     /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
@@ -181,13 +180,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ? Center(child: MyLoadingProgressWidget())
                 : (_checkOpenStateError ||
                         (_orderBillConfiguration != null &&
-                            _orderBillConfiguration.open_type >= 0 &&
-                            _orderBillConfiguration.open_type <= 3)
+                            _orderBillConfiguration.open_type! >= 0 &&
+                            _orderBillConfiguration.open_type! <= 3)
                     ? _buildOrderConfirmationPage2()
                     : ErrorPage(
                         onClickAction: () => widget.presenter
-                            .checkOpeningStateOf(
-                                widget.customer, widget.restaurant)))));
+                            !.checkOpeningStateOf(
+                                widget.customer!, widget.restaurant!)))));
   }
 
   Future _pickDeliveryAddress() async {
@@ -201,7 +200,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     /* jump and get it */
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(pick: true, presenter: AddressPresenter()),
+            MyAddressesPage(pick: true, presenter: AddressPresenter(AddressView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -218,16 +217,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         _selectedAddress = results['selection'];
       });
       /* update / refresh this page */
-      this.widget.presenter.orderConfirmationView = this;
+      this.widget.presenter!.orderConfirmationView = this;
       CustomerUtils.getCustomer().then((customer) {
         widget.customer = customer;
 
         // launch request for retrieving the delivery prices and so on.
-        widget.presenter.computeBilling(widget.restaurant, widget.customer,
-            widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
+        widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
+            widget.foods!, _selectedAddress!, _selectedVoucher!, _usePoint);
         showLoading(true);
         Future.delayed(Duration(seconds: 1), () {
-          Scrollable.ensureVisible(poweredByKey.currentContext);
+          Scrollable.ensureVisible(poweredByKey.currentContext!);
         });
       });
     }
@@ -248,7 +247,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 children: <Widget>[
                   Container(
                       width: MediaQuery.of(context).size.width,
-                      child: Text(Utils.capitalize(selectedAddress.name),
+                      child: Text(Utils.capitalize(selectedAddress.name!),
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -260,7 +259,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text(
-                              Utils.capitalize(selectedAddress.description),
+                              Utils.capitalize(selectedAddress.description!),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
@@ -300,8 +299,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         child: Column(
             children: List.generate(eligible_vouchers.length, (index) {
           if (eligible_vouchers[index].id == _selectedVoucher?.id ||
-              eligible_vouchers[index].use_count -
-                      eligible_vouchers[index].already_used_count ==
+              eligible_vouchers[index].use_count! -
+                      eligible_vouchers[index].already_used_count! ==
                   0)
             return Container(
                 /* padding: EdgeInsets.only(
@@ -347,7 +346,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   color: KColors.new_black))
                         ]),
                         SizedBox(height: 5),
-                        Text(eligible_vouchers[index].trade_name,
+                        Text(eligible_vouchers[index].trade_name!,
                             style: TextStyle(color: Colors.grey, fontSize: 12))
                       ]),
                   GestureDetector(
@@ -418,7 +417,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant commande normal */
                         Text(
-                            "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
+                            "${_orderBillConfiguration!.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500, fontSize: 12)),
                       ],
@@ -437,7 +436,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant livraison normal */
                         Text(
-                            "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
+                            "${_orderBillConfiguration!.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: KColors.new_black,
@@ -460,7 +459,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 14)),
                     /* montant total a payer */
-                    Text("${_orderBillConfiguration?.total_normal_pricing} F",
+                    Text("${_orderBillConfiguration!.total_normal_pricing} F",
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: KColors.primaryColor,
@@ -495,7 +494,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           child: Container(
             padding: EdgeInsets.all(10),
             child: Column(children: <Widget>[
-              (_orderBillConfiguration?.remise > 0 && !_isPreorder()
+              (_orderBillConfiguration!.remise! > 0 && !_isPreorder()
                   ? Container(
                       height: 40.0,
                       decoration: BoxDecoration(
@@ -526,9 +525,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant commande normal */
                         Text(
-                            _orderBillConfiguration?.command_pricing >
-                                    _orderBillConfiguration?.promotion_pricing
-                                ? "(${_orderBillConfiguration?.command_pricing})"
+                            _orderBillConfiguration!.command_pricing! >
+                                    _orderBillConfiguration!.promotion_pricing!
+                                ? "(${_orderBillConfiguration!.command_pricing})"
                                 : "",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
@@ -537,10 +536,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         SizedBox(width: 5),
                         /* montant commande promotion */
                         Text(
-                            _orderBillConfiguration?.command_pricing >
-                                    _orderBillConfiguration?.promotion_pricing
-                                ? "${_orderBillConfiguration?.promotion_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
-                                : "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
+                            _orderBillConfiguration!.command_pricing! >
+                                    _orderBillConfiguration!.promotion_pricing!
+                                ? "${_orderBillConfiguration!.promotion_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
+                                : "${_orderBillConfiguration!.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 12)),
                       ],
@@ -559,10 +558,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant livraison normal */
                         Text(
-                            _orderBillConfiguration?.shipping_pricing >
+                            _orderBillConfiguration!.shipping_pricing! >
                                     _orderBillConfiguration
-                                        ?.promotion_shipping_pricing
-                                ? "(${_orderBillConfiguration?.shipping_pricing})"
+                                        !.promotion_shipping_pricing!
+                                ? "(${_orderBillConfiguration!.shipping_pricing})"
                                 : "",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
@@ -571,11 +570,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         SizedBox(width: 5),
                         /* montant livraison promotion */
                         Text(
-                            _orderBillConfiguration?.shipping_pricing >
+                            _orderBillConfiguration!.shipping_pricing! >
                                     _orderBillConfiguration
-                                        ?.promotion_shipping_pricing
-                                ? "${_orderBillConfiguration?.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
-                                : "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
+                                        !.promotion_shipping_pricing!
+                                ? "${_orderBillConfiguration!.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
+                                : "${_orderBillConfiguration!.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 12)),
                       ],
@@ -583,7 +582,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ]),
               SizedBox(height: 10),
               //additional_fees
-              _orderBillConfiguration?.additional_fees_total_price!=0||_orderBillConfiguration?.additional_fees_total_price!=null?
+              _orderBillConfiguration!.additional_fees_total_price!=0||_orderBillConfiguration!.additional_fees_total_price!=null?
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -622,7 +621,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
               ),
               SizedBox(height: 10),
-              _orderBillConfiguration?.remise > 0
+              _orderBillConfiguration!.remise! > 0
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -633,7 +632,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   fontSize: 12,
                                   color: Colors.grey)),
                           /* montrer le discount s'il y'a lieu */
-                          Text("-${_orderBillConfiguration?.remise}%",
+                          Text("-${_orderBillConfiguration!.remise!}%",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
@@ -656,14 +655,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             fontWeight: FontWeight.bold, fontSize: 14)),
                     /* montant total a payer */
                     Text(
-                        "${_orderBillConfiguration?.total_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
+                        "${_orderBillConfiguration!.total_pricing!} ${AppLocalizations.of(context)!.translate('currency')}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: KColors.primaryColor,
                             fontSize: 14)),
                   ]),
               SizedBox(height: 10),
-              ((_orderBillConfiguration?.remise > 0 && !_isPreorder())
+              ((_orderBillConfiguration!.remise! > 0 && !_isPreorder())
                   ? Container(
                       height: 40.0,
                       decoration: BoxDecoration(
@@ -751,7 +750,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             // restaurant is closed and we can't do nothing
             ..addAll((_orderBillConfiguration.hasCheckedOpen == true &&
                     _orderBillConfiguration.can_preorder == 0 &&
-                    _orderBillConfiguration.open_type != 1)
+                    _orderBillConfiguration.open_type! != 1)
                 ? <Widget>[
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -784,11 +783,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     SizedBox(height: 10),
                     Container(
                         child: (widget.orderOrPreorderChoice == 1 &&
-                                    _orderBillConfiguration.open_type == 1 &&
+                                    _orderBillConfiguration.open_type! == 1 &&
                                     _orderBillConfiguration.can_preorder ==
                                         1) ||
                                 (_orderBillConfiguration.can_preorder == 1 &&
-                                    _orderBillConfiguration.open_type != 1 &&
+                                    _orderBillConfiguration.open_type! != 1 &&
                                     widget.orderOrPreorderChoice == 0)
                             ? _buildDeliveryTimeFrameList()
                             : Container(),
@@ -831,6 +830,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     BouncingWidget(
                                       duration: Duration(milliseconds: 400),
                                       scaleFactor: 2,
+                                      onPressed: () {  },
                                       child: Icon(Icons.location_on,
                                           size: 28, color: KColors.mBlue),
                                     ),
@@ -846,7 +846,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         onTap: () {
                           _pickDeliveryAddress();
                         }),
-                    _buildAddress(_selectedAddress),
+                    _buildAddress(_selectedAddress!),
                     SizedBox(key: poweredByKey, height: 25),
                     _usePoint ? Container() : _buildCouponSpace(),
                     _usePoint ? Container() : SizedBox(height: 15),
@@ -855,13 +855,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         : Container(),
                     SizedBox(height: 20),
                     _orderBillConfiguration != null &&
-                            _orderBillConfiguration?.isBillBuilt == true
+                            _orderBillConfiguration!.isBillBuilt == true
                         ?
                         // check if out of range before doing anything.
-                        _orderBillConfiguration?.out_of_range == true
+                        _orderBillConfiguration!.out_of_range == true
                             ? _buildOutOfRangePage()
                             : (Column(children: <Widget>[
-                                /* _orderBillConfiguration?.kaba_point?.is_eligible == true && _orderBillConfiguration?.kaba_point?.can_be_used == true
+                                /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
                         && */
                                 _selectedVoucher == null
                                     ? _buildPointDiscountOption()
@@ -996,7 +996,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   _jumpToRecoverPage() {
@@ -1005,7 +1005,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       context,
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(), is_a_process: true),
+            presenter: RecoverPasswordPresenter(RecoverPasswordView()), is_a_process: true),
       ),
     );
   }
@@ -1023,7 +1023,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     return Column(children: <Widget>[
       // pay at arrival button
-      _orderBillConfiguration?.pay_at_delivery == true
+      _orderBillConfiguration!.pay_at_delivery == true
           ? // pay at delivery and not having ongoing delivery right now.
           Row(
               mainAxisSize: MainAxisSize.min,
@@ -1056,10 +1056,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   "${AppLocalizations.of(context)!.translate('cant_pay_at_delivery')}")),
       SizedBox(height: 20),
       // pay immediately button
-      _orderBillConfiguration?.account_balance != null &&
-              _orderBillConfiguration.prepayed &&
-              _orderBillConfiguration?.account_balance >
-                  _orderBillConfiguration?.total_pricing
+      _orderBillConfiguration!.account_balance! != null &&
+              _orderBillConfiguration.prepayed! &&
+              _orderBillConfiguration!.account_balance! >
+                  _orderBillConfiguration!.total_pricing!
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -1112,7 +1112,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       color: Colors.grey, fontSize: 16),
                   children: <TextSpan>[
                     TextSpan(text: "${Utils.inflatePrice(
-                        "${_orderBillConfiguration?.account_balance}")} ${AppLocalizations.of(context)!.translate('currency')}",
+                        "${_orderBillConfiguration!.account_balance!}")} ${AppLocalizations.of(context)!.translate('currency')}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: KColors.primaryColor, fontSize: 16),
@@ -1124,10 +1124,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       ),
       SizedBox(height: 30),
       */ /* is your balance sufficient for the purchase ?*/ /*
-      _orderBillConfiguration?.account_balance != null &&
-          _orderBillConfiguration.prepayed &&
-          _orderBillConfiguration?.account_balance >
-              _orderBillConfiguration?.total_pricing ?
+      _orderBillConfiguration!.account_balance! != null &&
+          _orderBillConfiguration.prepayed! &&
+          _orderBillConfiguration!.account_balance! >
+              _orderBillConfiguration!.total_pricing! ?
       Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -1159,7 +1159,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               ),
               onPressed: () => _payNow()),
         ],
-      ) : (!_orderBillConfiguration.prepayed ?
+      ) : (!_orderBillConfiguration.prepayed! ?
       Container(margin: EdgeInsets.only(left: 20, right: 20),
           child: Text(
               "${AppLocalizations.of(context)!.translate('restaurant_no_allow_prepay')}",
@@ -1264,13 +1264,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPreorder(true);
           if (Utils.isCode(_mCode)) {
-            widget.presenter.payNow(
-                widget.customer,
-                widget.foods,
-                _selectedAddress,
+            widget.presenter!.payNow(
+                widget.customer!,
+                widget.foods!,
+                _selectedAddress!,
                 _mCode,
-                _addInfoController.text,
-                _selectedVoucher,
+                _addInfoController!.text!,
+                _selectedVoucher!,
                 _usePoint);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
@@ -1283,8 +1283,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _payAtDelivery(bool isDialogShown) async {
     // if untrustful, you can't go further.
-    if (_orderBillConfiguration?.trustful != 1) {
-      if (Utils.isEmailValid(widget?.customer?.username)) {
+    if (_orderBillConfiguration!.trustful != 1) {
+      if (Utils.isEmailValid(widget.customer!.username!)) {
         // email account
         _showDialog(
           iccon: VectorsData.questions, // untrustful
@@ -1335,13 +1335,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
-            await widget.presenter.payAtDelivery(
-                widget.customer,
-                widget.foods,
-                _selectedAddress,
+            await widget.presenter!.payAtDelivery(
+                widget.customer!,
+                widget.foods!,
+                _selectedAddress!,
                 _mCode,
-                _addInfoController.text,
-                _selectedVoucher,
+                _addInfoController!.text!,
+                _selectedVoucher!,
                 _usePoint);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
@@ -1355,11 +1355,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     DeliveryTimeFrameModel selectedFrame;
 
     // if there is no choosen time range then error with toast
-    if (widget.orderTimeRangeSelected >= 0 &&
-        widget.orderTimeRangeSelected <
-            _orderBillConfiguration.deliveryFrames?.length)
+    if (widget.orderTimeRangeSelected! >= 0 &&
+        widget.orderTimeRangeSelected! <
+            _orderBillConfiguration.deliveryFrames!.length)
       selectedFrame =
-          _orderBillConfiguration.deliveryFrames[widget.orderTimeRangeSelected];
+          _orderBillConfiguration.deliveryFrames![widget.orderTimeRangeSelected!];
     else {
       _showDialog(
           icon: Icon(Icons.error),
@@ -1372,7 +1372,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _showDialog(
           iccon: VectorsData.questions,
           message:
-              "${AppLocalizations.of(context)!.translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start, dayz: dayz)} ${AppLocalizations.of(context)!.translate('between')} ${Utils.timeStampToHourMinute(selectedFrame.start)} ${AppLocalizations.of(context)!.translate('and')} ${Utils.timeStampToHourMinute(selectedFrame.end)}",
+              "${AppLocalizations.of(context)!.translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start!, dayz: dayz)} ${AppLocalizations.of(context)!.translate('between')} ${Utils.timeStampToHourMinute(selectedFrame.start!)} ${AppLocalizations.of(context)!.translate('and')} ${Utils.timeStampToHourMinute(selectedFrame.end!)}",
           isYesOrNo: true,
           actionIfYes: () => _payPreorder(true));
       return;
@@ -1400,14 +1400,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
-            await widget.presenter.payPreorder(
-                widget.customer,
-                widget.foods,
-                _selectedAddress,
+            await widget.presenter!.payPreorder(
+                widget.customer!,
+                widget.foods!,
+                _selectedAddress!,
                 _mCode,
-                _addInfoController.text,
-                selectedFrame.start,
-                selectedFrame.end);
+                _addInfoController!.text!,
+                selectedFrame.start!,
+                selectedFrame.end!);
         } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
@@ -1417,13 +1417,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   void _showDialog(
-      {String iccon,
-      Icon icon,
+      {String? iccon,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes,
-      String asset_png = null}) {
+      Function? actionIfYes,
+      String? asset_png = null}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1444,7 +1444,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           )))
                       : (icon == null
                           ? SvgPicture.asset(
-                              iccon,
+                              iccon!,
                             )
                           : icon)),
               SizedBox(height: 10),
@@ -1474,7 +1474,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -1528,8 +1528,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   Future<void> _playMusicForSuccess() async {
     // play music
     final player = AudioPlayer();
-    player.play(MusicData.command_success_hold_on);
-    if (await Vibration.hasVibrator()) {
+    player.play(UrlSource(MusicData.command_success_hold_on));
+    if (await Vibration.hasVibrator()==true) {
       Vibration.vibrate(duration: 500);
     }
   }
@@ -1627,7 +1627,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       color: Colors.white,
       child: Column(
         children: <Widget>[
-          _orderBillConfiguration.open_type == 0
+          _orderBillConfiguration.open_type! == 0
               ? Container(
                   decoration: BoxDecoration(
                       color: KColors.mBlue,
@@ -1638,7 +1638,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)))
               : Container(),
-          _orderBillConfiguration.open_type == 1
+          _orderBillConfiguration.open_type! == 1
               ? Row(children: <Widget>[
                   Radio(
                       value: 0,
@@ -1661,7 +1661,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               : Container(),
           SizedBox(height: 10),
           _orderBillConfiguration.can_preorder == 1 &&
-                  _orderBillConfiguration.open_type == 1
+                  _orderBillConfiguration.open_type! == 1
               ? Row(children: <Widget>[
                   Radio(
                       value: 1,
@@ -1682,7 +1682,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                       : 12)))),
                 ])
               : (_orderBillConfiguration.can_preorder == 1 &&
-                      _orderBillConfiguration.open_type != 1
+                      _orderBillConfiguration.open_type! != 1
                   ? Row(children: <Widget>[
                       Radio(
                           value: 0,
@@ -1856,7 +1856,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           );
   }
 
-  void _handleOrderTypeRadioValueChange(int value) {
+  void _handleOrderTypeRadioValueChange(int? value) {
     setState(() {
       widget.orderOrPreorderChoice = value;
     });
@@ -1868,7 +1868,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     return Column(
         children: <Widget>[]..addAll(List.generate(
-              _orderBillConfiguration.deliveryFrames?.length, (index) {
+              _orderBillConfiguration.deliveryFrames!.length, (index) {
             return Container(
                 margin: const EdgeInsets.only(
                     top: 8.0, bottom: 8, left: 16, right: 16),
@@ -1880,7 +1880,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     Row(children: <Widget>[
                       Container(
                         child: Text(
-                            "${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames[index].start, dayz: dayz)}",
+                            "${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames![index].start!, dayz: dayz)}",
                             style: TextStyle(color: Colors.white)),
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
@@ -1889,11 +1889,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       ),
                       SizedBox(width: 10),
                       Text(
-                          "${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames[index].start)} - ${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames[index].end)}"),
+                          "${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].start!)} - ${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].end!)}"),
                     ]),
                     Radio(
                         value: index,
-                        groupValue: widget.orderTimeRangeSelected,
+                        groupValue: widget.orderTimeRangeSelected!,
                         onChanged: _timeFrameCheckBoxOnChange),
                   ],
                 ));
@@ -1907,11 +1907,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   _buildFoodList() {
-    List<Widget> foodList = List();
+    List<Widget> foodList = [];
     int s = 0;
-    widget.foods.forEach((k, v) {
+    widget.foods!.forEach((k, v) {
       foodList.add(_buildBasketItem(k, v));
-      if (s < widget?.foods?.length - 1) {
+      if (s < widget.foods!.length - 1) {
         foodList.add(Center(
             child: Container(
                 color: Colors.grey.withAlpha(100),
@@ -1943,7 +1943,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       image: new DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                              Utils.inflateLink(food.pic)))),
+                              Utils.inflateLink(food.pic!)))),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -2009,7 +2009,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("${Utils.capitalize(food?.name)}",
+                    Text("${Utils.capitalize(food.name!)}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.left,
@@ -2064,11 +2064,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _orderBillConfiguration = configuration;
       _orderBillConfiguration.hasCheckedOpen = true;
     });
-    if (_orderBillConfiguration.open_type == 1) {
+    if (_orderBillConfiguration.open_type! == 1) {
       /*  if (StateContainer.of(context).selectedAddress != null) {
         _selectedAddress = StateContainer.of(context).selectedAddress;
         Future.delayed(new Duration(milliseconds: 300), () {
-          widget.presenter.computeBilling(widget.restaurant, widget.customer,
+          widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
               widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
         });
         Future.delayed(Duration(seconds: 1), () {
@@ -2109,9 +2109,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.additional_fees_total_price = configuration.additional_fees_total_price;
 
     _orderBillConfiguration
-        .total_preorder_pricing = (configuration.command_pricing.toDouble() +
-            ((100 - int.parse(_orderBillConfiguration.discount).toDouble()) *
-                configuration.shipping_pricing.toDouble() /
+        .total_preorder_pricing = (configuration.command_pricing!.toDouble() +
+            ((100 - int.parse(_orderBillConfiguration.discount!).toDouble()) *
+                configuration.shipping_pricing!.toDouble() /
                 100))
         .toInt();
 
@@ -2120,7 +2120,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     });
 //    Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     Future.delayed(Duration(milliseconds: 500), () {
-      Scrollable.ensureVisible(poweredByKey.currentContext);
+      Scrollable.ensureVisible(poweredByKey.currentContext!);
     });
   }
 
@@ -2134,10 +2134,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _isPreorderSelected() {
     if ((_orderBillConfiguration.can_preorder == 1 &&
-            _orderBillConfiguration.open_type == 1) &&
+            _orderBillConfiguration.open_type! == 1) &&
         widget.orderOrPreorderChoice == 1) return true;
     if ((_orderBillConfiguration.can_preorder == 1 &&
-            _orderBillConfiguration.open_type != 1) &&
+            _orderBillConfiguration.open_type! != 1) &&
         widget.orderOrPreorderChoice == 0) return true;
     return false;
   }
@@ -2153,10 +2153,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _isPreorder() {
     return ((widget.orderOrPreorderChoice == 1 &&
-            _orderBillConfiguration.open_type == 1 &&
+            _orderBillConfiguration.open_type! == 1 &&
             _orderBillConfiguration.can_preorder == 1) ||
         (_orderBillConfiguration.can_preorder == 1 &&
-            _orderBillConfiguration.open_type != 1 &&
+            _orderBillConfiguration.open_type! != 1 &&
             widget.orderOrPreorderChoice == 0));
   }
 
@@ -2189,7 +2189,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     // jump to topup page.
     var results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TopNewUpPage(presenter: TopUpPresenter()),
+            TopNewUpPage(presenter: TopUpPresenter(TopUpView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -2217,7 +2217,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   Future<dynamic> _showDialog_({
-    String svgIcon,
+    String? svgIcon,
     var message,
   }) {
     return showDialog(
@@ -2225,7 +2225,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       builder: (BuildContext context) {
         return AlertDialog(
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon)),
+              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
@@ -2285,7 +2285,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     );
   }
 
-  _selectVoucher({bool has_voucher = false, VoucherModel voucher}) async {
+  _selectVoucher({bool has_voucher = false, VoucherModel? voucher}) async {
     /* just like we pick and address, we pick a voucher. */
 
     /* we go on the package list for vouchers, and we make a request to show those that are adapted for the foods
@@ -2308,9 +2308,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         MaterialPageRoute(
           builder: (context) => MyVouchersPage(
               pick: true,
-              presenter: VoucherPresenter(),
+              presenter: VoucherPresenter(VoucherView()),
               restaurantId: widget?.restaurant?.id,
-              foods: _getFoodsIdArray(widget.foods)),
+              foods: _getFoodsIdArray(widget.foods!)),
         ),
       );
     } else {
@@ -2324,19 +2324,19 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       });
 
       if (_selectedAddress != null) {
-        this.widget.presenter.orderConfirmationView = this;
+        this.widget.presenter!.orderConfirmationView = this;
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
 
-          widget.presenter.computeBilling(widget.restaurant, widget.customer,
-              widget.foods, _selectedAddress, _selectedVoucher, _usePoint);
+          widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
+              widget.foods!, _selectedAddress!, _selectedVoucher!, _usePoint);
           Future.delayed(Duration(seconds: 1), () {
-            Scrollable.ensureVisible(poweredByKey.currentContext);
+            Scrollable.ensureVisible(poweredByKey.currentContext!);
           });
           showLoading(true);
 //        Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
           Future.delayed(Duration(milliseconds: 500), () {
-            Scrollable.ensureVisible(poweredByKey.currentContext);
+            Scrollable.ensureVisible(poweredByKey.currentContext!);
           });
         });
       }
@@ -2398,7 +2398,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ])),
           ),
         ),
-        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
+        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers!)
       ]);
     }
     else {
@@ -2430,23 +2430,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                               setState(() {
                                 _selectedVoucher = null;
                               });
-                              this.widget.presenter.orderConfirmationView =
+                              this.widget.presenter!.orderConfirmationView =
                                   this;
                               CustomerUtils.getCustomer().then((customer) {
                                 widget.customer = customer;
                                 // launch request for retrieving the delivery prices and so on.
                                 if (_selectedAddress != null) {
-                                  widget.presenter.computeBilling(
-                                      widget.restaurant,
-                                      widget.customer,
-                                      widget.foods,
-                                      _selectedAddress,
-                                      _selectedVoucher,
+                                  widget.presenter!.computeBilling(
+                                      widget.restaurant!,
+                                      widget.customer!,
+                                      widget.foods!,
+                                      _selectedAddress!,
+                                      _selectedVoucher!,
                                       _usePoint);
                                   showLoading(true);
                                   Future.delayed(Duration(seconds: 1), () {
                                     Scrollable.ensureVisible(
-                                        poweredByKey.currentContext);
+                                        poweredByKey.currentContext!);
                                   });
                                 }
                               });
@@ -2456,15 +2456,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   )),
             ],
           ),
-          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
+          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers!)
         ],
       );
     }
   }
 
   _getFoodsIdArray(Map<ShopProductModel, int> foods) {
-    List<int> foodsId = List();
-    foods.forEach((foodItem, quantity) => {foodsId.add(foodItem.id)});
+    List<int> foodsId = [];
+    foods.forEach((foodItem, quantity) => {foodsId.add(foodItem.id!)});
     return foodsId;
   }
 
@@ -2482,8 +2482,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _buildPointDiscountOption() {
     if (_orderBillConfiguration == null ||
-            _orderBillConfiguration?.kaba_point?.balance == null ||
-            _orderBillConfiguration?.kaba_point?.is_eligible == false ||
+            _orderBillConfiguration!.kaba_point?.balance == null ||
+            _orderBillConfiguration!.kaba_point?.is_eligible == false ||
             _isPreorderSelected()
         // or if preorder
         ) return Container();
@@ -2530,7 +2530,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             children: [
                               Container(
                                   child: Text(
-                                      "${_orderBillConfiguration?.kaba_point?.can_use_amount}",
+                                      "${_orderBillConfiguration!.kaba_point?.can_use_amount}",
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: KColors.primaryColor))),
@@ -2545,20 +2545,20 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           SizedBox(height: 10),
           Container(
             child: Text(
-                "${AppLocalizations.of(context)!.translate(_orderBillConfiguration.kaba_point.is_eligible ? (_orderBillConfiguration.kaba_point.can_be_used ? 'use_of_kaba_points' : 'kaba_points_monthly_limit_reached') : 'use_of_kaba_points_not_eligible')}",
+                "${AppLocalizations.of(context)!.translate(_orderBillConfiguration.kaba_point!.is_eligible! ? (_orderBillConfiguration.kaba_point!.can_be_used! ? 'use_of_kaba_points' : 'kaba_points_monthly_limit_reached') : 'use_of_kaba_points_not_eligible')}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 12,
-                    color: !_orderBillConfiguration.kaba_point.can_be_used &&
-                            _orderBillConfiguration.kaba_point.is_eligible
+                    color: !_orderBillConfiguration.kaba_point!.can_be_used! &&
+                            _orderBillConfiguration.kaba_point!.is_eligible!
                         ? CommandStateColor.delivered
                         : Colors.grey)),
             margin: EdgeInsets.only(left: 10, right: 10),
           ),
           SizedBox(height: 10),
           // appears only if you are eligible
-          _orderBillConfiguration.kaba_point.is_eligible
-              ? (_orderBillConfiguration.kaba_point.can_be_used
+          _orderBillConfiguration.kaba_point!.is_eligible!
+              ? (_orderBillConfiguration.kaba_point!.can_be_used!
                   ? InkWell(
                       splashColor: Colors.white,
                       child: Container(
@@ -2583,7 +2583,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
                                         text:
-                                            "${_orderBillConfiguration?.kaba_point?.amount_to_reduce}",
+                                            "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
                                         style: TextStyle(
                                             color: KColors.primaryColor,
                                             fontWeight: FontWeight.bold))
@@ -2632,23 +2632,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     CustomerUtils.getCustomer()
                                         .then((customer) {
                                       widget.customer = customer;
-                                      widget.presenter.computeBilling(
-                                          widget.restaurant,
-                                          widget.customer,
-                                          widget.foods,
-                                          _selectedAddress,
-                                          _selectedVoucher,
+                                      widget.presenter!.computeBilling(
+                                          widget.restaurant!,
+                                          widget.customer!,
+                                          widget.foods!,
+                                          _selectedAddress!,
+                                          _selectedVoucher!,
                                           _usePoint);
                                       Future.delayed(Duration(seconds: 1), () {
                                         Scrollable.ensureVisible(
-                                            poweredByKey.currentContext);
+                                            poweredByKey.currentContext!);
                                       });
                                       showLoading(true);
                                       //   Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
                                       Future.delayed(
                                           Duration(milliseconds: 500), () {
                                         Scrollable.ensureVisible(
-                                            poweredByKey.currentContext);
+                                            poweredByKey.currentContext!);
                                       });
                                     });
                                   },

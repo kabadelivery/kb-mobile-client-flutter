@@ -8,9 +8,9 @@ class ConfirmLoginPage extends StatefulWidget {
 
   static var routeName = "/ConfirmLoginPage";
 
-  int type;
+  int? type;
 
-  ConfirmLoginPage({Key key, this.type=1}) : super(key: key){}
+  ConfirmLoginPage({Key? key, this.type=1}) : super(key: key){}
 
   @override
   _ConfirmLoginPageState createState() => _ConfirmLoginPageState();
@@ -18,10 +18,10 @@ class ConfirmLoginPage extends StatefulWidget {
 
 class _ConfirmLoginPageState extends State<ConfirmLoginPage> {
 
-  String hint;
+  String? hint;
 
-  TextEditingController _loginFieldController;
-  TextEditingController _codeFieldController;
+  TextEditingController? _loginFieldController;
+  TextEditingController? _codeFieldController;
 
   bool isCodeError = false;
 
@@ -56,7 +56,7 @@ class _ConfirmLoginPageState extends State<ConfirmLoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint!, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                   SizedBox(height: 30),
                   /* field that says insert the login. */
             Row( mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[

@@ -47,7 +47,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     widget.presenter!.dailyOrderView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
-      widget.presenter!.loadDailyOrders(customer!,is_out_of_app_order: is_out_of_app_order);
+      widget.presenter!.loadDailyOrders(customer,is_out_of_app_order: is_out_of_app_order);
     });
     super.initState();
     Future.delayed(Duration.zero, () async {

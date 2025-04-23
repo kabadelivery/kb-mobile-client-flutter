@@ -13,9 +13,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AddVouchersPage extends StatefulWidget {
   static var routeName = "/AddVouchersPage";
 
-  AddVoucherPresenter presenter;
+  AddVoucherPresenter? presenter;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   var qrCode;
 
@@ -24,7 +24,7 @@ class AddVouchersPage extends StatefulWidget {
   int damage_id;
 
   AddVouchersPage(
-      {Key key,
+      {Key? key,
       this.damage_id = -1,
       this.customer,
       this.presenter,
@@ -48,7 +48,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
   @override
   void initState() {
     super.initState();
-    widget.presenter.addVoucherView = this;
+    widget.presenter!.addVoucherView = this;
     _promoCodeFieldController.addListener(() {
       setState(() {
         isValidCode = _isValidCode(_promoCodeFieldController.text);
@@ -61,13 +61,13 @@ class _AddVouchersPageState extends State<AddVouchersPage>
         _promoCodeFieldController.text = widget.qrCode;
         if (_promoCodeFieldController.text?.trim() != "" &&
             _promoCodeFieldController.text?.trim()?.length != null &&
-            _promoCodeFieldController.text?.trim()?.length > 2)
+            _promoCodeFieldController.text!.trim()!.length! > 2)
           widget.presenter
-              .subscribeVoucher(widget.customer, widget.qrCode, isQrCode: true);
+              !.subscribeVoucher(widget.customer!, widget.qrCode, isQrCode: true);
       }
       if (widget.damage_id != -1) {
         widget.presenter
-            .subscribeVoucherForDamage(widget.customer, widget.damage_id);
+            !.subscribeVoucherForDamage(widget.customer!, widget.damage_id);
       }
     });
   }
@@ -77,7 +77,6 @@ class _AddVouchersPageState extends State<AddVouchersPage>
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -181,8 +180,8 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                                     onPressed: () {
                                       if (widget.damage_id != -1) {
                                         widget.presenter
-                                            .subscribeVoucherForDamage(
-                                                widget.customer,
+                                            !.subscribeVoucherForDamage(
+                                                widget.customer!,
                                                 widget.damage_id);
                                       }
                                     }),
@@ -274,7 +273,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
 
   void iLaunchCodeVerification() {
     widget.presenter
-        .subscribeVoucher(widget.customer, _promoCodeFieldController.text);
+        !.subscribeVoucher(widget.customer!, _promoCodeFieldController.text);
   }
 
   bool _isValidCode(String code) {
@@ -388,12 +387,12 @@ class _AddVouchersPageState extends State<AddVouchersPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -404,7 +403,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -434,7 +433,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]

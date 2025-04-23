@@ -21,9 +21,9 @@ class CustomerUtils {
         "${ServerConfig.LOGIN_EXPIRATION}" + CustomerUtils.signature, expDate);
   }
 
-  static Future<CustomerModel?> getCustomer() async {
+  static Future<CustomerModel> getCustomer() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    CustomerModel? customer;
+    CustomerModel customer;
     try {
       String? jsonCustomer = prefs.getString("_loginResponse" + signature);
       var obj = json.decode(jsonCustomer!);
@@ -32,7 +32,7 @@ class CustomerUtils {
       customer.token = token;
       customer.created_at = obj["data"]["customer"]["created_at"];
     } catch (_) {
-      customer = null;
+      customer = CustomerModel();
     }
     return customer;
   }

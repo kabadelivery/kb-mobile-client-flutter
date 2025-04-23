@@ -4,7 +4,7 @@ import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:audioplayers/audioplayers.dart';
 //import 'package:audioplayers/audio_cache.dart';
 //import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,11 +18,11 @@ class TransferMoneySuccessPage extends StatefulWidget {
 
   static var routeName = "/TransferMoneySuccessPage";
 
-  TransferMoneySuccessPage({Key key, this.amount, this.moneyReceiver}) : super(key: key);
+  TransferMoneySuccessPage({Key? key, this.amount, this.moneyReceiver}) : super(key: key);
 
-  final String amount;
+  final String? amount;
 
-  CustomerModel moneyReceiver;
+  CustomerModel? moneyReceiver;
 
   @override
   _TransferMoneySuccessPageState createState() => _TransferMoneySuccessPageState();
@@ -81,7 +81,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
                                     shape: BoxShape.rectangle,
                                     image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.moneyReceiver?.profile_picture))
+                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget.moneyReceiver!.profile_picture!))
                                     )
                                 )
                             ),
@@ -89,7 +89,7 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
 
                             Text("${widget?.moneyReceiver?.username}", textAlign: TextAlign.center, style: TextStyle(fontSize: 17, color: KColors.new_black, fontWeight: FontWeight.bold),),
                             SizedBox(height:5),
-                            Text("${Utils.hidePhoneNumber(widget?.moneyReceiver?.phone_number)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.normal),),
+                            Text("${Utils.hidePhoneNumber(widget.moneyReceiver!.phone_number!)}", textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.normal),),
                           ]),
                         ),
                       ],
@@ -142,8 +142,8 @@ class _TransferMoneySuccessPageState extends State<TransferMoneySuccessPage> {
     // AudioPlayer audioPlayer = AudioPlayer();
     // audioPlayer.play(MusicData.money_transfer_successfull);
     final player = AudioPlayer();
-    player.play(MusicData.money_transfer_successfull);
-    if (await Vibration.hasVibrator ()
+    player.play(UrlSource(MusicData.money_transfer_successfull));
+    if (await Vibration.hasVibrator () == true
     ) {
       Vibration.vibrate(duration: 500);
     }

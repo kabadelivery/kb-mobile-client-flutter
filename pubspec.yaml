@@ -49,7 +49,6 @@ dependencies:
   #  flutter_qr_reader: ^1.0.2
   qr_flutter: ^4.0.0
   image_picker: ^0.8.4+4
-  flutter_datetime_picker: ^1.5.1
   firebase_analytics: ^10.0.5 #9.0.4
   photo_view: ^0.13.0
   vibration: ^1.2.4
@@ -77,7 +76,7 @@ dependencies:
   whatsapp_unilink: ^2.0.0
   http: ^0.13.3
   dio: ^4.0.6
-  overlay_support: ^1.2.1
+  overlay_support: ^2.1.0
   flutter_switch: ^0.3.2
   firebase_messaging: ^14.2.1
   firebase_core: ^2.4.1
@@ -97,7 +96,6 @@ dependencies:
   path_provider: ^2.1.1
   mime: ^1.0.4
   video_player: ^2.6.1
-  animated_text_kit: ^4.2.3
   flutter_native_splash: ^2.2.16
   awesome_dialog: ^2.1.2
   fluttertoast: ^8.2.5
@@ -107,6 +105,7 @@ dependencies:
   device_info_plus: ^9.1.2
   audioplayers: ^5.2.1
   bouncing_widget: ^2.0.0
+  flutter_datetime_picker_plus: ^2.2.0
 
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15

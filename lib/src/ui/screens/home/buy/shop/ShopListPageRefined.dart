@@ -17,7 +17,6 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:KABA/src/utils/recustomlib/flutter_switch.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -28,7 +27,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
-
+import 'package:flutter_switch/flutter_switch.dart';
 // import 'package:android_intent/android_intent.dart';
 
 class ShopListPageRefined extends StatefulWidget {
@@ -93,7 +92,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   ScrollController _searchListScrollController = ScrollController();
   ScrollController _restaurantListScrollController = ScrollController();
-  SharedPreferences? prefs;
+  late SharedPreferences prefs;
 
   bool isLoading = false;
   bool hasNetworkError = false;

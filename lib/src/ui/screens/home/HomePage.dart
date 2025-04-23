@@ -46,8 +46,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
-
+import 'package:uni_links3/uni_links.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '_home/HomeWelcomeNewPage.dart';
@@ -56,7 +55,7 @@ import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 class HomePage extends StatefulWidget {
@@ -66,14 +65,14 @@ class HomePage extends StatefulWidget {
 
   var destination;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   var samePositionCount = 0;
 
-  bool hasGps = false;
+  bool? hasGps = false;
 
   HomePage(
-      {Key key,
+      {Key? key,
       this.destination,
       this.argument,
       this.is_out_of_app_order = false})
@@ -84,13 +83,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HomeWelcomeNewPage homeWelcomePage;
+  HomeWelcomeNewPage? homeWelcomePage;
 
-  ServiceMainPage serviceMainPage;
-  DailyOrdersPage dailyOrdersPage;
-  MeNewAccountPage meAccountPage;
+  ServiceMainPage? serviceMainPage;
+  DailyOrdersPage? dailyOrdersPage;
+  MeNewAccountPage? meAccountPage;
   static String messageId = "";
-  List<StatefulWidget> pages;
+  List<StatefulWidget>? pages;
   final PageStorageBucket bucket = PageStorageBucket();
 
   final PageStorageKey homeKey = PageStorageKey("homeKey"),
@@ -98,18 +97,18 @@ class _HomePageState extends State<HomePage> {
       orderKey = PageStorageKey("orderKey"),
       meKey = PageStorageKey("meKey");
 
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   var subscription;
 
-  StreamSubscription<Position> positionStream;
-  Position tmpLocation;
+  StreamSubscription<Position>? positionStream;
+  Position? tmpLocation;
 
   Future<int> checkLogin() async {
-    StatefulWidget launchPage = LoginPage(presenter: LoginPresenter());
+    StatefulWidget launchPage = LoginPage(presenter: LoginPresenter(LoginView()));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate =
-        prefs.getString("_login_expiration_date" + CustomerUtils.signature);
+        prefs.getString("_login_expiration_date" + CustomerUtils.signature)??"";
     int loginCheckResult = 0; // not logged in
     try {
       if (expDate != null) {
@@ -199,17 +198,17 @@ class _HomePageState extends State<HomePage> {
 
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
-        presenter: HomeWelcomePresenter(),
+        presenter: HomeWelcomePresenter(HomeWelcomeView()),
         destination: widget.destination,
         argument: widget.argument);
     serviceMainPage =
-        ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter());
+        ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter(ServiceMainView()));
     dailyOrdersPage = DailyOrdersPage(
         key: orderKey,
-        presenter: DailyOrderPresenter(),
+        presenter: DailyOrderPresenter(DailyOrderView()),
         is_out_of_app_order: widget.is_out_of_app_order);
     meAccountPage = MeNewAccountPage(key: meKey);
-    pages = [homeWelcomePage, serviceMainPage, dailyOrdersPage, meAccountPage];
+    pages = [homeWelcomePage!, serviceMainPage!, dailyOrdersPage!, meAccountPage!];
     super.initState();
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -220,11 +219,11 @@ class _HomePageState extends State<HomePage> {
       SharedPreferences.getInstance().then((value) async {
         prefs = value;
 
-        String _hasSeenEmailAccountNotification =
+        String? _hasSeenEmailAccountNotification =
             prefs.getString("_hasSeenEmailAccountNotification");
 
         if (_hasSeenEmailAccountNotification != "1" &&
-            Utils.isEmailValid(customer?.email))
+            Utils.isEmailValid(customer.email??""))
           showDialog<void>(
             context: context,
             barrierDismissible: false,
@@ -257,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                     child:
                         Text("${AppLocalizations.of(context)!.translate('ok')}"),
                     onPressed: () {
-                      prefs.setString("_hasSeenEmailAccountNotification", "1");
+                      prefs!.setString("_hasSeenEmailAccountNotification", "1");
                       Navigator.of(context).pop();
                     },
                   ),
@@ -286,7 +285,7 @@ class _HomePageState extends State<HomePage> {
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+    flutterLocalNotificationsPlugin!.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
     // new try
@@ -298,11 +297,11 @@ class _HomePageState extends State<HomePage> {
         xrint(
             'pnotif Message also contained a notification: ${message.notification.toString()}');
 
-        NotificationItem notificationItem =
+        NotificationItem? notificationItem =
             _notificationFromMessage(message.data);
         if (message.messageId != messageId) {
-          iLaunchNotifications(notificationItem);
-          messageId = message.messageId;
+          iLaunchNotifications(notificationItem!);
+          messageId = message.messageId!;
         }
       }
     });
@@ -355,7 +354,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     /* Save current address locally, then everytime the app restarts, we retrieve it. */
-    CustomerUtils.getSavedAddressLocally().then((Position position) {
+    CustomerUtils.getSavedAddressLocally().then((Position? position) {
       if (position != null && position?.longitude != null) {
         setState(() {
           StateContainer.of(context).location = position;
@@ -380,12 +379,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -396,7 +395,7 @@ class _HomePageState extends State<HomePage> {
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -426,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -447,8 +446,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     xrint('p_notify Message also contained a notification: ${message.data}');
-    NotificationItem notificationItem = _notificationFromMessage(message.data);
-    _handlePayLoad(notificationItem.destination.toSpecialString());
+    NotificationItem? notificationItem = _notificationFromMessage(message.data);
+    _handlePayLoad(notificationItem!.destination!.toSpecialString());
   }
 
   Future<void> _firebaseMessagingBackgroundHandler(
@@ -458,27 +457,27 @@ class _HomePageState extends State<HomePage> {
     xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
     if (message.notification != null) {
       xrint('p_notify Message also contained a notification: ${message.data}');
-      NotificationItem notificationItem =
+      NotificationItem? notificationItem =
           _notificationFromMessage(message.data);
-      _handlePayLoad(notificationItem.destination.toSpecialString());
+      _handlePayLoad(notificationItem!.destination!.toSpecialString());
     }
   }
 
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) {
+  Future? onDidReceiveLocalNotification(
+      int? id, String? title, String? body, String? payload) {
     xrint("onDidReceiveLocalNotification ${payload}");
-    _handlePayLoad(payload);
+    _handlePayLoad(payload!);
   }
 
-  Future onSelectNotification(String payload) {
+  Future? onSelectNotification(String? payload) {
     xrint("onSelectedNotification ${payload}");
-    _handlePayLoad(payload);
+    _handlePayLoad(payload!);
   }
 
   void _handlePayLoad(String payload) {
     print('payloader $payload');
 
-    Map<String, dynamic> notificationFDestination;
+    Map<String, dynamic>? notificationFDestination;
     String payloadData = '$payload';
 
     try {
@@ -488,11 +487,11 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       xrint(e);
     }
-    int type = int.parse(notificationFDestination['type'].toString());
+    int type = int.parse(notificationFDestination!['type'].toString());
     int is_out_of_app =
-        int.parse(notificationFDestination['is_out_of_app'].toString());
+        int.parse(notificationFDestination!['is_out_of_app'].toString());
     int productId =
-        int.parse(notificationFDestination['product_id'].toString());
+        int.parse(notificationFDestination!['product_id'].toString());
     switch (type) {
       /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
@@ -566,7 +565,7 @@ class _HomePageState extends State<HomePage> {
   int loginStuffChecked = 0;
   //  //get device token
   void get_token() async {
-    String token = await FirebaseMessaging.instance.getToken();
+    String? token = await FirebaseMessaging.instance.getToken();
     print('Device token $token');
   }
 
@@ -599,7 +598,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      body: pages[StateContainer.of(context).tabPosition],
+      body: pages![StateContainer.of(context)!.tabPosition!],
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 12.5,
         unselectedFontSize: 12,
@@ -638,7 +637,7 @@ class _HomePageState extends State<HomePage> {
                 '${AppLocalizations.of(context)!.translate('account')}'),
           ),
         ],
-        currentIndex: StateContainer.of(context).tabPosition,
+        currentIndex: StateContainer.of(context).tabPosition!,
         selectedItemColor: KColors.primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
@@ -709,7 +708,7 @@ class _HomePageState extends State<HomePage> {
 
                     Navigator.of(context).push(new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            LoginPage(presenter: LoginPresenter())));
+                            LoginPage(presenter: LoginPresenter(LoginView()))));
                   },
                 )
               ],
@@ -737,11 +736,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  StreamSubscription _sub;
+  StreamSubscription ?_sub;
 
   Future<Null> initUniLinksStream() async {
     // Attach a listener to the stream
-    _sub = getLinksStream().listen((String link) {
+    _sub = getLinksStream().listen((String? link) {
       // Parse the link and warn the user, if it is not correct
       if (link == null) return;
       xrint("initialLinkStream ${link}");
@@ -764,7 +763,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleLinksImmediately(String link) async {
     if (!(DateTime.now().millisecondsSinceEpoch -
-            StateContainer.of(context).lastTimeLinkMatchAction >
+            StateContainer.of(context)!.lastTimeLinkMatchAction! >
         2000)) {
       return;
     }
@@ -791,14 +790,14 @@ class _HomePageState extends State<HomePage> {
         _jumpToPage(
             context,
             MyAddressesPage(
-                presenter: AddressPresenter(),
+                presenter: AddressPresenter(AddressView()),
                 gps_location: "${mUri.path}".replaceAll(",", ":")));
       });
     } else {
       // we dont have  a gps location
       xrint("path is not gps location -> ${link}");
 
-      List<String> pathSegments = mUri.pathSegments.toList();
+      List<String?> pathSegments = mUri.pathSegments.toList();
       /*
      * send informations to homeactivity, that may send them to either restaurant page, or menu activity, before the end food activity
      * */
@@ -813,7 +812,7 @@ class _HomePageState extends State<HomePage> {
               _jumpToPage(
                   context,
                   AddVouchersPage(
-                      presenter: AddVoucherPresenter(),
+                      presenter: AddVoucherPresenter(AddVoucherView()),
                       qrCode: "${widget.argument}".toUpperCase(),
                       customer: widget.customer));
             }
@@ -824,7 +823,7 @@ class _HomePageState extends State<HomePage> {
             xrint("vouchers page");
             widget.destination = SplashPage.VOUCHERS;
             /* convert from hexadecimal to decimal */
-            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
           });
           break;
         case "addresses":
@@ -833,7 +832,7 @@ class _HomePageState extends State<HomePage> {
             widget.destination = SplashPage.ADDRESSES;
             /* convert from hexadecimal to decimal */
             _jumpToPage(
-                context, MyAddressesPage(presenter: AddressPresenter()));
+                context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
           });
           break;
         case "transactions":
@@ -1081,7 +1080,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter())));
+                          LoginPage(presenter: LoginPresenter(LoginView()))));
                 },
               )
             ],
@@ -1097,7 +1096,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs.getString("_has_accepted_gps");
+      String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
       /* no need to commit */
       /* expiration date in 3months */
       if (_has_accepted_gps != "ok") {
@@ -1141,7 +1140,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                       "${AppLocalizations.of(context)!.translate('accept')}"),
                   onPressed: () {
-                    prefs.setString("_has_accepted_gps", "ok");
+                    prefs!.setString("_has_accepted_gps", "ok");
                     // call get location again...
                     Future.delayed(Duration(milliseconds: 1000), () {
                       _getLastKnowLocation(
@@ -1346,9 +1345,9 @@ class _HomePageState extends State<HomePage> {
               if (position?.latitude != null &&
                   tmpLocation?.latitude != null &&
                   (position.latitude * 100).round() ==
-                      (tmpLocation.latitude * 100).round() &&
+                      (tmpLocation!.latitude! * 100).round() &&
                   (position.longitude * 100).round() ==
-                      (tmpLocation.longitude * 100).round()) {
+                      (tmpLocation!.longitude * 100).round()) {
                 widget.samePositionCount++;
               } else {
                 widget.samePositionCount = 0;
@@ -1361,7 +1360,7 @@ class _HomePageState extends State<HomePage> {
                   });
                 }
               }
-              if (widget.samePositionCount >= 3 || widget.hasGps)
+              if (widget.samePositionCount >= 3 || widget.hasGps!)
                 positionStream?.cancel();
             });
           }
@@ -1387,7 +1386,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-NotificationItem _notificationFromMessage(Map<String, dynamic> messageEntry) {
+NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
   xrint(" inside notificationFromMessage -- " + messageEntry.toString());
 
   try {
@@ -1426,7 +1425,7 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);
-  return flutterLocalNotificationsPlugin.show(notificationItem.hashCode,
+  return flutterLocalNotificationsPlugin!.show(notificationItem.hashCode,
       notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
       payload: notificationItem?.destination?.toSpecialString());
 }

@@ -26,14 +26,14 @@ import '../../../customwidgets/whatsappMessageButton.dart';
 class OrderNewDetailsPage extends StatefulWidget {
   static var routeName = "/OrderNewDetailsPage";
 
-  OrderDetailsPresenter presenter;
+  OrderDetailsPresenter? presenter;
   bool is_out_of_app_order;
-  OrderNewDetailsPage({Key key, this.orderId, this.presenter,this.is_out_of_app_order=false})
+  OrderNewDetailsPage({Key? key, this.orderId, this.presenter,this.is_out_of_app_order=false})
       : super(key: key);
 
-  int orderId;
-  CustomerModel customer;
-  CommandModel command;
+  int? orderId;
+  CustomerModel? customer;
+  CommandModel? command;
 
   @override
   _OrderNewDetailsPageState createState() => _OrderNewDetailsPageState();
@@ -51,30 +51,30 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.orderDetailsView = this;
+    widget.presenter!.orderDetailsView = this;
     showLoading(true);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
-      if (widget.orderId != null &&
-          widget.orderId != 0 &&
+      if (widget.orderId! != null &&
+          widget.orderId! != 0 &&
           widget.command == null &&
           widget.customer != null) {
-        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
+        widget.presenter!.fetchOrderDetailsWithId(customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context).settings.arguments; 
+    final int args = ModalRoute.of(context)!.settings.arguments as int; 
 
     if (args != null && args != 0) {
       widget.orderId = args;
       if (widget.customer != null && widget.command == null) {
         // there must be a food id.
         widget.presenter
-            .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
+            !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
       } else {
         // postpone it to the next second by adding showing the loading button.
         if (!waitedForCustomerOnce) {
@@ -83,7 +83,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           Future.delayed(Duration(seconds: 1)).then((onValue) {
             if (widget.customer != null && widget.command == null) {
               widget.presenter
-                  .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
+                  !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
             }
           });
         }
@@ -94,7 +94,6 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
         backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -141,12 +140,12 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   Widget _inflateDetails() {
         double foodPriceTotal = 0; 
-        print("Order type ${widget.command?.order_type}");
+        print("Order type ${widget.command!.order_type}");
         
-            if (widget.command?.food_list != null) {
-      for (var item in widget.command.food_list) {
+            if (widget.command!.food_list != null) {
+      for (var item in widget.command!.food_list!) {
         item.price = item.price==""?"0":item.price;
-        foodPriceTotal += double.parse(item.price);
+        foodPriceTotal += double.parse(item.price!);
       }
     }
     return SingleChildScrollView(
@@ -157,13 +156,13 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   width: MediaQuery.of(context).size.width,
                   padding:
                       EdgeInsets.only(top: 15, bottom: 15, right: 10, left: 10),
-                  color: Utils.getStateColor(widget?.command?.state),
+                  color: Utils.getStateColor(widget.command!.state!!),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          widget?.command?.is_preorder == 0
+                          widget.command!.is_preorder == 0
                               ? Container()
                               : Container(
                                   decoration: BoxDecoration(
@@ -177,7 +176,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                           fontWeight: FontWeight.bold)),
                                   padding: EdgeInsets.all(8)),
                           SizedBox(width: 5),
-                          Text(Utils.capitalize(_orderTopLabel(widget.command)),
+                          Text(Utils.capitalize(_orderTopLabel(widget.command!)),
                               textAlign: TextAlign.center,
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white)),
@@ -185,7 +184,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         ],
                       ),
                       SizedBox(height: 5),
-                      widget?.command?.state > 3
+                      widget.command!.state!! > 3
                           ? Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -207,14 +206,14 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   )),
               /* Progress line */
               Container(
-                child: _getProgressTimeLine(widget?.command),
+                child: _getProgressTimeLine(widget.command!),
                 margin: EdgeInsets.only(top: 25, bottom: 20),
               ),
-              (widget.command.state == 3 && widget.command.rating > 1
+              (widget.command!.state! == 3 && widget.command!.rating! > 1
                   ? SizedBox(height: 10)
                   : Container()),
-              (widget.command.state == 3)
-                  ? (widget.command.rating > 1
+              (widget.command!.state! == 3)
+                  ? (widget.command!.rating! > 1
                       ? Container(
                           margin: EdgeInsets.only(bottom: 20),
                           padding: EdgeInsets.only(
@@ -244,7 +243,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                               return Icon(
                                                   index <
                                                           widget
-                                                              ?.command?.rating
+                                                              .command!.rating!
                                                       ? FontAwesomeIcons
                                                           .solidStar
                                                       : FontAwesomeIcons.star,
@@ -255,7 +254,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                               ..addAll([
                                                 SizedBox(width: 10),
                                                 Text(
-                                                    "${widget?.command?.rating}.0",
+                                                    "${widget.command!.rating!}.0",
                                                     style: TextStyle(
                                                         fontSize: 32,
                                                         fontWeight:
@@ -263,7 +262,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                               ])),
                                       ),
                                       Text(
-                                          " ${_orderLastUpdate(widget.command)}",
+                                          " ${_orderLastUpdate(widget.command!)}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal,
@@ -286,7 +285,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                                   children: [
                                             TextSpan(
                                                 text:
-                                                    "  ${widget?.command?.comment == null ? "" : widget?.command?.comment} ",
+                                                    "  ${widget.command!.comment == null ? "" : widget.command!.comment} ",
                                                 style: TextStyle(
                                                     color: Colors.grey,
                                                     fontWeight:
@@ -295,7 +294,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                           ])
 
                                               /*  Text(
-                                          "${widget?.command?.comment == null ? "" : widget?.command?.comment} ",
+                                          "${widget.command!.comment == null ? "" : widget.command!.comment} ",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                               color: Colors.white,
@@ -349,8 +348,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                           ),
                         ))
                   : Container(),
-              (widget.command.rating < 1 &&
-                      Utils.within3days(widget.command?.last_update)
+              (widget.command!.rating! < 1 &&
+                      Utils.within3days(widget.command!.last_update!)
                   ? SizedBox(height: 10)
                   : Container()),
               /* your contact */
@@ -385,7 +384,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 padding: EdgeInsets.symmetric(horizontal: 5),
                                 color: KColors.new_gray,
                                 child: Text(
-                                    "${widget.command?.shipping_address?.phone_number}",
+                                    "${widget.command!.shipping_address?.phone_number}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                         color: KColors.new_black,
@@ -397,10 +396,10 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                            width: widget?.command?.state >
-                                        COMMAND_STATE.COOKING &&
-                                    widget?.command?.state <
-                                        COMMAND_STATE.REJECTED
+                            width: widget.command!.state! >
+                                        COMMAND_STATE.COOKING! &&
+                                    widget.command!.state! <
+                                        COMMAND_STATE.REJECTED!
                                 ? 0.8
                                 : 0,
                             color: Colors.grey.withAlpha(35)),
@@ -422,7 +421,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 padding: EdgeInsets.symmetric(horizontal: 5),
                                 color: KColors.new_gray,
                                 child: Text(
-                                    "${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED ? widget.command?.passphrase?.toUpperCase() : "---"}",
+                                    "${widget.command!.state! != COMMAND_STATE.WAITING && widget.command!.state! != COMMAND_STATE.REJECTED ? widget.command!.passphrase?.toUpperCase() : "---"}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                         color: KColors.new_black,
@@ -433,8 +432,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                 ]),
               ),
             ]
-              ..addAll(widget?.command?.state > COMMAND_STATE.COOKING &&
-                      widget?.command?.state < COMMAND_STATE.REJECTED
+              ..addAll(widget.command!.state! > COMMAND_STATE.COOKING! &&
+                      widget.command!.state! < COMMAND_STATE.REJECTED!
                   ? <Widget>[
                       /* KABA man name */
                       Container(
@@ -464,7 +463,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                               children: [
                                 Container(
                                     child: Text(
-                                        "${widget?.command?.livreur?.name}",
+                                        "${widget.command!.livreur?.name}",
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
                                             color: KColors.new_black,
@@ -472,7 +471,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 SizedBox(width: 10),
                                 InkWell(
                                   onTap: () => _callNumber(
-                                      widget?.command?.livreur?.workcontact),
+                                      widget.command!.livreur!.workcontact!),
                                   child: Container(
                                       child: Icon(
                                         FontAwesomeIcons.phone,
@@ -520,7 +519,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 vertical: 10, horizontal: 10),
                             child: Text(
                                 Utils.capitalize(
-                                    "${widget.command?.shipping_address?.near}"),
+                                    "${widget.command!.shipping_address?.near}"),
                                 style: TextStyle(
                                     color: KColors.new_black, fontSize: 12)),
                           ),
@@ -553,7 +552,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                 vertical: 10, horizontal: 10),
                             child: Text(
                                 Utils.capitalize(
-                                    "${widget.command?.shipping_address?.description}"),
+                                    "${widget.command!.shipping_address?.description}"),
                                 style: TextStyle(
                                     color: KColors.new_black, fontSize: 12)),
                           ),
@@ -561,8 +560,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   ),
                 ),
                 SizedBox(height: 10),
-                widget.command?.infos == null ||
-                        widget.command?.infos?.trim()?.length == 0
+                widget.command!.infos == null ||
+                        widget.command!.infos?.trim()?.length == 0
                     ? Container()
                     : Container(
                         margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -575,7 +574,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                           children: <Widget>[
                             Expanded(
                                 child: Text(
-                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command.infos}",
+                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command!.infos}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -592,23 +591,23 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         color: KColors.new_gray,
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: Column(
-                        children: List.generate(widget.command.food_list.length,
+                        children: List.generate(widget.command!.food_list!.length,
                             (int index) {
-                      return _buildBasketItem(widget.command.food_list[index],
-                          widget.command.food_list[index].quantity);
+                      return _buildBasketItem(widget.command!.food_list![index],
+                          widget.command!.food_list![index].quantity!);
                     }))),
                 SizedBox(height: 10),
                 /* if we have a voucher, we will show it */
                 _buildVoucher(),
                 SizedBox(height: 10),
                 /* bill */
-                widget?.command?.kaba_point_used_amount != null &&
-                        widget?.command?.kaba_point_used_amount > 0
+                widget.command!.kaba_point_used_amount != null &&
+                        widget.command!.kaba_point_used_amount! > 0
                     ? showKabaPointUsed()
                     : Container(),
                 _buildBill(),
                 SizedBox(height: 10),
-                widget.command.order_type == 4 || widget.command.order_type == 3?
+                widget.command!.order_type == 4 || widget.command!.order_type == 3?
                 Container(
                   decoration:BoxDecoration(
                       color: Color(0xffcb1f44).withOpacity(0.1),
@@ -625,7 +624,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
                 ):Container(),
                 SizedBox(height: 10),
-                widget.command.order_type==5 && widget.command?.state==3 && foodPriceTotal>0?
+                widget.command!.order_type==5 && widget.command!.state==3 && foodPriceTotal>0?
                 WhatsappMessageButton("${AppLocalizations.of(context)!.translate("contact_us_for_funds")}",
 """
 *Récupération de fonds*
@@ -635,12 +634,12 @@ Bonjour,
 Je souhaite récupérer les fonds de ma commande 
 
 *Détails de la commande*
-- *ID*: ${widget.command.id}
-- *Marchand*: ${widget.command.restaurant_entity.name}
-- *Client*: ${widget.customer.nickname}
-- *Numéro de téléphone*: ${widget.customer.phone_number}
+- *ID*: ${widget.command!.id}
+- *Marchand*: ${widget.command!.restaurant_entity!.name!}
+- *Client*: ${widget.customer!.nickname}
+- *Numéro de téléphone*: ${widget.customer!.phone_number}
 - *Total*: ${foodPriceTotal}
-- *Date*: ${widget.command.start_date}
+- *Date*: ${widget.command!.start_date}
 
 ""","91215301",)
                 :Container(),
@@ -672,15 +671,15 @@ Je souhaite récupérer les fonds de ma commande
                       decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                          image:widget.command.order_type==0? new DecorationImage(
+                          image:widget.command!.order_type==0? new DecorationImage(
                               fit: BoxFit.cover,
                               image: 
                               CachedNetworkImageProvider(
-                                  Utils.inflateLink(food.pic)))
+                                  Utils.inflateLink(food.pic!)))
                                   :
                                   food.pic==null?null:new DecorationImage(
                                   fit: BoxFit.cover,
-                                   image:  NetworkImage(food.pic))
+                                   image:  NetworkImage(food.pic!))
                     )
                     ),
                   ],
@@ -689,7 +688,7 @@ Je souhaite récupérer les fonds de ma commande
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("${Utils.capitalize(food?.name)}",
+                    Text("${Utils.capitalize(food.name!)}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                         textAlign: TextAlign.left,
@@ -776,7 +775,7 @@ Je souhaite récupérer les fonds de ma commande
   }
 
   String _orderTopLabel(CommandModel command) {
-    switch (widget?.command?.state) {
+    switch (widget.command!.state!) {
       case 0:
         return "${AppLocalizations.of(context)!.translate('order_waiting')}"
             .toUpperCase();
@@ -797,7 +796,7 @@ Je souhaite récupérer les fonds de ma commande
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(widget.command?.last_update));
+    return Utils.readTimestamp(context, int.parse(widget.command!.last_update!));
   }
 
   String _getStateLabel(CommandModel command) {
@@ -823,11 +822,11 @@ Je souhaite récupérer les fonds de ma commande
   }
 
   String _getLastModifiedDate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(command?.last_update));
+    return Utils.readTimestamp(context, int.parse(command.last_update!));
   }
 
   Color _getStateColor(int state) {
-    switch (widget.command.state) {
+    switch (widget.command!.state!) {
       case 0:
         return CommandStateColor.waiting;
       case 1:
@@ -900,9 +899,9 @@ Je souhaite récupérer les fonds de ma commande
         Container(
             child: Text("${Utils.capitalize(_getStateLabel(command))}",
                 style: TextStyle(
-                    fontSize: 12, color: _getStateColor(command?.state))),
+                    fontSize: 12, color: _getStateColor(command.state!))),
             decoration: BoxDecoration(
-                color: _getStateColor(command?.state).withAlpha(30),
+                color: _getStateColor(command.state!).withAlpha(30),
                 borderRadius: BorderRadius.circular(5)),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10)),
         SizedBox(height: 5),
@@ -927,15 +926,15 @@ Je souhaite récupérer les fonds de ma commande
   }
 
   _reviewOrder() async {
-    if (widget.command.rating < 1 &&
-        widget.command.state == 3 /*within 3 days, you can still do it.*/) {
+    if (widget.command!.rating! < 1 &&
+        widget.command!.state! == 3 /*within 3 days, you can still do it.*/) {
       // must review.
       /* jump to review pager. */
       Map results = await Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               OrderFeedbackPage(
-                  orderId: widget?.command?.id,
-                  presenter: OrderFeedbackPresenter()),
+                  orderId: widget.command!.id,
+                  presenter: OrderFeedbackPresenter(OrderFeedbackView())),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
@@ -951,12 +950,12 @@ Je souhaite récupérer les fonds de ma commande
         bool feedBackOk = results['ok'];
         if (feedBackOk) {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget?.command?.id,is_out_of_app_order:widget.is_out_of_app_order);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.command!.id!,is_out_of_app_order:widget.is_out_of_app_order);
         }
       }
     } else {
       // can't review or we don't have to review.
-      Toast.show("cant post review", context);
+      Toast.show("cant post review");
     }
   }
 
@@ -999,7 +998,7 @@ Je souhaite récupérer les fonds de ma commande
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
         });
   }
 
@@ -1008,43 +1007,43 @@ Je souhaite récupérer les fonds de ma commande
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId,is_out_of_app_order:widget.is_out_of_app_order);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
         });
   }
 
   _buildBill() {
-    int priceNormalCommand,
+    int? priceNormalCommand,
         priceActualCommand,
         priceTotalToPay,
         priceNormalDelivery,
         additionnalFee,
         priceActualDelivery;
 
-    priceNormalCommand = widget.command.food_pricing;
+    priceNormalCommand = widget.command!.food_pricing!;
 
     bool showRemise = true, showDeliveryNormal = true, showFoodNormal = true;
 
     // depends
-    if (widget?.command?.is_preorder == 1) {
-      priceTotalToPay = widget.command.preorder_food_pricing;
-      priceActualCommand = widget.command.preorder_food_pricing;
-      priceActualDelivery = widget.command.preorder_shipping_pricing;
-      priceNormalCommand = widget.command.food_pricing;
-      priceNormalDelivery = widget.command.shipping_pricing;
-      additionnalFee=widget.command.additionnal_fee;
-    } else if (widget.command.is_promotion == 1) {
-      priceTotalToPay = widget.command.promotion_total_pricing;
-      priceActualCommand = widget.command.promotion_food_pricing;
-      priceActualDelivery = widget.command.promotion_shipping_pricing;
-      priceNormalCommand = widget.command.food_pricing;
-      priceNormalDelivery = widget.command.shipping_pricing;
-      additionnalFee=widget.command.additionnal_fee;
-    } else if (widget.command.is_promotion == 0 &&
-        widget?.command?.is_preorder == 0) {
-      priceTotalToPay = widget.command.total_pricing;
-      priceActualCommand = widget.command.food_pricing;
-      priceActualDelivery = widget.command.shipping_pricing;
-      additionnalFee=widget.command.additionnal_fee;
+    if (widget.command!.is_preorder == 1) {
+      priceTotalToPay = widget.command!.preorder_food_pricing!;
+      priceActualCommand = widget.command!.preorder_food_pricing!;
+      priceActualDelivery = widget.command!.preorder_shipping_pricing!;
+      priceNormalCommand = widget.command!.food_pricing!;
+      priceNormalDelivery = widget.command!.shipping_pricing!;
+      additionnalFee=widget.command!.additionnal_fee!;
+    } else if (widget.command!.is_promotion == 1) {
+      priceTotalToPay = widget.command!.promotion_total_pricing!;
+      priceActualCommand = widget.command!.promotion_food_pricing!;
+      priceActualDelivery = widget.command!.promotion_shipping_pricing!;
+      priceNormalCommand = widget.command!.food_pricing!;
+      priceNormalDelivery = widget.command!.shipping_pricing!;
+      additionnalFee=widget.command!.additionnal_fee!;
+    } else if (widget.command!.is_promotion == 0 &&
+        widget.command!.is_preorder == 0) {
+      priceTotalToPay = widget.command!.total_pricing!;
+      priceActualCommand = widget.command!.food_pricing!;
+      priceActualDelivery = widget.command!.shipping_pricing!;
+      additionnalFee=widget.command!.additionnal_fee!;
       showRemise = false;
       showDeliveryNormal = false;
       showFoodNormal = false;
@@ -1054,11 +1053,11 @@ Je souhaite récupérer les fonds de ma commande
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: !widget.command.is_payed_at_arrival ? CommandStateColor.delivered.withAlpha(30) : KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+          color: !widget.command!.is_payed_at_arrival! ? CommandStateColor.delivered.withAlpha(30) : KColors.new_gray, borderRadius: BorderRadius.circular(5)),
       child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-   /*     (int.parse(widget.command?.remise) > 0
+   /*     (int.parse(widget.command!.remise) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -1099,8 +1098,8 @@ Je souhaite récupérer les fonds de ma commande
           /* check if there is promotion on Livraison */
           Row(
             children: <Widget>[
-              widget?.command?.is_preorder == 1 ||
-                      widget?.command?.is_promotion == 1
+              widget.command!.is_preorder == 1 ||
+                      widget.command!.is_promotion == 1
                   ? Row(
                       // only show if there is pre-order or promotion on the fees of delivery
                       children: <Widget>[
@@ -1126,7 +1125,7 @@ Je souhaite récupérer les fonds de ma commande
 
         //additionnal fees
         SizedBox(height: 10),
-        int.parse(widget.command?.remise) > 0
+        int.parse(widget.command!.remise!) > 0
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -1137,7 +1136,7 @@ Je souhaite récupérer les fonds de ma commande
                             fontSize: 15,
                             color: Colors.grey)),
                     /* check if there is remise */
-                    Text("-${widget.command?.remise}%",
+                    Text("-${widget.command!.remise}%",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -1161,14 +1160,14 @@ Je souhaite récupérer les fonds de ma commande
                       fontSize: 15,
                       color: KColors.new_black.withAlpha(200))),
               Text(
-                  "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
+                  "${widget.command!.is_preorder == 0 ? priceTotalToPay : widget.command!.preorder_total_pricing}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: KColors.primaryColor,
                       fontSize: 18)),
             ]),
     /*    SizedBox(height: 10),
-      (int.parse(widget.command?.remise) > 0
+      (int.parse(widget.command!.remise) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -1181,7 +1180,7 @@ Je souhaite récupérer les fonds de ma commande
         SizedBox(
           height: 20,
         ),
-    !widget.command.is_payed_at_arrival  ? Container(
+    !widget.command!.is_payed_at_arrival!  ? Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -1217,24 +1216,24 @@ Je souhaite récupérer les fonds de ma commande
       await launch(url);
     } else {
       // ask launch.
-      Toast.show("Call error", context);
+      Toast.show("Call error");
     }
   }
 
   _buildVoucher() {
     // build voucher if we have it
-    if (widget?.command != null &&
-        widget?.command?.voucher_entity != null &&
-        widget?.command?.voucher_entity?.id != null) {
-      return MyVoucherMiniWidget(voucher: widget?.command?.voucher_entity);
+    if (widget.command! != null &&
+        widget.command!.voucher_entity != null &&
+        widget.command!.voucher_entity?.id != null) {
+      return MyVoucherMiniWidget(voucher: widget.command!.voucher_entity);
     }
     return Container();
   }
 
   _getReason() {
-    if (widget.command.reason >= reasonsArray.length)
+    if (widget.command!.reason! >= reasonsArray.length)
       return "${AppLocalizations.of(context)!.translate('reason_beyond_control')}";
-    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
+    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command!.reason! - 1 < 0 ? 0 : widget.command!.reason! - 1]}')}";
   }
 
   showKabaPointUsed() {
@@ -1247,7 +1246,7 @@ Je souhaite récupérer les fonds de ma commande
                 style: TextStyle(color: Colors.white, fontSize: 12),
                 children: <TextSpan>[
               TextSpan(
-                  text: "${widget.command.kaba_point_used_amount}  ",
+                  text: "${widget.command!.kaba_point_used_amount}  ",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

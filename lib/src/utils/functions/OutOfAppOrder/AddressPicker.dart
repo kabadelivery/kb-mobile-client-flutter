@@ -28,8 +28,8 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
   final voucherState = ref.watch(voucherStateProvider);
   // ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
 //  ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
-  List<DeliveryAddressModel>? order_address = null;
-  DeliveryAddressModel? shipping_address = null;
+  List<DeliveryAddressModel> order_address = [];
+  DeliveryAddressModel shipping_address = DeliveryAddressModel();
   /* jump and get it */
   if (context.mounted) {
     Map results = await Navigator.of(context).push(PageRouteBuilder(
@@ -55,7 +55,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         locationNotifier.pickShippingAddress(shipping_address);
         locationNotifier.setShippingAddressPicked(true);
         if (locationState.selectedOrderAddress!.isNotEmpty) {
-          order_address = locationState.selectedOrderAddress;
+          order_address = locationState.selectedOrderAddress!;
         }
       }
       if (address_type == 2) {
@@ -64,7 +64,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         locationNotifier.pickOrderAddress(results['selection']);
         locationNotifier.setOrderAddressPicked(true);
         if (locationState.is_shipping_address_picked!) {
-          shipping_address = locationState.selectedShippingAddress;
+          shipping_address = locationState.selectedShippingAddress!;
         }
       }
 
@@ -76,7 +76,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
         if (outOfAppScreenState.order_type == 5 ||
             outOfAppScreenState.order_type == 6) {
-          if (shipping_address != null && order_address!.isNotEmpty) {
+          if (shipping_address != null && order_address!=[]) {
             outOfAppNotifier.setIsBillBuilt(false);
             outOfAppNotifier.setShowLoading(true);
 
@@ -111,15 +111,15 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
           }
           if (outOfAppScreenState.order_type == 5 ||
               outOfAppScreenState.order_type == 6) {
-            if (shipping_address != null && order_address!.isNotEmpty) {
+            if (shipping_address != null && order_address.isNotEmpty) {
               try {
                 OrderBillConfiguration orderBillConfiguration =
                     await api.computeBillingAction(
-                        customer!,
+                        customer,
                         order_address,
                         formData,
                         shipping_address,
-                        voucherState.selectedVoucher!,
+                        voucherState.selectedVoucher,
                         false);
                 ref
                     .read(orderBillingStateProvider.notifier)
@@ -138,6 +138,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                         " 🚨");
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);
+                xrint("ERROR 2 impossible_to_load_bill $e");
               }
               xrint(
                   "setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
@@ -147,18 +148,19 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
               try {
                 OrderBillConfiguration orderBillConfiguration =
                     await api.computeBillingAction(
-                        customer!,
-                        order_address!,
+                        customer,
+                        order_address,
                         formData,
                         shipping_address,
-                        voucherState.selectedVoucher!,
+                        voucherState.selectedVoucher,
                         false);
-                ref
+                   ref
                     .read(orderBillingStateProvider.notifier)
                     .setOrderBillConfiguration(orderBillConfiguration);
                 outOfAppNotifier.setIsBillBuilt(true);
                 outOfAppNotifier.setShowLoading(false);
               } catch (e) {
+                xrint("ERROR 1 impossible_to_load_bill $e");
                 Fluttertoast.showToast(
                     backgroundColor: Colors.black87,
                     textColor: Colors.white,
@@ -171,12 +173,11 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                 outOfAppNotifier.setShowLoading(false);
                 outOfAppNotifier.setIsBillBuilt(false);
               }
-              xrint(
-                  "setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
+              xrint("setIsBillBuilt ${ref.watch(outOfAppScreenStateProvier).isBillBuilt}");
             }
           }
         } catch (e) {
-          xrint("ENRRRRRR $e");
+          xrint("ERROR 3 impossible_to_load_bill $e");
         }
       });
     }

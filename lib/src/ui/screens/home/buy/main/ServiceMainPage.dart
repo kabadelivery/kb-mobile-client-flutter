@@ -69,7 +69,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   DeliveryAddressModel? _selectedAddress;
 
-  SharedPreferences? prefs;
+  late SharedPreferences prefs;
 
   bool isPickLocation = false;
 

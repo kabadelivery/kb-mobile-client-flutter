@@ -11,7 +11,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as dp;
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -21,14 +21,14 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 class Personal2Page extends StatefulWidget {
   static var routeName = "/Personal2Page";
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  PersonnalPagePresenter presenter;
+  PersonnalPagePresenter? presenter;
 
-  Personal2Page({Key key, this.title, this.presenter, this.customer})
+  Personal2Page({Key? key, this.title, this.presenter, this.customer})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _Personal2PageState createState() => _Personal2PageState();
@@ -37,11 +37,11 @@ class Personal2Page extends StatefulWidget {
 class _Personal2PageState extends State<Personal2Page>
     implements PersonnalPageView {
   bool editable = false;
-  DateTime date;
+  DateTime? date;
 
   final format = DateFormat("yyyy-MM-dd");
 
-  String localPicture;
+  String? localPicture;
 
   TextEditingController _phoneNumberFieldController = TextEditingController(),
       _jobTitleFieldController = TextEditingController(),
@@ -54,29 +54,29 @@ class _Personal2PageState extends State<Personal2Page>
 
   int accountType = 1; // 1 phone-number , 2 email
 
-  TextEditingValue s;
+  TextEditingValue? s;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    this.widget.presenter.personnalPageView = this;
-    _phoneNumberFieldController.text = widget.customer?.phone_number;
-    _emailFieldController.text = widget.customer?.email;
-    _nickNameFieldController.text = widget.customer?.nickname;
-    _jobTitleFieldController.text = widget.customer?.job_title;
-    _districtFieldController.text = widget.customer?.district;
-    _whatsappNoFieldController.text = widget.customer?.whatsapp_number;
-//    _emailFieldController.text = widget.customer?.email;
+    this.widget.presenter!.personnalPageView = this;
+    _phoneNumberFieldController.text = widget.customer!.phone_number!;
+    _emailFieldController.text = widget.customer!.email!;
+    _nickNameFieldController.text = widget.customer!.nickname!;
+    _jobTitleFieldController.text = widget.customer!.job_title!;
+    _districtFieldController.text = widget.customer!.district!;
+    _whatsappNoFieldController.text = widget.customer!.whatsapp_number!;
+//    _emailFieldController.text = widget.customer!.email;
 
     setState(() {
-      if (widget.customer?.phone_number != null) accountType = 1;
-      if (widget.customer?.email != null) accountType = 2;
+      if (widget.customer!.phone_number != null) accountType = 1;
+      if (widget.customer!.email != null) accountType = 2;
     });
   }
 
-  File _image;
+  File? _image;
 
   final picker = ImagePicker();
 
@@ -97,8 +97,8 @@ class _Personal2PageState extends State<Personal2Page>
     });
   }
 
-  String _validateName(String value) {
-    if (value.length < 2) {
+  String? _validateName(String? value) {
+    if (value!.length < 2) {
       return "${AppLocalizations.of(context)!.translate('field_more_2_chars')}";
 //      return 'This field must have more than 6 characters.';
     }
@@ -111,7 +111,6 @@ class _Personal2PageState extends State<Personal2Page>
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -154,9 +153,11 @@ class _Personal2PageState extends State<Personal2Page>
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: (_image != null
-                                ? FileImage(_image)
-                                : CachedNetworkImageProvider(Utils.inflateLink(
-                                    widget.customer?.profile_picture)))))),
+                                ? FileImage(_image!) as ImageProvider<Object>
+                                : CachedNetworkImageProvider(
+                                Utils.inflateLink(widget.customer?.profile_picture ?? '')
+                            ) as ImageProvider<Object>)
+                        ))),
                 Positioned(
                     child: InkWell(
                       onTap: getImage,
@@ -235,8 +236,8 @@ class _Personal2PageState extends State<Personal2Page>
                             "${AppLocalizations.of(context)!.translate('nickname')}",
                         border: InputBorder.none),
                     validator: this._validateName,
-                    onSaved: (String value) {
-                      widget.customer.nickname = value;
+                    onSaved: (String? value) {
+                      widget.customer!.nickname = value;
                     }),
               ),
               SizedBox(height: 20),
@@ -251,8 +252,8 @@ class _Personal2PageState extends State<Personal2Page>
                             "${AppLocalizations.of(context)!.translate('whatsapp_number_hint_ex')}",
                         border: InputBorder.none),
                     // validator: this._validateName,
-                    onSaved: (String value) {
-                      widget.customer.whatsapp_number = value;
+                    onSaved: (String? value) {
+                      widget.customer!.whatsapp_number = value;
                     }),
               ),
               SizedBox(height: 10),
@@ -266,8 +267,8 @@ class _Personal2PageState extends State<Personal2Page>
                             "${AppLocalizations.of(context)!.translate('job_title')}",
                         border: InputBorder.none),
                     validator: _validateName,
-                    onSaved: (String value) {
-                      widget.customer.job_title = value;
+                    onSaved: (String? value) {
+                      widget.customer!.job_title = value;
                     }),
               ),
               SizedBox(height: 10),
@@ -281,8 +282,8 @@ class _Personal2PageState extends State<Personal2Page>
                             "${AppLocalizations.of(context)!.translate('your_district')}",
                         border: InputBorder.none),
                     validator: _validateName,
-                    onSaved: (String value) {
-                      widget.customer.district = value;
+                    onSaved: (String? value) {
+                      widget.customer!.district = value;
                     }),
               ),
               SizedBox(height: 10),
@@ -308,29 +309,29 @@ class _Personal2PageState extends State<Personal2Page>
                                   TextStyle(color: KColors.new_black, fontSize: 16)),
                           Radio(
                               value: 1,
-                              groupValue: widget.customer.gender,
+                              groupValue: widget.customer!.gender,
                               onChanged: _handleGenderRadioValueChange),
                           Text(
                               "${AppLocalizations.of(context)!.translate('man_gender')}"),
                           Radio(
                               value: 2,
-                              groupValue: widget.customer.gender,
+                              groupValue: widget.customer!.gender,
                               onChanged: _handleGenderRadioValueChange)
                         ]),
                       ])),
               SizedBox(height: 10),
               InkWell(
                 onTap: () {
-                  DatePicker.showDatePicker(context, showTitleActions: true,
+                  dp.DatePicker.showDatePicker(context, showTitleActions: true,
                       onChanged: (date) {
                     xrint('change $date');
                   }, onConfirm: (date) {
                     xrint('confirm $date');
                     setState(() {
-                      widget.customer.birthday =
+                      widget.customer!.birthday =
                           "${date.year} - ${date.month < 10 ? "0${date.month}" : "${date.month}"} - ${date.day < 10 ? "0${date.day}" : "${date.day}"}";
                     });
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                  }, currentTime: DateTime.now(), locale: dp.LocaleType.en);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -343,7 +344,7 @@ class _Personal2PageState extends State<Personal2Page>
                           "${AppLocalizations.of(context)!.translate('birthday')}",
                           style: TextStyle(color: KColors.new_black, fontSize: 16)),
                       Container(width: 20),
-                      Text("${widget.customer.birthday}",
+                      Text("${widget.customer!.birthday}",
                           style: TextStyle(color: KColors.primaryColor)),
                     ],
                   ),
@@ -402,38 +403,38 @@ class _Personal2PageState extends State<Personal2Page>
     );
   }
 
-  void _handleGenderRadioValueChange(int value) {
+  void _handleGenderRadioValueChange(int? value) {
     setState(() {
-      widget.customer.gender = value; //
+      widget.customer!.gender = value; //
     });
   }
 
   Future _saveCustomerData() async {
     // First validate form.
-    if (this._formKey.currentState.validate()) {
-      _formKey.currentState.save(); // Save our form now.
+    if (this._formKey.currentState!.validate()) {
+      _formKey.currentState!.save(); // Save our form now.
 
       /* no need to check pictures, birthday and so on, we just need to upload them.*/
       if (_image != null) {
         // convert the imagefile to base64 and upload it to the server through the same process
       }
       /* upload the whole object to the server. */
-      widget.customer.district = _districtFieldController.text;
-      widget.customer.job_title = _jobTitleFieldController.text;
-      widget.customer.nickname = _nickNameFieldController.text;
-      widget.customer.whatsapp_number = _whatsappNoFieldController.text;
+      widget.customer!.district = _districtFieldController.text;
+      widget.customer!.job_title = _jobTitleFieldController.text;
+      widget.customer!.nickname = _nickNameFieldController.text;
+      widget.customer!.whatsapp_number = _whatsappNoFieldController.text;
 
       if (_image != null) {
         /* convert to base64, and upload to server. */
-        List<int> imageBytes = await _image.readAsBytesSync();
+        List<int> imageBytes = await _image!.readAsBytesSync();
         // xrint(imageBytes);
         String base64Image = base64Encode(imageBytes);
-        widget.customer.profile_picture = base64Image;
+        widget.customer!.profile_picture = base64Image;
       } else {
-        widget.customer.profile_picture = null;
+        widget.customer!.profile_picture = null;
       }
       showLoading(true);
-      widget.presenter.updatePersonnalPage(widget.customer);
+      widget.presenter!.updatePersonnalPage(widget.customer!);
     } else {
       mDialog(
           "${AppLocalizations.of(context)!.translate('please_fill_all_fields')}");
@@ -449,12 +450,12 @@ class _Personal2PageState extends State<Personal2Page>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -465,7 +466,7 @@ class _Personal2PageState extends State<Personal2Page>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -495,7 +496,7 @@ class _Personal2PageState extends State<Personal2Page>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -563,6 +564,6 @@ class _Personal2PageState extends State<Personal2Page>
 
   void mToast(String message) {
 //    mDialog(message);
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 }

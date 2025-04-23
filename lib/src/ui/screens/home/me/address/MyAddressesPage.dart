@@ -471,7 +471,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     /* Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAddressPage(address: address, presenter: EditAddressPresenter()),
+        builder: (context) => EditAddressPage(address: address, presenter: EditAddressPresenter(AddressView())),
       ),
     );*/
 

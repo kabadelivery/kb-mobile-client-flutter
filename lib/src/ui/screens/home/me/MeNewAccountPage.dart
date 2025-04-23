@@ -59,15 +59,15 @@ import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
 
 class MeNewAccountPage extends StatefulWidget {
-  CustomerModel customerData;
+  CustomerModel? customerData;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   static var routeName = "/MeNewAccountPage";
 
-  MeNewAccountPage({Key key, this.title}) : super(key: key);
+  MeNewAccountPage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MeNewAccountPageState createState() => _MeNewAccountPageState();
@@ -77,9 +77,9 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
 
-  StateContainerState container;
+  StateContainerState? container;
 
-  static List<String> popupMenus;
+  static List<String>? popupMenus;
 
   @override
   void initState() {
@@ -122,7 +122,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AddVouchersPage(
-                presenter: AddVoucherPresenter(), customer: widget.customer),
+                presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -137,7 +137,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
   void menuChoiceAction(String value) {
     /* jump to the other activity */
-    switch (popupMenus.indexOf(value)) {
+    switch (popupMenus!.indexOf(value)) {
       case 0:
         // scan
         _jumpToAddVoucherPage();
@@ -161,14 +161,13 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           centerTitle: true,
           actions: [
             PopupMenuButton<String>(
               onSelected: menuChoiceAction,
               itemBuilder: (BuildContext context) {
-                return popupMenus.map((String menuName) {
+                return popupMenus!.map((String menuName) {
                   return PopupMenuItem<String>(
                       value: menuName, child: Text(menuName));
                 }).toList();
@@ -231,7 +230,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               context,
               Personal3Page(
                   customer: widget.customerData,
-                  presenter: PersonnalPagePresenter())),
+                  presenter: PersonnalPagePresenter(PersonnalPageView()))),
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 15),
             child: Column(
@@ -253,7 +252,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                   fit: BoxFit.cover,
                                   image: CachedNetworkImageProvider(
                                       Utils.inflateLink(
-                                          widget.customerData.profile_picture),
+                                          widget.customerData!.profile_picture!),
                                       cacheKey: widget
                                           .customerData?.profile_picture)))),
                     ),
@@ -266,7 +265,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                widget.customerData.nickname,
+                                widget.customerData!.nickname!,
                                 style: TextStyle(
                                     color: KColors.new_black,
                                     fontSize: 15,
@@ -380,7 +379,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     onTap: () => _jumpToPage(
                         context,
                         TransferMoneyRequestPage(
-                            presenter: TransferMoneyRequestPresenter())),
+                            presenter: TransferMoneyRequestPresenter(TransferMoneyRequestView()))),
                     child: Container(
                       child: Column(
                         children: <Widget>[
@@ -499,7 +498,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
           child: Column(children: [
             InkWell(
               onTap: () => _jumpToPage(
-                  context, MyAddressesPage(presenter: AddressPresenter())),
+                  context, MyAddressesPage(presenter: AddressPresenter(AddressView()))),
               child: Container(
                 padding:
                     EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
@@ -547,7 +546,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             ),
             InkWell(
               onTap: () =>
-                  _jumpToPage(context, FeedsPage(presenter: FeedPresenter())),
+                  _jumpToPage(context, FeedsPage(presenter: FeedPresenter(FeedView()))),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border(
@@ -571,7 +570,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             ),
             InkWell(
               onTap: () => _jumpToPage(
-                  context, MyVouchersPage(presenter: VoucherPresenter())),
+                  context, MyVouchersPage(presenter: VoucherPresenter(VoucherView()))),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border(
@@ -680,7 +679,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
         PopupMenuButton<String>(
           onSelected: menuChoiceAction,
           itemBuilder: (BuildContext context) {
-            return popupMenus.map((String menuName) {
+            return popupMenus!.map((String menuName) {
               return PopupMenuItem<String>(
                   value: menuName, child: Text(menuName));
             }).toList();
@@ -729,9 +728,9 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
                                         Utils.inflateLink(widget
-                                            .customerData.profile_picture))))),
+                                            .customerData!.profile_picture!))))),
                         onTap: () => _seeProfilePicture()
-//                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
+//                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter(PersonnalPageView()))),
                         ),
                     Container(
                         padding: EdgeInsets.only(right: 20),
@@ -740,7 +739,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                widget.customerData.nickname,
+                                widget.customerData!.nickname!,
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -750,9 +749,9 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                               SizedBox(height: 10),
                               Text(
                                   Utils.isPhoneNumber_TGO(
-                                          widget.customerData.username)
-                                      ? "XXXX${widget.customerData.username.substring(4)}"
-                                      : "${widget.customerData.username.substring(0, 4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@") - 1)}",
+                                          widget.customerData!.username!)
+                                      ? "XXXX${widget.customerData!.username!.substring(4)}"
+                                      : "${widget.customerData!.username!.substring(0, 4)}****${widget.customerData!.username!.substring(widget.customerData!.username!.lastIndexOf("@") - 1)}",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 15),
                                   textAlign: TextAlign.right),
@@ -896,7 +895,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           onTap: () => _jumpToPage(
                               context,
                               TransferMoneyRequestPage(
-                                  presenter: TransferMoneyRequestPresenter())),
+                                  presenter: TransferMoneyRequestPresenter(TransferMoneyRequestView()))),
                           child: Container(
                             child: Column(
                               children: <Widget>[
@@ -992,7 +991,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                               Personal2Page(
                                                   customer: widget.customerData,
                                                   presenter:
-                                                      PersonnalPagePresenter()))),
+                                                      PersonnalPagePresenter(PersonnalPageView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -1041,7 +1040,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                               context,
                                               MyAddressesPage(
                                                   presenter:
-                                                      AddressPresenter()))),
+                                                      AddressPresenter(AddressView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -1099,7 +1098,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                           onPressed: () => _jumpToPage(
                                               context,
                                               FeedsPage(
-                                                  presenter: FeedPresenter()))),
+                                                  presenter: FeedPresenter(FeedView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -1131,7 +1130,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                               context,
                                               MyVouchersPage(
                                                   presenter:
-                                                      VoucherPresenter()))),
+                                                      VoucherPresenter(VoucherView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -1202,7 +1201,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TopNewUpPage(presenter: TopUpPresenter()),
+        builder: (context) => TopNewUpPage(presenter: TopUpPresenter(TopUpView())),
       ),
     );
 
@@ -1267,7 +1266,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     }
   }
 */
-  String _handleLinksImmediately(String data) {
+  String? _handleLinksImmediately(String data) {
     /* streams */
 
     // if you are logged in, we can just move to the activity.
@@ -1293,7 +1292,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             _jumpToPage(
                 context,
                 AddVouchersPage(
-                    presenter: AddVoucherPresenter(),
+                    presenter: AddVoucherPresenter(AddVoucherView()),
                     qrCode: "${arg}".toUpperCase(),
                     customer: widget.customer));
           }
@@ -1301,12 +1300,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
         case "vouchers":
           xrint("vouchers page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter()));
+          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
           break;
         case "addresses":
           xrint("addresses page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter()));
+          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
           break;
         case "transactions":
           _jumpToPage(context,
@@ -1384,12 +1383,12 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   }
 
   void _showDialog2(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1400,7 +1399,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -1430,7 +1429,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -1462,7 +1461,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   }
 
   Future<dynamic> _showDialog({
-    String svgIcon,
+    String? svgIcon,
     var message,
   }) {
     return showDialog(
@@ -1470,7 +1469,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       builder: (BuildContext context) {
         return AlertDialog(
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon)),
+              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
@@ -1515,7 +1514,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -1544,13 +1543,13 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   }
 
   String _getUsername() {
-    return (Utils.isPhoneNumber_TGO(widget.customerData.username)
+    return (Utils.isPhoneNumber_TGO(widget.customerData!.username!)
             ? "(228) "
             : "") +
-        widget?.customerData?.username;
-    return Utils.isPhoneNumber_TGO(widget.customerData.username)
-        ? "XXXX${widget.customerData.username.substring(4)}"
-        : "${widget.customerData.username.substring(0, 4)}****${widget.customerData.username.substring(widget.customerData.username.lastIndexOf("@") - 1)}";
+        widget.customerData!.username!;
+    return Utils.isPhoneNumber_TGO(widget.customerData!.username!)
+        ? "XXXX${widget.customerData!.username!.substring(4)}"
+        : "${widget.customerData!.username!.substring(0, 4)}****${widget.customerData!.username!.substring(widget.customerData!.username!.lastIndexOf("@") - 1)}";
   }
 
   void _logout() {

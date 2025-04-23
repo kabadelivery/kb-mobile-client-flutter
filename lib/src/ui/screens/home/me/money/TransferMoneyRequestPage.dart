@@ -14,14 +14,14 @@ import 'package:toast/toast.dart';
 class TransferMoneyRequestPage extends StatefulWidget {
   static var routeName = "/TransferMoneyRequest";
 
-  TransferMoneyRequestPresenter presenter;
+  TransferMoneyRequestPresenter? presenter;
 
-  TransferMoneyRequestPage({Key key, this.title, this.presenter})
+  TransferMoneyRequestPage({Key? key, this.title, this.presenter})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
   @override
   _TransferMoneyRequestPageState createState() =>
@@ -30,7 +30,7 @@ class TransferMoneyRequestPage extends StatefulWidget {
 
 class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
     implements TransferMoneyRequestView {
-  TextEditingController _phoneNumberFieldController;
+  TextEditingController? _phoneNumberFieldController;
 
   bool isOperatorOk = false;
 
@@ -42,7 +42,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.transferMoneyRequestView = this;
+    widget.presenter!.transferMoneyRequestView = this;
     _phoneNumberFieldController = TextEditingController();
     /* _phoneNumberFieldController.addListener((){
       setState(() {
@@ -59,7 +59,6 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 20),
@@ -211,14 +210,14 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
   }
 
   void iLaunchTransaction() {
-    String phoneNumber = _phoneNumberFieldController.text;
+    String phoneNumber = _phoneNumberFieldController!.text;
 //    if (Utils.isPhoneNumber_TGO(phoneNumber)) {
     // can launch
     if (widget.customer != null) {
-      if (widget.customer.phone_number != phoneNumber &&
-          widget.customer.email != phoneNumber)
+      if (widget.customer!.phone_number != phoneNumber &&
+          widget.customer!.email != phoneNumber)
         widget.presenter
-            .launchTransferMoneyRequest(widget.customer, phoneNumber);
+            !.launchTransferMoneyRequest(widget.customer!, phoneNumber);
       else
         _showDialog(
             message:
@@ -233,7 +232,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   @override
@@ -251,7 +250,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
           .push(new MaterialPageRoute<dynamic>(builder: (BuildContext context) {
         return TransferMoneyAmountConfirmationPage(
             moneyReceiver: customer,
-            presenter: TransferMoneyAmountConfirmationPresenter());
+            presenter: TransferMoneyAmountConfirmationPresenter(TransferMoneyAmountConfirmationView()));
       }));
     }
   }

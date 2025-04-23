@@ -31,15 +31,15 @@ import '../../../StateContainer.dart';
 class RestaurantDetailsPage extends StatefulWidget {
   static var routeName = "/RestaurantDetailsPage";
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  CustomerModel customer;
+  CustomerModel? customer;
 
-  RestaurantDetailsPresenter presenter;
+  RestaurantDetailsPresenter? presenter;
 
-  int restaurantId;
+  int? restaurantId;
 
-  List<CommentModel> commentList;
+  List<CommentModel>? commentList;
 
   RestaurantDetailsPage({this.restaurant, this.restaurantId, this.presenter}) {
 //    restaurantId = restaurant.id;
@@ -74,16 +74,16 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     super.initState();
 
     // check restaurant id and work with it.
-    widget.presenter.restaurantDetailsView = this;
+    widget.presenter!.restaurantDetailsView = this;
 
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       if (widget.restaurant != null) {
         // fetch comments
         // we can accept to load the restaurant here if needed
-        widget.presenter.checkCanComment(customer, widget?.restaurant);
-        widget.presenter.fetchCommentList(
-            widget?.customer, ShopModel(id: widget?.restaurantId));
+        widget.presenter!.checkCanComment(customer!, widget.restaurant!);
+        widget.presenter!.fetchCommentList(
+            widget.customer!, ShopModel(id: widget?.restaurantId));
         // fetch if the restaurant is open
       }
     });
@@ -91,27 +91,27 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0) widget.restaurantId = args;
     if (widget.restaurant == null || widget.restaurant?.name == null) {
       showLoading(true);
       // there must be a food id.
       if (widget.customer != null) {
-        widget.restaurant = ShopModel(id: widget.restaurantId);
+        widget.restaurant = ShopModel(id: widget.restaurantId!);
         widget.presenter
-            .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+            !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
       } else {
         showLoading(true);
         /*Future.delayed(Duration(seconds: 1)).then((onValue) {
-          widget.restaurant = ShopModel(id: widget.restaurantId);
-          widget.presenter.fetchRestaurantDetailsById(
-              widget.customer, widget.restaurantId);
+          widget.restaurant = ShopModel(id: widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });*/
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
-          widget.restaurant = ShopModel(id: widget.restaurantId);
+          widget.restaurant = ShopModel(id: widget.restaurantId!);
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
       }
     }
@@ -148,7 +148,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                 borderRadius: BorderRadius.all(Radius.circular(7)),
                 color: KColors.primaryColor.withAlpha(100)),
             padding: EdgeInsets.all(5),
-            child: Text("${widget?.restaurant?.name}",
+            child: Text("${widget.restaurant!.name}",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
@@ -157,7 +157,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
           background: Container(
             child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: Utils.inflateLink(widget?.restaurant?.theme_pic)),
+                imageUrl: Utils.inflateLink(widget.restaurant!.theme_pic!)),
           )),
     );
     return DefaultTabController(
@@ -202,7 +202,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                             children: <Widget>[
                                                 Icon(Icons.access_time),
                                                 Text(
-                                                    "${widget?.restaurant?.working_hour}",
+                                                    "${widget.restaurant!.working_hour}",
                                                     style: TextStyle(
                                                         color:
                                                             KColors.new_black,
@@ -217,7 +217,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                             width: 20,
                                             height: 20,
                                             child: CircularProgressIndicator()))
-                                    : _getRestaurantStateTag(widget.restaurant),
+                                    : _getRestaurantStateTag(widget.restaurant!),
                               ],
                             ),
                           ),
@@ -226,7 +226,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                           /* rounded image - */
                           InkWell(
                             onTap: () =>
-                                _seeProfilePicture(widget?.restaurant?.pic),
+                                _seeProfilePicture(widget.restaurant!.pic!),
                             child: Container(
                                 height: 90,
                                 width: 90,
@@ -239,7 +239,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                         fit: BoxFit.cover,
                                         image: CachedNetworkImageProvider(
                                             Utils.inflateLink(
-                                                widget?.restaurant?.pic))))),
+                                                widget.restaurant!.pic!))))),
                           ),
                           SizedBox(height: 20),
                           /* see the menu entry */
@@ -249,7 +249,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                             child: InkWell(
                                 onTap: () {
                                   _jumpToRestaurantMenu(
-                                      context, widget?.restaurant);
+                                      context, widget.restaurant!);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(top: 5, bottom: 5),
@@ -282,7 +282,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                 children: <Widget>[
                                   /* description of restaurant */
                                   Text(
-                                    "${widget?.restaurant?.description}",
+                                    "${widget.restaurant!.description}",
                                     style: TextStyle(
                                         color: KColors.new_black, fontSize: 16),
                                   ),
@@ -293,7 +293,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                           color: Colors.blue),
                                       Flexible(
                                           child: Text(
-                                              "${widget?.restaurant?.address}",
+                                              "${widget.restaurant!.address}",
                                               maxLines: 3,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
@@ -490,7 +490,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
   _buildCommentsList(List<CommentModel> comments) {
     var list = List<Widget>.generate(comments.length, (int index) {
-      if (!comments[index].hidden)
+      if (!comments[index].hidden!)
         return RestaurantCommentWidget(comment: comments[index]);
       return Container();
     })?.reversed;
@@ -505,7 +505,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -514,7 +514,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -524,7 +524,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -534,7 +534,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchRestaurantDetailsById(widget.customer, widget.restaurantId);
+              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -544,7 +544,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     setState(() {
       widget.restaurant = restaurant;
     });
-    widget.presenter.fetchCommentList(widget.customer, widget?.restaurant);
+    widget.presenter!.fetchCommentList(widget.customer!, widget.restaurant!);
   }
 
   @override
@@ -599,12 +599,12 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
       List<CommentModel> comments, String stars, String votes) {
     setState(() {
       if (widget?.restaurant != null) {
-        widget.restaurant.stars = double.parse(stars);
-        widget.restaurant.votes = int.parse(votes);
+        widget.restaurant!.stars = double.parse(stars);
+        widget.restaurant!.votes = int.parse(votes);
       }
       widget.commentList = comments;
     });
-    if (widget.commentList?.length > 0) {
+    if (widget.commentList!.length! > 0) {
       // scroll to bottom
       /*   Timer(Duration(milliseconds: 800), () {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent*2);
@@ -636,7 +636,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text("${widget.restaurant.stars.toStringAsFixed(1)}",
+            Text("${widget.restaurant!.stars!.toStringAsFixed(1)}",
                 style: TextStyle(fontSize: 100, color: KColors.primaryColor)),
             /* stars */
             Column(
@@ -644,17 +644,17 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                 children: <Widget>[
                   Row(
                       children: List<Widget>.generate(
-                          widget.restaurant.stars.toInt(), (int index) {
+                          widget.restaurant!.stars!.toInt(), (int index) {
                     return Icon(Icons.star, color: KColors.primaryYellowColor);
                   })),
                   Text(
-                      "${widget.restaurant.votes} ${AppLocalizations.of(context)!.translate('votes')}",
+                      "${widget.restaurant!.votes} ${AppLocalizations.of(context)!.translate('votes')}",
                       style: TextStyle(color: Colors.grey))
                 ])
           ],
         ),
         /* the list of comments */
-      ]..addAll(_buildCommentsList(widget.commentList)),
+      ]..addAll(_buildCommentsList(widget.commentList!)),
     );
   }
 
@@ -702,7 +702,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         builder: (context) => ReviewRestaurantPage(
             restaurant: widget?.restaurant,
             rate: _latentRate,
-            presenter: RestaurantReviewPresenter()),
+            presenter: RestaurantReviewPresenter(RestaurantReviewView())),
       ),
     );
     if (results != null && results.containsKey('ok')) {
@@ -711,10 +711,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         setState(() {
           _canComment = 0;
         });
-        if (widget?.restaurant?.id != null)
-          widget.restaurantId = widget?.restaurant?.id;
-        widget.presenter.fetchCommentList(
-            widget.customer, ShopModel(id: widget?.restaurantId));
+        if (widget.restaurant!.id != null)
+          widget.restaurantId = widget.restaurant!.id;
+        widget.presenter!.fetchCommentList(
+            widget.customer!, ShopModel(id: widget?.restaurantId));
       }
     }
   }
@@ -783,7 +783,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(),
+                          presenter: LoginPresenter(LoginView()),
                           fromOrderingProcess: true)));
                 },
               )
@@ -807,7 +807,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter()),
+            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

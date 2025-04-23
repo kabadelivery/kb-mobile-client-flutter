@@ -21,23 +21,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share/share.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 class RestaurantFoodDetailsPage extends StatefulWidget {
 
   static var routeName = "/RestaurantFoodDetailsPage";
 
-  ShopProductModel food;
+  ShopProductModel? food;
 
-  FoodPresenter presenter;
+  FoodPresenter? presenter;
 
-  int foodId;
+  int? foodId;
 
-  ShopModel restaurant;
+  ShopModel? restaurant;
 
-  RestaurantFoodDetailsPage({Key key, this.food, this.foodId, this.presenter}) : super(key: key) {
+  RestaurantFoodDetailsPage({Key? key, this.food, this.foodId, this.presenter}) : super(key: key) {
     this.restaurant = food?.restaurant_entity;
   }
 
@@ -48,7 +48,7 @@ class RestaurantFoodDetailsPage extends StatefulWidget {
 class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> implements FoodView {
 
 //  SliverAppBar flexibleSpaceWidget;
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   int _carousselPageIndex = 0;
 
@@ -78,8 +78,8 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
     if (widget.food == null){
       // there must be a food id.
-      widget.presenter.foodView = this;
-      widget.presenter.fetchFoodById(widget.foodId);
+      widget.presenter!.foodView = this;
+      widget.presenter!.fetchFoodById(widget.foodId!);
     }
   }
 
@@ -92,12 +92,12 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   @override
   Widget build(BuildContext context) {
 
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0)
       widget.foodId = args;
     if (widget.food == null){
       // there must be a food id.
-      widget.presenter.fetchFoodById(widget.foodId);
+      widget.presenter!.fetchFoodById(widget.foodId!);
     }
 
     /* use silver-app-bar first */
@@ -113,11 +113,11 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
   }
 
   _buildSysErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){ widget.presenter!.fetchFoodById(widget.foodId!); });
   }
 
   _buildNetworkErrorPage() {
-    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){ widget.presenter.fetchFoodById(widget.foodId); });
+    return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){ widget.presenter!.fetchFoodById(widget.foodId!); });
   }
 
 
@@ -152,10 +152,10 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
 
-                                            widget.food.promotion==0 ?
+                                            widget.food!.promotion==0 ?
                                             Text("${widget.food?.price}", style: TextStyle(color: KColors.primaryYellowColor, fontSize: 30, fontWeight: FontWeight.bold)) : Text("${widget.food?.price}", style: TextStyle(color: KColors.new_black, decoration:  TextDecoration.lineThrough, fontSize: 30, fontWeight: FontWeight.bold)),
 
-                                            widget.food.promotion!=0 ? Row(children: <Widget>[
+                                            widget.food!.promotion!=0 ? Row(children: <Widget>[
                                               SizedBox(width: 10),
                                               Text("${widget.food?.promotion_price}", style: TextStyle(color: KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.bold)),
                                             ]) : Container(),
@@ -186,7 +186,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                                     shape: BoxShape.circle,
                                                     image: new DecorationImage(
                                                         fit: BoxFit.cover,
-                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget?.food?.pic))
+                                                        image: CachedNetworkImageProvider(Utils.inflateLink(widget.food!.pic!))
                                                     )
                                                 )
                                             ),
@@ -220,7 +220,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                                               ),
                                               SizedBox(height: 5),
                                               Row(children: <Widget>[
-                                                Text("${widget.food.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
+                                                Text("${widget.food!.promotion==0 ? widget.food?.price : widget.food?.promotion_price}", style: TextStyle(fontSize: 30, color: KColors.primaryYellowColor)),
                                                  ]),
                                             ],
                                           ),
@@ -297,10 +297,10 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     int totalPrice = 0;
 
     /* init */
-    food_selected.putIfAbsent(widget.food, () => quantity);
-    totalPrice = int.parse(widget.food.promotion == 0 /* no promotion */
-        ? widget.food.price
-        : widget.food.promotion_price) * quantity;
+    food_selected.putIfAbsent(widget.food!, () => quantity);
+    totalPrice = int.parse(widget.food!.promotion == 0 /* no promotion */
+        ? widget.food!.price!
+        : widget.food!.promotion_price!) * quantity;
 
     /* data */
     /* Navigator.push(
@@ -364,7 +364,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
 
                   Navigator.of(context).push(new MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter(), fromOrderingProcess: true)));
+                          LoginPage(presenter: LoginPresenter(LoginView()), fromOrderingProcess: true)));
                 },
               )
             ],
@@ -377,7 +377,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   OrderConfirmationPage2(restaurant: widget.restaurant,
-                      presenter: OrderConfirmationPresenter(),
+                      presenter: OrderConfirmationPresenter(OrderConfirmationView()),
                       foods: food_selected,
                       addons: adds_on_selected),
               transitionsBuilder: (context, animation, secondaryAnimation,
@@ -438,7 +438,7 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
     double expandedHeight = 9*MediaQuery.of(context).size.width/16 + 20;
     var images = widget.food?.food_details_pictures;
     if (images == null){
-      images = [widget.food.pic];
+      images = [widget.food!.pic!];
     }
 
     return  new SliverAppBar(
@@ -500,13 +500,13 @@ class _RestaurantFoodDetailsPageState extends State<RestaurantFoodDetailsPage> i
                         child: Row(
                           children: <Widget>[]
                             ..addAll(
-                                List<Widget>.generate(images?.length == null ? 0 : images?.length, (int index) {
+                                List<Widget>.generate(images.length == null ? 0 : images.length, (int index) {
                                   return Container(
                                       margin: EdgeInsets.only(right:2.5, top: 2.5),
                                       height: 9,width:9,
                                       decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
                                           border: new Border.all(color: Colors.white),
-                                          color: (index==_carousselPageIndex || index== images.length)?Colors.white:Colors.transparent
+                                          color: (index==_carousselPageIndex || index== images!.length)?Colors.white:Colors.transparent
                                       ));
                                 })
                               /* add a list of rounded views */

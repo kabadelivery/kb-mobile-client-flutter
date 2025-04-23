@@ -22,13 +22,13 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 class OrderDetailsPageOld extends StatefulWidget {
   static var routeName = "/OrderDetailsPageOld";
 
-  OrderDetailsPresenter presenter;
+  OrderDetailsPresenter? presenter;
 
-  OrderDetailsPageOld({Key key, this.orderId, this.presenter}) : super(key: key);
+  OrderDetailsPageOld({Key? key, this.orderId, this.presenter}) : super(key: key);
 
-  int orderId;
-  CustomerModel customer;
-  CommandModel command;
+  int? orderId;
+  CustomerModel? customer;
+  CommandModel? command;
 
   @override
   _OrderDetailsPageState createState() => _OrderDetailsPageState();
@@ -46,29 +46,29 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.orderDetailsView = this;
+    widget.presenter!.orderDetailsView = this;
     showLoading(true);
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // if there is an id, then launch here
-      if (widget.orderId != null &&
-          widget.orderId != 0 &&
+      if (widget.orderId! != null &&
+          widget.orderId! != 0 &&
           widget.command == null &&
           widget.customer != null) {
-        widget.presenter.fetchOrderDetailsWithId(customer, widget.orderId);
+        widget.presenter!.fetchOrderDetailsWithId(customer!, widget.orderId!);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context).settings.arguments;
+    final int args = ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0) {
       widget.orderId = args;
       if (widget.customer != null && widget.command == null) {
         // there must be a food id.
         widget.presenter
-            .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+            !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
       } else {
         // postpone it to the next second by adding showing the loading button.
         if (!waitedForCustomerOnce) {
@@ -77,7 +77,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           Future.delayed(Duration(seconds: 1)).then((onValue) {
             if (widget.customer != null && widget.command == null) {
               widget.presenter
-                  .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+                  !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
             }
           });
         }
@@ -87,7 +87,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          brightness: Brightness.light,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -138,13 +137,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
       Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(top: 15, bottom: 15, right: 10, left: 10),
-          color: Utils.getStateColor(widget?.command?.state),
+          color: Utils.getStateColor(widget.command!.state!!),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  widget?.command?.is_preorder == 0
+                  widget.command!.is_preorder == 0
                       ? Container()
                       : Container(
                           decoration: BoxDecoration(
@@ -158,14 +157,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                                   fontWeight: FontWeight.bold)),
                           padding: EdgeInsets.all(8)),
                   SizedBox(width: 5),
-                  Text(_orderTopLabel(widget.command),
+                  Text(_orderTopLabel(widget.command!),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18, color: Colors.white)),
                   /* if rejected than we need a reason */
                 ],
               ),
               SizedBox(height: 5),
-              widget?.command?.state > 3
+              widget.command!.state! > 3
                   ? Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -187,7 +186,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           )),
       /* Progress line */
       Container(
-        child: _getProgressTimeLine(widget?.command),
+        child: _getProgressTimeLine(widget.command!),
         margin: EdgeInsets.only(top: 10, bottom: 10),
       ),
       Align(
@@ -202,7 +201,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                   fontWeight: FontWeight.bold, color: KColors.new_black),
               children: <TextSpan>[
                 TextSpan(
-                    text: " ${_orderLastUpdate(widget.command)}",
+                    text: " ${_orderLastUpdate(widget.command!)}",
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.normal,
@@ -212,10 +211,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           ),
         ),
       ),
-      (widget.command.state == 3 && widget.command.rating > 1
+      (widget.command!.state == 3 && widget.command!.rating!! > 1
           ? SizedBox(height: 10)
           : Container()),
-      (widget.command.state == 3 && widget.command.rating > 1
+      (widget.command!.state == 3 && widget.command!.rating!! > 1
           ? Container(
               padding: EdgeInsets.all(10),
               margin: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
@@ -236,11 +235,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                                   color: Colors.white))),
                       SizedBox(height: 5),
                       Row(
-                          mainAxisAlignment: widget?.command?.comment == null
+                          mainAxisAlignment: widget.command!.comment == null
                               ? MainAxisAlignment.center
                               : MainAxisAlignment.start,
                           children: <Widget>[]..addAll(List<Widget>.generate(
-                                widget?.command?.rating, (int index) {
+                                widget.command!.rating!, (int index) {
                               return Icon(Icons.star,
                                   color: KColors.primaryYellowColor, size: 20);
                             }))),
@@ -249,7 +248,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                         children: <Widget>[
                           Flexible(
                               child: Text(
-                                  "${widget?.command?.comment == null ? "" : widget?.command?.comment} ",
+                                  "${widget.command!.comment == null ? "" : widget.command!.comment} ",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 17))),
@@ -258,8 +257,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                     ]),
               ))
           : Container()),
-      (widget.command.rating < 1 &&
-              Utils.within3days(widget.command?.last_update)
+      (widget.command!.rating! < 1 &&
+              Utils.within3days(widget.command!.last_update!)
           ? SizedBox(height: 10)
           : Container()),
       /* your contact */
@@ -296,7 +295,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                           TextStyle(color: KColors.new_black, fontSize: 16))),
               Flexible(
                   child: Text(
-                      "${widget?.command?.state != COMMAND_STATE.WAITING && widget?.command?.state != COMMAND_STATE.REJECTED ? widget.command?.passphrase?.toUpperCase() : "---"}",
+                      "${widget.command!.state! != COMMAND_STATE.WAITING && widget.command!.state! != COMMAND_STATE.REJECTED ? widget.command?.passphrase?.toUpperCase() : "---"}",
                       style: TextStyle(
                           color: KColors.new_black,
                           fontSize: 20,
@@ -304,8 +303,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             ]),
       ),
     ]
-              ..addAll(widget?.command?.state > COMMAND_STATE.COOKING &&
-                      widget?.command?.state < COMMAND_STATE.REJECTED
+              ..addAll(widget.command!.state! > COMMAND_STATE.COOKING! &&
+                      widget.command!.state! < COMMAND_STATE.REJECTED!
                   ? <Widget>[
                       SizedBox(height: 10),
                       /* KABA man name */
@@ -324,7 +323,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                                           fontSize: 16))),
                               Flexible(
                                   child: Text(
-                                      "${widget?.command?.livreur?.name}",
+                                      "${widget.command!.livreur!.name}",
                                       style: TextStyle(
                                           color: KColors.new_black,
                                           fontSize: 16,
@@ -365,7 +364,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                                   ),
                                   onPressed: () {
                                     _callNumber(
-                                        widget?.command?.livreur?.workcontact);
+                                        widget.command!.livreur!.workcontact!);
                                   }),
                             ]),
                       ),
@@ -435,7 +434,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                           children: <Widget>[
                             Expanded(
                                 child: Text(
-                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command.infos}",
+                                    "${AppLocalizations.of(context)!.translate('informations')}: ${widget.command!.infos}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -447,17 +446,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 /* food list*/
                 Card(
                     child: Column(
-                        children: List.generate(widget.command.food_list.length,
+                        children: List.generate(widget.command!.food_list!.length,
                             (int index) {
-                  return SingleOrderFoodWidget(widget.command.food_list[index]);
+                  return SingleOrderFoodWidget(widget.command!.food_list![index]);
                 }))),
                 SizedBox(height: 10),
                 /* if we have a voucher, we will show it */
                 _buildVoucher(),
                 SizedBox(height: 10),
                 /* bill */
-                widget?.command?.kaba_point_used_amount != null &&
-                        widget?.command?.kaba_point_used_amount > 0
+                widget.command!.kaba_point_used_amount != null &&
+                        widget.command!.kaba_point_used_amount! > 0
                     ? showKabaPointUsed()
                     : Container(),
                 _buildBill(),
@@ -465,7 +464,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   }
 
   String _orderTopLabel(CommandModel command) {
-    switch (widget?.command?.state) {
+    switch (widget.command!.state!) {
       case 0:
         return "${AppLocalizations.of(context)!.translate('order_waiting')}"
             .toUpperCase();
@@ -486,7 +485,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(widget.command?.last_update));
+    return Utils.readTimestamp(context, int.parse(widget.command!.last_update!));
   }
 
   _getProgressTimeLine(CommandModel command) {
@@ -504,7 +503,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  widget?.command?.state == COMMAND_STATE.WAITING
+                  widget.command!.state! == COMMAND_STATE.WAITING
                       ? Container(
                           decoration: BoxDecoration(
                               color: CommandStateColor.waiting,
@@ -525,10 +524,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             flex: 0,
             child: Container(
                 child: Icon(Icons.watch_later,
-                    size: widget?.command?.state == COMMAND_STATE.WAITING
+                    size: widget.command!.state! == COMMAND_STATE.WAITING
                         ? PROGRESS_ICON_SIZE_ACTIVE
                         : PROGRESS_ICON_SIZE_PASSIVE,
-                    color: widget?.command?.state != COMMAND_STATE.WAITING
+                    color: widget.command!.state! != COMMAND_STATE.WAITING
                         ? PASSIVE_COLOR
                         : Colors.grey)),
           ),
@@ -562,10 +561,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             flex: 0,
             child: Container(
                 child: Icon(FontAwesomeIcons.utensils,
-                    size: widget?.command?.state == COMMAND_STATE.COOKING
+                    size: widget.command!.state! == COMMAND_STATE.COOKING
                         ? PROGRESS_ICON_SIZE_ACTIVE
                         : PROGRESS_ICON_SIZE_PASSIVE,
-                    color: widget?.command?.state != COMMAND_STATE.COOKING
+                    color: widget.command!.state! != COMMAND_STATE.COOKING
                         ? PASSIVE_COLOR
                         : CommandStateColor.cooking)),
           ),
@@ -575,7 +574,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(width: 10),
-                  widget?.command?.state == COMMAND_STATE.COOKING
+                  widget.command!.state! == COMMAND_STATE.COOKING
                       ? Container(
                           decoration: BoxDecoration(
                               color: CommandStateColor.cooking,
@@ -607,7 +606,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  widget?.command?.state == COMMAND_STATE.SHIPPING
+                  widget.command!.state! == COMMAND_STATE.SHIPPING
                       ? Container(
                           decoration: BoxDecoration(
                               color: CommandStateColor.shipping,
@@ -628,10 +627,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
             flex: 0,
             child: Container(
                 child: Icon(FontAwesomeIcons.biking,
-                    size: widget?.command?.state == COMMAND_STATE.SHIPPING
+                    size: widget.command!.state! == COMMAND_STATE.SHIPPING
                         ? PROGRESS_ICON_SIZE_ACTIVE
                         : PROGRESS_ICON_SIZE_PASSIVE,
-                    color: widget?.command?.state != COMMAND_STATE.SHIPPING
+                    color: widget.command!.state! != COMMAND_STATE.SHIPPING
                         ? PASSIVE_COLOR
                         : CommandStateColor.shipping)),
           ),
@@ -650,10 +649,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           Expanded(flex: 2, child: Container()),
           Container(
               child: Icon(Icons.check_circle,
-                  size: widget?.command?.state == COMMAND_STATE.DELIVERED
+                  size: widget.command!.state! == COMMAND_STATE.DELIVERED
                       ? PROGRESS_ICON_SIZE_ACTIVE
                       : PROGRESS_ICON_SIZE_PASSIVE,
-                  color: widget?.command?.state != COMMAND_STATE.DELIVERED
+                  color: widget.command!.state! != COMMAND_STATE.DELIVERED
                       ? PASSIVE_COLOR
                       : CommandStateColor.delivered)),
           Expanded(
@@ -662,7 +661,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(width: 10),
-                  widget?.command?.state == COMMAND_STATE.DELIVERED
+                  widget.command!.state! == COMMAND_STATE.DELIVERED
                       ? Container(
                           decoration: BoxDecoration(
                               color: CommandStateColor.delivered,
@@ -694,16 +693,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   }
 
   _reviewOrder() async {
-    if (widget.command.rating < 1 &&
-        Utils.within3days(widget.command?.last_update) &&
-        widget.command.state == 3 /*within 3 days, you can still do it.*/) {
+    if (widget.command!.rating! < 1 &&
+        Utils.within3days(widget.command!.last_update!) &&
+        widget.command!.state == 3 /*within 3 days, you can still do it.*/) {
       // must review.
       /* jump to review pager. */
       Map results = await Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               OrderFeedbackPage(
-                  orderId: widget?.command?.id,
-                  presenter: OrderFeedbackPresenter()),
+                  orderId: widget.command!.id!,
+                  presenter: OrderFeedbackPresenter(OrderFeedbackView())),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
@@ -719,7 +718,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         bool feedBackOk = results['ok'];
         if (feedBackOk) {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget?.command?.id);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.command!.id!);
         }
       }
     } else {
@@ -767,7 +766,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
         });
   }
 
@@ -776,39 +775,39 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           widget.presenter
-              .fetchOrderDetailsWithId(widget.customer, widget.orderId);
+              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
         });
   }
 
   _buildBill() {
-    int priceNormalCommand,
+    int? priceNormalCommand,
         priceActualCommand,
         priceTotalToPay,
         priceNormalDelivery,
         priceActualDelivery;
 
-    priceNormalCommand = widget.command.food_pricing;
+    priceNormalCommand = widget.command!.food_pricing!;
 
     bool showRemise = true, showDeliveryNormal = true, showFoodNormal = true;
 
     // depends
-    if (widget?.command?.is_preorder == 1) {
-      priceTotalToPay = widget.command.preorder_food_pricing;
-      priceActualCommand = widget.command.preorder_food_pricing;
-      priceActualDelivery = widget.command.preorder_shipping_pricing;
-      priceNormalCommand = widget.command.food_pricing;
-      priceNormalDelivery = widget.command.shipping_pricing;
-    } else if (widget.command.is_promotion == 1) {
-      priceTotalToPay = widget.command.promotion_total_pricing;
-      priceActualCommand = widget.command.promotion_food_pricing;
-      priceActualDelivery = widget.command.promotion_shipping_pricing;
-      priceNormalCommand = widget.command.food_pricing;
-      priceNormalDelivery = widget.command.shipping_pricing;
-    } else if (widget.command.is_promotion == 0 &&
-        widget?.command?.is_preorder == 0) {
-      priceTotalToPay = widget.command.total_pricing;
-      priceActualCommand = widget.command.food_pricing;
-      priceActualDelivery = widget.command.shipping_pricing;
+    if (widget.command!.is_preorder == 1) {
+      priceTotalToPay = widget.command!.preorder_food_pricing!;
+      priceActualCommand = widget.command!.preorder_food_pricing!;
+      priceActualDelivery = widget.command!.preorder_shipping_pricing!;
+      priceNormalCommand = widget.command!.food_pricing!;
+      priceNormalDelivery = widget.command!.shipping_pricing!;
+    } else if (widget.command!.is_promotion == 1) {
+      priceTotalToPay = widget.command!.promotion_total_pricing!;
+      priceActualCommand = widget.command!.promotion_food_pricing!;
+      priceActualDelivery = widget.command!.promotion_shipping_pricing!;
+      priceNormalCommand = widget.command!.food_pricing!;
+      priceNormalDelivery = widget.command!.shipping_pricing!;
+    } else if (widget.command!.is_promotion == 0 &&
+        widget.command!.is_preorder == 0) {
+      priceTotalToPay = widget.command!.total_pricing!;
+      priceActualCommand = widget.command!.food_pricing!;
+      priceActualDelivery = widget.command!.shipping_pricing!;
       showRemise = false;
       showDeliveryNormal = false;
       showFoodNormal = false;
@@ -820,7 +819,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
       child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-        (int.parse(widget.command?.remise) > 0
+        (int.parse(widget.command!.remise!) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -852,7 +851,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                       SizedBox(width: 5),
                     ],
                   ),
-                  Text("$priceActualCommand",
+                  Text("${priceActualCommand}",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
@@ -868,8 +867,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
               /* check if there is promotion on Livraison */
               Row(
                 children: <Widget>[
-                  widget?.command?.is_preorder == 1 ||
-                          widget?.command?.is_promotion == 1
+                  widget.command!.is_preorder == 1 ||
+                          widget.command!.is_promotion == 1
                       ? Row(
                           // only show if there is pre-order or promotion on the fees of delivery
                           children: <Widget>[
@@ -889,7 +888,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
               )
             ]),
         SizedBox(height: 10),
-        int.parse(widget.command?.remise) > 0
+        int.parse(widget.command!.remise!) > 0
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -900,7 +899,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                             fontSize: 15,
                             color: Colors.grey)),
                     /* check if there is remise */
-                    Text("-${widget.command?.remise}%",
+                    Text("-${widget.command!.remise!}%",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -921,14 +920,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
               Text("${AppLocalizations.of(context)!.translate('net_price')}",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               Text(
-                  "${widget?.command?.is_preorder == 0 ? priceTotalToPay : widget.command.preorder_total_pricing}",
+                  "${widget.command!.is_preorder == 0 ? priceTotalToPay : widget.command!.preorder_total_pricing}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: KColors.primaryColor,
                       fontSize: 18)),
             ]),
         SizedBox(height: 10),
-        (int.parse(widget.command?.remise) > 0
+        (int.parse(widget.command!.remise!) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -948,24 +947,24 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
       await launch(url);
     } else {
       // ask launch.
-      Toast.show("Call error", context);
+      Toast.show("Call error");
     }
   }
 
   _buildVoucher() {
     // build voucher if we have it
-    if (widget?.command != null &&
-        widget?.command?.voucher_entity != null &&
-        widget?.command?.voucher_entity?.id != null) {
-      return MyVoucherMiniWidget(voucher: widget?.command?.voucher_entity);
+    if (widget.command != null &&
+        widget.command!.voucher_entity != null &&
+        widget.command!.voucher_entity?.id != null) {
+      return MyVoucherMiniWidget(voucher: widget.command!.voucher_entity);
     }
     return Container();
   }
 
   _getReason() {
-    if (widget.command.reason >= reasonsArray.length)
+    if (widget.command!.reason! >= reasonsArray.length)
       return "${AppLocalizations.of(context)!.translate('reason_beyond_control')}";
-    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command.reason - 1 < 0 ? 0 : widget.command.reason - 1]}')}";
+    return "${AppLocalizations.of(context)!.translate('${reasonsArray[widget.command!.reason! - 1 < 0 ? 0 : widget.command!.reason! - 1]}')}";
   }
 
   showKabaPointUsed() {
@@ -978,7 +977,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 style: TextStyle(color: Colors.white, fontSize: 12),
                 children: <TextSpan>[
               TextSpan(
-                  text: "${widget.command.kaba_point_used_amount}  ",
+                  text: "${widget.command!.kaba_point_used_amount}  ",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

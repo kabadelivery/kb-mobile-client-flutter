@@ -1,27 +1,24 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
-import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/MusicData.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayer/audioplayer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vibration/vibration.dart';
+
+import '../../../../../utils/_static_data/MusicData.dart';
 
 
 class VoucherSubscribeSuccessPage extends StatefulWidget {
 
   static var routeName = "/VoucherSubscribeSuccessPage";
 
-  VoucherSubscribeSuccessPage({Key key, this.voucher}) : super(key: key);
+  VoucherSubscribeSuccessPage({Key? key, this.voucher}) : super(key: key);
 
-  VoucherModel voucher;
+  VoucherModel? voucher;
 
   @override
   _VoucherSubscribeSuccessPageState createState() => _VoucherSubscribeSuccessPageState();
@@ -102,8 +99,8 @@ class _VoucherSubscribeSuccessPageState extends State<VoucherSubscribeSuccessPag
     // AudioPlayer audioPlayer = AudioPlayer();
     // audioPlayer.play(MusicData.voucher_subscribe_success);
     final player = AudioPlayer();
-    player.play(MusicData.voucher_subscribe_success);
-    if (await Vibration.hasVibrator ()
+    player.play(UrlSource(MusicData.voucher_subscribe_success));
+    if (await Vibration.hasVibrator ()==true
     ) {
       Vibration.vibrate(duration: 500);
     }

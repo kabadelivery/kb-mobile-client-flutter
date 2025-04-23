@@ -7,7 +7,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,17 +20,17 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 class TransferMoneyAmountConfirmationPage extends StatefulWidget {
   static var routeName = "/TransferMoneyAmountConfirmationPage";
 
-  TransferMoneyAmountConfirmationPresenter presenter;
+  TransferMoneyAmountConfirmationPresenter? presenter;
 
-  CustomerModel mySelf;
+  CustomerModel? mySelf;
 
   TransferMoneyAmountConfirmationPage(
-      {Key key, this.title, this.moneyReceiver, this.presenter})
+      {Key? key, this.title, this.moneyReceiver, this.presenter})
       : super(key: key);
 
-  final String title;
+  final String? title;
 
-  CustomerModel moneyReceiver;
+  CustomerModel? moneyReceiver;
 
   @override
   _TransferMoneyAmountConfirmationPageState createState() =>
@@ -40,7 +40,7 @@ class TransferMoneyAmountConfirmationPage extends StatefulWidget {
 class _TransferMoneyAmountConfirmationPageState
     extends State<TransferMoneyAmountConfirmationPage>
     implements TransferMoneyAmountConfirmationView {
-  TextEditingController _amountFieldController;
+  TextEditingController? _amountFieldController;
 
   var isLaunching = false;
   bool _isAmountOk = false;
@@ -49,9 +49,9 @@ class _TransferMoneyAmountConfirmationPageState
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.presenter.transferMoneyAmountConfirmationView = this;
+    widget.presenter!.transferMoneyAmountConfirmationView = this;
     _amountFieldController = new TextEditingController();
-    _amountFieldController.addListener(() => isAmountOk());
+    _amountFieldController!.addListener(() => isAmountOk());
 
     CustomerUtils.getCustomer().then((customer) {
       widget.mySelf = customer;
@@ -63,7 +63,6 @@ class _TransferMoneyAmountConfirmationPageState
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        brightness: Brightness.light,
         backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 20),
@@ -99,12 +98,12 @@ class _TransferMoneyAmountConfirmationPageState
                       image: new DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(Utils.inflateLink(
-                              widget?.moneyReceiver?.profile_picture))))),
+                              widget.moneyReceiver!.profile_picture!))))),
               SizedBox(
                 height: 20,
               ),
               Text(
-                widget?.moneyReceiver?.nickname,
+                widget.moneyReceiver!.nickname!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 17,
@@ -113,7 +112,7 @@ class _TransferMoneyAmountConfirmationPageState
               ),
               SizedBox(height: 5),
               Text(
-                Utils.hidePhoneNumber(widget?.moneyReceiver?.phone_number),
+                Utils.hidePhoneNumber(widget.moneyReceiver!.phone_number!)!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 13,
@@ -276,10 +275,10 @@ class _TransferMoneyAmountConfirmationPageState
       } else {
         String _mCode = results['code'];
         if (Utils.isCode(_mCode)) {
-          String amount = _amountFieldController.text;
+          String amount = _amountFieldController!.text!;
           if (widget.moneyReceiver != null && widget.mySelf != null)
-            widget.presenter.launchTransferMoneyAction(
-                widget.mySelf, widget.moneyReceiver.id, _mCode, amount);
+            widget.presenter!.launchTransferMoneyAction(
+                widget.mySelf!, widget.moneyReceiver!.id!, _mCode, amount);
         } else {
           mToast("${AppLocalizations.of(context)!.translate('code_wrong')}");
         }
@@ -288,7 +287,7 @@ class _TransferMoneyAmountConfirmationPageState
   }
 
   void mToast(String message) {
-    Toast.show(message, context, duration: Toast.LENGTH_LONG);
+    Toast.show(message, duration: Toast.lengthLong);
   }
 
   @override
@@ -384,15 +383,15 @@ class _TransferMoneyAmountConfirmationPageState
     // play music
     // AudioPlayer audioPlayer = AudioPlayer();
     final player = AudioPlayer();
-    player.play(MusicData.money_transfer_successfull);
-    if (await Vibration.hasVibrator()) {
+    player.play(UrlSource(MusicData.money_transfer_successfull));
+    if ((await Vibration.hasVibrator()) == true) {
       Vibration.vibrate(duration: 500);
     }
   }
 
   isAmountOk() {
     // only ints
-    String amount = _amountFieldController.text;
+    String amount = _amountFieldController!.text;
     final regex = RegExp(r'^[0-9]{2,5}$');
     bool res = regex.hasMatch(amount) && int.parse(amount) > 0;
     setState(() {

@@ -20,6 +20,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +147,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
     }
     if (widget.fromNotification!) {
-      final int args = ModalRoute.of(context).settings.arguments;
+      final int args = ModalRoute.of(context)!.settings.arguments as int;
       if (args != null && args != 0) {
         if (args < 0) {
           widget.foodId = -1 * args;
@@ -198,18 +199,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             children: <Widget>[
               RotatedBox(
                   child: AnimatedBuilder(
-                    animation: foodAddAnimation,
+                    animation: foodAddAnimation!,
                     child: Text("${_foodCount}/${FOOD_MAX}",
                         style: TextStyle(color: Colors.white, fontSize: 14)),
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return Transform.rotate(
-                          angle: foodAddAnimation.value, child: child);
+                          angle: foodAddAnimation!.value, child: child);
                     },
                   ),
                   quarterTurns: 0),
               BouncingWidget(
                 duration: Duration(milliseconds: 500),
                 scaleFactor: 3,
+                onPressed: () {  },
                 child: IconButton(
                     key: _menuBasketKey,
                     icon: Icon(Icons.shopping_cart, color: Colors.white),
@@ -261,7 +263,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                     fontSize: 15))),
                                         Expanded(flex: 2, child: Container()),
                                         _getRestaurantStateTag(
-                                            widget.restaurant)
+                                            widget.restaurant!)
                                       ]),
                                       SizedBox(
                                         height: 10,
@@ -340,12 +342,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                           ),
                                                     SizedBox(width: 10),
                                                     ShippingFeeTag(widget
-                                                        ?.restaurant?.distance),
+                                                        .restaurant!.distance!),
                                                   ],
                                                 ),
                                           GestureDetector(
                                               onTap: () => _jumpToShopDetails(
-                                                  widget.restaurant),
+                                                  widget.restaurant!),
                                               child: Container(
                                                 padding: EdgeInsets.only(
                                                     left: 30,
@@ -449,21 +451,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                   onClickAction:
                                                                       () {
                                                                     if (!widget
-                                                                        .fromNotification) {
+                                                                        .fromNotification!) {
                                                                       if (widget
                                                                               .menuId ==
                                                                           -1)
                                                                         widget.presenter!.fetchMenuWithRestaurantId(widget
                                                                             .restaurant
-                                                                            .id);
+                                                                            !.id!);
                                                                       else
                                                                         widget
                                                                             .presenter
-                                                                            .fetchMenuWithMenuId(widget.menuId);
+                                                                            !.fetchMenuWithMenuId(widget.menuId!);
                                                                     } else
                                                                       restaurantBloc
                                                                           .fetchRestaurantMenuList(
-                                                                              widget.restaurant);
+                                                                              widget.restaurant!);
                                                                   })
                                                               : hasSystemError
                                                                   ? ErrorPage(
@@ -472,15 +474,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                       onClickAction:
                                                                           () {
                                                                         if (!widget
-                                                                            .fromNotification) {
+                                                                            !.fromNotification!) {
                                                                           if (widget.menuId ==
                                                                               -1)
-                                                                            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant.id);
+                                                                            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
                                                                           else
-                                                                            widget.presenter!.fetchMenuWithMenuId(widget.menuId);
+                                                                            widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
                                                                         } else
                                                                           restaurantBloc
-                                                                              .fetchRestaurantMenuList(widget.restaurant);
+                                                                              .fetchRestaurantMenuList(widget.restaurant!);
                                                                       })
                                                                   : _buildRestaurantMenu()),
                                                     ])))),
@@ -501,7 +503,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   _computeBasketOffset() {
     final RenderBox renderBox =
-        _menuBasketKey.currentContext.findRenderObject();
+        _menuBasketKey!.currentContext!.findRenderObject() as RenderBox;
     _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
   }
 
@@ -523,15 +525,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
     return Column(
         children: <Widget>[SizedBox(height: 5)]
-          ..addAll(List.generate(data[currentIndex]?.foods?.length, (index) {
+          ..addAll(List.generate(data![currentIndex].foods!.length, (index) {
             return Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 _buildFoodListWidget3(
-                    food: data[currentIndex]?.foods[index],
+                    food: data![currentIndex].foods![index],
                     foodIndex: index,
                     menuIndex: currentIndex,
-                    highlightedFoodId: widget.highlightedFoodId),
+                    highlightedFoodId: widget.highlightedFoodId!),
               ],
             );
           }))
@@ -540,9 +542,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   /* build food list widget */
   Widget _buildFoodListWidget(
-      {ShopProductModel food, int foodIndex, int menuIndex}) {
+      {ShopProductModel? food, int? foodIndex, int? menuIndex}) {
     return InkWell(
-      onTap: () => _jumpToFoodDetails(context, food),
+      onTap: () => _jumpToFoodDetails(context, food!),
       child: Card(
           elevation: 2.0,
           margin: EdgeInsets.only(left: 10, right: 70, top: 4, bottom: 4),
@@ -569,17 +571,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             image: new DecorationImage(
                                 fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(
-                                    Utils.inflateLink(food.pic)))),
+                                    Utils.inflateLink(food!.pic!!)))),
                       ),
                     ],
                   ),
                   title: InkWell(
-                    onTap: () => _jumpToShopDetails(widget.restaurant),
+                    onTap: () => _jumpToShopDetails(widget.restaurant!),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("${food?.name?.toUpperCase()}",
+                        Text("${food!.name?.toUpperCase()}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                             textAlign: TextAlign.left,
@@ -591,12 +593,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                         Row(
                           children: <Widget>[
                             Row(children: <Widget>[
-                              /* Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
-                                        (food.promotion!=0 ? Text("${food?.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
+                              /* Text("${food!.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 20, fontWeight: FontWeight.normal)),
+                                        (food.promotion!=0 ? Text("${food!.promotion_price}",  overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize: 20, fontWeight: FontWeight.normal, decoration: TextDecoration.lineThrough))
                                             : Container()),
                                         */
 
-                              Text("${food?.price}",
+                              Text("${food!.price}",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
@@ -609,7 +611,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                       fontWeight: FontWeight.normal)),
                               SizedBox(width: 5),
                               (food.promotion != 0
-                                  ? Text("${food?.promotion_price}",
+                                  ? Text("${food!.promotion_price}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
@@ -640,8 +642,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                 InkWell(
                   onTap: () {
                     Toast.show(
-                        "${AppLocalizations.of(context)!.translate('add_to_chart')}",
-                        context);
+                        "${AppLocalizations.of(context)!.translate('add_to_chart')}");
                   }, // () => _addFoodToChart(food, foodIndex, menuIndex),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -657,7 +658,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           button: true,
                           child: InkWell(
                             onTap: () =>
-                                _addFoodToChart(food, foodIndex, menuIndex),
+                                _addFoodToChart(food, foodIndex!, menuIndex!),
                             child: Container(
                               child: Row(children: <Widget>[
                                 Container(
@@ -687,10 +688,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   Future<Widget> _buildFoodListWidget2(
-      {ShopProductModel food,
-      int foodIndex,
-      int menuIndex,
-      int highlightedFoodId}) async {
+      {ShopProductModel? food,
+      int? foodIndex,
+      int? menuIndex,
+      int? highlightedFoodId}) async {
     /*return Expanded(
     child: InkWell(
           onTap: ()=> _jumpToFoodDetails(context, food),
@@ -698,13 +699,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   ); */
 
     return InkWell(
-      onTap: () => _jumpToFoodDetails(context, food),
+      onTap: () => _jumpToFoodDetails(context, food!),
       child: Card(
-          key: food?.id == highlightedFoodId ? dataKey : null,
+          key: food!.id == highlightedFoodId ? dataKey : null,
           child: Container(
             width: 7 * MediaQuery.of(context).size.width / 11,
             padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
-            color: food?.id == highlightedFoodId
+            color: food!.id == highlightedFoodId
                 ? Colors.yellow.withAlpha(50)
                 : Colors.white,
             child: Stack(
@@ -715,7 +716,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                     child: IconButton(
                         icon: Icon(FontAwesomeIcons.questionCircle,
                             color: KColors.primaryColor),
-                        onPressed: () => _showDetails(food))),
+                        onPressed: () => _showDetails(food!))),
                 Column(
                   children: <Widget>[
                     Row(children: <Widget>[
@@ -738,7 +739,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(food?.pic)))),
+                                        Utils.inflateLink(food!.pic!!)))),
                           ),
                         ],
                       ),
@@ -754,7 +755,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Expanded(
-                                    child: Text("${food?.name?.toUpperCase()}",
+                                    child: Text("${food!.name?.toUpperCase()}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
@@ -770,7 +771,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             Row(
                               children: <Widget>[
                                 Row(children: <Widget>[
-                                  Text("${food?.price}",
+                                  Text("${food!.price}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       textAlign: TextAlign.center,
@@ -783,7 +784,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                           fontWeight: FontWeight.normal)),
                                   SizedBox(width: 5),
                                   (food.promotion != 0
-                                      ? Text("${food?.promotion_price}",
+                                      ? Text("${food!.promotion_price}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
                                           textAlign: TextAlign.center,
@@ -815,7 +816,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   children: <Widget>[
                                     InkWell(
                                       onTap: () => _addFoodToChart(
-                                          food, foodIndex, menuIndex),
+                                          food, foodIndex!, menuIndex!),
                                       child: Card(
                                           color: KColors
                                               .primaryColorTransparentADDTOBASKETBUTTON,
@@ -859,18 +860,18 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   Widget _buildFoodListWidget3(
-      {ShopProductModel food,
-      int foodIndex,
-      int menuIndex,
-      int highlightedFoodId}) {
+      {ShopProductModel? food,
+      int? foodIndex,
+      int? menuIndex,
+      int? highlightedFoodId}) {
     return InkWell(
-      onTap: () => _jumpToFoodDetails(context, food),
+      onTap: () => _jumpToFoodDetails(context, food!),
       child: Container(
           width: MediaQuery.of(context).size.width - 20,
           margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
-          key: food?.id == highlightedFoodId ? dataKey : null,
+          key: food!.id == highlightedFoodId ? dataKey : null,
           child: Container(
-            color: food?.id == highlightedFoodId
+            color: food!.id == highlightedFoodId
                 ? Colors.yellow.withAlpha(50)
                 : Colors.white,
             child: Row(
@@ -883,7 +884,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomLeft: Radius.circular(8)),
-                      color: food?.id == highlightedFoodId
+                      color: food!.id == highlightedFoodId
                           ? Colors.yellow.withAlpha(50)
                           : KColors.new_gray),
                   padding: EdgeInsets.all(10),
@@ -896,7 +897,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${Utils.capitalize(food?.name?.trim())}",
+                            Text("${Utils.capitalize(food!.name!.trim())}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.start,
@@ -906,7 +907,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     fontWeight: FontWeight.w500)),
                             SizedBox(height: 5),
                             Text(
-                                "${Utils.capitalize(Utils.replaceNewLineBy(food?.description?.trim(), " / "))}",
+                                "${Utils.capitalize(Utils.replaceNewLineBy(food!.description!.trim(), " / "))}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 textAlign: TextAlign.start,
@@ -922,7 +923,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             children: [
                               // added
                               Row(children: <Widget>[
-                                Text("${food?.price}",
+                                Text("${food!.price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     textAlign: TextAlign.center,
@@ -935,7 +936,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                         fontWeight: FontWeight.w600)),
                                 SizedBox(width: 3),
                                 (food.promotion != 0
-                                    ? Text("${food?.promotion_price}",
+                                    ? Text("${food!.promotion_price}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
@@ -958,7 +959,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
                               GestureDetector(
                                 onTap: () =>
-                                    _addFoodToChart(food, foodIndex, menuIndex),
+                                    _addFoodToChart(food, foodIndex!, menuIndex!),
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: KColors.primaryColor.withAlpha(30),
@@ -994,7 +995,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                                Utils.inflateLink(food?.pic)))),
+                                Utils.inflateLink(food!.pic!)))),
                   ),
                 ),
               ],
@@ -1007,7 +1008,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
 
-    switch (shopModel?.open_type) {
+    switch (shopModel!.open_type) {
       case 0: // closed
         tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
         tagTextColor = KColors.mBlue;
@@ -1026,13 +1027,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         break;
     }
 
-    return shopModel?.coming_soon == 0
+    return shopModel!.coming_soon == 0
         ? Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 color: tagTextColor),
-            child: Text(Utils.capitalize("${tagText}"?.toUpperCase()),
+            child: Text(Utils.capitalize("${tagText}".toUpperCase()),
                 style: TextStyle(color: Colors.white, fontSize: 12)))
         : Container();
   }
@@ -1074,7 +1075,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       if (food_selected.containsKey(food))
         setState(() {
           food_selected.update(
-              food, (int val) => 1 + food_selected[food].toInt());
+              food, (int val) => 1 + food_selected[food]!.toInt());
         });
       else {
         setState(() {
@@ -1113,25 +1114,25 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         }
       });*/
 
-      await _controller.forward(from: 0.0).orCancel;
+      await _controller!.forward(from: 0.0).orCancel;
     } on TickerCanceled {}
   }
 
   void showToast(String message) {
-    Toast.show(message, context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+    Toast.show(message,
+        duration: Toast.lengthLong, gravity: Toast.center);
   }
 
   int _getQuantity(ShopProductModel food) {
-    if (!food.is_addon) {
+    if (!food.is_addon!) {
       if (food_selected.containsKey(food)) {
-        return food_selected[food].toInt();
+        return food_selected[food]!.toInt();
       } else {
         return 0;
       }
     } else {
       if (adds_on_selected.containsKey(food)) {
-        return adds_on_selected[food].toInt();
+        return adds_on_selected[food]!.toInt();
       } else {
         return 0;
       }
@@ -1188,43 +1189,43 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) {
     setState(() {
       if (restaurant.max_food == null) restaurant.max_food = "5";
-      if (restaurant.max_food != null || int.parse(restaurant.max_food) > 0)
-        FOOD_MAX = int.parse(restaurant.max_food);
+      if (restaurant.max_food != null || int.parse(restaurant.max_food!) > 0)
+        FOOD_MAX = int.parse(restaurant.max_food!);
       widget.restaurant = restaurant;
 
       widget.restaurant?.distance = Utils.locationDistance(
-                  StateContainer.of(context).location, widget.restaurant) >
+                  StateContainer.of(context).location!, widget.restaurant!) >
               100
           ? "> 100"
           : Utils.locationDistance(
-                  StateContainer.of(context).location, widget.restaurant)
+                  StateContainer.of(context).location!, widget.restaurant!)
               ?.toString();
 
       // according to the distance, we get the matching delivery fees
       // i dont want to make another loop
-      widget.restaurant.delivery_pricing = _getShippingPrice(
-          widget.restaurant?.distance,
-          StateContainer.of(context).myBillingArray);
+      widget.restaurant!.delivery_pricing = _getShippingPrice(
+          widget.restaurant!.distance!,
+          StateContainer.of(context).myBillingArray!);
 
       /* make sure, the menu_id is selected. */
       this.data = data;
 
-      this.data.forEach((element) {
-        _chipList.add(element.name);
+      this.data!.forEach((element) {
+        _chipList.add(element.name!);
       });
 
-      currentIndex = this.data.indexWhere((subMenu) {
+      currentIndex = this.data!.indexWhere((subMenu) {
         if (subMenu?.id == widget.menuId) return true;
         return false;
       });
-      if (currentIndex < 0 || currentIndex > this.data.length) {
+      if (currentIndex < 0 || currentIndex > this.data!.length) {
         currentIndex = 0;
       }
     });
     showLoading(false);
     // two seconds after, we jump
     Future.delayed(Duration(seconds: 1), () {
-      Scrollable.ensureVisible(dataKey.currentContext,
+      Scrollable.ensureVisible(dataKey.currentContext!,
           duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     });
 
@@ -1234,9 +1235,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       case 0: // closed
         dialogText =
             "${AppLocalizations.of(context)!.translate('t_closed_shop_long')}"
-                ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", restaurant?.name)
-                ?.replaceAll("(-)", ".");
+                .replaceAll("xxx", restaurant.working_hour!)
+                .replaceAll("yyy", restaurant.name!)
+                .replaceAll("(-)", ".");
 
         break;
       case 1: // open
@@ -1245,16 +1246,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       case 2: // paused
         dialogText =
             "${AppLocalizations.of(context)!.translate('t_paused_shop_long')}"
-                ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", restaurant?.name)
-                ?.replaceAll("(-)", ".");
+                .replaceAll("xxx", restaurant.working_hour!)
+                .replaceAll("yyy", restaurant.name!)
+                .replaceAll("(-)", ".");
         break;
       case 3: // blocked
         dialogText =
             "${AppLocalizations.of(context)!.translate('t_unavailable_shop_long')}"
-                ?.replaceAll("xxx", restaurant?.working_hour)
-                ?.replaceAll("yyy", restaurant?.name)
-                ?.replaceAll("(-)", ".");
+                .replaceAll("xxx", restaurant.working_hour!)
+                .replaceAll("yyy", restaurant.name!)
+                .replaceAll("(-)", ".");
         break;
     }
     if (dialogText != "") {
@@ -1281,7 +1282,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           image: new DecorationImage(
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(shopModel?.pic))))),
+                                  Utils.inflateLink(shopModel!.pic!))))),
                   SizedBox(height: 10),
                   Text("${message}",
                       textAlign: TextAlign.center,
@@ -1326,11 +1327,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         widget.presenter!.fetchMenuWithMenuId(widget.menuId);
 */
           if (widget.menuId != -1) {
-            widget.presenter!.fetchMenuWithMenuId(widget.menuId);
+            widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
           } else if (widget.foodId != -1) {
-            widget.presenter!.fetchMenuWithFoodId(widget.foodId);
+            widget.presenter!.fetchMenuWithFoodId(widget.foodId!);
           } else {
-            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant?.id);
+            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
           }
         });
   }
@@ -1345,11 +1346,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         widget.presenter!.fetchMenuWithMenuId(widget.menuId);*/
 
           if (widget.menuId != -1) {
-            widget.presenter!.fetchMenuWithMenuId(widget.menuId);
+            widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
           } else if (widget.foodId != -1) {
-            widget.presenter!.fetchMenuWithFoodId(widget.foodId);
+            widget.presenter!.fetchMenuWithFoodId(widget.foodId!);
           } else {
-            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant?.id);
+            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
           }
         });
   }
@@ -1361,7 +1362,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   _showDetails(ShopProductModel food) {
-    mDialog(food?.description);
+    mDialog(food!.description!);
   }
 
   void mDialog(String message) {
@@ -1373,12 +1374,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   void _showDialog(
-      {String svgIcons,
-      Icon icon,
+      {String? svgIcons,
+      Icon? icon,
       var message,
       bool okBackToHome = false,
       bool isYesOrNo = false,
-      Function actionIfYes}) {
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1389,7 +1390,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons,
+                          svgIcons!,
                         )
                       : icon),
               SizedBox(height: 10),
@@ -1419,7 +1420,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           style: TextStyle(color: KColors.primaryColor)),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        actionIfYes();
+                        actionIfYes!();
                       },
                     ),
                   ]
@@ -1441,8 +1442,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
-                distance: shopModel?.distance,
-                shipping_price: shopModel?.delivery_pricing,
+                distance: shopModel!.distance,
+                shipping_price: shopModel!.delivery_pricing,
                 restaurant: shopModel,
                 presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -1465,7 +1466,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       if (myBillingArray["$distanceInt"] == null) {
         return "~";
       } else {
-        return myBillingArray["$distanceInt"];
+        return myBillingArray["$distanceInt"]!;
       }
     } catch (_) {
       xrint(_);
@@ -1476,12 +1477,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
 class CustomAnimatedPosition extends AnimatedPositioned {
   var child;
-  double left;
-  double top;
-  double right;
-  double bottom;
+  double? left;
+  double? top;
+  double? right;
+  double? bottom;
   Duration duration;
-  int serial;
+  int? serial;
   var context;
 
   CustomAnimatedPosition(
@@ -1490,8 +1491,8 @@ class CustomAnimatedPosition extends AnimatedPositioned {
       this.bottom,
       this.left,
       this.top,
-      this.duration,
-      this.child})
+      required this.duration,
+      required this.child})
       : super(
             child: child,
             right: right,

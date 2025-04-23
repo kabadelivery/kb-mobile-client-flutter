@@ -23,6 +23,8 @@ import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../xrint.dart';
+
 class OutOfAppProductForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,7 +34,7 @@ class OutOfAppProductForm extends ConsumerWidget {
     final Size size = MediaQuery.of(context).size;
     final FocusNode _nameFocusNode = FocusNode();
     final FocusNode _priceFocusNode = FocusNode();
-    File? imagePath;
+    var imagePath;
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return Container(
@@ -59,7 +61,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                     try {
                       await pickImage(context, ref).then((value) {
                         ref.read(imageCacheProvider.notifier).state = value;
-                        imagePath = ref.watch(imageCacheProvider.notifier).state;
+                        imagePath = ref.watch(imageCacheProvider.notifier).state!;
                       });
                     } catch (e) {
                       print("##Error in image picking, out of app order## $e");
@@ -73,14 +75,14 @@ class OutOfAppProductForm extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: Color(0x64d2d2d2),
                       borderRadius: BorderRadius.circular(5),
-                      image: imagePath! != null
+                      image: imagePath != null
                           ? DecorationImage(
-                        image: FileImage(imagePath!),
+                        image: FileImage(imagePath),
                         fit: BoxFit.cover,
                       )
                           : null,
                     ),
-                    child: imagePath! == null
+                    child: imagePath == null
                         ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -241,7 +243,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                     "name": _nameController.text,
                                     "price": int.parse(_priceController.text.isEmpty ? "0" : _priceController.text),
                                     "quantity": int.parse(quantity.toString()),
-                                    "image": imagePath!,
+                                    "image": imagePath,
                                   };
 
                                   print("product $product");
@@ -300,6 +302,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                       outOfAppNotifier.setShowLoading(false);
                                     });
                                   }catch(e){
+                                    xrint("XXX impossible_to_load_bill ERROR $e");
                                     Fluttertoast.showToast(
             backgroundColor: Colors.black87,
             textColor: Colors.white,
@@ -429,13 +432,13 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                                     outOfAppNotifier.setIsBillBuilt(true);
                                     outOfAppNotifier.setShowLoading(false);
                                   } catch (e) {
+                                    xrint("impossible_to_load_bill $e");
                                     Fluttertoast.showToast(
-            backgroundColor: Colors.black87,
-            textColor: Colors.white,
-            fontSize: 14,
-            toastLength: Toast.LENGTH_LONG ,
-            msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
-                                    print("Error calculating billing: $e");
+                                    backgroundColor: Colors.black87,
+                                    textColor: Colors.white,
+                                    fontSize: 14,
+                                    toastLength: Toast.LENGTH_LONG ,
+                                    msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
                                     outOfAppNotifier.setIsBillBuilt(true);
                                     outOfAppNotifier.setShowLoading(false);
                                   }

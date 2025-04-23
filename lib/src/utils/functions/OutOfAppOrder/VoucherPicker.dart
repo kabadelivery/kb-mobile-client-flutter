@@ -18,7 +18,7 @@ import '../../../ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import '../../../xrint.dart';
 import '../CustomerUtils.dart';
 
-Future<VoucherModel?> SelectVoucher(BuildContext context, WidgetRef ref,
+Future<VoucherModel> SelectVoucher(BuildContext context, WidgetRef ref,
     bool has_voucher, VoucherModel? voucher) async {
   /* just like we pick and address, we pick a voucher. */
 
@@ -51,6 +51,8 @@ Future<VoucherModel?> SelectVoucher(BuildContext context, WidgetRef ref,
   }
 
   if (results != null && results.containsKey('voucher')) {
+    return results['voucher'];
+  }else{
     return results['voucher'];
   }
 }

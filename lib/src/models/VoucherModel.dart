@@ -70,7 +70,7 @@ class VoucherModel {
   }
 
   Map toJson() => {
-        "type": (type as int),
+        "type": (type),
         "details": details,
         "value": value,
         "already_used_count": already_used_count,

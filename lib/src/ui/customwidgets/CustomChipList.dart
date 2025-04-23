@@ -16,7 +16,7 @@ class CustomChipList extends StatefulWidget {
   int firstLineCount;
 
   CustomChipList({
-    Key key,
+    Key? key,
     this.firstLineCount = -1,
     this.listOfChipNames,
     this.listOfChipIndicesCurrentlySeclected,
@@ -47,10 +47,10 @@ class CustomChipList extends StatefulWidget {
   /// onTap event (maybe trigger updation of other UI components).
   /// If this is used, ensure you call
   /// setState at the end of the function.
-  final OnToggle extraOnToggle;
+  final OnToggle? extraOnToggle;
 
   /// List of ChoiceChip names in order of building them.
-  final List<String> listOfChipNames;
+  final List<String>? listOfChipNames;
 
   /// If multiple [ChoiceChips] can be selected at once.
   ///
@@ -108,7 +108,7 @@ class CustomChipList extends StatefulWidget {
   /// Initial `index` that must be selected.
   /// Useful to sync this widget with
   /// others if need be.
-  final List<int> listOfChipIndicesCurrentlySeclected;
+  final List<int>? listOfChipIndicesCurrentlySeclected;
 
   /// For any text styling needs.
   ///
@@ -116,7 +116,7 @@ class CustomChipList extends StatefulWidget {
   /// as it will be overwritten by
   /// the value of [activeTextColorList]
   /// and [inactiveTextColorList].
-  final TextStyle style;
+  final TextStyle? style;
 
   /// Determines if the chip_list should be wrapped.
   ///
@@ -132,7 +132,7 @@ class CustomChipList extends StatefulWidget {
   /// of the widget.
   ///
   /// Defaults to matching platform conventions.
-  final ScrollPhysics scrollPhysics;
+  final ScrollPhysics? scrollPhysics;
 
   /// MainAxisAlignment for the parent [Row] or [Column] of
   /// the [CustomChipList], which is used in case of
@@ -186,7 +186,7 @@ class CustomChipList extends StatefulWidget {
   /// Determines the order to lay children out
   /// horizontally and how to interpret start
   /// and end in the horizontal direction.
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// [verticalDirection] used, if [shouldWrap] is [true],
   ///
@@ -246,10 +246,10 @@ class CustomChipList extends StatefulWidget {
 class _CustomChipListState extends State<CustomChipList> {
   bool _checkChipSelectionStatus(int _index) {
     if (widget.supportsMultiSelect &&
-        widget.listOfChipIndicesCurrentlySeclected.contains(_index)) {
+        widget.listOfChipIndicesCurrentlySeclected!.contains(_index)) {
       return true;
     } else if (!widget.supportsMultiSelect &&
-        widget.listOfChipIndicesCurrentlySeclected.first == _index) {
+        widget.listOfChipIndicesCurrentlySeclected!.first == _index) {
       return true;
     }
 
@@ -259,11 +259,11 @@ class _CustomChipListState extends State<CustomChipList> {
   void _handleOnSelected(int _index) {
     // if [supportsMultiSelect] is true
     if (widget.supportsMultiSelect) {
-      if (widget.listOfChipIndicesCurrentlySeclected.contains(_index)) {
-        widget.listOfChipIndicesCurrentlySeclected.remove(_index);
+      if (widget.listOfChipIndicesCurrentlySeclected!.contains(_index)) {
+        widget.listOfChipIndicesCurrentlySeclected!.remove(_index);
         return;
       } else {
-        widget.listOfChipIndicesCurrentlySeclected.add(_index);
+        widget.listOfChipIndicesCurrentlySeclected!.add(_index);
         return;
       }
     }
@@ -271,14 +271,14 @@ class _CustomChipListState extends State<CustomChipList> {
     // otherwise logic for ensuring only one
     // chip is selected.
     else {
-      widget.listOfChipIndicesCurrentlySeclected.first = _index;
+      widget.listOfChipIndicesCurrentlySeclected!.first = _index;
     }
   }
 
   Color _textColorizer(int _index) {
     // if [supportsMultiSelect] is true
     if (widget.supportsMultiSelect) {
-      if (widget.listOfChipIndicesCurrentlySeclected.contains(_index)) {
+      if (widget.listOfChipIndicesCurrentlySeclected!.contains(_index)) {
         if (widget.activeTextColorList.length == 1) {
           return widget.activeTextColorList.first;
         } else {
@@ -296,7 +296,7 @@ class _CustomChipListState extends State<CustomChipList> {
     // otherwise logic for ensuring only one
     // chip is selected.
     else {
-      if (_index == widget.listOfChipIndicesCurrentlySeclected.first) {
+      if (_index == widget.listOfChipIndicesCurrentlySeclected!.first) {
         if (widget.activeTextColorList.length == 1) {
           return widget.activeTextColorList.first;
         } else {
@@ -315,7 +315,7 @@ class _CustomChipListState extends State<CustomChipList> {
   Color _tileColorizer(int _index) {
     // if [supportsMultiSelect] is true
     if (widget.supportsMultiSelect) {
-      if (widget.listOfChipIndicesCurrentlySeclected.contains(_index)) {
+      if (widget.listOfChipIndicesCurrentlySeclected!.contains(_index)) {
         if (widget.activeBgColorList.length == 1) {
           return widget.activeBgColorList.first;
         } else {
@@ -333,7 +333,7 @@ class _CustomChipListState extends State<CustomChipList> {
     // otherwise logic for ensuring only one
     // chip is selected.
     else {
-      if (_index == widget.listOfChipIndicesCurrentlySeclected.first) {
+      if (_index == widget.listOfChipIndicesCurrentlySeclected!.first) {
         if (widget.activeBgColorList.length == 1) {
           return widget.activeBgColorList.first;
         } else {
@@ -352,7 +352,7 @@ class _CustomChipListState extends State<CustomChipList> {
   Color _borderColorizer(int _index) {
 // if [supportsMultiSelect] is true
     if (widget.supportsMultiSelect) {
-      if (widget.listOfChipIndicesCurrentlySeclected.contains(_index)) {
+      if (widget.listOfChipIndicesCurrentlySeclected!.contains(_index)) {
         if (widget.activeBorderColorList.length == 1) {
           return widget.activeBorderColorList.first;
         } else {
@@ -370,7 +370,7 @@ class _CustomChipListState extends State<CustomChipList> {
     // otherwise logic for ensuring only one
     // chip is selected.
     else {
-      if (_index == widget.listOfChipIndicesCurrentlySeclected.first) {
+      if (_index == widget.listOfChipIndicesCurrentlySeclected!.first) {
         if (widget.activeBorderColorList.length == 1) {
           return widget.activeBorderColorList.first;
         } else {
@@ -392,31 +392,31 @@ class _CustomChipListState extends State<CustomChipList> {
 
     if (widget.inactiveBorderColorList.length != 1 &&
         widget.inactiveBorderColorList.length !=
-            widget.listOfChipNames.length) {
+            widget.listOfChipNames!.length) {
       throw Exception(
           'Length of inactiveBorderColorList must match the length of listOfChipNames, if overriden.');
     }
 
     if (widget.activeBorderColorList.length != 1 &&
-        widget.activeBorderColorList.length != widget.listOfChipNames.length) {
+        widget.activeBorderColorList.length != widget.listOfChipNames!.length) {
       throw Exception(
           'Length of activeBorderColorList must match the length of listOfChipNames, if overriden.');
     }
 
     if (widget.borderRadiiList.length != 1 &&
-        widget.borderRadiiList.length != widget.listOfChipNames.length) {
+        widget.borderRadiiList.length != widget.listOfChipNames!.length) {
       throw Exception(
           'Length of borderRadiiList must match the length of listOfChipNames, if overriden.');
     }
 
     if (widget.activeBgColorList.length != 1 &&
-        widget.activeBgColorList.length != widget.listOfChipNames.length) {
+        widget.activeBgColorList.length != widget.listOfChipNames!.length) {
       throw Exception(
           'Length of activeBgColorList must match the length of listOfChipNames, if overriden.');
     }
 
     if (widget.inactiveBgColorList.length != 1 &&
-        widget.inactiveBgColorList.length != widget.listOfChipNames.length) {
+        widget.inactiveBgColorList.length != widget.listOfChipNames!.length) {
       throw Exception(
           'Length of inactiveBgColorList must match the length of listOfChipNames, if overriden.');
     }
@@ -438,7 +438,7 @@ class _CustomChipListState extends State<CustomChipList> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: List.generate(
                   widget.firstLineCount == -1
-                      ? widget.listOfChipNames.length
+                      ? widget.listOfChipNames!.length
                       : widget.firstLineCount,
                   (index) => Padding(
                     padding: EdgeInsets.symmetric(
@@ -446,9 +446,9 @@ class _CustomChipListState extends State<CustomChipList> {
                     ),
                     child: ChoiceChip(
                       label: Text(
-                        Utils.capitalize(widget.listOfChipNames[index]?.trim()),
+                        Utils.capitalize(widget.listOfChipNames![index].trim()),
                         style: widget.style != null
-                            ? widget.style.copyWith(
+                            ? widget.style!.copyWith(
                                 color: _textColorizer(index),
                               )
                             : const TextStyle().copyWith(
@@ -474,7 +474,7 @@ class _CustomChipListState extends State<CustomChipList> {
                         _handleOnSelected(index);
 
                         if (widget.extraOnToggle != null) {
-                          widget.extraOnToggle(index);
+                          widget.extraOnToggle!(index);
 
                           // prevents further execution,
                           // thus ensuring setState is not called.
@@ -493,16 +493,16 @@ class _CustomChipListState extends State<CustomChipList> {
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: List.generate(
-                        widget.listOfChipNames.length - widget.firstLineCount,
+                        widget.listOfChipNames!.length - widget.firstLineCount,
                         (index) => Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: widget.widgetSpacing,
                           ),
                           child: ChoiceChip(
                             label: Text(
-                              Utils.capitalize(widget.listOfChipNames[widget.firstLineCount+index]?.trim()),
+                              Utils.capitalize(widget.listOfChipNames![widget.firstLineCount+index].trim()),
                               style: widget.style != null
-                                  ? widget.style.copyWith(
+                                  ? widget.style!.copyWith(
                                       color: _textColorizer(widget.firstLineCount+index),
                                     )
                                   : const TextStyle().copyWith(
@@ -528,7 +528,7 @@ class _CustomChipListState extends State<CustomChipList> {
                               _handleOnSelected(widget.firstLineCount+index);
 
                               if (widget.extraOnToggle != null) {
-                                widget.extraOnToggle(widget.firstLineCount+index);
+                                widget.extraOnToggle!(widget.firstLineCount+index);
 
                                 // prevents further execution,
                                 // thus ensuring setState is not called.
