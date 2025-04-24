@@ -73,12 +73,12 @@ class HomeScreenModel {
   }
 
   Map toJson () => {
-    "serial_home" : (serial_home as int),
+    "serial_home" : (serial_home),
     "feed" : feed,
     "resto" : resto,
     "slider" : slider,
-    "promotion" : promotion!.toJson(),
-    "event" : event!.toJson(),
+    "promotion" : promotion==null?"":promotion!.toJson(),
+    "event" :promotion==null?"": event!.toJson(),
     "groupad" : groupad,
     "subMenus" : subMenus,
   };
