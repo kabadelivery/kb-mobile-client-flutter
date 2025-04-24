@@ -120,7 +120,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
           presenter: ShopSchedulePresenter(ShopScheduleView()));
     }
 
-    final int args = ModalRoute.of(context)!.settings.arguments! as int;
+    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0) widget.restaurantId = args;
     if (widget.restaurant == null || widget.restaurant?.name == null) {
       showLoading(true);

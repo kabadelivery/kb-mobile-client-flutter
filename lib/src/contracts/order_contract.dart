@@ -57,7 +57,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
   @override
   Future computeBilling(ShopModel restaurantModel, CustomerModel customer, Map<ShopProductModel, int> foods,
-      DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint) async {
+      DeliveryAddressModel address, VoucherModel? voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
@@ -85,7 +85,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
 
   @override
-  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
+  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel? voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;

@@ -48,7 +48,7 @@ class OrderItemModel {
    }
 
    Map toJson () => {
-      "id" : (id as int),
+      "id" : id,
       "name" : name,
       "pic" : pic,
       "details" : details,

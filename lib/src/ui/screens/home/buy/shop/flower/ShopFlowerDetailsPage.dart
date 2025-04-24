@@ -97,7 +97,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context)!.settings.arguments as int ;
+    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int ;
     if (args != null && args != 0) widget.foodId = args;
     if (widget.food == null) {
       // there must be a food id.

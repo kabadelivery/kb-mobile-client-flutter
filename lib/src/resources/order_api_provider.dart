@@ -25,7 +25,7 @@ class OrderApiProvider {
       ShopModel restaurant,
       Map<ShopProductModel, int> foods,
       DeliveryAddressModel address,
-      VoucherModel voucher,
+      VoucherModel? voucher,
       bool useKabaPoints) async {
     xrint("entered computeBillingAction");
     if (await Utils.hasNetwork()) {
@@ -79,7 +79,7 @@ class OrderApiProvider {
       DeliveryAddressModel selectedAddress,
       String mCode,
       String infos,
-      VoucherModel voucher,
+      VoucherModel? voucher,
       bool useKabaPoint) async {
     DeviceInfoPlugin? deviceInfo = DeviceInfoPlugin();
 
@@ -135,7 +135,7 @@ class OrderApiProvider {
         'infos': '$infos',
         'device': device, // device informations
         'push_token': '$token', // push token
-        "voucher_id": voucher?.id,
+        "voucher_id": voucher==null?voucher!.id:null,
         "use_kaba_point": useKabaPoint
       });
 

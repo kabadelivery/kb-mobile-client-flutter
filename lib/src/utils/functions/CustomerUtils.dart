@@ -114,6 +114,7 @@ class CustomerUtils {
   static getOldWelcomePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonContent = prefs.getString("_homepage_" + signature);
+    print('fetchHomePage $jsonContent');
     return jsonContent;
   }
 

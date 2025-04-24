@@ -80,6 +80,7 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
       try {
         // save it to the shared preferences
         Map<String, dynamic> _dataResponse = await provider.fetchHomeScreenModel();
+        print("_dataResponse $_dataResponse");
         _model = HomeScreenModel.fromJson(_dataResponse["data"]);
         _homeWelcomeView.updateHomeWelcomePage(_model);
         CustomerUtils.saveWelcomePage(json.encode(_dataResponse));

@@ -21,6 +21,7 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 
+import '../../../../xrint.dart';
 import '../../../customwidgets/whatsappMessageButton.dart';
 
 class OrderNewDetailsPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context)!.settings.arguments as int; 
+    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int;
 
     if (args != null && args != 0) {
       widget.orderId = args;
@@ -139,14 +140,16 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
   // </string-array>
 
   Widget _inflateDetails() {
-        double foodPriceTotal = 0; 
-        print("Order type ${widget.command!.order_type}");
-        
-            if (widget.command!.food_list != null) {
-      for (var item in widget.command!.food_list!) {
-        item.price = item.price==""?"0":item.price;
-        foodPriceTotal += double.parse(item.price!);
+    double foodPriceTotal = 0;
+    try{
+      if (widget.command!.food_list != null) {
+        for (var item in widget.command!.food_list!) {
+          item.price = item.price==""?"0":item.price;
+          foodPriceTotal += double.parse(item.price!);
+        }
       }
+    }catch(_){
+      xrint(_);
     }
     return SingleChildScrollView(
         child: Column(
@@ -156,7 +159,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                   width: MediaQuery.of(context).size.width,
                   padding:
                       EdgeInsets.only(top: 15, bottom: 15, right: 10, left: 10),
-                  color: Utils.getStateColor(widget.command!.state!!),
+                  color: Utils.getStateColor(widget.command!.state!),
                   child: Column(
                     children: [
                       Row(
@@ -184,7 +187,7 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         ],
                       ),
                       SizedBox(height: 5),
-                      widget.command!.state!! > 3
+                      widget.command!.state! > 3
                           ? Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -1037,13 +1040,13 @@ Je souhaite récupérer les fonds de ma commande
       priceActualDelivery = widget.command!.promotion_shipping_pricing!;
       priceNormalCommand = widget.command!.food_pricing!;
       priceNormalDelivery = widget.command!.shipping_pricing!;
-      additionnalFee=widget.command!.additionnal_fee!;
+      additionnalFee=widget.command!.additionnal_fee??0;
     } else if (widget.command!.is_promotion == 0 &&
         widget.command!.is_preorder == 0) {
       priceTotalToPay = widget.command!.total_pricing!;
       priceActualCommand = widget.command!.food_pricing!;
       priceActualDelivery = widget.command!.shipping_pricing!;
-      additionnalFee=widget.command!.additionnal_fee!;
+      additionnalFee=widget.command!.additionnal_fee??0;
       showRemise = false;
       showDeliveryNormal = false;
       showFoodNormal = false;

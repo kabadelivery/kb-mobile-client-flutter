@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShippingFeeTag extends StatefulWidget {
-  String distance;
+  String? distance;
 
   ShippingFeeTag(this.distance);
 
@@ -27,7 +27,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
   }
 
   void inflateBillingInformation() {
-    xrint(StateContainer.of(context).myBillingArray.toString());
+    xrint("YYYY ${StateContainer.of(context).myBillingArray.toString()}");
     if (StateContainer.of(context).myBillingArray == null) {
       CustomerUtils.getLastStoredBilling().then((value) {
         try {
@@ -57,7 +57,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
               }
             }
           }
-
+          xrint("myBillingArray $myBillingArray");
           /* update platform billing into state container */
           StateContainer.of(context).myBillingArray = myBillingArray;
 
@@ -84,7 +84,7 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
     if (StateContainer.of(context).location == null) return Container();
 
     var shipping_price = _getShippingPrice(
-        widget.distance, StateContainer.of(context).myBillingArray!);
+        widget.distance??"0", StateContainer.of(context).myBillingArray);
 
     return Container(
         padding: EdgeInsets.all(5),
@@ -106,14 +106,14 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
   }
 
   String _getShippingPrice(
-      String distance, Map<String, String> myBillingArray) {
+      String distance, Map<String, String>? myBillingArray) {
     try {
       int distanceInt = int.parse(
           !distance.contains(".") ? distance : distance.split(".")[0]);
-      if (myBillingArray["$distanceInt"] == null) {
+      if (myBillingArray!["$distanceInt"] == null) {
         return "~";
       } else {
-        return myBillingArray["$distanceInt"]!;
+        return myBillingArray!["$distanceInt"]!;
       }
     } catch (_) {
       xrint(_);

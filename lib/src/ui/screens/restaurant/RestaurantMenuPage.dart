@@ -342,7 +342,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                           ),
                                                     SizedBox(width: 10),
                                                     ShippingFeeTag(widget
-                                                        .restaurant!.distance!),
+                                                        .restaurant!.distance),
                                                   ],
                                                 ),
                                           GestureDetector(

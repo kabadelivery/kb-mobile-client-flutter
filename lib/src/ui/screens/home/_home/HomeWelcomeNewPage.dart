@@ -103,6 +103,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   List<String>? popupMenus;
 
   List<String>? _popupMenus() {
+
     if (StateContainer.of(context).loggingState == 0) {
       return null;
     } else {
@@ -305,6 +306,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
 
   @override
   Widget build(BuildContext context) {
+
     if (widget.bestSellerMini == null)
       widget.bestSellerMini = BestSellersMiniPage(
           presenter: BestSellerPresenter(BestSellerView()), customer: widget.customer);
@@ -377,6 +379,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void menuChoiceAction(String value) {
+
     /* jump to the other activity */
     switch (_popupMenus()!.indexOf(value)) {
       case 0:
@@ -503,6 +506,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   void _jumpToInfoPage() {
+
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => InfoPage(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -917,11 +921,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     setState(() {
       if (data != null) widget.data = data;
       xrint("UPDATING HOMEPAGE");
+
     });
   }
 
   void mToast(String message) {
     to.Toast.show(message, duration:5);
+
   }
 
   _jumpToAdsList(List<AdModel> slider, int position) { 

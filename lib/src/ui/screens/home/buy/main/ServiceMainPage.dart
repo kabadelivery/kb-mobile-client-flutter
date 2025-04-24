@@ -96,7 +96,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     if (widget.available_services?.length == 0 &&
         widget.coming_soon_services?.length == 0) {
       widget.presenter?.fetchServiceCategoryFromLocation(
-          StateContainer.of(context).location!);
+          StateContainer.of(context).location);
     }
     widget.presenter?.fetchBilling();
   }

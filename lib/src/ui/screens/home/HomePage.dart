@@ -1096,7 +1096,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
 
-      String _has_accepted_gps = prefs!.getString("_has_accepted_gps")!;
+      String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
       /* no need to commit */
       /* expiration date in 3months */
       if (_has_accepted_gps != "ok") {

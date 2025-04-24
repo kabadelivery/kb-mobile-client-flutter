@@ -37,7 +37,7 @@ class ServiceMainPresenter implements ServiceMainContract {
   }
 
   @override
-  Future<void> fetchServiceCategoryFromLocation(Position location) async {
+  Future<void> fetchServiceCategoryFromLocation(Position? location) async {
     if (isWorking) return;
     isWorking = true;
 
@@ -67,7 +67,7 @@ class ServiceMainPresenter implements ServiceMainContract {
 
       try {
         String resJson =
-            await provider.fetchServiceCategoryFromLocation(location);
+            await provider.fetchServiceCategoryFromLocation(location!);
         Iterable lo = mJsonDecode(resJson)["data"];
         List<ServiceMainEntity>? res = lo
             ?.map((categorie) => ServiceMainEntity.fromJson(categorie))

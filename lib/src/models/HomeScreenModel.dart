@@ -47,29 +47,33 @@ class HomeScreenModel {
     feed = json['feed'];
     /* manually get the json */
 
-    l = json["resto"];
-    resto = l?.map((resto) => ShopModel.fromJson(resto))?.toList();
+    l = json["resto"]as List<dynamic>?;
+    resto = l?.map((resto) => ShopModel.fromJson(resto)).toList();
 
-    l = json["slider"];
-    slider = l?.map((slider_model) => AdModel.fromJson(slider_model))?.toList();
+    l = json["slider"]as List<dynamic>?;
+    slider = l?.map((slider_model) => AdModel.fromJson(slider_model)).toList();
 
-    event = EvenementModel.fromJson(json["event"]);
+    try{
+      event = EvenementModel.fromJson(json["event"]);
 
-    promotion = EvenementModel.fromJson(json["promotion"]);
+      promotion = EvenementModel.fromJson(json["promotion"]);
+    }catch(_){
+      xrint(_);
+    }
 
-    l = json["groupad"];
-    groupad = l?.map((groupad) => GroupAdsModel.fromJson(groupad))?.toList();
+    l = json["groupad"]as List<dynamic>?;
+    groupad = l?.map((groupad) => GroupAdsModel.fromJson(groupad)).toList();
 
     try {
       l = json["food_suggestions"];
       food_suggestions =
-          l?.map((product) => ShopProductModel.fromJson(product))?.toList();
+          l?.map((product) => ShopProductModel.fromJson(product)).toList();
     } catch(e){
       xrint(e);
     }
 
     l = json["subMenus"];
-    subMenus = l?.map((subMenus) => HomeScreenSubMenuModel.fromJson(subMenus))?.toList();
+    subMenus = l?.map((subMenus) => HomeScreenSubMenuModel.fromJson(subMenus)).toList();
   }
 
   Map toJson () => {

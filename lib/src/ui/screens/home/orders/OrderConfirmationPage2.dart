@@ -223,7 +223,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
         // launch request for retrieving the delivery prices and so on.
         widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
-            widget.foods!, _selectedAddress!, _selectedVoucher!, _usePoint);
+            widget.foods!, _selectedAddress!, _selectedVoucher, _usePoint);
         showLoading(true);
         Future.delayed(Duration(seconds: 1), () {
           Scrollable.ensureVisible(poweredByKey.currentContext!);
@@ -232,7 +232,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     }
   }
 
-  _buildAddress(DeliveryAddressModel selectedAddress) {
+  _buildAddress(DeliveryAddressModel? selectedAddress) {
     if (selectedAddress == null)
       return Container();
     else
@@ -247,7 +247,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 children: <Widget>[
                   Container(
                       width: MediaQuery.of(context).size.width,
-                      child: Text(Utils.capitalize(selectedAddress.name!),
+                      child: Text(Utils.capitalize(selectedAddress.name??""),
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -259,7 +259,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text(
-                              Utils.capitalize(selectedAddress.description!),
+                              Utils.capitalize(selectedAddress.description??""),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
@@ -289,7 +289,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       );
   }
 
-  _buildEligibleVoucher(List<VoucherModel> eligible_vouchers) {
+  _buildEligibleVoucher(List<VoucherModel>? eligible_vouchers) {
     if (eligible_vouchers == null)
       return Container();
     else
@@ -846,7 +846,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         onTap: () {
                           _pickDeliveryAddress();
                         }),
-                    _buildAddress(_selectedAddress!),
+                    _buildAddress(_selectedAddress),
                     SizedBox(key: poweredByKey, height: 25),
                     _usePoint ? Container() : _buildCouponSpace(),
                     _usePoint ? Container() : SizedBox(height: 15),
@@ -1341,7 +1341,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _selectedAddress!,
                 _mCode,
                 _addInfoController!.text!,
-                _selectedVoucher!,
+                _selectedVoucher,
                 _usePoint);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
@@ -2398,7 +2398,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ])),
           ),
         ),
-        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers!)
+        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
       ]);
     }
     else {
@@ -2456,7 +2456,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   )),
             ],
           ),
-          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers!)
+          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
         ],
       );
     }

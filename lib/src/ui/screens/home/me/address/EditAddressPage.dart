@@ -30,7 +30,7 @@ import 'package:toast/toast.dart';
 class EditAddressPage extends StatefulWidget {
   static var routeName = "/EditAddressPage";
 
-  DeliveryAddressModel? address;
+  DeliveryAddressModel? address =DeliveryAddressModel();
 
   EditAddressPresenter? presenter;
 
@@ -51,7 +51,7 @@ class EditAddressPage extends StatefulWidget {
   }
 
   @override
-  _EditAddressPageState createState() => _EditAddressPageState(address!);
+  _EditAddressPageState createState() => _EditAddressPageState(address==null?DeliveryAddressModel(name: ""):address!);
 }
 
 class _EditAddressPageState extends State<EditAddressPage>
@@ -113,10 +113,10 @@ class _EditAddressPageState extends State<EditAddressPage>
       widget.customer = customer;
       _getLastKnowLocation();
     });
-    _locationNameController.text = address.name!;
-    _phoneNumberController.text = address.phone_number!;
-    _nearController.text = address.near!;
-    _descriptionController.text = address.description!;
+    _locationNameController.text = address.name??"";
+    _phoneNumberController.text = address.phone_number??"";
+    _nearController.text = address.near??"";
+    _descriptionController.text = address.description??"";
   }
 
   @override
@@ -345,7 +345,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                     ],
                   ),
                   color: KColors.primaryColor,
-                  onPressed: () => _saveAddress()),
+                  onPressed: (){}),
               SizedBox(width: 10),
               MaterialButton(
                   padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -542,8 +542,10 @@ class _EditAddressPageState extends State<EditAddressPage>
         setState(() {
           _checkLocationLoading = true;
           address.location = "${result.latitude}:${result.longitude}";
+          widget.gps_location = address.location;
         });
-        xrint(address.location);
+        xrint("address.location ${address.location}");
+
         // use mvp to launch a request and place the result here.
         widget.presenter!.checkLocationDetails(widget.customer!,
             position: Position(
