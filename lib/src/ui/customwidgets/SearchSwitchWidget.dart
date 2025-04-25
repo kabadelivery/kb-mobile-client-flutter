@@ -203,8 +203,10 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                 SizedBox(width: 5),
                 widget.selectedPosition == 1
                     ? GestureDetector(
-                        onTap: widget
-                            .listContentFilter(), //widget.scrollToTopFunction,
+                        onTap: (){
+                          widget
+                              .listContentFilter();
+                        }, //widget.scrollToTopFunction,
                         child: Container(
                           padding: EdgeInsets.all(8),
                           width: 70,
