@@ -94,7 +94,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
     districtState.districts = widget.districts;
     outOfAppScreenState.order_type=6;
     if(locationState.is_order_address_picked! && locationState.is_shipping_address_picked!){
-      if(locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
+      if((locationState.selectedOrderAddress!.isNotEmpty) && locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
 
         Fluttertoast.showToast(
             backgroundColor: Colors.black87,
@@ -161,7 +161,7 @@ class _FecthingPackageOrderPageState extends  ConsumerState<FecthingPackageOrder
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(
                             additional_info: additionnalInfoState.additionnal_info,
-                            additionnal_info_image: additionnalInfoState.image!,
+                            additionnal_info_image: additionnalInfoState.image,
                             districts: widget.districts!,
                           ),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {

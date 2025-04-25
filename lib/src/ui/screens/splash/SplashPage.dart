@@ -244,7 +244,7 @@ class _SplashPageState extends State<SplashPage> {
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
       xrint("initialLink ${initialLink}");
-      _handleLinks(initialLink!);
+      _handleLinks(initialLink);
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
@@ -385,7 +385,7 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
-  void _handleLinks(String link) {
+  void _handleLinks(String? link) {
     // if you are logged in, we can just move to the activity.
     if (link == null)
       return;

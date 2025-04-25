@@ -263,7 +263,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                     fontSize: 15))),
                                         Expanded(flex: 2, child: Container()),
                                         _getRestaurantStateTag(
-                                            widget.restaurant!)
+                                            widget.restaurant)
                                       ]),
                                       SizedBox(
                                         height: 10,
@@ -1004,10 +1004,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  _getRestaurantStateTag(ShopModel shopModel) {
+  _getRestaurantStateTag(ShopModel? shopModel) {
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
-
+    if(shopModel !=null){
     switch (shopModel!.open_type) {
       case 0: // closed
         tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
@@ -1026,8 +1026,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         tagTextColor = KColors.mBlue;
         break;
     }
-
-    return shopModel!.coming_soon == 0
+ }
+    int? coming_soon = shopModel==null?0:shopModel!.coming_soon;
+    return coming_soon== 0
         ? Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(

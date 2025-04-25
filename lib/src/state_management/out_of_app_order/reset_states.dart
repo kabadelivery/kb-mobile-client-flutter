@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/voucher_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +33,7 @@ resetAll(WidgetRef ref) {
 
   // Voucher resets
   final voucherNotifier = ref.read(voucherStateProvider.notifier);
-  voucherNotifier.setVoucher(null);
-  voucherNotifier.setOldVoucher(null);
+  voucherNotifier.setVoucher(VoucherModel());
+  voucherNotifier.setOldVoucher(VoucherModel());
   voucherNotifier.setUsePoint(false);
 } 

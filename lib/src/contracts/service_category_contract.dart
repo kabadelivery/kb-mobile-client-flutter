@@ -75,7 +75,7 @@ class ServiceMainPresenter implements ServiceMainContract {
         /* order list by position */
         res!.sort((a, b) => (a.position! - b.position!));
         // also get the restaurant entity here.
-        if (!(res!.length > 0)) {
+        if (!(res.length! > 0)) {
           throw UnimplementedError();
         }
 

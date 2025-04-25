@@ -971,7 +971,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     setState(() {
       checkIsRestaurantOpenConfigIsLoading = false;
     });
-    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
+    if(context.mounted || context!=null){
+      mToast("${AppLocalizations.of(context)!.translate('network_error')}");
+    }
   }
 
   @override
@@ -1336,7 +1338,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
             await widget.presenter!.payAtDelivery(
-                widget.customer!,
+                widget.customer,
                 widget.foods!,
                 _selectedAddress!,
                 _mCode,

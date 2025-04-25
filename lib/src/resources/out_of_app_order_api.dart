@@ -17,9 +17,9 @@ import '../xrint.dart';
 class OutOfAppOrderApiProvider{
   Future<OrderBillConfiguration> computeBillingAction(
       CustomerModel customer,
-      List<DeliveryAddressModel> order_adress,
+      List<DeliveryAddressModel>? order_adress,
       List<Map<String,dynamic>> foods,
-      DeliveryAddressModel shipping_adress,
+      DeliveryAddressModel? shipping_adress,
       VoucherModel? voucher,
       bool useKabaPoints) async {
       xrint("entered computeBillingAction");
@@ -34,7 +34,7 @@ class OutOfAppOrderApiProvider{
       var _data = json.encode({
         'order_details': foods,
         'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
-        'shipping_address': shipping_adress.id,
+        'shipping_address': shipping_adress!.id,
         "voucher_id": voucher?.id,
         "use_kaba_point": useKabaPoints,
         "pay_at_delivery":true

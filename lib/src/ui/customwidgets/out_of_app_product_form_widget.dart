@@ -398,7 +398,9 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                     onChanged: (value)async {
                       ref.read(outOfAppScreenStateProvier.notifier).setPackageAmount(value);
                       _amountController.text = value;
-                  _typingTimer!.cancel();
+                   if (_typingTimer != null) {
+                     _typingTimer!.cancel();
+                   }
                    _typingTimer = Timer(Duration(seconds: 2), () async {
                     if(locationState.is_shipping_address_picked! && locationState.selectedOrderAddress!.isNotEmpty) {
                                 await CustomerUtils.getCustomer().then((customer) async {
@@ -419,11 +421,11 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                                   try {
                                     OrderBillConfiguration orderBillConfiguration =
                                         await api.computeBillingAction(
-                                          customer!,
-                                          locationState.selectedOrderAddress!,
+                                          customer,
+                                          locationState.selectedOrderAddress,
                                           ref.watch(productListProvider),
-                                          locationState.selectedShippingAddress!,
-                                          voucherState.selectedVoucher!,
+                                          locationState.selectedShippingAddress,
+                                          voucherState.selectedVoucher,
                                           false
                                         );
 

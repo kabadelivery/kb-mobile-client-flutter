@@ -12,6 +12,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../xrint.dart';
+
 class BestSellersMiniPage extends StatefulWidget {
   static var routeName = "/BestSellersMiniPage";
 
@@ -45,8 +47,10 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
 
   @override
   Widget build(BuildContext context) {
+
     if (widget.data == null) {
-      widget.presenter!.fetchBestSeller(widget.customer!);
+      xrint('NO DATA');
+      widget.presenter!.fetchBestSeller(widget.customer);
     } else {
       if (!isDataInflated) {
         inflateBestSeller(widget.data!);
@@ -68,6 +72,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
 
   @override
   void inflateBestSeller(List<BestSellerModel> bSellers) {
+
     showLoading(false);
     setState(() {
       widget.data = bSellers;
@@ -119,7 +124,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
         message:
             "", //"""${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter!.fetchBestSeller(widget.customer!);
+          widget.presenter!.fetchBestSeller(widget.customer);
         });
   }
 

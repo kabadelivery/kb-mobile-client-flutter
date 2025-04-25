@@ -85,13 +85,13 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
 
   @override
-  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel? voucher, bool useKabaPoint) async {
+  Future<void> payAtDelivery(CustomerModel? customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel? voucher, bool useKabaPoint) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
-      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher??VoucherModel(), useKabaPoint);
       _orderConfirmationView.launchOrderResponse(error);
     } catch (_) {
       /* login failure */

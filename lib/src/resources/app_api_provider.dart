@@ -13,6 +13,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 class AppApiProvider {
@@ -427,6 +428,7 @@ class AppApiProvider {
 
   Future<String> fetchBilling() async {
     xrint("entered fetchBilling");
+    debugPrint(StackTrace.current.toString());
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
@@ -448,6 +450,7 @@ class AppApiProvider {
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return json.encode(response.data["data"]);
+
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }

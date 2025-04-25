@@ -41,22 +41,50 @@ class BestSellerPresenter implements BestSellerContract {
   @override
   Future fetchBestSeller(CustomerModel? customer) async {
     /* fetch the one store in the local file first */
-
+    if(customer == null) {
+       customer = await CustomerUtils.getCustomer();
+    }
     if (isWorking) return;
     isWorking = true;
 
     CustomerUtils.getOldBestSellerPage().then((pageJson) async {
       _bestSellerView.showLoading(true);
+      var data;
       try {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
           List<BestSellerModel>? bestSellers =
               lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
           /* send these to json */
+          data = bestSellers;
           _bestSellerView.inflateBestSeller(bestSellers!);
           _bestSellerView.showLoading(false);
         } else {
           _bestSellerView.showLoading(true);
+          try {
+            String bsellers_json = await provider.fetchBestSellerList(customer!);
+            // save best seller json
+            // also get the restaurant entity here.
+            Iterable lo = mJsonDecode(bsellers_json)["data"];
+            List<BestSellerModel>? bestSellers =
+            lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
+
+            /* send these to json */
+            CustomerUtils.saveBestSellerPage(bsellers_json);
+            CustomerUtils.saveBestSellerVersion(); // date
+            _bestSellerView.showLoading(false);
+            _bestSellerView.inflateBestSeller(bestSellers!);
+            isWorking = false;
+          } catch (_) {
+            /* BestSeller failure */
+            xrint("error ${_}");
+            if (_ == -2) {
+              _bestSellerView.systemError();
+            } else {
+              _bestSellerView.networkError();
+            }
+            isWorking = false;
+          }
         }
       } catch (_) {
         xrint(_);
@@ -68,30 +96,6 @@ class BestSellerPresenter implements BestSellerContract {
       if (!canLoadBestSeller) {
         isWorking = false;
         return;
-      }
-
-      try {
-        String bsellers_json = await provider.fetchBestSellerList(customer!);
-        // save best seller json
-        // also get the restaurant entity here.
-        Iterable lo = mJsonDecode(bsellers_json)["data"];
-        List<BestSellerModel>? bestSellers =
-            lo?.map((bs) => BestSellerModel.fromJson(bs))?.toList();
-        /* send these to json */
-        CustomerUtils.saveBestSellerPage(bsellers_json);
-        CustomerUtils.saveBestSellerVersion(); // date
-        _bestSellerView.showLoading(false);
-        _bestSellerView.inflateBestSeller(bestSellers!);
-        isWorking = false;
-      } catch (_) {
-        /* BestSeller failure */
-        xrint("error ${_}");
-        if (_ == -2) {
-          _bestSellerView.systemError();
-        } else {
-          _bestSellerView.networkError();
-        }
-        isWorking = false;
       }
 
     });

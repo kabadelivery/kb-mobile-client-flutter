@@ -74,7 +74,7 @@ class OrderApiProvider {
 
   Future<int> launchOrder(
       bool isPayAtDelivery,
-      CustomerModel customer,
+      CustomerModel? customer,
       Map<ShopProductModel, int> foods,
       DeliveryAddressModel selectedAddress,
       String mCode,
@@ -142,7 +142,7 @@ class OrderApiProvider {
       xrint("000 _ " + _data.toString());
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..headers = Utils.getHeadersWithToken(customer!.token!)
         ..connectTimeout = 90000
         ..headers['Cache-Control'] = 'no-cache';
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

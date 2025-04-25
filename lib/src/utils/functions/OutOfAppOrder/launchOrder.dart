@@ -40,7 +40,7 @@ Future<void> launchOrderFunc(
     DeliveryAddressModel selectedAddress,
     String mCode,
     String infos,
-    VoucherModel voucher,
+    VoucherModel? voucher,
     bool useKabaPoint,
     int order_type,
     BuildContext context,
@@ -57,7 +57,7 @@ Future<void> launchOrderFunc(
         selectedAddress,
         mCode,
         infos,
-        voucher,
+        voucher??VoucherModel(),
         useKabaPoint,
         order_type,
         phone_number,
@@ -210,7 +210,7 @@ void payAtDelivery(
                 _selectedAddress!,
                 _mCode,
                 addInfo,
-                _selectedVoucher!,
+                _selectedVoucher,
                 _usePoint!,
                 order_type,
                 context,
@@ -218,7 +218,7 @@ void payAtDelivery(
                 phone_number,
                 uploadAdditionnalInfoImage[0]["image"]);
           } catch (e) {
-             xrint(e);
+             xrint("LAUNCHING ORDER ERROR $e");
           }
         } else {
           mToast("${AppLocalizations.of(context)!.translate('wrong_code')}",

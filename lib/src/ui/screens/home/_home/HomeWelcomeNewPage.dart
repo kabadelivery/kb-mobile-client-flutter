@@ -85,8 +85,8 @@ class HomeWelcomeNewPage extends StatefulWidget {
 
   static var routeName = "/HomeWelcomeNewPage";
 
-  BestSellersMiniPage? bestSellerMini = null;
-  ProposalMiniWithPreloadedDataPage? proposalMini = null;
+  BestSellersMiniPage? bestSellerMini;
+  ProposalMiniWithPreloadedDataPage? proposalMini;
 
   HomeWelcomeNewPage(
       {Key? key, this.title, this.presenter, this.destination, this.argument})
@@ -374,7 +374,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child: _buildHomeScreen(widget.data!),
+          child: _buildHomeScreen(widget.data),
         ));
   }
 
@@ -522,9 +522,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   }
 
   Widget _buildHomeScreen(HomeScreenModel data) {
-    if (data != null) widget.data = data;
+    if (data != null&& widget.data.slider == null) widget.data = data;
+    int sliderLength = data.slider!=null?data.slider!.length:0;
     xrint("building data $data");
-    if (widget.data != null)
+    if (widget.data != null && widget.data.slider != null)
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
@@ -540,7 +541,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                       margin: EdgeInsets.only(bottom: 10, top: 15),
                       child: ClipPath(
                           // clipper: KabaRoundTopClipper(),
-                          child: data.slider!.length > 1
+                          child: sliderLength> 1
                               ? CarouselSlider(
                                   options: CarouselOptions(
                                     onPageChanged: _carousselPageChanged,
@@ -845,7 +846,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   ),
                 ))));
     else {
-      data = HomeWelcomeNewPage.standardData!;
+      data = HomeWelcomeNewPage.standardData==null?HomeScreenModel():HomeWelcomeNewPage.standardData!;
+      if(data==null) return Container();
+      else
       return RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,

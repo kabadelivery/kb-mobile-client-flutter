@@ -317,7 +317,7 @@ class _EditAddressPageState extends State<EditAddressPage>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              MRaisedButton(
+              MaterialButton(
 
                   padding:
                       EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
@@ -346,7 +346,9 @@ class _EditAddressPageState extends State<EditAddressPage>
                     ],
                   ),
                   color: KColors.primaryColor,
-                  onPressed: (){}),
+                  onPressed: (){
+                    _saveAddress();
+                  }),
               SizedBox(width: 10),
               MaterialButton(
                   padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -786,6 +788,7 @@ class _EditAddressPageState extends State<EditAddressPage>
       /* expiration date in 3months */
 
       if (_has_accepted_gps != "ok") {
+        print('GETS LOCATION PERMISSION');
         return showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
@@ -842,24 +845,26 @@ class _EditAddressPageState extends State<EditAddressPage>
           },
         );
       } else {
+        print('DO NOT GETS LOCATION PERMISSION');
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.deniedForever) {
           await Geolocator.openAppSettings();
         } else if (permission == LocationPermission.denied) {
           Geolocator.requestPermission();
-        } else {
-          // location is enabled
-          bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
-          if (!isLocationServiceEnabled) {
-            await Geolocator.openLocationSettings();
-          } else {
-            positionStream =
-                Geolocator.getPositionStream().listen((Position position) {
-              if (position != null && mounted)
-                StateContainer.of(context).updateLocation(location: position);
-            });
-          }
+        }
+        else {
+            // location is enabled
+            bool isLocationServiceEnabled =
+                await Geolocator.isLocationServiceEnabled();
+            if (!isLocationServiceEnabled) {
+              await Geolocator.openLocationSettings();
+            } else {
+              positionStream =
+                  Geolocator.getPositionStream().listen((Position position) {
+                if (position != null && mounted)
+                  StateContainer.of(context).updateLocation(location: position);
+              });
+            }
         }
       }
     });

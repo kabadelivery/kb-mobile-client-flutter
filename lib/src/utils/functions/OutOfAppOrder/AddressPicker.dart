@@ -29,7 +29,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
   // ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
 //  ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
   List<DeliveryAddressModel> order_address = [];
-  DeliveryAddressModel shipping_address = DeliveryAddressModel();
+  DeliveryAddressModel? shipping_address =null;
   /* jump and get it */
   if (context.mounted) {
     Map results = await Navigator.of(context).push(PageRouteBuilder(

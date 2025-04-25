@@ -12,6 +12,7 @@ import '../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/functions/CustomerUtils.dart';
+import '../../xrint.dart';
 
 class DistrictSelectionWidget extends ConsumerWidget {
   @override
@@ -68,7 +69,7 @@ class DistrictSelectionWidget extends ConsumerWidget {
               name: selectedDistrict["name"],
               description: selectedDistrict["description"],
             );
-            DeliveryAddressModel shipping_address=locationState.selectedShippingAddress!;
+            DeliveryAddressModel? shipping_address=locationState.selectedShippingAddress==null?null:locationState.selectedShippingAddress;
             List<DeliveryAddressModel> order_address=locationState.selectedOrderAddress!;
 
             if(outofAppState.order_type==5){
@@ -102,16 +103,17 @@ class DistrictSelectionWidget extends ConsumerWidget {
                   OutOfAppOrderApiProvider api = OutOfAppOrderApiProvider();
                   CustomerModel? customer = await CustomerUtils.getCustomer();
                   OrderBillConfiguration orderBillConfiguration = await api.computeBillingAction(
-                      customer!,
+                      customer,
                       order_address,
                       formData,
                       shipping_address,
-                      voucherState.selectedVoucher!,
+                      voucherState.selectedVoucher,
                       false);
                   orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                   outOfAppNotifier.setIsBillBuilt(true);
                   outOfAppNotifier.setShowLoading(false);
                 }catch(e){
+                  xrint("ERROR 1 impossible_to_load_bill $e");
                   Fluttertoast.showToast(
             backgroundColor: Colors.black87,
             textColor: Colors.white,
