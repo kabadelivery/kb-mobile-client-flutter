@@ -247,8 +247,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             flexibleSpace: SingleChildScrollView(
                               child: Container(
                                   padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 10),
-                                  height: 120,
+                                      left: 10, right: 10, top: 10,bottom: 10),
+                                  height: 140,
                                   child: Column(
                                     children: [
                                       Row(children: [

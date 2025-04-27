@@ -45,7 +45,6 @@ class MenuApiProvider {
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
           mapRes.putIfAbsent("menus", () => restaurantSubModel);
-
           return mapRes;
         } else
           throw Exception(-1); // there is an error in your request

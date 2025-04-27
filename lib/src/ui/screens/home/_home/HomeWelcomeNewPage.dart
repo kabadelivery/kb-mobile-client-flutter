@@ -68,6 +68,7 @@ import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import '../../../../StateContainer.dart';
 import '../../../../resources/out_of_app_order_api.dart';
 import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
+import '../../../../utils/functions/requestLocation.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
@@ -1826,7 +1827,7 @@ void _getShippingPriceRange()async{
     xrint(e);
   }
 }
-void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
+void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel)async {
   /* Navigator.push(
     context,
     MaterialPageRoute(
@@ -1834,7 +1835,7 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
           ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
     ),
   );*/
-
+  await requestLocation(context);
   Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
           restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),

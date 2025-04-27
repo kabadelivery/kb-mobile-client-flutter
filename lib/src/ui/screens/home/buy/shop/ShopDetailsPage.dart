@@ -286,7 +286,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           ),
                                         ),
                                   SizedBox(width: 10),
-                                  ShippingFeeTag(widget.distance!)
+                                  ShippingFeeTag(widget.distance==null?"0":widget.distance!)
                                   /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
