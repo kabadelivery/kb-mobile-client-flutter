@@ -55,20 +55,13 @@ class MenuPresenter implements MenuContract {
       return;
     isWorking = true;
     _menuView.showLoading(true);
-    try {
+
       Map res = await provider.fetchRestaurantMenuList(restaurantId);
       // also get the restaurant entity here.
+      xrint("restaurant ${jsonEncode(res)}");
+      xrint("menus ${jsonEncode(res["menus"])}");
       _menuView.inflateMenu(res["restaurant"], res["menus"]);
-    } catch (_) {
-      /* login failure */
-      xrint("error ${_.toString()}");
-      if (_ == -2) {
-        _menuView.systemError();
-      } else {
-        _menuView.networkError();
-      }
-      isWorking = false;
-    }
+
   }
 
 

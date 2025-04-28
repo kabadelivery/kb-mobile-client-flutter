@@ -38,6 +38,15 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   void initState() {
     super.initState();
     widget.presenter!.bestSellerView = this;
+
+    if (widget.data == null) {
+      widget.presenter!.fetchBestSeller(widget.customer);
+    } else {
+      if (!isDataInflated) {
+        inflateBestSeller(widget.data!);
+        isDataInflated = true;
+      }
+    }
   }
 
   bool isLoading = true;
@@ -48,15 +57,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
   @override
   Widget build(BuildContext context) {
 
-    if (widget.data == null) {
-      xrint('NO DATA');
-      widget.presenter!.fetchBestSeller(widget.customer);
-    } else {
-      if (!isDataInflated) {
-        inflateBestSeller(widget.data!);
-        isDataInflated = true;
-      }
-    }
+
     return Container(
         color: Colors.white,
         child: isLoading

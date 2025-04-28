@@ -313,10 +313,10 @@ class Utils {
     return _validURL;
   }
 
-  static double locationDistance(Position position, ShopModel restaurant) {
+  static double locationDistance(Position? position, ShopModel restaurant) {
     try {
-      double lat1 = position.latitude;
-      double long1 = position.longitude;
+      double lat1 = position!.latitude;
+      double long1 = position!.longitude;
       double lat2 = double.parse(restaurant.location!.split(":")[0]);
       double long2 = double.parse(restaurant.location!.split(":")[1]);
       double distance =

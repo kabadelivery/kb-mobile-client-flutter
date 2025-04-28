@@ -74,6 +74,7 @@ class RestaurantBloc {
     try {
       if (_isDisposedForRestaurantMenu)
         return;
+
       List<RestaurantSubMenuModel> restaurantMenu = await _repository.fetchRestaurantMenuList(ShopModel);
       _restaurantMenuFetcher.sink.add(restaurantMenu);
       _isDisposedForRestaurantMenu = true;

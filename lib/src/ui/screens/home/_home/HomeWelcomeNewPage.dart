@@ -1835,7 +1835,6 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel)as
           ShopDetailsPage(restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
     ),
   );*/
-  await requestLocation(context);
   Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
           restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),

@@ -344,6 +344,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                       child: InkWell(
                         onTap: () {
+                          int amount =int.parse(outOfAppScreenState.package_amount.isEmpty?"0":outOfAppScreenState.package_amount);
                 if(outOfAppScreenState.phone_number.isEmpty || outOfAppScreenState.phone_number.length<8){
                       Fluttertoast.showToast(
                       backgroundColor: Colors.black87,
@@ -352,7 +353,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                       toastLength: Toast.LENGTH_LONG ,
                       msg: "🚨 "+AppLocalizations.of(context)!.translate("enter_correct_phone_number")+" 🚨");
                 }
-               else if(int.parse(outOfAppScreenState.package_amount)>100000){
+               else if(amount>100000){
                   Fluttertoast.showToast(
                       backgroundColor: Colors.black87,
                       textColor: Colors.white,

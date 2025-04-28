@@ -28,6 +28,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:toast/toast.dart';
 
@@ -462,10 +463,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                         widget
                                                                             .presenter
                                                                             !.fetchMenuWithMenuId(widget.menuId!);
-                                                                    } else
+                                                                    } else {
                                                                       restaurantBloc
                                                                           .fetchRestaurantMenuList(
                                                                               widget.restaurant!);
+
+                                                                    }
                                                                   })
                                                               : hasSystemError
                                                                   ? ErrorPage(
@@ -1194,19 +1197,36 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         FOOD_MAX = int.parse(restaurant.max_food!);
       widget.restaurant = restaurant;
 
-      widget.restaurant?.distance = Utils.locationDistance(
-                  StateContainer.of(context).location!, widget.restaurant!) >
-              100
-          ? "> 100"
-          : Utils.locationDistance(
-                  StateContainer.of(context).location!, widget.restaurant!)
-              ?.toString();
+      Position? currentLocation = StateContainer.of(context).location;
 
+      if (currentLocation == null && widget.restaurant?.location != null) {
+        var parts = widget.restaurant!.location!.split(":");
+        if (parts.length == 2) {
+          double latitude = double.tryParse(parts[0]) ?? 0.0;
+          double longitude = double.tryParse(parts[1]) ?? 0.0;
+          currentLocation = Position(
+            latitude: latitude,
+            longitude: longitude,
+            timestamp: DateTime.now(),
+            accuracy: 0.0,
+            altitude: 0.0,
+            heading: 0.0,
+            speed: 0.0,
+            speedAccuracy: 0.0, altitudeAccuracy: 5, headingAccuracy: 1,
+            // Since Position requires these fields, just set dummy values if needed
+          );
+        }
+      }
+
+      if (currentLocation != null && widget.restaurant != null) {
+        double distance = Utils.locationDistance(currentLocation, widget.restaurant!);
+        widget.restaurant?.distance = distance > 100 ? "> 100" : distance.toString();
+      }
       // according to the distance, we get the matching delivery fees
       // i dont want to make another loop
       widget.restaurant!.delivery_pricing = _getShippingPrice(
           widget.restaurant!.distance!,
-          StateContainer.of(context).myBillingArray!);
+          StateContainer.of(context).myBillingArray??{});
 
       /* make sure, the menu_id is selected. */
       this.data = data;
@@ -1345,7 +1365,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant.id);
       else
         widget.presenter!.fetchMenuWithMenuId(widget.menuId);*/
-
+          xrint('entered error network for fetchMenuWithMenuId');
           if (widget.menuId != -1) {
             widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
           } else if (widget.foodId != -1) {
