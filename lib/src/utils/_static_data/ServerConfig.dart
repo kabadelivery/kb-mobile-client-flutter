@@ -1,28 +1,21 @@
 class ServerConfig {
   //PROD//
 
+  static const String ip_address = "app.kaba-delivery.com"; // prod server
+  static const String pay_ip_address = "pay.kaba-delivery.com";
+  static const String stat_ip_address = "stats.kaba-delivery.com"; //prod
 
-  //static const String ip_address = "app.kaba-delivery.com"; // prod server
-  //static const String pay_ip_address = "pay.kaba-delivery.com";
-  //static const String stat_ip_address="stats.kaba-delivery.com"; //prod
-
-
-  
   //DEV//
 
-
-   static const String ip_address = "dev.kaba-delivery.com"; // dev server
-   static const String pay_ip_address = "dev.pay.kaba-delivery.com";
-   static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
-
+  //  static const String ip_address = "dev.kaba-delivery.com"; // dev server
+  //  static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+  //  static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
 
   //LOCAL
 
-   //static const String ip_address = "moldova-blocked-maintained-period.trycloudflare.com"; // dev server
-   //static const String pay_ip_address = "dev.pay.kaba-delivery.com";
-   //static const String stat_ip_address="b13b-2c0f-f0f8-704-ec00-3543-942a-7d39-7a4e.ngrok-free.app"; //dev
-
-
+  //static const String ip_address = "moldova-blocked-maintained-period.trycloudflare.com"; // dev server
+  //static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+  //static const String stat_ip_address="b13b-2c0f-f0f8-704-ec00-3543-942a-7d39-7a4e.ngrok-free.app"; //dev
 
   //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;

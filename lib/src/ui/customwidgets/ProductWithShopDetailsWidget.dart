@@ -8,10 +8,8 @@ import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ProductWithShopDetailsWidget extends StatefulWidget {
   ShopProductModel? food;
@@ -90,19 +88,27 @@ class _ProductWithShopDetailsWidgetState
                                               child: Text(
                                                   Utils.capitalize(
                                                       "${widget.food!.name}"),
-                                                  maxLines: 1,overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                       color: KColors.new_black,
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600)),
-                                           width: MediaQuery.of(context).size.width-200, ),
-                                           SizedBox(height: 5,),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  200,
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
                                             Row(children: <Widget>[
-                                              Text(
-                                                  "${widget.food!.price}",
-                                                  overflow: TextOverflow.ellipsis,
+                                              Text("${widget.food!.price}",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -110,7 +116,8 @@ class _ProductWithShopDetailsWidgetState
                                                                   .promotion! ==
                                                               1
                                                           ? KColors.new_black
-                                                          : KColors.primaryColor,
+                                                          : KColors
+                                                              .primaryColor,
                                                       fontSize: widget.food!
                                                                   .promotion ==
                                                               1
@@ -131,7 +138,8 @@ class _ProductWithShopDetailsWidgetState
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 1,
-                                                      textAlign: TextAlign.center,
+                                                      textAlign:
+                                                          TextAlign.center,
                                                       style: TextStyle(
                                                         color: KColors
                                                             .primaryYellowColor,
@@ -142,11 +150,13 @@ class _ProductWithShopDetailsWidgetState
                                                   : Container()),
                                               Text(
                                                   "${AppLocalizations.of(context)!.translate("currency")}",
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                      color: KColors.primaryColor,
+                                                      color:
+                                                          KColors.primaryColor,
                                                       fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.w600)),
@@ -163,10 +173,13 @@ class _ProductWithShopDetailsWidgetState
                                               Text(
                                                   Utils.capitalize(
                                                       "${widget.food!.restaurant_entity?.name}"),
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                   // textAlign: TextAlign.left,
-                                                  style: TextStyle(fontWeight: FontWeight.w500,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: KColors.new_black,
                                                       fontSize: 14)),
                                               SizedBox(height: 5),
@@ -179,34 +192,38 @@ class _ProductWithShopDetailsWidgetState
                                                         null
                                                     ? Container()
                                                     : Container(
-                                                        padding: EdgeInsets.all(5),
+                                                        padding:
+                                                            EdgeInsets.all(5),
                                                         decoration: BoxDecoration(
                                                             borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10)),
-                                                            color: Colors.white),
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10)),
+                                                            color:
+                                                                Colors.white),
                                                         child: Row(
                                                           children: [
                                                             Icon(
                                                                 FontAwesomeIcons
                                                                     .locationArrow,
-                                                                color:
-                                                                    KColors.mGreen,
+                                                                color: KColors
+                                                                    .mGreen,
                                                                 size: 10),
                                                             SizedBox(width: 5),
                                                             Text(
                                                                 "${widget.food!.restaurant_entity?.distance}${AppLocalizations.of(context)!.translate('km')}",
                                                                 style: TextStyle(
-                                                                    color:
-                                                                        Colors.grey,
+                                                                    color: Colors
+                                                                        .grey,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
-                                                                    fontSize: 12)),
+                                                                    fontSize:
+                                                                        12)),
                                                           ],
                                                         ),
                                                       ),
@@ -222,46 +239,46 @@ class _ProductWithShopDetailsWidgetState
                                                             "0"
                                                         ? Container()
                                                         : Container(
-                                                            padding:
-                                                                EdgeInsets.all(5),
+                                                            padding: EdgeInsets
+                                                                .all(5),
                                                             decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .all(Radius
-                                                                            .circular(
-                                                                                10)),
-                                                                color:
-                                                                    Colors.white),
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10)),
+                                                                color: Colors
+                                                                    .white),
                                                             child: Row(
-                                                              children: <Widget>[
+                                                              children: <
+                                                                  Widget>[
                                                                 Icon(
                                                                     FontAwesomeIcons
                                                                         .personBiking,
                                                                     color: KColors
                                                                         .primaryColor,
                                                                     size: 12),
-                                                                SizedBox(width: 5),
+                                                                SizedBox(
+                                                                    width: 5),
                                                                 Text(
-                                                                    (widget.food!.restaurant_entity
-                                                                                ?.delivery_pricing ==
+                                                                    (widget.food!.restaurant_entity?.delivery_pricing ==
                                                                             "~"
                                                                         ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
-                                                                        : widget
-                                                                                !.food
-                                                                                !.restaurant_entity
-                                                                                !.delivery_pricing! +
+                                                                        : widget!.food!.restaurant_entity!.delivery_pricing! +
                                                                             " F"),
                                                                     style: TextStyle(
                                                                         color: Colors
-                                                                            .grey,fontWeight: FontWeight.w500,
+                                                                            .grey,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
                                                                         fontSize:
                                                                             12)),
                                                               ],
                                                             )),
                                               ]),
                                               SizedBox(height: 5),
-                                              getRating(
-                                                  widget.food!.restaurant_entity!)
+                                              getRating(widget
+                                                  .food!.restaurant_entity!)
                                             ],
                                           ),
                                         ),
@@ -374,12 +391,15 @@ class _ProductWithShopDetailsWidgetState
 
     return shopModel?.coming_soon == 0
         ? Container(
-            padding: EdgeInsets.only(left:5, right: 5, top: 2, bottom: 2),
+            padding: EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Colors.white),
             child: Text(tagText.toUpperCase(),
-                style: TextStyle(color: tagTextColor, fontWeight: FontWeight.w600, fontSize: 12)))
+                style: TextStyle(
+                    color: tagTextColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12)))
         : Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
@@ -388,7 +408,10 @@ class _ProductWithShopDetailsWidgetState
             child: Text(
                 "${AppLocalizations.of(context)!.translate('coming_soon')}"
                     .toUpperCase(),
-                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 11)));
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11)));
   }
 
   getRating(ShopModel shopModel) {

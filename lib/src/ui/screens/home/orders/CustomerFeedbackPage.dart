@@ -13,7 +13,6 @@ import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderFeedbackPage extends StatefulWidget {
   static var routeName = "/OrderFeedbackPage";
@@ -56,7 +55,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
       if (widget.orderId != null &&
           widget.orderId != 0 &&
           widget.customer != null) {
-        widget.presenter!.loadOrderDetailsForFeedback(customer!, widget.orderId!);
+        widget.presenter!
+            .loadOrderDetailsForFeedback(customer!, widget.orderId!);
       }
     });
   }
@@ -74,8 +74,9 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -252,8 +253,8 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "${AppLocalizations.of(context)!.translate('submit')}"
-                                      !.toUpperCase(),
+                                  "${AppLocalizations.of(context)!.translate('submit')}"!
+                                      .toUpperCase(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15,

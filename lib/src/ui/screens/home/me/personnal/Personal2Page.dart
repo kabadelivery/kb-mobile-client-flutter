@@ -11,12 +11,12 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as dp;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as dp;
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class Personal2Page extends StatefulWidget {
   static var routeName = "/Personal2Page";
@@ -118,8 +118,9 @@ class _Personal2PageState extends State<Personal2Page>
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -154,10 +155,9 @@ class _Personal2PageState extends State<Personal2Page>
                             fit: BoxFit.cover,
                             image: (_image != null
                                 ? FileImage(_image!) as ImageProvider<Object>
-                                : CachedNetworkImageProvider(
-                                Utils.inflateLink(widget.customer?.profile_picture ?? '')
-                            ) as ImageProvider<Object>)
-                        ))),
+                                : CachedNetworkImageProvider(Utils.inflateLink(
+                                        widget.customer?.profile_picture ?? ''))
+                                    as ImageProvider<Object>)))),
                 Positioned(
                     child: InkWell(
                       onTap: getImage,
@@ -214,7 +214,8 @@ class _Personal2PageState extends State<Personal2Page>
                         color: Colors.white,
                         /* phone number must be confirmed by another interface before setting it up. */
                         child: TextField(
-                          style: TextStyle(color: KColors.new_black, fontSize: 14),
+                            style: TextStyle(
+                                color: KColors.new_black, fontSize: 14),
                             controller: _emailFieldController,
                             enabled: false,
                             decoration: InputDecoration(
@@ -305,8 +306,8 @@ class _Personal2PageState extends State<Personal2Page>
                         Row(children: <Widget>[
                           Text(
                               "${AppLocalizations.of(context)!.translate('woman_gender')}",
-                              style:
-                                  TextStyle(color: KColors.new_black, fontSize: 16)),
+                              style: TextStyle(
+                                  color: KColors.new_black, fontSize: 16)),
                           Radio(
                               value: 1,
                               groupValue: widget.customer!.gender,
@@ -342,7 +343,8 @@ class _Personal2PageState extends State<Personal2Page>
                     children: <Widget>[
                       Text(
                           "${AppLocalizations.of(context)!.translate('birthday')}",
-                          style: TextStyle(color: KColors.new_black, fontSize: 16)),
+                          style: TextStyle(
+                              color: KColors.new_black, fontSize: 16)),
                       Container(width: 20),
                       Text("${widget.customer!.birthday}",
                           style: TextStyle(color: KColors.primaryColor)),
@@ -391,8 +393,8 @@ class _Personal2PageState extends State<Personal2Page>
                         color: Colors.white,
                         child: Text(
                             "${AppLocalizations.of(context)!.translate('cancel')}",
-                            style:
-                                TextStyle(fontSize: 14, color: KColors.new_black)),
+                            style: TextStyle(
+                                fontSize: 14, color: KColors.new_black)),
                         onPressed: () {
                           _cancelAll();
                         }),

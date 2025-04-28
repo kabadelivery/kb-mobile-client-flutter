@@ -6,7 +6,6 @@ import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
-import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
@@ -16,10 +15,8 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 import '../../../../xrint.dart';
 import '../../../customwidgets/whatsappMessageButton.dart';
@@ -29,7 +26,11 @@ class OrderNewDetailsPage extends StatefulWidget {
 
   OrderDetailsPresenter? presenter;
   bool is_out_of_app_order;
-  OrderNewDetailsPage({Key? key, this.orderId, this.presenter,this.is_out_of_app_order=false})
+  OrderNewDetailsPage(
+      {Key? key,
+      this.orderId,
+      this.presenter,
+      this.is_out_of_app_order = false})
       : super(key: key);
 
   int? orderId;
@@ -61,21 +62,25 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           widget.orderId! != 0 &&
           widget.command == null &&
           widget.customer != null) {
-        widget.presenter!.fetchOrderDetailsWithId(customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
+        widget.presenter!.fetchOrderDetailsWithId(customer!, widget.orderId!,
+            is_out_of_app_order: widget.is_out_of_app_order);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int;
+    final int args = ModalRoute.of(context)!.settings.arguments == null
+        ? 0
+        : ModalRoute.of(context)!.settings.arguments as int;
 
     if (args != null && args != 0) {
       widget.orderId = args;
       if (widget.customer != null && widget.command == null) {
         // there must be a food id.
-        widget.presenter
-            !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
+        widget.presenter!.fetchOrderDetailsWithId(
+            widget.customer!, widget.orderId!,
+            is_out_of_app_order: widget.is_out_of_app_order);
       } else {
         // postpone it to the next second by adding showing the loading button.
         if (!waitedForCustomerOnce) {
@@ -83,8 +88,9 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
           showLoading(true);
           Future.delayed(Duration(seconds: 1)).then((onValue) {
             if (widget.customer != null && widget.command == null) {
-              widget.presenter
-                  !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
+              widget.presenter!.fetchOrderDetailsWithId(
+                  widget.customer!, widget.orderId!,
+                  is_out_of_app_order: widget.is_out_of_app_order);
             }
           });
         }
@@ -141,14 +147,14 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
 
   Widget _inflateDetails() {
     double foodPriceTotal = 0;
-    try{
+    try {
       if (widget.command!.food_list != null) {
         for (var item in widget.command!.food_list!) {
-          item.price = item.price==""?"0":item.price;
+          item.price = item.price == "" ? "0" : item.price;
           foodPriceTotal += double.parse(item.price!);
         }
       }
-    }catch(_){
+    } catch (_) {
       xrint(_);
     }
     return SingleChildScrollView(
@@ -179,7 +185,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                                           fontWeight: FontWeight.bold)),
                                   padding: EdgeInsets.all(8)),
                           SizedBox(width: 5),
-                          Text(Utils.capitalize(_orderTopLabel(widget.command!)),
+                          Text(
+                              Utils.capitalize(_orderTopLabel(widget.command!)),
                               textAlign: TextAlign.center,
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white)),
@@ -594,8 +601,8 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                         color: KColors.new_gray,
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: Column(
-                        children: List.generate(widget.command!.food_list!.length,
-                            (int index) {
+                        children: List.generate(
+                            widget.command!.food_list!.length, (int index) {
                       return _buildBasketItem(widget.command!.food_list![index],
                           widget.command!.food_list![index].quantity!);
                     }))),
@@ -610,26 +617,28 @@ class _OrderNewDetailsPageState extends State<OrderNewDetailsPage>
                     : Container(),
                 _buildBill(),
                 SizedBox(height: 10),
-                widget.command!.order_type == 4 || widget.command!.order_type == 3?
-                Container(
-                  decoration:BoxDecoration(
-                      color: Color(0xffcb1f44).withOpacity(0.1),
-                      borderRadius:BorderRadius.circular(5)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                        "${AppLocalizations.of(context)!.translate('this_order_can_get_changes')}",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xffcb1f44))),
-                  ),
-
-                ):Container(),
+                widget.command!.order_type == 4 ||
+                        widget.command!.order_type == 3
+                    ? Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xffcb1f44).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                              "${AppLocalizations.of(context)!.translate('this_order_can_get_changes')}",
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xffcb1f44))),
+                        ),
+                      )
+                    : Container(),
                 SizedBox(height: 10),
-                widget.command!.order_type==5 && widget.command!.state==3 && foodPriceTotal>0?
-                WhatsappMessageButton("${AppLocalizations.of(context)!.translate("contact_us_for_funds")}",
-"""
+                widget.command!.order_type == 5 &&
+                        widget.command!.state == 3 &&
+                        foodPriceTotal > 0
+                    ? WhatsappMessageButton(
+                        "${AppLocalizations.of(context)!.translate("contact_us_for_funds")}",
+                        """
 *Récupération de fonds*
 
 Bonjour,
@@ -644,12 +653,12 @@ Je souhaite récupérer les fonds de ma commande
 - *Total*: ${foodPriceTotal}
 - *Date*: ${widget.command!.start_date}
 
-""","91215301",)
-                :Container(),
+""",
+                        "91215301",
+                      )
+                    : Container(),
                 SizedBox(height: 30),
-              ]
-              
-              )));
+              ])));
   }
 
   Widget _buildBasketItem(OrderItemModel food, int quantity) {
@@ -669,22 +678,21 @@ Je souhaite récupérer les fonds de ma commande
                   /* according to the position of the view, menu - food, we have a key that we store. */
                   children: <Widget>[
                     Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          image:widget.command!.order_type==0? new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: 
-                              CachedNetworkImageProvider(
-                                  Utils.inflateLink(food.pic!)))
-                                  :
-                                  food.pic==null?null:new DecorationImage(
-                                  fit: BoxFit.cover,
-                                   image:  NetworkImage(food.pic!))
-                    )
-                    ),
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            image: widget.command!.order_type == 0
+                                ? new DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(
+                                        Utils.inflateLink(food.pic!)))
+                                : food.pic == null
+                                    ? null
+                                    : new DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(food.pic!)))),
                   ],
                 ),
                 title: Column(
@@ -716,14 +724,15 @@ Je souhaite récupérer les fonds de ma commande
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    decoration: food.promotion != 0 &&food.promotion!=null
+                                    decoration: food.promotion != 0 &&
+                                            food.promotion != null
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
                                     color: KColors.new_black,
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal)),
                             SizedBox(width: 5),
-                            (food.promotion != 0&&food.promotion!=null
+                            (food.promotion != 0 && food.promotion != null
                                 ? Text("${food?.promotion_price}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
@@ -799,7 +808,8 @@ Je souhaite récupérer les fonds de ma commande
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(widget.command!.last_update!));
+    return Utils.readTimestamp(
+        context, int.parse(widget.command!.last_update!));
   }
 
   String _getStateLabel(CommandModel command) {
@@ -952,8 +962,9 @@ Je souhaite récupérer les fonds de ma commande
       if (results != null && results.containsKey('ok')) {
         bool feedBackOk = results['ok'];
         if (feedBackOk) {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.command!.id!,is_out_of_app_order:widget.is_out_of_app_order);
+          widget.presenter!.fetchOrderDetailsWithId(
+              widget.customer!, widget.command!.id!,
+              is_out_of_app_order: widget.is_out_of_app_order);
         }
       }
     } else {
@@ -1000,8 +1011,9 @@ Je souhaite récupérer les fonds de ma commande
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
+          widget.presenter!.fetchOrderDetailsWithId(
+              widget.customer!, widget.orderId!,
+              is_out_of_app_order: widget.is_out_of_app_order);
         });
   }
 
@@ -1009,8 +1021,9 @@ Je souhaite récupérer les fonds de ma commande
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!,is_out_of_app_order:widget.is_out_of_app_order);
+          widget.presenter!.fetchOrderDetailsWithId(
+              widget.customer!, widget.orderId!,
+              is_out_of_app_order: widget.is_out_of_app_order);
         });
   }
 
@@ -1033,20 +1046,20 @@ Je souhaite récupérer les fonds de ma commande
       priceActualDelivery = widget.command!.preorder_shipping_pricing!;
       priceNormalCommand = widget.command!.food_pricing!;
       priceNormalDelivery = widget.command!.shipping_pricing!;
-      additionnalFee=widget.command!.additionnal_fee!;
+      additionnalFee = widget.command!.additionnal_fee!;
     } else if (widget.command!.is_promotion == 1) {
       priceTotalToPay = widget.command!.promotion_total_pricing!;
       priceActualCommand = widget.command!.promotion_food_pricing!;
       priceActualDelivery = widget.command!.promotion_shipping_pricing!;
       priceNormalCommand = widget.command!.food_pricing!;
       priceNormalDelivery = widget.command!.shipping_pricing!;
-      additionnalFee=widget.command!.additionnal_fee??0;
+      additionnalFee = widget.command!.additionnal_fee ?? 0;
     } else if (widget.command!.is_promotion == 0 &&
         widget.command!.is_preorder == 0) {
       priceTotalToPay = widget.command!.total_pricing!;
       priceActualCommand = widget.command!.food_pricing!;
       priceActualDelivery = widget.command!.shipping_pricing!;
-      additionnalFee=widget.command!.additionnal_fee??0;
+      additionnalFee = widget.command!.additionnal_fee ?? 0;
       showRemise = false;
       showDeliveryNormal = false;
       showFoodNormal = false;
@@ -1056,11 +1069,14 @@ Je souhaite récupérer les fonds de ma commande
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: !widget.command!.is_payed_at_arrival! ? CommandStateColor.delivered.withAlpha(30) : KColors.new_gray, borderRadius: BorderRadius.circular(5)),
+          color: !widget.command!.is_payed_at_arrival!
+              ? CommandStateColor.delivered.withAlpha(30)
+              : KColors.new_gray,
+          borderRadius: BorderRadius.circular(5)),
       child: Column(children: <Widget>[
 //                      SizedBox(height: 10),
 //                      "/web/assets/app_icons/promo_large.gif"
-   /*     (int.parse(widget.command!.remise) > 0
+        /*     (int.parse(widget.command!.remise) > 0
             ? Container(
                 height: 40.0,
                 decoration: BoxDecoration(
@@ -1115,11 +1131,9 @@ Je souhaite récupérer les fonds de ma commande
               Text("${priceActualDelivery}", style: TextStyle(fontSize: 15)),
             ],
           ),
-
-
         ]),
         SizedBox(height: 10),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:[
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text("${AppLocalizations.of(context)!.translate('additional_fees')}",
               style: TextStyle(fontSize: 15)),
           Text("${additionnalFee}", style: TextStyle(fontSize: 15)),
@@ -1169,7 +1183,7 @@ Je souhaite récupérer les fonds de ma commande
                       color: KColors.primaryColor,
                       fontSize: 18)),
             ]),
-    /*    SizedBox(height: 10),
+        /*    SizedBox(height: 10),
       (int.parse(widget.command!.remise) > 0
             ? Container(
                 height: 40.0,
@@ -1183,33 +1197,32 @@ Je souhaite récupérer les fonds de ma commande
         SizedBox(
           height: 20,
         ),
-    !widget.command!.is_payed_at_arrival!  ? Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: CommandStateColor.delivered,
-                size: 30,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "${AppLocalizations.of(context)!.translate("payed")}".toUpperCase(),
-                style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: CommandStateColor.delivered),
+        !widget.command!.is_payed_at_arrival!
+            ? Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: CommandStateColor.delivered,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "${AppLocalizations.of(context)!.translate("payed")}"
+                          .toUpperCase(),
+                      style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: CommandStateColor.delivered),
+                    )
+                  ],
+                ),
               )
-            ],
-          ),
-        ) : Container()
-    ,
-   
- 
-      ]
-      ),
+            : Container(),
+      ]),
     );
   }
 

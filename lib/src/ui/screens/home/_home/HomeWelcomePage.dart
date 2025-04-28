@@ -24,7 +24,6 @@ import 'package:KABA/src/ui/customwidgets/MRaisedButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShinningTextWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
-import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/bestsellers/BestSellersPage.dart';
@@ -35,7 +34,6 @@ import 'package:KABA/src/ui/screens/home/me/settings/SettingsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 //import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -51,18 +49,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
-//import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as to;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+
 // For Flutter applications, you'll most likely want to use
 // the url_launcher package.
 
@@ -190,8 +185,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 MaterialPageRoute(
                   settings: RouteSettings(
                       name: TransactionHistoryPage.routeName), // <----------
-                  builder: (context) =>
-                      TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
+                  builder: (context) => TransactionHistoryPage(
+                      presenter: TransactionPresenter(TransactionView())),
                 ),
               );
             });
@@ -204,7 +199,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: widget.argument),
-                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
+                    presenter:
+                        RestaurantDetailsPresenter(RestaurantDetailsView())));
             break;
           case SplashPage.VOUCHER:
             _checkIfLoggedInAndDoAction(() {
@@ -219,15 +215,15 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
             break;
           case SplashPage.VOUCHERS:
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(
-                  context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
+              _jumpToPage(context,
+                  MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
             });
             break;
           case SplashPage.ADDRESSES:
 //           xrint("voucher homewelcome -> ${widget.argument}");
             _checkIfLoggedInAndDoAction(() {
-              _jumpToPage(
-                  context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
+              _jumpToPage(context,
+                  MyAddressesPage(presenter: AddressPresenter(AddressView())));
             });
             break;
           case SplashPage.ORDER:
@@ -255,7 +251,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    menuId: widget.argument, presenter: MenuPresenter(MenuView())));
+                    menuId: widget.argument,
+                    presenter: MenuPresenter(MenuView())));
             break;
           case SplashPage.REVIEW_ORDER:
             _checkIfLoggedInAndDoAction(() {
@@ -629,8 +626,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                           if (data.resto!.length > rowIndex * 3 + cell_index) {
                             return TableCell(
                                 child: _mainRestaurantWidget(
-                                    restaurant:
-                                        data.resto![rowIndex * 3 + cell_index]));
+                                    restaurant: data
+                                        .resto![rowIndex * 3 + cell_index]));
                           } else {
                             return TableCell(child: Container());
                           }
@@ -746,9 +743,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                                           width: 120,
                                           child: CachedNetworkImage(
                                               fit: BoxFit.fitHeight,
-                                              imageUrl: Utils.inflateLink(
-                                                  widget.data!.promotion!.pic!)
-                                          ),
+                                              imageUrl: Utils.inflateLink(widget
+                                                  .data!.promotion!.pic!)),
                                         ),
                                       ],
                                     )),
@@ -860,8 +856,10 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           IconButton(
-                              icon: Icon(Icons.flight_takeoff,
-                                  color: Colors.grey), onPressed: () {  },),
+                            icon:
+                                Icon(Icons.flight_takeoff, color: Colors.grey),
+                            onPressed: () {},
+                          ),
                           SizedBox(height: 5),
                           Container(
                               margin: EdgeInsets.only(left: 20, right: 20),
@@ -952,7 +950,9 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
   _jumpToAdsList(List<AdModel> slider, int position) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: position, presenter: AdsViewerPresenter(AdsViewerView())),
+            ads: slider,
+            position: position,
+            presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -1163,7 +1163,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AddVouchersPage(
-                presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer!),
+                presenter: AddVoucherPresenter(AddVoucherView()),
+                customer: widget.customer!),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -1222,8 +1223,8 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                       onPressed: () {
                         saveMessageAsRead(data);
                         setState(() {
-                          OverlaySupportEntry.of(context)
-                              !.dismiss(animate: true);
+                          OverlaySupportEntry.of(context)!
+                              .dismiss(animate: true);
                         });
                       },
                       child: Text(
@@ -1597,7 +1598,8 @@ void _jumpToRestaurantDetails(BuildContext context, ShopModel restaurantModel) {
 
   Navigator.of(context).push(PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => ShopDetailsPage(
-          restaurant: restaurantModel, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
+          restaurant: restaurantModel,
+          presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 0.0);
         var end = Offset.zero;

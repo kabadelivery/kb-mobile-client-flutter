@@ -2,20 +2,15 @@ import 'dart:math';
 
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/ui/customwidgets/BuyCategoryWidget.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/movies/MovieWidgetItem.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/movies/shop_refined/ShopSimpleList.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/MusicData.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flare_flutter/base/animation/actor_animation.dart';
-import 'package:flare_flutter/flare.dart';
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flare_flutter/flare_controller.dart';
-import 'package:flare_flutter/flare_controls.dart';
+import 'package:cool_flare/flare.dart';
+import 'package:cool_flare/flare_actor.dart';
+import 'package:cool_flare/flare_controller.dart';
+import 'package:cool_flare/flare_controls.dart';
 import 'package:flutter/material.dart';
-
 // import 'package:just_audio/just_audio.dart';
 import 'package:vibration/vibration.dart';
 
@@ -38,7 +33,8 @@ class _TestPageState extends State<TestPage> {
       shl = ShopSimpleList(
           search_key: searchKey,
           type: "food",
-          restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
+          restaurantListPresenter:
+              RestaurantListPresenter(RestaurantListView()));
     return shl;
   }
 
@@ -171,8 +167,8 @@ Future<void> _playMusic() async {
   // audioPlayer.play(MusicData.command_success_hold_on, isLocal: true);   /**/
 
   final player = AudioPlayer();
-  player.play(
-      UrlSource("https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3"));
+  player.play(UrlSource(
+      "https://dev.kaba-delivery.com/downloads/command_success_hold_on.mp3"));
   // player.setAudioSource(AudioSource.uri(Uri.parse(
   //     "${MusicData.command_success_hold_on}")));
   // var duration = await player.setAsset(MusicData.command_success_hold_on, preload: true);
@@ -181,7 +177,7 @@ Future<void> _playMusic() async {
   //      initialPosition: Duration.zero, preload: true);
   //
 
-  if (await Vibration.hasVibrator()!=null) {
+  if (await Vibration.hasVibrator() != null) {
     Vibration.vibrate(duration: 500);
   }
 }
@@ -490,10 +486,10 @@ class AnimationControls extends FlareController {
     if (artboard.name.compareTo("Artboard") == 0) {
       _currentWaterFill +=
           (_waterFill - _currentWaterFill) * min(1, elapsed * _smoothTime);
-      _fillAnimation!.apply(
-          _currentWaterFill * _fillAnimation!.duration, artboard, 1);
-      _iceboyMoveY!.apply(
-          _currentWaterFill * _iceboyMoveY!.duration, artboard, 1);
+      _fillAnimation!
+          .apply(_currentWaterFill * _fillAnimation!.duration, artboard, 1);
+      _iceboyMoveY!
+          .apply(_currentWaterFill * _iceboyMoveY!.duration, artboard, 1);
     }
     int len = _baseAnimations.length - 1;
     for (int i = len; i >= 0; i--) {

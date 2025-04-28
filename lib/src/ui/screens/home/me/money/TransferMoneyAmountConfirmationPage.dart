@@ -15,7 +15,6 @@ import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
 import 'TransferMoneySuccessPage.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class TransferMoneyAmountConfirmationPage extends StatefulWidget {
   static var routeName = "/TransferMoneyAmountConfirmationPage";
@@ -70,8 +69,9 @@ class _TransferMoneyAmountConfirmationPageState
               Navigator.pop(context);
             }),
 //        actions: <Widget>[ IconButton(tooltip: "Confirm", icon: Icon(Icons.check, color:KColors.primaryColor), onPressed: (){_confirmContent();})],
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -254,8 +254,8 @@ class _TransferMoneyAmountConfirmationPageState
       _showDialog(
           message:
               "${AppLocalizations.of(context)!.translate('amount_greater_than_0')}",
-          icon:
-              Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
+          icon: Icon(FontAwesomeIcons.exclamationTriangle,
+              color: KColors.new_black));
       return;
     }
 
@@ -295,14 +295,17 @@ class _TransferMoneyAmountConfirmationPageState
     _showDialog(
         message:
             "${AppLocalizations.of(context)!.translate('balance_not_sufficient')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
+        icon: Icon(FontAwesomeIcons.exclamationTriangle,
+            color: KColors.new_black));
   }
 
   @override
   void passwordWrong() {
     _showDialog(
-        message: "${AppLocalizations.of(context)!.translate('password_wrong_')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
+        message:
+            "${AppLocalizations.of(context)!.translate('password_wrong_')}",
+        icon: Icon(FontAwesomeIcons.exclamationTriangle,
+            color: KColors.new_black));
   }
 
   @override
@@ -310,7 +313,8 @@ class _TransferMoneyAmountConfirmationPageState
     _showDialog(
         message:
             "${AppLocalizations.of(context)!.translate('transaction_error')}",
-        icon: Icon(FontAwesomeIcons.exclamationTriangle, color: KColors.new_black));
+        icon: Icon(FontAwesomeIcons.exclamationTriangle,
+            color: KColors.new_black));
   }
 
   @override

@@ -12,8 +12,8 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/DeliveryTimeFrameModel.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
@@ -23,7 +23,6 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
-import 'package:KABA/src/ui/screens/home/me/money/TopUpPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TransactionHistoryPage.dart';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
@@ -34,21 +33,18 @@ import 'package:KABA/src/utils/_static_data/NetworkImages.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pulsator/pulsator.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
@@ -184,8 +180,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             _orderBillConfiguration.open_type! <= 3)
                     ? _buildOrderConfirmationPage2()
                     : ErrorPage(
-                        onClickAction: () => widget.presenter
-                            !.checkOpeningStateOf(
+                        onClickAction: () => widget.presenter!
+                            .checkOpeningStateOf(
                                 widget.customer!, widget.restaurant!)))));
   }
 
@@ -200,7 +196,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     /* jump and get it */
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(pick: true, presenter: AddressPresenter(AddressView())),
+            MyAddressesPage(
+                pick: true, presenter: AddressPresenter(AddressView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -242,32 +239,30 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         padding: EdgeInsets.all(10),
         child: Stack(
           children: [
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Text(Utils.capitalize(selectedAddress.name??""),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(Utils.capitalize(selectedAddress.name ?? ""),
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: KColors.new_black,
+                          fontSize: 14))),
+              SizedBox(height: 5),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: Row(children: <Widget>[
+                  Expanded(
+                      child: Text(
+                          Utils.capitalize(selectedAddress.description ?? ""),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: KColors.new_black,
-                              fontSize: 14))),
-                  SizedBox(height: 5),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: Row(children: <Widget>[
-                      Expanded(
-                          child: Text(
-                              Utils.capitalize(selectedAddress.description??""),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.grey))),
-                    ]),
-                  )
+                          style: TextStyle(fontSize: 12, color: Colors.grey))),
                 ]),
+              )
+            ]),
             Positioned(
                 top: 5,
                 right: 0,
@@ -559,8 +554,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant livraison normal */
                         Text(
                             _orderBillConfiguration!.shipping_pricing! >
-                                    _orderBillConfiguration
-                                        !.promotion_shipping_pricing!
+                                    _orderBillConfiguration!
+                                        .promotion_shipping_pricing!
                                 ? "(${_orderBillConfiguration!.shipping_pricing})"
                                 : "",
                             style: TextStyle(
@@ -571,8 +566,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant livraison promotion */
                         Text(
                             _orderBillConfiguration!.shipping_pricing! >
-                                    _orderBillConfiguration
-                                        !.promotion_shipping_pricing!
+                                    _orderBillConfiguration!
+                                        .promotion_shipping_pricing!
                                 ? "${_orderBillConfiguration!.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
                                 : "${_orderBillConfiguration!.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
@@ -582,43 +577,40 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ]),
               SizedBox(height: 10),
               //additional_fees
-              _orderBillConfiguration!.additional_fees_total_price!=0||_orderBillConfiguration!.additional_fees_total_price!=null?
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('additional_fees')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                    /* check if there is promotion on Livraison */
-                    Row(
+              _orderBillConfiguration!.additional_fees_total_price != 0 ||
+                      _orderBillConfiguration!.additional_fees_total_price !=
+                          null
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        /* montant livraison promotion */
-                        Text(
-                           "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12)),
-
-                      ],
-                    )
-                  ])
-                  :Container(),
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('additional_fees')}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal, fontSize: 12)),
+                          /* check if there is promotion on Livraison */
+                          Row(
+                            children: <Widget>[
+                              /* montant livraison promotion */
+                              Text(
+                                  "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12)),
+                            ],
+                          )
+                        ])
+                  : Container(),
               SizedBox(height: 10),
               Container(
-                decoration:BoxDecoration(
-                  color:Color(0x54B6B6B6),
-                  borderRadius:BorderRadius.circular(5)
-                ),
+                decoration: BoxDecoration(
+                    color: Color(0x54B6B6B6),
+                    borderRadius: BorderRadius.circular(5)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                       "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
-                      style: TextStyle(
-
-                          fontSize: 12,
-                          color: Colors.black)),
+                      style: TextStyle(fontSize: 12, color: Colors.black)),
                 ),
-
               ),
               SizedBox(height: 10),
               _orderBillConfiguration!.remise! > 0
@@ -830,7 +822,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     BouncingWidget(
                                       duration: Duration(milliseconds: 400),
                                       scaleFactor: 2,
-                                      onPressed: () {  },
+                                      onPressed: () {},
                                       child: Icon(Icons.location_on,
                                           size: 28, color: KColors.mBlue),
                                     ),
@@ -971,7 +963,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     setState(() {
       checkIsRestaurantOpenConfigIsLoading = false;
     });
-    if(context.mounted || context!=null){
+    if (context.mounted || context != null) {
       mToast("${AppLocalizations.of(context)!.translate('network_error')}");
     }
   }
@@ -1007,7 +999,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       context,
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(RecoverPasswordView()), is_a_process: true),
+            presenter: RecoverPasswordPresenter(RecoverPasswordView()),
+            is_a_process: true),
       ),
     );
   }
@@ -1360,8 +1353,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     if (widget.orderTimeRangeSelected! >= 0 &&
         widget.orderTimeRangeSelected! <
             _orderBillConfiguration.deliveryFrames!.length)
-      selectedFrame =
-          _orderBillConfiguration.deliveryFrames![widget.orderTimeRangeSelected!];
+      selectedFrame = _orderBillConfiguration
+          .deliveryFrames![widget.orderTimeRangeSelected!];
     else {
       _showDialog(
           icon: Icon(Icons.error),
@@ -1410,7 +1403,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _addInfoController!.text!,
                 selectedFrame.start!,
                 selectedFrame.end!);
-        } else {
+          } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
         }
@@ -1531,7 +1524,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     // play music
     final player = AudioPlayer();
     player.play(UrlSource(MusicData.command_success_hold_on));
-    if (await Vibration.hasVibrator()==true) {
+    if (await Vibration.hasVibrator() == true) {
       Vibration.vibrate(duration: 500);
     }
   }
@@ -1781,7 +1774,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   children: <Widget>[
                     Icon(FontAwesomeIcons.wallet, color: Colors.white),
                     SizedBox(width: 10),
-                    Text("${AppLocalizations.of(context)!.translate('pay_now')}",
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('pay_now')}",
                         style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
@@ -2108,7 +2102,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.kaba_point = configuration.kaba_point;
     _orderBillConfiguration.eligible_vouchers = configuration.eligible_vouchers;
     _orderBillConfiguration.additional_fees = configuration.additional_fees;
-    _orderBillConfiguration.additional_fees_total_price = configuration.additional_fees_total_price;
+    _orderBillConfiguration.additional_fees_total_price =
+        configuration.additional_fees_total_price;
 
     _orderBillConfiguration
         .total_preorder_pricing = (configuration.command_pricing!.toDouble() +
@@ -2227,7 +2222,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       builder: (BuildContext context) {
         return AlertDialog(
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
+              SizedBox(
+                  height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
@@ -2402,8 +2398,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         ),
         _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
       ]);
-    }
-    else {
+    } else {
 //      _selectedVoucher
       return Column(
         children: [

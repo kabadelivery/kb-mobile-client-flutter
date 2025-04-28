@@ -24,7 +24,6 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 import '../../../StateContainer.dart';
 
@@ -98,8 +97,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
       // there must be a food id.
       if (widget.customer != null) {
         widget.restaurant = ShopModel(id: widget.restaurantId!);
-        widget.presenter
-            !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+        widget.presenter!
+            .fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
       } else {
         showLoading(true);
         /*Future.delayed(Duration(seconds: 1)).then((onValue) {
@@ -110,8 +109,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
           widget.restaurant = ShopModel(id: widget.restaurantId!);
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
       }
     }
@@ -217,7 +216,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                             width: 20,
                                             height: 20,
                                             child: CircularProgressIndicator()))
-                                    : _getRestaurantStateTag(widget.restaurant!),
+                                    : _getRestaurantStateTag(
+                                        widget.restaurant!),
                               ],
                             ),
                           ),
@@ -475,7 +475,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
+                restaurant: restaurantModel,
+                presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -504,8 +505,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -513,8 +514,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -523,8 +524,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -533,8 +534,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -807,7 +808,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
+            ads: slider,
+            position: 0,
+            presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

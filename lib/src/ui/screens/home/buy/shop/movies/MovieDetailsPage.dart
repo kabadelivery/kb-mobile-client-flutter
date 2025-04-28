@@ -6,7 +6,6 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MovieDetailsPage extends StatefulWidget {
   MovieModel? movie = MovieModel(
@@ -133,7 +132,9 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                             ]),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
                         Container(
@@ -144,11 +145,12 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                 left: 8, right: 8, top: 3, bottom: 3),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 color: KColors.primaryColor.withOpacity(0.15))),
                         SizedBox(
                           width: 10,
-                        ),   Container(
+                        ),
+                        Container(
                             child: Text("${widget?.movie?.age_limit}",
                                 style: TextStyle(
                                     fontSize: 11, color: Colors.grey)),
@@ -156,11 +158,12 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                 left: 8, right: 8, top: 3, bottom: 3),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 color: KColors.primaryColor.withOpacity(0.15))),
                         SizedBox(
                           width: 10,
-                        ),   Container(
+                        ),
+                        Container(
                             child: Text("${widget?.movie?.age_limit}",
                                 style: TextStyle(
                                     fontSize: 11, color: Colors.grey)),
@@ -168,11 +171,12 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                 left: 8, right: 8, top: 3, bottom: 3),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 color: KColors.primaryColor.withOpacity(0.15))),
                         SizedBox(
                           width: 10,
-                        ),   Container(
+                        ),
+                        Container(
                             child: Text("${widget?.movie?.age_limit}",
                                 style: TextStyle(
                                     fontSize: 11, color: Colors.grey)),
@@ -180,7 +184,7 @@ class MovieDetailsPageState extends State<MovieDetailsPage>
                                 left: 8, right: 8, top: 3, bottom: 3),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 color: KColors.primaryColor.withOpacity(0.15))),
                         SizedBox(
                           width: 10,

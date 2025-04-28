@@ -3,21 +3,15 @@ import 'package:KABA/src/contracts/order_feedback_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/OrderItemModel.dart';
-import 'package:KABA/src/models/VoucherModel.dart';
 import 'package:KABA/src/ui/screens/home/orders/CustomerFeedbackPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
-import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart' as to;
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyNewOrderWidget extends StatefulWidget {
   CommandModel? command;
@@ -122,60 +116,76 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
-                      Container(
-                          height: 45,
-                          width: 45,
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                              border: new Border.all(
-                                  color: KColors.primaryYellowColor, width: 2),
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(
-                                      command.order_type==0?
-                                      Utils.inflateLink(
-                                          command.restaurant_entity!.pic!):
-                                  "${command.restaurant_entity!.pic!}"
-                                  )
-
-                              ))),
-                      SizedBox(width: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                    child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [  SizedBox(height: 10),
+                        children: <Widget>[
                           Container(
-                            width: 1 * MediaQuery.of(context).size.width / 2,
-                            child: Text(
-                                restoName,
-                                style: TextStyle(
-                                    color: KColors.new_black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14),
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                        SizedBox(height: 5),
-                          Container(width: MediaQuery.of(context).size.width-160,child: Text("${_getOrderFoodName()}", style: TextStyle(overflow: TextOverflow.ellipsis, fontSize: 12, color: Colors.grey),)),
-                          SizedBox(height: 5),
-                          command!.is_payed_at_arrival! ? Container(height: 20,) : Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 6, horizontal: 10),
+                              height: 45,
+                              width: 45,
+                              margin: EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                  BorderRadius.circular(5)),
-                              child: Text(
-                                  "${AppLocalizations.of(context)!.translate("payed")}",
-                                  style: TextStyle(fontWeight: FontWeight.bold,
-                                      color: KColors.primaryColor,
-                                      fontSize: 12))),
-                          SizedBox(height: 10),
-                        ],
-                      )
-                    ]),
+                                  border: new Border.all(
+                                      color: KColors.primaryYellowColor,
+                                      width: 2),
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: CachedNetworkImageProvider(command
+                                                  .order_type ==
+                                              0
+                                          ? Utils.inflateLink(
+                                              command.restaurant_entity!.pic!)
+                                          : "${command.restaurant_entity!.pic!}")))),
+                          SizedBox(width: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10),
+                              Container(
+                                width:
+                                    1 * MediaQuery.of(context).size.width / 2,
+                                child: Text(restoName,
+                                    style: TextStyle(
+                                        color: KColors.new_black,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                    overflow: TextOverflow.ellipsis),
+                              ),
+                              SizedBox(height: 5),
+                              Container(
+                                  width:
+                                      MediaQuery.of(context).size.width - 160,
+                                  child: Text(
+                                    "${_getOrderFoodName()}",
+                                    style: TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 12,
+                                        color: Colors.grey),
+                                  )),
+                              SizedBox(height: 5),
+                              command!.is_payed_at_arrival!
+                                  ? Container(
+                                      height: 20,
+                                    )
+                                  : Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 6, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Text(
+                                          "${AppLocalizations.of(context)!.translate("payed")}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: KColors.primaryColor,
+                                              fontSize: 12))),
+                              SizedBox(height: 10),
+                            ],
+                          )
+                        ]),
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -193,42 +203,45 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                               Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    command.state! > 1 && command.state! <= 3
-                                        ? Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.directions_bike,
-                                            color: Colors.white, size: 16),
-                                        SizedBox(width: 5),
-                                        Text("${widget?.command?.livreur?.name}",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white)),
-                                      ],
-                                    )
-                                        : Container(height: 5),
-                                  ],
-                                ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                command.state! > 1 && command.state! <= 3
+                                    ? Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.directions_bike,
+                                              color: Colors.white, size: 16),
+                                          SizedBox(width: 5),
+                                          Text(
+                                              "${widget?.command?.livreur?.name}",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white)),
+                                        ],
+                                      )
+                                    : Container(height: 5),
+                              ],
+                            ),
                             /*shipping mode only*/
                             Row(
                               children: [
                                 // SizedBox(width: 10),
                                 widget?.command?.state == 2 ||
-                                       ( widget?.command?.state == 3 && (widget?.command?.rating == null || widget.command!.rating! < 1))
+                                        (widget?.command?.state == 3 &&
+                                            (widget?.command?.rating == null ||
+                                                widget.command!.rating! < 1))
                                     ? InkWell(
                                         child: Container(
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 6, horizontal: 10),
                                             decoration: BoxDecoration(
-                                                color: Colors.white.withAlpha(50),
+                                                color:
+                                                    Colors.white.withAlpha(50),
                                                 borderRadius:
                                                     BorderRadius.circular(5)),
                                             child: Row(
@@ -275,7 +288,7 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                       RichText(
                           text: TextSpan(
                               text:
-                              "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context)!.translate('currency_short')}",
+                                  "${command?.is_preorder == 1 ? command.preorder_total_pricing : (command.is_promotion == 1 ? command.promotion_total_pricing : command.total_pricing)} ${AppLocalizations.of(context)!.translate('currency_short')}",
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
@@ -367,8 +380,10 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             OrderNewDetailsPage(
-                is_out_of_app_order:widget.command?.order_type!=0?true:false,
-                orderId: command.id!, presenter: OrderDetailsPresenter(OrderDetailsView())),
+                is_out_of_app_order:
+                    widget.command?.order_type != 0 ? true : false,
+                orderId: command.id!,
+                presenter: OrderDetailsPresenter(OrderDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -415,9 +430,8 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
     for (var value in widget.command!.food_list!) {
       condensedName += " ${value.name} /";
     }
-    return condensedName.substring(0, condensedName.length-1);
+    return condensedName.substring(0, condensedName.length - 1);
   }
-
 }
 
 class MiniVoucherClipper extends CustomClipper<Path> {

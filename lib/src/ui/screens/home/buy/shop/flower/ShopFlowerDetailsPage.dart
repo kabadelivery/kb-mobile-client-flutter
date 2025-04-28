@@ -5,8 +5,8 @@ import 'package:KABA/src/contracts/food_contract.dart';
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -20,7 +20,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShopFlowerDetailsPage extends StatefulWidget {
@@ -97,7 +96,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int ;
+    final int args = ModalRoute.of(context)!.settings.arguments == null
+        ? 0
+        : ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0) widget.foodId = args;
     if (widget.food == null) {
       // there must be a food id.
@@ -115,16 +116,16 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
               Navigator.pop(context);
             }),
         actions: <Widget>[
-      PopupMenuButton<String>(
-      onSelected: menuChoiceAction,
-        itemBuilder: (BuildContext context) {
-          return popupMenus.map((String menuName) {
-            return PopupMenuItem<String>(
-                value: menuName, child: Text(menuName));
-          }).toList();
-        },
-      )
-      ],
+          PopupMenuButton<String>(
+            onSelected: menuChoiceAction,
+            itemBuilder: (BuildContext context) {
+              return popupMenus.map((String menuName) {
+                return PopupMenuItem<String>(
+                    value: menuName, child: Text(menuName));
+              }).toList();
+            },
+          )
+        ],
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -221,10 +222,11 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                    color: Colors.white,
                     /*  borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))*/),
+                          topRight: Radius.circular(20))*/
+                  ),
                   child: Column(
                     children: [
                       Padding(
@@ -256,21 +258,28 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                SizedBox(height: 10,),
-                            Row(crossAxisAlignment: CrossAxisAlignment.start,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Text("${widget.food?.name?.toUpperCase()}",
+                                  child: Text(
+                                      "${widget.food?.name?.toUpperCase()}",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
-                                          fontSize: 15,fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.grey)),
                                 ),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      SizedBox(width: 20,),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
                                       widget.food!.promotion == 0
                                           ? Text("${widget.food?.price}",
                                               style: TextStyle(
@@ -290,8 +299,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                               Text(
                                                   "${widget.food?.promotion_price}",
                                                   style: TextStyle(
-                                                      color:
-                                                          KColors.primaryYellowColor,
+                                                      color: KColors
+                                                          .primaryYellowColor,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -301,7 +310,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                       Text(
                                           "${AppLocalizations.of(context)!.translate('currency')}",
                                           style: TextStyle(
-                                              color:  widget.food!.promotion == 0 ? KColors.primaryColor : KColors.primaryYellowColor,
+                                              color: widget.food!.promotion == 0
+                                                  ? KColors.primaryColor
+                                                  : KColors.primaryYellowColor,
                                               fontSize: 12))
                                     ]),
                               ],
@@ -310,17 +321,20 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                             Row(children: [
                               Text(
                                   "${AppLocalizations.of(context)!.translate('product_description_section_title')}",
-                                  style: TextStyle(color: KColors.new_black,  fontSize: 14, fontWeight: FontWeight.w600))
+                                  style: TextStyle(
+                                      color: KColors.new_black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600))
                             ]),
                             SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Expanded(
-                                  child: Text("${widget.food?.description?.trim()}",
+                                  child: Text(
+                                      "${widget.food?.description?.trim()}",
                                       style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12)),
+                                          color: Colors.grey, fontSize: 12)),
                                 ),
                               ],
                             ),
@@ -359,7 +373,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                               SizedBox(width: 15),
                               Text("${quantity}",
                                   style: TextStyle(
-                                      color: KColors.new_black, fontSize: 20, fontWeight: FontWeight.bold)),
+                                      color: KColors.new_black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                               SizedBox(width: 15),
                               Container(
                                 child: IconButton(
@@ -376,9 +392,14 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                         SizedBox(height: 10),
                         Text(
                             "${_getTotalPrice()}${AppLocalizations.of(context)!.translate('currency')}",
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey)),
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey)),
                         SizedBox(height: 15),
-                        Container(margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           child: ElevatedButton(
                               onPressed: () {
                                 _continuePurchase();
@@ -388,8 +409,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                      "${AppLocalizations.of(context)!.translate('buy')}"
-                                          !.toUpperCase(),
+                                      "${AppLocalizations.of(context)!.translate('buy')}"!
+                                          .toUpperCase(),
                                       style: TextStyle(
                                           color: KColors.white, fontSize: 15)),
                                 ],
@@ -473,10 +494,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                       decoration: BoxDecoration(
 //                      border: new Border.all(color: Colors.white, width: 2),
                           image: new DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image:
-                                new AssetImage(ImageAssets.login_description),
-                          ))),
+                        fit: BoxFit.fitHeight,
+                        image: new AssetImage(ImageAssets.login_description),
+                      ))),
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
@@ -515,7 +535,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
           pageBuilder: (context, animation, secondaryAnimation) =>
               OrderConfirmationPage2(
                   restaurant: widget.restaurant!,
-                  presenter: OrderConfirmationPresenter(OrderConfirmationView()),
+                  presenter:
+                      OrderConfirmationPresenter(OrderConfirmationView()),
                   foods: food_selected,
                   addons: adds_on_selected),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {

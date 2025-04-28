@@ -3,18 +3,13 @@ import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
-import 'package:KABA/src/ui/screens/home/buy/shop/flower/FlowerCatalogPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopListWidget extends StatefulWidget {
   ShopModel? shopModel;
@@ -58,14 +53,23 @@ class _ShopListWidgetState extends State<ShopListWidget> {
 
                               Stack(
                                 children: [
-                                  Container(height: 80, width: 60,   padding: EdgeInsets.all(0), margin: EdgeInsets.all(0),
+                                  Container(
+                                    height: 80,
+                                    width: 60,
+                                    padding: EdgeInsets.all(0),
+                                    margin: EdgeInsets.all(0),
                                     child: Center(
                                       child: Container(
                                           height: 60,
                                           width: 60,
                                           decoration: BoxDecoration(
                                               border: new Border.all(
-                                                  color: widget.shopModel?.is_promotion == 1 ? KColors.pureGreen : KColors.primaryYellowColor,
+                                                  color: widget.shopModel
+                                                              ?.is_promotion ==
+                                                          1
+                                                      ? KColors.pureGreen
+                                                      : KColors
+                                                          .primaryYellowColor,
                                                   width: 3),
                                               /*borderRadius:
                                                   BorderRadius.all(Radius.circular(2)),*/
@@ -74,12 +78,26 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                               color: Colors.white,
                                               image: new DecorationImage(
                                                   fit: BoxFit.cover,
-                                                  image: CachedNetworkImageProvider(
-                                                      Utils.inflateLink(
-                                                          widget.shopModel!.pic!))))),
+                                                  image:
+                                                      CachedNetworkImageProvider(
+                                                          Utils.inflateLink(
+                                                              widget.shopModel!
+                                                                  .pic!))))),
                                     ),
                                   ),
-                                  Positioned(top: 0, right: 0, child: widget.shopModel?.is_promotion == 1 ? Container(width: 40, height: 40,child: LottieBuilder.network("https://app.kaba-delivery.com/lottie/promotion_lottie.json"),padding: EdgeInsets.all(0), margin: EdgeInsets.all(0),): Container())
+                                  Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: widget.shopModel?.is_promotion == 1
+                                          ? Container(
+                                              width: 40,
+                                              height: 40,
+                                              child: LottieBuilder.network(
+                                                  "https://app.kaba-delivery.com/lottie/promotion_lottie.json"),
+                                              padding: EdgeInsets.all(0),
+                                              margin: EdgeInsets.all(0),
+                                            )
+                                          : Container())
                                 ],
                               ),
                               /*title:*/
@@ -102,38 +120,63 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500)),
                                         ),
-                                        widget?.shopModel?.stars != null && widget.shopModel!.stars! > 1 ?
-                                        Row(mainAxisSize: MainAxisSize.min,children: [
-                                          SizedBox(width: 5),
-                                          Container(decoration: BoxDecoration(color: KColors.primaryYellowColor.withAlpha(20), borderRadius: BorderRadius.circular(20)),
-                                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  FontAwesomeIcons.solidStar,
-                                                  color: KColors.primaryYellowColor,
-                                                  size: 12,
-                                                ),
-                                                SizedBox(width: 5),
-                                                Text(
-                                                    "${widget?.shopModel?.stars}"
-                                                        .length >
-                                                        3
-                                                        ? "${widget?.shopModel?.stars}"
-                                                        .substring(0, 3)
-                                                        : "${widget?.shopModel?.stars}",
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.start,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.grey,
-                                                        fontWeight: FontWeight.w500)),  ],
-                                            ),
-                                          ),
-
-                                      SizedBox(width: 60)
-                                        ]) :        SizedBox(width: 60),
+                                        widget?.shopModel?.stars != null &&
+                                                widget.shopModel!.stars! > 1
+                                            ? Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                    SizedBox(width: 5),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          color: KColors
+                                                              .primaryYellowColor
+                                                              .withAlpha(20),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20)),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5,
+                                                              horizontal: 10),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            FontAwesomeIcons
+                                                                .solidStar,
+                                                            color: KColors
+                                                                .primaryYellowColor,
+                                                            size: 12,
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                              "${widget?.shopModel?.stars}"
+                                                                          .length >
+                                                                      3
+                                                                  ? "${widget?.shopModel?.stars}"
+                                                                      .substring(
+                                                                          0, 3)
+                                                                  : "${widget?.shopModel?.stars}",
+                                                              maxLines: 1,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 60)
+                                                  ])
+                                            : SizedBox(width: 60),
                                       ],
                                     ),
                                     SizedBox(height: 5),
@@ -148,7 +191,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                 .withAlpha(150))),
                                     SizedBox(height: 10),
                                     /* kilometers and shipping fees */
-                                    Row (children: <Widget>[
+                                    Row(children: <Widget>[
                                       _getRestaurantStateTag(widget.shopModel!),
                                       SizedBox(width: 5),
                                       widget.shopModel?.distance == null
@@ -211,8 +254,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                                       ?.delivery_pricing ==
                                                                   "~"
                                                               ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
-                                                              : widget.shopModel
-                                                                      !.delivery_pricing! +
+                                                              : widget.shopModel!
+                                                                      .delivery_pricing! +
                                                                   " F"),
                                                           style: TextStyle(
                                                               fontWeight:
@@ -304,7 +347,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                 ? RestaurantMenuPage(
                     restaurant: shopModel, presenter: MenuPresenter(MenuView()))
                 : RestaurantMenuPage(
-                    restaurant: shopModel, presenter: MenuPresenter(MenuView())),
+                    restaurant: shopModel,
+                    presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

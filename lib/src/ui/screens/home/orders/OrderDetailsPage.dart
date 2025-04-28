@@ -17,14 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class OrderDetailsPageOld extends StatefulWidget {
   static var routeName = "/OrderDetailsPageOld";
 
   OrderDetailsPresenter? presenter;
 
-  OrderDetailsPageOld({Key? key, this.orderId, this.presenter}) : super(key: key);
+  OrderDetailsPageOld({Key? key, this.orderId, this.presenter})
+      : super(key: key);
 
   int? orderId;
   CustomerModel? customer;
@@ -67,8 +67,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
       widget.orderId = args;
       if (widget.customer != null && widget.command == null) {
         // there must be a food id.
-        widget.presenter
-            !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
+        widget.presenter!
+            .fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
       } else {
         // postpone it to the next second by adding showing the loading button.
         if (!waitedForCustomerOnce) {
@@ -76,8 +76,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
           showLoading(true);
           Future.delayed(Duration(seconds: 1)).then((onValue) {
             if (widget.customer != null && widget.command == null) {
-              widget.presenter
-                  !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
+              widget.presenter!
+                  .fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
             }
           });
         }
@@ -94,7 +94,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 Navigator.pop(context);
               }),
           centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -446,9 +447,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
                 /* food list*/
                 Card(
                     child: Column(
-                        children: List.generate(widget.command!.food_list!.length,
-                            (int index) {
-                  return SingleOrderFoodWidget(widget.command!.food_list![index]);
+                        children: List.generate(
+                            widget.command!.food_list!.length, (int index) {
+                  return SingleOrderFoodWidget(
+                      widget.command!.food_list![index]);
                 }))),
                 SizedBox(height: 10),
                 /* if we have a voucher, we will show it */
@@ -485,7 +487,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
   }
 
   _orderLastUpdate(CommandModel command) {
-    return Utils.readTimestamp(context, int.parse(widget.command!.last_update!));
+    return Utils.readTimestamp(
+        context, int.parse(widget.command!.last_update!));
   }
 
   _getProgressTimeLine(CommandModel command) {
@@ -717,8 +720,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
       if (results != null && results.containsKey('ok')) {
         bool feedBackOk = results['ok'];
         if (feedBackOk) {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.command!.id!);
+          widget.presenter!
+              .fetchOrderDetailsWithId(widget.customer!, widget.command!.id!);
         }
       }
     } else {
@@ -765,8 +768,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
+          widget.presenter!
+              .fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
         });
   }
 
@@ -774,8 +777,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPageOld>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
+          widget.presenter!
+              .fetchOrderDetailsWithId(widget.customer!, widget.orderId!);
         });
   }
 

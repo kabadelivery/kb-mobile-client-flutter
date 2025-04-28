@@ -165,7 +165,8 @@ class _CurrentLocationTileState extends State<CurrentLocationTile> {
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      LoadingAnimationWidget.prograssiveDots(
+                                      LoadingAnimationWidget
+                                          .horizontalRotatingDots(
                                         color: KColors.mBlue,
                                         size: 18,
                                       )

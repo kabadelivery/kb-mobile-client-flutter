@@ -1,12 +1,7 @@
-import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/MovieModel.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
-import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MovieWidgetItem extends StatelessWidget {
   MovieModel movie = MovieModel(
@@ -43,8 +38,7 @@ class MovieWidgetItem extends StatelessWidget {
                   image: new DecorationImage(
                       fit: BoxFit.cover, image: CachedNetworkImageProvider(
                           // Utils.inflateLink(movie?.pic)
-                          movie.pic!))
-              ),
+                          movie.pic!))),
             ),
             SizedBox(width: 10),
             Expanded(
