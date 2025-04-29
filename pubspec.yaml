@@ -248,7 +248,9 @@ flutter:
     - assets/voucher_subscribe_success.mp3
   # test splash screen
     - assets/images/jpg/flu_splash.jpeg
-    - assets/images/jpg/new_update.jpg
+    - assets/images/jpg/update_fr.jpg
+    - assets/images/jpg/update_en.jpg
+    - assets/images/jpg/update_zh.jpg
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

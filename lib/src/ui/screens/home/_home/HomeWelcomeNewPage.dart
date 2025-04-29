@@ -1461,7 +1461,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
   void showNewFeature(BuildContext context, String version) {
     OverlayState overlayState = Overlay.of(context);
     OverlayEntry? overlayEntry;
-
+    String defaultLocale = Platform.localeName;
     overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
@@ -1472,7 +1472,11 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               width:MediaQuery.of(context).size.width*.95,
               color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
               child: Image.asset(
-                "assets/images/jpg/new_update.jpg",
+                defaultLocale.contains("fr")?
+                "assets/images/jpg/update_fr.jpg"
+                :defaultLocale.contains("en")?
+                 "assets/images/jpg/update_en.jpg"
+                :"assets/images/jpg/update_zh.jpg",
                 fit: BoxFit.contain,
               ),
             ),
