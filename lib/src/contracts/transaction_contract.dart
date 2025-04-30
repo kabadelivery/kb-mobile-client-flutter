@@ -79,12 +79,10 @@ class TransactionPresenter implements TransactionContract {
     _transactionView.showBalanceLoading(true);
     try {
       String balance = await provider.checkBalance(customer);
-      // String kabaPoints = await provider.checkKabaPoints(customer);
-      // _transactionView.updateKabaPoints(kabaPoints);
-
-      // also get the restaurant entity here.
+      xrint("BALANCE $balance");
       _transactionView.showBalance(balance);
       isFetchBalanceWorking = false;
+      _transactionView.showBalanceLoading(false);
     } catch (_) {
       /* Transaction failure */
       xrint("error ${_}");

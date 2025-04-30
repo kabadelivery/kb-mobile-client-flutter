@@ -19,6 +19,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../resources/client_personal_api_provider.dart';
+
 class TransactionHistoryPage extends StatefulWidget {
   static var routeName = "/TransactionHistoryPage";
 
@@ -73,13 +75,19 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       _handleTabSelection();
     });*/
 
-    CustomerUtils.getCustomer().then((customer) {
+    CustomerUtils.getCustomer().then((customer) async{
       widget.customer = customer;
 
       // fetch transaction as the first page
       widget.presenter!.fetchMoneyTransaction(customer!);
       // only fetch point when we press on the other button
-      widget.presenter!.checkBalance(customer!);
+      ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
+      balance = await provider.checkBalance(customer);
+      pointData = await provider.fetchPointTransactionsHistory(customer);
+      setState(() {
+        isMoneyBalanceLoading = false;
+        isMoneyLoading = false;
+      });
     });
     _tabController!.addListener(_handleTabSelection);
   }
@@ -165,7 +173,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
           child: Column(
             children: [
               SizedBox(height: 10),
-              Container(
+              balance!=null? Container(
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -175,7 +183,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                         decoration: BoxDecoration(
                           color: filter_unactive_button_color,
                           borderRadius:
-                              BorderRadius.all(const Radius.circular(5.0)),
+                          BorderRadius.all(const Radius.circular(5.0)),
                         ),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -189,27 +197,27 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                         padding: EdgeInsets.all(10),
                                         child: Center(
                                           child: Text(Utils.capitalize(
-                                                  // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
-                                                  _searchChoices[0]),
+                                            // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
+                                              _searchChoices[0]),
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: widget
-                                                              .selectedPosition ==
-                                                          1
+                                                      .selectedPosition ==
+                                                      1
                                                       ? this
-                                                          .filter_active_text_color
+                                                      .filter_active_text_color
                                                       : this
-                                                          .filter_unactive_text_color)),
+                                                      .filter_unactive_text_color)),
                                         ),
                                         decoration: BoxDecoration(
                                             color: widget.selectedPosition == 1
                                                 ? this
-                                                    .filter_active_button_color
+                                                .filter_active_button_color
                                                 : this
-                                                    .filter_unactive_button_color,
+                                                .filter_unactive_button_color,
                                             borderRadius:
-                                                new BorderRadius.circular(
-                                                    5.0)))),
+                                            new BorderRadius.circular(
+                                                5.0)))),
                               ),
                               SizedBox(width: 5),
                               Expanded(
@@ -225,22 +233,22 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: widget
-                                                              .selectedPosition ==
-                                                          1
+                                                      .selectedPosition ==
+                                                      1
                                                       ? this
-                                                          .filter_unactive_text_color
+                                                      .filter_unactive_text_color
                                                       : this
-                                                          .filter_active_text_color)),
+                                                      .filter_active_text_color)),
                                         ),
                                         decoration: BoxDecoration(
                                             color: widget.selectedPosition == 1
                                                 ? this
-                                                    .filter_unactive_button_color
+                                                .filter_unactive_button_color
                                                 : this
-                                                    .filter_active_button_color,
+                                                .filter_active_button_color,
                                             borderRadius:
-                                                new BorderRadius.circular(
-                                                    5.0)))),
+                                            new BorderRadius.circular(
+                                                5.0)))),
                               ),
                             ]),
                         duration: Duration(milliseconds: 3000),
@@ -248,7 +256,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
                     ),
                   ],
                 ),
-              ),
+              ):Container(),
               SizedBox(height: 20),
               widget.selectedPosition == 1
                   ? Container(
@@ -1593,8 +1601,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     setState(() {
       widget.selectedPosition = i;
       if (widget.selectedPosition == 2) {
-        if (pointData == null)
-          widget.presenter!.fetchPointTransaction(widget.customer!);
+        if (pointData != null){
+          isPointPageLoading = false;
+          isPointTopLoading = false;
+        }
       }
     });
   }

@@ -153,20 +153,20 @@ class PointObjModel {
 
   factory PointObjModel.fromMap(Map<String, dynamic> map) {
     return PointObjModel(
-      balance: map['balance'] as int,
-      can_use: map['can_use'] as int,
-      amount_already_used: map['amount_already_used'] as int,
-      can_be_used: map['can_be_used'] as bool,
-      is_eligible: map['is_eligible'] as bool,
-      is_new_beneficiary: map['is_new_beneficiary'] as bool,
-      month_transactions_amount: map['month_transactions_amount'] as int,
-      month_transactions_amount_plus_amount_to_debit: map['month_transactions_amount_plus_amount_to_debit'] as int,
-      client_command_count: map['client_command_count'] as int,
-      client_ca_delivery: map['client_ca_delivery'] as int,
+      balance: map['balance']??0,
+      can_use: map['can_use']??0,
+      amount_already_used: map['amount_already_used'] ??0,
+      can_be_used: map['can_be_used'] ??false,
+      is_eligible: map['is_eligible'] ??false,
+      is_new_beneficiary: map['is_new_beneficiary'] ??false,
+      month_transactions_amount: map['month_transactions_amount']??0,
+      month_transactions_amount_plus_amount_to_debit: map['month_transactions_amount_plus_amount_to_debit'] ??0,
+      client_command_count: map['client_command_count'] ??0,
+      client_ca_delivery: map['client_ca_delivery'] ??0,
       last_ten_transactions:
       (map['last_ten_transactions'] as List ?? [])?.map((f) => PointTransactionModel.fromMap(f))?.toList(),
-      eligible_order_count: map['eligible_order_count'] as int,
-      monthly_limit_amount: map['monthly_limit_amount'] as int,
+      eligible_order_count: map['eligible_order_count'] ??0,
+      monthly_limit_amount: map['monthly_limit_amount'] ??0,
     );
   }
 
