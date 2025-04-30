@@ -2,21 +2,13 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
-import 'package:KABA/src/ui/customwidgets/RestaurantListWidget.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
-import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/models/ShopCategoryModelModel.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 class FoodWithRestaurantDetailsWidget extends StatefulWidget {
   ShopProductModel? food;
@@ -162,8 +154,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                             Utils.inflateLink(widget.food!
                                                 .restaurant_entity!.pic!))))),
                             trailing:
-                                widget.food?.restaurant_entity?.coming_soon ==
-                                        0
+                                widget.food?.restaurant_entity?.coming_soon == 0
                                     ? IconButton(
                                         icon: Icon(Icons.home,
                                             size: 30,
@@ -193,7 +184,8 @@ class _FoodWithRestaurantDetailsWidgetState
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 13,
-                                        color: KColors.new_black.withAlpha(150))),
+                                        color:
+                                            KColors.new_black.withAlpha(150))),
                               ],
                             )),
                         Container(
@@ -214,8 +206,7 @@ class _FoodWithRestaurantDetailsWidgetState
                                   _getRestaurantStateTag(
                                       widget.food!.restaurant_entity!),
                                   SizedBox(width: 5),
-                                  widget.food?.restaurant_entity
-                                              ?.coming_soon ==
+                                  widget.food?.restaurant_entity?.coming_soon ==
                                           1
                                       ? Container(
                                           padding: EdgeInsets.all(5),

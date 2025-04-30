@@ -10,16 +10,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:toast/toast.dart';
 
-
 class VoucherDetailsPage extends StatefulWidget {
-
   static var routeName = "/VoucherDetailsPage";
 
   VoucherModel? voucher;
 
   bool? food_see_more;
 
-  VoucherDetailsPage({Key? key, this.title, this.voucher, this.food_see_more = false}) : super(key: key);
+  VoucherDetailsPage(
+      {Key? key, this.title, this.voucher, this.food_see_more = false})
+      : super(key: key);
 
   final String? title;
 
@@ -28,7 +28,6 @@ class VoucherDetailsPage extends StatefulWidget {
 }
 
 class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
-
   var voucherIcon = Icons.not_interested;
 
   var scaffoldColor = KColors.primaryColor;
@@ -39,7 +38,7 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    switch(widget.voucher!.type){
+    switch (widget.voucher!.type) {
       case 1: // restaurant (yellow background)
         voucherIcon = FontAwesomeIcons.hamburger;
         scaffoldColor = KColors.primaryYellowColor;
@@ -57,70 +56,87 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: scaffoldColor,  key: _scaffoldGlobalKey,
+    return Scaffold(
+        backgroundColor: scaffoldColor,
+        key: _scaffoldGlobalKey,
         appBar: AppBar(
-            leading: IconButton(icon: Icon(Icons.arrow_back, color: KColors.primaryColor), onPressed: (){Navigator.pop(context);}),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: KColors.primaryColor),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
             backgroundColor: Colors.white,
-            title: Text("${AppLocalizations.of(context)!.translate('voucher_details')}", style:TextStyle(color:KColors.primaryColor))),
-        body:  _buildVoucherDetailsPage(null)
-    );
+            title: Text(
+                "${AppLocalizations.of(context)!.translate('voucher_details')}",
+                style: TextStyle(color: KColors.primaryColor))),
+        body: _buildVoucherDetailsPage(null));
   }
 
   Widget _buildVoucherDetailsPage(VoucherDetailsPage? data) {
     return SingleChildScrollView(
-      child:   ClipPath(
+      child: ClipPath(
         clipper: VoucherClipper(),
         child: Card(
-          margin: EdgeInsets.only(left:40, right: 40, top: 30, bottom:30),
+          margin: EdgeInsets.only(left: 40, right: 40, top: 30, bottom: 30),
           color: Colors.white,
           child: Container(
             padding: EdgeInsets.only(top: 20, right: 10, left: 10, bottom: 10),
-            child: Column(
+            child: Column(children: <Widget>[
+              SizedBox(height: 10),
+              Text("${AppLocalizations.of(context)!.translate('voucher_')}",
+                  style: KStyles.hintTextStyle_gray),
+              SizedBox(height: 10),
+              /* code qr; s'il est possible de partager cela */
+              Stack(
                 children: <Widget>[
-                  SizedBox(height:10),
-                  Text("${AppLocalizations.of(context)!.translate('voucher_')}", style: KStyles.hintTextStyle_gray),
-                  SizedBox(height:10),
-                  /* code qr; s'il est possible de partager cela */
-                  Stack(
-                    children: <Widget>[
-                      Container(height: 160, width: 160,
-                          child: QrImage(
-                            data: '${_getVoucherShareLink()}',
-                            version: QrVersions.auto,
-                            size: 160,
-                            gapless: false,
-                            foregroundColor: KColors.new_black,
-                            embeddedImageStyle: QrEmbeddedImageStyle(
-                              size: Size(35, 35),
-                            ),
-                          )
-                      ),
-                      /*   Positioned(left: 64, top:64,child:
+                  Container(
+                      height: 160,
+                      width: 160,
+                      child: QrImageView(
+                        data: '${_getVoucherShareLink()}',
+                        version: QrVersions.auto,
+                        size: 160,
+                        gapless: false,
+                        backgroundColor: Colors.white,
+                        // foregroundColor: KColors.new_black,
+                        embeddedImage: null, // Add image if needed
+                        embeddedImageStyle: QrEmbeddedImageStyle(
+                          size: const Size(35, 35),
+                        ),
+                      )),
+                  /*   Positioned(left: 64, top:64,child:
                       Container(
                           decoration: BoxDecoration(shape: BoxShape.circle,
                               border: Border.all(width: 2, color: KColors.primaryYellowColor), color: Colors.white),
                           padding: EdgeInsets.all(6),
                           child: Center(child: Icon(voucherIcon, color: KColors.primaryColor, size: 16)))),*/
-                    ],
-                  ),
+                ],
+              ),
 
-                  SizedBox(height: 10),
+              SizedBox(height: 10),
 
-                 /* Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
+              /* Row(mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[
                     Text('-${widget.voucher.value}',  style: new TextStyle(fontWeight: FontWeight.bold, color: KColors.primaryColor, fontSize: 24)),
                     Text(" ${widget.voucher.category == 1 ?  "%" : "${AppLocalizations.of(context)!.translate('currency')}"}", style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   ]),*/
-          _buildCFAPriceWidget(),
+              _buildCFAPriceWidget(),
 
-
-                  /* details du restaurant */
-                  SizedBox(height: 20),
-                  Text("${widget.voucher?.trade_name}".toUpperCase(), style: TextStyle(color: KColors.new_black, fontWeight: FontWeight.bold, fontSize: 16)),
-                  widget.voucher?.description == null ? Container() : Column(
-                    children: <Widget>[
+              /* details du restaurant */
+              SizedBox(height: 20),
+              Text("${widget.voucher?.trade_name}".toUpperCase(),
+                  style: TextStyle(
+                      color: KColors.new_black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+              widget.voucher?.description == null
+                  ? Container()
+                  : Column(children: <Widget>[
                       SizedBox(height: 10),
-                     Text("${widget.voucher?.description == null ? "" : widget.voucher?.description}",
-                          textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor))]),
+                      Text(
+                          "${widget.voucher?.description == null ? "" : widget.voucher?.description}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: KColors.primaryColor))
+                    ]),
 //                   Column(
 //                     children: <Widget>[
 //                       SizedBox(height: 10),
@@ -146,47 +162,62 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 //                         })
 //                     )*/,
 //                   ),
-                  SizedBox(height: 20),
-                  Column(
-                    children: <Widget>[
-                      Text("${AppLocalizations.of(context)!.translate('voucher_code')}", style: KStyles.hintTextStyle_gray),
-                    ],
-                  ),
-                  SizedBox(height:10),
-                  Container(height: 1, color: Colors.grey.withAlpha(100)),
-                  /* repas concernes */
-                  Container(
+              SizedBox(height: 20),
+              Column(
+                children: <Widget>[
+                  Text(
+                      "${AppLocalizations.of(context)!.translate('voucher_code')}",
+                      style: KStyles.hintTextStyle_gray),
+                ],
+              ),
+              SizedBox(height: 10),
+              Container(height: 1, color: Colors.grey.withAlpha(100)),
+              /* repas concernes */
+              Container(
 //                    color: Colors.yellow,
-                    padding: EdgeInsets.only(top:20, bottom:20),
-                    child:
-                    InkWell(
-                        onTap: ()=>_copyIntoClipboard("${widget.voucher!.subscription_code!}".toUpperCase()),
-                        child: Text('${widget.voucher!.subscription_code}'.toUpperCase(),textAlign: TextAlign.center, style: TextStyle(color: KColors.primaryColor, fontSize: 16, fontWeight: FontWeight.bold))),
-                  ),
-                  Container(height: 1, color: Colors.grey.withAlpha(100)),
-                  /* debut d'utilisation */
-                  SizedBox(height: 20),
-                  /* use counts for me \ category of voucher \ type of voucher \ */
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                            children: <Widget>[
-                              Text("${AppLocalizations.of(context)!.translate('available_since')}", style: TextStyle(color: Colors.green, fontSize: 13)),
-                              Text("${Utils.timeStampToDate(widget.voucher!.start_date!)}",style: TextStyle(fontSize: 13))
-                            ]
-                        ),
-                        Column(
-                            children: <Widget>[
-                              Text("${AppLocalizations.of(context)!.translate('expiry_date')}",  style: TextStyle(color: KColors.primaryColor, fontSize: 13)),
-                              Text("${Utils.timeStampToDate(widget.voucher!.end_date!)}",style: TextStyle(fontSize: 13))
-                            ]
-                        )
-                      ]),
-                  /* powered by */
-                  SizedBox(height: 20),
-                  Text('${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}', style: TextStyle(color: Colors.grey, fontSize: 10)),
-                ]
-            ),
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: InkWell(
+                    onTap: () => _copyIntoClipboard(
+                        "${widget.voucher!.subscription_code!}".toUpperCase()),
+                    child: Text(
+                        '${widget.voucher!.subscription_code}'.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: KColors.primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold))),
+              ),
+              Container(height: 1, color: Colors.grey.withAlpha(100)),
+              /* debut d'utilisation */
+              SizedBox(height: 20),
+              /* use counts for me \ category of voucher \ type of voucher \ */
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(children: <Widget>[
+                      Text(
+                          "${AppLocalizations.of(context)!.translate('available_since')}",
+                          style: TextStyle(color: Colors.green, fontSize: 13)),
+                      Text(
+                          "${Utils.timeStampToDate(widget.voucher!.start_date!)}",
+                          style: TextStyle(fontSize: 13))
+                    ]),
+                    Column(children: <Widget>[
+                      Text(
+                          "${AppLocalizations.of(context)!.translate('expiry_date')}",
+                          style: TextStyle(
+                              color: KColors.primaryColor, fontSize: 13)),
+                      Text(
+                          "${Utils.timeStampToDate(widget.voucher!.end_date!)}",
+                          style: TextStyle(fontSize: 13))
+                    ])
+                  ]),
+              /* powered by */
+              SizedBox(height: 20),
+              Text(
+                  '${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}',
+                  style: TextStyle(color: Colors.grey, fontSize: 10)),
+            ]),
           ),
         ),
       ),
@@ -194,26 +225,50 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   }
 
   _buildCFAPriceWidget() {
-    return
-      widget.voucher!.category == 1 ?
-      Text("-${widget.voucher!.value}%", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor))
-          :
-      Column(crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text("-${(widget.voucher!.use_count!-widget.voucher!.already_used_count!)*widget.voucher!.value!}F", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: KColors.primaryColor)),
-          Container(width:110, height: 2, color: KColors.new_black, margin: EdgeInsets.only(bottom:1),),
-          Row(mainAxisSize: MainAxisSize.min,mainAxisAlignment: MainAxisAlignment.center,
+    return widget.voucher!.category == 1
+        ? Text("-${widget.voucher!.value}%",
+            style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: KColors.primaryColor))
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("* ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: KColors.new_black)),
-              Text("-${widget.voucher!.value}F X ${widget.voucher!.use_count!-widget.voucher!.already_used_count!}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: KColors.new_black)),
+              Text(
+                  "-${(widget.voucher!.use_count! - widget.voucher!.already_used_count!) * widget.voucher!.value!}F",
+                  style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: KColors.primaryColor)),
+              Container(
+                width: 110,
+                height: 2,
+                color: KColors.new_black,
+                margin: EdgeInsets.only(bottom: 1),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("* ",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                          color: KColors.new_black)),
+                  Text(
+                      "-${widget.voucher!.value}F X ${widget.voucher!.use_count! - widget.voucher!.already_used_count!}",
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.normal,
+                          color: KColors.new_black)),
+                ],
+              ),
             ],
-          ),
-        ],
-      );
+          );
   }
 
-  String _getVoucherShareLink (){
-    return ServerConfig.APP_SERVer+"/voucher/"+widget.voucher!.qr_code!;
+  String _getVoucherShareLink() {
+    return ServerConfig.APP_SERVer + "/voucher/" + widget.voucher!.qr_code!;
   }
 
   void _copyIntoClipboard(String codePromo) {
@@ -222,7 +277,8 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
     // });
 
     FlutterClipboard.copy(codePromo).then((value) {
-      mToast("${codePromo} ${AppLocalizations.of(context)!.translate('copied_c')}");
+      mToast(
+          "${codePromo} ${AppLocalizations.of(context)!.translate('copied_c')}");
     });
   }
 
@@ -231,35 +287,59 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
   }
 
   _miniFoodWidget(ShopProductModel food) {
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("${food?.name!.toUpperCase()}", overflow: TextOverflow.ellipsis,maxLines: 3, textAlign: TextAlign.left, style: TextStyle(color:KColors.new_black, fontSize: 13, fontWeight: FontWeight.w500)),
+            Text("${food?.name!.toUpperCase()}",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: KColors.new_black,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   /*prix*/
                   Row(children: <Widget>[
-                    Text("${food?.price}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 12, fontWeight: FontWeight.normal)),
-                    Text("${AppLocalizations.of(context)!.translate('currency')}", overflow: TextOverflow.ellipsis,maxLines: 1, textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryYellowColor, fontSize: 8, fontWeight: FontWeight.normal)),
+                    Text("${food?.price}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: KColors.primaryYellowColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal)),
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('currency')}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: KColors.primaryYellowColor,
+                            fontSize: 8,
+                            fontWeight: FontWeight.normal)),
                   ]),
                 ],
               ),
             ),
           ],
         ),
-        Container(height:1, margin: EdgeInsets.only(top:5, bottom:5), color: Colors.green),
+        Container(
+            height: 1,
+            margin: EdgeInsets.only(top: 5, bottom: 5),
+            color: Colors.green),
       ],
     );
   }
 
   _miniFoodsText(List<ShopProductModel> products) {
-
     if (products!.length! > 20 && widget.food_see_more == false) {
       return "${products?.length} ${AppLocalizations.of(context)!.translate('foods_')}\n\n> See More <";
     } else {
@@ -276,7 +356,6 @@ class _VoucherDetailsPageState extends State<VoucherDetailsPage> {
 }
 
 class VoucherClipper extends CustomClipper<Path> {
-
   @override
   Path getClip(Size size) {
     final path = Path();
@@ -298,13 +377,13 @@ class VoucherClipper extends CustomClipper<Path> {
     path.close();
 */
     path.moveTo(0, 0);
-    path.arcToPoint(Offset(0, radius), radius: Radius.circular(radius/2));
+    path.arcToPoint(Offset(0, radius), radius: Radius.circular(radius / 2));
 //    path.lineTo(0, radius);
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
 
     path.lineTo(size.width, radius);
-    path.arcToPoint(Offset(size.width, 0), radius: Radius.circular(radius/2));
+    path.arcToPoint(Offset(size.width, 0), radius: Radius.circular(radius / 2));
 
     path.close();
 
@@ -312,7 +391,5 @@ class VoucherClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip (VoucherClipper oldClipper) => true;
-
+  bool shouldReclip(VoucherClipper oldClipper) => true;
 }
-

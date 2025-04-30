@@ -105,10 +105,12 @@ class _HomePageState extends State<HomePage> {
   Position? tmpLocation;
 
   Future<int> checkLogin() async {
-    StatefulWidget launchPage = LoginPage(presenter: LoginPresenter(LoginView()));
+    StatefulWidget launchPage =
+        LoginPage(presenter: LoginPresenter(LoginView()));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate =
-        prefs.getString("_login_expiration_date" + CustomerUtils.signature)??"";
+        prefs.getString("_login_expiration_date" + CustomerUtils.signature) ??
+            "";
     int loginCheckResult = 0; // not logged in
     try {
       if (expDate != null) {
@@ -201,14 +203,20 @@ class _HomePageState extends State<HomePage> {
         presenter: HomeWelcomePresenter(HomeWelcomeView()),
         destination: widget.destination,
         argument: widget.argument);
-    serviceMainPage =
-        ServiceMainPage(key: serviceMainKey, presenter: ServiceMainPresenter(ServiceMainView()));
+    serviceMainPage = ServiceMainPage(
+        key: serviceMainKey,
+        presenter: ServiceMainPresenter(ServiceMainView()));
     dailyOrdersPage = DailyOrdersPage(
         key: orderKey,
         presenter: DailyOrderPresenter(DailyOrderView()),
         is_out_of_app_order: widget.is_out_of_app_order);
     meAccountPage = MeNewAccountPage(key: meKey);
-    pages = [homeWelcomePage!, serviceMainPage!, dailyOrdersPage!, meAccountPage!];
+    pages = [
+      homeWelcomePage!,
+      serviceMainPage!,
+      dailyOrdersPage!,
+      meAccountPage!
+    ];
     super.initState();
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
@@ -223,7 +231,7 @@ class _HomePageState extends State<HomePage> {
             prefs.getString("_hasSeenEmailAccountNotification");
 
         if (_hasSeenEmailAccountNotification != "1" &&
-            Utils.isEmailValid(customer.email??""))
+            Utils.isEmailValid(customer.email ?? ""))
           showDialog<void>(
             context: context,
             barrierDismissible: false,
@@ -253,8 +261,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child:
-                        Text("${AppLocalizations.of(context)!.translate('ok')}"),
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('ok')}"),
                     onPressed: () {
                       prefs!.setString("_hasSeenEmailAccountNotification", "1");
                       Navigator.of(context).pop();
@@ -272,21 +280,28 @@ class _HomePageState extends State<HomePage> {
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('app_icon');
 
-    var initializationSettingsIOS = IOSInitializationSettings(
-        requestBadgePermission: true,
-        requestAlertPermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-
-    var initializationSettingsMacOs = MacOSInitializationSettings();
+    var initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      // onDidReceiveLocalNotification: onDidReceiveLocalNotification
+    );
 
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
-    flutterLocalNotificationsPlugin!.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+    flutterLocalNotificationsPlugin!.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        final String? payload = response.payload;
+        xrint("onDidReceiveNotificationResponse ${payload}");
+        if (payload != null) {
+          _handlePayLoad(payload);
+        }
+      },
+    );
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -526,8 +541,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _jumpToFoodDetailsWithId(int productId) {
-    _jumpToPage(context,
-        RestaurantMenuPage(foodId: productId, presenter: MenuPresenter(MenuView())));
+    _jumpToPage(
+        context,
+        RestaurantMenuPage(
+            foodId: productId, presenter: MenuPresenter(MenuView())));
   }
 
   void _jumpToOrderDetailsWithId(int productId, {int is_out_of_app_order = 0}) {
@@ -542,24 +559,31 @@ class _HomePageState extends State<HomePage> {
   void _jumpToTransactionHistory() {
     xrint("_jumpINGToTransactionHistory");
     _jumpToPage(
-        context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
+        context,
+        TransactionHistoryPage(
+            presenter: TransactionPresenter(TransactionView())));
   }
 
   void _jumpToRestaurantDetailsPage(int productId) {
     _jumpToPage(
         context,
         ShopDetailsPage(
-            restaurantId: productId, presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
+            restaurantId: productId,
+            presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
   }
 
   void _jumpToRestaurantMenuPage(int productId) {
-    _jumpToPage(context,
-        RestaurantMenuPage(menuId: productId, presenter: MenuPresenter(MenuView())));
+    _jumpToPage(
+        context,
+        RestaurantMenuPage(
+            menuId: productId, presenter: MenuPresenter(MenuView())));
   }
 
   void _jumpToServiceClient() {
     _jumpToPage(
-        context, CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
+        context,
+        CustomerCareChatPage(
+            presenter: CustomerCareChatPresenter(CustomerCareChatView())));
   }
 
   int loginStuffChecked = 0;
@@ -736,7 +760,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  StreamSubscription ?_sub;
+  StreamSubscription? _sub;
 
   Future<Null> initUniLinksStream() async {
     // Attach a listener to the stream
@@ -823,7 +847,8 @@ class _HomePageState extends State<HomePage> {
             xrint("vouchers page");
             widget.destination = SplashPage.VOUCHERS;
             /* convert from hexadecimal to decimal */
-            _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
+            _jumpToPage(context,
+                MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
           });
           break;
         case "addresses":
@@ -831,14 +856,16 @@ class _HomePageState extends State<HomePage> {
             xrint("addresses page");
             widget.destination = SplashPage.ADDRESSES;
             /* convert from hexadecimal to decimal */
-            _jumpToPage(
-                context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
+            _jumpToPage(context,
+                MyAddressesPage(presenter: AddressPresenter(AddressView())));
           });
           break;
         case "transactions":
           _checkIfLoggedInAndDoAction(() {
-            _jumpToPage(context,
-                TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
+            _jumpToPage(
+                context,
+                TransactionHistoryPage(
+                    presenter: TransactionPresenter(TransactionView())));
           });
           break;
         case "restaurants":
@@ -888,7 +915,8 @@ class _HomePageState extends State<HomePage> {
                   context,
                   ShopDetailsPage(
                       restaurant: ShopModel(id: widget.argument),
-                      presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
+                      presenter:
+                          RestaurantDetailsPresenter(RestaurantDetailsView())));
             }
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
@@ -915,7 +943,8 @@ class _HomePageState extends State<HomePage> {
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    foodId: widget.argument, presenter: MenuPresenter(MenuView())));
+                    foodId: widget.argument,
+                    presenter: MenuPresenter(MenuView())));
           }
           break;
         case "menu":
@@ -927,7 +956,8 @@ class _HomePageState extends State<HomePage> {
             _jumpToPage(
                 context,
                 RestaurantMenuPage(
-                    menuId: widget.argument, presenter: MenuPresenter(MenuView())));
+                    menuId: widget.argument,
+                    presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -946,8 +976,11 @@ class _HomePageState extends State<HomePage> {
           break;
         case "customer-care-message":
           _checkIfLoggedInAndDoAction(() {
-            _jumpToPage(context,
-                CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView())));
+            _jumpToPage(
+                context,
+                CustomerCareChatPage(
+                    presenter:
+                        CustomerCareChatPresenter(CustomerCareChatView())));
           });
           break;
       }
@@ -1420,7 +1453,13 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
       groupKey: groupKey,
       ticker: notificationItem?.title);
 
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      categoryIdentifier: "plainCategory",
+      threadIdentifier: "thread1",
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: "default");
 
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,

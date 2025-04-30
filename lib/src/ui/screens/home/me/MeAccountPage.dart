@@ -29,9 +29,7 @@ import 'package:KABA/src/ui/screens/home/me/vouchers/AddVouchersPage.dart';
 // import 'package:KABA/src/ui/screens/home/me/vouchers/KabaScanPage.old';
 import 'package:KABA/src/ui/screens/home/me/vouchers/MyVouchersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
-import 'package:KABA/src/ui/screens/restaurant/RestaurantDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
@@ -42,17 +40,15 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flare_flutter/flare_actor.dart';
+import 'package:cool_flare/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
 import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class MeAccountPage extends StatefulWidget {
   CustomerModel? customerData;
@@ -116,7 +112,8 @@ class _MeAccountPageState extends State<MeAccountPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AddVouchersPage(
-                presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer),
+                presenter: AddVoucherPresenter(AddVoucherView()),
+                customer: widget.customer),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -208,8 +205,11 @@ class _MeAccountPageState extends State<MeAccountPage>
     var flexibleSpaceWidget = new SliverAppBar(
       actions: <Widget>[
         InkWell(
-          onTap: () => _jumpToPage(context,
-              CustomerCareChatPage(presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
+          onTap: () => _jumpToPage(
+              context,
+              CustomerCareChatPage(
+                  presenter:
+                      CustomerCareChatPresenter(CustomerCareChatView()))),
           child: Container(
             width: 60,
             height: 60,
@@ -271,10 +271,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
-                                        Utils.inflateLink(widget
-                                            .customerData!.profile_picture!)
-                                    )
-                                ))),
+                                        Utils.inflateLink(widget.customerData!
+                                            .profile_picture!))))),
                         onTap: () => _seeProfilePicture()
 //                    _jumpToPage(context, Personal2Page(customer: widget.customerData, presenter: PersonnalPagePresenter())),
                         ),
@@ -366,7 +364,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                           onTap: () => _jumpToPage(
                               context,
                               TransactionHistoryPage(
-                                  presenter: TransactionPresenter(TransactionView()))),
+                                  presenter:
+                                      TransactionPresenter(TransactionView()))),
                           child: Container(
                             padding: EdgeInsets.all(10),
                             child: Column(
@@ -440,7 +439,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                           onTap: () => _jumpToPage(
                               context,
                               TransferMoneyRequestPage(
-                                  presenter: TransferMoneyRequestPresenter(TransferMoneyRequestView()))),
+                                  presenter: TransferMoneyRequestPresenter(
+                                      TransferMoneyRequestView()))),
                           child: Container(
                             child: Column(
                               children: <Widget>[
@@ -477,7 +477,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                             onTap: () => _jumpToPage(
                                 context,
                                 CustomerCareChatPage(
-                                    presenter: CustomerCareChatPresenter(CustomerCareChatView()))),
+                                    presenter: CustomerCareChatPresenter(
+                                        CustomerCareChatView()))),
                             child: Container(
                                 decoration: BoxDecoration(
                                     color: Colors.white,
@@ -536,7 +537,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                                               Personal2Page(
                                                   customer: widget.customerData,
                                                   presenter:
-                                                      PersonnalPagePresenter(PersonnalPageView())))),
+                                                      PersonnalPagePresenter(
+                                                          PersonnalPageView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -584,8 +586,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                                           onPressed: () => _jumpToPage(
                                               context,
                                               MyAddressesPage(
-                                                  presenter:
-                                                      AddressPresenter(AddressView())))),
+                                                  presenter: AddressPresenter(
+                                                      AddressView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -643,7 +645,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                                           onPressed: () => _jumpToPage(
                                               context,
                                               FeedsPage(
-                                                  presenter: FeedPresenter(FeedView())))),
+                                                  presenter: FeedPresenter(
+                                                      FeedView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -674,8 +677,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                                           onPressed: () => _jumpToPage(
                                               context,
                                               MyVouchersPage(
-                                                  presenter:
-                                                      VoucherPresenter(VoucherView())))),
+                                                  presenter: VoucherPresenter(
+                                                      VoucherView())))),
                                       SizedBox(height: 10),
                                       Center(
                                           child: Text(
@@ -739,7 +742,9 @@ class _MeAccountPageState extends State<MeAccountPage>
 
   void _jumpToTransactionHistory() {
     _jumpToPage(
-        context, TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
+        context,
+        TransactionHistoryPage(
+            presenter: TransactionPresenter(TransactionView())));
   }
 
   _jumpToTopUpPage() async {
@@ -845,16 +850,20 @@ class _MeAccountPageState extends State<MeAccountPage>
         case "vouchers":
           xrint("vouchers page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
+          _jumpToPage(context,
+              MyVouchersPage(presenter: VoucherPresenter(VoucherView())));
           break;
         case "addresses":
           xrint("addresses page");
           /* convert from hexadecimal to decimal */
-          _jumpToPage(context, MyAddressesPage(presenter: AddressPresenter(AddressView())));
+          _jumpToPage(context,
+              MyAddressesPage(presenter: AddressPresenter(AddressView())));
           break;
         case "transactions":
-          _jumpToPage(context,
-              TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())));
+          _jumpToPage(
+              context,
+              TransactionHistoryPage(
+                  presenter: TransactionPresenter(TransactionView())));
           break;
         case "restaurants":
           StateContainer.of(context).updateTabPosition(tabPosition: 1);
@@ -873,7 +882,8 @@ class _MeAccountPageState extends State<MeAccountPage>
                 context,
                 ShopDetailsPage(
                     restaurant: ShopModel(id: arg),
-                    presenter: RestaurantDetailsPresenter(RestaurantDetailsView())));
+                    presenter:
+                        RestaurantDetailsPresenter(RestaurantDetailsView())));
           }
           break;
         case "order":
@@ -883,23 +893,28 @@ class _MeAccountPageState extends State<MeAccountPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
+                    orderId: arg,
+                    presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         case "food":
           if (pathSegments.length > 1) {
             xrint("food id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context,
-                RestaurantMenuPage(foodId: arg, presenter: MenuPresenter(MenuView())));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    foodId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "menu":
           if (pathSegments.length > 1) {
             xrint("menu id -> ${pathSegments[1]}");
             arg = int.parse("${pathSegments[1]}");
-            _jumpToPage(context,
-                RestaurantMenuPage(menuId: arg, presenter: MenuPresenter(MenuView())));
+            _jumpToPage(
+                context,
+                RestaurantMenuPage(
+                    menuId: arg, presenter: MenuPresenter(MenuView())));
           }
           break;
         case "review-order":
@@ -909,7 +924,8 @@ class _MeAccountPageState extends State<MeAccountPage>
             _jumpToPage(
                 context,
                 OrderNewDetailsPage(
-                    orderId: arg, presenter: OrderDetailsPresenter(OrderDetailsView())));
+                    orderId: arg,
+                    presenter: OrderDetailsPresenter(OrderDetailsView())));
           }
           break;
         default:
@@ -1014,7 +1030,8 @@ class _MeAccountPageState extends State<MeAccountPage>
       builder: (BuildContext context) {
         return AlertDialog(
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
+              SizedBox(
+                  height: 80, width: 80, child: SvgPicture.asset(svgIcon!)),
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
@@ -1059,7 +1076,9 @@ class _MeAccountPageState extends State<MeAccountPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
+            ads: slider,
+            position: 0,
+            presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

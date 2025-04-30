@@ -29,7 +29,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:toast/toast.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
@@ -166,28 +165,25 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       titleSpacing: 0,
       title: GestureDetector(
           onTap: () => _jumpToShopDetails(widget.restaurant!),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                /*  Icon(Icons.home, color: Colors.white, size: 20),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+              Widget>[
+            /*  Icon(Icons.home, color: Colors.white, size: 20),
                 SizedBox(width: 10),*/
-                Expanded(
-                  child: Container(
-                      padding: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 10, right: 10),
-                      child: Text(
-                          widget.restaurant == null
-                              ? ""
-                              : widget.restaurant!.name!,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white))),
-                ),
-              ])),
+            Expanded(
+              child: Container(
+                  padding:
+                      EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                  child: Text(
+                      widget.restaurant == null ? "" : widget.restaurant!.name!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white))),
+            ),
+          ])),
       leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -212,7 +208,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               BouncingWidget(
                 duration: Duration(milliseconds: 500),
                 scaleFactor: 3,
-                onPressed: () {  },
+                onPressed: () {},
                 child: IconButton(
                     key: _menuBasketKey,
                     icon: Icon(Icons.shopping_cart, color: Colors.white),
@@ -248,7 +244,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             flexibleSpace: SingleChildScrollView(
                               child: Container(
                                   padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 10,bottom: 10),
+                                      left: 10, right: 10, top: 10, bottom: 10),
                                   height: 140,
                                   child: Column(
                                     children: [
@@ -457,17 +453,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                               .menuId ==
                                                                           -1)
                                                                         widget.presenter!.fetchMenuWithRestaurantId(widget
-                                                                            .restaurant
-                                                                            !.id!);
+                                                                            .restaurant!
+                                                                            .id!);
                                                                       else
                                                                         widget
-                                                                            .presenter
-                                                                            !.fetchMenuWithMenuId(widget.menuId!);
+                                                                            .presenter!
+                                                                            .fetchMenuWithMenuId(widget.menuId!);
                                                                     } else {
                                                                       restaurantBloc
                                                                           .fetchRestaurantMenuList(
                                                                               widget.restaurant!);
-
                                                                     }
                                                                   })
                                                               : hasSystemError
@@ -476,8 +471,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                                           "${AppLocalizations.of(context)!.translate('system_error')}",
                                                                       onClickAction:
                                                                           () {
-                                                                        if (!widget
-                                                                            !.fromNotification!) {
+                                                                        if (!widget!
+                                                                            .fromNotification!) {
                                                                           if (widget.menuId ==
                                                                               -1)
                                                                             widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
@@ -961,8 +956,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                               ]),
 
                               GestureDetector(
-                                onTap: () =>
-                                    _addFoodToChart(food, foodIndex!, menuIndex!),
+                                onTap: () => _addFoodToChart(
+                                    food, foodIndex!, menuIndex!),
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: KColors.primaryColor.withAlpha(30),
@@ -1010,28 +1005,29 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   _getRestaurantStateTag(ShopModel? shopModel) {
     String tagText = "-- --";
     Color tagTextColor = Colors.white;
-    if(shopModel !=null){
-    switch (shopModel!.open_type) {
-      case 0: // closed
-        tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
-        tagTextColor = KColors.mBlue;
-        break;
-      case 1: // open
-        tagText = "${AppLocalizations.of(context)!.translate('t_opened')}";
-        tagTextColor = CommandStateColor.delivered;
-        break;
-      case 2: // paused
-        tagText = "${AppLocalizations.of(context)!.translate('t_paused')}";
-        tagTextColor = KColors.mBlue;
-        break;
-      case 3: // blocked
-        tagText = "${AppLocalizations.of(context)!.translate('t_unavailable')}";
-        tagTextColor = KColors.mBlue;
-        break;
+    if (shopModel != null) {
+      switch (shopModel!.open_type) {
+        case 0: // closed
+          tagText = "${AppLocalizations.of(context)!.translate('t_closed')}";
+          tagTextColor = KColors.mBlue;
+          break;
+        case 1: // open
+          tagText = "${AppLocalizations.of(context)!.translate('t_opened')}";
+          tagTextColor = CommandStateColor.delivered;
+          break;
+        case 2: // paused
+          tagText = "${AppLocalizations.of(context)!.translate('t_paused')}";
+          tagTextColor = KColors.mBlue;
+          break;
+        case 3: // blocked
+          tagText =
+              "${AppLocalizations.of(context)!.translate('t_unavailable')}";
+          tagTextColor = KColors.mBlue;
+          break;
+      }
     }
- }
-    int? coming_soon = shopModel==null?0:shopModel!.coming_soon;
-    return coming_soon== 0
+    int? coming_soon = shopModel == null ? 0 : shopModel!.coming_soon;
+    return coming_soon == 0
         ? Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
@@ -1123,8 +1119,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   void showToast(String message) {
-    Toast.show(message,
-        duration: Toast.lengthLong, gravity: Toast.center);
+    Toast.show(message, duration: Toast.lengthLong, gravity: Toast.center);
   }
 
   int _getQuantity(ShopProductModel food) {
@@ -1219,14 +1214,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       }
 
       if (currentLocation != null && widget.restaurant != null) {
-        double distance = Utils.locationDistance(currentLocation, widget.restaurant!);
-        widget.restaurant?.distance = distance > 100 ? "> 100" : distance.toString();
+        double distance =
+            Utils.locationDistance(currentLocation, widget.restaurant!);
+        widget.restaurant?.distance =
+            distance > 100 ? "> 100" : distance.toString();
       }
       // according to the distance, we get the matching delivery fees
       // i dont want to make another loop
       widget.restaurant!.delivery_pricing = _getShippingPrice(
           widget.restaurant!.distance!,
-          StateContainer.of(context).myBillingArray??{});
+          StateContainer.of(context).myBillingArray ?? {});
 
       /* make sure, the menu_id is selected. */
       this.data = data;

@@ -30,7 +30,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ShopDetailsPage extends StatefulWidget {
   static var routeName = "/ShopDetailsPage";
@@ -120,22 +119,24 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
           presenter: ShopSchedulePresenter(ShopScheduleView()));
     }
 
-    final int args = ModalRoute.of(context)!.settings.arguments==null?0:ModalRoute.of(context)!.settings.arguments as int;
+    final int args = ModalRoute.of(context)!.settings.arguments == null
+        ? 0
+        : ModalRoute.of(context)!.settings.arguments as int;
     if (args != null && args != 0) widget.restaurantId = args;
     if (widget.restaurant == null || widget.restaurant?.name == null) {
       showLoading(true);
       // there must be a food id.
       if (widget.customer != null) {
         widget.restaurant = ShopModel(id: widget.restaurantId);
-        widget.presenter
-            !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+        widget.presenter!
+            .fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
       } else {
         showLoading(true);
         CustomerUtils.getCustomer().then((customer) {
           widget.customer = customer;
           widget.restaurant = ShopModel(id: widget.restaurantId);
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
       }
     }
@@ -286,7 +287,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                           ),
                                         ),
                                   SizedBox(width: 10),
-                                  ShippingFeeTag(widget.distance==null?"0":widget.distance!)
+                                  ShippingFeeTag(widget.distance == null
+                                      ? "0"
+                                      : widget.distance!)
                                   /*  Container(
                                           padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
@@ -406,15 +409,15 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                   Row(
                                                       children: List<
                                                               Widget>.generate(
-                                                          widget.restaurant
-                                                                  !.stars!
+                                                          widget.restaurant!
+                                                                  .stars!
                                                                   .toInt() +
-                                                              (widget.restaurant
-                                                                              !.stars! -
+                                                              (widget.restaurant!
+                                                                              .stars! -
                                                                           widget
-                                                                              .restaurant
-                                                                              !.stars
-                                                                              !.toInt()
+                                                                              .restaurant!
+                                                                              .stars!
+                                                                              .toInt()
                                                                               .toDouble() >
                                                                       0.1
                                                                   ? 1
@@ -425,8 +428,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                                         Icon(
                                                           index ==
                                                                   widget
-                                                                      .restaurant
-                                                                      !.stars!
+                                                                      .restaurant!
+                                                                      .stars!
                                                                       .toInt()
                                                               ? FontAwesomeIcons
                                                                   .solidStarHalf
@@ -622,7 +625,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                                         width: 40,
                                         height: 40,
                                         child: CircularProgressIndicator())
-                                    : _getRestaurantStateTag(widget.restaurant!),
+                                    : _getRestaurantStateTag(
+                                        widget.restaurant!),
                               ],
                             ),
                           ),
@@ -877,7 +881,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuPage(
-                restaurant: restaurantModel, presenter: MenuPresenter(MenuView())),
+                restaurant: restaurantModel,
+                presenter: MenuPresenter(MenuView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -926,8 +931,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -935,8 +940,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -946,8 +951,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         error_text_font_size: 12,
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -957,8 +962,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
         error_text_font_size: 12,
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
-          widget.presenter
-              !.fetchRestaurantDetailsById(widget.customer!, widget.restaurantId!);
+          widget.presenter!.fetchRestaurantDetailsById(
+              widget.customer!, widget.restaurantId!);
         });
   }
 
@@ -1238,7 +1243,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
 
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AdsPreviewPage(
-            ads: slider, position: 0, presenter: AdsViewerPresenter(AdsViewerView())),
+            ads: slider,
+            position: 0,
+            presenter: AdsViewerPresenter(AdsViewerView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
