@@ -38,6 +38,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,7 +47,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links5/uni_links.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '_home/HomeWelcomeNewPage.dart';
@@ -760,19 +760,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  StreamSubscription? _sub;
+  StreamSubscription<Uri>? _sub;
+  final AppLinks _appLinks = AppLinks();
+
 
   Future<Null> initUniLinksStream() async {
     // Attach a listener to the stream
-    _sub = getLinksStream().listen((String? link) {
-      // Parse the link and warn the user, if it is not correct
-      if (link == null) return;
-      xrint("initialLinkStream ${link}");
-      // send the links to home page to handle them instead
+    _sub = _appLinks.uriLinkStream.listen((Uri uri) {
+      final link = uri.toString();
+      xrint("initialLinkStream $link");
       _handleLinksImmediately(link);
     }, onError: (err) {
-      // Handle exception by warning the user their action did not succeed
-      xrint("initialLinkStreamError");
+      xrint("initialLinkStreamError: $err");
     });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()

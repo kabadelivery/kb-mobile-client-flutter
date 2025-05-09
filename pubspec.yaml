@@ -86,7 +86,7 @@ dependencies:
   audioplayers: ^5.2.1
   bouncing_widget: ^2.0.0
   flutter_datetime_picker_plus: ^2.2.0
-  uni_links5: ^0.5.2
+  app_links : ^6.4.0
   cool_flare: ^3.1.0
 
 #  in_app_update: ^3.0.0

@@ -25,6 +25,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:app_links/app_links.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links5/uni_links.dart';
 import '../../../StateContainer.dart';
 import 'AnimatedSplash.dart';
 
@@ -235,39 +235,35 @@ class _SplashPageState extends State<SplashPage> {
   void _listenToUniLinks() {
     initUniLinks();
   }
+  final AppLinks _appLinks = AppLinks();
 
 // uni-links
-  Future<Null> initUniLinks() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
+  Future<void> initUniLinks() async {
     try {
-      String? initialLink = await getInitialLink();
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
-      xrint("initialLink ${initialLink}");
-      _handleLinks(initialLink);
+      Uri? initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        String initialLink = initialUri.toString();
+        xrint("initialLink $initialLink");
+        _handleLinks(initialLink);
+      }
     } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
       xrint("initialLink PlatformException");
+    } catch (e) {
+      xrint("initialLink Unknown error: $e");
     }
   }
 
-  StreamSubscription? _sub;
-
+  StreamSubscription<Uri>? _sub;
   Future<Null> initUniLinksStream() async {
 
-    // Attach a listener to the stream
-    _sub = getLinksStream().listen((String? link) {
-      // Parse the link and warn the user, if it is not correct
-      if (link == null)
-        return;
-      xrint("initialLinkStream ${link}");
-      // send the links to home page to handle them instead
+    _sub = _appLinks.uriLinkStream.listen((Uri uri) {
+      final link = uri.toString();
+      xrint("initialLinkStream $link");
       _handleLinksImmediately(link);
     }, onError: (err) {
-      // Handle exception by warning the user their action did not succeed
-      xrint("initialLinkStreamError");
+      xrint("initialLinkStreamError: $err");
     });
+
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
