@@ -46,7 +46,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links3/uni_links.dart';
+import 'package:uni_links5/uni_links.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '_home/HomeWelcomeNewPage.dart';

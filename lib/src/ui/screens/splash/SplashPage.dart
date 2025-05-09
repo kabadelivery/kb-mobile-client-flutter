@@ -33,7 +33,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links3/uni_links.dart';
+import 'package:uni_links5/uni_links.dart';
 import '../../../StateContainer.dart';
 import 'AnimatedSplash.dart';
 
