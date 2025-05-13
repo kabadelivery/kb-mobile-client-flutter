@@ -6,6 +6,7 @@ Future<bool> requestCameraAndGalleryPermissions() async {
 
   // 📸 Camera permission
   var cameraStatus = await Permission.camera.status;
+
   if (!cameraStatus.isGranted) {
     cameraStatus = await Permission.camera.request();
   }
@@ -15,25 +16,11 @@ Future<bool> requestCameraAndGalleryPermissions() async {
   }
 
   // 🖼️ Gallery / Photos permission
-  PermissionStatus galleryStatus;
-
-  if (Platform.isAndroid) {
-    // Android 13+ prefers these specific permissions
-    if (await Permission.photos.isGranted) {
-      galleryStatus = await Permission.photos.status;
-    } else {
-      galleryStatus = await Permission.photos.request();
-    }
-  } else if (Platform.isIOS) {
-    final cameraStatus = await Permission.camera.request();
-    final photosStatus = await Permission.photos.request();
-
-    return cameraStatus.isGranted && photosStatus.isGranted;
-  }else {
-    galleryStatus = PermissionStatus.granted; // fallback (e.g., web or desktop)
+  var photosStatus = await Permission.photos.status;
+  if (!photosStatus.isGranted) {
+    photosStatus = await Permission.photos.request();
   }
-
-  if (!galleryStatus.isGranted) {
+  if (!photosStatus.isGranted) {
     print("❌ Gallery access denied");
     granted = false;
   }

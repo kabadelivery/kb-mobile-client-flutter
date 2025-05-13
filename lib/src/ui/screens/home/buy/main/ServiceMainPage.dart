@@ -34,7 +34,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
+import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ServiceMainPage extends StatefulWidget {
   static var routeName = "/ServiceMainPage";
@@ -285,10 +287,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     shrinkWrap: true,
                     children: [
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async{
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
+                             await Permission.camera.status;
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => OutOfAppOrderPage(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
