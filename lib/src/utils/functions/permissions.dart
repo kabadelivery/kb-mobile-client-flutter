@@ -25,8 +25,11 @@ Future<bool> requestCameraAndGalleryPermissions() async {
       galleryStatus = await Permission.photos.request();
     }
   } else if (Platform.isIOS) {
-    galleryStatus = await Permission.photos.request();
-  } else {
+    final cameraStatus = await Permission.camera.request();
+    final photosStatus = await Permission.photos.request();
+
+    return cameraStatus.isGranted && photosStatus.isGranted;
+  }else {
     galleryStatus = PermissionStatus.granted; // fallback (e.g., web or desktop)
   }
 
