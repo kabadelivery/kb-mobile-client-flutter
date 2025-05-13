@@ -9,9 +9,11 @@
     <uses-permission
         android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
         tools:node="remove" />
-
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     <uses-sdk tools:overrideLibrary="net.touchcapture.qr.flutterqr,com.google.zxing.client.android" />
 
     <uses-feature
