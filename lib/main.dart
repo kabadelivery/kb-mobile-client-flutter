@@ -115,6 +115,33 @@ class _MyAppState extends State<MyApp> {
               navigatorKey: navigatorKey,
               onGenerateTitle: (BuildContext context) => "KABA",
               theme: ThemeData(
+                appBarTheme: AppBarTheme(
+                  iconTheme: IconThemeData(color: Colors.white),
+                ),
+          dialogTheme: DialogTheme(
+          backgroundColor: Colors.white),
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.colorCustom, // couleur de fond
+                      foregroundColor: Colors.white,        // texte / icône
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  useMaterial3: true,
+                  colorScheme: ColorScheme.fromSeed(
+                      seedColor: Colors.white,
+                    primary: KColors.colorCustom,
+                    brightness: Brightness.light,
+                    onPrimary: Colors.white,
+                      secondary: KColors.colorCustom,
+                      onSecondary: Colors.white,
+                      surface: Colors.white,
+
+                    
+                  ),
+                  scaffoldBackgroundColor: Colors.white,
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
               // home: RestaurantMenuPage(presenter: MenuPresenter(MenuView()), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
 //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),

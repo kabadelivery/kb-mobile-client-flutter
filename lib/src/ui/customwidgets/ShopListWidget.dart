@@ -324,8 +324,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             ShopDetailsPage(
-                distance: shopModel!.distance!,
-                shipping_price: shopModel!.delivery_pricing!,
+                distance: shopModel!.distance??"",
+                shipping_price: shopModel!.delivery_pricing??"",
                 restaurant: shopModel,
                 presenter: RestaurantDetailsPresenter(RestaurantDetailsView())),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {

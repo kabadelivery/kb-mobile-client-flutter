@@ -19,7 +19,8 @@ Future<bool> _isImageSizeValid(File imageFile) async {
 Future<File?> pickImage(BuildContext context, WidgetRef ref) async {
   // Request photo access permission (for Android <= 12 or if you're being safe)
   final status = await Permission.photos.request();
-  if (!status.isGranted) {
+  final storage_status = await Permission.storage.request();
+  if (!status.isGranted &&!storage_status.isGranted) {
     return null;
   }
 

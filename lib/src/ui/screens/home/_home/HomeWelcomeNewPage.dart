@@ -362,6 +362,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             StateContainer.of(context).loggingState == 0
                 ? SizedBox(width: 15)
                 : PopupMenuButton<String>(
+                    color: Colors.white,
                     onSelected: menuChoiceAction,
                     itemBuilder: (BuildContext context) {
                       return _popupMenus()!.map((String menuName) {
