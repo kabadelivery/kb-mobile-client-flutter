@@ -21,8 +21,8 @@ import '../../state_management/out_of_app_order/out_of_app_order_screen_state.da
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
-import 'package:image_picker/image_picker.dart';
 
+import '../../utils/functions/permissions.dart';
 import '../../xrint.dart';
 
 class OutOfAppProductForm extends ConsumerWidget {
@@ -59,10 +59,14 @@ class OutOfAppProductForm extends ConsumerWidget {
                   onTap: outOfAppScreenState.showLoading == false
                       ? () async {
                     try {
-                      await pickImage(context, ref).then((value) {
-                        ref.read(imageCacheProvider.notifier).state = value;
-                        imagePath = ref.watch(imageCacheProvider.notifier).state!;
-                      });
+
+                      bool granted = await requestCameraAndGalleryPermissions();
+                      if(granted==true){
+                        await pickImage(context, ref).then((value) {
+                          ref.read(imageCacheProvider.notifier).state = value;
+                          imagePath = ref.watch(imageCacheProvider.notifier).state!;
+                        });
+                      }
                     } catch (e) {
                       print("##Error in image picking, out of app order## $e");
                     }

@@ -1,8 +1,8 @@
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -17,32 +17,38 @@ Future<bool> _isImageSizeValid(File imageFile) async {
 }
 
 Future<File?> pickImage(BuildContext context, WidgetRef ref) async {
-  final _picker = ImagePicker();
-
-  PermissionStatus status = await Permission.photos.request();
+  // Request photo access permission (for Android <= 12 or if you're being safe)
+  final status = await Permission.photos.request();
   if (!status.isGranted) {
     return null;
   }
 
-  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  if (pickedFile != null) {
-    File imageFile = File(pickedFile.path);
+  // Open file picker
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.image,
+    withData: false, // if you only need the path
+  );
 
-    if (await _isImageSizeValid(imageFile)) {
-      return imageFile;
+  if (result != null && result.files.isNotEmpty) {
+    final file = File(result.files.first.path!);
+
+    if (await _isImageSizeValid(file)) {
+      return file;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
             "${AppLocalizations.of(context)!.translate('image_size_exceed')}",
-            style: TextStyle(color: Colors.white)),
-      ));
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
       return null;
     }
   }
 
-  return null; // Return null if no file was picked
+  return null; // No file selected
 }
-
 Future<void> removeImageFromCache(String imagePath) async {
   final file = File(imagePath);
   if (await file.exists()) {

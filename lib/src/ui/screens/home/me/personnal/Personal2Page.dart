@@ -10,11 +10,11 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as dp;
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
@@ -78,25 +78,21 @@ class _Personal2PageState extends State<Personal2Page>
 
   File? _image;
 
-  final picker = ImagePicker();
 
   Future getImage() async {
-//    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-//    setState(() {
-//      _image = image;
-//    });
-
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: false,
+    );
 
     setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
+      if (result != null && result.files.isNotEmpty) {
+        _image = File(result.files.first.path!);
       } else {
-        xrint('No image selected.');
+        print('Aucune image sélectionnée.');
       }
     });
   }
-
   String? _validateName(String? value) {
     if (value!.length < 2) {
       return "${AppLocalizations.of(context)!.translate('field_more_2_chars')}";

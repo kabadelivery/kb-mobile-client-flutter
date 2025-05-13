@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "tg.tmye.kaba.brave.one"
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     lintOptions {
         disable 'InvalidPackage'

@@ -10,6 +10,7 @@ import '../../localizations/AppLocalizations.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
 import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
+import '../../utils/functions/permissions.dart';
 import '../../xrint.dart';
 
 Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String text) {
@@ -78,10 +79,15 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
 
               onTap:outOfAppScreenState.showLoading==false? ()async{
                 try{
-                  await pickImage(context,ref).then((value){
-                    ref.read(additionnalInfoProvider.notifier).setImage(value!);
-                  });
-
+                  bool granted = await requestCameraAndGalleryPermissions();
+                  if (granted) {
+                    await pickImage(context,ref).then((value){
+                      ref.read(additionnalInfoProvider.notifier).setImage(value!);
+                    });
+                    print("Camera permission granted!");
+                  } else {
+                    print("Camera permission denied.");
+                  }
                 }catch(e){
                   xrint("##Error in image picking, out of app order## $e");
                 }
