@@ -70,12 +70,16 @@
 	<string>Photo library permission is need so that the user could pick his profile picture from the gallery.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech data from this app will be sent to Apple to process your requests.</string>
-	<key>NSCameraUsageDescription</key>
-    <string>This app requires access to the camera to take photos or scan documents.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs access to your camera to take photos.</string>
 
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to your photo library to select and upload images or videos.</string>
+    <string>This app needs access to your photo library to select images.</string>
 
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs permission to save images to your photo library.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>To capture profile photo please grant camera access</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
