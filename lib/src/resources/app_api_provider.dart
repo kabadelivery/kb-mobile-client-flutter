@@ -428,7 +428,6 @@ class AppApiProvider {
 
   Future<String> fetchBilling() async {
     xrint("entered fetchBilling");
-    debugPrint(StackTrace.current.toString());
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options

@@ -20,7 +20,7 @@ Widget BuildExplanationSpace(BuildContext context,WidgetRef ref,String explanati
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       padding: EdgeInsets.all(5),
-      height: 230,
+      height: 260,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
              color: Colors.transparent,

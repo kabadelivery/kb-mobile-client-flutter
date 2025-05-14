@@ -393,7 +393,7 @@ _searchAction();
                       ? _buildNetworkErrorPage()
                       : hasSystemError
                           ? _buildSysErrorPage()
-                          : _buildRestaurantList(widget.restaurantList!))),
+                          : _buildRestaurantList(widget.restaurantList??[]))),
         ));
 
     /* return Scaffold(
@@ -444,7 +444,7 @@ _searchAction();
           children: <Widget>[
             SizedBox(height: 10),
             SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration!),
+                _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
             SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
