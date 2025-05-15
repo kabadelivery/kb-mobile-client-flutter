@@ -134,7 +134,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       child: isLoading!
                           ? Center(child: MyLoadingProgressWidget())
                           : (hasNetworkError!
-                              ? _buildNetworkErrorPage()
+                              ? Center(child: MyLoadingProgressWidget())
                               : hasSystemError!
                                   ? _buildSysErrorPage()
                                   : _buildServicePage())),

@@ -20,7 +20,7 @@ Widget BuildExplanationSpace(BuildContext context,WidgetRef ref,String explanati
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       padding: EdgeInsets.all(5),
-      height: 260,
+      height: 300,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
              color: Colors.transparent,
@@ -48,7 +48,7 @@ Widget BuildExplanationSpace(BuildContext context,WidgetRef ref,String explanati
         children: [
       Container(
         width: 200,
-        height: 150,
+        height: 200,
         child: Text("${explanation}",style: TextStyle(fontSize: 14,color:  Colors.black,fontFamily: "Inter"),),
       ),
       Lottie.network(animationUrl,width: 130,height: 130,)
