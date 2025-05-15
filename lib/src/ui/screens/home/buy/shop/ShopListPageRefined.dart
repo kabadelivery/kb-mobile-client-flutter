@@ -1371,6 +1371,7 @@ _searchAction();
 
   @override
   void inflateRestaurants(List<ShopModel> restaurants) {
+
     PAGE_SIZE = 20;
     setState(() {
       widget.finalRestaurantList = restaurants;

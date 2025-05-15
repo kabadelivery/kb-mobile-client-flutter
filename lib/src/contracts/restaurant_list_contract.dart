@@ -82,7 +82,7 @@ class RestaurantListPresenter implements RestaurantListContract {
         final userPosition =  await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
-        var address= await CustomerUtils.getSavedAddressLocally();
+        //var address= await CustomerUtils.getSavedAddressLocally();
         String? billing = await CustomerUtils.getLastStoredBilling();
         CustomerModel user = await CustomerUtils.getCustomer();
 
@@ -91,7 +91,7 @@ class RestaurantListPresenter implements RestaurantListContract {
           final restoLocation = resto.location!.split(':');
           final restoLat = double.tryParse(restoLocation[0]) ?? 0.0;
           final restoLon = double.tryParse(restoLocation[1]) ?? 0.0;
-          final distanceKm = await Utils.locationDistance(address,resto);
+          final distanceKm = await Utils.locationDistance(userPosition,resto);
           resto.distance = distanceKm.toStringAsFixed(2);
           if(user.phone_number!=null&&user.phone_number!.isNotEmpty){
             for (var item in jsonDecode(billing!)['phoneNumber']) {
@@ -106,14 +106,14 @@ class RestaurantListPresenter implements RestaurantListContract {
               }
             }
           }
-
-          print("Distance calculated ${distanceKm.toStringAsFixed(2)}, users :${userPosition}, resto :${restoLocation}");
         });
-        restaurants?.sort((a, b) => a.distance!.compareTo(b.distance!));
 
-      } catch (e) {
+
+        xrint("Distance calculated $restaurants");
+       } catch (e) {
         debugPrint('Erreur lors de la récupération de la localisation : $e');
       }
+
       // save billing locally so that the other stuffs can use it.
       String billing = json.encode(data["billing"]);
 
