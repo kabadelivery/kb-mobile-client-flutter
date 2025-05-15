@@ -63,22 +63,27 @@ Future<void> removeImageFromCache(String imagePath) async {
 
 
 Future<XFile?> compressImage(File file) async {
-  final dir = await getTemporaryDirectory();
-  final targetPath = p.join(dir.path, "compressed_${p.basename(file.path)}");
+  try{
+    final dir = await getTemporaryDirectory();
+    final targetPath = p.join(dir.path, "compressed_${p.basename(file.path)}");
 
-  final result = await FlutterImageCompress.compressAndGetFile(
-    file.absolute.path,
-    targetPath,
-    quality: 70,
-    minWidth: 800,
-    minHeight: 800,
-    format: file.absolute.path.contains("png")?CompressFormat.png:file.absolute.path.contains("jpeg")?CompressFormat.jpeg:CompressFormat.heic,
-  );
-  if (result != null) {
-    final compressedSize = await result.length();
-    xrint("Compressed image size: ${(compressedSize / (1024 * 1024)).toStringAsFixed(2)} MB");
-  } else {
-    xrint("Compression failed, result is null.");
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 70,
+      minWidth: 800,
+      minHeight: 800,
+      format: file.absolute.path.contains("png")?CompressFormat.png:file.absolute.path.contains("jpeg")?CompressFormat.jpeg:CompressFormat.heic,
+    );
+    if (result != null) {
+      final compressedSize = await result.length();
+      xrint("Compressed image size: ${(compressedSize / (1024 * 1024)).toStringAsFixed(2)} MB");
+    } else {
+      xrint("Compression failed, result is null.");
+    }
+    return result;
+  }catch(e){
+    return null;
   }
-  return result;
+
 }

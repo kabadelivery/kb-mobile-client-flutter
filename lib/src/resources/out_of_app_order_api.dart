@@ -227,7 +227,7 @@ dio.options
             'name': order['name'],
             'price': order['price'].toString(),
             'quantity': order['quantity'].toString(),
-            'image':compressedImage
+            'image':compressedImage==null?await imageToBase64File(order['image']):await imageToBase64XFile(compressedImage)
           };
 
         orderDetailsWithImages.add(orderDetail);
