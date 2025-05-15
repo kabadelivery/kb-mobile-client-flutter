@@ -10,6 +10,8 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../utils/functions/map.dart';
+
 class RestaurantListContract {
 //  void RestaurantList (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
@@ -76,13 +78,48 @@ class RestaurantListPresenter implements RestaurantListContract {
           "filter_key": filter_key,
           "filter_configuration": configuration
         });
+      try {
+        final userPosition =  await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        var address= await CustomerUtils.getSavedAddressLocally();
+        String? billing = await CustomerUtils.getLastStoredBilling();
+        CustomerModel user = await CustomerUtils.getCustomer();
 
+        restaurants?.forEach((resto) async{
+
+          final restoLocation = resto.location!.split(':');
+          final restoLat = double.tryParse(restoLocation[0]) ?? 0.0;
+          final restoLon = double.tryParse(restoLocation[1]) ?? 0.0;
+          final distanceKm = await Utils.locationDistance(address,resto);
+          resto.distance = distanceKm.toStringAsFixed(2);
+          if(user.phone_number!=null&&user.phone_number!.isNotEmpty){
+            for (var item in jsonDecode(billing!)['phoneNumber']) {
+              if (distanceKm.toInt() >= int.parse(item['from']) && distanceKm.toInt() < int.parse(item['to'])) {
+                resto.delivery_pricing = item['value'];
+              }
+            }
+          }else{
+            for (var item in jsonDecode(billing!)['email']) {
+              if (distanceKm.toInt() >= int.parse(item['from']) && distanceKm.toInt() < int.parse(item['to'])) {
+                resto.delivery_pricing = item['value'];
+              }
+            }
+          }
+
+          print("Distance calculated ${distanceKm.toStringAsFixed(2)}, users :${userPosition}, resto :${restoLocation}");
+        });
+        restaurants?.sort((a, b) => a.distance!.compareTo(b.distance!));
+
+      } catch (e) {
+        debugPrint('Erreur lors de la récupération de la localisation : $e');
+      }
       // save billing locally so that the other stuffs can use it.
       String billing = json.encode(data["billing"]);
 
       CustomerUtils.updateBillingLocally(billing);
 
-      xrint(restaurants);
+      xrint("restaurants in fetchShopList $restaurants");
 
       _restaurantListView.loadRestaurantListLoading(false);
 
@@ -122,10 +159,11 @@ class RestaurantListPresenter implements RestaurantListContract {
   }
 }
 
-FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) {
+FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data)async {
   Iterable lo = data["data"]["data"] /*["resto"]*/;
 
   List<ShopModel>? tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
+
 
   // remove the 79 & 80
   List<ShopModel> tf = List.empty(growable: true);

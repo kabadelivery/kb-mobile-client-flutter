@@ -254,7 +254,7 @@ class RestaurantApiProvider {
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: params);
 
-      xrint(response.data);
+      xrint("data from fetchShopList ${response.data}");
       if (response.statusCode == 200) {
         dynamic data = mJsonDecode(response.data);
 

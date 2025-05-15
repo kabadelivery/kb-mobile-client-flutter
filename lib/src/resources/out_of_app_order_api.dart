@@ -4,12 +4,14 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../models/CustomerModel.dart';
 import '../models/DeliveryAddressModel.dart';
 import '../models/OrderBillConfiguration.dart';
 import '../models/VoucherModel.dart';
 import '../utils/_static_data/ServerRoutes.dart';
+import '../utils/functions/OutOfAppOrder/imagePicker.dart';
 import '../utils/functions/Utils.dart';
 import '../utils/ssl/ssl_validation_certificate.dart';
 import '../xrint.dart';
@@ -215,12 +217,17 @@ dio.options
       List<Map<String, dynamic>> orderDetailsWithImages = [];
       for (var i = 0; i < formDataList.length; i++) {
         var order = formDataList[i];
+
+
         if(order['image']!=null && order['image'] is File){
+          final originalSize = await order['image'].length();
+          xrint("Original image size [${order['name']}]: ${(originalSize / (1024 * 1024)).toStringAsFixed(2)} MB");
+          XFile? compressedImage  = await compressImage(order['image']);
           Map<String, dynamic> orderDetail = {
             'name': order['name'],
             'price': order['price'].toString(),
             'quantity': order['quantity'].toString(),
-            'image':await imageToBase64(order['image'])
+            'image':compressedImage
           };
 
         orderDetailsWithImages.add(orderDetail);
@@ -313,7 +320,12 @@ dio.options
       xrint("XXX fetchShippingPriceRange error : $e");
     }
   }
-  Future<String> imageToBase64(File imageFile) async {
+  Future<String> imageToBase64File(File imageFile) async {
+    List<int> imageBytes = await imageFile.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    return base64Image;
+  }
+  Future<String> imageToBase64XFile(XFile imageFile) async {
     List<int> imageBytes = await imageFile.readAsBytes();
     String base64Image = base64Encode(imageBytes);
     return base64Image;

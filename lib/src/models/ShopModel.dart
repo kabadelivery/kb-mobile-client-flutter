@@ -51,6 +51,7 @@ class ShopModel {
       this.max_food,
       this.location});
 
+
   ShopModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];

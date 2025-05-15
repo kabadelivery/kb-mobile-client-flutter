@@ -26,6 +26,7 @@ class ShopListWidget extends StatefulWidget {
 class _ShopListWidgetState extends State<ShopListWidget> {
   @override
   Widget build(BuildContext context) {
+    debugPrint(" widget.shopModel ${ widget.shopModel!.toJson()}");
     // TODO: implement build
     return (InkWell(
         child: Container(
