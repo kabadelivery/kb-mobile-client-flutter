@@ -81,8 +81,12 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
                  if(Platform.isAndroid){
                    try{
                        await pickImageAndroid(context,ref).then((value){
-                         ref.read(additionnalInfoProvider.notifier).setImage(value!);
-                       });
+                         if (value != null) {
+                           ref.read(additionnalInfoProvider.notifier).setImage(value);
+                         } else {
+                           debugPrint("No image picked or image too large.");
+                           // Optionally show a SnackBar or handle cancellation here
+                         }   });
                    }catch(e){
                      xrint("##Error in image picking, out of app order## $e");
                    }

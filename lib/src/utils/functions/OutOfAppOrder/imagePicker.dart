@@ -51,37 +51,47 @@ Future<File?> pickImageIOS(BuildContext context, WidgetRef ref) async {
   return null; // No file selected or invalid image
 }
 Future<File?> pickImageAndroid(BuildContext context, WidgetRef ref) async {
-  if (Platform.isAndroid && Platform.version.compareTo('13') >= 0) {
-    const MethodChannel methodChannel = MethodChannel('photo_picker_method_channel');
+  const methodChannel = MethodChannel('photo_picker_method_channel');
 
+  if (Platform.isAndroid && Platform.version.compareTo('13') >= 0) {
     try {
-      final String? path = await methodChannel.invokeMethod('pickMedia', <String, String>{
+      final String? uriPath = await methodChannel.invokeMethod('pickMedia', <String, String>{
         'file_type': 'image',
       });
 
-      if (path != null) {
-        final file = File(path);
-        if (await _isImageSizeValid(file)) {
-          return file;
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.translate('image_size_exceed'),
-                style: const TextStyle(color: Colors.white),
+      if (uriPath != null) {
+         final Uint8List? bytes = await methodChannel.invokeMethod('readFileBytes', {
+          'uri': uriPath,
+        });
+
+        if (bytes != null) {
+          final tempDir = await getTemporaryDirectory();
+          final timestamp = DateTime.now().millisecondsSinceEpoch;
+          final uniquePath = '${tempDir.path}/picked_image_$timestamp.jpg';
+          final tempFile = File(uniquePath);
+
+          await tempFile.writeAsBytes(bytes);
+
+          if (await _isImageSizeValid(tempFile)) {
+            return tempFile;
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.translate('image_size_exceed'),
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
-            ),
-          );
+            );
+          }
         }
       }
     } on PlatformException catch (e) {
       debugPrint('Error picking image: ${e.message}');
     }
-
     return null;
   } else {
-    // Use image_picker on Android <13 or iOS
-    final ImagePicker picker = ImagePicker();
+    final picker = ImagePicker();
 
     if (Platform.isAndroid) {
       final status = await Permission.storage.request();
@@ -109,7 +119,6 @@ Future<File?> pickImageAndroid(BuildContext context, WidgetRef ref) async {
     return null;
   }
 }
-
 
 Future<void> removeImageFromCache(String imagePath) async {
   final file = File(imagePath);
@@ -142,4 +151,21 @@ Future<XFile?> compressImage(File file) async {
     return null;
   }
 
+}
+Future<void> deleteCachedPickedImages() async {
+  final tempDir = await getTemporaryDirectory();
+
+  final files = tempDir
+      .listSync()
+      .where((file) =>
+  file is File && file.path.contains('picked_image_') && file.path.endsWith('.jpg'));
+
+  for (final file in files) {
+    try {
+      await file.delete();
+      debugPrint('Deleted: ${file.path}');
+    } catch (e) {
+      debugPrint('Failed to delete ${file.path}: $e');
+    }
+  }
 }
