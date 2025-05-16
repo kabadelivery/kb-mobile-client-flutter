@@ -78,19 +78,29 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
     return GestureDetector(
 
               onTap:outOfAppScreenState.showLoading==false? ()async{
-                try{
-                  bool granted = await requestCameraAndGalleryPermissions();
-                  if (granted) {
-                    await pickImage(context,ref).then((value){
-                      ref.read(additionnalInfoProvider.notifier).setImage(value!);
-                    });
-                    print("Camera permission granted!");
-                  } else {
-                    print("Camera permission denied.");
-                  }
-                }catch(e){
-                  xrint("##Error in image picking, out of app order## $e");
-                }
+                 if(Platform.isAndroid){
+                   try{
+                       await pickImageAndroid(context,ref).then((value){
+                         ref.read(additionnalInfoProvider.notifier).setImage(value!);
+                       });
+                   }catch(e){
+                     xrint("##Error in image picking, out of app order## $e");
+                   }
+                 }else{
+                   try{
+                     bool granted = await requestCameraAndGalleryPermissions();
+                     if (granted) {
+                       await pickImageIOS(context,ref).then((value){
+                         ref.read(additionnalInfoProvider.notifier).setImage(value!);
+                       });
+                       print("Camera permission granted!");
+                     } else {
+                       print("Camera permission denied.");
+                     }
+                   }catch(e){
+                     xrint("##Error in image picking, out of app order## $e");
+                   }
+                 }
               }:null,
             child: Container(
   height: 70,

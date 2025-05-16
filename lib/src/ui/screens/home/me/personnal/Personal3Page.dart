@@ -10,11 +10,11 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as dp;
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
@@ -79,14 +79,14 @@ class _Personal3PageState extends State<Personal3Page>
   File? _image;
 
   Future getImage() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      withData: false,
-    );
+    final ImagePicker picker = ImagePicker();
 
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
     setState(() {
-      if (result != null && result.files.isNotEmpty) {
-        _image = File(result.files.first.path!);
+      if (image != null) {
+        _image = File(image.path!);
       } else {
         print('Aucune image sélectionnée.');
       }

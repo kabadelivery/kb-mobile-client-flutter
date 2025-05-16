@@ -17,10 +17,10 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-    flutterVersionCode = '366'
+    flutterVersionCode = '367'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-    flutterVersionName = '3.6.6'
+    flutterVersionName = '3.6.7'
 
 
 
@@ -38,6 +38,9 @@ android {
     lintOptions {
         disable 'InvalidPackage'
         abortOnError false
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
     defaultConfig {
@@ -82,6 +85,8 @@ flutter {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation "androidx.fragment:fragment-ktx:1.5.4"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

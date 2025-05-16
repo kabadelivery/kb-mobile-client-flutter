@@ -59,18 +59,28 @@ class OutOfAppProductForm extends ConsumerWidget {
                   return GestureDetector(
                     onTap: outOfAppScreenState.showLoading == false
                         ? () async {
-                      try {
-
-                        bool granted = await requestCameraAndGalleryPermissions();
-                        if(granted==true){
-                          await pickImage(context, ref).then((value) {
-                            ref.read(imageCacheProvider.notifier).state = value;
-                            imagePath = ref.watch(imageCacheProvider.notifier).state!;
-                          });
-                        }
-                      } catch (e) {
-                        print("##Error in image picking, out of app order## $e");
-                      }
+                                if(Platform.isAndroid){
+                                  try {
+                                      await pickImageAndroid(context, ref).then((value) {
+                                        ref.read(imageCacheProvider.notifier).state = value;
+                                        imagePath = ref.watch(imageCacheProvider.notifier).state!;
+                                      });
+                                  } catch (e) {
+                                    print("##Error in image picking, out of app order## $e");
+                                  }
+                                }else{
+                                  try {
+                                    bool granted = await requestCameraAndGalleryPermissions();
+                                    if(granted==true){
+                                      await pickImageIOS(context, ref).then((value) {
+                                        ref.read(imageCacheProvider.notifier).state = value;
+                                        imagePath = ref.watch(imageCacheProvider.notifier).state!;
+                                      });
+                                    }
+                                  } catch (e) {
+                                    print("##Error in image picking, out of app order## $e");
+                                  }
+                                }
                     }
                         : null,
                     child: Container(
