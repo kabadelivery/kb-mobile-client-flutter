@@ -32,6 +32,7 @@ import '../../_static_data/MusicData.dart';
 import '../../_static_data/Vectors.dart';
 import '../CustomerUtils.dart';
 import '../Utils.dart';
+import 'imagePicker.dart';
 
 Future<void> launchOrderFunc(
     CustomerModel customer,
@@ -217,6 +218,8 @@ void payAtDelivery(
                 ref,
                 phone_number,
                 uploadAdditionnalInfoImage[0]["image"]);
+
+            await deleteCachedPickedImages();
           } catch (e) {
              xrint("LAUNCHING ORDER ERROR $e");
           }

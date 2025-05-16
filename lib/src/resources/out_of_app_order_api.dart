@@ -248,12 +248,13 @@ dio.options
         url,
         data: json.encode({"orderDetails":orderDetailsWithImages}),
       );
-      await deleteCachedPickedImages();
+
       xrint("response.data ${response.data}");
      return response.data['orders'];
     } catch (e, stackTrace) {
       xrint("Error: $e");
       xrint("StackTrace: $stackTrace");
+
       return "Error: $e\nLine: ${stackTrace.toString().split("\n")[0]}";
     }
   }
