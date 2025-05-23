@@ -439,6 +439,39 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     )
                   ]),
               SizedBox(height: 10),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('additional_fees')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 12)),
+                    /* check if there is promotion on Livraison */
+                    Row(
+                      children: <Widget>[
+                        /* montant livraison normal */
+                        Text(
+                            "${_orderBillConfiguration!.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: KColors.new_black,
+                                fontSize: 12)),
+                      ],
+                    )
+                  ]),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                    color: Color(0x54B6B6B6),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
+                      style: TextStyle(fontSize: 12, color: Colors.black)),
+                ),
+              ),
+              SizedBox(height: 10),
               Center(
                   child: Container(
                       width: MediaQuery.of(context).size.width - 10,
@@ -2105,9 +2138,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.additional_fees = configuration.additional_fees;
     _orderBillConfiguration.additional_fees_total_price =
         configuration.additional_fees_total_price;
+    double additionnal_fee_total = configuration.additional_fees_total_price!=null?configuration.additional_fees_total_price!.toDouble():0;
 
     _orderBillConfiguration
-        .total_preorder_pricing = (configuration.command_pricing!.toDouble() +
+        .total_preorder_pricing = (additionnal_fee_total + configuration.command_pricing!.toDouble() +
             ((100 - int.parse(_orderBillConfiguration.discount!).toDouble()) *
                 configuration.shipping_pricing!.toDouble() /
                 100))

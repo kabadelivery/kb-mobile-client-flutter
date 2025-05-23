@@ -1016,7 +1016,8 @@ _searchAction();
     }
 
     var filteredResult =
-        _filteredFoodProposal(_filterDropdownValue!, foodProposals!);
+        _filteredFoodProposal(_filterDropdownValue??"cheap_to_exp",
+            foodProposals??[]);
 
     if (justInflatedFoodProposal) {
       // firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());

@@ -196,7 +196,7 @@ class _BestSellersMiniPageState extends State<BestSellersMiniPage>
                               Utils.inflateLink(data.food_entity!.pic!)))),
                 ),
                 Container(
-                  height: 64,
+                  height: 74,
                   width: 160,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

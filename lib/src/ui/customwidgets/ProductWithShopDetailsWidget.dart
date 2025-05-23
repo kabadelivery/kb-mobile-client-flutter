@@ -52,7 +52,7 @@ class _ProductWithShopDetailsWidgetState
                         children: [
                           Container(
                             height: 115,
-                            width: 90,
+                            width: 80,
                             decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,
                                 borderRadius:
@@ -68,7 +68,7 @@ class _ProductWithShopDetailsWidgetState
                           ),
                           SizedBox(width: 18),
                           Container(
-                            height: 115,
+                            height: 120,
                             child: Column(
                               children: [
                                 Expanded(

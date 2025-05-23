@@ -125,7 +125,7 @@ class _ProposalMiniWithPreloadedDataPageState
             onTap: () => _jumpToFoodDetails(product),
             child: Container(
                 width: MediaQuery.of(context).size.width - 30,
-                height: 115,
+                height: 125,
                 margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
                 child: Container(
                   color: Colors.white,
@@ -141,7 +141,7 @@ class _ProposalMiniWithPreloadedDataPageState
                                 bottomLeft: Radius.circular(8)),
                             color: KColors.new_gray),
                         padding: EdgeInsets.all(10),
-                        height: 115,
+                        height: 125,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

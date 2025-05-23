@@ -253,7 +253,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String tmp = prefs.getString("vlcst")!;
-    login = prefs.getString("vl")!;
+    login = await prefs.getString("vl")??"";
 
     DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -271,7 +271,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
       /* if code sent, do something else,  */
       isCodeSent = true;
       this._requestId = prefs.getString("vri");
-      _loginFieldController.text = prefs.getString("vl")!;
+      _loginFieldController.text = prefs.getString("vl")??"";
 
       mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {

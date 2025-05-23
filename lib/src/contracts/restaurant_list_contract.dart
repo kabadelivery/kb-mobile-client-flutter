@@ -68,48 +68,22 @@ class RestaurantListPresenter implements RestaurantListContract {
 
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
 
-      if (data["data"]?.length > 0)
-        restaurants = await compute(sortOutRestaurantList, {
-          "data": data,
-          "position": position,
-          "is_email_account": customer == null || customer?.username == null
-              ? false
-              : (customer.username!.contains("@") ? true : false),
-          "filter_key": filter_key,
-          "filter_configuration": configuration
-        });
       try {
         final userPosition =  await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
         //var address= await CustomerUtils.getSavedAddressLocally();
-        String? billing = await CustomerUtils.getLastStoredBilling();
         CustomerModel user = await CustomerUtils.getCustomer();
-        List<ShopModel> newRestaurantList = [];
-        restaurants?.forEach((resto) async{
-
-          final restoLocation = resto.location!.split(':');
-          final restoLat = double.tryParse(restoLocation[0]) ?? 0.0;
-          final restoLon = double.tryParse(restoLocation[1]) ?? 0.0;
-          final distanceKm = await Utils.locationDistance(userPosition,resto);
-          resto.distance = distanceKm.toStringAsFixed(2);
-          if(user.phone_number!=null&&user.phone_number!.isNotEmpty){
-            for (var item in jsonDecode(billing!)['phoneNumber']) {
-              if (distanceKm.toInt() >= int.parse(item['from']) && distanceKm.toInt() < int.parse(item['to'])) {
-                resto.delivery_pricing = item['value'];
-              }
-            }
-          }else{
-            for (var item in jsonDecode(billing!)['email']) {
-              if (distanceKm.toInt() >= int.parse(item['from']) && distanceKm.toInt() < int.parse(item['to'])) {
-                resto.delivery_pricing = item['value'];
-              }
-            }
-          }
-        });
-        await Future.delayed(Duration(seconds: 2), () {
-          restaurants.sort((a, b) => a.distance!.compareTo(b.distance!));
-
+        await Future.delayed(Duration(seconds: 2), ()async {
+          restaurants = await compute(sortOutRestaurantList, {
+            "data": data,
+            "position": userPosition,
+            "is_email_account": user == null || user?.username == null
+                ? false
+                : (customer.username!.contains("@") ? true : false),
+            "filter_key": filter_key,
+            "filter_configuration": configuration
+          });
         });
         xrint("Distance calculated $restaurants");
        } catch (e) {
@@ -161,103 +135,57 @@ class RestaurantListPresenter implements RestaurantListContract {
   }
 }
 
-FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data)async {
-  Iterable lo = data["data"]["data"] /*["resto"]*/;
-
-  List<ShopModel>? tmp = lo?.map((resto) => ShopModel.fromJson(resto))?.toList();
-
-
-  // remove the 79 & 80
-  List<ShopModel> tf = List.empty(growable: true);
-
+FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async {
   try {
-    bool is_email_account = data["is_email_account"];
-    Position tmpPosition = data["position"];
-    String filter_key = data["filter_key"];
-    Map<String, dynamic> configuration = data["filter_configuration"];
+    final Iterable rawList = data["data"]["data"];
+    final bool isEmailAccount = data["is_email_account"];
+    final Position userPosition = data["position"];
+    final Map<String, dynamic> config = data["filter_configuration"];
 
-    xrint("before filtered ${tmp?.length}");
-    /* filter the data */
-    /* if (filter_key != null && filter_key?.trim() != "")
-      tmp = _filteredData(tmp, filter_key);
-    xrint("after filtered ${tmp?.length}");*/
+    // Convert raw data into ShopModel list
+    List<ShopModel> shops = rawList.map((resto) => ShopModel.fromJson(resto)).toList();
 
-    if (tmpPosition != null) {
-      Map<String, String> myBillingArray = Map();
-      // prepare billing array
-      List<dynamic> lBilling =
-          data["data"]["billing"][is_email_account ? "email" : "phoneNumber"];
-      for (int s = 0; s < lBilling.length; s++) {
-        int from = int.parse(lBilling[s]["from"]);
-        int to = int.parse(lBilling[s]["to"]);
-        int value = int.parse(lBilling[s]["value"]);
-        // we take upper border
-        myBillingArray["${from}"] = "${value}";
-        if (to - from > 1) {
-          for (int i = from + 1; i < to; i++) {
-            myBillingArray["${i}"] = "${value}";
-          }
-        }
-      }
-
-      xrint(myBillingArray);
-      // we can store the billing array locally
-
-      int indexOf79 = -1;
-      int indexOf80 = -1;
-
-      // filter tmp with only restaurant that are opened or all
-      tmp = tmp!.where((e) {
-        if (configuration["opened_filter"] == true)
-          return e.is_open == 1 && e.coming_soon == 0;
-        return true;
-      }).toList();
-
-      /* make sure the distances and shipping prices are computed */
-      for (int s = 0; s < tmp.length; s++) {
-        tmp[s].distance = (Utils.locationDistance(tmpPosition, tmp[s]) > 100
-            ? "> 100"
-            : Utils.locationDistance(tmpPosition, tmp[s])?.toString())!;
-        tmp[s].delivery_pricing =
-            _getShippingPrice(tmp[s].distance!, myBillingArray)!;
-        if (tmp[s].id == 79) indexOf79 = s;
-        if (tmp[s].id == 80) indexOf80 = s;
-      }
-
-      // add elements
-      /*   tf.add(tmp[indexOf79]);
-      tf.add(tmp[indexOf80]);*/
-      // remote from tmp
-      /*     tmp.removeAt(indexOf80);
-      tmp.removeAt(indexOf79);*/
-
-      // if (tmp[s].id == 79 || tmp[s].id == 80) {
-      //   tf.add(tmp[s]);
-      //   tmp.removeAt(s);
-      // }
-
-      // do the sort_out using the distances as well
-      tf.sort((restA, restB) => (
-              // try to put these 2 restaurants above
-              double.parse(restA.distance!) * 1000 -
-                  double.parse(restB.distance!) * 1000)
-          .toInt());
-      /* tmp =*/
-      tmp.sort((restA, restB) => (
-// try to put these 2 restaurants above
-              double.parse(restA.distance!) * 1000 -
-                  double.parse(restB.distance!) * 1000)
-          .toInt());
+    // Optional filter by 'opened'
+    if (config["opened_filter"] == true) {
+      shops = shops.where((shop) => shop.is_open == 1 && shop.coming_soon == 0).toList();
     }
 
-    tf.addAll(tmp!);
-    return tf;
-  } catch (_) {
-    xrint(_.toString());
-    return tmp!;
+    // Generate billing map
+    final List<dynamic> billingData =
+    data["data"]["billing"][isEmailAccount ? "email" : "phoneNumber"];
+    final Map<String, String> billingMap = {};
+    for (var entry in billingData) {
+      int from = int.parse(entry["from"]);
+      int to = int.parse(entry["to"]);
+      String value = entry["value"].toString();
+      for (int i = from; i < to; i++) {
+        billingMap["$i"] = value;
+      }
+    }
+
+    // Helper to safely parse distance
+    double parseDistance(String? distance) {
+      if (distance == null || distance.contains(">")) return 9999.0;
+      return double.tryParse(distance) ?? 9999.0;
+    }
+
+    // Calculate distance and shipping
+    for (final shop in shops) {
+      final double dist = Utils.locationDistance(userPosition, shop);
+      shop.distance = dist > 100 ? "> 100" : dist.toStringAsFixed(2);
+      shop.delivery_pricing = _getShippingPrice(shop.distance!, billingMap);
+    }
+
+    // Sort by distance
+    shops.sort((a, b) => parseDistance(a.distance).compareTo(parseDistance(b.distance)));
+
+    return shops;
+  } catch (e, stacktrace) {
+    print("Error in sortOutRestaurantList: $e");
+    print(stacktrace);
+    return []; // fallback to empty list in case of failure
   }
 }
-
 _filteredData(List<ShopModel> data, String filter_key) {
   List<ShopModel> d =[];
 
