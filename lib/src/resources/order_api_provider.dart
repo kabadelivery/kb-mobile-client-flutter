@@ -333,9 +333,21 @@ class OrderApiProvider {
       xrint("000 _ " + _data.toString());
 
       var dio = Dio();
+
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..headers = {
+          ...Utils.getHeadersWithToken(customer!.token!),
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'Content-Type': 'application/json', // Adjust if needed
+        }
         ..connectTimeout = 90000;
+      final url = Uri.parse(ServerRoutes.LINK_CREATE_COMMAND)
+          .replace(queryParameters: {
+        '_': DateTime.now().millisecondsSinceEpoch.toString()
+      })
+          .toString();
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -343,10 +355,8 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
-          data: _data);
 
+      var response = await dio.post(url, data: _data);
       xrint("001 _ " + response.data.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false

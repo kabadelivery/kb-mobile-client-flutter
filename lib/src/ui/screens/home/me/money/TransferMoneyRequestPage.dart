@@ -9,7 +9,7 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class TransferMoneyRequestPage extends StatefulWidget {
   static var routeName = "/TransferMoneyRequest";
@@ -232,7 +232,7 @@ class _TransferMoneyRequestPageState extends State<TransferMoneyRequestPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   @override

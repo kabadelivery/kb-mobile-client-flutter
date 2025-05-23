@@ -27,7 +27,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // import 'package:android_intent/android_intent.dart';
 
@@ -1093,7 +1093,7 @@ class _RestaurantListPageState extends State<RestaurantListPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   _showSearchPage() {

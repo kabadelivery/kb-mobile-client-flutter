@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
 import 'package:KABA/src/contracts/order_contract.dart';
@@ -42,7 +42,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
@@ -990,7 +989,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   _jumpToRecoverPage() {
@@ -1265,7 +1264,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _selectedAddress!,
                 _mCode,
                 _addInfoController!.text!,
-                _selectedVoucher!,
+                _selectedVoucher??VoucherModel(),
                 _usePoint);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
@@ -1395,14 +1394,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
+            CustomerModel cus = await CustomerUtils.getCustomer();
             await widget.presenter!.payPreorder(
-                widget.customer!,
+                cus,
                 widget.foods!,
                 _selectedAddress!,
                 _mCode,
                 _addInfoController!.text!,
                 selectedFrame.start!,
-                selectedFrame.end!);
+                selectedFrame.end!
+            );
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }

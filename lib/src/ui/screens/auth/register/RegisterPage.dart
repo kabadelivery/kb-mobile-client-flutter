@@ -10,8 +10,9 @@ import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
+import 'package:toast/toast.dart' as t;
 
 
 class RegisterPage extends StatefulWidget {
@@ -390,7 +391,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     /* get start-time */
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = prefs.getString("last_code_sent_time")!;
+    String? tmp = await prefs.getString("last_code_sent_time");
 
 //    if (!(registerType != null && registerType >= 0 && registerType < recoverModeHints.length))
 //      return;
@@ -398,7 +399,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
 
     try {
-      lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
+      lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp!)*1000);
     } catch (_) {
       xrint("ERROR");
       return;
@@ -584,8 +585,10 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void registerSuccess(String phone_number, String password) {
     /*  */
-    Toast.show("${AppLocalizations.of(context)!.translate('account_created_successfully')}", duration: 5);
-    Navigator.of(context).pop({'phone_number':phone_number, 'password':password, 'autologin': true});
+
+    Fluttertoast.showToast(msg: "${AppLocalizations.of(context)!.translate('account_created_successfully')}");
+  Navigator.of(context).pop({'phone_number':phone_number, 'password':password, 'autologin': true});
+
   }
 
   @override

@@ -8,8 +8,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:toast/toast.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 class TopUpPage extends StatefulWidget {
   static var routeName = "/TopUpPage";
 
@@ -479,7 +478,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   void mDialog(String message) {

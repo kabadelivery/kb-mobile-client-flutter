@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            RegisterPage (presenter: RegisterPresenter(RegisterView()), login: login!),
+            RegisterPage (presenter: RegisterPresenter(RegisterView()), login: login),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;

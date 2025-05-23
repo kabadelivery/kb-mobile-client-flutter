@@ -85,7 +85,7 @@ class RestaurantListPresenter implements RestaurantListContract {
         //var address= await CustomerUtils.getSavedAddressLocally();
         String? billing = await CustomerUtils.getLastStoredBilling();
         CustomerModel user = await CustomerUtils.getCustomer();
-
+        List<ShopModel> newRestaurantList = [];
         restaurants?.forEach((resto) async{
 
           final restoLocation = resto.location!.split(':');
@@ -107,8 +107,10 @@ class RestaurantListPresenter implements RestaurantListContract {
             }
           }
         });
+        await Future.delayed(Duration(seconds: 2), () {
+          restaurants.sort((a, b) => a.distance!.compareTo(b.distance!));
 
-
+        });
         xrint("Distance calculated $restaurants");
        } catch (e) {
         debugPrint('Erreur lors de la récupération de la localisation : $e');

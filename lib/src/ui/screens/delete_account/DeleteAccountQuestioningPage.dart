@@ -264,7 +264,8 @@ class DeleteAccountQuestioningPageState
     );
   }
 
-  void _confirm() {
+  void _confirm() async{
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
     /* get message and all the selected box content and send it,
     * then wait for the voucher proposition and move*/
     List<String> reasons = [];
@@ -274,7 +275,7 @@ class DeleteAccountQuestioningPageState
       }
     }
     widget.presenter!.postQuestioningResult(
-        widget.customer!, reasons, _messageFieldController.text);
+        customerModel, reasons, _messageFieldController.text);
   }
 
 

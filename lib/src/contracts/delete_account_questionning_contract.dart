@@ -51,7 +51,7 @@ class DeleteAccountQuestioningPresenter
           await provider.postQuestioningResult(customer, reasons, message);
       VoucherModel? mVoucher = null;
       if (res["data"]["voucher"] != null)
-        mVoucher = VoucherModel.fromJson(res["data"]["voucher"]);
+        mVoucher =await VoucherModel.fromJson(res["data"]["voucher"]);
       // also get the restaurant entity here.
       _deleteAccountQuestioningView.showLoading(false);
       _deleteAccountQuestioningView.showProposedReparation(

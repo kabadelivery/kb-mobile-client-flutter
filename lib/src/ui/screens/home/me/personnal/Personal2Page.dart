@@ -16,7 +16,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Personal2Page extends StatefulWidget {
   static var routeName = "/Personal2Page";
@@ -562,6 +562,6 @@ class _Personal2PageState extends State<Personal2Page>
 
   void mToast(String message) {
 //    mDialog(message);
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 }

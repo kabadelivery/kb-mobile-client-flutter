@@ -18,8 +18,9 @@ import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:toast/toast.dart';
+
 
 import '../../../../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 
@@ -695,7 +696,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   void _reorderWithFavorite(List<DeliveryAddressModel> deliveryAddresses) {

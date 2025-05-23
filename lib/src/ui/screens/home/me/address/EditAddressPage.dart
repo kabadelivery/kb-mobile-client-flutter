@@ -21,11 +21,11 @@ import 'package:bouncing_widget/bouncing_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lo;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 
 class EditAddressPage extends StatefulWidget {
   static var routeName = "/EditAddressPage";
@@ -893,7 +893,7 @@ class _EditAddressPageState extends State<EditAddressPage>
   }
 
   void mToast(String message) {
-    Toast.show(message, duration: Toast.lengthLong);
+    Fluttertoast.showToast(msg: message,toastLength: Toast.LENGTH_LONG);
   }
 
   @override
