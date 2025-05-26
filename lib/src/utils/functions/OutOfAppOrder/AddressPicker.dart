@@ -13,6 +13,7 @@ import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../../state_management/out_of_app_order/voucher_state.dart';
+import '../../../ui/customwidgets/billing_widget.dart';
 import '../../../ui/screens/home/me/address/MyAddressesPage.dart';
 import '../../../xrint.dart';
 import '../CustomerUtils.dart';
@@ -121,11 +122,17 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                         shipping_address,
                         voucherState.selectedVoucher,
                         false);
-                ref
-                    .read(orderBillingStateProvider.notifier)
-                    .setOrderBillConfiguration(orderBillConfiguration);
-                outOfAppNotifier.setIsBillBuilt(true);
-                outOfAppNotifier.setShowLoading(false);
+
+                if(orderBillConfiguration.shipping_pricing==0){
+                  showOutOfRangePopup(context);
+                  outOfAppNotifier.setIsBillBuilt(false);
+                  outOfAppNotifier.setShowLoading(false);
+                }else{
+                  ref.read(orderBillingStateProvider.notifier)
+                      .setOrderBillConfiguration(orderBillConfiguration);
+                  outOfAppNotifier.setIsBillBuilt(true);
+                  outOfAppNotifier.setShowLoading(false);
+                }
               } catch (e) {
                 Fluttertoast.showToast(
                     backgroundColor: Colors.black87,
@@ -154,11 +161,16 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
                         shipping_address,
                         voucherState.selectedVoucher,
                         false);
-                   ref
-                    .read(orderBillingStateProvider.notifier)
-                    .setOrderBillConfiguration(orderBillConfiguration);
-                outOfAppNotifier.setIsBillBuilt(true);
-                outOfAppNotifier.setShowLoading(false);
+                if(orderBillConfiguration.shipping_pricing==0){
+                  showOutOfRangePopup(context);
+                  outOfAppNotifier.setIsBillBuilt(false);
+                  outOfAppNotifier.setShowLoading(false);
+                }else{
+                  ref.read(orderBillingStateProvider.notifier)
+                      .setOrderBillConfiguration(orderBillConfiguration);
+                  outOfAppNotifier.setIsBillBuilt(true);
+                  outOfAppNotifier.setShowLoading(false);
+                }
               } catch (e) {
                 xrint("ERROR 1 impossible_to_load_bill $e");
                 Fluttertoast.showToast(

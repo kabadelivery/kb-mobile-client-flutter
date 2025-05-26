@@ -24,6 +24,7 @@ import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 
 import '../../utils/functions/permissions.dart';
 import '../../xrint.dart';
+import 'billing_widget.dart';
 
 class OutOfAppProductForm extends ConsumerWidget {
   @override
@@ -322,9 +323,16 @@ class OutOfAppProductForm extends ConsumerWidget {
                                     outOfAppNotifier.setShowLoading(true);
                                     try{
                                       await api.computeBillingAction(customer, order_address, formData, shipping_adress, _selectedVoucher!, _usePoint!).then((value) {
-                                        ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(value);
-                                        outOfAppNotifier.setIsBillBuilt(true);
-                                        outOfAppNotifier.setShowLoading(false);
+                                        if(value.shipping_pricing==0){
+                                          showOutOfRangePopup(context);
+                                          outOfAppNotifier.setIsBillBuilt(false);
+                                          outOfAppNotifier.setShowLoading(false);
+                                        }else{
+                                          ref.read(orderBillingStateProvider.notifier)
+                                              .setOrderBillConfiguration(value);
+                                          outOfAppNotifier.setIsBillBuilt(true);
+                                          outOfAppNotifier.setShowLoading(false);
+                                        }
                                       });
                                     }catch(e){
                                       xrint("XXX impossible_to_load_bill ERROR $e");
@@ -455,10 +463,16 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                                           false
                                         );
 
-                                    ref.read(orderBillingStateProvider.notifier)
-                                        .setOrderBillConfiguration(orderBillConfiguration);
-                                    outOfAppNotifier.setIsBillBuilt(true);
-                                    outOfAppNotifier.setShowLoading(false);
+                                    if(orderBillConfiguration.shipping_pricing==0){
+                                      showOutOfRangePopup(context);
+                                      outOfAppNotifier.setIsBillBuilt(false);
+                                      outOfAppNotifier.setShowLoading(false);
+                                    }else{
+                                      ref.read(orderBillingStateProvider.notifier)
+                                          .setOrderBillConfiguration(orderBillConfiguration);
+                                      outOfAppNotifier.setIsBillBuilt(true);
+                                      outOfAppNotifier.setShowLoading(false);
+                                    }
                                   } catch (e) {
                                     xrint("impossible_to_load_bill $e");
                                     Fluttertoast.showToast(
@@ -467,7 +481,7 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
                                     fontSize: 14,
                                     toastLength: Toast.LENGTH_LONG ,
                                     msg: "🚨 "+AppLocalizations.of(context)!.translate("impossible_to_load_bill")+" 🚨");
-                                    outOfAppNotifier.setIsBillBuilt(true);
+                                    outOfAppNotifier.setIsBillBuilt(false);
                                     outOfAppNotifier.setShowLoading(false);
                                   }
                                 });

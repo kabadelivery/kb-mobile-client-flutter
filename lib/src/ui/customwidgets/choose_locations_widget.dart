@@ -19,6 +19,7 @@ import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 import '../../utils/functions/Utils.dart';
 import '../../xrint.dart';
+import 'billing_widget.dart';
 Widget ChooseShippingAddress(
     BuildContext context,
     WidgetRef ref,
@@ -224,12 +225,16 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                                       locationState.selectedShippingAddress!,
                                       voucherState.selectedVoucher!,
                                       false);
-                                  ref
-                                      .read(orderBillingStateProvider.notifier)
-                                      .setOrderBillConfiguration(
-                                      orderBillConfiguration);
-                                  outOfAppNotifier.setIsBillBuilt(true);
-                                  outOfAppNotifier.setShowLoading(false);
+                                  if(orderBillConfiguration.shipping_pricing==0){
+                                    showOutOfRangePopup(context);
+                                    outOfAppNotifier.setIsBillBuilt(false);
+                                    outOfAppNotifier.setShowLoading(false);
+                                  }else{
+                                    ref.read(orderBillingStateProvider.notifier)
+                                        .setOrderBillConfiguration(orderBillConfiguration);
+                                    outOfAppNotifier.setIsBillBuilt(true);
+                                    outOfAppNotifier.setShowLoading(false);
+                                  }
                                 }catch(e){
                                   Fluttertoast.showToast(
                                       backgroundColor: Colors.black87,

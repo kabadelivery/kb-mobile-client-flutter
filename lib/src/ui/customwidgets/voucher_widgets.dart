@@ -19,6 +19,7 @@ import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/VoucherPicker.dart';
 import '../../xrint.dart';
 import 'MyVoucherMiniWidget.dart';
+import 'billing_widget.dart';
 
 Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
 
@@ -43,9 +44,16 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
             try{
               VoucherModel voucher = await SelectVoucher(context, ref, false, null);
               await getBillingForVoucher(context,ref,voucher).then((value)async {
-                outOfAppNotifier.setIsBillBuilt(true);
-                outOfAppNotifier.setShowLoading(false);
-                orderBillingNotifier.setOrderBillConfiguration(value);
+                if(value!.shipping_pricing==0){
+                  showOutOfRangePopup(context);
+                  outOfAppNotifier.setIsBillBuilt(false);
+                  outOfAppNotifier.setShowLoading(false);
+                }else{
+                  ref.read(orderBillingStateProvider.notifier)
+                      .setOrderBillConfiguration(value);
+                  outOfAppNotifier.setIsBillBuilt(true);
+                  outOfAppNotifier.setShowLoading(false);
+                }
 
               });
             }catch(e){
@@ -87,9 +95,16 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                 VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
                                 OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
-                                orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
-                                outOfAppNotifier.setIsBillBuilt(true);
-                                outOfAppNotifier.setShowLoading(false);
+                                if(orderBillConfiguration!.shipping_pricing==0){
+                                  showOutOfRangePopup(context);
+                                  outOfAppNotifier.setIsBillBuilt(false);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }else{
+                                  ref.read(orderBillingStateProvider.notifier)
+                                      .setOrderBillConfiguration(orderBillConfiguration);
+                                  outOfAppNotifier.setIsBillBuilt(true);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }
                               },
                           ),
                           IconButton(
@@ -99,9 +114,16 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                 VoucherModel? voucher = await SelectVoucher(context, ref, false, null);
                                 OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
-                                orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
-                                outOfAppNotifier.setIsBillBuilt(true);
-                                outOfAppNotifier.setShowLoading(false);
+                                if(orderBillConfiguration!.shipping_pricing==0){
+                                  showOutOfRangePopup(context);
+                                  outOfAppNotifier.setIsBillBuilt(false);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }else{
+                                  ref.read(orderBillingStateProvider.notifier)
+                                      .setOrderBillConfiguration(orderBillConfiguration);
+                                  outOfAppNotifier.setIsBillBuilt(true);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }
                               },
                           )
                         ],
@@ -168,9 +190,16 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                   null,
                                   false).then((value){
                                 voucherNotifier.state.selectedVoucher=null;
-                                outOfAppNotifier.setIsBillBuilt(true);
-                                outOfAppNotifier.setShowLoading(false);
-                                orderBillingNotifier.setOrderBillConfiguration(value);
+                                if(orderBillConfiguration!.shipping_pricing==0){
+                                  showOutOfRangePopup(context);
+                                  outOfAppNotifier.setIsBillBuilt(false);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }else{
+                                  ref.read(orderBillingStateProvider.notifier)
+                                      .setOrderBillConfiguration(orderBillConfiguration);
+                                  outOfAppNotifier.setIsBillBuilt(true);
+                                  outOfAppNotifier.setShowLoading(false);
+                                }
 
                               });
                               }catch(e){
@@ -204,8 +233,16 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
   if(orderBillConfiguration!=null){
     ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
     var outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
-    outOfAppNotifier.setIsBillBuilt(true);
-    outOfAppNotifier.setShowLoading(false);
+    if(orderBillConfiguration.shipping_pricing==0){
+      showOutOfRangePopup(context);
+      outOfAppNotifier.setIsBillBuilt(false);
+      outOfAppNotifier.setShowLoading(false);
+    }else{
+      ref.read(orderBillingStateProvider.notifier)
+          .setOrderBillConfiguration(orderBillConfiguration);
+      outOfAppNotifier.setIsBillBuilt(true);
+      outOfAppNotifier.setShowLoading(false);
+    }
   }
   return Consumer(builder: (context,ref,child){
     final voucherState = ref.watch(voucherStateProvider);
@@ -281,9 +318,16 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
                           VoucherModel? voucher = await SelectVoucher(context,ref,true,eligible_vouchers[index]);
                           OrderBillConfiguration? orderBillConfiguration = await getBillingForVoucher(context,ref,voucher!);
 
-                          ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
-                          outOfAppNotifier.setIsBillBuilt(true);
-                          outOfAppNotifier.setShowLoading(false);
+                          if(orderBillConfiguration!.shipping_pricing==0){
+                            showOutOfRangePopup(context);
+                            outOfAppNotifier.setIsBillBuilt(false);
+                            outOfAppNotifier.setShowLoading(false);
+                          }else{
+                            ref.read(orderBillingStateProvider.notifier)
+                                .setOrderBillConfiguration(orderBillConfiguration);
+                            outOfAppNotifier.setIsBillBuilt(true);
+                            outOfAppNotifier.setShowLoading(false);
+                          }
                         },
                         child: Container(
                           child: Text(

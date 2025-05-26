@@ -13,6 +13,7 @@ import '../../state_management/out_of_app_order/out_of_app_order_screen_state.da
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../xrint.dart';
+import 'billing_widget.dart';
 
 class DistrictSelectionWidget extends ConsumerWidget {
   @override
@@ -109,9 +110,15 @@ class DistrictSelectionWidget extends ConsumerWidget {
                       shipping_address,
                       voucherState.selectedVoucher,
                       false);
+                  if(orderBillConfiguration.shipping_pricing==0){
+                    showOutOfRangePopup(context);
+                    outOfAppNotifier.setIsBillBuilt(false);
+                    outOfAppNotifier.setShowLoading(false);
+                  }else{
                   orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
                   outOfAppNotifier.setIsBillBuilt(true);
                   outOfAppNotifier.setShowLoading(false);
+                  }
                 }catch(e){
                   xrint("ERROR 1 impossible_to_load_bill $e");
                   Fluttertoast.showToast(

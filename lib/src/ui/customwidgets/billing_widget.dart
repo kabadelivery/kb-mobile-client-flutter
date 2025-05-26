@@ -1,8 +1,62 @@
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../utils/_static_data/KTheme.dart';
+import '../../utils/_static_data/Vectors.dart';
+void showOutOfRangePopup(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: KColors.primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!
+                      .translate('out_of_delivery_range'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                child: SvgPicture.asset(
+                  VectorsData.out_of_range,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
 Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfiguration){
   return Column(children: <Widget>[
