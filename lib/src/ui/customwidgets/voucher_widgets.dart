@@ -49,7 +49,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                   outOfAppNotifier.setIsBillBuilt(false);
                   outOfAppNotifier.setShowLoading(false);
                 }else{
-                  ref.read(orderBillingStateProvider.notifier)
+                  orderBillingNotifier
                       .setOrderBillConfiguration(value);
                   outOfAppNotifier.setIsBillBuilt(true);
                   outOfAppNotifier.setShowLoading(false);
@@ -100,7 +100,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                   outOfAppNotifier.setIsBillBuilt(false);
                                   outOfAppNotifier.setShowLoading(false);
                                 }else{
-                                  ref.read(orderBillingStateProvider.notifier)
+                                  orderBillingNotifier
                                       .setOrderBillConfiguration(orderBillConfiguration);
                                   outOfAppNotifier.setIsBillBuilt(true);
                                   outOfAppNotifier.setShowLoading(false);
@@ -119,7 +119,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                   outOfAppNotifier.setIsBillBuilt(false);
                                   outOfAppNotifier.setShowLoading(false);
                                 }else{
-                                  ref.read(orderBillingStateProvider.notifier)
+                                  orderBillingNotifier
                                       .setOrderBillConfiguration(orderBillConfiguration);
                                   outOfAppNotifier.setIsBillBuilt(true);
                                   outOfAppNotifier.setShowLoading(false);
@@ -195,7 +195,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
                                   outOfAppNotifier.setIsBillBuilt(false);
                                   outOfAppNotifier.setShowLoading(false);
                                 }else{
-                                  ref.read(orderBillingStateProvider.notifier)
+                                  orderBillingNotifier
                                       .setOrderBillConfiguration(orderBillConfiguration);
                                   outOfAppNotifier.setIsBillBuilt(true);
                                   outOfAppNotifier.setShowLoading(false);
@@ -228,17 +228,17 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
 }
 
 Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConfiguration? orderBillConfiguration) {
-
+  final orderBillingNotifier = ref.read(orderBillingStateProvider.notifier);
   List<VoucherModel>? eligible_vouchers = orderBillConfiguration!=null?orderBillConfiguration.eligible_vouchers:[];
   if(orderBillConfiguration!=null){
-    ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(orderBillConfiguration);
+    orderBillingNotifier.setOrderBillConfiguration(orderBillConfiguration);
     var outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
     if(orderBillConfiguration.shipping_pricing==0){
       showOutOfRangePopup(context);
       outOfAppNotifier.setIsBillBuilt(false);
       outOfAppNotifier.setShowLoading(false);
     }else{
-      ref.read(orderBillingStateProvider.notifier)
+      orderBillingNotifier
           .setOrderBillConfiguration(orderBillConfiguration);
       outOfAppNotifier.setIsBillBuilt(true);
       outOfAppNotifier.setShowLoading(false);
@@ -323,7 +323,7 @@ Widget   _buildEligibleVoucher(BuildContext context, WidgetRef ref,OrderBillConf
                             outOfAppNotifier.setIsBillBuilt(false);
                             outOfAppNotifier.setShowLoading(false);
                           }else{
-                            ref.read(orderBillingStateProvider.notifier)
+                            orderBillingNotifier
                                 .setOrderBillConfiguration(orderBillConfiguration);
                             outOfAppNotifier.setIsBillBuilt(true);
                             outOfAppNotifier.setShowLoading(false);
