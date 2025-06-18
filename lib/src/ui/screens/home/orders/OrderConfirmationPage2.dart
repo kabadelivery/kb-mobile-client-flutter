@@ -1362,6 +1362,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPayAtDelivery(true);
           if (Utils.isCode(_mCode)) {
+
             await widget.presenter!.payAtDelivery(
                 widget.customer,
                 widget.foods!,

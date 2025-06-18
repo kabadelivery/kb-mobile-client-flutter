@@ -605,5 +605,6 @@
   "depending_on_store_location": " en fonction de l'adresse d'achat de votre commande",
   "this_order_can_get_changes": "Cette commande peut subir des modifications de prix",
   "name_too_long":  "Doit comporter au plus 30 caractères",
-  "price_too_high":  "Doit être inférieur à 100.000CFA"
+  "price_too_high":  "Doit être inférieur à 100.000CFA",
+  "china": "Chine"
 }

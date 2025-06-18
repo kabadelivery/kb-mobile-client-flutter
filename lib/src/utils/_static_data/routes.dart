@@ -52,6 +52,7 @@ import 'package:KABA/src/ui/screens/restaurant/food/RestaurantFoodDetailsPage.da
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 
+import '../../microservices/kaba_chine/presentation/page_holder.dart';
 import '../../ui/screens/delete_account/DeleteAccountRefundQuestionnaryPage.dart';
 import '../../ui/screens/delete_account/DeleteAccountSuccessfulPage.dart';
 import '../../ui/screens/out_of_app_orders/fetching_package.dart';
@@ -123,5 +124,6 @@ var generalRoutes = {
     );
   },
   OutOfAppOrderPage.routeName : (BuildContext context) =>OutOfAppOrderPage(),
+  WelcomeToKabaChine.routeName : (BuildContext context) =>WelcomeToKabaChine(),
 
 };

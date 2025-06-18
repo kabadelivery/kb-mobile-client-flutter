@@ -82,7 +82,7 @@ class OrderApiProvider {
       VoucherModel? voucher,
       bool useKabaPoint) async {
     DeviceInfoPlugin? deviceInfo = DeviceInfoPlugin();
-
+    xrint('SELECTED VOUCHER ${voucher!.id}');
     var device;
 
     String? token = "";
@@ -120,6 +120,7 @@ class OrderApiProvider {
 
     xrint("entered payAtDelivery");
     xrint("entered payAtDelivery");
+    var voucher_id=voucher==null? null:voucher.id;
     if (await Utils.hasNetwork()) {
       List<Object> food_quantity = [];
 
@@ -135,7 +136,7 @@ class OrderApiProvider {
         'infos': '$infos',
         'device': device, // device informations
         'push_token': '$token', // push token
-        "voucher_id": voucher==null?voucher!.id:null,
+        "voucher_id": voucher_id,
         "use_kaba_point": useKabaPoint
       });
 

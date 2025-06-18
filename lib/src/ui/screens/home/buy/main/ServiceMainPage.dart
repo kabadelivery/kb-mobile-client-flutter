@@ -32,6 +32,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../../microservices/kaba_chine/presentation/page_holder.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../../../utils/functions/permissions.dart';
@@ -390,7 +391,53 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      GestureDetector(
+                        onTap: () async{
+                          if (StateContainer.of(context).loggingState == 0){
+                            NotLoggedInPopUp(context);
+                          }else{
+                            await Permission.camera.status;
+                            Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => WelcomeToKabaChine(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/d1ae6efb-1f15-4bfc-ab2d-2731c1280fd8/VgIF2un2jh.json")),
+                                SizedBox(width: 9),
+                                Text(
+                                    "${AppLocalizations.of(context)!.translate('china')}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: KColors.new_black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ]..addAll(widget.available_services
                         !.map((e) => BuyCategoryWidget(e,
                             available: true,
