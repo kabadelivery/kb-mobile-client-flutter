@@ -28,7 +28,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                 width: size.width,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: Color(0xffececec),
+                  color:  Color(0xa6f1f1f1),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
@@ -127,7 +127,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                         width: size.width*.7,
 
                         child: Text("Important : Communiquez votre code client à votre fournisseur pour qu'il l'inscrive sur votre colis. Cela permettra une identification rapide et un traitement prioritaire."
-                        ,style: TextStyle(fontSize: 11),
+                        ,style: TextStyle(fontSize: 13),
                           textAlign: TextAlign.start,
                         ),
                       )
@@ -142,3 +142,98 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
   );
 
 }
+
+
+Widget userProfileInfo({required BuildContext context,required String name,required String tel,required String customer_code}) {
+  Size size = MediaQuery.of(context).size;
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child:  Container(
+      width: size.width,
+      height: 150,
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 5.0,
+              spreadRadius: 1.0,
+              offset: Offset(0, 2),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white
+      ),
+      child: Column(
+        children: [
+          Container(
+              width: size.width,
+              height: 30,
+              decoration: BoxDecoration(
+                color:  Color(0xa6f1f1f1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 10,),
+                  Icon(Icons.person,color: Colors.black87,),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Votre Profil",
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )
+          ),
+          SizedBox(height: 10,),
+          Container(
+            width: size.width*.85,
+            height: 90,
+            decoration: BoxDecoration(
+              color:  Color(0xa6f1f1f1),
+              borderRadius: BorderRadius.circular(10),
+             ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                          width: 80,
+                          child: Text("Nom :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+                      Text("$name",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(width: 80,child: Text("Téléphone :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+                      Text("$tel",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(width: 80,child: Text("Code Client :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+                      Text("$customer_code",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                ],
+              )
+            ),
+          )
+
+        ],
+      ),
+    ),
+  );
+
+}
+

@@ -1,4 +1,5 @@
 import 'package:KABA/src/microservices/kaba_chine/presentation/pages/information_page.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/pages/order_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _WelcomeToKabaChineState extends State<WelcomeToKabaChine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: UserInformationPage(),
+      body: KabaChineOrderPage(),
     );
   }
 }
