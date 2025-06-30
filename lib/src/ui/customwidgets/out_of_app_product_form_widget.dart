@@ -62,7 +62,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                         ? () async {
                                 if(Platform.isAndroid){
                                   try {
-                                      await pickImageAndroid(context,ref).then((value) {
+                                      await pickImageAndroid(context).then((value) {
                                         ref.read(imageCacheProvider.notifier).state = value;
                                         imagePath = ref.watch(imageCacheProvider.notifier).state!;
                                       });
@@ -73,7 +73,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                   try {
                                     bool granted = await requestCameraAndGalleryPermissions();
                                     if(granted==true){
-                                      await pickImageIOS(context, ref).then((value) {
+                                      await pickImageIOS(context).then((value) {
                                         ref.read(imageCacheProvider.notifier).state = value;
                                         imagePath = ref.watch(imageCacheProvider.notifier).state!;
                                       });

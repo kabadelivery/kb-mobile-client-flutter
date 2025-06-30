@@ -1,4 +1,11 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:KABA/src/microservices/kaba_chine/domain/user/user_entity.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/user/user_model.dart';
 
 class KabaChineColors {
   static const Color primary = Color(0xFFB81B3E);
@@ -34,4 +41,42 @@ class _DestinationOffices {
 
   final String lome = 'Lomé';
   final String agbalepedogan = 'Agbalépédogan';
+}
+
+class StatusInfo {
+  final String text;
+  final Color color;
+  final IconData icon;
+  final String? actionRequired;
+
+  const StatusInfo({
+    required this.text,
+    required this.color,
+    required this.icon,
+    this.actionRequired,
+  });
+}
+
+
+class KabaChineUtils{
+  Future<UserModel> getUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userJson = prefs.getString("kaba_chine_user");
+    if (userJson != null && userJson.isNotEmpty) {
+      try {
+        Map<String, dynamic> userMap = jsonDecode(userJson);
+        return UserModel.fromJson(userMap);
+      } catch (e) {
+        print("Error decoding userJson: $e");
+      }
+    }
+
+    return UserModel();
+  }
+
+  void SaveUserInfo(UserModel user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userJson = jsonEncode(user.toJson());
+    await prefs.setString("kaba_chine_user", userJson);
+  }
 }

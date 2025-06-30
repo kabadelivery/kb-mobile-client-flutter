@@ -8,5 +8,4 @@ class TarifEntity{
      this.price,
      this.duration,
   });
-
 }

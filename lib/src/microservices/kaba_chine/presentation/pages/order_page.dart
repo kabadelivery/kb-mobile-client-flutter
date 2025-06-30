@@ -1,10 +1,23 @@
+import 'package:KABA/src/microservices/kaba_chine/Enums/deliveryStatus.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/delivery_model.dart';
+import 'package:KABA/src/microservices/kaba_chine/domain/user/user_entity.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cherry_toast/cherry_toast.dart';
+import '../../Enums/menu.dart';
 import '../../core/utils.dart';
 import '../../domain/tarif/shipping_entity.dart';
+import '../../functions/checkInfos.dart';
 import '../widgets/office.dart';
 import '../widgets/package_form_info.dart';
+import 'history_page.dart';
 
 class KabaChineOrderPage extends StatefulWidget {
   const KabaChineOrderPage({super.key});
@@ -15,14 +28,124 @@ class KabaChineOrderPage extends StatefulWidget {
 
 class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
 
-  String customercode = "TG-123456789";
+  String customercode = "TG-XXXXXX";
+  String userPhoneNumber = "";
+  String username = "";
+  bool accept_general_service = false;
+  bool confirm_packages_is_safe = false;
+  bool isLoading =false;
   List<ShippingEntity> shipping_offices = [
     ShippingEntity(departure: "GuangZhou", destination: "Agbalépédogan",),
   ];
+  Delivery delivery = Delivery(
+      id: "",
+      packageName: "",
+      trackingCode: "",
+      declaredValue: 0,
+      recipientName: "",
+      buyerPhoneNumber: "",
+      shippingMode: 0,
+      status: DeliveryStatus.pending.toString(),
+      homeDelivery: false,
+      estimatedWeight: 0,
+      collectionOffice: "GuangZhou",
+      destinationOffice: "Agbalépédogan",
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      notes: "",
+      productImage:"",
+      purchaseProofImage: "",
+  );
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<OrderBloc>(context).add(getInfosEvent());
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    
+    return BlocConsumer<OrderBloc, OrderState>(
+  listener: (context, state) {
+    if(state is getInfosState) {
+      username = state.user.name!;
+      userPhoneNumber = state.user.phone_number!;
+      delivery.recipientName = state.user.name!;
+      delivery.buyerPhoneNumber = state.user.phone_number!;
+      customercode = state.user.customer_code!;
+    }
+    else if(state is chooseExpeditionModeState) {
+      delivery.shippingMode = state.expeditionMode.value;
+      debugPrint(delivery.shippingMode.toString());
+    }
+    else if(state is switchDeliveryModeState) {
+      delivery.homeDelivery = state.isHomeDelivery;
+      debugPrint(delivery.homeDelivery.toString());
+    }
+    else if(state is enterPackageNameState) {
+      delivery.packageName = state.packageName;
+      debugPrint(delivery.packageName);
+    }
+    else if(state is enterPackageWeightState) {
+      delivery.estimatedWeight = state.packageWeight;
+      debugPrint(delivery.estimatedWeight.toString());
+    }
+    else if(state is enterPackagePriceState) {
+      delivery.declaredValue = state.packagePrice;
+      debugPrint(delivery.declaredValue.toString());
+    }
+    else if(state is enterRecipientNameState) {
+      delivery.recipientName = state.recipientName;
+      debugPrint(delivery.recipientName);
+    }
+    else if(state is enterRecipientPhoneState) {
+      delivery.buyerPhoneNumber = state.recipientPhone;
+      debugPrint(delivery.buyerPhoneNumber);
+    }
+    else if(state is enterAdditionnalNotesState) {
+      delivery.notes = state.additionnalNotes;
+      debugPrint(delivery.notes);
+    }
+    else if(state is checkPackageIsSafeState) {
+      confirm_packages_is_safe = state.packageCondition;
+      debugPrint(confirm_packages_is_safe.toString());
+    }
+    else if(state is checkGeneralConditionState) {
+      accept_general_service = state.generalCondition;
+      debugPrint(accept_general_service.toString());
+    }
+    else if(state is chooseProofImageState) {
+      delivery.purchaseProofImage = state.proofImage.path;
+    }
+    else if(state is chooseProductImageState) {
+      delivery.productImage = state.productImage.path;
+    }
+    else if(state is LoadingState){
+      isLoading = true;
+      BlocProvider.of<OrderBloc>(context).add(startOrderingEvent(delivery: delivery));
+    }
+    else if(state is endOrderingState){
+      isLoading = false;
+      if(state.error==0){
+        MenuBloc menuBloc = BlocProvider.of<MenuBloc>(context);
+        menuBloc.add(changeMenuEvent(selectedMenu: MenuEnum.historique));
+        CherryToast.success(
+            toastPosition: Position.center,
+            toastDuration:
+            Duration(seconds: 5),
+            title: Text(state.msg)).show(context);
+      }else{
+        CherryToast.error(
+            toastPosition: Position.center,
+            toastDuration:
+            Duration(seconds: 5),
+            title: Text(state.msg)).show(context);
+      }
+    }
+  },
+  builder: (context, state) {
+
+    return isLoading == true ? Center(child: MyLoadingProgressWidget()) : SingleChildScrollView(
       child: Column(
         children: [
           Container(
@@ -114,9 +237,48 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
           SizedBox(height: 10),
           ExpeditionModes(context: context),
           SizedBox(height: 10,),
-          PackageFormInfo(context:context)
+          PackageFormInfo(),
+          SizedBox(height: 10,),
+          UserFormInfo(username:username.toString(), userPhoneNumber: userPhoneNumber.toString()),
+          SizedBox(height: 10,),
+          DeliveryConditions(),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: MaterialButton(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              height: 50,
+              color: KabaChineColors.primary,
+              minWidth: size.width,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              onPressed: () async{
+                Map isformCorrect = await isFormInfosCorrect(delivery:delivery,generalConditionsAccepted:  accept_general_service,packageIsSafeConditionAccepted:  confirm_packages_is_safe);
+                if(isformCorrect['is_good']==false){
+                  CherryToast.error(
+                      toastPosition: Position.center,
+                      toastDuration:
+                      Duration(seconds: 5),
+                      title: Text(isformCorrect['msg'])
+                  ).show(context);
+                }else{
+                  BlocProvider.of<OrderBloc>(context).add(LoadingEvent());
+                }
+                },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.send,color:Colors.white,size: 20,),
+                  SizedBox(width: 10,),
+                  Text("Soumettre la demande",style: TextStyle(color: Colors.white,fontSize: 16),)
+                ],
+              ),
+            ),
+          ),
                   ]
     )
     );
+  },
+);
   }
 }

@@ -1,9 +1,13 @@
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../ui/customwidgets/MyLoadingProgressWidget.dart';
 import '../../core/utils.dart';
 import '../../domain/tarif/shipping_entity.dart';
 import '../../domain/tarif/tarif_entity.dart';
+import '../../domain/user/user_entity.dart';
+import '../bloc/information/information_bloc.dart';
 import '../widgets/contact_assistance.dart';
 import '../widgets/tarif.dart';
 import '../widgets/user_infos_page_widgets.dart';
@@ -20,20 +24,33 @@ class _UserInformationPageState extends State<UserInformationPage> {
   TarifEntity boatRate=TarifEntity();
   TarifEntity planeRate=TarifEntity();
   ShippingEntity shipping =ShippingEntity();
+  UserEntity user = UserEntity();
+  bool isLoading= true;
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<InformationBloc>(context).add(getInfosEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
-    boatRate.duration = 45;
-    boatRate.price = 25000;
-    boatRate.type = Tariftype.boat.value;
-    planeRate.duration = 21;
-    planeRate.price = 45000;
-    planeRate.type = Tariftype.plane.value;
-    ShippingEntity shipping = ShippingEntity(
-      departure: "GuangZhou",
-      destination: "Lomé",
-    );
     Size size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return BlocConsumer<InformationBloc, InformationState>(
+   listener: (context, state) {
+       if(state is getInfosState){
+       user = state.user;
+       boatRate = state.bookTarif;
+       planeRate = state.planeTarif;
+       shipping = ShippingEntity(
+         departure: "GuangZhou",
+         destination: "Lomé",
+       );
+       isLoading = false;
+     }
+  },
+  builder: (context, state) {
+    return isLoading? MyLoadingProgressWidget():
+    SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,9 +98,12 @@ class _UserInformationPageState extends State<UserInformationPage> {
           SizedBox(height: 10),
           userIdInfo(
             context: context,
-            userId: "TG-1234567890",
+            userId: user.customer_code??"TG-XXXXXXX",
           ),
-          userProfileInfo(context: context,customer_code: "TG-1234567890",name:"Ben Boris",tel: "+225 01 02 03 04"),
+          userProfileInfo(context: context,
+              customer_code: user.customer_code??"TG-XXXXXXX",
+              name:user.name?? "",
+              tel: user.phone_number??"XXXXXXX"),
           tarifExpeditionWidget(context: context,
             shipping: shipping,
             boatRate: boatRate,
@@ -94,5 +114,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
         ],
       ),
     );
+  },
+);
   }
 }

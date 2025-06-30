@@ -3,6 +3,8 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../functions/contact.dart';
 Widget contactAssitanceListWidget({required BuildContext context}) {
   Size size = MediaQuery.of(context).size;
   return Padding(
@@ -55,7 +57,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
             context: context,
             title: "Nous contacter sur WhatsApp",
             subtitle: "Support d'assistance en 7j/7",
-            onPress: (){},
+            onPress: ()=>contactWhatsApp(phoneNumber: "22892109474"),
             icon:Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 25, )
           ),
           contactAssitanceWidget(
@@ -63,7 +65,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
               context: context,
               title: "Nous envoyer un e-mail",
               subtitle: "contact@kaba-chine.com",
-              onPress: (){},
+              onPress: ()=>contactEmail(email: "contact@kaba-chine.com"),
               icon:Icon(FontAwesomeIcons.solidEnvelope, color:KabaChineColors.primary, size: 20, )
           ),
           contactAssitanceWidget(
@@ -71,7 +73,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
               context: context,
               title: "Nous appeler",
               subtitle: "+228 90 XX XX XX",
-              onPress: (){},
+              onPress: ()=>contactPhone(phoneNumber: "22892109474"),
               icon:Icon(FontAwesomeIcons.phone, color:KabaChineColors.info, size: 15, )
           ),
           SizedBox(height: 20)

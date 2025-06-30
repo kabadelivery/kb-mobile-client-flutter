@@ -1,6 +1,11 @@
 import 'dart:core';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/history_bloc.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -11,6 +16,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
@@ -43,8 +49,25 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(StateContainer(child:
-    riverpod.ProviderScope(child:
-    MyApp(appLanguage: appLanguage)))
+    riverpod.ProviderScope(
+        child:MultiBlocProvider(
+            providers: [
+              BlocProvider<InformationBloc>(
+                create: (context) => InformationBloc(),
+              ),
+              BlocProvider<MenuBloc>(
+                create: (context) => MenuBloc(),
+              ),
+              BlocProvider<OrderBloc>(
+                create: (context) => OrderBloc(),
+              ),
+              BlocProvider<HistoryBloc>(
+                create: (context) => HistoryBloc(),
+              ),
+              BlocProvider<ChatBloc>(
+                create: (context) => ChatBloc(),
+              ),
+        ], child: MyApp(appLanguage: appLanguage))))
     );
   });
 }

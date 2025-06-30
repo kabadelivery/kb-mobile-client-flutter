@@ -20,7 +20,7 @@ Future<bool> _isImageSizeValid(File imageFile) async {
   return fileSize <= 15 * 1024 * 1024; // 3MB
 }
 
-Future<File?> pickImageIOS(BuildContext context, WidgetRef ref) async {
+Future<File?> pickImageIOS(BuildContext context) async {
   final ImagePicker picker = ImagePicker();
   if (Platform.isAndroid && Platform.version.compareTo('13') < 0) {
     final status = await Permission.storage.request();
@@ -50,7 +50,7 @@ Future<File?> pickImageIOS(BuildContext context, WidgetRef ref) async {
 
   return null; // No file selected or invalid image
 }
-Future<File?> pickImageAndroid(BuildContext context, WidgetRef ref) async {
+Future<File?> pickImageAndroid(BuildContext context) async {
   const methodChannel = MethodChannel('photo_picker_method_channel');
 
   if (Platform.isAndroid && Platform.version.compareTo('13') >= 0) {

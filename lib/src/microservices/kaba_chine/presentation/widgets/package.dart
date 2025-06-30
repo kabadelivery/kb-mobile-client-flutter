@@ -1,0 +1,222 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../Enums/TarifType.dart';
+import '../../Enums/deliveryStatus.dart';
+import '../../core/utils.dart';
+import '../../data/order/delivery_model.dart';
+import '../../functions/getStatusInfo.dart';
+import '../pages/delivery_details.dart';
+
+Widget PackageDeliveryWidget(
+    {required BuildContext context, required Delivery delivery})
+{
+  Size size = MediaQuery.of(context).size;
+  final info = getStatusInfo(DeliveryStatus.values.firstWhere(
+      (e) => e.value == delivery.status,
+      orElse: () => DeliveryStatus.pending,
+    ));
+  return Container(
+    width: size.width,
+    decoration: BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 5.0,
+          spreadRadius: 1.0,
+          offset: Offset(0, 2), // changes position of shadow
+        ),
+      ],
+      borderRadius: BorderRadius.circular(10),
+      border: info.actionRequired==null &&delivery.status!=DeliveryStatus.cancelled.value?null: Border(
+        left: BorderSide(
+          color: info.color,
+          width: 5,
+        ),
+      ),
+    ),
+    child: MaterialButton(
+      onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PackageDeliveryDetailsWidget(
+                delivery: delivery,
+              ),
+            ),
+          );
+      },
+      padding: EdgeInsets.all(0),
+      highlightColor: info.color.withOpacity(0.1),
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(children: [
+          Container(
+            width: size.width,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Color(0xa6f1f1f1),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  FontAwesomeIcons.box,
+                  color: Colors.black54,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Livraison ${delivery.trackingCode}",
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("${delivery.packageName}",
+                  style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 15, vertical: 10),
+                decoration: BoxDecoration(
+                  color: info.color.withOpacity(0.2),
+                  border: info.actionRequired==null?null: Border.all(
+                    color: info.color,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: [
+                    Icon(info.icon, color: info.color, size: 16),
+                    SizedBox(width: 5),
+                    Text(info.text,
+                        style: TextStyle(
+                            color: info.color,
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(FontAwesomeIcons.barcode,
+                  color: Colors.black54, size: 16),
+              Text(delivery.trackingCode??"",
+                  style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal)),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children:[
+              Row(
+                children: [
+                  Icon(delivery.shippingMode==Tariftype.plane.value?FontAwesomeIcons.plane:Icons.directions_boat,color: Colors.black54,size: 20),
+                  SizedBox(width: 5),
+                  Text(delivery.shippingMode==Tariftype.plane.value?"Avion":"Bateau",
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal)),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(Icons.calendar_month_rounded,
+                      color: Colors.black54, size: 20),
+                  SizedBox(width: 5),
+                  Text(
+                    "${delivery.createdAt!.day}/${delivery.createdAt!.month<10?"0"+delivery.createdAt!.month.toString():delivery.createdAt!.month}/${delivery.createdAt!.year}",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ],
+              )
+            ]
+          ),
+          SizedBox(height: 10),
+          if (info.actionRequired != null || delivery.status == DeliveryStatus.cancelled.value)
+            Container(
+              width: size.width,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: info.color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: info.color,
+                    size: 16,
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    delivery.status == DeliveryStatus.cancelled.value?"${delivery.cancellationReason}":info.actionRequired!,
+                    style: TextStyle(
+                        color: info.color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          SizedBox(height: 10),
+          if (delivery.status == DeliveryStatus.collected.value)
+            MaterialButton(
+
+              color: KabaChineColors.info,
+              elevation: 0,
+              minWidth: size.width,
+              height: 40,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () {
+                // Handle payment action
+              },
+              child: Text(
+                "Payer pour l'expédition",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+        ]),
+      ),
+    ),
+  );
+}

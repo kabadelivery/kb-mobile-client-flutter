@@ -80,7 +80,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
               onTap:outOfAppScreenState.showLoading==false? ()async{
                  if(Platform.isAndroid){
                    try{
-                       await pickImageAndroid(context,ref).then((value){
+                       await pickImageAndroid(context).then((value){
                          if (value != null) {
                            ref.read(additionnalInfoProvider.notifier).setImage(value);
                          } else {
@@ -94,7 +94,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
                    try{
                      bool granted = await requestCameraAndGalleryPermissions();
                      if (granted) {
-                       await pickImageIOS(context,ref).then((value){
+                       await pickImageIOS(context).then((value){
                          ref.read(additionnalInfoProvider.notifier).setImage(value!);
                        });
                        print("Camera permission granted!");
