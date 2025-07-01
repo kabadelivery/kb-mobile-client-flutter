@@ -1,0 +1,40 @@
+import '../../data/chat/chat_message_model.dart';
+import '../../data/chat/data_remote_source.dart';
+import 'chat_message_entity.dart';
+
+abstract class ChatRepository {
+  Future<List<ChatMessageEntity>> getMessages({required String conversationId, int? limit, int? offset});
+  Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message});
+  Future<bool> markMessagesAsRead({required String conversationId, required bool isAdmin});
+  Future<bool> deleteConversation({required String conversationId});
+}
+
+class ChatRepositoryImpl implements ChatRepository {
+  final ChatRemoteDataSource remote;
+
+  ChatRepositoryImpl(this.remote);
+
+  @override
+  Future<List<ChatMessageEntity>> getMessages({required String conversationId, int? limit, int? offset}) async {
+    final models = await remote.getMessages(conversationId: conversationId, limit: limit, offset: offset);
+    return models;
+  }
+
+  @override
+  Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message}) async {
+    assert(message is ChatMessageModel);
+    final model = message as ChatMessageModel;
+    final sent = await remote.sendMessage(model);
+    return sent;
+  }
+
+  @override
+  Future<bool> markMessagesAsRead({required String conversationId, required bool isAdmin}) {
+    return remote.markMessagesAsRead(conversationId: conversationId, isAdmin: isAdmin);
+  }
+
+  @override
+  Future<bool> deleteConversation({required String conversationId}) {
+    return remote.deleteConversation(conversationId);
+  }
+}

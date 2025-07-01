@@ -18,9 +18,17 @@ class getChatByIdState extends ChatState {
 
 class openChatState extends ChatState {
   final ChatConversationEntity chat;
-  openChatState({required this.chat});
+  Delivery?delivery;
+  openChatState({required this.chat, this.delivery});
 }
 class sendMessageState extends ChatState{
   final ChatMessageEntity message;
   sendMessageState({required this.message});
+}
+
+class createConversationState extends ChatState{
+  final ChatConversationEntity chat;
+  Delivery?delivery;
+  final bool error;
+  createConversationState({required this.chat, required this.error, this.delivery});
 }

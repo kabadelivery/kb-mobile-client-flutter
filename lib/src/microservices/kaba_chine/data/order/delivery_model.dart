@@ -1,11 +1,12 @@
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
+import 'package:KABA/src/microservices/kaba_chine/domain/order/delivery_entity.dart';
 import 'package:KABA/src/microservices/kaba_chine/domain/tarif/tarif_entity.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../Enums/deliveryStatus.dart';
 import '../../domain/order/status_history_entry.dart';
 
-class Delivery {
+class Delivery extends DeliveryEntity {
    String id;
    String? userId;
    String? buyerId;
@@ -55,7 +56,32 @@ class Delivery {
     this.statusHistory,
     required this.createdAt,
     required this.updatedAt,
-  });
+  }):super(
+    id: id,
+    userId: userId,
+    buyerId: buyerId,
+    kabaUserId: kabaUserId,
+    packageName: packageName,
+    trackingCode: trackingCode,
+    declaredValue: declaredValue,
+    recipientName: recipientName,
+    buyerPhoneNumber: buyerPhoneNumber,
+    shippingMode: shippingMode,
+    status: status,
+    currentStatus: currentStatus,
+    homeDelivery: homeDelivery,
+    estimatedWeight: estimatedWeight,
+    collectionOffice: collectionOffice,
+    destinationOffice: destinationOffice,
+    addressText: addressText,
+    notes: notes,
+    cancellationReason: cancellationReason,
+    purchaseProofImage: purchaseProofImage,
+    productImage: productImage,
+    statusHistory: statusHistory,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
   factory Delivery.fromJson(Map<String, dynamic> json) {
     return Delivery(
       id: json['id'],
@@ -89,6 +115,35 @@ class Delivery {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'buyerId': buyerId,
+      'kabaUserId': kabaUserId,
+      'packageName': packageName,
+      'trackingCode': trackingCode,
+      'declaredValue': declaredValue,
+      'recipientName': recipientName,
+      'buyerPhoneNumber': buyerPhoneNumber,
+      'shippingMode': shippingMode == Tariftype.plane.value ? "AVION" : "BATEAU",
+      'status': status,
+      'currentStatus': currentStatus,
+      'homeDelivery': homeDelivery,
+      'estimatedWeight': estimatedWeight,
+      'collectionOffice': collectionOffice,
+      'destinationOffice': destinationOffice,
+      'addressText': addressText,
+      'notes': notes,
+      'cancellationReason': cancellationReason,
+      'purchaseProofImage': purchaseProofImage,
+      'productImage': productImage,
+      'statusHistory':
+          statusHistory?.map((e) => e.toJson()).toList(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
   }
   static Delivery decoy() {
     return Delivery(

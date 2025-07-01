@@ -24,7 +24,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             updatedAt: '2023-10-01T12:00:00Z',
             unreadAdminMessages: 0,
             unreadUserMessages: 1,
-            messages: [],
+            messages: [
+              ChatMessageEntity(
+                id: '1',
+                content: 'Hello, how can I help you?',
+                kabaUserId: 'admin',
+                conversationId: '2',
+                isFromAdmin: true,
+                isRead: true,
+                adminId: 'admin1',
+                createdAt: '2023-10-02T12:00:00Z',
+                updatedAt: '2023-10-02T12:00:00Z',
+              )
+            ],
             deliveryRequestId: null,
           ),
           ChatConversationEntity(
@@ -35,7 +47,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             updatedAt: '2023-10-02T12:00:00Z',
             unreadAdminMessages: 2,
             unreadUserMessages: 0,
-            messages: [],
+            messages: [
+              ChatMessageEntity(
+                id: '1',
+                content: 'Hello, how can I help you?',
+                kabaUserId: 'admin',
+                conversationId: '2',
+                isFromAdmin: true,
+                isRead: true,
+                adminId: 'admin1',
+                createdAt: '2023-10-02T12:00:00Z',
+                updatedAt: '2023-10-02T12:00:00Z',
+              )
+            ],
             deliveryRequestId: null,
           ),
         ];
@@ -55,11 +79,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       }
       else if(event is openChatEvent){
-        emit(openChatState(chat: event.chat));
+        emit(openChatState(chat: event.chat,delivery: event.delivery));
       }
-
       else if (event is sendMessageEvent){
         emit(sendMessageState(message: event.message));
+      }
+      else if(event is createConversationEvent){
+        emit(createConversationState(chat: event.chat, error: false,delivery: event.delivery));
       }
     });
   }

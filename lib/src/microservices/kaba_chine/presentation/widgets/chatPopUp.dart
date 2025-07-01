@@ -1,9 +1,14 @@
+import 'package:KABA/src/microservices/kaba_chine/Enums/messageType.dart';
+import 'package:KABA/src/microservices/kaba_chine/domain/chat/chat_conversation_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Enums/deliveryStatus.dart';
 import '../../core/utils.dart';
 import '../../data/order/delivery_model.dart';
+import '../../functions/crud_chat.dart';
 import '../../functions/getStatusInfo.dart';
+import '../bloc/chat/chat_bloc.dart';
 
 void startChatPopUp({required BuildContext context,required List<Delivery> deliveries}) {
 
@@ -73,8 +78,11 @@ void startChatPopUp({required BuildContext context,required List<Delivery> deliv
                             padding: EdgeInsets.zero,
                             minWidth: MediaQuery.of(context).size.width,
 
-                            onPressed: () {
-
+                            onPressed: () async{
+                              ChatConversationEntity conversation = await createConversation(type: MessageType.DELIVERY,
+                                  deliveryRequestId: deliveries[index].id);
+                              BlocProvider.of<ChatBloc>(context).add(createConversationEvent(chat: conversation,delivery: deliveries[index]));
+                              Navigator.pop(context);
                             },
                             color: Colors.white,
                             child:Container(
@@ -132,8 +140,10 @@ void startChatPopUp({required BuildContext context,required List<Delivery> deliv
                     width: MediaQuery.of(context).size.width ,
                     height: 60,
                     child: MaterialButton(
-                      onPressed: () {
-
+                      onPressed: ()async {
+                        ChatConversationEntity conversation = await createConversation(type: MessageType.GENERAL);
+                        BlocProvider.of<ChatBloc>(context).add(createConversationEvent(chat: conversation));
+                        Navigator.pop(context);
                       },
                       height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),

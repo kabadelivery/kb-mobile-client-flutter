@@ -10,7 +10,7 @@ class ServerConfig {
     static const String ip_address = "dev.kaba-delivery.com"; // dev server
     static const String pay_ip_address = "dev.pay.kaba-delivery.com";
     static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
-    static const String kaba_chine ="";
+    static const String kaba_chine ="https://a569-102-64-150-106.ngrok-free.app";
 
   //LOCAL
 

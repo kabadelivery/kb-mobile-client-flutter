@@ -62,7 +62,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               ],
             )),
         SizedBox(height: 20),
-        Container(
+     widget.delivery.userId!=null  ?Container(
 
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -113,10 +113,10 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               ],
             ),
           ),
-        ),
+        ):Container(),
         Container(
           width: size.width,
-          height: size.height*0.56,
+          height:widget.delivery.userId!=null  ? size.height*0.56: size.height*0.67,
           child: ListView.builder(
               itemCount: conversation.messages!.length,
               itemBuilder: (context,index){
