@@ -26,6 +26,7 @@ class DeliveryEntity {
   List<StatusHistoryEntry>? statusHistory;
   DateTime? createdAt;
   DateTime? updatedAt;
+  String? addressId;
   DeliveryEntity({
     required this.id,
     this.userId,
@@ -51,6 +52,7 @@ class DeliveryEntity {
     this.statusHistory,
     required this.createdAt,
     required this.updatedAt,
+    this.addressId,
   });
 
 }

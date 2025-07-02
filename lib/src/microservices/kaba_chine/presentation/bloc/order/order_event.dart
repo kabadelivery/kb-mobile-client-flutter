@@ -62,3 +62,7 @@ class OrderingIsOverEvent extends OrderEvent {
   final String msg;
   OrderingIsOverEvent({required this.msg});
 }
+class enterPackageCodeEvent extends OrderEvent {
+  final String packageCode;
+  enterPackageCodeEvent({required this.packageCode});
+}

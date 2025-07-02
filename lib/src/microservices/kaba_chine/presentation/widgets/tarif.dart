@@ -146,7 +146,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                   decoration: BoxDecoration(
-                    color: tarif.type==Tariftype.plane.value? Colors.blueAccent:
+                    color: tarif.mode==Tariftype.plane.value? Colors.blueAccent:
                     Color(0xff28A2B5),
 
                     borderRadius: BorderRadius.circular(50),
@@ -154,11 +154,11 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                   child: Row(
                     children: [
                       Transform.rotate(
-                          angle: tarif.type==Tariftype.plane.value? 120:0,
-                          child: Icon(tarif.type==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,)),
+                          angle: tarif.mode==Tariftype.plane.value? 120:0,
+                          child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,)),
                       SizedBox(width: 5,),
                       Text(
-                        tarif.type == 0 ? "Bateau" : "Avion",
+                        tarif.mode == 0 ? "Bateau" : "Avion",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -195,11 +195,11 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text('/ ${tarif.type== Tariftype.plane.value ? "kg" : "cbm"}')
+                Text('/ ${tarif.mode== Tariftype.plane.value ? "kg" : "cbm"}')
               ],
             ),
             SizedBox(height: 5,),
-            tarif.type== Tariftype.plane.value
+            tarif.mode== Tariftype.plane.value
                 ? Row(
                   children: [
                     Row(

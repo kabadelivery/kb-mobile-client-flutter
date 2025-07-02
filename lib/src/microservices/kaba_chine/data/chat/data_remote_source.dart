@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../../core/constants.dart';
+import 'chat_conversation_model.dart';
 import 'chat_message_model.dart';
 
 abstract class ChatRemoteDataSource {
@@ -19,7 +20,7 @@ abstract class ChatRemoteDataSource {
     required String conversationId,
     required bool isAdmin,
   });
-
+  Future<List<ChatConversationModel>> getConversations(String userId);
   Future<bool> deleteConversation(String conversationId);
 }
 
@@ -27,6 +28,25 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   final http.Client client;
   ChatRemoteDataSourceImpl(this.client);
 
+
+  @override
+  Future<List<ChatConversationModel>> getConversations(String userId) async {
+    final uri = Uri.parse('$LINK_CHAT_GET_CONVERSATIONS?userId=$userId');
+    try {
+      final resp = await client.get(uri);
+
+      if (resp.statusCode == 200) {
+        final List jsonList = json.decode(resp.body);
+        return jsonList.map((e) => ChatConversationModel.fromJson(e)).toList();
+      } else {
+        debugPrint('Erreur API getConversations: ${resp.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      debugPrint('Exception getConversations: $e');
+      return [];
+    }
+  }
   @override
   Future<List<ChatMessageModel>> getMessages({required String conversationId, int? limit, int? offset}) async {
     final params = {

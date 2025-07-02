@@ -5,6 +5,9 @@ Map isFormInfosCorrect({required Delivery delivery,required bool generalConditio
   if (delivery.packageName!.isEmpty) {
     return {"is_good":false, "msg":"Veuillez renseigner le nom du colis"};
   }
+  if(delivery.trackingCode!.isEmpty){
+    return {"is_good":false, "msg": "Veuillez renseigner le code du colis"};
+  }
   if (delivery.declaredValue! <= 0) {
     return {"is_good":false, "msg":"Veuillez renseigner le prix du colis"};
   }

@@ -21,6 +21,24 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
   @override
   Future<Delivery> createDeliveryRequest(Delivery delivery) async {
     final uri = Uri.parse('$LINK_GET_DELIVERIES');
+    Map<String, dynamic> deliveryRequest={
+    "packageName": delivery.packageName!,
+    "declaredValue": delivery.declaredValue,
+    "trackingCode": delivery.trackingCode,
+    "purchaseProofImage": delivery.purchaseProofImage,
+    "productImage": delivery.productImage,
+    "recipientName": delivery.recipientName,
+    "buyerPhoneNumber": delivery.buyerPhoneNumber,
+    "shippingMode": delivery.shippingMode,
+    "homeDelivery": delivery.homeDelivery,
+    "estimatedWeight": delivery.estimatedWeight,
+    "collectionOffice": delivery.collectionOffice,
+    "destinationOffice": delivery.destinationOffice,
+    "addressId": string,
+    "addressText": string,
+    "notes": string,
+    "kabaUserId": string,
+    };
     final response = await client.post(
       uri,
       headers: {'Content-Type': 'application/json'},

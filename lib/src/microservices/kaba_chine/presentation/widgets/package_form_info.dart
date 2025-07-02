@@ -23,6 +23,7 @@ class PackageFormInfo extends StatefulWidget {
 class _PackageFormInfoState extends State<PackageFormInfo> {
 
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
   TextEditingController _declaredValue = TextEditingController();
   TextEditingController _weight = TextEditingController(text: "1");
   int proofImageType = 0;
@@ -127,7 +128,26 @@ class _PackageFormInfoState extends State<PackageFormInfo> {
                               Icon(FontAwesomeIcons.barcode, color: Colors.black54),
                               SizedBox(width: 10,),
                               Text("KBA-",style: TextStyle(color: Colors.black54, fontSize: 16,fontWeight: FontWeight.bold),),
-                              Text("Code de suivis",style: TextStyle(color: Colors.black54, fontSize: 16,fontWeight: FontWeight.normal),),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _codeController,
+                                  decoration: InputDecoration(
+                                    hintText: "Code de suivis",
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                  ),
+                                  onChanged: (value) {
+                                    BlocProvider.of<OrderBloc>(context).add(enterPackageCodeEvent(packageCode: value));
+                                    _codeController.text = value;
+                                  },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Veuillez entrer le code de suivis du colis';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
                             ],
                           )),
                       SizedBox(height: 10),

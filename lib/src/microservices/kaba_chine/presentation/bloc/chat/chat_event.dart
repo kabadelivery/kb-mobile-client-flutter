@@ -28,3 +28,8 @@ class createConversationEvent extends ChatEvent{
   Delivery? delivery;
   createConversationEvent({required this.chat,this.delivery});
 }
+class markMessageAsReadEvent extends ChatEvent {
+  final String messageId;
+  final String conversationId;
+  markMessageAsReadEvent({required this.messageId, required this.conversationId});
+}

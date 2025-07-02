@@ -1,11 +1,20 @@
+import 'package:KABA/src/microservices/kaba_chine/domain/tarif/shipping_entity.dart';
+
 class TarifEntity{
-  int? type;
+  String? id;
+  int? mode;
   double? price;
   int? duration;
-
+  String ?unit;
+  ShippingEntity? route;
+  String ? updatedAt;
   TarifEntity({
-     this.type,
+     this.mode,
      this.price,
      this.duration,
+     this.unit,
+     this.route,
+     this.id,
+     this.updatedAt,
   });
 }

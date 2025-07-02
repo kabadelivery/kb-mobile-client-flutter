@@ -3,6 +3,7 @@ import 'package:KABA/src/microservices/kaba_chine/data/order/delivery_model.dart
 import 'package:KABA/src/microservices/kaba_chine/domain/user/user_entity.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import '../../../../utils/functions/CustomerUtils.dart';
 import '../../Enums/menu.dart';
 import '../../core/utils.dart';
 import '../../domain/tarif/shipping_entity.dart';
@@ -122,7 +124,11 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
     }
     else if(state is LoadingState){
       isLoading = true;
+      debugPrint(delivery.toJson().toString());
       BlocProvider.of<OrderBloc>(context).add(startOrderingEvent(delivery: delivery));
+    }
+    else if(state is enterPackageCodeState){
+      delivery.trackingCode =state.packageCode;
     }
     else if(state is endOrderingState){
       isLoading = false;
@@ -262,6 +268,10 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                       title: Text(isformCorrect['msg'])
                   ).show(context);
                 }else{
+                  CustomerModel customer = await CustomerUtils.getCustomer();
+                  delivery.buyerId = customer!.id.toString();
+                  delivery.userId = customer.id.toString();
+                  delivery.kabaUserId = customer.id.toString();
                   BlocProvider.of<OrderBloc>(context).add(LoadingEvent());
                 }
                 },

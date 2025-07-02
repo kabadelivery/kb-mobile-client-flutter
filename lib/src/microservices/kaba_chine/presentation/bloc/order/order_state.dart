@@ -66,3 +66,7 @@ class endOrderingState extends OrderState {
   final String msg;
   endOrderingState({required this.msg,required this.error});
 }
+class enterPackageCodeState extends OrderState {
+  final String packageCode;
+  enterPackageCodeState({required this.packageCode});
+}

@@ -28,6 +28,7 @@ class Delivery extends DeliveryEntity {
    String? cancellationReason;
    String? purchaseProofImage;
    String? productImage;
+   String?addressId;
    List<StatusHistoryEntry>? statusHistory;
    DateTime? createdAt;
    DateTime? updatedAt;
@@ -56,6 +57,7 @@ class Delivery extends DeliveryEntity {
     this.statusHistory,
     required this.createdAt,
     required this.updatedAt,
+    this.addressId,
   }):super(
     id: id,
     userId: userId,
@@ -81,6 +83,7 @@ class Delivery extends DeliveryEntity {
     statusHistory: statusHistory,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    addressId: addressId,
   );
   factory Delivery.fromJson(Map<String, dynamic> json) {
     return Delivery(
@@ -114,6 +117,7 @@ class Delivery extends DeliveryEntity {
           : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
+      addressId: json['addressId'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -143,6 +147,7 @@ class Delivery extends DeliveryEntity {
           statusHistory?.map((e) => e.toJson()).toList(),
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'addressId': addressId,
     };
   }
   static Delivery decoy() {
@@ -194,6 +199,7 @@ class Delivery extends DeliveryEntity {
       ],
       createdAt: DateTime.now().subtract(const Duration(days: 3)),
       updatedAt: DateTime.now(),
+      addressId: 'address-123',
     );
   }
 

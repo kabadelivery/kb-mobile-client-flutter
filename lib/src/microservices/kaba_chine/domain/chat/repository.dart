@@ -1,5 +1,8 @@
+import 'package:KABA/src/microservices/kaba_chine/data/chat/chat_conversation_model.dart';
+
 import '../../data/chat/chat_message_model.dart';
 import '../../data/chat/data_remote_source.dart';
+import 'chat_conversation_entity.dart';
 import 'chat_message_entity.dart';
 
 abstract class ChatRepository {
@@ -7,6 +10,7 @@ abstract class ChatRepository {
   Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message});
   Future<bool> markMessagesAsRead({required String conversationId, required bool isAdmin});
   Future<bool> deleteConversation({required String conversationId});
+  Future<List<ChatConversationModel>> getConversations(String userId);
 }
 
 class ChatRepositoryImpl implements ChatRepository {
@@ -19,7 +23,10 @@ class ChatRepositoryImpl implements ChatRepository {
     final models = await remote.getMessages(conversationId: conversationId, limit: limit, offset: offset);
     return models;
   }
-
+  @override
+  Future<List<ChatConversationModel>> getConversations(String userId) async {
+    return await remote.getConversations(userId);
+  }
   @override
   Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message}) async {
     assert(message is ChatMessageModel);
