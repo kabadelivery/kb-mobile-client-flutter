@@ -5,7 +5,8 @@ class SendMessage {
   final ChatRepository repo;
   SendMessage(this.repo);
 
-  Future<ChatMessageEntity> call(ChatMessageEntity msg) {
+  Future<ChatMessageEntity?> call(ChatMessageEntity msg) {
+
     return repo.sendMessage(message: msg);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
@@ -23,16 +25,19 @@ class AllChatPage extends StatefulWidget {
 
 class _AllChatPageState extends State<AllChatPage> {
   List<ChatConversationEntity> chatList = [];
-  List<Delivery> deliveryHistory = [];
   bool isLoading = true;
 
   bool showChat = false;
   late Delivery currentDelivery;
   late ChatConversationEntity currentChat;
+  late Timer _timer;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ChatBloc>(context).add(getChatsEvent());
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      BlocProvider.of<ChatBloc>(context).add(getChatsEvent());
+      debugPrint("XXX timer");
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,6 @@ class _AllChatPageState extends State<AllChatPage> {
       listener: (context, state) {
         if(state is getChatsState){
           isLoading = false;
-          deliveryHistory = state.deliveries;
           chatList = state.chats;
         }else if(state is openChatState){
           currentChat = state.chat;
@@ -87,6 +91,10 @@ class _AllChatPageState extends State<AllChatPage> {
             BlocProvider.of<ChatBloc>(context).add(openChatEvent(chat: state.chat,delivery: state.delivery));
           }
         }
+        else if(state is closeChatState){
+          showChat = false;
+          isLoading = false;
+        }
       },
       builder: (context, state) {
         return isLoading?Center(
@@ -125,7 +133,6 @@ class _AllChatPageState extends State<AllChatPage> {
                         border:Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1))
                       ),
                       child: MaterialButton(
-
                         onPressed: (){
                           BlocProvider.of<ChatBloc>(context).add(openChatEvent(chat: chatList[index]));
                         },
@@ -147,10 +154,10 @@ class _AllChatPageState extends State<AllChatPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Chat avec KABA ID-${chatList[index].id}"),
+                                    Text("Chat avec KABA ID-${chatList[index].id.toString().substring(0,9)}..."),
                                     SizedBox(height: 5,),
                                     Text("${chatList[index].messages!.last.isFromAdmin! ? "Admin" : "Vous"} : "
-                                        "${chatList[index].messages!.last.content}",
+                                        "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,30)+"...":chatList[index].messages!.last.content}",
                                       style: TextStyle(color: Colors.grey,fontSize: 12),)
                                   ],
                                 ),
@@ -161,7 +168,7 @@ class _AllChatPageState extends State<AllChatPage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text("${chatList[index].messages!.last!.updatedAt!.substring(0, 10)} ${chatList[index].messages!.last!.updatedAt!.substring(11, 16)}",
-                                  style: TextStyle(color:   chatList[index].unreadUserMessages! > 0 ?KabaChineColors.success:Colors.grey, fontSize: 12),),
+                                  style: TextStyle(color:     chatList[index].unreadAdminMessages!  > 0 ?KabaChineColors.success:Colors.grey, fontSize: 12),),
                                 chatList[index].unreadUserMessages! > 0 ?
                                 Container(
                                   height:20,
@@ -190,8 +197,7 @@ class _AllChatPageState extends State<AllChatPage> {
                 width: 300,
                 child: MaterialButton(
                   onPressed: ()async {
-                   // startChatPopUp(context: context,deliveries: deliveryHistory);
-                    await getDeliveries();
+                    startChatPopUp(context: context);
                   },
 
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),

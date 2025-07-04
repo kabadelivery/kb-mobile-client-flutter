@@ -44,6 +44,10 @@ class enterAdditionnalNotesEvent extends OrderEvent {
   final String additionnalNotes;
   enterAdditionnalNotesEvent({required this.additionnalNotes});
 }
+class enterAddressEvent extends OrderEvent {
+  final String addressText;
+  enterAddressEvent({required this.addressText});
+}
 class checkPackageIsSafeEvent extends OrderEvent {
   final bool packageCondition;
   checkPackageIsSafeEvent({required this.packageCondition});
@@ -65,4 +69,9 @@ class OrderingIsOverEvent extends OrderEvent {
 class enterPackageCodeEvent extends OrderEvent {
   final String packageCode;
   enterPackageCodeEvent({required this.packageCode});
+}
+class uploadImageEvent extends OrderEvent {
+  final String imagePath;
+  final String type;
+  uploadImageEvent({required this.imagePath, this.type = 'proof'});
 }

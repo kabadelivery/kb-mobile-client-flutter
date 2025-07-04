@@ -27,6 +27,13 @@ class DeliveryEntity {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? addressId;
+  String? afalikaBatchId;
+  String? afalikaTrackingId;
+  String? afalikaPackageId;
+  String? afalikaTrackingCode;
+  dynamic address;
+  DateTime? estimatedArrival;
+  List? payments;
   DeliveryEntity({
     required this.id,
     this.userId,
@@ -53,6 +60,13 @@ class DeliveryEntity {
     required this.createdAt,
     required this.updatedAt,
     this.addressId,
+    this.afalikaBatchId,
+    this.afalikaTrackingId,
+    this.afalikaPackageId,
+    this.afalikaTrackingCode,
+    this.address,
+    this.estimatedArrival,
+    this.payments
   });
 
 }

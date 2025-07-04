@@ -10,7 +10,7 @@ import '../../functions/crud_chat.dart';
 import '../../functions/getStatusInfo.dart';
 import '../bloc/chat/chat_bloc.dart';
 
-void startChatPopUp({required BuildContext context,required List<Delivery> deliveries}) {
+void startChatPopUp({required BuildContext context}) {
 
   showDialog(context: context,
 
@@ -54,87 +54,6 @@ void startChatPopUp({required BuildContext context,required List<Delivery> deliv
                     ),
                   ),
                   SizedBox(height: 10),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: deliveries.isEmpty ? 1 : deliveries.length,
-                      itemBuilder: (context, index) {
-
-                        if(deliveries.isEmpty){
-                          return Center(
-                            child: Text(
-                              "Aucune livraison trouvée",
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 16,
-                              ),
-                            ),
-                          );
-                        }else{
-                          final info = getStatusInfo(DeliveryStatus.values.firstWhere(
-                                (e) => e.value == deliveries[index].status,
-                            orElse: () => DeliveryStatus.pending,
-                          ));
-                          return MaterialButton(
-                            padding: EdgeInsets.zero,
-                            minWidth: MediaQuery.of(context).size.width,
-
-                            onPressed: () async{
-                              ChatConversationEntity conversation = await createConversation(type: MessageType.DELIVERY,
-                                  deliveryRequestId: deliveries[index].id);
-                              BlocProvider.of<ChatBloc>(context).add(createConversationEvent(chat: conversation,delivery: deliveries[index]));
-                              Navigator.pop(context);
-                            },
-                            color: Colors.white,
-                            child:Container(
-                              padding: EdgeInsets.symmetric(horizontal: 0,vertical: 10),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  border: Border(bottom: BorderSide(color: KabaChineColors.border, width: 1))
-                              ),
-                              child:  Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        info.text,
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        "${deliveries[index].packageName}",
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                          "${deliveries[index].createdAt!.day}/${deliveries[index].createdAt!.month}/${deliveries[index].createdAt!.year}",
-                                          style: TextStyle(
-                                              color: Colors.grey)),
-                                    ],
-                                  ),
-                                  Icon(Icons.arrow_forward_ios,
-                                    color: Colors.black54,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-
-                      },
-                    ),
-                  ),
                   Container(
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width ,

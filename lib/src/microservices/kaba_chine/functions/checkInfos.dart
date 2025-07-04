@@ -24,6 +24,9 @@ Map isFormInfosCorrect({required Delivery delivery,required bool generalConditio
   if (delivery.buyerPhoneNumber!.isEmpty) {
     return {"is_good":false, "msg": "Veuillez renseigner le numéro de téléphone du destinataire"};
   }
+  if(delivery.buyerPhoneNumber!.length<8){
+    return {"is_good":false, "msg": "Votre numéro de téléphone doit être de 08 chiffres"};
+  }
 
   if(generalConditionsAccepted==false){
     return {"is_good":false, "msg": "Veuillez accepter les conditions générales"};

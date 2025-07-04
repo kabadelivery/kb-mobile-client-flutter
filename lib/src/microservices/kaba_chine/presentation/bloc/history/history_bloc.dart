@@ -28,7 +28,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           error = true;
           deliveries = [];
         }
-        emit(GetHistoryState(deliveries: deliveries, error: error));
+        emit(GetHistoryState(deliveries: deliveries.reversed.toList(), error: error));
       } else if (event is GetHistoryByIdEvent) {
        }
     });

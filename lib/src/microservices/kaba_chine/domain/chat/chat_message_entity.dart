@@ -1,14 +1,14 @@
 class ChatMessageEntity {
-  final String? id;
-  final String? content;
-  final String? kabaUserId;
-  final String? adminId;
-  final bool? isFromAdmin;
-  final bool? isRead;
-  final String? createdAt;
-  final String? updatedAt;
-  final String? conversationId;
-  final String? deliveryRequestId;
+   String? id;
+   String? content;
+   String? kabaUserId;
+   String? adminId;
+   bool? isFromAdmin;
+   bool? isRead;
+   String? createdAt;
+   String? updatedAt;
+   String? conversationId;
+  String? deliveryRequestId;
 
   ChatMessageEntity({
     this.id,

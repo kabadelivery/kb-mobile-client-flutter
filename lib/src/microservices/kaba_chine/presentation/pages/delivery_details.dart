@@ -375,7 +375,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                 )),
-                            Text("${widget.delivery.addressText}",
+                            Text("${widget.delivery.addressText=="null"?"Aucune":widget.delivery.addressText}",
                                 style: TextStyle(
                                   color: Colors.black87.withOpacity(0.7),
                                   fontSize: 14,

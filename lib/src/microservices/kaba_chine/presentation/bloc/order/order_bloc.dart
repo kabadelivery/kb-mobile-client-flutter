@@ -14,6 +14,7 @@ import '../../../data/order/delivery_model.dart';
 import '../../../data/user/user_model.dart';
 import '../../../domain/user/user_entity.dart';
 import '../../../usecases/order/create_order.dart';
+import '../../../usecases/order/upload_image.dart';
 
 part 'order_event.dart';
 part 'order_state.dart';
@@ -69,8 +70,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         emit(enterPackageCodeState(packageCode: event.packageCode));
       }
       else if(event is startOrderingEvent){
-
         CreateDeliveryRequest createDeliveryRequest = CreateDeliveryRequest(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client())));
+        event.delivery.trackingCode = "KBA-"+event.delivery.trackingCode.toString().toUpperCase();
+
         Delivery delivery = await createDeliveryRequest.call(event.delivery);
         if(delivery == null){
           String error = "Une erreur s'est produite lors de l'enregistrement de votre commande. Veuillez réessayer plus tard.";
@@ -79,11 +81,22 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           String success = "Votre commande a été enregistrée avec succès. Vous pouvez suivre son état dans la section historique.";
           emit(endOrderingState(msg: success,error: false));
         }
-
       }
       else if(event is LoadingEvent){
         emit(LoadingState());
       }
+      else if (event is enterAddressEvent){
+        emit(enterAddressState(addressText: event.addressText));
+      }
+      else if(event is uploadImageEvent){
+        UploadImage uploadImage = UploadImage(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client())));
+        String url = await uploadImage.call(imagePath: event.imagePath,type: event.type);
+        if(url.isNotEmpty){
+          emit(uploadImageState(url: url,type: event.type));
+        }else{
+          emit(uploadImageState(url: "",type: event.type));
+        }
+        }
     });
   }
 }

@@ -14,7 +14,7 @@ abstract class ChatRemoteDataSource {
     int? offset,
   });
 
-  Future<ChatMessageModel> sendMessage(ChatMessageModel message);
+  Future<ChatMessageModel?> sendMessage(ChatMessageModel message);
 
   Future<bool> markMessagesAsRead({
     required String conversationId,
@@ -35,8 +35,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     try {
       final resp = await client.get(uri);
 
-      if (resp.statusCode == 200) {
+      if (resp.statusCode == 200 || resp.statusCode == 201) {
         final List jsonList = json.decode(resp.body);
+        debugPrint('Response body: ${resp.body}');
         return jsonList.map((e) => ChatConversationModel.fromJson(e)).toList();
       } else {
         debugPrint('Erreur API getConversations: ${resp.statusCode}');
@@ -56,8 +57,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     };
     final uri = Uri.parse(LINK_CHAT_GET_MESSAGES).replace(queryParameters: params);
     final resp = await client.get(uri);
-    if (resp.statusCode == 200) {
+    if (resp.statusCode == 200 || resp.statusCode == 201) {
       final List jsonList = json.decode(resp.body);
+      debugPrint('Response body: ${jsonList}');
       return jsonList.map((j) => ChatMessageModel.fromJson(j)).toList();
     } else {
       debugPrintStack();
@@ -67,18 +69,35 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
-  Future<ChatMessageModel> sendMessage(ChatMessageModel message) async {
+  Future<ChatMessageModel?> sendMessage(ChatMessageModel message) async {
     final uri = Uri.parse(LINK_CHAT_GET_MESSAGES);
+
+    Map <String, dynamic> messageRequest = message.conversationId!.isEmpty?{
+      'content': message.content,
+      'kabaUserId': message.kabaUserId.toString(),
+      'adminId': message.adminId,
+      'isFromAdmin': message.isFromAdmin,
+      'deliveryRequestId': message.deliveryRequestId
+    }:
+    {
+      'content': message.content,
+      'kabaUserId': message.kabaUserId,
+      'adminId': message.adminId,
+      'isFromAdmin': message.isFromAdmin,
+      'conversationId': message.conversationId,
+      'deliveryRequestId': message.deliveryRequestId
+    };
     final resp = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(message.toJson())
+        body: json.encode(messageRequest)
     );
+    debugPrint('Response body: ${messageRequest}');
     if (resp.statusCode == 200 || resp.statusCode == 201) {
+      debugPrint('Response body: ${resp.body}');
       return ChatMessageModel.fromJson(json.decode(resp.body));
     } else {
       debugPrintStack();
       debugPrint('Error sending message: ${resp.statusCode}');
-      throw Exception('Failed to send message');
     }
   }
 
@@ -89,7 +108,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'conversationId': conversationId, 'isAdmin': isAdmin})
     );
-    return resp.statusCode == 200;
+    return resp.statusCode == 200 || resp.statusCode == 201;
   }
   @override
   Future<bool> deleteConversation(String conversationId) async {

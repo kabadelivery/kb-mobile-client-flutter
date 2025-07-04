@@ -7,7 +7,7 @@ import 'chat_message_entity.dart';
 
 abstract class ChatRepository {
   Future<List<ChatMessageEntity>> getMessages({required String conversationId, int? limit, int? offset});
-  Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message});
+  Future<ChatMessageEntity?> sendMessage({required ChatMessageEntity message});
   Future<bool> markMessagesAsRead({required String conversationId, required bool isAdmin});
   Future<bool> deleteConversation({required String conversationId});
   Future<List<ChatConversationModel>> getConversations(String userId);
@@ -25,12 +25,23 @@ class ChatRepositoryImpl implements ChatRepository {
   }
   @override
   Future<List<ChatConversationModel>> getConversations(String userId) async {
+
     return await remote.getConversations(userId);
   }
   @override
-  Future<ChatMessageEntity> sendMessage({required ChatMessageEntity message}) async {
-    assert(message is ChatMessageModel);
-    final model = message as ChatMessageModel;
+  Future<ChatMessageEntity?> sendMessage({required ChatMessageEntity message}) async {
+
+    final model =ChatMessageModel(
+        id: message.id,
+        content: message.content,
+        kabaUserId: message.kabaUserId,
+        adminId: message.adminId,
+        isFromAdmin: message.isFromAdmin,
+        isRead: message.isRead,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+        conversationId: message.conversationId,
+        deliveryRequestId: message.deliveryRequestId);
     final sent = await remote.sendMessage(model);
     return sent;
   }

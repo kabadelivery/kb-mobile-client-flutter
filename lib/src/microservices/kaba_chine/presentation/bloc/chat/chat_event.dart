@@ -17,7 +17,13 @@ class openChatEvent extends ChatEvent {
 }
 class sendMessageEvent extends ChatEvent{
   final ChatMessageEntity message;
-  sendMessageEvent({required this.message});
+  final String deliveryRequestId;
+  sendMessageEvent({required this.message,required this.deliveryRequestId});
+}
+class sendMessageLocalEvent extends ChatEvent{
+  final ChatMessageEntity message;
+  final String deliveryRequestId;
+  sendMessageLocalEvent({required this.message,required this.deliveryRequestId});
 }
 class getMessagesEvent extends ChatEvent {
   final String conversationId;
@@ -32,4 +38,7 @@ class markMessageAsReadEvent extends ChatEvent {
   final String messageId;
   final String conversationId;
   markMessageAsReadEvent({required this.messageId, required this.conversationId});
+}
+class closeChatEvent extends ChatEvent{
+
 }

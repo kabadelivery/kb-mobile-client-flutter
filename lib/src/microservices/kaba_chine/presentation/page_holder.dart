@@ -27,6 +27,7 @@ class _WelcomeToKabaChineState extends State<WelcomeToKabaChine> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
+    BlocProvider.of<MenuBloc>(context).add(changeMenuEvent(selectedMenu: MenuEnum.informations));
   }
   @override
   void dispose() {

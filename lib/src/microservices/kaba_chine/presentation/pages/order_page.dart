@@ -108,6 +108,9 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
       delivery.notes = state.additionnalNotes;
       debugPrint(delivery.notes);
     }
+    else if(state is enterAddressState){
+      delivery.destinationOffice = state.addressText;
+    }
     else if(state is checkPackageIsSafeState) {
       confirm_packages_is_safe = state.packageCondition;
       debugPrint(confirm_packages_is_safe.toString());
@@ -117,14 +120,13 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
       debugPrint(accept_general_service.toString());
     }
     else if(state is chooseProofImageState) {
-      delivery.purchaseProofImage = state.proofImage.path;
+      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(imagePath: state.proofImage.path, type: 'proof'));
     }
     else if(state is chooseProductImageState) {
-      delivery.productImage = state.productImage.path;
+      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(imagePath: state.productImage.path, type: 'product'));
     }
     else if(state is LoadingState){
       isLoading = true;
-      debugPrint(delivery.toJson().toString());
       BlocProvider.of<OrderBloc>(context).add(startOrderingEvent(delivery: delivery));
     }
     else if(state is enterPackageCodeState){
@@ -132,7 +134,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
     }
     else if(state is endOrderingState){
       isLoading = false;
-      if(state.error==0){
+      if(state.error==false){
         MenuBloc menuBloc = BlocProvider.of<MenuBloc>(context);
         menuBloc.add(changeMenuEvent(selectedMenu: MenuEnum.historique));
         CherryToast.success(
@@ -147,6 +149,22 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
             Duration(seconds: 5),
             title: Text(state.msg)).show(context);
       }
+    }
+    else if(state is uploadImageState){
+      if(state.url.isEmpty){
+        CherryToast.error(
+            toastPosition: Position.center,
+            toastDuration:
+            Duration(seconds: 5),
+            title: Text("Une erreur s'est produite lors de l'envoi de l'image. Veuillez réessayer.")).show(context);
+      }else{
+        if(state.type == 'proof'){
+          delivery.purchaseProofImage = state.url;
+        }else{
+          delivery.productImage = state.url;
+        }
+      }
+
     }
   },
   builder: (context, state) {
@@ -241,7 +259,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
           SizedBox(height: 10),
           OfficesWidget(context: context,shipping_offices:[ShippingEntity(departure: "GuangZhou", destination: "Agbalépédogan")]),
           SizedBox(height: 10),
-          ExpeditionModes(context: context),
+          ExpeditionModes(),
           SizedBox(height: 10,),
           PackageFormInfo(),
           SizedBox(height: 10,),
@@ -272,6 +290,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                   delivery.buyerId = customer!.id.toString();
                   delivery.userId = customer.id.toString();
                   delivery.kabaUserId = customer.id.toString();
+                  debugPrint("IsHomeDelivery"+delivery.homeDelivery.toString());
                   BlocProvider.of<OrderBloc>(context).add(LoadingEvent());
                 }
                 },

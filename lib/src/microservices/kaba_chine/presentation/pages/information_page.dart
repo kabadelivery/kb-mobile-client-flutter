@@ -49,7 +49,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
      }
   },
   builder: (context, state) {
-    return isLoading? MyLoadingProgressWidget():
+    return
     SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,20 +96,24 @@ class _UserInformationPageState extends State<UserInformationPage> {
             ),
           ),
           SizedBox(height: 10),
-          userIdInfo(
-            context: context,
-            userId: user.customer_code??"TG-XXXXXXX",
-          ),
-          userProfileInfo(context: context,
-              customer_code: user.customer_code??"TG-XXXXXXX",
-              name:user.name?? "",
-              tel: user.phone_number??"XXXXXXX"),
-          tarifExpeditionWidget(context: context,
-            shipping: shipping,
-            boatRate: boatRate,
-            planeRate: planeRate, ),
-          contactAssitanceListWidget(
-            context: context,
+          isLoading? Center(child: MyLoadingProgressWidget()):Column(
+            children: [
+              userIdInfo(
+                context: context,
+                userId: user.customer_code??"TG-XXXXXXX",
+              ),
+              userProfileInfo(context: context,
+                  customer_code: user.customer_code??"TG-XXXXXXX",
+                  name:user.name?? "",
+                  tel: user.phone_number??"XXXXXXX"),
+              tarifExpeditionWidget(context: context,
+                shipping: shipping,
+                boatRate: boatRate,
+                planeRate: planeRate, ),
+              contactAssitanceListWidget(
+                context: context,
+              ),
+            ],
           ),
         ],
       ),

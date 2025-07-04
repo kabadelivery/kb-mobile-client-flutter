@@ -17,7 +17,7 @@ class Delivery extends DeliveryEntity {
    String? recipientName;
    String? buyerPhoneNumber;
    int? shippingMode;
-  String? status;
+   String? status;
    String? currentStatus;
    bool? homeDelivery;
    double? estimatedWeight;
@@ -32,6 +32,13 @@ class Delivery extends DeliveryEntity {
    List<StatusHistoryEntry>? statusHistory;
    DateTime? createdAt;
    DateTime? updatedAt;
+   String? afalikaBatchId;
+   String? afalikaTrackingId;
+   String? afalikaPackageId;
+   String? afalikaTrackingCode;
+   dynamic address;
+   DateTime? estimatedArrival;
+   List? payments;
   Delivery({
     required this.id,
     this.userId,
@@ -58,6 +65,12 @@ class Delivery extends DeliveryEntity {
     required this.createdAt,
     required this.updatedAt,
     this.addressId,
+    this.afalikaBatchId,
+    this.afalikaTrackingId,
+    this.afalikaPackageId,
+    this.afalikaTrackingCode,
+    this.address,
+    this.estimatedArrival,
   }):super(
     id: id,
     userId: userId,
@@ -84,6 +97,12 @@ class Delivery extends DeliveryEntity {
     createdAt: createdAt,
     updatedAt: updatedAt,
     addressId: addressId,
+    afalikaBatchId: afalikaBatchId,
+    afalikaTrackingId: afalikaTrackingId,
+    afalikaPackageId: afalikaPackageId,
+    afalikaTrackingCode: afalikaTrackingCode,
+    address: address,
+    estimatedArrival: estimatedArrival,
   );
   factory Delivery.fromJson(Map<String, dynamic> json) {
     return Delivery(
@@ -118,6 +137,16 @@ class Delivery extends DeliveryEntity {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       addressId: json['addressId'],
+      afalikaBatchId: json['afalikaBatchId'],
+      afalikaTrackingId: json['afalikaTrackingId'],
+      afalikaPackageId: json['afalikaPackageId'],
+      afalikaTrackingCode: json['afalikaTrackingCode'],
+      address: json['address'],
+      estimatedArrival: json['estimatedArrival'] != null
+          ? DateTime.parse(json['estimatedArrival'])
+          : null,
+
+
     );
   }
   Map<String, dynamic> toJson() {
@@ -148,6 +177,12 @@ class Delivery extends DeliveryEntity {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'addressId': addressId,
+      'afalikaBatchId': afalikaBatchId,
+      'afalikaTrackingId': afalikaTrackingId,
+      'afalikaPackageId': afalikaPackageId,
+      'afalikaTrackingCode': afalikaTrackingCode,
+      'address': address,
+      'estimatedArrival': estimatedArrival
     };
   }
   static Delivery decoy() {
@@ -177,7 +212,7 @@ class Delivery extends DeliveryEntity {
         StatusHistoryEntry(
           id: 'status-001',
           deliveryRequestId: 'test-delivery-001',
-          status: 0, // e.g., "created"
+          status: "PENDING", // e.g., "created"
           createdAt: DateTime.now()
               .subtract(const Duration(days: 3))
               .toIso8601String(),
@@ -188,7 +223,7 @@ class Delivery extends DeliveryEntity {
         StatusHistoryEntry(
           id: 'status-002',
           deliveryRequestId: 'test-delivery-001',
-          status: 1, // e.g., "in transit"
+          status: "PENDING", // e.g., "in transit"
           createdAt: DateTime.now()
               .subtract(const Duration(days: 1))
               .toIso8601String(),

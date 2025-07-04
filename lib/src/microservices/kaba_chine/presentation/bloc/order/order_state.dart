@@ -70,3 +70,12 @@ class enterPackageCodeState extends OrderState {
   final String packageCode;
   enterPackageCodeState({required this.packageCode});
 }
+class enterAddressState extends OrderState {
+  final String addressText;
+  enterAddressState({required this.addressText});
+}
+class uploadImageState extends OrderState {
+  final String url;
+  final String type;
+  uploadImageState({required this.url, required this.type});
+}

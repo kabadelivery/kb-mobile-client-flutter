@@ -250,6 +250,7 @@ class _UserFormInfoState extends State<UserFormInfo> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _userPhoneNumberController = TextEditingController();
   TextEditingController _noteController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
   bool isHomeDelivery = false;
   @override
   void initState() {
@@ -257,6 +258,7 @@ class _UserFormInfoState extends State<UserFormInfo> {
     _usernameController.text = widget.username;
     _userPhoneNumberController.text = widget.userPhoneNumber;
     _noteController.text = "";
+    _addressController.text = "";
   }
   @override
   Widget build(BuildContext context) {
@@ -332,12 +334,6 @@ class _UserFormInfoState extends State<UserFormInfo> {
                                   onChanged: (value) {
                                     BlocProvider.of<OrderBloc>(context).add(enterRecipientNameEvent(recipientName: value));
                                   },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Veuillez entrer le nom du destinataire';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ),
                             ],
@@ -358,7 +354,8 @@ class _UserFormInfoState extends State<UserFormInfo> {
                                   controller: _userPhoneNumberController,
                                   keyboardType: TextInputType.phone,
                                   inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.digitsOnly
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(8),
                                   ],
                                   decoration: InputDecoration(
                                     hintText: "Numéro de téléphone du destinataire",
@@ -367,12 +364,6 @@ class _UserFormInfoState extends State<UserFormInfo> {
                                   ),
                                   onChanged: (value) {
                                     BlocProvider.of<OrderBloc>(context).add(enterRecipientPhoneEvent(recipientPhone: value));
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Veuillez entrer le numéro de téléphone du destinataire';
-                                    }
-                                    return null;
                                   },
                                 ),
                               ),
@@ -431,7 +422,58 @@ class _UserFormInfoState extends State<UserFormInfo> {
                               ],
                             );
                           }),
+                      BlocSelector<OrderBloc, OrderState, OrderState>(
+                          selector: (state){
+                            return state;
+                          }, builder: (context, state) {
+                            if(state is switchDeliveryModeState){
+                              isHomeDelivery = state.isHomeDelivery;
+                            }
+                            return  isHomeDelivery?Column(
+                              children: [
+                                SizedBox(height: 10),
+                                FormTitle(context: context, title: "Adresse de livraison", isRequired: false),
+                                SizedBox(height: 10),
+                                FormTextFieldContainerDecoration(
+                                    context: context,
+                                    maxLines: 3,
 
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                                        children: [
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Icon(Icons.home_outlined, color: Colors.black54),
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: _addressController,
+                                              keyboardType: TextInputType.text,
+                                              maxLines: 5,
+                                              inputFormatters: <TextInputFormatter>[
+                                                LengthLimitingTextInputFormatter(1000),
+                                              ],
+                                              onChanged: (value) {
+                                                BlocProvider.of<OrderBloc>(context).add(enterAddressEvent(addressText: value));
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: "Décrire l'adresse de livraison",
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ],
+                            ):Container();
+                      }
+                      ),
                       SizedBox(height: 10),
                       FormTitle(context: context, title: "Note (Optionnel)", isRequired: false),
                       SizedBox(height: 10),
@@ -454,6 +496,9 @@ class _UserFormInfoState extends State<UserFormInfo> {
                                   child: TextFormField(
                                     controller: _noteController,
                                     keyboardType: TextInputType.text,
+                                    inputFormatters: <TextInputFormatter>[
+                                      LengthLimitingTextInputFormatter(1000),
+                                    ],
                                     maxLines: 5,
                                     onChanged: (value) {
                                       BlocProvider.of<OrderBloc>(context).add(enterAdditionnalNotesEvent(additionnalNotes: value));
@@ -463,12 +508,6 @@ class _UserFormInfoState extends State<UserFormInfo> {
                                       border: InputBorder.none,
                                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                     ),
-                                    validator: (value) {
-                                      if (value != null && value.length>1000) {
-                                        return 'La note ne doit pas dépasser 1000 caractères';
-                                      }
-                                      return null;
-                                    },
                                   ),
                                 ),
                               ],

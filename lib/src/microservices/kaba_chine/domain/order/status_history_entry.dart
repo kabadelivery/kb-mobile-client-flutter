@@ -1,7 +1,7 @@
 class StatusHistoryEntry{
   final String id;
   final String deliveryRequestId;
-  final int status;
+  final String status;
   final String createdAt;
   final String location;
   final String? notes;
@@ -18,13 +18,13 @@ class StatusHistoryEntry{
   });
   factory StatusHistoryEntry.fromJson(Map<String, dynamic> json) {
     return StatusHistoryEntry(
-      id: json['id'],
-      deliveryRequestId: json['deliveryRequestId'],
-      status: json['status'],
-      createdAt: json['createdAt'],
-      location: json['location'],
-      notes: json['notes'],
-      performedBy: json['performedBy'],
+      id: json['id']??"",
+      deliveryRequestId: json['deliveryRequestId']??"",
+      status: json['status']??"PENDING",
+      createdAt: json['createdAt']??"",
+      location: json['location']??"",
+      notes: json['notes']??"",
+      performedBy: json['performedBy']??"",
     );
   }
   Map<String, dynamic> toJson() {
