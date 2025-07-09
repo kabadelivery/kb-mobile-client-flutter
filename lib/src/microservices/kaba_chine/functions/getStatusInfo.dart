@@ -64,6 +64,12 @@ StatusInfo getStatusInfo(DeliveryStatus status) {
         color: Color(0xFFE74C3C),
         icon: Icons.cancel_outlined,
       );
+    case DeliveryStatus.readyToPay:
+      return StatusInfo(
+        text: 'Prêt à payer',
+        color: Color(0xFF2ECC71),
+        icon: Icons.payment_outlined,
+      );
     default:
       return StatusInfo(
         text: 'Inconnu',

@@ -1,10 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
+import '../../../../models/CustomerModel.dart';
+import '../../../../utils/_static_data/ServerRoutes.dart';
+import '../../../../utils/functions/Utils.dart';
+import '../../../../utils/ssl/ssl_validation_certificate.dart';
 import '../../core/constants.dart';
 import '../../domain/order/status_history_entry.dart';
 import 'DeliveryStatusUpdate.dart';
@@ -15,6 +22,8 @@ abstract class DeliveryRemoteDataSource {
   Future<String> uploadImage(String imagePath, {String type = 'proof'});
   Future<List<Delivery>> getDeliveryHistory(String userId);
   Future<List<DeliveryStatusUpdate>> checkForStatusUpdates(String userId);
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance,
+      double fees);
 }
 
 class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
@@ -170,6 +179,46 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
       return jsonList.map((j) => DeliveryStatusUpdate.fromJson(j)).toList();
     } else {
       throw Exception('Erreur vérification statut : ${response.statusCode}');
+    }
+  }
+
+  @override
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance,
+      double fees) async {
+    debugPrint("entered launchTopUp");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber)
+            ? ServerRoutes.LINK_TOPUP_TMONEY
+            : ServerRoutes.LINK_TOPUP_FLOOZ)
+            .toString(),
+        data: json.encode(
+            {"phone_number": phoneNumber, "amount": balance, 'fees': '$fees'}),
+        );
+
+      debugPrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          return response.data;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
     }
   }
 }

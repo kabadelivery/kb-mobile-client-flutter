@@ -33,6 +33,7 @@ import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
+import 'package:KABA/src/utils/Enums/type_of_transaction.dart';
 import 'package:KABA/src/utils/_static_data/FlareData.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
@@ -1213,7 +1214,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TopNewUpPage(presenter: TopUpPresenter(TopUpView())),
+            TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.topup,),
       ),
     );
 

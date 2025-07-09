@@ -608,5 +608,6 @@
   "this_order_can_get_changes":  "This order may be subject to changes on the prices",
   "name_too_long":  "Must be less than 30 characters",
   "price_too_high":  "The price must be inferior to 100.000CFA",
-  "china": "China"
+  "china": "China",
+  "proceed_to_transaction": "Proceed to transaction"
 }

@@ -10,12 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../../../microservices/kaba_chine/data/order/data_remote_source.dart';
+import '../../../../../microservices/kaba_chine/domain/order/repository.dart';
+import '../../../../../microservices/kaba_chine/usecases/order/payForDelivery.dart';
+import '../../../../../utils/Enums/type_of_transaction.dart';
 
 
 class TopNewUpPage extends StatefulWidget {
   static var routeName = "/TopNewUpPage";
 
   TopUpPresenter? presenter;
+  TransactionType? transactionType;
 
   var total = 0;
 
@@ -29,7 +36,7 @@ class TopNewUpPage extends StatefulWidget {
 
   int? selectedPosition = 1;
 
-  TopNewUpPage({Key? key, this.presenter}) : super(key: key);
+  TopNewUpPage({Key? key, this.presenter,this.transactionType}) : super(key: key);
 
   CustomerModel? customer;
 
@@ -72,6 +79,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   @override
   void initState() {
     super.initState();
+
     widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
     _totalAmountFieldController = new TextEditingController(text: "0");
@@ -122,8 +130,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('top_up')}"),
+               widget.transactionType==null || widget.transactionType == TransactionType.topup? Utils.capitalize(
+                    "${AppLocalizations.of(context)!.translate('top_up')}"):
+                     Utils.capitalize("${AppLocalizations.of(context)!.translate('proceed_to_transaction')}"),
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -138,6 +147,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               child: Column(children: <Widget>[
                 SizedBox(height: 15),
                 /* define mobile money and visa-card */
+                widget.transactionType==null || widget.transactionType == TransactionType.topup?
                 Container(
                   padding: EdgeInsets.only(left: 20, right: 20),
                   child: Row(
@@ -215,7 +225,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                       ),
                     ],
                   ),
-                ),
+                ): Container(),
                 SizedBox(height: 30),
                 widget.selectedPosition == 1
                     ? Container(
@@ -497,8 +507,12 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                           color: KColors.primaryColor,
                           borderRadius: BorderRadius.circular(5)),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async{
+                          if(widget.transactionType==null || widget.transactionType == TransactionType.topup)
                           iLaunchTransaction();
+                          else if(widget.transactionType == TransactionType.kaba_chine)
+                             kabaChinePay();
+
                         },
                         child: Container(
                           child: Row(
@@ -847,7 +861,25 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     return double.parse(
         ((_getRealTotalAmountFromInitial() / euroRatio)).toStringAsFixed(2));
   }
+  void kabaChinePay()async{
+    setState(() {
+      showLoading(true);
 
+    });
+    PayForDelivery payForDelivery = PayForDelivery(
+        DeliveryRepositoryImpl(
+            DeliveryRemoteDataSourceImpl(http.Client())));
+    Map data=await payForDelivery.call(widget.customer!, _phoneNumberFieldController!.text, _amountFieldController!.text, _getFees());
+
+    setState(() {
+      if(data!=null){
+        Navigator.of(context).pop({"success": true});
+      }else{
+        Navigator.of(context).pop({"success": false});
+      }
+      showLoading(false);
+    });
+  }
   _onSwitch(int i) {
     setState(() {
       widget.selectedPosition = i;

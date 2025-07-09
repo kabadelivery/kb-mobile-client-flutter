@@ -34,6 +34,10 @@ class DeliveryEntity {
   dynamic address;
   DateTime? estimatedArrival;
   List? payments;
+  String? afalikaTotal;
+  String? kabaAdditionnalFee;
+  String? total;
+
   DeliveryEntity({
     required this.id,
     this.userId,
@@ -66,7 +70,11 @@ class DeliveryEntity {
     this.afalikaTrackingCode,
     this.address,
     this.estimatedArrival,
-    this.payments
+    this.payments,
+    this.afalikaTotal,
+    this.kabaAdditionnalFee,
+    this.total
+
   });
 
 }

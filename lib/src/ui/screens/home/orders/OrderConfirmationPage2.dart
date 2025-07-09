@@ -45,6 +45,8 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../../utils/Enums/type_of_transaction.dart';
+
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
 
@@ -2222,7 +2224,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     // jump to topup page.
     var results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TopNewUpPage(presenter: TopUpPresenter(TopUpView())),
+            TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.topup,),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

@@ -39,7 +39,11 @@ class Delivery extends DeliveryEntity {
    dynamic address;
    DateTime? estimatedArrival;
    List? payments;
-  Delivery({
+   String? afalikaTotal;
+   String? kabaAdditionnalFee;
+   String? total;
+
+   Delivery({
     required this.id,
     this.userId,
     this.buyerId,
@@ -71,6 +75,10 @@ class Delivery extends DeliveryEntity {
     this.afalikaTrackingCode,
     this.address,
     this.estimatedArrival,
+     this.payments,
+    this.afalikaTotal,
+     this.kabaAdditionnalFee,
+     this.total,
   }):super(
     id: id,
     userId: userId,
@@ -103,6 +111,10 @@ class Delivery extends DeliveryEntity {
     afalikaTrackingCode: afalikaTrackingCode,
     address: address,
     estimatedArrival: estimatedArrival,
+    payments: payments,
+    afalikaTotal: afalikaTotal,
+    kabaAdditionnalFee: kabaAdditionnalFee,
+     total: total,
   );
   factory Delivery.fromJson(Map<String, dynamic> json) {
     return Delivery(
@@ -145,8 +157,10 @@ class Delivery extends DeliveryEntity {
       estimatedArrival: json['estimatedArrival'] != null
           ? DateTime.parse(json['estimatedArrival'])
           : null,
-
-
+      payments: json['payments'],
+      kabaAdditionnalFee: json['kabaAdditionnalFee'],
+      afalikaTotal: json['afalikaTotal'],
+      total: json['total']
     );
   }
   Map<String, dynamic> toJson() {
@@ -182,7 +196,8 @@ class Delivery extends DeliveryEntity {
       'afalikaPackageId': afalikaPackageId,
       'afalikaTrackingCode': afalikaTrackingCode,
       'address': address,
-      'estimatedArrival': estimatedArrival
+      'estimatedArrival': estimatedArrival,
+
     };
   }
   static Delivery decoy() {

@@ -1,7 +1,12 @@
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../contracts/topup_contract.dart';
+import '../../../../ui/screens/home/me/money/TopNewUpPage.dart';
+import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../Enums/TarifType.dart';
 import '../../Enums/deliveryStatus.dart';
 import '../../core/utils.dart';
@@ -197,22 +202,67 @@ Widget PackageDeliveryWidget(
               ),
             ),
           SizedBox(height: 10),
-          if (delivery.status == DeliveryStatus.collected.value)
-            MaterialButton(
-
-              color: KabaChineColors.info,
-              elevation: 0,
-              minWidth: size.width,
-              height: 40,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () {
-                // Handle payment action
-              },
-              child: Text(
-                "Payer pour l'expédition",
-                style: TextStyle(color: Colors.white),
+          if (delivery.status == DeliveryStatus.readyToPay.value)
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: size.width-260,
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline,color: KabaChineColors.success,size: 16),
+                        Text(" Paiement requis pour l'expédition",style: TextStyle(color: KabaChineColors.success,fontSize: 12,fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                  
+                    color: KabaChineColors.info,
+                    elevation: 0,
+                    minWidth: 120,
+                    height: 40,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    onPressed: () async{
+                      Map results = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.kaba_chine,),
+                        ),
+                      );
+                      if (results!=null) {
+                        if (results["success"]) {
+                          CherryToast.success(
+                            title: Text("Paiement effectué avec succès"),
+                            toastPosition: Position.center,
+                          ).show(context);
+                        }else{
+                          CherryToast.error(
+                            title: Text("Erreur lors du paiement"),
+                            toastPosition: Position.center,
+                          ).show(context);
+                        }
+                      }else{
+                        CherryToast.error(
+                          title: Text("Erreur lors du paiement"),
+                          toastPosition: Position.center,
+                        ).show(context);
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.credit_card, color: Colors.white),
+                        Text(
+                          "Payer pour maintenant",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
         ]),
