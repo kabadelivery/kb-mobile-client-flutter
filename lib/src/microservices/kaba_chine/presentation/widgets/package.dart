@@ -230,7 +230,7 @@ Widget PackageDeliveryWidget(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.kaba_chine,),
+                              TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.kaba_chine,additionnal_infos: {'delivery_id':delivery.id.toString}),
                         ),
                       );
                       if (results!=null) {

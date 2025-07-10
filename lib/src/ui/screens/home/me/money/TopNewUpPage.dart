@@ -23,6 +23,7 @@ class TopNewUpPage extends StatefulWidget {
 
   TopUpPresenter? presenter;
   TransactionType? transactionType;
+  Map<String,dynamic>? additionnal_infos;
 
   var total = 0;
 
@@ -36,7 +37,7 @@ class TopNewUpPage extends StatefulWidget {
 
   int? selectedPosition = 1;
 
-  TopNewUpPage({Key? key, this.presenter,this.transactionType}) : super(key: key);
+  TopNewUpPage({Key? key, this.presenter,this.transactionType,this.additionnal_infos}) : super(key: key);
 
   CustomerModel? customer;
 
@@ -869,7 +870,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     PayForDelivery payForDelivery = PayForDelivery(
         DeliveryRepositoryImpl(
             DeliveryRemoteDataSourceImpl(http.Client())));
-    Map data=await payForDelivery.call(widget.customer!, _phoneNumberFieldController!.text, _amountFieldController!.text, _getFees());
+    Map data=await payForDelivery.call(widget.customer!, _phoneNumberFieldController!.text, _amountFieldController!.text, _getFees(),widget.additionnal_infos!['delivery_id']);
 
     setState(() {
       if(data!=null){

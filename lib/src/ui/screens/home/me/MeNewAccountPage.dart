@@ -1220,6 +1220,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
     if (results != null && results.containsKey('check_balance')) {
 //      bool check_balance =  results['check_balance'];
+      debugPrint("link : ${results}");
+
       String link = results['link'];
       if (results['check_balance'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../Enums/TarifType.dart';
 import '../../Enums/deliveryStatus.dart';
 import '../../functions/getStatusInfo.dart';
+import '../widgets/transaction.dart';
 
 class PackageDeliveryDetailsWidget extends StatefulWidget {
   final Delivery delivery;
@@ -23,6 +24,19 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
       orElse: () => DeliveryStatus.pending,
     ));
     Size size = MediaQuery.of(context).size;
+    List<Map<String,dynamic>> fake_transactions = [
+      {
+        "id": "123456789",
+      }
+      ,
+      {
+        "id": "123456789",
+      }
+      ,
+      {
+        "id": "123456789",
+      }
+    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: KabaChineColors.primary,
@@ -500,6 +514,43 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
               ):Container(),
               widget.delivery.notes!=null&& widget.delivery.notes!.isNotEmpty?
               SizedBox(height: 20):Container(),
+
+              Container(
+                width: size.width,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color:  KabaChineColors.info.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(info.icon, color:  KabaChineColors.info, size: 20),
+                    SizedBox(width: 5),
+                    Text("Vos transactions",
+                        style: TextStyle(
+                            color: KabaChineColors.info,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              widget.delivery.payments==null||widget.delivery.payments!.isEmpty?
+                  Text("Aucune transaction trouvée"):
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.delivery.payments!.length,
+                    itemBuilder: (context, index) {
+                      Map<String,dynamic> transaction = widget.delivery.payments![index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Transaction(context: context,transaction: transaction),
+                      );
+                    }
+                  ),
             ],
           ),
         ),
