@@ -27,14 +27,19 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
     List<Map<String,dynamic>> fake_transactions = [
       {
         "id": "123456789",
-      }
-      ,
+        'user_id': "123456789",
+        'amount': 10000,
+        'currency': 'FCFA',
+        'created_date':DateTime.now(),
+        'type_of_transaction':"FLOOZ"
+      },
       {
         "id": "123456789",
-      }
-      ,
-      {
-        "id": "123456789",
+        'user_id': "123456789",
+        'amount': 10000,
+        'currency': 'FCFA',
+        'created_date':DateTime.now(),
+        'type_of_transaction':"MIXX BY YAS"
       }
     ];
     return Scaffold(
@@ -551,6 +556,17 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       );
                     }
                   ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: fake_transactions.length,
+                  itemBuilder: (context, index) {
+                    Map<String,dynamic> transaction = fake_transactions[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Transaction(context: context,transaction: transaction),
+                    );
+                  }
+              ),
             ],
           ),
         ),
