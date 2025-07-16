@@ -60,7 +60,8 @@ class LoadingEvent extends OrderEvent {
 }
 class startOrderingEvent extends OrderEvent {
   final Delivery delivery;
-  startOrderingEvent({required this.delivery});
+  final BuildContext context;
+  startOrderingEvent({required this.delivery,required this.context});
 }
 class OrderingIsOverEvent extends OrderEvent {
   final String msg;
@@ -74,4 +75,9 @@ class uploadImageEvent extends OrderEvent {
   final String imagePath;
   final String type;
   uploadImageEvent({required this.imagePath, this.type = 'proof'});
+}
+class initUserInfoEvent extends OrderEvent {
+ final String  username;
+ final String userPhoneNumber;
+ initUserInfoEvent({required this.username,required this.userPhoneNumber});
 }

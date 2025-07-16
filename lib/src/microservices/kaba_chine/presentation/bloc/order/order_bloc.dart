@@ -6,6 +6,7 @@ import 'package:KABA/src/microservices/kaba_chine/domain/order/repository.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -15,7 +16,7 @@ import '../../../data/user/user_model.dart';
 import '../../../domain/user/user_entity.dart';
 import '../../../usecases/order/create_order.dart';
 import '../../../usecases/order/upload_image.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 part 'order_event.dart';
 part 'order_state.dart';
 
@@ -29,6 +30,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
       if(event is getInfosEvent){
         emit(getInfosState(user: user));
+      }
+      if(event is initUserInfoEvent){
+        emit(initUserInfoState(username: event.username, userPhoneNumber: event.userPhoneNumber));
       }
       else if(event is chooseExpeditionModeEvent){
         emit(chooseExpeditionModeState(expeditionMode: event.expeditionMode));
@@ -75,10 +79,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
         Delivery delivery = await createDeliveryRequest.call(event.delivery);
         if(delivery == null){
-          String error = "Une erreur s'est produite lors de l'enregistrement de votre commande. Veuillez réessayer plus tard.";
+          
+          String error = "${AppLocalizations.of(event.context)!.translate('order_save_error')}";
           emit(endOrderingState(msg: error,error: true));
         }else{
-          String success = "Votre commande a été enregistrée avec succès. Vous pouvez suivre son état dans la section historique.";
+          String success = "${AppLocalizations.of(event.context)!.translate('order_save_success')}";
           emit(endOrderingState(msg: success,error: false));
         }
       }

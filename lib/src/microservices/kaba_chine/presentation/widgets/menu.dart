@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../Enums/menu.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget MenuWidget({
   required BuildContext context,
   required MenuEnum selectedMenu,
@@ -52,7 +52,7 @@ Widget MenuWidget({
                 size: 30,
               ),
               SizedBox(height: 5,),
-              Text("Informations",
+              Text("${AppLocalizations.of(context)!.translate('information')}",
                 style: TextStyle(
                   color:  currentMenu==MenuEnum.informations?KabaChineColors.primary:Colors.grey,
                   fontSize: 12,
@@ -76,7 +76,7 @@ Widget MenuWidget({
                 size: 30,
               ),
               SizedBox(height: 5,),
-              Text("Demande",
+              Text("${AppLocalizations.of(context)!.translate('request')}",
                 style: TextStyle(
                   color:  currentMenu==MenuEnum.demande?KabaChineColors.primary:Colors.grey,
                   fontSize: 12,
@@ -100,7 +100,7 @@ Widget MenuWidget({
                 size: 30,
               ),
               SizedBox(height: 5,),
-              Text("Historique",
+              Text("${AppLocalizations.of(context)!.translate('history')}",
                 style: TextStyle(
                   color: currentMenu==MenuEnum.historique?KabaChineColors.primary: Colors.grey,
                   fontSize: 12,
@@ -124,7 +124,7 @@ Widget MenuWidget({
                 size: 30,
               ),
               SizedBox(height: 5,),
-              Text("Discussion",
+              Text("${AppLocalizations.of(context)!.translate('discussion')}",
                 style: TextStyle(
                   color:  currentMenu==MenuEnum.discussion?KabaChineColors.primary:Colors.grey,
                   fontSize: 12,

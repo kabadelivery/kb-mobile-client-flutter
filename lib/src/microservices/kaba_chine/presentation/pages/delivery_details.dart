@@ -2,7 +2,7 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/data/order/delivery_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import '../../Enums/TarifType.dart';
 import '../../Enums/deliveryStatus.dart';
 import '../../functions/getStatusInfo.dart';
@@ -19,7 +19,7 @@ class PackageDeliveryDetailsWidget extends StatefulWidget {
 class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWidget> {
   @override
   Widget build(BuildContext context) {
-    final info = getStatusInfo(DeliveryStatus.values.firstWhere(
+    final info = getStatusInfo(context,DeliveryStatus.values.firstWhere(
       (e) => e.value == widget.delivery.status,
       orElse: () => DeliveryStatus.pending,
     ));
@@ -53,7 +53,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
           onPressed: () {
             Navigator.pop(context);
           }),
-        title: Text("Colis ${widget.delivery.trackingCode}",
+        title: Text("${AppLocalizations.of(context)!.translate('parcel')}",
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -142,7 +142,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Informations générales",
+                      Text("${AppLocalizations.of(context)!.translate('general_information')}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Code de suivi:",
+                          Text("${AppLocalizations.of(context)!.translate('tracking_code')}",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 14,
@@ -170,7 +170,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Date de création:",
+                          Text("${AppLocalizations.of(context)!.translate('creation_date')}",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 14,
@@ -188,7 +188,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Dernière mise à jour:",
+                          Text("${AppLocalizations.of(context)!.translate('last_update')}",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 14,
@@ -207,7 +207,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Mode d'expédition:",
+                          Text("${AppLocalizations.of(context)!.translate('shipping_method')}",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 14,
@@ -219,7 +219,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                               Icon(widget.delivery.shippingMode == Tariftype.plane.value ? Icons.airplanemode_active : Icons.directions_boat,
                                 color: Colors.black87.withOpacity(0.7), size: 16),
                               SizedBox(width: 5),
-                              Text(widget.delivery.shippingMode == Tariftype.plane.value ? "Avion" : "Bateau",
+                              Text(widget.delivery.shippingMode == Tariftype.plane.value ?"${AppLocalizations.of(context)!.translate('plane')}": "${AppLocalizations.of(context)!.translate('boat')}",
                                 style: TextStyle(
                                   color: Colors.black87.withOpacity(0.7),
                                   fontSize: 14,
@@ -255,7 +255,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Détails du colis',
+                  Text("${AppLocalizations.of(context)!.translate('parcel_details')}",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -265,7 +265,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Valeur déclarée:",
+                      Text("${AppLocalizations.of(context)!.translate('declared_value')}",
                         style: TextStyle(
                           color: Colors.black54,
                           fontSize: 14,
@@ -283,7 +283,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Poids estimé:",
+                      Text("${AppLocalizations.of(context)!.translate('estimated_weight')}",
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 14,
@@ -324,7 +324,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Adresse & Destination',
+                        Text("${AppLocalizations.of(context)!.translate('address_and_destination')}",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -334,7 +334,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Bureau de collecte:",
+                            Text("${AppLocalizations.of(context)!.translate('collection_office')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
@@ -352,7 +352,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Bureau de destination:",
+                            Text("${AppLocalizations.of(context)!.translate('destination_office')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
@@ -370,13 +370,13 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Mode de livraison:",
+                            Text("${AppLocalizations.of(context)!.translate('delivery_method')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                 )),
-                            Text("${widget.delivery.homeDelivery!?"Livraison à domicile":"Retrait au bureau"}",
+                            Text("${widget.delivery.homeDelivery!?"${AppLocalizations.of(context)!.translate('home_delivery')}":"${AppLocalizations.of(context)!.translate('pickup_at_office')}"}",
                                 style: TextStyle(
                                   color: Colors.black87.withOpacity(0.7),
                                   fontSize: 14,
@@ -388,13 +388,13 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Adresse de livraison:",
+                            Text("${AppLocalizations.of(context)!.translate('delivery_address')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                 )),
-                            Text("${widget.delivery.addressText=="null"?"Aucune":widget.delivery.addressText}",
+                            Text("${widget.delivery.addressText=="null"?"${AppLocalizations.of(context)!.translate('none')}":widget.delivery.addressText}",
                                 style: TextStyle(
                                   color: Colors.black87.withOpacity(0.7),
                                   fontSize: 14,
@@ -429,7 +429,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Destinataire',
+                        Text("${AppLocalizations.of(context)!.translate('recipient')}",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -439,7 +439,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Nom du destinataire:",
+                            Text("${AppLocalizations.of(context)!.translate('recipient_name')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
@@ -457,7 +457,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Numéro de téléphone:",
+                            Text("${AppLocalizations.of(context)!.translate('recipient_phone')}",
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,
@@ -499,7 +499,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Notes',
+                        Text("${AppLocalizations.of(context)!.translate('notes')}",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -534,7 +534,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                   children: [
                     Icon(info.icon, color:  KabaChineColors.info, size: 20),
                     SizedBox(width: 5),
-                    Text("Vos transactions",
+                    Text("${AppLocalizations.of(context)!.translate('your_transactions')}",
                         style: TextStyle(
                             color: KabaChineColors.info,
                             fontSize: 16,
@@ -544,7 +544,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
               ),
               SizedBox(height: 20),
               widget.delivery.payments==null||widget.delivery.payments!.isEmpty?
-                  Text("Aucune transaction trouvée"):
+                  Text("${AppLocalizations.of(context)!.translate('no_transactions_found')}"):
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: widget.delivery.payments!.length,

@@ -1,4 +1,6 @@
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_info_model.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_model.dart';
 import 'package:KABA/src/microservices/kaba_chine/domain/order/delivery_entity.dart';
 import 'package:KABA/src/microservices/kaba_chine/domain/tarif/tarif_entity.dart';
 import 'package:flutter/foundation.dart';
@@ -38,10 +40,8 @@ class Delivery extends DeliveryEntity {
    String? afalikaTrackingCode;
    dynamic address;
    DateTime? estimatedArrival;
-   List? payments;
-   String? afalikaTotal;
-   String? kabaAdditionnalFee;
-   String? total;
+   List<PaymentModel>? payments;
+   PaymentInfoModel? paymentInfo;
 
    Delivery({
     required this.id,
@@ -76,9 +76,7 @@ class Delivery extends DeliveryEntity {
     this.address,
     this.estimatedArrival,
      this.payments,
-    this.afalikaTotal,
-     this.kabaAdditionnalFee,
-     this.total,
+     this.paymentInfo
   }):super(
     id: id,
     userId: userId,
@@ -112,9 +110,7 @@ class Delivery extends DeliveryEntity {
     address: address,
     estimatedArrival: estimatedArrival,
     payments: payments,
-    afalikaTotal: afalikaTotal,
-    kabaAdditionnalFee: kabaAdditionnalFee,
-     total: total,
+    paymentInfo: paymentInfo
   );
   factory Delivery.fromJson(Map<String, dynamic> json) {
     return Delivery(
@@ -157,10 +153,6 @@ class Delivery extends DeliveryEntity {
       estimatedArrival: json['estimatedArrival'] != null
           ? DateTime.parse(json['estimatedArrival'])
           : null,
-      payments: json['payments'],
-      kabaAdditionnalFee: json['kabaAdditionnalFee'],
-      afalikaTotal: json['afalikaTotal'],
-      total: json['total']
     );
   }
   Map<String, dynamic> toJson() {
@@ -197,7 +189,8 @@ class Delivery extends DeliveryEntity {
       'afalikaTrackingCode': afalikaTrackingCode,
       'address': address,
       'estimatedArrival': estimatedArrival,
-
+      'payments': payments,
+      'paymentInfo': paymentInfo
     };
   }
   static Delivery decoy() {

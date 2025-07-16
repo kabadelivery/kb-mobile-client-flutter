@@ -20,7 +20,7 @@ import '../../functions/checkInfos.dart';
 import '../widgets/office.dart';
 import '../widgets/package_form_info.dart';
 import 'history_page.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 class KabaChineOrderPage extends StatefulWidget {
   const KabaChineOrderPage({super.key});
 
@@ -75,6 +75,8 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
       delivery.recipientName = state.user.name!;
       delivery.buyerPhoneNumber = state.user.phone_number!;
       customercode = state.user.customer_code!;
+      BlocProvider.of<OrderBloc>(context).add(initUserInfoEvent(username: username, userPhoneNumber: userPhoneNumber));
+
     }
     else if(state is chooseExpeditionModeState) {
       delivery.shippingMode = state.expeditionMode.value;
@@ -127,7 +129,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
     }
     else if(state is LoadingState){
       isLoading = true;
-      BlocProvider.of<OrderBloc>(context).add(startOrderingEvent(delivery: delivery));
+      BlocProvider.of<OrderBloc>(context).add(startOrderingEvent(delivery: delivery,context: context));
     }
     else if(state is enterPackageCodeState){
       delivery.trackingCode =state.packageCode;
@@ -156,7 +158,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
             toastPosition: Position.center,
             toastDuration:
             Duration(seconds: 5),
-            title: Text("Une erreur s'est produite lors de l'envoi de l'image. Veuillez réessayer.")).show(context);
+            title: Text("${AppLocalizations.of(context)!.translate('image_send_error')}")).show(context);
       }else{
         if(state.type == 'proof'){
           delivery.purchaseProofImage = state.url;
@@ -164,7 +166,6 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
           delivery.productImage = state.url;
         }
       }
-
     }
   },
   builder: (context, state) {
@@ -213,9 +214,9 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Demande de livraison",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
+                    Text("${AppLocalizations.of(context)!.translate('delivery_request')}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
                     SizedBox(height: 10),
-                    Text("Votre code client : $customercode",style: TextStyle(color: Colors.white,fontSize: 14),)
+                    Text("${AppLocalizations.of(context)!.translate('your_customer_code')}"+": $customercode",style: TextStyle(color: Colors.white,fontSize: 14),)
                   ],
                 ),
 
@@ -248,9 +249,9 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Code client"),
+                    Text("${AppLocalizations.of(context)!.translate('customer_code')}"),
                     Text("${customercode}",style: TextStyle(color: Colors.black87,fontSize: 16,fontWeight: FontWeight.bold),),
-                    Text("Ce code sera utilisé pour identifier votre colis.",style: TextStyle(color: Colors.black54,fontSize: 12),)
+                    Text("${AppLocalizations.of(context)!.translate('code_usage_info')}",style: TextStyle(color: Colors.black54,fontSize: 12),)
                   ],
                 ),
               ),
@@ -277,7 +278,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               onPressed: () async{
-                Map isformCorrect = await isFormInfosCorrect(delivery:delivery,generalConditionsAccepted:  accept_general_service,packageIsSafeConditionAccepted:  confirm_packages_is_safe);
+                Map isformCorrect = await isFormInfosCorrect(context:context,delivery:delivery,generalConditionsAccepted:  accept_general_service,packageIsSafeConditionAccepted:  confirm_packages_is_safe);
                 if(isformCorrect['is_good']==false){
                   CherryToast.error(
                       toastPosition: Position.center,
@@ -299,7 +300,7 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                 children: [
                   Icon(Icons.send,color:Colors.white,size: 20,),
                   SizedBox(width: 10,),
-                  Text("Soumettre la demande",style: TextStyle(color: Colors.white,fontSize: 16),)
+                  Text("${AppLocalizations.of(context)!.translate('submit_request')}",style: TextStyle(color: Colors.white,fontSize: 16),)
                 ],
               ),
             ),

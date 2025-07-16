@@ -8,7 +8,7 @@ abstract class DeliveryRepository {
   Future<String> uploadImage(String imagePath, {String type = 'proof'});
   Future<List<Delivery>> getDeliveryHistory(String userId);
   Future<List<DeliveryStatusUpdate>> checkForStatusUpdates(String userId);
-  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance, double fees,String delivery_id);
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,String delivery_id, String paymentMethod);
 }
 
 class DeliveryRepositoryImpl implements DeliveryRepository {
@@ -36,7 +36,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     return remoteDataSource.checkForStatusUpdates(userId);
   }
   @override
-  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance, double fees,String delivery_id) {
-    return remoteDataSource.payForDelivery(customer,phoneNumber, balance, fees,delivery_id);
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,String delivery_id,String paymentMethod) {
+    return remoteDataSource.payForDelivery(customer,phoneNumber, amount,delivery_id, paymentMethod);
   }
 }

@@ -1,10 +1,11 @@
 import 'package:KABA/src/microservices/kaba_chine/domain/chat/chat_message_entity.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../Enums/messageType.dart';
 import '../domain/chat/chat_conversation_entity.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Future<ChatMessageEntity> sendMessage({required  String message,required ChatConversationEntity conversation})async {
   CustomerModel? kabaUser = await CustomerUtils.getCustomer();
   ChatMessageEntity messageEntity = ChatMessageEntity(
@@ -24,7 +25,7 @@ Future<ChatMessageEntity> sendMessage({required  String message,required ChatCon
   return messageEntity;
 }
 
-Future<ChatConversationEntity> createConversation({required MessageType type, String? deliveryRequestId})async {
+Future<ChatConversationEntity> createConversation({required BuildContext context,required MessageType type, String? deliveryRequestId})async {
   CustomerModel? kabaUser = await CustomerUtils.getCustomer();
   ChatConversationEntity conversation = ChatConversationEntity(
     id:"",
@@ -37,7 +38,7 @@ Future<ChatConversationEntity> createConversation({required MessageType type, St
     messages: [
       ChatMessageEntity(
         id: '',
-        content: type==MessageType.GENERAL?"Bonjour, j'ai besoin d'aide générale.":"Bonjour, j'ai besoin de mon colis",
+        content: type==MessageType.GENERAL?"${AppLocalizations.of(context)!.translate('general_help_message')}":"${AppLocalizations.of(context)!.translate('parcel_help_message')}",
         kabaUserId: kabaUser.id.toString(),
         conversationId: '',
         isFromAdmin: false,

@@ -1,40 +1,42 @@
-import '../data/order/delivery_model.dart';
+import 'package:flutter/cupertino.dart';
 
-Map isFormInfosCorrect({required Delivery delivery,required bool generalConditionsAccepted,required bool packageIsSafeConditionAccepted})  {
+import '../data/order/delivery_model.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
+Map isFormInfosCorrect({required BuildContext context,required Delivery delivery,required bool generalConditionsAccepted,required bool packageIsSafeConditionAccepted})  {
   // Check if all required fields are filled
   if (delivery.packageName!.isEmpty) {
-    return {"is_good":false, "msg":"Veuillez renseigner le nom du colis"};
+    return {"is_good":false, "msg":"${AppLocalizations.of(context)!.translate('msg_package_name_missing')}"};
   }
   if(delivery.trackingCode!.isEmpty){
-    return {"is_good":false, "msg": "Veuillez renseigner le code du colis"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_tracking_code_missing')}"};
   }
   if (delivery.declaredValue! <= 0) {
-    return {"is_good":false, "msg":"Veuillez renseigner le prix du colis"};
+    return {"is_good":false, "msg":"${AppLocalizations.of(context)!.translate('msg_declared_value_missing')}"};
   }
   if (delivery.estimatedWeight! <= 0) {
-    return {"is_good":false, "msg":"Veuillez renseigner le poids du colis"};
+    return {"is_good":false, "msg":"${AppLocalizations.of(context)!.translate('msg_estimated_weight_missing')}"};
   }
   if(delivery.productImage!.isEmpty)
-    return {"is_good":false, "msg":"Veuillez renseigner une image du colis"};
+    return {"is_good":false, "msg":"${AppLocalizations.of(context)!.translate('msg_product_image_missing')}"};
   if(delivery.purchaseProofImage!.isEmpty)
-    return {"is_good":false, "msg": "Veuillez renseigner une image de la preuve d'achat"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_purchase_proof_image_missing')}"};
   if (delivery.recipientName!.isEmpty) {
-    return {"is_good":false, "msg": "Veuillez renseigner le nom du destinataire"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_recipient_name_missing')}"};
   }
   if (delivery.buyerPhoneNumber!.isEmpty) {
-    return {"is_good":false, "msg": "Veuillez renseigner le numéro de téléphone du destinataire"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_recipient_phone_missing')}"};
   }
   if(delivery.buyerPhoneNumber!.length<8){
-    return {"is_good":false, "msg": "Votre numéro de téléphone doit être de 08 chiffres"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_phone_invalid_length')}"};
   }
 
   if(generalConditionsAccepted==false){
-    return {"is_good":false, "msg": "Veuillez accepter les conditions générales"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_general_conditions_not_accepted')}"};
   }
   if(packageIsSafeConditionAccepted==false){
-    return {"is_good":false, "msg": "Veuillez confirmer que le colis est en bon état"};
+    return {"is_good":false, "msg": "${AppLocalizations.of(context)!.translate('msg_package_safety_not_confirmed')}"};
   }
  // If all checks pass, return true
-  return {"is_good":true, "msg": "Formulaire valide"};
+  return {"is_good":true, "msg":"${AppLocalizations.of(context)!.translate('msg_form_valid')}"};
 
 }

@@ -9,7 +9,7 @@ import '../../data/order/delivery_model.dart';
 import '../../functions/crud_chat.dart';
 import '../../functions/getStatusInfo.dart';
 import '../bloc/chat/chat_bloc.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 void startChatPopUp({required BuildContext context}) {
 
   showDialog(context: context,
@@ -19,7 +19,7 @@ void startChatPopUp({required BuildContext context}) {
           return AlertDialog(
             content: Container(
               width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.2,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,7 +28,7 @@ void startChatPopUp({required BuildContext context}) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Nouvelle conversation",
+                      Text("${AppLocalizations.of(context)!.translate('new_conversation')}",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -46,7 +46,7 @@ void startChatPopUp({required BuildContext context}) {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text("A propos de quelle lignes souhaitez-vous discuter ?",
+                  Text("${AppLocalizations.of(context)!.translate('which_lines_discuss')}",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 14,
@@ -60,7 +60,7 @@ void startChatPopUp({required BuildContext context}) {
                     height: 60,
                     child: MaterialButton(
                       onPressed: ()async {
-                        ChatConversationEntity conversation = await createConversation(type: MessageType.GENERAL);
+                        ChatConversationEntity conversation = await createConversation(type: MessageType.GENERAL, context: context);
                         BlocProvider.of<ChatBloc>(context).add(createConversationEvent(chat: conversation));
                         Navigator.pop(context);
                       },
@@ -73,7 +73,7 @@ void startChatPopUp({required BuildContext context}) {
                       elevation: 0,
                       child: Center(
                         child: Text(
-                          'Demande générale',
+                          "${AppLocalizations.of(context)!.translate('general_request')}",
                           style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       ),

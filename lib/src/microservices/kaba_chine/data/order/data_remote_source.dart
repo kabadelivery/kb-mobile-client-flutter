@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_info_model.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_model.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,8 +24,8 @@ abstract class DeliveryRemoteDataSource {
   Future<String> uploadImage(String imagePath, {String type = 'proof'});
   Future<List<Delivery>> getDeliveryHistory(String userId);
   Future<List<DeliveryStatusUpdate>> checkForStatusUpdates(String userId);
-  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance,
-      double fees,String delivery_id);
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,
+      String delivery_id,String paymentMethod);
 }
 
 class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
@@ -162,10 +164,35 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
         return Delivery.fromJson(d);
       })
           .toList();
+      final userPayement = await client.get(Uri.parse('$LINK_GET_USER_PAYMENTS/$userId'));
+      if (userPayement.statusCode == 200 || userPayement.statusCode==201) {
+         if(userPayement.body.isNotEmpty || userPayement.body!=""){
+           final List<PaymentModel> paymentList =jsonList.map((item)=>PaymentModel.fromJson(json.decode(userPayement.body))).toList();
+           for (final delivery in deliveries) {
+             for(PaymentModel payment in paymentList){
+               if(delivery.id == payment.deliveryRequestId){
+                 delivery.payments!.add(payment);
+               }
+             }
+           }
+         }
+        }
+      else{
+          throw Exception('Error getting payments : ${userPayement.statusCode}');
+      }
 
+      final paymentInfo = await client.get(Uri.parse('$LINK_GET_DELIVERY_PAYMENT_INFOS'));
+      if (paymentInfo.statusCode == 200 || paymentInfo.statusCode==201) {
+        if(paymentInfo.body.isNotEmpty || paymentInfo.body!=""){
+          PaymentInfoModel paymentInfoModel = PaymentInfoModel.fromJson(json.decode(paymentInfo.body));
+
+        }
+      }else{
+        throw Exception('Erreur fetching payment infos : ${paymentInfo.statusCode}');
+      }
       return deliveries;
     } else {
-      throw Exception('Erreur récupération historique : ${response.statusCode}');
+      throw Exception('Erreur fetching history of delivery: ${response.statusCode}');
     }
   }
 
@@ -183,8 +210,7 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
   }
 
   @override
-  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String balance,
-      double fees,String delivery_id) async {
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,String delivery_id,paymentMethod) async {
     debugPrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -199,12 +225,17 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
         };
       };
       var response = await dio.post(
-        Uri.parse(Utils.isPhoneNumber_Tgcel(phoneNumber)
-            ? ServerRoutes.LINK_TOPUP_TMONEY
-            : ServerRoutes.LINK_TOPUP_FLOOZ)
-            .toString(),
+        LINK_INIT_PAYMENT,
         data: json.encode(
-            {"phone_number": phoneNumber, "amount": balance, 'fees': '$fees'}),
+            {
+              "deliveryRequestId": delivery_id,
+              "kabaUserId": customer.id,
+              "amount": amount,
+              "paymentMethod": paymentMethod,
+              "currency": "FCFA",
+              "phoneNumber": phoneNumber
+            }
+        ),
         );
 
       debugPrint(response.data.toString());

@@ -12,13 +12,14 @@ import '../../Enums/deliveryStatus.dart';
 import '../../core/utils.dart';
 import '../../data/order/delivery_model.dart';
 import '../../functions/getStatusInfo.dart';
+import '../../functions/payment_code_msg.dart';
 import '../pages/delivery_details.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget PackageDeliveryWidget(
     {required BuildContext context, required Delivery delivery})
 {
   Size size = MediaQuery.of(context).size;
-  final info = getStatusInfo(DeliveryStatus.values.firstWhere(
+  final info = getStatusInfo(context,DeliveryStatus.values.firstWhere(
       (e) => e.value == delivery.status,
       orElse: () => DeliveryStatus.pending,
     ));
@@ -151,7 +152,7 @@ Widget PackageDeliveryWidget(
                 children: [
                   Icon(delivery.shippingMode==Tariftype.plane.value?FontAwesomeIcons.plane:Icons.directions_boat,color: Colors.black54,size: 20),
                   SizedBox(width: 5),
-                  Text(delivery.shippingMode==Tariftype.plane.value?"Avion":"Bateau",
+                  Text(delivery.shippingMode==Tariftype.plane.value?"${AppLocalizations.of(context)!.translate('plane')}":"${AppLocalizations.of(context)!.translate('boat')}",
                       style: TextStyle(
                           color: Colors.black54,
                           fontSize: 14,
@@ -212,7 +213,7 @@ Widget PackageDeliveryWidget(
                     child: Row(
                       children: [
                         Icon(Icons.info_outline,color: KabaChineColors.success,size: 16),
-                        Text(" Paiement requis pour l'expédition",style: TextStyle(color: KabaChineColors.success,fontSize: 12,fontWeight: FontWeight.bold)),
+                        Text("${AppLocalizations.of(context)!.translate('discussion')}",style: TextStyle(color: KabaChineColors.success,fontSize: 12,fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -236,18 +237,19 @@ Widget PackageDeliveryWidget(
                       if (results!=null) {
                         if (results["success"]) {
                           CherryToast.success(
-                            title: Text("Paiement effectué avec succès"),
+                            title: Text("${AppLocalizations.of(context)!.translate('payment_successful')}"),
                             toastPosition: Position.center,
                           ).show(context);
                         }else{
+                          String msg = paymentStateMessage(context: context,code: results['code']);
                           CherryToast.error(
-                            title: Text("Erreur lors du paiement"),
+                            title: Text(msg),
                             toastPosition: Position.center,
                           ).show(context);
                         }
                       }else{
                         CherryToast.error(
-                          title: Text("Erreur lors du paiement"),
+                          title: Text("${AppLocalizations.of(context)!.translate('payment_error')}"),
                           toastPosition: Position.center,
                         ).show(context);
                       }
@@ -256,7 +258,7 @@ Widget PackageDeliveryWidget(
                       children: [
                         Icon(Icons.credit_card, color: Colors.white),
                         Text(
-                          "Payer pour maintenant",
+                          "${AppLocalizations.of(context)!.translate('pay_now')}",
                           style: TextStyle(color: Colors.white),
                         ),
                       ],

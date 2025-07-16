@@ -870,11 +870,17 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     PayForDelivery payForDelivery = PayForDelivery(
         DeliveryRepositoryImpl(
             DeliveryRemoteDataSourceImpl(http.Client())));
-    Map data=await payForDelivery.call(widget.customer!, _phoneNumberFieldController!.text, _amountFieldController!.text, _getFees(),widget.additionnal_infos!['delivery_id']);
+            Map data=await payForDelivery.call(
+                widget.customer!,
+                _phoneNumberFieldController!.text,
+                _amountFieldController!.text,
+                widget.additionnal_infos!['delivery_id'],
+                dropdownValue=="Flooz"?"FLOOZ":"TMONEY"
+            );
 
     setState(() {
       if(data!=null){
-        Navigator.of(context).pop({"success": true});
+        Navigator.of(context).pop({"success": data['success'],"code":data['code']});
       }else{
         Navigator.of(context).pop({"success": false});
       }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/tarif/shipping_entity.dart';
 import '../../domain/tarif/tarif_entity.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget tarifExpeditionWidget({required BuildContext context,required ShippingEntity shipping,required TarifEntity boatRate,required TarifEntity planeRate}) {
   Size size = MediaQuery.of(context).size;
   return Padding(
@@ -42,7 +42,7 @@ Widget tarifExpeditionWidget({required BuildContext context,required ShippingEnt
                   Icon(Icons.money,color: Colors.black87,),
                   SizedBox(width: 10,),
                   Text(
-                    "Nos Tarifs d'Expédition",
+                    "${AppLocalizations.of(context)!.translate('our_shipping_rates')}",
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,
@@ -158,7 +158,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                           child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,)),
                       SizedBox(width: 5,),
                       Text(
-                        tarif.mode == 0 ? "Bateau" : "Avion",
+                        tarif.mode == 0 ? "${AppLocalizations.of(context)!.translate('boat')}" : "${AppLocalizations.of(context)!.translate('plane')}",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -172,7 +172,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                   children: [
                     Icon(Icons.access_time, color: Colors.black54,size: 14,),
                     Text(
-                      "${tarif.duration} jours",
+                      "${tarif.duration} "+"${AppLocalizations.of(context)!.translate('days')}",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
@@ -207,7 +207,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                         Icon(Icons.check_circle, color: KabaChineColors.success, size: 16,),
                         SizedBox(width: 5,),
                         Text(
-                          "Livraison rapide",
+                          "${AppLocalizations.of(context)!.translate('fast_delivery')}",
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 14,
@@ -221,7 +221,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                         Icon(Icons.check_circle, color: KabaChineColors.success, size: 16,),
                         SizedBox(width: 5,),
                         Text(
-                          "Suivi en temps réel",
+                          "${AppLocalizations.of(context)!.translate('real_time_tracking')}",
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 14,
@@ -237,7 +237,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                     Icon(Icons.check_circle, color: KabaChineColors.success, size: 16,),
                     SizedBox(width: 5,),
                     Text(
-                      "Tarif économique",
+                      "${AppLocalizations.of(context)!.translate('economy_rate')}",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
@@ -251,7 +251,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                     Icon(Icons.check_circle, color: KabaChineColors.success, size: 16,),
                     SizedBox(width: 5,),
                     Text(
-                      "Colis volumineux acceptés",
+                     "${AppLocalizations.of(context)!.translate('large_packages_accepted')}",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,

@@ -2,7 +2,7 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget userIdInfo({required BuildContext context,required String userId}) {
   Size size = MediaQuery.of(context).size;
   return Padding(
@@ -40,7 +40,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                     Icon(Icons.badge,color: Colors.black87,),
                     SizedBox(width: 10,),
                     Text(
-                      "Votre Identifiant Client",
+                      "${AppLocalizations.of(context)!.translate('your_customer_id')}",
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: 14,
@@ -86,7 +86,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                             Clipboard.setData(ClipboardData(text: userId));
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text("Identifiant copié dans le presse-papiers"),
+                                content: Text("${AppLocalizations.of(context)!.translate('customer_id_copied')}"),
                               ),
                             );
                           },
@@ -103,7 +103,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                         ),
                       ],
                     ),
-                    Text("VOTRE CODE CLIENT",style: TextStyle(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.bold),)
+                    Text("${AppLocalizations.of(context)!.translate('your_customer_code')}",style: TextStyle(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.bold),)
                   ],
                 ),
               ),
@@ -126,7 +126,7 @@ Widget userIdInfo({required BuildContext context,required String userId}) {
                       Container(
                         width: size.width*.7,
 
-                        child: Text("Important : Communiquez votre code client à votre fournisseur pour qu'il l'inscrive sur votre colis. Cela permettra une identification rapide et un traitement prioritaire."
+                        child: Text("${AppLocalizations.of(context)!.translate('important_note')}"
                         ,style: TextStyle(fontSize: 13),
                           textAlign: TextAlign.start,
                         ),
@@ -181,7 +181,7 @@ Widget userProfileInfo({required BuildContext context,required String name,requi
                   Icon(Icons.person,color: Colors.black87,),
                   SizedBox(width: 10,),
                   Text(
-                    "Votre Profil",
+                   "${AppLocalizations.of(context)!.translate('your_profile')}",
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,
@@ -208,20 +208,20 @@ Widget userProfileInfo({required BuildContext context,required String name,requi
                   Row(
                     children: [
                       Container(
-                          width: 80,
-                          child: Text("Nom :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+
+                          child: Text("${AppLocalizations.of(context)!.translate('name')} : ",style: TextStyle(fontSize: 12,color: Colors.black87),)),
                       Text("$name",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                     ],
                   ),
                   Row(
                     children: [
-                      Container(width: 80,child: Text("Téléphone :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+                      Container(child: Text("${AppLocalizations.of(context)!.translate('phone')} ",style: TextStyle(fontSize: 12,color: Colors.black87),)),
                       Text("$tel",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                     ],
                   ),
                   Row(
                     children: [
-                      Container(width: 80,child: Text("Code Client :",style: TextStyle(fontSize: 12,color: Colors.black87),)),
+                      Container(child: Text("${AppLocalizations.of(context)!.translate('your_customer_code')} : ",style: TextStyle(fontSize: 12,color: Colors.black87),)),
                       Text("$customer_code",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                     ],
                   ),

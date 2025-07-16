@@ -79,3 +79,9 @@ class uploadImageState extends OrderState {
   final String type;
   uploadImageState({required this.url, required this.type});
 }
+class initUserInfoState extends OrderState {
+  final String username;
+  final String userPhoneNumber;
+  initUserInfoState({required this.username, required this.userPhoneNumber});
+
+}

@@ -15,3 +15,6 @@ const LINK_PRODUCT_IMAGE =  ServerConfig.kaba_chine +'/api/uploads/product-image
 const LINK_CHAT_GET_CONVERSATIONS =  ServerConfig.kaba_chine +'/api/chat/conversations';
 const LINK_CHAT_GET_MESSAGES =  ServerConfig.kaba_chine +'/api/chat/messages';
 const LINK_MARK_AS_READ = ServerConfig.kaba_chine + '/api/chat/messages/read';
+const LINK_INIT_PAYMENT =ServerConfig.kaba_chine + '/api/payments/pay-shipping';
+const LINK_GET_USER_PAYMENTS =ServerConfig.kaba_chine + '/api/payments/user';
+const LINK_GET_DELIVERY_PAYMENT_INFOS =ServerConfig.kaba_chine + '/api/payments/payment-details';

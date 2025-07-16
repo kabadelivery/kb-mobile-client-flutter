@@ -1,5 +1,8 @@
 
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_model.dart';
 import 'package:KABA/src/microservices/kaba_chine/domain/order/status_history_entry.dart';
+
+import '../../data/order/payment_info_model.dart';
 
 class DeliveryEntity {
   String id;
@@ -33,10 +36,8 @@ class DeliveryEntity {
   String? afalikaTrackingCode;
   dynamic address;
   DateTime? estimatedArrival;
-  List? payments;
-  String? afalikaTotal;
-  String? kabaAdditionnalFee;
-  String? total;
+  List<PaymentModel>? payments;
+  PaymentInfoModel? paymentInfo;
 
   DeliveryEntity({
     required this.id,
@@ -71,9 +72,7 @@ class DeliveryEntity {
     this.address,
     this.estimatedArrival,
     this.payments,
-    this.afalikaTotal,
-    this.kabaAdditionnalFee,
-    this.total
+    this.paymentInfo
 
   });
 

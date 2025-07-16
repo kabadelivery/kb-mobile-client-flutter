@@ -13,7 +13,7 @@ import '../../data/chat/chat_message_model.dart';
 import '../../domain/chat/chat_conversation_entity.dart';
 import '../../functions/crud_chat.dart';
 import 'delivery_details.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 class ChatConversationPage extends StatefulWidget {
   final ChatConversationEntity conversation;
   final Delivery delivery;
@@ -128,7 +128,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   children: [
                     Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
                     SizedBox(width: 20),
-                    Text("Retour aux chats",style: TextStyle(color: Colors.white,fontSize: 16),),
+                    Text("${AppLocalizations.of(context)!.translate('back_to_chats')}",style: TextStyle(color: Colors.white,fontSize: 16),),
 
                   ],
                 ),
@@ -160,7 +160,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Discussion concernant la livraison en cours",
+                            Text("${AppLocalizations.of(context)!.translate('discussion_about_delivery')}",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                             SizedBox(height: 10),
                             Row(
                               children: [
-                                Text("Voir la livraison",
+                                Text("${AppLocalizations.of(context)!.translate('view_delivery')}",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.blue,

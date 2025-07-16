@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../functions/contact.dart';
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget contactAssitanceListWidget({required BuildContext context}) {
   Size size = MediaQuery.of(context).size;
   return Padding(
@@ -42,7 +43,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
                   Icon(Icons.support_agent,color: Colors.black87,),
                   SizedBox(width: 10,),
                   Text(
-                    "Contact et Assistance",
+                    "${AppLocalizations.of(context)!.translate('contact_and_support')}",
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,
@@ -55,15 +56,15 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
           contactAssitanceWidget(
             border: false,
             context: context,
-            title: "Nous contacter sur WhatsApp",
-            subtitle: "Support d'assistance en 7j/7",
+            title: "${AppLocalizations.of(context)!.translate('contact_us_whatsapp')}",
+            subtitle: "${AppLocalizations.of(context)!.translate('support_7_days')}",
             onPress: ()=>contactWhatsApp(phoneNumber: "22892109474"),
             icon:Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 25, )
           ),
           contactAssitanceWidget(
               border: true,
               context: context,
-              title: "Nous envoyer un e-mail",
+              title: "${AppLocalizations.of(context)!.translate('send_us_email')}",
               subtitle: "contact@kaba-chine.com",
               onPress: ()=>contactEmail(email: "contact@kaba-chine.com"),
               icon:Icon(FontAwesomeIcons.solidEnvelope, color:KabaChineColors.primary, size: 20, )
@@ -71,8 +72,8 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
           contactAssitanceWidget(
               border: true,
               context: context,
-              title: "Nous appeler",
-              subtitle: "+228 90 XX XX XX",
+              title: "${AppLocalizations.of(context)!.translate('call_us')}",
+              subtitle: "+228 90 21 09 47",
               onPress: ()=>contactPhone(phoneNumber: "22892109474"),
               icon:Icon(FontAwesomeIcons.phone, color:KabaChineColors.info, size: 15, )
           ),

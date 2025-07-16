@@ -19,8 +19,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   HistoryBloc() : super(HistoryInitial()) {
     on<HistoryEvent>((event, emit)async {
      if(event is GetHistoryEvent) {
-       /*
-       *
+
         List <Delivery> deliveries = [];
         CustomerModel customer = await CustomerUtils.getCustomer();
         bool error = false;
@@ -30,16 +29,17 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           error = true;
           deliveries = [];
         }
-       **/
 
-        List<Delivery> fake_delivery = [
+
+        /*
+        *  List<Delivery> fake_delivery = [
           randomizedStatusDecoy(),
           randomizedStatusDecoy(),
           randomizedStatusDecoy(),
           randomizedStatusDecoy(),
         ];
-        bool decoy_error  = false;
-        emit(GetHistoryState(deliveries: fake_delivery.reversed.toList(), error: decoy_error));
+        bool decoy_error  = false;*/
+        emit(GetHistoryState(deliveries: deliveries.reversed.toList(), error: error));
       } else if (event is GetHistoryByIdEvent) {
        }
     });

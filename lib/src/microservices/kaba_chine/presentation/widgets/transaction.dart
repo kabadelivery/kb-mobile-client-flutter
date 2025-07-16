@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../core/utils.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget Transaction({required BuildContext context, required Map<String,dynamic> transaction}){
   Size size = MediaQuery.of(context).size;
   return Container(
@@ -37,7 +37,7 @@ Widget Transaction({required BuildContext context, required Map<String,dynamic> 
                 width: 10,
               ),
               Text(
-                "Paiement ${transaction["id"].toString().length>15?transaction["id"].toString().substring(0,15)+"...":transaction["id"]}",
+                "${AppLocalizations.of(context)!.translate('payment')}"+" ${transaction["id"].toString().length>15?transaction["id"].toString().substring(0,15)+"...":transaction["id"]}",
                 style: TextStyle(
                   color: Colors.black54,
                   fontSize: 14,
@@ -54,7 +54,7 @@ Widget Transaction({required BuildContext context, required Map<String,dynamic> 
               children: [
                 Icon(FontAwesomeIcons.moneyBill,color: Colors.black54,size: 16),
                 SizedBox(width: 5),
-                Text("Montant",)
+                Text("${AppLocalizations.of(context)!.translate('amount')}",)
               ],
             ),
            Text("${transaction["amount"]} ${transaction['currency']}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black87))
@@ -68,7 +68,7 @@ Widget Transaction({required BuildContext context, required Map<String,dynamic> 
               children: [
                 Icon(FontAwesomeIcons.moneyBillTransfer,color: Colors.black54,size: 16),
                 SizedBox(width: 5),
-                Text("Transfert par ",)
+                Text("${AppLocalizations.of(context)!.translate('transfer_by')}",)
               ],
             ),
             Container(

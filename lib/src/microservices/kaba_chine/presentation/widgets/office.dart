@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../core/utils.dart';
 import '../../domain/tarif/shipping_entity.dart';
 import '../bloc/order/order_bloc.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget OfficesWidget(
     {required BuildContext context,
     required,
@@ -53,7 +53,7 @@ Widget OfficesWidget(
                         width: 10,
                       ),
                       Text(
-                        "Nos Bureaux",
+                        "${AppLocalizations.of(context)!.translate('our_offices')}",
                         style: TextStyle(
                           color: Colors.black87,
                           fontSize: 14,
@@ -83,7 +83,7 @@ Widget OfficesWidget(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Bureau de collecte"),
+                              Text("${AppLocalizations.of(context)!.translate('collection_office')}"),
                               Row(
                                 children: [
                                   Icon(
@@ -128,7 +128,7 @@ Widget OfficesWidget(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Bureau de destination"),
+                              Text("${AppLocalizations.of(context)!.translate('destination_office')}"),
                               Row(
                                 children: [
                                   Icon(
@@ -215,7 +215,7 @@ SizedBox(
 width: 10,
 ),
 Text(
-"Mode d'expédition",
+"${AppLocalizations.of(context)!.translate('shipping_method')}",
 style: TextStyle(
 color: Colors.black87,
 fontSize: 14,
@@ -263,7 +263,7 @@ SizedBox(
 width: 5,
 ),
 Text(
-"Bateau",
+"${AppLocalizations.of(context)!.translate('boat')}",
 style: TextStyle(
 color:
 selectedMode == Tariftype.boat.value
@@ -289,7 +289,7 @@ borderRadius:
 BorderRadius.circular(5),
 ),
 child: Text(
-"Economique",
+"${AppLocalizations.of(context)!.translate('economy')}",
 style: TextStyle(
 color: Colors.white,
 fontSize: 10),
@@ -337,7 +337,7 @@ color: selectedMode == Tariftype.plane.value
 SizedBox(
 width: 5,
 ),
-Text("Avion",
+Text("${AppLocalizations.of(context)!.translate('plane')}",
 style: TextStyle(
 fontSize: 16,
 color:
@@ -363,7 +363,7 @@ borderRadius:
 BorderRadius.circular(5),
 ),
 child: Text(
-"Rapide",
+"${AppLocalizations.of(context)!.translate('express')}",
 style: TextStyle(
 color: Colors.white,
 fontSize: 10),

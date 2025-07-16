@@ -7,7 +7,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import '../../../Enums/TarifType.dart';
 import '../../../data/tarif/data_remote_source.dart';
 import '../../../domain/tarif/tarif_entity.dart';
@@ -37,7 +37,7 @@ class InformationBloc extends Bloc<InformationEvent, InformationState> {
         debugPrint("Active Rates ${rates.toString()}");
 
         CustomerModel customerModel = await CustomerUtils.getCustomer();
-        customerCode = "TG-"+customerModel.phone_number!;//decoy
+        customerCode = "TG-"+customerModel.id.toString();//decoy
         UserEntity user = UserEntity(customer_code: customerCode,name: customerModel.nickname,phone_number: customerModel.phone_number);
         UserModel userModel = UserModel(
           customer_code: user.customer_code,

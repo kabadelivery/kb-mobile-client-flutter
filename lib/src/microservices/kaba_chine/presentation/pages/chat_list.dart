@@ -15,7 +15,7 @@ import '../../functions/getRandomDecoys.dart';
 import '../../functions/tests.dart';
 import '../widgets/chatPopUp.dart';
 import 'chat_conversation.dart';
-
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 class AllChatPage extends StatefulWidget {
   const AllChatPage({super.key});
 
@@ -78,14 +78,14 @@ class _AllChatPageState extends State<AllChatPage> {
         }else if(state is createConversationState){
           if(state.error){
             CherryToast.error(
-              title: Text("Erreur"),
-              description: Text("Une erreur est survenue lors de la création de la discussion"),
+              title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+              description: Text("${AppLocalizations.of(context)!.translate('error_creating_discussion')}"),
               toastPosition: Position.center,
             ).show(context);
           }else{
             CherryToast.success(
-              title: Text("Succès"),
-              description: Text("Discussion créée avec succès"),
+              title: Text("${AppLocalizations.of(context)!.translate('success')}"),
+              description: Text("${AppLocalizations.of(context)!.translate('discussion_created_success')}"),
               toastPosition: Position.center,
             ).show(context);
             BlocProvider.of<ChatBloc>(context).add(openChatEvent(chat: state.chat,delivery: state.delivery));
@@ -108,7 +108,7 @@ class _AllChatPageState extends State<AllChatPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Discussions",
+              Text("${AppLocalizations.of(context)!.translate('discussions')}",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class _AllChatPageState extends State<AllChatPage> {
                     if (chatList.isEmpty) {
                       return Center(
                         child: Text(
-                          "Vous n'avez pas encore de discussion avec KABA",
+                          "${AppLocalizations.of(context)!.translate('no_discussion_with_kaba')}",
                           style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                       );
@@ -154,9 +154,9 @@ class _AllChatPageState extends State<AllChatPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Chat avec KABA ID-${chatList[index].id.toString().substring(0,9)}..."),
+                                    Text("${AppLocalizations.of(context)!.translate('chat_with_kaba')}"+" ID-${chatList[index].id.toString().substring(0,9)}..."),
                                     SizedBox(height: 5,),
-                                    Text("${chatList[index].messages!.last.isFromAdmin! ? "Admin" : "Vous"} : "
+                                    Text("${chatList[index].messages!.last.isFromAdmin! ? "${AppLocalizations.of(context)!.translate('admin')}" : "${AppLocalizations.of(context)!.translate('you')}"} : "
                                         "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,30)+"...":chatList[index].messages!.last.content}",
                                       style: TextStyle(color: Colors.grey,fontSize: 12),)
                                   ],
@@ -208,7 +208,7 @@ class _AllChatPageState extends State<AllChatPage> {
                   elevation: 0,
                   child: Center(
                     child: Text(
-                      'Démarrer une nouvelle discussion',
+                      "${AppLocalizations.of(context)!.translate('start_new_discussion')}",
                       style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
                   ),
