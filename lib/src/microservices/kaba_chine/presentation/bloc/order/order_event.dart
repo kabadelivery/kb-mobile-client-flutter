@@ -81,3 +81,7 @@ class initUserInfoEvent extends OrderEvent {
  final String userPhoneNumber;
  initUserInfoEvent({required this.username,required this.userPhoneNumber});
 }
+class getDeliveryPaymentInfo extends OrderEvent{
+  final String deliveryId;
+  getDeliveryPaymentInfo({required this.deliveryId});
+}

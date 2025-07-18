@@ -48,7 +48,8 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
         _scrollController.position.maxScrollExtent,
       );
     });
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    BlocProvider.of<ChatBloc>(context).add(getMessagesEvent(conversationId: conversation.id!));
+    _timer = Timer.periodic(Duration(seconds: 15), (timer) {
       BlocProvider.of<ChatBloc>(context).add(getMessagesEvent(conversationId: conversation.id!));
       debugPrint("XXX timer");
     });
@@ -101,6 +102,12 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             curve: Curves.easeInOut,
           );
         });
+        for(int i=0;i<conversation.messages!.length;i++){
+          if(conversation.messages![i].isRead==false){
+            BlocProvider.of<ChatBloc>(context).add(markMessageAsReadEvent(conversationId: conversation.id.toString(), messageId: conversation.messages![i].id.toString()));
+          }
+        }
+
       }
         },
         builder: (context, state) {

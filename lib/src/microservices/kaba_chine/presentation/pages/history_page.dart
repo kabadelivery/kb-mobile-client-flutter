@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,11 +23,17 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
   List<Delivery> deliveryHistory = [];
   bool _isLoading = true;
   bool error = false;
+  late Timer _timer;
+
   @override
   void initState() {
     super.initState();
     _isLoading = true;
     BlocProvider.of<HistoryBloc>(context).add(GetHistoryEvent() );
+    _timer = Timer.periodic(Duration(seconds: 15), (timer) {
+      BlocProvider.of<HistoryBloc>(context).add(GetHistoryEvent() );
+      debugPrint("XXX timer");
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -60,26 +68,10 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
                 bottomRight: Radius.circular(20),
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 20,),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: KabaChineColors.card.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Icon(Icons.arrow_back_sharp,size: 20,color: KabaChineColors.card,),
-                    ),
-                    Container()
-                  ],
-                ),
+
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +82,20 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
 
                   ],
                 ),
-
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: KabaChineColors.card.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(Icons.arrow_back_sharp,size: 20,color: KabaChineColors.card,),
+                  ),
+                ),
               ],
             )
         ),

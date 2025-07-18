@@ -1,5 +1,6 @@
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/data/order/delivery_model.dart';
+import 'package:KABA/src/microservices/kaba_chine/data/order/payment_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
@@ -42,6 +43,7 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
         'type_of_transaction':"MIXX BY YAS"
       }
     ];
+    debugPrint("PAYMENT INFOS ${widget.delivery.kabaUserId}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: KabaChineColors.primary,
@@ -334,42 +336,6 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("${AppLocalizations.of(context)!.translate('collection_office')}",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                )),
-                            Text("${widget.delivery.collectionOffice}",
-                                style: TextStyle(
-                                  color: Colors.black87.withOpacity(0.7),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${AppLocalizations.of(context)!.translate('destination_office')}",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                )),
-                            Text("${widget.delivery.destinationOffice}",
-                                style: TextStyle(
-                                  color: Colors.black87.withOpacity(0.7),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
                             Text("${AppLocalizations.of(context)!.translate('delivery_method')}",
                                 style: TextStyle(
                                   color: Colors.black54,
@@ -544,29 +510,18 @@ class _PackageDeliveryDetailsWidgetState extends State<PackageDeliveryDetailsWid
               ),
               SizedBox(height: 20),
               widget.delivery.payments==null||widget.delivery.payments!.isEmpty?
-                  Text("${AppLocalizations.of(context)!.translate('no_transactions_found')}"):
+                 Container():// Text("${AppLocalizations.of(context)!.translate('no_transaction_found')}"):
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: widget.delivery.payments!.length,
                     itemBuilder: (context, index) {
-                      Map<String,dynamic> transaction = widget.delivery.payments![index];
+                      PaymentModel transaction = widget.delivery.payments![index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Transaction(context: context,transaction: transaction),
                       );
                     }
                   ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: fake_transactions.length,
-                  itemBuilder: (context, index) {
-                    Map<String,dynamic> transaction = fake_transactions[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Transaction(context: context,transaction: transaction),
-                    );
-                  }
-              ),
             ],
           ),
         ),

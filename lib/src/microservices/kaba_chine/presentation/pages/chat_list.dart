@@ -34,7 +34,8 @@ class _AllChatPageState extends State<AllChatPage> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    BlocProvider.of<ChatBloc>(context).add(getChatsEvent());
+    _timer = Timer.periodic(Duration(seconds: 15), (timer) {
       BlocProvider.of<ChatBloc>(context).add(getChatsEvent());
       debugPrint("XXX timer");
     });

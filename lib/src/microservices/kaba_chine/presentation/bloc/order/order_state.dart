@@ -83,5 +83,8 @@ class initUserInfoState extends OrderState {
   final String username;
   final String userPhoneNumber;
   initUserInfoState({required this.username, required this.userPhoneNumber});
-
+}
+class getDeliveryPaymentInfoState extends OrderState{
+  final PaymentInfoModel paymentInfo;
+  getDeliveryPaymentInfoState({required this.paymentInfo});
 }

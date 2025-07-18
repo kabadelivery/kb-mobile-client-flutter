@@ -18,3 +18,4 @@ const LINK_MARK_AS_READ = ServerConfig.kaba_chine + '/api/chat/messages/read';
 const LINK_INIT_PAYMENT =ServerConfig.kaba_chine + '/api/payments/pay-shipping';
 const LINK_GET_USER_PAYMENTS =ServerConfig.kaba_chine + '/api/payments/user';
 const LINK_GET_DELIVERY_PAYMENT_INFOS =ServerConfig.kaba_chine + '/api/payments/payment-details';
+const LINK_FOLLOW_TUTORIAL =ServerConfig.kaba_chine + '/api/formation';

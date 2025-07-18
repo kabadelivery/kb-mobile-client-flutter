@@ -26,7 +26,7 @@ class _PackageFormInfoState extends State<PackageFormInfo> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _codeController = TextEditingController();
   TextEditingController _declaredValue = TextEditingController();
-  TextEditingController _weight = TextEditingController(text: "1");
+  TextEditingController _weight = TextEditingController();
   int proofImageType = 0;
   int imageProductType = 1;
   @override

@@ -1,8 +1,13 @@
+import 'dart:async';
+
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../../contracts/topup_contract.dart';
 import '../../../../ui/screens/home/me/money/TopNewUpPage.dart';
@@ -10,9 +15,13 @@ import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../Enums/TarifType.dart';
 import '../../Enums/deliveryStatus.dart';
 import '../../core/utils.dart';
+import '../../data/order/data_remote_source.dart';
 import '../../data/order/delivery_model.dart';
+import '../../data/order/payment_model.dart';
+import '../../domain/order/repository.dart';
 import '../../functions/getStatusInfo.dart';
 import '../../functions/payment_code_msg.dart';
+import '../../usecases/order/getPaymentInfo.dart';
 import '../pages/delivery_details.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 Widget PackageDeliveryWidget(
@@ -87,7 +96,7 @@ Widget PackageDeliveryWidget(
                   width: 10,
                 ),
                 Text(
-                  "Livraison ${delivery.trackingCode}",
+                  "${AppLocalizations.of(context)!.translate('shipping').toUpperCase()} ${delivery.trackingCode}",
                   style: TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
@@ -203,70 +212,198 @@ Widget PackageDeliveryWidget(
               ),
             ),
           SizedBox(height: 10),
-          if (delivery.status == DeliveryStatus.readyToPay.value)
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: size.width-260,
-                    child: Row(
+          if (delivery.status != DeliveryStatus.outForDelivery.value && delivery.status != DeliveryStatus.delivered.value && delivery.status != DeliveryStatus.cancelled.value)
+            BlocSelector<OrderBloc,OrderState,OrderState>(selector: (state){
+              return state;
+            }, builder: (context, state) {
+
+              return Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if(state is getDeliveryPaymentInfoState && state.paymentInfo!=null)
+                    Column(
                       children: [
-                        Icon(Icons.info_outline,color: KabaChineColors.success,size: 16),
-                        Text("${AppLocalizations.of(context)!.translate('discussion')}",style: TextStyle(color: KabaChineColors.success,fontSize: 12,fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                  MaterialButton(
-                  
-                    color: KabaChineColors.info,
-                    elevation: 0,
-                    minWidth: 120,
-                    height: 40,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    onPressed: () async{
-                      Map results = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.kaba_chine,additionnal_infos: {'delivery_id':delivery.id.toString}),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(delivery.shippingMode==Tariftype.plane.value?FontAwesomeIcons.plane:Icons.directions_boat_outlined,color: Colors.black54,size: 15),
+                                SizedBox(width: 5),
+                                Text("${AppLocalizations.of(context)!.translate('shipping_price').toLowerCase()} : ",
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal)
+                                ),
+                              ],
+                            ),
+                            Text("${state.paymentInfo.shippingFee} FCFA",
+                                style:   TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+
+                                )
+                            ),
+                          ],
                         ),
-                      );
-                      if (results!=null) {
-                        if (results["success"]) {
-                          CherryToast.success(
-                            title: Text("${AppLocalizations.of(context)!.translate('payment_successful')}"),
-                            toastPosition: Position.center,
-                          ).show(context);
-                        }else{
-                          String msg = paymentStateMessage(context: context,code: results['code']);
-                          CherryToast.error(
-                            title: Text(msg),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.payments_outlined,color: Colors.black54,size: 15),
+                                SizedBox(width: 5),
+                                Text("${AppLocalizations.of(context)!.translate('payment_info')} : ",
+                                style:
+                                TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal)
+                                ),
+                              ],
+                            ),
+                            Text("${state.paymentInfo.minPercent} % (${((state.paymentInfo.minPercent*state.paymentInfo.shippingFee)/100).toStringAsFixed(2)}) FCFA",
+                                style:   TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+
+                                )
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.attach_money_outlined,color: Colors.black54,size: 15),
+                                SizedBox(width: 5),
+                                Text(
+                                  "${AppLocalizations.of(context)!.translate('already_payed')} : ",
+                                  style:
+                                  TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal)
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "${state.paymentInfo.totalPaid} FCFA",
+                                style:   TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+
+                                )
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.attach_money_outlined,color: Colors.black54,size: 15),
+                                SizedBox(width: 5),
+                                Text(
+                                  "${AppLocalizations.of(context)!.translate('remaining_to_pay')} : ",
+                                  style:  TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal
+                                ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "${state.paymentInfo.remaining} FCFA",
+                              style:   TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+
+                              )
+                            ),
+                          ],
+                        )
+                      ]
+                    )
+                    else Container(),
+                    MaterialButton(
+
+                      color:  state is getDeliveryPaymentInfoState && state.paymentInfo!=null? KabaChineColors.info:
+                      Color(0x62818181),
+                      elevation: 0,
+                      minWidth: 120,
+                      height: 40,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      onPressed: () async{
+                        Map? results = null;
+                        BlocProvider.of<OrderBloc>(context).add(getDeliveryPaymentInfo(deliveryId: delivery.id));
+                        late Timer _timer;
+                        _timer = Timer.periodic(Duration(seconds: 15), (timer) {
+                          BlocProvider.of<OrderBloc>(context).add(getDeliveryPaymentInfo(deliveryId: delivery.id));
+                          debugPrint("XXX timer shipping price");
+                        });
+
+                        if(state is getDeliveryPaymentInfoState && state.paymentInfo!=null){
+                        results = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.kaba_chine,additionnal_infos: {'delivery_id':delivery.id}),
+                          ),
+                        );
+                        }
+                        if (results!=null) {
+                          if (results["success"]) {
+                            CherryToast.success(
+                              title: Text("${AppLocalizations.of(context)!.translate('payment_successful')}"),
+                              toastPosition: Position.center,
+                            ).show(context);
+                          }else{
+                            String msg = paymentStateMessage(context: context,code: results['code']);
+                            CherryToast.error(
+                              title: Text(msg),
+                              toastPosition: Position.center,
+                            ).show(context);
+                          }
+                        }
+                        else{
+                          CherryToast.warning(
+                            title: Text("${AppLocalizations.of(context)!.translate('give_us_a_second')}"),
                             toastPosition: Position.center,
                           ).show(context);
                         }
-                      }else{
-                        CherryToast.error(
-                          title: Text("${AppLocalizations.of(context)!.translate('payment_error')}"),
-                          toastPosition: Position.center,
-                        ).show(context);
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.credit_card, color: Colors.white),
-                        Text(
-                          "${AppLocalizations.of(context)!.translate('pay_now')}",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.credit_card, color: Colors.white),
+                          Text(
+                            state is getDeliveryPaymentInfoState && state.paymentInfo!=null?"${AppLocalizations.of(context)!.translate('pay_now')}":"${AppLocalizations.of(context)!.translate('init_payment')}",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            }),
         ]),
       ),
     ),

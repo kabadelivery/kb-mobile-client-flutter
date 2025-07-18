@@ -1,4 +1,5 @@
 
+import 'package:KABA/src/microservices/kaba_chine/core/constants.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,10 +73,10 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
           contactAssitanceWidget(
               border: true,
               context: context,
-              title: "${AppLocalizations.of(context)!.translate('call_us')}",
-              subtitle: "+228 90 21 09 47",
-              onPress: ()=>contactPhone(phoneNumber: "22892109474"),
-              icon:Icon(FontAwesomeIcons.phone, color:KabaChineColors.info, size: 15, )
+              title: "${AppLocalizations.of(context)!.translate('train_yourself')}",
+              subtitle: "${AppLocalizations.of(context)!.translate('link_to_training')}",
+              onPress: ()=>goToNavigator(url: LINK_FOLLOW_TUTORIAL),
+              icon:Icon(FontAwesomeIcons.book, color:KabaChineColors.info, size: 15, )
           ),
           SizedBox(height: 20)
         ],

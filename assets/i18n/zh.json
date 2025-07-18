@@ -740,7 +740,19 @@
   "status_cancelled": "已取消",
   "status_ready_to_pay": "可付款",
   "status_unknown": "未知",
+  "status_failed": "失败",
+  "status_paid": "已付款",
   "name": "姓名",
   "kaba_chine": "“国际递送服务”",
-  "not_enough_to_pay": "您必须支付指定金额"
+  "not_enough_to_pay": "您必须支付指定金额",
+  "init_payment": "开始付款",
+  "payment_info": "首付款百分比",
+  "already_payed": "已支付金额",
+  "remaining_to_pay": "剩余应付金额",
+  "no_fee_for_this_delivery": "本次发货未指定运费",
+  "waiting_payment": "请确认交易",
+  "did_on": "做了对",
+  "give_us_a_second": "稍等一下",
+  "train_yourself": "训练自己",
+  "link_to_training": "训练自己，成功从中国发货"
 }

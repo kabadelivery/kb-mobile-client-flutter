@@ -26,6 +26,7 @@ abstract class DeliveryRemoteDataSource {
   Future<List<DeliveryStatusUpdate>> checkForStatusUpdates(String userId);
   Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,
       String delivery_id,String paymentMethod);
+  Future<PaymentInfoModel> getPaymentInfo(String deliveryId);
 }
 
 class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
@@ -167,10 +168,13 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
       final userPayement = await client.get(Uri.parse('$LINK_GET_USER_PAYMENTS/$userId'));
       if (userPayement.statusCode == 200 || userPayement.statusCode==201) {
          if(userPayement.body.isNotEmpty || userPayement.body!=""){
-           final List<PaymentModel> paymentList =jsonList.map((item)=>PaymentModel.fromJson(json.decode(userPayement.body))).toList();
+           final List paymentList =json.decode(userPayement.body).map((item)=>PaymentModel.fromJson(item)).toList();
            for (final delivery in deliveries) {
              for(PaymentModel payment in paymentList){
                if(delivery.id == payment.deliveryRequestId){
+                 if(delivery.payments==null){
+                   delivery.payments=[];
+                 }
                  delivery.payments!.add(payment);
                }
              }
@@ -179,16 +183,6 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
         }
       else{
           throw Exception('Error getting payments : ${userPayement.statusCode}');
-      }
-
-      final paymentInfo = await client.get(Uri.parse('$LINK_GET_DELIVERY_PAYMENT_INFOS'));
-      if (paymentInfo.statusCode == 200 || paymentInfo.statusCode==201) {
-        if(paymentInfo.body.isNotEmpty || paymentInfo.body!=""){
-          PaymentInfoModel paymentInfoModel = PaymentInfoModel.fromJson(json.decode(paymentInfo.body));
-
-        }
-      }else{
-        throw Exception('Erreur fetching payment infos : ${paymentInfo.statusCode}');
       }
       return deliveries;
     } else {
@@ -224,32 +218,46 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
           return validateSSL(cert, host, port);
         };
       };
+      var data =  json.encode(
+          {
+            "deliveryRequestId": delivery_id,
+            "kabaUserId": customer.id.toString(),
+            "amount": int.parse(amount),
+            "paymentMethod": paymentMethod,
+            "currency": "FCFA",
+            "phoneNumber": phoneNumber
+          }
+      );
+      debugPrint("Data ${data}");
       var response = await dio.post(
         LINK_INIT_PAYMENT,
-        data: json.encode(
-            {
-              "deliveryRequestId": delivery_id,
-              "kabaUserId": customer.id,
-              "amount": amount,
-              "paymentMethod": paymentMethod,
-              "currency": "FCFA",
-              "phoneNumber": phoneNumber
-            }
-        ),
+        data:data,
         );
 
       debugPrint(response.data.toString());
-      if (response.statusCode == 200) {
-        int errorCode = mJsonDecode(response.data)["error"];
-        if (errorCode == 0) {
+      if (response.statusCode == 200 || response.statusCode==201) {
+
           return response.data;
-        } else
-          throw Exception(-1); // there is an error in your request
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
     } else {
       throw Exception(-2); // you have no network
+    }
+  }
+  @override
+  Future<PaymentInfoModel> getPaymentInfo(String deliveryId) async {
+    final paymentInfo = await client.post(
+      Uri.parse('$LINK_GET_DELIVERY_PAYMENT_INFOS'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'deliveryRequestId': deliveryId,
+      }),
+    );
+    if (paymentInfo.statusCode == 200 || paymentInfo.statusCode==201) {
+      return PaymentInfoModel.fromJson(json.decode(paymentInfo.body));
+    }else{
+      throw Exception('Erreur fetching payment infos : ${paymentInfo.statusCode}');
     }
   }
 }

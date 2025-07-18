@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../Enums/deliveryStatus.dart';
 import '../core/utils.dart';
@@ -69,6 +70,41 @@ StatusInfo getStatusInfo(BuildContext context, DeliveryStatus status) {
         text: "${AppLocalizations.of(context)!.translate('status_ready_to_pay')}",
         color: Color(0xFF2ECC71),
         icon: Icons.payment_outlined,
+      );
+    default:
+      return StatusInfo(
+        text:"${AppLocalizations.of(context)!.translate('status_unknown')}",
+        color: Color(0xFF95A5A6),
+        icon: Icons.help_outline,
+      );
+  }
+}
+StatusInfo getPaymentStatusInfo(BuildContext context, String status) {
+  switch (status) {
+    case "PENDING":
+      return StatusInfo(
+        text: "${AppLocalizations.of(context)!.translate('status_pending')}",
+        color: Color(0xFFF39C12),
+        icon: Icons.access_time,
+        actionRequired: "${AppLocalizations.of(context)!.translate('status_pending_action')}",
+      );
+    case "CANCELED":
+      return StatusInfo(
+        text: "${AppLocalizations.of(context)!.translate('status_cancelled')}",
+        color: Color(0xFFE74C3C),
+        icon: Icons.cancel_outlined,
+      );
+    case "PAID":
+      return StatusInfo(
+        text: "${AppLocalizations.of(context)!.translate('status_paid')}",
+        color:KabaChineColors.success,
+        icon: FontAwesomeIcons.check,
+      );
+    case "FAILED":
+      return StatusInfo(
+        text: "${AppLocalizations.of(context)!.translate('status_failed')}",
+        color: Color(0xFFE74C3C),
+        icon: Icons.cancel_outlined,
       );
     default:
       return StatusInfo(

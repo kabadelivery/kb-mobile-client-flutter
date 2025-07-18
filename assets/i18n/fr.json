@@ -742,8 +742,20 @@
   "status_delivered": "Livré",
   "status_cancelled": "Annulé",
   "status_ready_to_pay": "Prêt à payer",
+  "status_failed": "Echoué",
+  "status_paid": "Payé",
   "status_unknown": "Inconnu",
   "name": "Nom",
   "kaba_chine": "Service de livraison international",
-  "not_enough_to_pay": "Vous devez payer le montant spécifié"
+  "not_enough_to_pay": "Vous devez payer le montant spécifié",
+  "init_payment": "Initialiser le paiement",
+  "payment_info": "Pourcentage du premier paiement",
+  "already_payed": "Montant déjà payé",
+  "remaining_to_pay": "Reste à payer",
+  "no_fee_for_this_delivery": "Frais d'expédition non renseignés pour cette livraison",
+  "waiting_payment": "Veuillez valider la transaction",
+  "did_on": "Fais le",
+  "give_us_a_second": "Un instant...",
+  "train_yourself": "Formez vous",
+  "link_to_training": "Formez vous à bien passer une livraison depuis la chine"
 }

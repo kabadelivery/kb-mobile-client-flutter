@@ -8,7 +8,7 @@ String paymentStateMessage({required BuildContext context,required int code}){
 
   switch(code){
     case 100:
-      msg = "${AppLocalizations.of(context)!.translate('payment_successful')}";
+      msg = "${AppLocalizations.of(context)!.translate('waiting_payment')}";
       break;
     case 101:
       msg = "${AppLocalizations.of(context)!.translate('payment_error')}";

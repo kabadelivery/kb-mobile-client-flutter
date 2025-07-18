@@ -83,15 +83,20 @@ class _UserInformationPageState extends State<UserInformationPage> {
                     Text("Service de livraison international",style: TextStyle(color: Colors.white,fontSize: 14),)
                   ],
                 ),
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    color: KabaChineColors.card.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(50),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: KabaChineColors.card.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(Icons.arrow_back_sharp,size: 20,color: KabaChineColors.card,),
                   ),
-                  child: Icon(Icons.share,size: 20,color: KabaChineColors.card,),
-                )
+                ),
               ],
             ),
           ),

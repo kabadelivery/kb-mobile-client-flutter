@@ -13,3 +13,7 @@ void contactPhone({required String phoneNumber}) {
   final Uri phoneUrl = Uri.parse('tel:$phoneNumber');
   launchUrl(phoneUrl, mode: LaunchMode.externalApplication);
 }
+void goToNavigator({required String url}){
+  final Uri urlLaunch = Uri.parse(url);
+  launchUrl(urlLaunch, mode: LaunchMode.externalApplication);
+}

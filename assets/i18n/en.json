@@ -745,7 +745,19 @@
   "status_cancelled": "Cancelled",
   "status_ready_to_pay": "Ready to pay",
   "status_unknown": "Unknown",
+  "status_failed": "Failed",
+  "status_paid": "Paid",
   "name": "Name",
   "kaba_chine": "International Delivery Service",
-  "not_enough_to_pay": "You must pay the specified amount"
+  "not_enough_to_pay": "You must pay the specified amount",
+  "init_payment": "Initiate payment",
+  "payment_info": "First payment pourcentage",
+  "already_payed": "Amount already payed",
+  "remaining_to_pay": "Remaining to pay",
+  "no_fee_for_this_delivery": "No fee for this delivery yet",
+  "waiting_payment": "Please confirm the transaction",
+  "did_on": "Did on the",
+  "give_us_a_second": "Wait a little bit",
+  "train_yourself": "Train yourself",
+  "link_to_training": "Train yourself to successfully deliver from China"
 }

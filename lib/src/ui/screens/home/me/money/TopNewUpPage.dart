@@ -109,6 +109,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("additionnal_infos ${widget.additionnal_infos}");
     if (_searchChoices == null) {
       _searchChoices = [
         "${AppLocalizations.of(context)?.translate("mobile_money_top_up")}",
@@ -870,11 +871,12 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     PayForDelivery payForDelivery = PayForDelivery(
         DeliveryRepositoryImpl(
             DeliveryRemoteDataSourceImpl(http.Client())));
+           CustomerModel customer = await CustomerUtils.getCustomer();
             Map data=await payForDelivery.call(
-                widget.customer!,
+                 customer,
                 _phoneNumberFieldController!.text,
                 _amountFieldController!.text,
-                widget.additionnal_infos!['delivery_id'],
+                 widget.additionnal_infos!['delivery_id'].toString(),
                 dropdownValue=="Flooz"?"FLOOZ":"TMONEY"
             );
 

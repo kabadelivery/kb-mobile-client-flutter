@@ -2,6 +2,8 @@ import '../../../../models/CustomerModel.dart';
 import '../../data/order/DeliveryStatusUpdate.dart';
 import '../../data/order/data_remote_source.dart';
 import '../../data/order/delivery_model.dart';
+import '../../data/order/payment_info_model.dart';
+import '../../data/order/payment_model.dart';
 
 abstract class DeliveryRepository {
   Future<Delivery> createDeliveryRequest(Delivery delivery);
@@ -9,6 +11,7 @@ abstract class DeliveryRepository {
   Future<List<Delivery>> getDeliveryHistory(String userId);
   Future<List<DeliveryStatusUpdate>> checkForStatusUpdates(String userId);
   Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,String delivery_id, String paymentMethod);
+  Future<PaymentInfoModel> getPaymentInfo(String deliveryId);
 }
 
 class DeliveryRepositoryImpl implements DeliveryRepository {
@@ -38,5 +41,9 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
   @override
   Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,String delivery_id,String paymentMethod) {
     return remoteDataSource.payForDelivery(customer,phoneNumber, amount,delivery_id, paymentMethod);
+  }
+  @override
+  Future<PaymentInfoModel> getPaymentInfo(String deliveryId) {
+    return remoteDataSource.getPaymentInfo(deliveryId);
   }
 }
