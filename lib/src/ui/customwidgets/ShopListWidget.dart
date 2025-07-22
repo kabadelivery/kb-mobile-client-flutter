@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../utils/functions/show_tutorials.dart';
+import '../../xrint.dart';
+
 class ShopListWidget extends StatefulWidget {
   ShopModel? shopModel;
 
@@ -26,7 +29,9 @@ class ShopListWidget extends StatefulWidget {
 class _ShopListWidgetState extends State<ShopListWidget> {
   @override
   Widget build(BuildContext context) {
+
     debugPrint(" widget.shopModel ${ widget.shopModel!.toJson()}");
+    debugPrint("  widget?.shopModel!.is_certified ${widget?.shopModel!.is_certified}");
     // TODO: implement build
     return (InkWell(
         child: Container(
@@ -111,15 +116,31 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     Row(
                                       children: [
                                         Expanded(
-                                          child: Text(
-                                              "${widget?.shopModel?.name}",
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: KColors.new_black,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500)),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                  "${widget?.shopModel?.name}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: KColors.new_black,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w500)),
+                                              SizedBox(width: 10,),
+                                              widget.shopModel!.is_certified==true?
+                                              GestureDetector(
+                                                onTap:(){
+                                                  showCertificationTutorial(context:context);
+                                                },
+                                                child: Image.asset("assets/images/png/certif.png",
+                                                    width: 20,
+                                                    height: 20,
+                                                    fit: BoxFit.cover),
+                                              ): Container(),
+
+                                            ],
+                                          ),
                                         ),
                                         widget?.shopModel?.stars != null &&
                                                 widget.shopModel!.stars! > 1

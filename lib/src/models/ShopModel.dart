@@ -23,7 +23,7 @@ class ShopModel {
   String? discount;
   String? location;
   String? category_id;
-
+  bool? is_certified;
   double distanceBetweenMeandRestaurant = 0;
 
   ShopModel(
@@ -49,7 +49,9 @@ class ShopModel {
       this.delivery_pricing,
       this.discount,
       this.max_food,
-      this.location});
+      this.location,
+      this.is_certified = false,
+      });
 
 
   ShopModel.fromJson(Map<String, dynamic> json) {
@@ -77,6 +79,7 @@ class ShopModel {
     max_food = json['max_food'];
     location = json["location"];
     category_id = "${json["category_id"]}";
+    is_certified = json['certified'];
   }
 
   Map toJson() => {
@@ -97,7 +100,8 @@ class ShopModel {
         "is_promotion": is_promotion,
         "is_new": is_new,
         "location": location,
-        "category_id": category_id
+        "category_id": category_id,
+        "is_certified":is_certified
       };
 
   @override

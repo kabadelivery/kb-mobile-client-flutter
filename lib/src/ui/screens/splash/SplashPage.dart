@@ -7,6 +7,7 @@ import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
@@ -35,6 +36,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../StateContainer.dart';
+import '../../../contracts/service_category_contract.dart';
 import 'AnimatedSplash.dart';
 
 // import 'package:android_intent/android_intent.dart';
@@ -111,8 +113,7 @@ class _SplashPageState extends State<SplashPage> {
       // if logged in, go directly to home page
 
       StatefulWidget launchPage = LoginPage(presenter: LoginPresenter(LoginView()));
-      launchPage = HomePage(
-          destination: widget.destination, argument: widget.argument);
+      launchPage = ServiceMainPage(presenter:ServiceMainPresenter(ServiceMainView()));
 
       // prefs = await SharedPreferences.getInstance();
       // String expDate = prefs.getString("${ServerConfig.LOGIN_EXPIRATION}");

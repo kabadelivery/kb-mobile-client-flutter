@@ -161,6 +161,7 @@ class _FeedsPageState extends State<FeedsPage> implements FeedView {
         child: ListView.builder(
             itemCount: widget.data?.length,
             itemBuilder: (BuildContext context, int position) {
+              xrint('feed ${widget.data![position].toString()}');
               return InkWell(
                 onTap: () => _jumpToAdd(widget.data![position].destination!),
                 child: Container(decoration: BoxDecoration(color: KColors.new_gray, borderRadius: BorderRadius.circular(5)),

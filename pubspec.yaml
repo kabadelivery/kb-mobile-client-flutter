@@ -75,7 +75,7 @@ dependencies:
   flutter_riverpod: ^2.3.7
   path_provider: ^2.1.1
   mime: ^1.0.4
-  video_player: ^2.6.1
+  video_player: ^2.10.0
   flutter_native_splash: ^2.2.16
   awesome_dialog: ^2.1.2
   fluttertoast: ^8.2.5
@@ -234,6 +234,9 @@ flutter:
     - assets/images/jpg/update_fr.jpg
     - assets/images/jpg/update_en.jpg
     - assets/images/jpg/update_zh.jpg
+    - assets/images/png/certif.png
+    - assets/images/png/certif_white.png
+    - assets/images/png/start_certif.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

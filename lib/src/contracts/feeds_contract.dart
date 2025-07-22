@@ -46,6 +46,7 @@ class FeedPresenter implements FeedContract {
     _feedView.showLoading(true);
     try {
       List<FeedModel> feeds = await provider.fetchFeedList(customer) as List<FeedModel>;
+
       // also get the restaurant entity here.
       _feedView.inflateFeed(feeds);
     } catch (_) {

@@ -31,6 +31,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:toast/toast.dart';
 
+import '../../../utils/functions/show_tutorials.dart';
+
 class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
 
@@ -143,6 +145,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   @override
   Widget build(BuildContext context) {
+    xrint("widget?.restaurant!.is_certified ${widget?.restaurant!.is_certified}");
     if (MAX_CHIP_FOR_SCREEN < 0) {
       MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
     }
@@ -173,15 +176,29 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               child: Container(
                   padding:
                       EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                  child: Text(
-                      widget.restaurant == null ? "" : widget.restaurant!.name!,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white))),
+                  child: Row(
+                    children: [
+                      Text(
+                          widget.restaurant == null ? "" : widget.restaurant!.name!,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
+                      SizedBox(width:10),
+                      widget?.restaurant!.is_certified==true?   GestureDetector(
+                        onTap:(){
+                          showCertificationTutorial(context:context);
+                        },
+                        child: Image.asset("assets/images/png/certif_white.png",
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.cover),
+                      ):Container(),
+                    ],
+                  )),
             ),
           ])),
       leading: IconButton(
