@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
@@ -48,6 +49,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
@@ -312,6 +315,7 @@ class _HomePageState extends State<HomePage> {
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
+      xrint('pnotif Message data: ${message.toMap().toString()}');
       if (message.notification != null) {
         xrint(
             'pnotif Message also contained a notification: ${message.notification.toString()}');
@@ -478,6 +482,7 @@ class _HomePageState extends State<HomePage> {
       xrint('p_notify Message also contained a notification: ${message.data}');
       NotificationItem? notificationItem =
           _notificationFromMessage(message.data);
+
       _handlePayLoad(notificationItem!.destination!.toSpecialString());
     }
   }
@@ -605,21 +610,7 @@ class _HomePageState extends State<HomePage> {
         StateContainer.of(context).updateLoggingState(state: value);
       });
 
-      try {
-        _firebaseMessaging.getInitialMessage().then((initialMessage) {
-          if (initialMessage != null) {
-            _firebaseMessagingOpenedAppHandler(initialMessage);
-          } else {
-            FirebaseMessaging.onBackgroundMessage(
-                _firebaseMessagingBackgroundHandler);
-            FirebaseMessaging.onMessageOpenedApp
-                .listen(_firebaseMessagingOpenedAppHandler);
-          }
-        });
-      } catch (_) {
-        xrint(
-            "===========================================================\nYOU MUST LOGIN BEFORE\n===============================================");
-      }
+
       // }
 
       loginStuffChecked = 1;
@@ -1446,14 +1437,30 @@ NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
 
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
+  final String bigPictureUrl = notificationItem.image_link.toString();
+  final directory = await getApplicationDocumentsDirectory();
+  final filePath = '${directory.path}/bigImage.jpg';
+  final response = await http.get(Uri.parse(bigPictureUrl));
+  final file = File(filePath);
+  await file.writeAsBytes(response.bodyBytes);
 
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID, AppConfig.CHANNEL_NAME,
-      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.max,
-      priority: Priority.max,
-      groupKey: groupKey,
-      ticker: notificationItem?.title);
+  final BigPictureStyleInformation bigPictureStyleInformation =
+  BigPictureStyleInformation(
+    FilePathAndroidBitmap(filePath),
+    contentTitle: notificationItem?.title,
+    summaryText: notificationItem?.body,
+    htmlFormatContentTitle: true,
+    htmlFormatSummaryText: true,
+  );
+  final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    AppConfig.CHANNEL_ID,
+    AppConfig.CHANNEL_NAME,
+    channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+    importance: Importance.max,
+    priority: Priority.max,
+    ticker: notificationItem.title,
+    styleInformation: bigPictureStyleInformation,
+  );
 
   var iOSPlatformChannelSpecifics = DarwinNotificationDetails(
       categoryIdentifier: "plainCategory",

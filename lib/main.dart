@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
@@ -6,6 +8,8 @@ import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/hist
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/models/NotificationFDestination.dart';
+import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -14,13 +18,16 @@ import 'package:KABA/src/utils/_static_data/routes.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:http/http.dart' as http;
 import 'package:overlay_support/overlay_support.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'src/StateContainer.dart';
@@ -45,6 +52,9 @@ Future<void> main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  await _initializeLocalNotifications();
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
@@ -74,6 +84,95 @@ Future<void> main() async {
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
+Future<void> _initializeLocalNotifications() async {
+  const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
+  const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+
+  final InitializationSettings settings = InitializationSettings(
+    android: androidInit,
+    iOS: iosInit,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(settings);
+}
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  // Parse safely your payload
+  try {
+    final Map<String, dynamic> data = message.data;
+    final notificationRaw = data["notification"];
+    final decodedNotification = jsonDecode(notificationRaw);
+
+    final title = decodedNotification["title"];
+    final body = decodedNotification["body"];
+    final imageUrl = decodedNotification["image_link"];
+    final destination = jsonDecode(decodedNotification["destination"]);
+
+    final destinationString = jsonEncode(destination); // For payload
+
+    // Download image
+    String? imagePath;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      try {
+        final response = await http.get(Uri.parse(imageUrl));
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/notif_image.jpg';
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+        imagePath = filePath;
+      } catch (e) {
+        print("❌ Erreur lors du téléchargement de l'image : $e");
+      }
+    }
+
+    // Init plugin (important in background)
+    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidInit,
+      iOS: iosInit,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initSettings);
+
+    // Notification style
+    final BigPictureStyleInformation? bigPictureStyle = imagePath != null
+        ? BigPictureStyleInformation(
+      FilePathAndroidBitmap(imagePath),
+      contentTitle: title,
+      summaryText: body,
+      htmlFormatContentTitle: true,
+      htmlFormatSummaryText: true,
+    )
+        : null;
+
+    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      AppConfig.CHANNEL_ID,
+      AppConfig.CHANNEL_NAME,
+      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.high,
+      styleInformation: bigPictureStyle,
+    );
+
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: const DarwinNotificationDetails(),
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      notificationDetails,
+      payload: destinationString,
+    );
+
+  } catch (e) {
+    print("❌ Erreur dans _firebaseMessagingBackgroundHandler : $e");
+  }
+}
 
 class MyApp extends StatefulWidget {
   FirebaseAnalytics? analytics;
