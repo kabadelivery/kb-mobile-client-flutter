@@ -15,6 +15,7 @@ import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
@@ -45,6 +46,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
@@ -197,7 +199,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     get_token();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getLastKnowLocation(jumpToBuyPageDetails: false);
+    });
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(HomeWelcomeView()),
@@ -212,8 +216,8 @@ class _HomePageState extends State<HomePage> {
         is_out_of_app_order: widget.is_out_of_app_order);
     meAccountPage = MeNewAccountPage(key: meKey);
     pages = [
-      homeWelcomePage!,
       serviceMainPage!,
+      homeWelcomePage!,
       dailyOrdersPage!,
       meAccountPage!
     ];
@@ -620,7 +624,6 @@ class _HomePageState extends State<HomePage> {
 
       loginStuffChecked = 1;
     }
-
     return Scaffold(
       body: pages![StateContainer.of(context)!.tabPosition!],
       bottomNavigationBar: BottomNavigationBar(
@@ -628,33 +631,33 @@ class _HomePageState extends State<HomePage> {
         unselectedFontSize: 12,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(VectorsData.home), // Icon(Icons.home),
-            activeIcon: SvgPicture.asset(VectorsData.home_selected),
-            label: Utils.capitalize(
-                "${AppLocalizations.of(context)!.translate('home')}"),
-            tooltip: Utils.capitalize(
-                "${AppLocalizations.of(context)!.translate('home')}"),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(VectorsData.buy),
-            activeIcon: SvgPicture.asset(VectorsData.buy_selected),
+            icon: Icon(Icons.shopping_bag_outlined),
+            activeIcon: Icon(Icons.shopping_bag,color: KabaChineColors.primary),
             label: Utils.capitalize(
                 '${AppLocalizations.of(context)!.translate('buy')}'),
             tooltip: Utils.capitalize(
                 '${AppLocalizations.of(context)!.translate('buy')}'),
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(VectorsData.orders),
+            icon: Icon(Icons.rocket_outlined), // Icon(Icons.home),
+            activeIcon: Icon(Icons.rocket,color: KabaChineColors.primary,),
+            label: Utils.capitalize(
+                "${AppLocalizations.of(context)!.translate('discover')}"),
+            tooltip: Utils.capitalize(
+                "${AppLocalizations.of(context)!.translate('discover')}"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.basketShopping),
             // Icon(Icons.view_list),
-            activeIcon: SvgPicture.asset(VectorsData.orders_selected),
+            activeIcon: Icon(FontAwesomeIcons.basketShopping, color: KabaChineColors.primary),
             label: Utils.capitalize(
                 '${AppLocalizations.of(context)!.translate('orders')}'),
             tooltip: Utils.capitalize(
                 '${AppLocalizations.of(context)!.translate('orders')}'),
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(VectorsData.me), //  Icon(Icons.person),
-            activeIcon: SvgPicture.asset(VectorsData.me_selected),
+            icon: Icon(Icons.person_4_outlined), //  Icon(Icons.person),
+            activeIcon: Icon(Icons.person_4,color: KabaChineColors.primary),
             label: Utils.capitalize(
                 '${AppLocalizations.of(context)!.translate('account')}'),
             tooltip: Utils.capitalize(

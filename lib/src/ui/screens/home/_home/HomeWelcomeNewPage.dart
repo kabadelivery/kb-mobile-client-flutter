@@ -335,44 +335,8 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
             ],
           ),
           centerTitle: true,
-          leading: IconButton(
-              icon: SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: SvgPicture.asset(
-                    VectorsData.kaba_icon_svg,
-                    color: Colors.white,
-                  )),
-              onPressed: () {
-                _jumpToInfoPage();
-              }),
-          backgroundColor: KColors.primaryColor,
-          actions: <Widget>[
-            InkWell(
-              onTap: () => _showBottomContactSheet(),
-              child: Container(
-                width: 42,
-                height: 42,
-                child: IconButton(
-                  icon: Icon(Icons.phone, color: Colors.white),
-                  onPressed: () => _showBottomContactSheet(),
-                ),
-              ),
-            ),
-            StateContainer.of(context).loggingState == 0
-                ? SizedBox(width: 15)
-                : PopupMenuButton<String>(
-                    color: Colors.white,
-                    onSelected: menuChoiceAction,
-                    itemBuilder: (BuildContext context) {
-                      return _popupMenus()!.map((String menuName) {
-                        return PopupMenuItem<String>(
-                            value: menuName, child: Text(menuName));
-                      }).toList();
-                    },
-                  )
-          ],
-          systemOverlayStyle: SystemUiOverlayStyle.light,
+           backgroundColor: KColors.primaryColor,
+           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
