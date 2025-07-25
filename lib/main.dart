@@ -154,6 +154,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     )
         : null;
 
+
     final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       AppConfig.CHANNEL_ID,
       AppConfig.CHANNEL_NAME,
@@ -161,6 +162,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       importance: Importance.max,
       priority: Priority.high,
       styleInformation: bigPictureStyle,
+      enableLights: true,
+      showWhen: true,
+      largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
     );
 
     final NotificationDetails notificationDetails = NotificationDetails(

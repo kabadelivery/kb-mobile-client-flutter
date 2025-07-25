@@ -603,6 +603,11 @@ class _HomePageState extends State<HomePage> {
   //  //get device token
   void get_token() async {
     String? token = await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.instance.subscribeToTopic('testeurs_kaba').then((_) {
+      print('✅ Subscribed to topic: testeurs_kaba');
+    }).catchError((error) {
+      print('❌ Failed to subscribe to topic: $error');
+    });
     print('Device token $token');
   }
 
@@ -1464,6 +1469,7 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     priority: Priority.max,
     ticker: notificationItem.title,
     styleInformation: bigPictureStyleInformation,
+    largeIcon: filePath != null ? FilePathAndroidBitmap(filePath) : null,
   );
 
   var iOSPlatformChannelSpecifics = DarwinNotificationDetails(
