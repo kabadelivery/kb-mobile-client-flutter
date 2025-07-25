@@ -44,6 +44,7 @@ import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
@@ -202,6 +203,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     get_token();
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getLastKnowLocation(jumpToBuyPageDetails: false);
     });
@@ -316,6 +319,7 @@ class _HomePageState extends State<HomePage> {
       xrint("FirebaseMessaging.onMessage.listen");
       xrint('pnotif Message data: ${message.data}');
       xrint('pnotif Message data: ${message.toMap().toString()}');
+
       if (message.notification != null) {
         xrint(
             'pnotif Message also contained a notification: ${message.notification.toString()}');

@@ -15,10 +15,12 @@ import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -126,7 +128,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         print("❌ Erreur lors du téléchargement de l'image : $e");
       }
     }
-
+    if (kDebugMode) {
+      FirebaseMessaging.instance.subscribeToTopic('kaba_testeurs');
+      xrint('Subscribed to kaba_testeurs (debug only)');
+    } else {
+      xrint('Not in debug mode — skipping topic subscription');
+    }
     // Init plugin (important in background)
     const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
