@@ -164,10 +164,20 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       showWhen: true,
       largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
     );
+    final iOSAttachment = DarwinNotificationAttachment(imagePath!);
 
-    final NotificationDetails notificationDetails = NotificationDetails(
+    final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      attachments: [iOSAttachment],
+      categoryIdentifier: "plainCategory",
+      threadIdentifier: "thread1",
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: "default",
+    );
+     final NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
-      iOS: const DarwinNotificationDetails(),
+      iOS: iOSPlatformChannelSpecifics,
     );
 
     await flutterLocalNotificationsPlugin.show(

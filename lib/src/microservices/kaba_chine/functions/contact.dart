@@ -1,8 +1,14 @@
 import 'package:url_launcher/url_launcher.dart';
 
-void contactWhatsApp({required String phoneNumber}) {
+void contactWhatsApp({
+  required String phoneNumber,
+  required String message,
+}) {
+  final String encodedMessage = Uri.encodeComponent(message);
   final Uri whatsappUrl = Uri.parse(
-      'https://api.whatsapp.com/send?phone=$phoneNumber');
+    'https://api.whatsapp.com/send?phone=$phoneNumber&text=$encodedMessage',
+  );
+
   launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
 }
 void contactEmail({required String email}) {

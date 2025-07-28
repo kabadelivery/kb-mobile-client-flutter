@@ -1373,9 +1373,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
         CustomerUtils utils = CustomerUtils();
         bool isUpdateSeen = await utils.getViewUpdate();
         xrint("isUpdateSeen $isUpdateSeen");
-        if(!isUpdateSeen){
-          showNewFeature(context, code);
-        }
+        if(!isUpdateSeen){showNewFeature(context, code);}
       }
     });
   }

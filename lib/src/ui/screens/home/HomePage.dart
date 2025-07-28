@@ -1485,14 +1485,17 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     largeIcon: filePath != null ? FilePathAndroidBitmap(filePath) : null,
   );
 
-  var iOSPlatformChannelSpecifics = DarwinNotificationDetails(
-      categoryIdentifier: "plainCategory",
-      threadIdentifier: "thread1",
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      sound: "default");
+  final iOSAttachment = DarwinNotificationAttachment(filePath);
 
+  final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+    attachments: [iOSAttachment],
+    categoryIdentifier: "plainCategory",
+    threadIdentifier: "thread1",
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    sound: "default",
+  );
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);
