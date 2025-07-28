@@ -55,9 +55,7 @@ Future<void> main() async {
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   await _initializeLocalNotifications();
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(StateContainer(child:

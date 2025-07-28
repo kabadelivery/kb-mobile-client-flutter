@@ -315,14 +315,27 @@ class _HomePageState extends State<HomePage> {
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
       xrint('pnotif Got a message whilst in the foreground!');
       xrint("FirebaseMessaging.onMessage.listen");
+      var notificationPayload ={
+        "title": jsonDecode(message.data["notification"])["title"] ?? "",
+        "body":  jsonDecode(message.data["notification"])["body"]  ?? "",
+        "image":jsonDecode(message.data["notification"])["image"] ?? "",
+      };
+      RemoteNotification localNotif =RemoteNotification(
+        title: notificationPayload["title"],
+        body: notificationPayload["body"],
+        android: AndroidNotification(
+          imageUrl: notificationPayload["image"],
+        ),
+      );
       xrint('pnotif Message data: ${message.data}');
       xrint('pnotif Message data: ${message.toMap().toString()}');
 
-      if (message.notification != null) {
+      if (localNotif != null) {
         xrint(
-            'pnotif Message also contained a notification: ${message.notification.toString()}');
+            'pnotif Message also contained a notification: ${localNotif.toString()}');
 
         NotificationItem? notificationItem =
             _notificationFromMessage(message.data);
