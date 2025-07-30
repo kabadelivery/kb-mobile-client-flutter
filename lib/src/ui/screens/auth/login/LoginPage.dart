@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
       if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) && widget?.password?.length == 4)
-        widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version!);
+        widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
     } else {
       // we dont do any another login here
     }

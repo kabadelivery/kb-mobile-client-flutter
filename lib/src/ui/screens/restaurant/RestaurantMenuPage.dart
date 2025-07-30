@@ -1234,7 +1234,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         double distance =
             Utils.locationDistance(currentLocation, widget.restaurant!);
         widget.restaurant?.distance =
-            distance > 100 ? "> 100" : distance.toString();
+            distance > 100 ? "100" : distance.toString();
       }
       // according to the distance, we get the matching delivery fees
       // i dont want to make another loop

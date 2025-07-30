@@ -17,6 +17,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 
 class ClientPersonalApiProvider {
   var TGO = "228";
@@ -217,6 +218,7 @@ class ClientPersonalApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+      String? device_token = await FirebaseMessaging.instance.getToken();
       var response =
           await dio.post(Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
               data: json.encode({
@@ -226,9 +228,9 @@ class ClientPersonalApiProvider {
                 "phone_number": phone_number,
                 "email": email,
                 "request_id": request_id,
-                'type': Utils.isEmailValid(email) ? 1 : 0
+                'type': Utils.isEmailValid(email) ? 1 : 0,
+                "device_token":device_token??""
               }));
-
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
@@ -300,6 +302,8 @@ class ClientPersonalApiProvider {
       String link = !shouldSendOtpCode!
           ? Uri.parse(ServerRoutes.LINK_USER_LOGIN_V2).toString()
           : Uri.parse(ServerRoutes.LINK_USER_LOGIN_V3).toString();
+      debugPrint(json.encode(
+          {"username": login, "password": password, 'device': device}));
       var response = await dio.post(
         link,
         data: json.encode(

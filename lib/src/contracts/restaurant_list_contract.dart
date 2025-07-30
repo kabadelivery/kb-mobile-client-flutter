@@ -172,7 +172,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async
     // Calculate distance and shipping
     for (final shop in shops) {
       final double dist = Utils.locationDistance(userPosition, shop);
-      shop.distance = dist > 100 ? "> 100" : dist.toStringAsFixed(2);
+      shop.distance = dist > 100 ? "100" : dist.toStringAsFixed(2);
       shop.delivery_pricing = _getShippingPrice(shop.distance!, billingMap);
     }
 

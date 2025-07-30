@@ -761,5 +761,8 @@
   "certification_tutorial_text": "Ce marchand est certifié qualité. Il remplit la majorité des critères de qualité pour vendre sur Kaba (menu toujours disponible, temps de cuisson respecté, système de portefeuille, bonne note clients…)",
   "know_more": "En savoir plus",
   "discover": "Découvrir",
-  "kaba_chine_tutorial_message": "Bonjour / Bonsoir, je souhaiterais recevoir une formation sur votre fonctionnalité intitulée \"KABA CHINE\""
+  "kaba_chine_tutorial_message": "Bonjour / Bonsoir, je souhaiterais recevoir une formation sur votre fonctionnalité intitulée \"KABA CHINE\"",
+  "voucher_new_user": "BON NOUVEL UTILISATEUR",
+  "cannot_use_voucher": "Vous ne pouvez pas utiliser de bon de réduction",
+  "new_user_voucher_info": "Ce bon de réduction est destiné à vos premières commandes"
 }

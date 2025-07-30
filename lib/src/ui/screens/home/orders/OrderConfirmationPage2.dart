@@ -46,6 +46,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../../utils/Enums/type_of_transaction.dart';
+import '../../../customwidgets/voucher_widgets.dart';
 
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
@@ -98,7 +99,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   List<String> dayz = [];
 
   GlobalKey poweredByKey = GlobalKey();
-
+  bool is_new_user=false;
+  int new_user_voucher_amount=0;
   @override
   void initState() {
     // TODO: implement initState
@@ -347,6 +349,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       ]),
                   GestureDetector(
                     onTap: () {
+                      debugPrint("is new user ${is_new_user}");
+                      if(is_new_user){
+                        mToast("${AppLocalizations.of(context)!.translate('cannot_use_voucher')}");
+                      }else
                       _selectVoucher(
                           has_voucher: true, voucher: eligible_vouchers[index]);
                     },
@@ -874,6 +880,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         }),
                     _buildAddress(_selectedAddress),
                     SizedBox(key: poweredByKey, height: 25),
+                    //NEW USER VOUCHER
+                    is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
                     _usePoint ? Container() : _buildCouponSpace(),
                     _usePoint ? Container() : SizedBox(height: 15),
                     isConnecting
@@ -1043,6 +1051,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   void inflateBillingConfiguration(OrderBillConfiguration configuration) {
     setState(() {
       _orderBillConfiguration = configuration;
+      is_new_user = configuration.is_new_user!;
+      new_user_voucher_amount =configuration.shipping_pricing! - configuration.total_pricing!;
     });
     showLoading(false);
   }

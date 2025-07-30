@@ -171,6 +171,15 @@ class HomeWelcomePresenter implements HomeWelcomeContract {
     }
   }
 
+  //Future<void> checkIfIsNewUser(){
+    //try{
+      //Map isNewUser = provider.checkIfIsNewUser();
+    //}catch(_)
+    //{
+
+    //}
+  //}
+
   Future<void> checkServiceMessage() async {
     try {
       Map<String,dynamic> smessage = await provider.checkServiceMessage();

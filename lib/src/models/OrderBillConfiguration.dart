@@ -45,7 +45,7 @@ class OrderBillConfiguration {
 
   Map<String,dynamic>? additional_fees;
   int?   additional_fees_total_price;
-
+  bool? is_new_user;
   static OrderBillConfiguration fake() {
     OrderBillConfiguration p = OrderBillConfiguration.none();
 
@@ -93,7 +93,7 @@ class OrderBillConfiguration {
     this.out_of_range, this.pay_at_delivery, this.prepayed, this.trustful,
     this.max_pay, this.cooking_time, this.can_preorder, this.discount, this.eligible_vouchers,
     this.open_type, this.working_hour, this.reason, this.deliveryFrames, this.isBillBuilt, this.kaba_point,
-    this.additional_fees,this.additional_fees_total_price});
+    this.additional_fees,this.additional_fees_total_price, this.is_new_user});
 
 
   OrderBillConfiguration.fromJson(Map<String, dynamic> json) {
@@ -117,7 +117,7 @@ class OrderBillConfiguration {
     // eligible voucher
       l = json["eligible_vouchers"];
     eligible_vouchers = l?.map((voucher_model) => VoucherModel.fromJson(voucher_model))?.toList();
-
+    is_new_user = json['is_new_user'] ?? false;
   }
 
   Map toJson () => {
@@ -138,6 +138,7 @@ class OrderBillConfiguration {
     "kaba_point": kaba_point?.toMap(),
     "additional_fees":additional_fees,
     "additional_fees_total_price":additional_fees_total_price,
+    "is_new_user": is_new_user,
   };
 
   @override

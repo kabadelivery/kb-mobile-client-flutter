@@ -305,7 +305,6 @@ class ServerRoutes {
 
   static const String LINK_CHECK_APP_VERSION =
       ServerConfig.SERVER_ADDRESS + "/api/ltsapp/get";
-
   static const String LINK_CHECK_SYS_MESSAGE =
       ServerConfig.SERVER_ADDRESS + "/api/alert-message/get";
 
@@ -344,5 +343,7 @@ class ServerRoutes {
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/image/upload";
   static const String FETCH_DISTRICTS = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/districts/get";
   static const String FETCH_SHIPPING_PRICE_RANGE = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/shipping_price_range/get";
+  static const String LINK_CHECK_IF_IS_NEW_USER= ServerConfig.SERVER_ADDRESS + "/api/user/is-new";
+
 
 }

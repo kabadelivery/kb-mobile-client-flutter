@@ -321,6 +321,31 @@ class AppApiProvider {
       throw Exception(-2);
     }
   }
+  checkIfIsNewUser() async{
+    xrint("entered checkIfIsNewUser");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CHECK_IF_IS_NEW_USER).toString(),
+      );
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        return mJsonDecode(response.data)["isNewUser"];
+      } else
+        throw Exception(-1); // there is an error in your request
+    } else {
+      throw Exception(-2);
+    }
+  }
 
   /*hack */
   checkBalance(CustomerModel customer) async {
