@@ -764,5 +764,6 @@
   "kaba_chine_tutorial_message": "Bonjour / Bonsoir, je souhaiterais recevoir une formation sur votre fonctionnalité intitulée \"KABA CHINE\"",
   "voucher_new_user": "BON NOUVEL UTILISATEUR",
   "cannot_use_voucher": "Vous ne pouvez pas utiliser de bon de réduction",
-  "new_user_voucher_info": "Ce bon de réduction est destiné à vos premières commandes"
+  "new_user_voucher_info": "Ce bon de réduction est destiné à vos premières commandes",
+  "fee_can_be_changed": "Ces frais peuvent être sujet de modifications"
 }

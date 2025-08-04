@@ -48,7 +48,7 @@ Widget OfficesWidget(
                       Icon(
                         FontAwesomeIcons.building,
                         color: Colors.black87,
-                      ),
+                       ),
                       SizedBox(
                         width: 10,
                       ),
@@ -72,7 +72,6 @@ Widget OfficesWidget(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 180,
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -83,17 +82,25 @@ Widget OfficesWidget(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("${AppLocalizations.of(context)!.translate('collection_office')}"),
+                              Text("${AppLocalizations.of(context)!.translate('collection_office')}",
+                              style: TextStyle(
+                              fontSize:  size.width>360?14:12
+                              ),
+      ),
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on,
                                     color: Colors.black87,
-                                  ),
+                                    size: size.width > 360 ? 20 : 16,
+
+),
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text(office.departure.toString()),
+                                  Text(office.departure.toString(),  style: TextStyle(
+fontSize:  size.width>360?14:12
+),),
                                 ],
                               )
                             ],
@@ -117,7 +124,7 @@ Widget OfficesWidget(
                           ],
                         ),
                         Container(
-                          width: 180,
+
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -128,17 +135,22 @@ Widget OfficesWidget(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("${AppLocalizations.of(context)!.translate('destination_office')}"),
+                              Text("${AppLocalizations.of(context)!.translate('destination_office')}",style: TextStyle(
+fontSize:  size.width>360?14:12
+),),
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on,
                                     color: Colors.black87,
+size: size.width > 360 ? 20 : 16,
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text(office.destination.toString()),
+                                  Text(office.destination.toString(),style: TextStyle(
+fontSize:  size.width>360?14:12
+),),
                                 ],
                               )
                             ],
@@ -237,7 +249,7 @@ chooseExpeditionModeEvent(
 expeditionMode: Tariftype.boat));
 },
 child: Container(
-width: 180,
+width:size.width>360?180: 120,
 height: 70,
 decoration: BoxDecoration(
 border: Border.all(
@@ -309,8 +321,9 @@ chooseExpeditionModeEvent(
 expeditionMode: Tariftype.plane));
 },
 child: Container(
-width: 180,
+width:size.width>360?180: 120,
 height: 70,
+
 decoration: BoxDecoration(
 border: Border.all(
 width: 1, color: KabaChineColors.border),

@@ -766,5 +766,6 @@
   "kaba_chine_tutorial_message":"Hello , I would like to receive training on your feature called \"KABA CHINE\".",
   "voucher_new_user": "New User Voucher",
     "cannot_use_voucher": "You cannot use a voucher",
-  "new_user_voucher_info": "This voucher is for your first orders"
+  "new_user_voucher_info": "This voucher is for your first orders",
+  "fee_can_be_changed": "These fees can be subject of change"
 }

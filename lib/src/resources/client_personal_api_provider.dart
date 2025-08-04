@@ -500,8 +500,7 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchTopUp(CustomerModel customer, String phoneNumber, String balance,
-      double fees) async {
+  launchTopUp(CustomerModel customer, String phoneNumber, String balance,double fees) async {
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -540,6 +539,109 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+  launchSemoa(CustomerModel customer,Map<String, dynamic> paymentData) async {
+    debugPrint("entered launchSemoa");
+    if (await Utils.hasNetwork()) {
+      xrint("entered launchSemoa");
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        ServerRoutes.SEMOA_INIT_PAYMENT,
+        data: json.encode(paymentData),
+      );
+
+      xrint("Semoa payload"+response.data.toString());
+      if (response.statusCode == 200) {
+        String order_reference = mJsonDecode(response.data)["order_reference"];
+        if (order_reference!=null) {
+          return mJsonDecode(response.data);
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+  launchStoreSemoaTransaction(CustomerModel customer,Map<String, dynamic> paymentData) async {
+    xrint("entered launchStoreSemoaTransaction");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        ServerRoutes.SEMOA_STORE_TRANSACTION,
+        data: json.encode(paymentData),
+      );
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          // String link = mJsonDecode(response.data)["data"]["url"];
+          // return link;
+          return mJsonDecode(response.data);
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+  launchUpdateSemoaTransaction(CustomerModel customer,Map<String, dynamic> statusData)async {
+    xrint("entered launchStoreSemoaTransaction");
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token!)
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        ServerRoutes.SEMOA_UPDATE_TRANSACTION,
+        data: json.encode(statusData),
+      );
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+        int errorCode = mJsonDecode(response.data)["error"];
+        if (errorCode == 0) {
+          // String link = mJsonDecode(response.data)["data"]["url"];
+          // return link;
+          return response.data;
+        } else
+          throw Exception(-1); // there is an error in your request
+      } else {
+        throw Exception(response.statusCode); // you have no right to do this
+      }
+    } else {
+      throw Exception(-2); // you have no network
+    }
+  }
+
 
   launchPayDunya(CustomerModel customer, String balance, double fees) async {
     xrint("entered launchPayDunya ${json.encode({

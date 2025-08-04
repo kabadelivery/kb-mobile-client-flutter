@@ -1,6 +1,7 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
@@ -15,7 +16,10 @@ import 'package:http/http.dart' as http;
 import '../../../../../microservices/kaba_chine/data/order/data_remote_source.dart';
 import '../../../../../microservices/kaba_chine/domain/order/repository.dart';
 import '../../../../../microservices/kaba_chine/usecases/order/payForDelivery.dart';
+import '../../../../../resources/client_personal_api_provider.dart';
+import '../../../../../resources/kkiapay_provider.dart';
 import '../../../../../utils/Enums/type_of_transaction.dart';
+import '../../../webview/paymentWebView.dart';
 
 
 class TopNewUpPage extends StatefulWidget {
@@ -34,6 +38,7 @@ class TopNewUpPage extends StatefulWidget {
   double? fees_flooz = 10.0;
 
   double? fees_bankcard = 10.0;
+  double? fees_momo = 10.0;
 
   int? selectedPosition = 1;
 
@@ -76,11 +81,21 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   var _searchChoices = null;
 
   var dropdownValue = "Tmoney";
+  List<Map<String, dynamic>> momoPaymentModes = [
+    {"name": "Tmoney", "id": "t_money","logo":"assets/images/png/tmoney_logo.png"},
+    {"name": "Flooz", "id": "flooz", "logo":"assets/images/png/moov_africa_logo.png"},
+  ];
+  List<Map<String, dynamic>> bankPaymentModes = [
+    {"name":"Visa","id":"visa_card","logo":"assets/images/png/visa_logo.png"},
+    {"name":"MasterCard","id":"master_card","logo":"assets/images/png/master_card_logo.png"},
+    {"name":"American Express","id":"american_express","logo":"assets/images/png/american_express.png"},
+  ];
 
+  String momo_picked_id="t_money";
+  String bank_picked_id="visa_card";
   @override
   void initState() {
     super.initState();
-
     widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
     _totalAmountFieldController = new TextEditingController(text: "0");
@@ -98,6 +113,11 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
     _totalFocusNode = new FocusNode();
     _amountFocusNode = new FocusNode();
+    if(widget.transactionType==TransactionType.topup){
+      momoPaymentModes.add({"name":"Orange money","id":"orange_money","logo":"assets/images/png/orange_money_logo.png"});
+      momoPaymentModes.add({"name":"MTN","id":"mtn","logo":"assets/images/jpg/mtn_logo.jpg"});
+      momoPaymentModes.add({"name":"Wave","id":"wave","logo":"assets/images/png/wave_logo.png"});
+    }
   }
 
   @override
@@ -230,49 +250,140 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                 ): Container(),
                 SizedBox(height: 30),
                 widget.selectedPosition == 1
-                    ? Container(
-                        decoration: BoxDecoration(
-                            color: KColors.new_gray,
-                            borderRadius: BorderRadius.circular(5)),
-                        margin:
-                            EdgeInsets.only( right: 10, left: 10),
-                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                        child:
-                            // usage example
-                            DropdownButton<String>(
-                          isExpanded: true,
-                          value: dropdownValue,
-                          underline: Container(),
-                          icon: const Icon(FontAwesomeIcons.chevronDown,
-                              size: 15, color: KColors.primaryColor),
-                          elevation: 16,
-                          style: const TextStyle(
-                              color: KColors.primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
-                          hint: Text(
-                              "${AppLocalizations.of(context)!.translate('choose_mobile_money_service')}",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 14)),
-                          onChanged: (newValue) {
-                            setState(() {
-                              dropdownValue = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            'Tmoney',
-                            'Flooz',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ))
-                    : Container(),
+                    ? Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                             width: MediaQuery.of(context).size.width,
+                              height:momoPaymentModes.length==2 ?80:120,
+                              child: GridView.builder(
+                                itemCount: momoPaymentModes.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        momo_picked_id = momoPaymentModes[index]['id'];
+                                        dropdownValue = momoPaymentModes[index]['name'];
+                                      });
+                                    }, child: Container(
+                                    height: 30,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(momoPaymentModes[index]['logo']),
+                                            fit: BoxFit.fitWidth),
+                                        color: KColors.new_gray,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: momo_picked_id==momoPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.2):Colors.transparent,
+                                          border: Border.all(
+                                              color:momo_picked_id==momoPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.5):Colors.transparent,
+                                              width: 4),
+                                          borderRadius: BorderRadius.circular(5)),
+                                      ),
+                                    ),
+                                  );
+                                }, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  childAspectRatio: 1.9,
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 10,
+                                ),
+                              )
 
+                          ),
+                        ),
+                        /* Container(
+                            decoration: BoxDecoration(
+                                color: KColors.new_gray,
+                                borderRadius: BorderRadius.circular(5)),
+                            margin:
+                                EdgeInsets.only( right: 10, left: 10),
+                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                            child:
+                                // usage example
+                                DropdownButton<String>(
+                              isExpanded: true,
+                              value: dropdownValue,
+                              underline: Container(),
+                              icon: const Icon(FontAwesomeIcons.chevronDown,
+                                  size: 15, color: KColors.primaryColor),
+                              elevation: 16,
+                              style: const TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                              hint: Text(
+                                  "${AppLocalizations.of(context)!.translate('choose_mobile_money_service')}",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14)),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  dropdownValue = newValue!;
+                                });
+                              },
+                              items: <String>[
+                                'Tmoney',
+                                'Flooz',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            )),*/
+                      ],
+                    )
+                    :    Container(),
+                  /*
+                  * Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: MediaQuery.of(context).size.width*0.8,
+                      height:70,
+                      alignment: Alignment.center,
+                      child: GridView.builder(
+                        itemCount: bankPaymentModes.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                bank_picked_id = bankPaymentModes[index]['id'];
+                              });
+                            }, child: Container(
+                            height: 40,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(bankPaymentModes[index]['logo']),
+                                    fit: BoxFit.contain),
+                                color: KColors.new_gray,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: bank_picked_id==bankPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.2):Colors.transparent,
+                                  border: Border.all(
+                                      color:bank_picked_id==bankPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.5):Colors.transparent,
+                                      width: 4),
+                                  borderRadius: BorderRadius.circular(5)),
+                            ),
+                          ),
+                          );
+                        }, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 10,
+                      ),
+                      )
+
+                  ),
+                )
+                  * */
                 widget.selectedPosition == 1
                     ? Column(children: [
                         SizedBox(height: 30),
@@ -454,6 +565,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                     ),
                                   ))
                             ]),
+                        Text("${AppLocalizations.of(context)!.translate('fee_can_be_changed')}",style: TextStyle(color: Colors.grey, fontSize: 12),),
                         SizedBox(height: 10),
                         SizedBox(height: 10),
                         Row(
@@ -510,11 +622,14 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                           borderRadius: BorderRadius.circular(5)),
                       child: GestureDetector(
                         onTap: () async{
-                          if(widget.transactionType==null || widget.transactionType == TransactionType.topup)
-                          iLaunchTransaction();
+                          if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
+                            if(widget.selectedPosition==1)
+                            launchNewMomoTopUp();
+                            else
+                             launchNewCardTopUp();
+                          }
                           else if(widget.transactionType == TransactionType.kaba_chine)
                              kabaChinePay();
-
                         },
                         child: Container(
                           child: Row(
@@ -642,7 +757,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               "${_amountFieldController!.text}",
               _getFees());
         } else if (widget.selectedPosition == 2) {
-          // launch pay dunya
           String amount = "${_amountFieldController!.text}";
           int _amount = int.parse(amount);
           if (_amount >= BANK_MIN_AMOUNT)
@@ -889,8 +1003,151 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       showLoading(false);
     });
   }
+  void launchNewMomoTopUp()async{
+    setState(() {
+      showLoading(true);
+    });
+    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    bool launch_other_payment = false;
+
+    if(momo_picked_id!="flooz" && momo_picked_id!="t_money"){
+      launch_other_payment=true;
+    }
+    if(!launch_other_payment){
+      try{
+        Map result = await provider.launchTopUp(customer,
+            _phoneNumberFieldController!.text,
+            _amountFieldController!.text,
+            _getFees());
+        if(result!=null){
+          Navigator.of(context).pop({"success": result['success'],"code":result['code']});
+        }
+      }catch(_){
+        launch_other_payment=true;
+      }
+    }
+    if(launch_other_payment){
+      KkiapayProvider kkiapayProvider = new KkiapayProvider();
+      kkiapayProvider.launchKkiapayPayment(
+        context,
+        amount:int.parse(_amountFieldController!.text),
+        customer: customer,
+        phone_number: _phoneNumberFieldController!.text,
+        feesAmount: _getFees(), typeOfTransaction: 'momo',
+        );
+    }
+
+  }
+  void launchNewCardTopUp()async{
+    setState(() {
+      showLoading(true);
+    });
+    bool launch_other_payment = false;
+    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    Map<String, dynamic> semoaResult = {};
+    try{
+      Map<String, dynamic> paymentData = {
+        "amount": (_getRealInitialAmountFromTotal()),
+        "description": "Paiement par carte",
+        "user": {
+          "lastname": "${customer.nickname}",
+          "firstname": "",
+          "phone": "${customer.username}",
+        }
+      };
+      semoaResult = await provider.launchSemoa(customer, paymentData);
+    }catch(_){
+      launch_other_payment=true;
+    }
+    if(semoaResult!=null && semoaResult.isNotEmpty){
+      debugPrint('semoaResult $semoaResult');
+      if(semoaResult['order_reference']!=null){
+        Map<String, dynamic> semoaData = semoaResult;
+        List<dynamic> paymentsMethods = semoaData['payments_method'] ?? [];
+        String orderReference = semoaData['order_reference'] ?? '';
+        Map<String, dynamic> semoaStoreData = {
+          'transaction_id': orderReference,
+          'amount': int.parse(_totalAmountFieldController!.text),
+          'user_id': customer?.id,
+          'fees': _getFees(),
+          'details': 'Rechargement de carte',
+        };
+        Map result = await provider.launchStoreSemoaTransaction(customer,semoaStoreData);
+        debugPrint('paymentsMethods: $paymentsMethods');
+        if( result!=null && result['data']['success']&& paymentsMethods.isNotEmpty) {
+          Map<String, dynamic>? firstPaymentMethod;
+          if (paymentsMethods.isNotEmpty && paymentsMethods[0] is List) {
+            List<dynamic> firstGroup = paymentsMethods[0];
+            if (firstGroup.isNotEmpty) {
+              firstPaymentMethod = firstGroup[0];
+            }
+          }
+          if (firstPaymentMethod != null) {
+            String actionUrl = firstPaymentMethod['action'] ?? '';
+            String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
+            String description = firstPaymentMethod['description'] ?? '';
+            if (actionUrl.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WebViewScreen(
+                    url: actionUrl,
+                    title: '${AppLocalizations.of(context)!.translate('top_up')}',
+                    onPaymentComplete: (bool success) async {
+                        debugPrint('success: $success');
+                        if(success==false){
+                          launch_other_payment = true;
+                        }else{
+                          Map<String, dynamic> statusData = {
+                            'transaction_id': orderReference,
+                            'status': success ? 'SUCCESSFUL' : 'FAILED',
+                          };
+                          try{
+                            Map<String, dynamic> result = await provider.launchUpdateSemoaTransaction(customer,statusData);
+                            Navigator.of(context).pop({"success": result['success']});
+                          }catch(_){}
+                        }
+                    },
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('URL de paiement non disponible pour $gatewayName'),
+                  backgroundColor: Colors.orange,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+
+          }
+        }
+    }else{
+      launch_other_payment=true;
+      }
+    }
+    if(launch_other_payment){
+      KkiapayProvider kkiapayProvider = new KkiapayProvider();
+      String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
+      kkiapayProvider.launchKkiapayPayment(
+        context,
+        amount:int.parse(_amountFieldController!.text),
+        customer: customer,
+        selectedCard: picked_card,
+        feesAmount: _getFees(),
+        typeOfTransaction: 'card',
+      );
+      setState(() {
+        showLoading(true);
+      });
+    }
+    }
   _onSwitch(int i) {
     setState(() {
+      showLoading(false);
       widget.selectedPosition = i;
     });
   }

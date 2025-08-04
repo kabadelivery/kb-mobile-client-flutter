@@ -345,5 +345,14 @@ class ServerRoutes {
   static const String FETCH_SHIPPING_PRICE_RANGE = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/shipping_price_range/get";
   static const String LINK_CHECK_IF_IS_NEW_USER= ServerConfig.SERVER_ADDRESS + "/api/user/is-new";
 
+  //SEMOA API ENDPOINTS
+  static const String SEMOA_INIT_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/mobile/api/semoa/order";
+  static const String SEMOA_STORE_TRANSACTION= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/semoa/store";
+  static const String SEMOA_UPDATE_TRANSACTION= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/semoa/update";
+
+  //KKiapay API EndpointsKKIAPAY_CONFIRM_TRANSACTION
+  static const String KKIAPAY_STORE_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/store";
+  static const String KKIAPAY_CONFIRM_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/confirm";
+
 
 }

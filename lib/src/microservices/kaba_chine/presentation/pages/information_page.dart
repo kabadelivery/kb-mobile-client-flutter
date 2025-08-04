@@ -35,6 +35,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    debugPrint("UserInformationPage size ${size.width} ");
     return BlocConsumer<InformationBloc, InformationState>(
    listener: (context, state) {
        if(state is getInfosState){

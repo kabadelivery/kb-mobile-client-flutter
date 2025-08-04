@@ -65,14 +65,6 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
           contactAssitanceWidget(
               border: true,
               context: context,
-              title: "${AppLocalizations.of(context)!.translate('send_us_email')}",
-              subtitle: "contact@kaba-chine.com",
-              onPress: ()=>contactEmail(email: "contact@kaba-chine.com"),
-              icon:Icon(FontAwesomeIcons.solidEnvelope, color:KabaChineColors.primary, size: 20, )
-          ),
-          contactAssitanceWidget(
-              border: true,
-              context: context,
               title: "${AppLocalizations.of(context)!.translate('train_yourself')}",
               subtitle: "${AppLocalizations.of(context)!.translate('link_to_training')}",
               onPress: ()=>contactWhatsApp(phoneNumber: "22892109474",message: AppLocalizations.of(context)!.translate('kaba_chine_tutorial_message')),
@@ -98,7 +90,7 @@ Widget contactAssitanceWidget({required BuildContext context,required String tit
     child: MaterialButton(
       onPressed: onPress,
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(size.width>360? 15.0: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -117,8 +109,11 @@ Widget contactAssitanceWidget({required BuildContext context,required String tit
                Column(
                  crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
-                   Text(title,style: TextStyle(color: Colors.black87,fontSize: 14,fontWeight: FontWeight.normal),),
-                   Text(subtitle,style: TextStyle(color: Colors.black54,fontSize: 12),),
+                   Text(title,style: TextStyle(color: Colors.black87,fontSize: size.width>360? 14:12,fontWeight: FontWeight.normal),),
+                   Container(
+                       width: size.width*.54,
+                       height: size.width>360? 10: 30,
+                       child: Text(subtitle,style: TextStyle(color: Colors.black54,fontSize:size.width>360? 12:10),)),
                  ],
                ),
              ],

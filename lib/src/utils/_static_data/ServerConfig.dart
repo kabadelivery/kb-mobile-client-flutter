@@ -8,14 +8,14 @@ class ServerConfig {
   //DEV//
 
     static const String ip_address = "dev.kaba-delivery.com"; // dev server
-    static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+    //static const String pay_ip_address = "dev.pay.kaba-delivery.com";
     static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
-    static const String kaba_chine ="https://kaba-chine-backend.onrender.com";
+    static const String kaba_chine ="https://148.230.85.247.nip.io";
 
   //LOCAL
 
   //static const String ip_address = "moldova-blocked-maintained-period.trycloudflare.com"; // dev server
-  //static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+  static const String pay_ip_address = "2570d8c37378.ngrok-free.app";
   //static const String stat_ip_address="b13b-2c0f-f0f8-704-ec00-3543-942a-7d39-7a4e.ngrok-free.app"; //dev
 
   //static const String pay_ip_address = "pay.kaba-technology.com";

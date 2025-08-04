@@ -71,7 +71,7 @@ Widget tarifExpeditionWidget({required BuildContext context,required ShippingEnt
               Row(
                 children: [
                   Container(
-                    width: 100,
+                    width:size.width>360? 100: 50,
                     height: 2,
                     decoration: BoxDecoration(
                       color: Color(0x61dadada),
@@ -155,13 +155,13 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                     children: [
                       Transform.rotate(
                           angle: tarif.mode==Tariftype.plane.value? 120:0,
-                          child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,)),
+                          child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,size: size.width>360? 20:15,)),
                       SizedBox(width: 5,),
                       Text(
                         tarif.mode == 0 ? "${AppLocalizations.of(context)!.translate('boat')}" : "${AppLocalizations.of(context)!.translate('plane')}",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: size.width>360? 16:12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -175,7 +175,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                       "${tarif.duration} "+"${AppLocalizations.of(context)!.translate('days')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 14,
+                        fontSize: size.width>360? 14:12,
                       ),
                     ),
                   ],
@@ -191,7 +191,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                   "${tarif.price?.toInt()} FCFA ",
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: 20,
+                    fontSize: size.width>360? 20:14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -210,7 +210,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                           "${AppLocalizations.of(context)!.translate('fast_delivery')}",
                           style: TextStyle(
                             color: Colors.black54,
-                            fontSize: 14,
+                            fontSize: size.width>360? 14:10,
                           ),
                         ),
                       ],
@@ -224,7 +224,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                           "${AppLocalizations.of(context)!.translate('real_time_tracking')}",
                           style: TextStyle(
                             color: Colors.black54,
-                            fontSize: 14,
+                            fontSize: size.width>360? 14:10,
                           ),
                         ),
                       ],
@@ -240,7 +240,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                       "${AppLocalizations.of(context)!.translate('economy_rate')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 14,
+                        fontSize: size.width>360? 14:10,
                       ),
                     ),
                   ],
@@ -254,7 +254,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                      "${AppLocalizations.of(context)!.translate('large_packages_accepted')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 14,
+                        fontSize: size.width>360? 14:12,
                       ),
                     ),
                   ],

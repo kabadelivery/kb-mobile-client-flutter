@@ -19,7 +19,7 @@ void startChatPopUp({required BuildContext context}) {
           return AlertDialog(
             content: Container(
               width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.width>360? MediaQuery.of(context).size.height * 0.2: MediaQuery.of(context).size.height * 0.3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,

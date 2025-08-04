@@ -92,6 +92,7 @@ dependencies:
   dotted_border: ^3.0.1
   flutter_bloc: ^9.1.1
   cherry_toast:
+  kkiapay_flutter_sdk: ^1.3.4
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0
@@ -237,6 +238,14 @@ flutter:
     - assets/images/png/certif.png
     - assets/images/png/certif_white.png
     - assets/images/png/start_certif.png
+    - assets/images/png/american_express.png
+    - assets/images/png/master_card_logo.png
+    - assets/images/png/orange_money_logo.png
+    - assets/images/png/tmoney_logo.png
+    - assets/images/png/moov_africa_logo.png
+    - assets/images/jpg/mtn_logo.jpg
+    - assets/images/png/visa_logo.png
+    - assets/images/png/wave_logo.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:
