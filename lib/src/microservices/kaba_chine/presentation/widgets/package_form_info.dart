@@ -208,9 +208,9 @@ class _PackageFormInfoState extends State<PackageFormInfo> {
                       child: TextFormField(
                         controller: _weight,
                         inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d+[\.,]?\d{0,}$')),
                         ],
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),

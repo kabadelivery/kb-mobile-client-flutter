@@ -147,12 +147,23 @@ class ServiceMainPageState extends State<ServiceMainPage>
       context: context,
       builder: (context) => Container(
           width: 335,
-          height: 105,
+          height: 155,
           margin: EdgeInsets.all(20),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
+              Container(
+                  width:335 ,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_our_customer_service')}",style: TextStyle(color: Colors.white,fontSize: 14))),
               InkWell(
                 onTap: () => {_callCustomerCare()},
                 child: Container(
@@ -223,7 +234,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             InkWell(
             onTap: () => _showBottomContactSheet(),
                 child: Container(
-                width: 42,
+                width: 70,
                 height: 42,
                 child: IconButton(
                 icon: Icon(Icons.phone, color: Colors.white),
@@ -547,7 +558,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/d1ae6efb-1f15-4bfc-ab2d-2731c1280fd8/VgIF2un2jh.json")),
+                                    child: Lottie.network("https://lottie.host/fe005783-1b4c-457e-83a3-a826d7388550/3c37XYz9Fo.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('china')}",

@@ -765,5 +765,7 @@
   "voucher_new_user": "BON NOUVEL UTILISATEUR",
   "cannot_use_voucher": "Vous ne pouvez pas utiliser de bon de réduction",
   "new_user_voucher_info": "Ce bon de réduction est destiné à vos premières commandes",
-  "fee_can_be_changed": "Ces frais peuvent être sujet de modifications"
+  "fee_can_be_changed": "Ces frais peuvent être sujet de modifications",
+  "contact_our_customer_service": "Contactez notre service client",
+  "shipping_rates_updating": "Les tarifs d'expédition sont en cours de mise à jour"
 }

@@ -23,7 +23,8 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
         unit: 'kg',
         duration: 21,
         route: ShippingModel(departure: 'GuangZhou', destination: "Lomé"),
-        updatedAt: new DateTime.now().toString()
+        updatedAt: new DateTime.now().toString(),
+        isActive: false
     ),
     TarifModel(
         id: 'sea-default',
@@ -32,7 +33,8 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
         unit: 'CBM',
         duration: 45,
         route: ShippingModel(departure: 'GuangZhou', destination: "Lomé"),
-        updatedAt: new DateTime.now().toString()
+        updatedAt: new DateTime.now().toString(),
+        isActive: true
     )
   ];
   ShippingRemoteDataSourceImpl(this.client);
@@ -48,6 +50,7 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
       }
 
       final rawText = response.body;
+      debugPrint("Raw Text $rawText");
       List<dynamic> jsonList;
       try {
         jsonList = json.decode(rawText);
@@ -69,7 +72,8 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
             duration: json['shippingMode']== 'AVION' ? 21 : 45,
             unit: json['shippingMode']== 'AVION' ? 'kg' : 'CBM',
             route: ShippingModel(departure: 'GuangZhou', destination: "Lomé"),
-            updatedAt: json['updatedAt'].toString()
+            updatedAt: json['updatedAt'].toString(),
+            isActive: json['isActive']
         );
         activeRates.add(tarif);
       }

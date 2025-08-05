@@ -85,3 +85,5 @@ class getDeliveryPaymentInfo extends OrderEvent{
   final String deliveryId;
   getDeliveryPaymentInfo({required this.deliveryId});
 }
+class GetExpiditionModeEvent extends OrderEvent{
+}

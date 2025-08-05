@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../microservices/kaba_chine/data/order/data_remote_source.dart';
 import '../../../../../microservices/kaba_chine/domain/order/repository.dart';
@@ -19,6 +20,7 @@ import '../../../../../microservices/kaba_chine/usecases/order/payForDelivery.da
 import '../../../../../resources/client_personal_api_provider.dart';
 import '../../../../../resources/kkiapay_provider.dart';
 import '../../../../../utils/Enums/type_of_transaction.dart';
+import '../../../../../utils/functions/topups.dart';
 import '../../../webview/paymentWebView.dart';
 
 
@@ -1014,6 +1016,10 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     if(momo_picked_id!="flooz" && momo_picked_id!="t_money"){
       launch_other_payment=true;
     }
+    bool isMomoFromTogo   =await detectTogoMomoOperator(_phoneNumberFieldController!.text);
+    if(!isMomoFromTogo){
+      launch_other_payment=true;
+    }
     if(!launch_other_payment){
       try{
         Map result = await provider.launchTopUp(customer,
@@ -1048,8 +1054,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     CustomerModel customer = await CustomerUtils.getCustomer();
     Map<String, dynamic> semoaResult = {};
     try{
+      debugPrint("_getRealInitialAmountFromTotal ${_getRealTotalAmountFromInitial()}");
       Map<String, dynamic> paymentData = {
-        "amount": (_getRealInitialAmountFromTotal()),
+        "amount": (_getRealTotalAmountFromInitial()),
         "description": "Paiement par carte",
         "user": {
           "lastname": "${customer.nickname}",
@@ -1069,7 +1076,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         String orderReference = semoaData['order_reference'] ?? '';
         Map<String, dynamic> semoaStoreData = {
           'transaction_id': orderReference,
-          'amount': int.parse(_totalAmountFieldController!.text),
+          'amount': int.parse(_amountFieldController!.text),
           'user_id': customer?.id,
           'fees': _getFees(),
           'details': 'Rechargement de carte',
@@ -1089,30 +1096,13 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
             String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
             String description = firstPaymentMethod['description'] ?? '';
             if (actionUrl.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WebViewScreen(
-                    url: actionUrl,
-                    title: '${AppLocalizations.of(context)!.translate('top_up')}',
-                    onPaymentComplete: (bool success) async {
-                        debugPrint('success: $success');
-                        if(success==false){
-                          launch_other_payment = true;
-                        }else{
-                          Map<String, dynamic> statusData = {
-                            'transaction_id': orderReference,
-                            'status': success ? 'SUCCESSFUL' : 'FAILED',
-                          };
-                          try{
-                            Map<String, dynamic> result = await provider.launchUpdateSemoaTransaction(customer,statusData);
-                            Navigator.of(context).pop({"success": result['success']});
-                          }catch(_){}
-                        }
-                    },
-                  ),
-                ),
-              );
+              final uri = Uri.parse(actionUrl);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                Navigator.of(context).pop();
+              } else {
+                launch_other_payment=true;
+              }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

@@ -17,8 +17,14 @@ import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyOrderWidget.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:fluttertoast/fluttertoast.dart' as to;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
+import '../../../../utils/_static_data/AppConfig.dart';
+import '../../../../utils/_static_data/ImageAssets.dart';
 import '../../../../xrint.dart';
 
 class DailyOrdersPage extends StatefulWidget {
@@ -57,6 +63,93 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
 
   }
 
+  _jumpToWhatsapp() async {
+    final link = WhatsAppUnilink(
+      phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+      text: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}",
+    );
+    await launch('$link');
+  }
+
+  Future<void> _callCustomerCare() async {
+    const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+  _showBottomContactSheet() {
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      expand: false,
+      context: context,
+      builder: (context) => Container(
+          width: 335,
+          height: 155,
+          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Container(
+                  width:335 ,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_our_customer_service')}",style: TextStyle(color: Colors.white,fontSize: 14))),
+
+              InkWell(
+                onTap: () => {_callCustomerCare()},
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('phone_call')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
+              ),
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: KColors.new_gray,
+                  height: 1),
+              InkWell(
+                onTap: () => {_jumpToWhatsapp()},
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        Container(
+                            width: 20,
+                            height: 20,
+                            child: Image.asset(ImageAssets.whatsapp)),
+                      ]),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
   @override
   void dispose() {
     mainTimer!.cancel();
@@ -72,6 +165,19 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     return Scaffold(
         backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: <Widget>[
+          InkWell(
+            onTap: () => _showBottomContactSheet(),
+            child: Container(
+              width: 70,
+              height: 42,
+              child: IconButton(
+                icon: Icon(Icons.phone, color: Colors.white),
+                onPressed: () => _showBottomContactSheet(),
+              ),
+            ),
+          ),
+        ],
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         backgroundColor: KColors.primaryColor,
          centerTitle: true,

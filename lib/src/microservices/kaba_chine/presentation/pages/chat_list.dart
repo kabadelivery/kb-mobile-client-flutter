@@ -147,7 +147,7 @@ class _AllChatPageState extends State<AllChatPage> {
                             Row(
                               children: [
                                 CircleAvatar(
-                                    radius: 30,
+                                    radius:size.width>360?  30:20,
                                     backgroundColor: KabaChineColors.primary,
                                     child: Icon(Icons.chat, color: Colors.white)
                                 ),
@@ -155,10 +155,11 @@ class _AllChatPageState extends State<AllChatPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("${AppLocalizations.of(context)!.translate('chat_with_kaba')}"+" ID-${chatList[index].id.toString().substring(0,9)}..."),
+                                    Text("${AppLocalizations.of(context)!.translate('chat_with_kaba')}"+" ID-${chatList[index].id.toString().substring(0,size.width>360? 9:5)}...",
+                                      style: TextStyle(fontSize: size.width>360? 16:12),),
                                     SizedBox(height: 5,),
                                     Text("${chatList[index].messages!.last.isFromAdmin! ? "${AppLocalizations.of(context)!.translate('admin')}" : "${AppLocalizations.of(context)!.translate('you')}"} : "
-                                        "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,30)+"...":chatList[index].messages!.last.content}",
+                                        "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,size.width >360?30:15)+"...":chatList[index].messages!.last.content}",
                                       style: TextStyle(color: Colors.grey,fontSize: 12),)
                                   ],
                                 ),

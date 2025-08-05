@@ -88,3 +88,8 @@ class getDeliveryPaymentInfoState extends OrderState{
   final PaymentInfoModel paymentInfo;
   getDeliveryPaymentInfoState({required this.paymentInfo});
 }
+class GetExpiditionModeState extends OrderState{
+  final bool isBoatActive;
+  final bool isPlaneActive;
+  GetExpiditionModeState({required this.isBoatActive, required this.isPlaneActive});
+}

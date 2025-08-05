@@ -348,7 +348,6 @@ class ServerRoutes {
   //SEMOA API ENDPOINTS
   static const String SEMOA_INIT_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/mobile/api/semoa/order";
   static const String SEMOA_STORE_TRANSACTION= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/semoa/store";
-  static const String SEMOA_UPDATE_TRANSACTION= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/semoa/update";
 
   //KKiapay API EndpointsKKIAPAY_CONFIRM_TRANSACTION
   static const String KKIAPAY_STORE_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/store";

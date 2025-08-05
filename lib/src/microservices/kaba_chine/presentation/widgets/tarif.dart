@@ -1,11 +1,16 @@
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/tarif/shipping_entity.dart';
 import '../../domain/tarif/tarif_entity.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+
+import '../bloc/information/information_bloc.dart';
 Widget tarifExpeditionWidget({required BuildContext context,required ShippingEntity shipping,required TarifEntity boatRate,required TarifEntity planeRate}) {
   Size size = MediaQuery.of(context).size;
   return Padding(
@@ -37,18 +42,33 @@ Widget tarifExpeditionWidget({required BuildContext context,required ShippingEnt
                 ),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(width: 10,),
-                  Icon(Icons.money,color: Colors.black87,),
-                  SizedBox(width: 10,),
-                  Text(
-                    "${AppLocalizations.of(context)!.translate('our_shipping_rates')}",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      SizedBox(width: 10,),
+                      Icon(Icons.money,color: Colors.black87,),
+                      SizedBox(width: 10,),
+                      Text(
+                        "${AppLocalizations.of(context)!.translate('our_shipping_rates')}",
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
+                IconButton(onPressed: (){
+                  BlocProvider.of<InformationBloc>(context).add(getInfosEvent());
+                  CherryToast.info(
+                    toastPosition: Position.center,
+                    toastDuration:
+                    Duration(seconds: 5),
+                    title: Text("${AppLocalizations.of(context)!.translate('shipping_rates_updating')}"),
+
+                  ).show(context);
+                }, icon:Icon(Icons.refresh, color: Colors.black54, size: 16,),)
                 ],
               )
           ),
@@ -99,15 +119,15 @@ Widget tarifExpeditionWidget({required BuildContext context,required ShippingEnt
             ],
           ),
           SizedBox(height: 20,),
-          TarifWidget(
+          planeRate.isActive!?TarifWidget(
               context: context,
               tarif: planeRate
-          ),
+          ):SizedBox(),
           SizedBox(height: 10),
-          TarifWidget(
+         boatRate.isActive!? TarifWidget(
             context: context,
             tarif: boatRate
-          ),
+          ): SizedBox(),
           SizedBox(height: 20),
 
         ],

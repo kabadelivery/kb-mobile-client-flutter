@@ -8,6 +8,7 @@ class TarifEntity{
   String ?unit;
   ShippingEntity? route;
   String ? updatedAt;
+  bool ? isActive;
   TarifEntity({
      this.mode,
      this.price,
@@ -16,5 +17,6 @@ class TarifEntity{
      this.route,
      this.id,
      this.updatedAt,
+     this.isActive,
   });
 }

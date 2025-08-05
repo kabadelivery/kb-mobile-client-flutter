@@ -14,12 +14,17 @@ import 'package:meta/meta.dart';
 import '../../../data/order/data_remote_source.dart';
 import '../../../data/order/delivery_model.dart';
 import '../../../data/order/payment_model.dart';
+import '../../../data/tarif/data_remote_source.dart';
 import '../../../data/user/user_model.dart';
+import '../../../domain/tarif/repository.dart';
+import '../../../domain/tarif/tarif_entity.dart';
 import '../../../domain/user/user_entity.dart';
 import '../../../usecases/order/create_order.dart';
 import '../../../usecases/order/getPaymentInfo.dart';
 import '../../../usecases/order/upload_image.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+
+import '../../../usecases/tarif/get_tarif.dart';
 part 'order_event.dart';
 part 'order_state.dart';
 
@@ -109,6 +114,21 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         GetPaymentInfo getPaymentInfo = GetPaymentInfo(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client())));
         PaymentInfoModel paymentInfo = await getPaymentInfo.call(event.deliveryId);
         emit(getDeliveryPaymentInfoState(paymentInfo: paymentInfo));
+      }
+      else if (event is GetExpiditionModeEvent){
+        TarifEntity boatRate = TarifEntity();
+        TarifEntity planeRate = TarifEntity();
+        //call functions here
+        GetShippingRates getShippingRates = GetShippingRates(ShippingRepositoryImpl(ShippingRemoteDataSourceImpl(http.Client())));
+        List<TarifEntity> rates = await getShippingRates.call();
+        for(var rate in rates) {
+          if (rate.mode == Tariftype.plane.value) {
+            planeRate = rate;
+          } else {
+            boatRate = rate;
+          }
+        }
+        emit(GetExpiditionModeState(isBoatActive: boatRate.isActive!, isPlaneActive: planeRate.isActive!));
       }
     });
   }

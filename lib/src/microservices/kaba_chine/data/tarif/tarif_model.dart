@@ -10,7 +10,8 @@ class TarifModel extends TarifEntity{
     required int duration,
     required String  unit,
     required ShippingModel route,
-    required  String  updatedAt
+    required  String  updatedAt,
+    required bool isActive,
   }):super(
     id: id,
     mode: mode,
@@ -19,6 +20,7 @@ class TarifModel extends TarifEntity{
     unit: unit,
     route: route,
     updatedAt: updatedAt,
+      isActive: isActive,
   );
   factory TarifModel.fromJson(Map<String, dynamic> json) {
     return TarifModel(
@@ -29,6 +31,7 @@ class TarifModel extends TarifEntity{
       unit: json['unit'],
       route: ShippingModel.fromJson(json['route']),
       updatedAt: json['updatedAt'],
+        isActive:json['isActive']
     );
   }
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class TarifModel extends TarifEntity{
       'unit': unit,
       'route': ShippingModel(departure: route!.departure.toString(), destination: route!.destination.toString()).toJson(),
       'updatedAt': updatedAt,
+      'isActive':isActive
     };
   }
 }

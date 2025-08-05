@@ -12,6 +12,7 @@ class KkiapayProvider {
   String temp_transaction_id="";
   bool init_launch=true;
   bool success_launch=true;
+  bool isMomo =true;
   void kkiapayCallback(BuildContext context, Map<String, dynamic> response, Map<String, dynamic> paymentData) {
     debugPrint('In call back');
     switch (response['status']) {
@@ -57,6 +58,7 @@ class KkiapayProvider {
         'phone_number':kkiapayResponse['requestData']['phone']??null,
         'fees': feesAmount,
         'details': 'payment Kkiapay for user $userId',
+        'is_momo': isMomo,
       };
       String apiUrl = ServerRoutes.KKIAPAY_STORE_TRANSACTION;
       final response = await http.post(
@@ -95,6 +97,7 @@ class KkiapayProvider {
         'reference': temp_transaction_id,
         'kkiapay_transaction_id': transactionId,
         'amount': amount.toString(),
+        'is_momo': isMomo,
       };
       debugPrint('success data: ${jsonEncode(successData)}');
       final response = await http.post(
@@ -134,6 +137,11 @@ class KkiapayProvider {
       "selectedCard": selectedCard??"",
       "phone_number":phone_number
     };
+    if(typeOfTransaction=="momo") {
+      isMomo = true;
+    } else {
+      isMomo = false;
+    }
     final kkiapay = KKiaPay(
       amount: amount,
       apikey: 'd991dc8063b911f08da44b2b59e422d0',

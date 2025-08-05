@@ -320,6 +320,19 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          actions: <Widget>[
+            InkWell(
+              onTap: () => _showBottomContactSheet(),
+              child: Container(
+                width: 70,
+                height: 42,
+                child: IconButton(
+                  icon: Icon(Icons.phone, color: Colors.white),
+                  onPressed: () => _showBottomContactSheet(),
+                ),
+              ),
+            ),
+          ],
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           title: Row(
             mainAxisSize: MainAxisSize.min,
@@ -1681,12 +1694,24 @@ void iShowDialog(BuildContext context, String version, int force,{String? change
       context: context,
       builder: (context) => Container(
           width: 335,
-          height: 105,
+          height: 155,
           margin: EdgeInsets.all(20),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
+              Container(
+                  width:335 ,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_our_customer_service')}",style: TextStyle(color: Colors.white,fontSize: 14))),
+
               InkWell(
                 onTap: () => {_callCustomerCare()},
                 child: Container(

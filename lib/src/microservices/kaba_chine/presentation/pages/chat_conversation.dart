@@ -123,20 +123,18 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               child: MaterialButton(
                 padding: EdgeInsets.all(0),
                 elevation: 0,
-
                 color: Colors.transparent,
+                minWidth: size.width,
                 shape:RoundedRectangleBorder(),
                 onPressed: () {
                   BlocProvider.of<ChatBloc>(context).add(closeChatEvent());
                 },
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    SizedBox(width: 20),
                     Text("${AppLocalizations.of(context)!.translate('back_to_chats')}",style: TextStyle(color: Colors.white,fontSize: 16),),
-
+                    Container()
                   ],
                 ),
               )),
@@ -195,7 +193,8 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
           ):Container(),
           Container(
             width: size.width,
-            height:widget.delivery.userId!=null  ? size.height*0.56: size.height*0.67,
+            height:widget.delivery.userId!=null  ?
+            size.height*0.56: size.height*0.67 -(size.width>360? 0: size.height*0.11),
             child: ListView.builder(
               controller: _scrollController,
                 itemCount: conversation.messages!.length,
