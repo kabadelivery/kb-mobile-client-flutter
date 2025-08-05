@@ -91,6 +91,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     {"name":"Visa","id":"visa_card","logo":"assets/images/png/visa_logo.png"},
     {"name":"MasterCard","id":"master_card","logo":"assets/images/png/master_card_logo.png"},
     {"name":"American Express","id":"american_express","logo":"assets/images/png/american_express.png"},
+    {"name":"Solimi","id":"solimi","logo":"assets/images/png/solimi_logo.png"},
   ];
 
   String momo_picked_id="t_money";
@@ -250,50 +251,65 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                     ],
                   ),
                 ): Container(),
-                SizedBox(height: 30),
+
                 widget.selectedPosition == 1
                     ? Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                             width: MediaQuery.of(context).size.width,
-                              height:momoPaymentModes.length==2 ?80:120,
+                             width: MediaQuery.of(context).size.width*0.8,
+                              height: (momoPaymentModes.length / 4).ceil() * 50.0,
                               child: GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
                                 itemCount: momoPaymentModes.length,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  childAspectRatio: 1.5,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5,
+                                ),
                                 itemBuilder: (context, index) {
-                                  return InkWell(
+                                  final isSelected = momo_picked_id == momoPaymentModes[index]['id'];
+
+                                  return GestureDetector(
+
                                     onTap: () {
                                       setState(() {
                                         momo_picked_id = momoPaymentModes[index]['id'];
                                         dropdownValue = momoPaymentModes[index]['name'];
                                       });
-                                    }, child: Container(
-                                    height: 30,
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(momoPaymentModes[index]['logo']),
-                                            fit: BoxFit.fitWidth),
-                                        color: KColors.new_gray,
-                                        borderRadius: BorderRadius.circular(5)),
+                                    },
                                     child: Container(
+
                                       decoration: BoxDecoration(
-                                          color: momo_picked_id==momoPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.2):Colors.transparent,
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: AssetImage(momoPaymentModes[index]['logo']),
+                                          fit: BoxFit.scaleDown, // Adjust to BoxFit.contain if needed
+                                        ),
+                                        color: KColors.new_gray,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isSelected
+                                              ? KabaChineColors.success.withOpacity(0.2)
+                                              : Colors.transparent,
                                           border: Border.all(
-                                              color:momo_picked_id==momoPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.5):Colors.transparent,
-                                              width: 4),
-                                          borderRadius: BorderRadius.circular(5)),
+                                            color: isSelected
+                                                ? KabaChineColors.success.withOpacity(0.5)
+                                                : Colors.transparent,
+                                            width: 4,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   );
-                                }, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
-                                  childAspectRatio: 1.9,
-                                  crossAxisSpacing: 15,
-                                  mainAxisSpacing: 10,
-                                ),
+                                },
                               )
+
 
                           ),
                         ),
@@ -340,52 +356,66 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                             )),*/
                       ],
                     )
-                    :    Container(),
-                  /*
-                  * Padding(
+                    :   Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                       width: MediaQuery.of(context).size.width*0.8,
-                      height:70,
+                      height: (bankPaymentModes.length / 4).ceil() * 80.0,
                       alignment: Alignment.center,
                       child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: bankPaymentModes.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          childAspectRatio: 1.5,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                        ),
                         itemBuilder: (context, index) {
-                          return InkWell(
+                          final isSelected = bank_picked_id == bankPaymentModes[index]['id'];
+
+                          return GestureDetector(
                             onTap: () {
+                              if(bankPaymentModes[index]['id'] == "solimi"){
+                                mDialog("${AppLocalizations.of(context)!.translate('solimi_payment_not_available')}");
+                                return;
+                              }
                               setState(() {
                                 bank_picked_id = bankPaymentModes[index]['id'];
                               });
-                            }, child: Container(
-                            height: 40,
-                            width: 60,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(bankPaymentModes[index]['logo']),
-                                    fit: BoxFit.contain),
-                                color: KColors.new_gray,
-                                borderRadius: BorderRadius.circular(5)),
+                            },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: bank_picked_id==bankPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.2):Colors.transparent,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: AssetImage(bankPaymentModes[index]['logo']),
+                                  fit: BoxFit.contain,
+                                ),
+                                color: KColors.new_gray,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isSelected
+                                      ? KabaChineColors.success.withOpacity(0.2)
+                                      : Colors.transparent,
                                   border: Border.all(
-                                      color:bank_picked_id==bankPaymentModes[index]['id']? KabaChineColors.success.withOpacity(0.5):Colors.transparent,
-                                      width: 4),
-                                  borderRadius: BorderRadius.circular(5)),
+                                    color: isSelected
+                                        ? KabaChineColors.success.withOpacity(0.5)
+                                        : Colors.transparent,
+                                    width: 4,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
                           );
-                        }, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 10,
-                      ),
+                        },
                       )
 
+
                   ),
-                )
-                  * */
+                ),
                 widget.selectedPosition == 1
                     ? Column(children: [
                         SizedBox(height: 30),
@@ -1027,7 +1057,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
             _amountFieldController!.text,
             _getFees());
         if(result!=null){
-          Navigator.of(context).pop({"success": result['success'],"code":result['code']});
+          Navigator.of(context).pop({"success": true,"code":result['code']});
         }
       }catch(_){
         launch_other_payment=true;

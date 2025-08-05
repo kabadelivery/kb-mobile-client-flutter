@@ -112,14 +112,14 @@ class KkiapayProvider {
         debugPrint('SUCCESS request sent to Semoa API successfully');
         debugPrint('context ${context.mounted}');
         if(context.mounted)
-        Navigator.of(context).pop({"check_balance":true});
+        Navigator.of(context).pop({"check_balance":true,"success":true});
       } else {
         debugPrint('Failed to send SUCCESS request: ${response.statusCode} - ${response.body}');
         if(context.mounted)
-        Navigator.of(context).pop({"check_balance":false});
+        Navigator.of(context).pop({"check_balance":false,"success":false});
       }
     } catch (e) {
-      Navigator.of(context).pop({"check_balance":false});
+      Navigator.of(context).pop({"check_balance":false,"success":false});
       if(context.mounted)
       debugPrint('Error sending SUCCESS request: $e');
     }

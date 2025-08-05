@@ -769,5 +769,6 @@
   "new_user_voucher_info": "This voucher is for your first orders",
   "fee_can_be_changed": "These fees can be subject of change",
   "contact_our_customer_service": "Contact our customer service",
-  "shipping_rates_updating": "Shipping rates are being updated"
+  "shipping_rates_updating": "Shipping rates are being updated",
+  "solimi_payment_not_available": "Solimi payment is not available for now"
 }

@@ -1303,8 +1303,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         } else {
           showLoadingPreorder(true);
           if (Utils.isCode(_mCode)) {
+            CustomerModel customerModel = await CustomerUtils.getCustomer();
             widget.presenter!.payNow(
-                widget.customer!,
+                customerModel,
                 widget.foods!,
                 _selectedAddress!,
                 _mCode,
@@ -2248,15 +2249,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     if (results != null && results.containsKey('check_balance')) {
 //      bool check_balance =  results['check_balance'];
-      String link = results['link'];
-      if (results['check_balance'] == true) {
+ //     String link = results['link'];
+      debugPrint("success: ${results['success']}");
+      if (results['success'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-        link = Uri.encodeFull(link);
-        _launchURL(link);
-        _showDialog_(
-            message:
-                "${AppLocalizations.of(context)!.translate('please_check_balance')}",
-            svgIcon: VectorsData.account_balance);
+       // link = Uri.encodeFull(link);
+      //  _showDialog_(
+        //             svgIcon: VectorsData.account_balance,
+        //             message:
+        //                 "${AppLocalizations.of(context)!.translate('please_check_balance')}");
+        //
+        if( widget.orderOrPreorderChoice == 1)
+          _payPreorder(true);
+        else
+          _payNow();
+        //        _launchURL(link);
+        //         _showDialog_(
+        //             message:
+        //                 "${AppLocalizations.of(context)!.translate('please_check_balance')}",
+        //             svgIcon: VectorsData.account_balance);
       }
     }
   }

@@ -763,5 +763,6 @@
   "new_user_voucher_info": "此优惠券仅适用于您的第一次订单",
   "fee_can_be_changed": "这些费用可能会有所变更。",
   "contact_our_customer_service": "联系客服",
-  "shipping_rates_updating": "运费正在更新"
+  "shipping_rates_updating": "运费正在更新",
+  "solimi_payment_not_available": "Solimi 付款方式不可用"
 }
