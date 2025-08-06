@@ -122,10 +122,10 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
       debugPrint(accept_general_service.toString());
     }
     else if(state is chooseProofImageState) {
-      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(imagePath: state.proofImage.path, type: 'proof'));
+      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(context:context,imagePath: state.proofImage.path, type: 'proof'));
     }
     else if(state is chooseProductImageState) {
-      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(imagePath: state.productImage.path, type: 'product'));
+      BlocProvider.of<OrderBloc>(context).add(uploadImageEvent(context:context,imagePath: state.productImage.path, type: 'product'));
     }
     else if(state is LoadingState){
       isLoading = true;

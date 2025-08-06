@@ -560,7 +560,7 @@ class ClientPersonalApiProvider {
       );
 
       xrint("Semoa payload"+response.data.toString());
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         String order_reference = mJsonDecode(response.data)["order_reference"];
         if (order_reference!=null) {
           return mJsonDecode(response.data);
@@ -592,7 +592,7 @@ class ClientPersonalApiProvider {
         data: json.encode(paymentData),
       );
       xrint(response.data.toString());
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           // String link = mJsonDecode(response.data)["data"]["url"];

@@ -69,7 +69,7 @@ class KkiapayProvider {
         body: jsonEncode(pendingData),
       );
       debugPrint('Pending transaction data ${response.body}');
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         debugPrint('Pending transaction data ${response.body}');
         init_launch=false;
        } else {
@@ -107,7 +107,7 @@ class KkiapayProvider {
         },
         body: jsonEncode(successData),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         success_launch = false;
         debugPrint('SUCCESS request sent to Semoa API successfully');
         debugPrint('context ${context.mounted}');

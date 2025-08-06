@@ -72,16 +72,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
       else if(event is createConversationEvent){
         SendMessage createConversation = SendMessage(ChatRepositoryImpl(ChatRemoteDataSourceImpl(http.Client())));
-        debugPrint("XXX deliveryRequestId ${event.chat.deliveryRequestId}");
-        ChatMessageEntity? chatMessage = await createConversation.call(event.chat.messages![0]);
-        chatMessage!.deliveryRequestId = event.chat.deliveryRequestId;
-        ChatMessageEntity? message = await createConversation.call(chatMessage);
-        if(message==null){
+        ChatMessageEntity? created = await createConversation.call(event.chat.messages![0]);
+        if(created==null){
           emit(createConversationState(chat: event.chat, error: true,delivery: event.delivery));
         }else{
-          event.chat.messages!.removeLast();
-          event.chat.messages!.add(message);
-          emit(createConversationState(chat: event.chat, error: false,delivery: event.delivery));
+          event.chat.id = created.conversationId!;
+          event.chat.messages = [created];
+          emit(createConversationState(chat: event.chat, error: false, delivery: event.delivery));
         }
         }
       else if(event is markMessageAsReadEvent){

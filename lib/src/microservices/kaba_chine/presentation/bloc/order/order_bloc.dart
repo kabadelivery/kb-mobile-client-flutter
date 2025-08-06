@@ -8,9 +8,11 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+import '../../../../../ui/customwidgets/LoadingPopUp.dart';
 import '../../../data/order/data_remote_source.dart';
 import '../../../data/order/delivery_model.dart';
 import '../../../data/order/payment_model.dart';
@@ -101,15 +103,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       else if (event is enterAddressEvent){
         emit(enterAddressState(addressText: event.addressText));
       }
-      else if(event is uploadImageEvent){
-        UploadImage uploadImage = UploadImage(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client())));
-        String url = await uploadImage.call(imagePath: event.imagePath,type: event.type);
-        if(url.isNotEmpty){
-          emit(uploadImageState(url: url,type: event.type));
-        }else{
-          emit(uploadImageState(url: "",type: event.type));
-        }
-        }
       else if(event is getDeliveryPaymentInfo){
         GetPaymentInfo getPaymentInfo = GetPaymentInfo(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client())));
         PaymentInfoModel paymentInfo = await getPaymentInfo.call(event.deliveryId);
@@ -131,5 +124,25 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         emit(GetExpiditionModeState(isBoatActive: boatRate.isActive!, isPlaneActive: planeRate.isActive!));
       }
     });
+    on<uploadImageEvent>((event, emit) async {
+      await showDialog(
+        context: event.context,
+        barrierDismissible: false,
+        builder: (_) => LoadingPopup(
+          asyncFunction: () async {
+            final url = await UploadImage(DeliveryRepositoryImpl(DeliveryRemoteDataSourceImpl(http.Client()))).call(
+              imagePath: event.imagePath,
+              type: event.type,
+            );
+            if (url.isNotEmpty) {
+              emit(uploadImageState(url: url, type: event.type));
+            } else {
+              emit(uploadImageState(url: "", type: event.type));
+            }
+          },
+        ),
+      );
+    });
+
   }
 }

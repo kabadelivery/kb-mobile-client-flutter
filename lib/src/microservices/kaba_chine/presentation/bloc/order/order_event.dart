@@ -74,7 +74,8 @@ class enterPackageCodeEvent extends OrderEvent {
 class uploadImageEvent extends OrderEvent {
   final String imagePath;
   final String type;
-  uploadImageEvent({required this.imagePath, this.type = 'proof'});
+  BuildContext context;
+  uploadImageEvent({required this.imagePath, this.type = 'proof',required this.context});
 }
 class initUserInfoEvent extends OrderEvent {
  final String  username;

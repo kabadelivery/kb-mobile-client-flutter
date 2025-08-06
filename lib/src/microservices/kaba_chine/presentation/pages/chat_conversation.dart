@@ -111,187 +111,197 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
       }
         },
         builder: (context, state) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-            Container(
-              padding: EdgeInsets.all(20),
-               width:size.width,
-              alignment: Alignment.bottomCenter,
-              height: 100,
-              color: KabaChineColors.primary,
-              child: MaterialButton(
-                padding: EdgeInsets.all(0),
-                elevation: 0,
-                color: Colors.transparent,
-                minWidth: size.width,
-                shape:RoundedRectangleBorder(),
-                onPressed: () {
-                  BlocProvider.of<ChatBloc>(context).add(closeChatEvent());
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+              Container(
+                padding: EdgeInsets.all(20),
+                 width:size.width,
+                alignment: Alignment.bottomCenter,
+                height: 100,
+                color: KabaChineColors.primary,
+                child: MaterialButton(
+                  padding: EdgeInsets.all(0),
+                  elevation: 0,
+                  color: Colors.transparent,
+                  minWidth: size.width,
+                  shape:RoundedRectangleBorder(),
+                  onPressed: () {
+                    BlocProvider.of<ChatBloc>(context).add(closeChatEvent());
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                      Text("${AppLocalizations.of(context)!.translate('back_to_chats')}",style: TextStyle(color: Colors.white,fontSize: 16),),
+                      Container()
+                    ],
+                  ),
+                )),
+            SizedBox(height: 20),
+         widget.delivery.userId!=null  ?Container(
+        
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   children: [
-                    Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    Text("${AppLocalizations.of(context)!.translate('back_to_chats')}",style: TextStyle(color: Colors.white,fontSize: 16),),
-                    Container()
-                  ],
-                ),
-              )),
-          SizedBox(height: 20),
-       widget.delivery.userId!=null  ?Container(
-
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PackageDeliveryDetailsWidget(
-                            delivery:widget.delivery,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PackageDeliveryDetailsWidget(
+                              delivery:widget.delivery,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0x22a4ddff),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${AppLocalizations.of(context)!.translate('discussion_about_delivery')}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text("${AppLocalizations.of(context)!.translate('view_delivery')}",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                  ),
+                        );
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0x22a4ddff),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${AppLocalizations.of(context)!.translate('discussion_about_delivery')}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Icon(Icons.arrow_forward_ios, size: 16, color: Colors.blue),
-                              ],
-                            ),
-                          ],
-                        )
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ):Container(),
-          Container(
-            width: size.width,
-            height:widget.delivery.userId!=null  ?
-            size.height*0.56: size.height*0.67 -(size.width>360? 0: size.height*0.11),
-            child: ListView.builder(
-              controller: _scrollController,
-                itemCount: conversation.messages!.length,
-                itemBuilder: (context,index){
-                  ChatMessageEntity currentMessage  = conversation.messages![index];
-                  return  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: currentMessage.isFromAdmin! ?CrossAxisAlignment.start:CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                color: currentMessage.isFromAdmin!?
-                                Color(0x77a4ddff):
-                                KabaChineColors.primary,
-                                borderRadius: currentMessage.isFromAdmin!?
-                                BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomRight: Radius.circular(20))
-                            :
-                                BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomLeft: Radius.circular(20)),
                               ),
-                              padding: EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                              SizedBox(height: 10),
+                              Row(
                                 children: [
-                                  Text(currentMessage.content!,
+                                  Text("${AppLocalizations.of(context)!.translate('view_delivery')}",
                                     style: TextStyle(
-                                      color:  currentMessage.isFromAdmin!?Colors.black54:
-                                      Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      color: Colors.blue,
                                     ),
                                   ),
-                                  currentMessage.id.toString().length<10 ?
-                                  Container():
-                              currentMessage.isFromAdmin==false? Row(
-                                    children: [
-                                      SizedBox(width: 10),
-                                      Container(child: currentMessage.isRead! ?Icon(FontAwesomeIcons.checkDouble,color: Colors.white,size: 16):
-                                      Icon(FontAwesomeIcons.check,color: Colors.white,size: 16)),
-                                    ],
-                                  ):Container()
+                                  Icon(Icons.arrow_forward_ios, size: 16, color: Colors.blue),
                                 ],
-                              )
+                              ),
+                            ],
                           )
-                        ],
                       ),
-                    ),
-                  );
-                 }),
-          ),
-          Container(
-            width: size.width*.98,
-            height:80,
-            color: Colors.white,
-            child: Row(children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    controller: messageController,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                      fillColor: Color(0x22a4ddff) ,
-                      filled: true,
-                      hintText: "Taper votre message ici...",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(50),
-                      )
+                    )
+                  ],
+                ),
+              ),
+            ):Container(),
+            Container(
+              width: size.width,
+              height:widget.delivery.userId!=null  ?
+              size.height*0.56: size.height*0.67 -(size.width>360? 0: size.height*0.13),
+              child: ListView.builder(
+                controller: _scrollController,
+                  itemCount: conversation.messages!.length,
+                  itemBuilder: (context,index){
+                    ChatMessageEntity currentMessage  = conversation.messages![index];
+                    DateTime createdAt = DateTime.parse(currentMessage.createdAt!);
+                    return  Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: currentMessage.isFromAdmin! ?CrossAxisAlignment.start:CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: currentMessage.isFromAdmin!?
+                                  Color(0x77a4ddff):
+                                  KabaChineColors.primary,
+                                  borderRadius: currentMessage.isFromAdmin!?
+                                  BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomRight: Radius.circular(20))
+                              :
+                                  BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                ),
+                                padding: EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(currentMessage.content!,
+                                      style: TextStyle(
+                                        color:  currentMessage.isFromAdmin!?Colors.black54:
+                                        Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    currentMessage.id.toString().length<10 ?
+                                    Container():
+                                currentMessage.isFromAdmin==false? Row(
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Container(child: currentMessage.isRead! ?Icon(FontAwesomeIcons.checkDouble,color: Colors.white,size: 16):
+                                        Icon(FontAwesomeIcons.check,color: Colors.white,size: 16)),
+                                      ],
+                                    ):Container()
+                                  ],
+                                )
+                            ),
+                            Text('${(createdAt.day==DateTime.now().day && createdAt.month==DateTime.now().month && createdAt.year==DateTime.now().year) ?"":
+                           DateTime.now().day==(createdAt.day -1) && DateTime.now().month==createdAt.month && DateTime.now().year==createdAt.year ?"${AppLocalizations.of(context)!.translate('yesterday')}":currentMessage.createdAt!.substring(0, 10)}  ${currentMessage.createdAt!.substring(11, 16)}',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                   }),
+            ),
+            Container(
+              width: size.width*.98,
+              height:80,
+              color: Colors.white,
+              child: Row(children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: messageController,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        fillColor: Color(0x22a4ddff) ,
+                        filled: true,
+                        hintText: "Taper votre message ici...",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(50),
+                        )
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: KabaChineColors.primary,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.send, color: Colors.white),
-                  onPressed: () async{
-                    if (messageController.text.isNotEmpty) {
-                      ChatMessageEntity message = await sendMessage(message: messageController.text, conversation: widget.conversation);
-                      BlocProvider.of<ChatBloc>(context).add(sendMessageLocalEvent(message: message,deliveryRequestId: widget.delivery.id.toString()));
-                      messageController.clear();
-                    }
-                  },
-                ),
-              )
-            ],),
-          )
-        ]
-          );
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: KabaChineColors.primary,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    onPressed: () async{
+                      if (messageController.text.isNotEmpty) {
+                        ChatMessageEntity message = await sendMessage(message: messageController.text, conversation: widget.conversation);
+                        BlocProvider.of<ChatBloc>(context).add(sendMessageLocalEvent(message: message,deliveryRequestId: widget.delivery.id.toString()));
+                        messageController.clear();
+                      }
+                    },
+                  ),
+                )
+              ],),
+            )
+          ]
+            ),
+      );
         },
       ),
     );
