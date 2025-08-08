@@ -90,7 +90,7 @@ Widget contactAssitanceWidget({required BuildContext context,required String tit
     child: MaterialButton(
       onPressed: onPress,
       child: Padding(
-        padding: EdgeInsets.all(size.width>360? 15.0: 5.0),
+        padding: EdgeInsets.all(size.width>400? 15.0: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -109,11 +109,11 @@ Widget contactAssitanceWidget({required BuildContext context,required String tit
                Column(
                  crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
-                   Text(title,style: TextStyle(color: Colors.black87,fontSize: size.width>360? 14:12,fontWeight: FontWeight.normal),),
+                   Text(title,style: TextStyle(color: Colors.black87,fontSize: size.width>400? 14:12,fontWeight: FontWeight.normal),),
                    Container(
                        width: size.width*.54,
-                       height: size.width>360? 10: 30,
-                       child: Text(subtitle,style: TextStyle(color: Colors.black54,fontSize:size.width>360? 12:10),)),
+                       height: size.width>400? 10: 30,
+                       child: Text(subtitle,style: TextStyle(color: Colors.black54,fontSize:size.width>400? 12:10),)),
                  ],
                ),
              ],

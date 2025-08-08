@@ -833,7 +833,7 @@ class _DeliveryConditionsState extends State<DeliveryConditions> {
                         Icon(Icons.gpp_good_rounded, color: Colors.black87),
                         SizedBox(width: 10),
                         Text(
-                          "Conditions",
+                         "${AppLocalizations.of(context)!.translate('conditions')}",
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 14,

@@ -195,7 +195,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             Container(
               width: size.width,
               height:widget.delivery.userId!=null  ?
-              size.height*0.56: size.height*0.67 -(size.width>360? 0: size.height*0.13),
+              size.height*0.56: size.height*0.67 -(size.width>400? 0: size.height*0.13),
               child: ListView.builder(
                 controller: _scrollController,
                   itemCount: conversation.messages!.length,

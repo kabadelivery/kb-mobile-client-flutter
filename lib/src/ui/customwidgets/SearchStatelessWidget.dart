@@ -54,7 +54,7 @@ class SearchStatelessWidget extends StatelessWidget {
                       bottomLeft: Radius.circular(5)),
 //            border: new Border.all(color: Colors.white),
                   color: KColors.primaryColor.withAlpha(30)),
-              padding: EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 16),
+              padding: EdgeInsets.only(left: 8, right: 8, top: 11, bottom: 16),
               margin: EdgeInsets.only(top: 10, bottom: 8, left: 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,

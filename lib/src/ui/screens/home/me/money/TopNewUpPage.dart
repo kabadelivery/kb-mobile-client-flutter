@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../microservices/kaba_chine/data/order/data_remote_source.dart';
 import '../../../../../microservices/kaba_chine/domain/order/repository.dart';
+import '../../../../../microservices/kaba_chine/presentation/widgets/package_form_info.dart';
 import '../../../../../microservices/kaba_chine/usecases/order/payForDelivery.dart';
 import '../../../../../resources/client_personal_api_provider.dart';
 import '../../../../../resources/kkiapay_provider.dart';
@@ -35,12 +36,12 @@ class TopNewUpPage extends StatefulWidget {
 
   var fees = 0;
 
-  double? fees_tmoney = 10.0;
+  double? fees_tmoney = 5.0;
 
-  double? fees_flooz = 10.0;
+  double? fees_flooz = 5.0;
 
-  double? fees_bankcard = 10.0;
-  double? fees_momo = 10.0;
+  double? fees_bankcard = 5.0;
+  double? fees_momo = 5.0;
 
   int? selectedPosition = 1;
 
@@ -251,15 +252,32 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                     ],
                   ),
                 ): Container(),
+                SizedBox(height: 5),
+                Container(
 
+                  width:MediaQuery.of(context).size.width*0.9,
+                  height: 40,
+                  decoration: BoxDecoration(
+                     border: Border.all(
+                        color: Colors.grey.withOpacity(0.3), width: 1),
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                     Text("${AppLocalizations.of(context)!.translate('choose_your_payment_method')}",style: TextStyle(color: Colors.black87, fontSize: 12),),
+
+                    ],
+                  ),
+                ),
                 widget.selectedPosition == 1
                     ? Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                             width: MediaQuery.of(context).size.width*0.8,
-                              height: (momoPaymentModes.length / 4).ceil() * 50.0,
+                             width: MediaQuery.of(context).size.width*0.95,
+                              height: (momoPaymentModes.length / 4).ceil() * 57.0,
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
@@ -294,14 +312,12 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: isSelected
-                                              ? KabaChineColors.success.withOpacity(0.2)
-                                              : Colors.transparent,
+                                          color:Colors.transparent,
                                           border: Border.all(
                                             color: isSelected
-                                                ? KabaChineColors.success.withOpacity(0.5)
-                                                : Colors.transparent,
-                                            width: 4,
+                                                ? KColors.primaryColor
+                                                :KColors.primaryColor,
+                                            width: isSelected?4:1,
                                           ),
                                         ),
                                       ),
@@ -359,7 +375,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                     :   Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                      width: MediaQuery.of(context).size.width*0.8,
+                      width: MediaQuery.of(context).size.width*0.9,
                       height: (bankPaymentModes.length / 4).ceil() * 80.0,
                       alignment: Alignment.center,
                       child: GridView.builder(
@@ -394,17 +410,15 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                 ),
                                 color: KColors.new_gray,
                               ),
-                              child: Container(
+                              child:  Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: isSelected
-                                      ? KabaChineColors.success.withOpacity(0.2)
-                                      : Colors.transparent,
+                                  color: Colors.transparent,
                                   border: Border.all(
                                     color: isSelected
-                                        ? KabaChineColors.success.withOpacity(0.5)
-                                        : Colors.transparent,
-                                    width: 4,
+                                        ?KColors.primaryColor
+                                        : KColors.primaryColor,
+                                    width: isSelected?4:1,
                                   ),
                                 ),
                               ),
@@ -418,109 +432,90 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                 ),
                 widget.selectedPosition == 1
                     ? Column(children: [
-                        SizedBox(height: 30),
+
                         /* phone number just in case we are working with moov*/
                         Container(
                           color: Colors.white,
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(20),
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                RichText(
-                                    text: TextSpan(
-                                        text:
-                                            "${AppLocalizations.of(context)!.translate('topup_phone_number')}",
-                                        children: [
-                                          TextSpan(
-                                              text: " *",
-                                              style: TextStyle(
-                                                  color: KColors.primaryColor))
-                                        ],
-                                        style: TextStyle(
-                                            fontSize: 12, color: Colors.grey))),
+                                FormTitle(
+                                  context: context,
+                                  title:  "${AppLocalizations.of(context)!.translate('topup_phone_number')}",
+                                  isRequired: true,
+                                ),
                                 SizedBox(height: 5),
-                                Container(
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  decoration: BoxDecoration(
-                                      color: KColors.new_gray,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8))),
-                                  child: TextField(
-                                      controller: _phoneNumberFieldController,
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(fontSize: 20),
-                                      decoration: InputDecoration(
-                                          fillColor: Colors.yellow,
-                                          border: InputBorder.none,
-                                          hintMaxLines: 5,
-                                          hintStyle: TextStyle(fontSize: 13)),
-                                      keyboardType: TextInputType.phone),
-                                )
+                          FormTextFieldContainerDecoration(
+                              context: context,child: Row(
+                                  children: [
+                                    SizedBox(width: 10),
+                                    Icon(Icons.phone_outlined, color: Colors.black54),
+                                    Expanded(
+                                      child: TextField(
+                                          controller: _phoneNumberFieldController,
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(fontSize: 20),
+                                          decoration: InputDecoration(
+                                              fillColor: Colors.yellow,
+                                              border: InputBorder.none,
+                                              hintMaxLines: 5,
+                                              hintStyle: TextStyle(fontSize: 13)),
+                                          keyboardType: TextInputType.phone),
+                                    ),
+                                  ],
+                                ))
                               ]),
                         ),
                       ])
                     : Container(),
                 Column(children: [
-                  SizedBox(height: 15),
                   /* amount you wanna get paid */
                   Container(
                     color: Colors.white,
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          RichText(
-                              text: TextSpan(
-                                  text:
-                                      "${AppLocalizations.of(context)!.translate('amount_to_topup')}",
-                                  children: [
-                                    TextSpan(
-                                        text: " *",
-                                        style: TextStyle(color: KColors.primaryColor))
-                                  ],
-                                  style:
-                                      TextStyle(fontSize: 12, color: Colors.grey))),
+                          FormTitle(
+                            context: context,
+                            title:  "${AppLocalizations.of(context)!.translate('amount_to_top_up')}",
+                            isRequired: true,
+                          ),
                           SizedBox(height: 5),
-                          Container(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 5, right: 5),
-                                    decoration: BoxDecoration(
-                                        color: KColors.new_gray,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(8),
-                                            bottomLeft: Radius.circular(8))),
-                                    child: TextField(
-                                        controller: _amountFieldController,
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(fontSize: 20),
-                                        decoration: InputDecoration(
-                                            fillColor: Colors.yellow,
-                                            border: InputBorder.none,
-                                            hintMaxLines: 5,
-                                            hintStyle: TextStyle(fontSize: 13)),
-                                        keyboardType: TextInputType.number),
-                                  ),
-                                ),
-                                Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
-                                    child: Text(
-                                        "${AppLocalizations.of(context)!.translate('currency')}",
-                                        style:
-                                            TextStyle(color: KColors.primaryColor)),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(8),
-                                            bottomRight: Radius.circular(8)),
-                                        color: KColors.primaryColor.withAlpha(30)))
-                              ],
-                            ),
-                          )
+                    FormTextFieldContainerDecoration(
+                        context: context,child:  Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Icon(FontAwesomeIcons.moneyBill1, color: Colors.black54),
+                              Expanded(
+                                child: TextField(
+                                    controller: _amountFieldController,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(fontSize: 20),
+                                    decoration: InputDecoration(
+                                        fillColor: Colors.yellow,
+                                        border: InputBorder.none,
+                                        hintMaxLines: 5,
+                                        hintStyle: TextStyle(fontSize: 13)),
+                                    keyboardType: TextInputType.number),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 20),
+                                  child: Text(
+                                      "${AppLocalizations.of(context)!.translate('currency')}",
+                                      style:
+                                          TextStyle(color:Colors.black54)),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(8),
+                                          bottomRight: Radius.circular(8)),
+                                      color: Colors.transparent))
+                            ],
+                          ))
                         ]),
                   ),
                 ]),
@@ -541,10 +536,33 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                   SizedBox(height: 10),
                   /* amount you wanna get paid */
                   Container(
-                    color: KColors.new_gray,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                            color: Colors.grey.withOpacity(0.3), width: 1),
+                        borderRadius: BorderRadius.circular(10)
+                    ),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Column(
                       children: [
+                        Container(
+                          width:MediaQuery.of(context).size.width,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Color(0xa6f1f1f1),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Icon(FontAwesomeIcons.moneyBillTrendUp, color: Colors.black54),
+                              SizedBox(width: 10),
+                              Text("${AppLocalizations.of(context)!.translate('fee_can_be_changed')}",style: TextStyle(color: Colors.black87, fontSize: 12),),
+
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 10),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -597,9 +615,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                     ),
                                   ))
                             ]),
-                        Text("${AppLocalizations.of(context)!.translate('fee_can_be_changed')}",style: TextStyle(color: Colors.grey, fontSize: 12),),
-                        SizedBox(height: 10),
-                        SizedBox(height: 10),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -638,71 +653,58 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                   "${AppLocalizations.of(context)!.translate('total_amount')}: ${_getTotalAmountEuro()} €",
                   style: TextStyle(color: KColors.mBlue, fontSize: 14),
                 )) : Container(),
+                SizedBox(height: 10),
+                Container(width: MediaQuery.of(context).size.width * 0.9,
+                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                      color: KColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: GestureDetector(
+                    onTap: () async{
+                      if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
+                        if(widget.selectedPosition==1)
+                          launchNewMomoTopUp();
+                        else
+                          launchNewCardTopUp();
+                      }
+                      else if(widget.transactionType == TransactionType.kaba_chine)
+                        kabaChinePay();
+                    },
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('top_up')}"
+                                  .toUpperCase(),
+                              style:
+                              TextStyle(fontSize: 14, color: Colors.white)),
+                          SizedBox(width: 10),
 
-                SizedBox(height: 50)
-              ]),
-            ),
-            Positioned(
-              child: Container(width: MediaQuery.of(context).size.width,
-                child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      decoration: BoxDecoration(
-                          color: KColors.primaryColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: GestureDetector(
-                        onTap: () async{
-                          if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
-                            if(widget.selectedPosition==1)
-                            launchNewMomoTopUp();
-                            else
-                             launchNewCardTopUp();
-                          }
-                          else if(widget.transactionType == TransactionType.kaba_chine)
-                             kabaChinePay();
-                        },
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                          isLaunching
+                              ? Row(
                             children: <Widget>[
-                              Text(
-                                  "${AppLocalizations.of(context)!.translate('top_up')}"
-                                      .toUpperCase(),
-                                  style:
-                                  TextStyle(fontSize: 14, color: Colors.white)),
                               SizedBox(width: 10),
-                              Text(
-                                  "${_totalAmountFieldController!.text} ${_totalAmountFieldController!.text.trim() == "" ? "" : AppLocalizations.of(context)!.translate('currency')}",
-                                  style:
-                                  TextStyle(color: Colors.white, fontSize: 20)),
-                              SizedBox(width: 8),
-                              isLaunching
-                                  ? Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(
-                                      child: CircularProgressIndicator(
-                                          valueColor:
-                                          AlwaysStoppedAnimation<Color>(
-                                              Colors.white)),
-                                      height: 15,
-                                      width: 15),
-                                ],
-                              )
-                                  : Container(),
+                              SizedBox(
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                      AlwaysStoppedAnimation<Color>(
+                                          Colors.white)),
+                                  height: 15,
+                                  width: 15),
                             ],
-                          ),
-                        ),
+                          )
+                              : Container(),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-           bottom: 0, left: 0,
+                SizedBox(height: 20)
+              ]),
             ),
+
           ],
         ),
       ),

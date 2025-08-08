@@ -130,7 +130,7 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
         ):
         Container(
           width: size.width,
-          height:size.width>360?size.height*0.69: size.height*0.5,
+          height:size.width>400?size.height*0.69: size.height*0.5,
           alignment: deliveryHistory.length==0?Alignment.center:null,
           child:ListView.builder(
             itemCount: deliveryHistory.length==0 ? 1 : deliveryHistory.length,

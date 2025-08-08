@@ -136,6 +136,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("_buildBilling ${_orderBillConfiguration.toJson()}");
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -882,7 +884,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     SizedBox(key: poweredByKey, height: 25),
                     //NEW USER VOUCHER
                     is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
-                    _usePoint ? Container() : _buildCouponSpace(),
+                    _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
                     _usePoint ? Container() : SizedBox(height: 15),
                     isConnecting
                         ? Center(child: MyLoadingProgressWidget())
@@ -1051,9 +1053,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   void inflateBillingConfiguration(OrderBillConfiguration configuration) {
     setState(() {
       _orderBillConfiguration = configuration;
-      is_new_user = configuration.is_new_user!;
-      new_user_voucher_amount =configuration.shipping_pricing! - configuration.total_pricing!;
-    });
+       });
     showLoading(false);
   }
 
@@ -2137,7 +2137,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.cooking_time = configuration.cooking_time;
     _orderBillConfiguration.prepayed = configuration.prepayed;
     _orderBillConfiguration.trustful = configuration.trustful;
-
+    _orderBillConfiguration.is_new_user = configuration.is_new_user;
     _orderBillConfiguration.shipping_pricing = configuration.shipping_pricing;
     _orderBillConfiguration.command_pricing = configuration.command_pricing;
     _orderBillConfiguration.promotion_pricing = configuration.promotion_pricing;
@@ -2153,7 +2153,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.additional_fees_total_price =
         configuration.additional_fees_total_price;
     double additionnal_fee_total = configuration.additional_fees_total_price!=null?configuration.additional_fees_total_price!.toDouble():0;
-
+    is_new_user = configuration.is_new_user!;
+    new_user_voucher_amount =configuration.shipping_pricing! - configuration.promotion_shipping_pricing!;
     _orderBillConfiguration
         .total_preorder_pricing = (additionnal_fee_total + configuration.command_pricing!.toDouble() +
             ((100 - int.parse(_orderBillConfiguration.discount!).toDouble()) *
