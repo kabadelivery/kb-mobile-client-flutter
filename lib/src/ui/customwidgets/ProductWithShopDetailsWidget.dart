@@ -43,24 +43,24 @@ class _ProductWithShopDetailsWidgetState
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(
-                      color: KColors.new_gray,
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                      color: Colors.grey.withOpacity(0.15),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   margin: EdgeInsets.only(top: 20),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: 115,
+                            height: 80,
                             width: 80,
+
                             decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(3)),
-                                border: new Border.all(
-                                    color: KColors.primaryYellowColor
-                                        .withOpacity(0.7),
-                                    width: 3),
+
                                 image: new DecorationImage(
                                     fit: BoxFit.cover,
                                     image: CachedNetworkImageProvider(
@@ -68,7 +68,7 @@ class _ProductWithShopDetailsWidgetState
                           ),
                           SizedBox(width: 18),
                           Container(
-                            height: 120,
+                            height: 90,
                             child: Column(
                               children: [
                                 Expanded(
@@ -163,124 +163,30 @@ class _ProductWithShopDetailsWidgetState
                                             ]),
                                           ],
                                         ),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                  Utils.capitalize(
-                                                      "${widget.food!.restaurant_entity?.name}"),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 2,
-                                                  // textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: KColors.new_black,
-                                                      fontSize: 14)),
-                                              SizedBox(height: 5),
-                                              Row(children: <Widget>[
-                                                _getRestaurantStateTag(widget
-                                                    .food!.restaurant_entity!),
-                                                SizedBox(width: 5),
-                                                widget.food!.restaurant_entity
-                                                            ?.distance ==
-                                                        null
-                                                    ? Container()
-                                                    : Container(
-                                                        padding:
-                                                            EdgeInsets.all(5),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10)),
-                                                            color:
-                                                                Colors.white),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                                FontAwesomeIcons
-                                                                    .locationArrow,
-                                                                color: KColors
-                                                                    .mGreen,
-                                                                size: 10),
-                                                            SizedBox(width: 5),
-                                                            Text(
-                                                                "${widget.food!.restaurant_entity?.distance}${AppLocalizations.of(context)!.translate('km')}",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontStyle:
-                                                                        FontStyle
-                                                                            .normal,
-                                                                    fontSize:
-                                                                        12)),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                SizedBox(width: 5),
-                                                widget.food!.restaurant_entity
-                                                            ?.distance ==
-                                                        null
-                                                    ? Container()
-                                                    : widget
-                                                                ?.food
-                                                                ?.restaurant_entity
-                                                                ?.delivery_pricing ==
-                                                            "0"
-                                                        ? Container()
-                                                        : Container(
-                                                            padding: EdgeInsets
-                                                                .all(5),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10)),
-                                                                color: Colors
-                                                                    .white),
-                                                            child: Row(
-                                                              children: <
-                                                                  Widget>[
-                                                                Icon(
-                                                                    FontAwesomeIcons
-                                                                        .personBiking,
-                                                                    color: KColors
-                                                                        .primaryColor,
-                                                                    size: 12),
-                                                                SizedBox(
-                                                                    width: 5),
-                                                                Text(
-                                                                    (widget.food!.restaurant_entity?.delivery_pricing ==
-                                                                            "~"
-                                                                        ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
-                                                                        : widget!.food!.restaurant_entity!.delivery_pricing! +
-                                                                            " F"),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w500,
-                                                                        fontSize:
-                                                                            12)),
-                                                              ],
-                                                            )),
-                                              ]),
-                                              SizedBox(height: 5),
-                                              getRating(widget
-                                                  .food!.restaurant_entity!)
-                                            ],
-                                          ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                Utils.capitalize(
+                                                    "${widget.food!.restaurant_entity?.name}"),
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                // textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w500,
+                                                    color: KColors.new_black,
+                                                    fontSize: 14)),
+                                            SizedBox(height: 5),
+                                        
+                                            SizedBox(height: 5),
+                                            getRating(widget
+                                                .food!.restaurant_entity!)
+                                          ],
                                         ),
                                       ]),
                                 ),
@@ -288,7 +194,111 @@ class _ProductWithShopDetailsWidgetState
                             ),
                           )
                         ],
-                      )
+                      ),
+                      SizedBox(height: 5),
+                      Row(children: <Widget>[
+                        _getRestaurantStateTag(widget
+                            .food!.restaurant_entity!),
+                        SizedBox(width: 5),
+                        widget.food!.restaurant_entity
+                            ?.distance ==
+                            null
+                            ? Container()
+                            : Container(
+                          padding:
+                          EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                              BorderRadius
+                                  .all(Radius
+                                  .circular(
+                                  10)),
+                              color:
+                              Colors.white),
+                          child: Row(
+                            children: [
+                              Icon(
+                                  FontAwesomeIcons
+                                      .locationArrow,
+                                  color: KColors
+                                      .mGreen,
+                                  size: 10),
+                              SizedBox(width: 5),
+                              Text(
+                                  "${widget.food!.restaurant_entity?.distance}${AppLocalizations.of(context)!.translate('km')}",
+                                  style: TextStyle(
+                                      color: Colors
+                                          .grey,
+                                      fontWeight:
+                                      FontWeight
+                                          .w500,
+                                      fontStyle:
+                                      FontStyle
+                                          .normal,
+                                      fontSize:
+                                      12)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        widget.food!.restaurant_entity
+                            ?.distance ==
+                            null
+                            ? Container()
+                            : widget
+                            ?.food
+                            ?.restaurant_entity
+                            ?.delivery_pricing ==
+                            "0"
+                            ? Container()
+                            : Container(
+                            padding: EdgeInsets
+                                .all(5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius
+                                    .all(Radius
+                                    .circular(
+                                    10)),
+                                color: Colors
+                                    .white),
+                            child: Row(
+                              children: <
+                                  Widget>[
+                                Icon(
+                                    FontAwesomeIcons
+                                        .personBiking,
+                                    color: KColors
+                                        .primaryColor,
+                                    size: 12),
+                                SizedBox(
+                                    width: 5),
+                                Text(
+                                    (widget.food!.restaurant_entity?.delivery_pricing ==
+                                        "~"
+                                        ? "${AppLocalizations.of(context)!.translate('out_of_range')}"
+                                        : widget!.food!.restaurant_entity!.delivery_pricing! +
+                                        " F"),
+                                    overflow:
+                                    TextOverflow
+                                        .ellipsis,
+                                    maxLines: 1,
+                                    textAlign:
+                                    TextAlign
+                                        .center,
+
+                                    style: TextStyle(
+                                        color: Colors
+                                            .grey,
+
+
+                                        fontWeight:
+                                        FontWeight
+                                            .w500,
+                                        fontSize:
+                                        12)),
+                              ],
+                            )),
+                      ]),
                     ],
                   ),
                 ),
