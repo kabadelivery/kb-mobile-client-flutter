@@ -1,6 +1,7 @@
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../localizations/AppLocalizations.dart';
 import '../../microservices/kaba_chine/core/constants.dart';
@@ -21,7 +22,8 @@ void showCertificationTutorial({required BuildContext context}){
             alignment: Alignment.bottomCenter,
             children: [
               Container(
-                height: 170,
+                height: MediaQuery.of(context).size.height*0.30,
+
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: KabaChineColors.primary.withOpacity(0.1),
@@ -80,7 +82,11 @@ void showCertificationTutorial({required BuildContext context}){
 
                                 ),
                               ),
-                              onPressed: (){
+                              onPressed: ()async {
+                                final uri = Uri.parse("https://www.linkedin.com/pulse/kaba-pr%C3%A9sente-sa-vignette-de-certification-qualit%C3%A9-72sne?utm_source=share&utm_medium=member_android&utm_campaign=share_via");
+                                if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                }
                                 Navigator.pop(context);
                               },
                               child: Text(
@@ -99,14 +105,14 @@ void showCertificationTutorial({required BuildContext context}){
               Positioned(
                   top: 20,
                   left: 30,
-                  child: Image.asset("assets/images/png/start_certif.png",width: 50,)),
+                  child: Image.asset("assets/images/png/start_certif.png",width: 30,)),
               Positioned(
                   top: 70,
                   right: 30,
-                  child: Image.asset("assets/images/png/start_certif.png",width: 50,)),
+                  child: Image.asset("assets/images/png/start_certif.png",width: 30,)),
               Positioned(
                 top: 0,
-                  child: Image.asset("assets/images/png/certif.png",width: 200,)),
+                  child: Image.asset("assets/images/png/certif.png",width: 150,)),
 
             ],
           ),

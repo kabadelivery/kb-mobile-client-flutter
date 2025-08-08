@@ -193,8 +193,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           showCertificationTutorial(context:context);
                         },
                         child: Image.asset("assets/images/png/certif_white.png",
-                            width: 30,
-                            height: 30,
+                            width: 20,
+                            height: 20,
                             fit: BoxFit.cover),
                       ):Container(),
                     ],

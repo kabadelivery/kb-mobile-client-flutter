@@ -61,6 +61,7 @@ class KkiapayProvider {
         'is_momo': isMomo,
       };
       String apiUrl = ServerRoutes.KKIAPAY_STORE_TRANSACTION;
+      debugPrint('KKIAPAY_STORE_TRANSACTION');
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
@@ -100,6 +101,7 @@ class KkiapayProvider {
         'is_momo': isMomo,
       };
       debugPrint('success data: ${jsonEncode(successData)}');
+      debugPrint('KKIAPAY_CONFIRM_TRANSACTION');
       final response = await http.post(
         Uri.parse(ServerRoutes.KKIAPAY_CONFIRM_TRANSACTION),
         headers: {

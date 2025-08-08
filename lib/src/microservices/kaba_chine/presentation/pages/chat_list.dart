@@ -166,11 +166,11 @@ class _AllChatPageState extends State<AllChatPage> {
                               ],
                             ),
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("${chatList[index].messages!.last!.createdAt!.substring(0, 10)} ${chatList[index].messages!.last!.createdAt!.substring(11, 16)}",
-                                  style: TextStyle(color:     chatList[index].unreadAdminMessages!  > 0 ?KabaChineColors.success:Colors.grey, fontSize: 12),),
+                                  style: TextStyle(color:     chatList[index].unreadAdminMessages!  > 0 ?KabaChineColors.success:Colors.grey, fontSize: 10),),
                                 chatList[index].unreadUserMessages! > 0 ?
                                 Container(
                                   height:20,

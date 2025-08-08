@@ -541,8 +541,9 @@ class ClientPersonalApiProvider {
   }
   launchSemoa(CustomerModel customer,Map<String, dynamic> paymentData) async {
     debugPrint("entered launchSemoa");
+    debugPrint("Customer token ${customer.token}");
+    debugPrint("paymentData ${paymentData.toString()}");
     if (await Utils.hasNetwork()) {
-      xrint("entered launchSemoa");
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token!)
@@ -558,7 +559,6 @@ class ClientPersonalApiProvider {
         ServerRoutes.SEMOA_INIT_PAYMENT,
         data: json.encode(paymentData),
       );
-
       xrint("Semoa payload"+response.data.toString());
       if (response.statusCode == 200 || response.statusCode == 201) {
         String order_reference = mJsonDecode(response.data)["order_reference"];
