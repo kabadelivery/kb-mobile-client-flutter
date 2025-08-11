@@ -17,8 +17,9 @@ class ServiceMainView {
   void systemError() {}
 
   void networkError() {}
-
+  void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
   void inflateServiceCategory(List<ServiceMainEntity> data) {}
+
 }
 
 class ServiceMainPresenter implements ServiceMainContract {
@@ -104,6 +105,22 @@ class ServiceMainPresenter implements ServiceMainContract {
       String billing = await provider.fetchBilling();
       CustomerUtils.updateBillingLocally(billing);
     } catch (_) {
+      xrint("error ${_}");
+    }
+  }
+
+  Future<void> checkVersion() async {
+    try {
+      AppApiProvider provider = AppApiProvider();
+      Map version = await provider.checkVersion();
+      String code = version["version"];
+      int force = version["is_required"];
+      String cl_en = version["changeLog"]["en"];
+      String cl_fr = version["changeLog"]["fr"];
+      String cl_zh = version["changeLog"]["zh"];
+      _serviceMainView.checkVersion(code, force, cl_en, cl_fr, cl_zh);
+    } catch (_) {
+      /* RestaurantReview failure */
       xrint("error ${_}");
     }
   }

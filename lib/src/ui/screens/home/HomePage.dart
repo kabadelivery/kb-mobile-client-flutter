@@ -631,10 +631,7 @@ class _HomePageState extends State<HomePage> {
       checkLogin().then((value) {
         StateContainer.of(context).updateLoggingState(state: value);
       });
-
-
       // }
-
       loginStuffChecked = 1;
     }
     return Scaffold(

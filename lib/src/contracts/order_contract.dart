@@ -63,21 +63,12 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     if (isWorking)
       return;
     isWorking = true;
-    try {
+    
       OrderBillConfiguration orderBillConfiguration = await provider.computeBillingAction(customer, restaurantModel, foods, address, voucher, useKabaPoint);
      _orderConfirmationView.showLoading(false);
       _orderConfirmationView.inflateBillingConfiguration2(orderBillConfiguration);
       isWorking = false;
-    } catch (_) {
-      /* login failure */
-      xrint("error ${_}");
-      if (_ == -2) {
-        _orderConfirmationView.systemOpeningStateError();
-      } else {
-        _orderConfirmationView.networkOpeningStateError();
-      }
-      isWorking = false;
-    }
+
   }
 
   set orderConfirmationView(OrderConfirmationView value) {

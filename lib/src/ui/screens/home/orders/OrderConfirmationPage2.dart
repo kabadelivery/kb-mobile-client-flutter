@@ -516,14 +516,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     } else
       return Container(
           decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 1), // changes position of shadow
-                ),
-              ],
+
               color: KColors.new_gray,
               borderRadius: BorderRadius.all(Radius.circular(5))),
           margin: EdgeInsets.only(left: 10, right: 10),
@@ -881,7 +874,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           _pickDeliveryAddress();
                         }),
                     _buildAddress(_selectedAddress),
-                    SizedBox(key: poweredByKey, height: 25),
+                    SizedBox(key: poweredByKey, height: 10),
+              _orderBillConfiguration != null &&
+                  _orderBillConfiguration!.isBillBuilt == true
+                  ?GestureDetector(
+                onTap: (){
+                  showBillingPopUp();
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 20,
+                    height: 40,
+                     alignment: Alignment.center,
+                     decoration: BoxDecoration(
+                      color: KColors.primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    child: Text("${AppLocalizations.of(context)!.translate('see_bill')}",style: TextStyle(color: Colors.white,fontSize: 16),
+                    )
+                ),
+              ):Container(),
                     //NEW USER VOUCHER
                     is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
                     _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
@@ -889,89 +900,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     isConnecting
                         ? Center(child: MyLoadingProgressWidget())
                         : Container(),
-                    SizedBox(height: 20),
-                    _orderBillConfiguration != null &&
-                            _orderBillConfiguration!.isBillBuilt == true
-                        ?
-                        // check if out of range before doing anything.
-                        _orderBillConfiguration!.out_of_range == true
-                            ? _buildOutOfRangePage()
-                            : (Column(children: <Widget>[
-                                /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
-                        && */
-                                _selectedVoucher == null
-                                    ? _buildPointDiscountOption()
-                                    : Container(),
 
-                                SizedBox(height: 30),
-                                _buildBill(),
-                                SizedBox(height: 10),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(
-                                      left: 20, right: 10, top: 20, bottom: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                          "${AppLocalizations.of(context)!.translate('your_balance')}",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500)),
-                                      SizedBox(width: 10),
-                                      Text(
-                                          "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                                          style: TextStyle(
-                                              color: KColors.primaryColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600)),
-                                      Container(
-                                          padding: EdgeInsets.only(
-                                              left: 15,
-                                              right: 15,
-                                              top: 10,
-                                              bottom: 10),
-                                          decoration: BoxDecoration(
-                                              color: KColors.primaryColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5))),
-                                          child: InkWell(
-                                              child: Text(
-                                                  "${AppLocalizations.of(context)!.translate('top_up')}"
-                                                      .toUpperCase(),
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                              onTap: () => _topUpAccount())),
-                                    ],
-                                  ),
-                                ),
-                                _isPreorderSelected()
-                                    ? SizedBox(height: 10)
-                                    : Container(),
-                                // purchase buttons are becoming cards.
-                                _isPreorderSelected()
-                                    ? _buildPreOrderButton()
-                                    : Container(),
-                                !_isPreorderSelected()
-                                    ? SizedBox(height: 10)
-                                    : Container(),
-                                !_isPreorderSelected()
-                                    ? _buildOrderNowButton()
-                                    : Container(),
-                                !_isPreorderSelected()
-                                    ? SizedBox(height: 10)
-                                    : Container(),
-                                !_isPreorderSelected()
-                                    ? _buildOrderPayAtArrivalButton()
-                                    : Container(),
-                                SizedBox(height: 30),
-                              ]))
-                        : Container(),
                     Center(
                         child: InkWell(
                       onTap: () => _jumpToRecoverPage(),
@@ -1054,6 +983,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     setState(() {
       _orderBillConfiguration = configuration;
        });
+
     showLoading(false);
   }
 
@@ -2164,11 +2094,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     setState(() {
       _orderBillConfiguration.isBillBuilt = true;
+      showBillingPopUp();
     });
 //    Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     Future.delayed(Duration(milliseconds: 500), () {
       Scrollable.ensureVisible(poweredByKey.currentContext!);
     });
+
   }
 
   @override
@@ -2720,6 +2652,113 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               : Container(),
         ],
       ),
+    );
+  }
+
+  void showBillingPopUp(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content:Column(
+              mainAxisSize: MainAxisSize.min,
+                children:[
+                  SizedBox(height: 20),
+                  _orderBillConfiguration != null &&
+                      _orderBillConfiguration!.isBillBuilt == true
+                      ?
+                  // check if out of range before doing anything.
+                  _orderBillConfiguration!.out_of_range == true
+                      ? _buildOutOfRangePage()
+                      : (Column(children: <Widget>[
+                    /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
+                        && */
+                    _selectedVoucher == null
+                        ? _buildPointDiscountOption()
+                        : Container(),
+
+                    SizedBox(height: 30),
+                    _buildBill(),
+                    SizedBox(height: 10),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(
+                          left: 20, right: 10, top: 20, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('your_balance')}",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500)),
+                          SizedBox(width: 10),
+                          Text(
+                              "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                              style: TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600)),
+                          Container(
+                              padding: EdgeInsets.only(
+                                  left: 15,
+                                  right: 15,
+                                  top: 10,
+                                  bottom: 10),
+                              decoration: BoxDecoration(
+                                  color: KColors.primaryColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(5))),
+                              child: InkWell(
+                                  child: Text(
+                                      "${AppLocalizations.of(context)!.translate('top_up')}"
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                          fontWeight:
+                                          FontWeight.w500)),
+                                  onTap: () => _topUpAccount())),
+                        ],
+                      ),
+                    ),
+                    _isPreorderSelected()
+                        ? SizedBox(height: 10)
+                        : Container(),
+                    // purchase buttons are becoming cards.
+                    _isPreorderSelected()
+                        ? _buildPreOrderButton()
+                        : Container(),
+                    !_isPreorderSelected()
+                        ? SizedBox(height: 10)
+                        : Container(),
+                    !_isPreorderSelected()
+                        ? _buildOrderNowButton()
+                        : Container(),
+                    !_isPreorderSelected()
+                        ? SizedBox(height: 10)
+                        : Container(),
+                    !_isPreorderSelected()
+                        ? _buildOrderPayAtArrivalButton()
+                        : Container(),
+                    SizedBox(height: 30),
+                  ]))
+                      : Container(),
+                ]
+            ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('${AppLocalizations.of(context)!.translate('ok')}')
+                  )
+          ],
+        );
+      }
+
     );
   }
 }

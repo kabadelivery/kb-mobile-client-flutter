@@ -117,7 +117,7 @@ class _AllChatPageState extends State<AllChatPage> {
               ),
               Container(
                 width: size.width,
-                height: chatList.isNotEmpty ? size.height * 0.7 : 50,
+                height: chatList.isNotEmpty ? size.height * 0.7 : 100,
                 child: ListView.builder(
                   itemCount: chatList.length == 0 ? 1 : chatList.length,
                   itemBuilder: (context, index) {
@@ -147,7 +147,7 @@ class _AllChatPageState extends State<AllChatPage> {
                             Row(
                               children: [
                                 CircleAvatar(
-                                    radius:size.width>400?  30:20,
+                                    radius:20,
                                     backgroundColor: KabaChineColors.primary,
                                     child: Icon(Icons.chat, color: Colors.white)
                                 ),
@@ -156,10 +156,10 @@ class _AllChatPageState extends State<AllChatPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text("Chat"+" ID-${chatList[index].id.toString().substring(0,2)}",
-                                      style: TextStyle(fontSize: size.width>400? 16:12),),
+                                      style: TextStyle(fontSize: 12),),
                                     SizedBox(height: 5,),
                                     Text("${chatList[index].messages!.last.isFromAdmin! ? "${AppLocalizations.of(context)!.translate('admin')}" : "${AppLocalizations.of(context)!.translate('you')}"} : "
-                                        "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,size.width >400?30:15)+"...":chatList[index].messages!.last.content}",
+                                        "${chatList[index].messages!.last.content.toString().length>30?chatList[index].messages!.last.content.toString().substring(0,15)+"...":chatList[index].messages!.last.content}",
                                       style: TextStyle(color: Colors.grey,fontSize: 12),)
                                   ],
                                 ),

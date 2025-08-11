@@ -10,6 +10,7 @@ import '../../domain/tarif/shipping_entity.dart';
 import '../../domain/tarif/tarif_entity.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 
+import '../../functions/checkInfos.dart';
 import '../bloc/information/information_bloc.dart';
 Widget tarifExpeditionWidget({required BuildContext context,required ShippingEntity shipping,required TarifEntity boatRate,required TarifEntity planeRate}) {
   Size size = MediaQuery.of(context).size;
@@ -91,7 +92,7 @@ Widget tarifExpeditionWidget({required BuildContext context,required ShippingEnt
               Row(
                 children: [
                   Container(
-                    width:size.width>400? 100: 50,
+                    width:50,
                     height: 2,
                     decoration: BoxDecoration(
                       color: Color(0x61dadada),
@@ -175,13 +176,13 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                     children: [
                       Transform.rotate(
                           angle: tarif.mode==Tariftype.plane.value? 120:0,
-                          child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,size: size.width>400? 20:15,)),
+                          child: Icon(tarif.mode==Tariftype.plane.value? Icons.airplanemode_active_outlined:Icons.directions_boat_outlined, color: Colors.white,size:15,)),
                       SizedBox(width: 5,),
                       Text(
                         tarif.mode == 0 ? "${AppLocalizations.of(context)!.translate('boat')}" : "${AppLocalizations.of(context)!.translate('plane')}",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: size.width>400? 16:12,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -191,11 +192,10 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                 Row(
                   children: [
                     Icon(Icons.access_time, color: Colors.black54,size: 14,),
-                    Text(
-                      "${tarif.duration} "+"${AppLocalizations.of(context)!.translate('days')}",
+                    Text("${tarif.mode== Tariftype.plane.value ? "15" : "40"} ${AppLocalizations.of(context)!.translate('to')} ${tarif.mode== Tariftype.plane.value ? "25" : "60"} ${AppLocalizations.of(context)!.translate('days')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: size.width>400? 14:12,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -208,16 +208,17 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
               children: [
                 
                 Text(
-                  "${tarif.price?.toInt()} FCFA ",
+                  "${tarif.mode==Tariftype.boat.value?"240.000":tarif.price?.toInt()} FCFA ",
                   style: TextStyle(
                     color: Colors.black87,
-                    fontSize: size.width>400? 20:14,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text('/ ${tarif.mode== Tariftype.plane.value ? "kg" : "cbm"}')
+                Text('/ ${tarif.mode== Tariftype.plane.value ? "kg" : "m3/Cbm"}')
               ],
             ),
+
             SizedBox(height: 5,),
             tarif.mode== Tariftype.plane.value
                 ? Row(
@@ -230,7 +231,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                           "${AppLocalizations.of(context)!.translate('fast_delivery')}",
                           style: TextStyle(
                             color: Colors.black54,
-                            fontSize: size.width>400? 14:10,
+                            fontSize: 10,
                           ),
                         ),
                       ],
@@ -244,7 +245,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                           "${AppLocalizations.of(context)!.translate('real_time_tracking')}",
                           style: TextStyle(
                             color: Colors.black54,
-                            fontSize: size.width>400? 14:10,
+                            fontSize: 10,
                           ),
                         ),
                       ],
@@ -260,7 +261,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                       "${AppLocalizations.of(context)!.translate('economy_rate')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: size.width>400? 14:10,
+                        fontSize:10,
                       ),
                     ),
                   ],
@@ -274,13 +275,44 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                      "${AppLocalizations.of(context)!.translate('large_packages_accepted')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: size.width>400? 14:12,
+                        fontSize:12,
                       ),
                     ),
                   ],
                 ),
               ],
-            )
+            ),
+            SizedBox(height: 5,),
+            Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: KabaChineColors.primary,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                child: GestureDetector(
+                  onTap: (){
+                    showShippingCostPopup(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.ads_click, color: Colors.white,size: 16,),
+                      SizedBox(width: 5,),
+                      Text("${AppLocalizations.of(context)!.translate('calculate_shipping_cost')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         )
     ),

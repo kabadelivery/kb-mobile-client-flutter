@@ -82,7 +82,6 @@ class OrderApiProvider {
       VoucherModel? voucher,
       bool useKabaPoint) async {
     DeviceInfoPlugin? deviceInfo = DeviceInfoPlugin();
-    xrint('SELECTED VOUCHER ${voucher!.id}');
     var device;
 
     String? token = "";

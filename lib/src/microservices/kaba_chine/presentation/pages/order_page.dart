@@ -173,53 +173,75 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
     return isLoading == true ? Center(child: MyLoadingProgressWidget()) : SingleChildScrollView(
       child: Column(
         children: [
-          Container(
-            width: size.width,
-            height: 170,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  KabaChineColors.primary,
-                  KabaChineColors.primary_darker,
+        Container(
+        width: size.width,
+        height: 170,
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              KabaChineColors.primary,
+              KabaChineColors.primary_darker,
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.translate('delivery_request'),
+                    textAlign: TextAlign.center, // centrer le texte
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    maxLines: 2, // éviter un texte trop haut
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "${AppLocalizations.of(context)!.translate('your_customer_code')}: $customercode",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    softWrap: true,
+                  ),
                 ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.translate('delivery_request')}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
-                    SizedBox(height: 10),
-                    Text("${AppLocalizations.of(context)!.translate('your_customer_code')}"+": $customercode",style: TextStyle(color: Colors.white,fontSize: 14),)
-                  ],
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: KabaChineColors.card.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(50),
                 ),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: KabaChineColors.card.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Icon(Icons.arrow_back_sharp,size: 20,color: KabaChineColors.card,),
-                  ),
+                child: Icon(
+                  Icons.arrow_back_sharp,
+                  size: 20,
+                  color: KabaChineColors.card,
                 ),
-              ],
-            )
-          ),
+              ),
+            ),
+          ],
+        ),
+      ),
           SizedBox(height: 10),
 
           Padding(

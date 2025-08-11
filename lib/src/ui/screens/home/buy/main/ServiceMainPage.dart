@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
@@ -31,11 +33,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../../microservices/kaba_chine/presentation/page_holder.dart';
+import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
@@ -87,7 +91,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   void initState() {
     super.initState();
-
+    this.widget.presenter!.checkVersion();
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -97,6 +101,190 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasSystemError = false;
     hasNetworkError = false;
     isLoading = false;
+  }
+  @override
+  void checkVersion(
+      String code, int force, String cl_en, String cl_fr, String cl_zh) {
+    String mCode = code.replaceAll(new RegExp(r'\.'), "");
+
+    String defaultLocale = Platform.localeName;
+    String cl = cl_fr;
+
+    if (defaultLocale.contains("en")) {
+      cl = cl_en;
+    } else if (defaultLocale.contains("fr")) {
+      cl = cl_fr;
+    } else if (defaultLocale.contains("zh")) {
+      cl = cl_zh;
+    }
+
+    int _code = int.parse(mCode);
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
+      String appCode_ = packageInfo.version.replaceAll(new RegExp(r'\.'), "");
+      int appCode = int.parse(appCode_);
+      xrint("net-code = $code");
+      xrint("app-code = $appCode");
+      xrint("app-cl = $cl");
+      if (appCode < _code) {
+        // 2.3.4 < 4.5.6
+        if (force == 1) {
+          /* show the dialog. */
+          Future.delayed(new Duration(seconds: 1)).then((value) {
+            iShowDialog(context,code, 1, change_log: cl);
+          });
+        } else {
+          Future.delayed(new Duration(seconds: 1)).then((value) {
+            iShowDialog(context,code, 0, change_log: cl);
+          });
+        }
+      }else {
+        CustomerUtils utils = CustomerUtils();
+        bool isUpdateSeen = await utils.getViewUpdate();
+        xrint("isUpdateSeen $isUpdateSeen");
+        if(!isUpdateSeen){showNewFeature(context, code);}
+      }
+    });
+  }
+  void showNewFeature(BuildContext context, String version) {
+    OverlayState overlayState = Overlay.of(context);
+    OverlayEntry? overlayEntry;
+    String defaultLocale = Platform.localeName;
+    overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Full-screen image
+          Positioned.fill(
+            child: Container(
+              height: MediaQuery.of(context).size.height*.7,
+              width:MediaQuery.of(context).size.width*.95,
+              color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
+              child:  Image.asset(
+                defaultLocale.contains("fr")?
+                "assets/images/png/update.png"
+                    :defaultLocale.contains("en")?
+                "assets/images/png/update.png"
+                    :"assets/images/png/update.png",
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          // Update button at bottom right
+          Positioned(
+            bottom: 40,
+            right: 10,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OutlinedButton(
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(color: Colors.white, width: 1)),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.translate('ok'),
+                    style: TextStyle(color: KColors.primaryColor),
+                  ),
+                  onPressed: () async{
+                    CustomerUtils utils = CustomerUtils();
+                    await utils.setViewUpdate(enable: true);
+                    overlayEntry!.remove();
+                  },
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    overlayState.insert(overlayEntry);
+  }
+
+  void iShowDialog(BuildContext context, String version, int force,{String? change_log = null}) {
+    OverlayState overlayState = Overlay.of(context);
+    OverlayEntry? overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Full-screen image
+          Positioned.fill(
+            child: Container(
+              height: MediaQuery.of(context).size.height*.7,
+              width:MediaQuery.of(context).size.width*.95,
+              color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
+              child: Image.network(
+                change_log!,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          // Update button at bottom right
+          Positioned(
+            bottom: 40,
+            right: 10,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // "Refuse" button (if force == 0)
+                if (force == 0)
+                  OutlinedButton(
+                    style: ButtonStyle(
+                      side: MaterialStateProperty.all(BorderSide(color: Colors.white, width: 1)),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('refuse'),
+                      style: TextStyle(color: KColors.primaryColor),
+                    ),
+                    onPressed: () {
+                      overlayEntry!.remove();
+                    },
+                  ),
+                SizedBox(width: 10),
+                // "Update" button
+                OutlinedButton(
+                  style: ButtonStyle(
+
+                    backgroundColor: MaterialStateProperty.all(KColors.primaryColor),
+                  ),
+                  child: Text(
+                    "${AppLocalizations.of(context)!.translate('update')} $version",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    overlayEntry!.remove();
+                    _updateApp();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    overlayState.insert(overlayEntry);
+  }
+
+  void _updateApp() {
+    if (Platform.isAndroid) {
+      _launchURL(ServerConfig.ANDROID_APP_LINK);
+    } else if (Platform.isIOS) {
+      _launchURL(ServerConfig.IOS_APP_LINK);
+    }
+  }
+  Future<dynamic> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      return await launch(url);
+    } else {
+      try {
+        throw 'Could not launch $url';
+      } catch (_) {
+        xrint(_);
+      }
+    }
+    return -1;
   }
 
   @override

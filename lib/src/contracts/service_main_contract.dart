@@ -3,6 +3,8 @@ import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/resources/service_main_provider.dart';
 import 'package:KABA/src/xrint.dart';
 
+import '../resources/app_api_provider.dart';
+
 class ServiceMainContract {
   void fetchCategories() {}
 }
@@ -11,6 +13,7 @@ class ServiceMainView {
   void showLoading(bool isLoading) {}
   void systemError () {}
   void networkError () {}
+  void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
   void inflateCategories(List<ServiceMainEntity> buy_entity) {}
 }
 
@@ -31,7 +34,22 @@ class ServiceMainPresenter implements ServiceMainContract {
   set serviceView(ServiceMainView value) {
     _serviceMainView = value;
   }
-
+  @override
+  Future<void> checkVersion() async {
+    try {
+      AppApiProvider provider = AppApiProvider();
+      Map version = await provider.checkVersion();
+      String code = version["version"];
+      int force = version["is_required"];
+      String cl_en = version["changeLog"]["en"];
+      String cl_fr = version["changeLog"]["fr"];
+      String cl_zh = version["changeLog"]["zh"];
+      _serviceMainView.checkVersion(code, force, cl_en, cl_fr, cl_zh);
+    } catch (_) {
+      /* RestaurantReview failure */
+      xrint("error ${_}");
+    }
+  }
   @override
   Future fetchCategories() async {
     if (isWorking)

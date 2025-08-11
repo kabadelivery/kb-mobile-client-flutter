@@ -88,14 +88,14 @@ Widget OfficesWidget(
                               Text(
                                 "${AppLocalizations.of(context)!.translate('collection_office')}",
                                 style: TextStyle(
-                                    fontSize: size.width > 360 ? 14 : 12),
+                                    fontSize:  12),
                               ),
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on,
                                     color: Colors.black87,
-                                    size: size.width > 360 ? 20 : 16,
+                                    size:16,
                                   ),
                                   SizedBox(
                                     width: 5,
@@ -103,7 +103,7 @@ Widget OfficesWidget(
                                   Text(
                                     office.departure.toString(),
                                     style: TextStyle(
-                                        fontSize: size.width > 360 ? 14 : 12),
+                                        fontSize:  12),
                                   ),
                                 ],
                               )
@@ -141,14 +141,14 @@ Widget OfficesWidget(
                               Text(
                                 "${AppLocalizations.of(context)!.translate('destination_office')}",
                                 style: TextStyle(
-                                    fontSize: size.width > 360 ? 14 : 12),
+                                    fontSize: 12),
                               ),
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on,
                                     color: Colors.black87,
-                                    size: size.width > 360 ? 20 : 16,
+                                    size: 16,
                                   ),
                                   SizedBox(
                                     width: 5,
@@ -156,7 +156,7 @@ Widget OfficesWidget(
                                   Text(
                                     office.destination.toString(),
                                     style: TextStyle(
-                                        fontSize: size.width > 360 ? 14 : 12),
+                                        fontSize: 12),
                                   ),
                                 ],
                               )
@@ -289,7 +289,7 @@ BlocSelector<OrderBloc, OrderState, OrderState>(
                               ).show(context);
                           },
                           child: Container(
-                            width: size.width > 360 ? 180 : 120,
+                            width:  120,
                             height: 70,
                             decoration: BoxDecoration(
                               border: Border.all(
@@ -372,7 +372,7 @@ BlocSelector<OrderBloc, OrderState, OrderState>(
                               ).show(context);
                           },
                           child: Container(
-                            width: size.width > 360 ? 180 : 120,
+                            width: 120,
                             height: 70,
                             decoration: BoxDecoration(
                               border: Border.all(

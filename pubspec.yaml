@@ -247,6 +247,7 @@ flutter:
     - assets/images/png/visa_logo.png
     - assets/images/png/wave_logo.png
     - assets/images/png/solimi_logo.png
+    - assets/images/png/update.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

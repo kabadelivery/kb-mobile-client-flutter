@@ -1449,10 +1449,10 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               color: Colors.black.withOpacity(0.7), // Optional: slight dim effect
               child: Image.asset(
                 defaultLocale.contains("fr")?
-                "assets/images/jpg/update_fr.jpg"
+                "assets/images/png/update.png"
                 :defaultLocale.contains("en")?
-                 "assets/images/jpg/update_en.jpg"
-                :"assets/images/jpg/update_zh.jpg",
+                 "assets/images/png/update.png"
+                :"assets/images/png/update.png",
                 fit: BoxFit.contain,
               ),
             ),

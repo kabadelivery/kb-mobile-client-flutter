@@ -36,12 +36,12 @@ class TopNewUpPage extends StatefulWidget {
 
   var fees = 0;
 
-  double? fees_tmoney = 5.0;
+  double? fees_tmoney = 4.0;
 
-  double? fees_flooz = 5.0;
+  double? fees_flooz = 4.0;
 
   double? fees_bankcard = 5.0;
-  double? fees_momo = 5.0;
+  double? fees_momo = 4.0;
 
   int? selectedPosition = 1;
 
@@ -1003,8 +1003,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         if (dropdownValue == "Tmoney")
           return widget.fees_tmoney!;
         else if (dropdownValue == "Flooz") return widget.fees_flooz!;
+
     }
-    return 10.toDouble();
+    return widget.fees_flooz!.toDouble();
   }
 
   _getTotalAmountEuro() {
@@ -1058,12 +1059,17 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
             _phoneNumberFieldController!.text,
             _amountFieldController!.text,
             _getFees());
-        if(result!=null){
+        debugPrint('result $result');
+        if(result!=null && result['error']==0){
           Navigator.of(context).pop({"success": true,"code":result['code']});
         }
       }catch(_){
         launch_other_payment=true;
       }
+    }
+    if(momo_picked_id=="tmoney") {
+      Navigator.of(context).pop();
+      return;
     }
     if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();

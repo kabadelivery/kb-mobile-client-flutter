@@ -100,7 +100,7 @@ class OrderBillConfiguration {
     promotion_pricing =  json['promotion_pricing'];
     command_pricing = json['command_pricing'];
     account_balance = json['account_balance'];
-    shipping_pricing = json['shipping_pricing'];
+    shipping_pricing = int.parse(json['shipping_pricing'].toString());
     total_pricing = json['total_pricing'];
     total_normal_pricing = json['total_normal_pricing'];
     promotion_shipping_pricing = json['promotion_shipping_pricing'];
