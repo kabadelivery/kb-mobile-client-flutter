@@ -793,5 +793,6 @@
 
   "shipping_payment_info_1": "计算完成后，运费将显示在您的请求中。",
   "shipping_payment_info_2": "您可以通过Kaba的手机支付（Mobile Money）支付全部或部分费用，点击“开始付款”即可。",
-  "see_bill": "参见账单"
+  "see_bill": "参见账单",
+  "close_bill":"关闭账单"
 }

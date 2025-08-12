@@ -792,5 +792,6 @@
   "shipping_final_calc": "Multipliez le résultat final en CBM par 230 000 (coût par mètre cube) pour obtenir vos frais d'expédition.",
   "shipping_payment_info_1": "Une fois calculé, le coût d'expédition apparaîtra sur votre demande.",
   "shipping_payment_info_2": "Vous pouvez payer la totalité ou une partie via Mobile Money dans Kaba en cliquant sur 'Initialiser le paiement'.",
-  "see_bill": "Voir la facture"
+  "see_bill": "Voir la facture",
+  "close_bill": "Fermer la facture"
 }

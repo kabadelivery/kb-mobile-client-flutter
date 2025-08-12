@@ -118,7 +118,7 @@ class CommandModel {
       ))?.toList();
     // normal one
     total_pricing = json["total_pricing"];
-    shipping_pricing = json["shipping_pricing"];
+    shipping_pricing = int.parse(json["shipping_pricing"].toString());
     food_pricing = json["food_pricing"];
 
     // preorder case
@@ -128,7 +128,7 @@ class CommandModel {
 
     // promotion case
     promotion_total_pricing = json["promotion_total_pricing"];
-    promotion_shipping_pricing = json["promotion_shipping_pricing"];
+    promotion_shipping_pricing = int.parse(json["promotion_shipping_pricing"].toString());
     promotion_food_pricing = json["promotion_food_pricing"];
 
     // differents cases

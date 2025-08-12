@@ -793,6 +793,7 @@
   "shipping_final_calc": "Multiply the final CBM result by 230,000 (cost per cubic meter) to find your shipping fee.",
   "shipping_payment_info_1": "Once calculated, the shipping fee will appear on your request.",
   "shipping_payment_info_2": "You can pay all or part via Mobile Money in Kaba by clicking 'Initialize payment'.",
-"calculate_shipping_cost": "Calculate shipping cost",
-  "see_bill": "See bill"
+  "calculate_shipping_cost": "Calculate shipping cost",
+  "see_bill": "See bill",
+  "close_bill": "Close bill"
 }

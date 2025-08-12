@@ -2657,9 +2657,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   void showBillingPopUp(){
     showDialog(
+
       context: context,
+
       builder: (BuildContext context) {
         return AlertDialog(
+          scrollable: true,
             content:Column(
               mainAxisSize: MainAxisSize.min,
                 children:[
