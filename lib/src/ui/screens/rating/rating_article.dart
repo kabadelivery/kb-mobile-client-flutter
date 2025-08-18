@@ -23,17 +23,30 @@ class _RatingArticleState extends State<RatingArticle> {
   String articleName = "";
   int totalRating = 3;
   TextEditingController commentController = TextEditingController();
+  DeliveryRatingPending deliveryRatingPending= DeliveryRatingPending();
   @override
 void initState() {
     super.initState();
     sellerImage = widget.deliveryRatingPending.seller_image!;
     sellerName = widget.deliveryRatingPending.seller_name!;
     articleName = widget.deliveryRatingPending.article_name!;
+    deliveryRatingPending = widget.deliveryRatingPending;
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: BlocSelector<RatingBloc, RatingState, RatingState>(
+      selector: (state) {
+        return state;
+      },
+  builder: (context, state) {
+    if (state is RateDeliveryTypeState) {
+      totalRating = state.rating;
+    }
+    if (state is SendDeliveryRatingPendingState) {
+      deliveryRatingPending = state.deliveryRatingPending;
+    }
+    return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Stack(
@@ -54,7 +67,7 @@ void initState() {
             // Moved this out of Container and into Stack
             Positioned(
               top: 40,
-              left: (MediaQuery.of(context).size.width -120)/2,
+              left: 100,
               child: Container(
                 width: 120,
                 height: 120,
@@ -84,7 +97,7 @@ void initState() {
             ),
             // Bottom section
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.20,
+              top: MediaQuery.of(context).size.height * 0.25,
               left: 0,
               right: 0,
               child: Column(
@@ -111,7 +124,12 @@ void initState() {
                   const SizedBox(height: 10),
                    Container(
                      width: 350,
+                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                      child: GestureDetector(
+                       onTap: (){
+                         BlocProvider.of<RatingBloc>(context).add(previousPageEvent());
+
+                       },
                        child: Row(
                          children: [
                            Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
@@ -145,13 +163,12 @@ void initState() {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 10,),
                   RatingWidget(
                     context: context,
                     ratingTextAndIcon: Container(),
                     rate_id: DeliveryRatingType.ratingAricle,
                   ),
-                  const SizedBox(height: 10),
                   Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(
@@ -161,6 +178,7 @@ void initState() {
                           maxLines: 1,
                           controller: commentController,
                           decoration: InputDecoration(
+                            hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
                             hintText: "Ajouter un commentaire sur l'article",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -175,8 +193,12 @@ void initState() {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   GestureDetector(
+                    onTap: (){
+                      deliveryRatingPending.article_comment = commentController.text;
+                      deliveryRatingPending.article_rating = totalRating.toDouble();
+                    },
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.8,
                       height: 40,
@@ -204,6 +226,9 @@ void initState() {
                       borderRadius: BorderRadius.circular(50.0),
                      ),
                     onPressed: (){
+                      deliveryRatingPending.article_comment = commentController.text;
+                      deliveryRatingPending.article_rating = totalRating.toDouble();
+                      debugPrint("Article Rating: ${deliveryRatingPending.toJson()}");
                       Navigator.pop(context);
                     },
                     child: Text("Retour au menu d'achat",
@@ -211,14 +236,40 @@ void initState() {
                           fontSize: 14,
                           color: KColors.primaryColor),
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 23),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
 
+                      Container(
+                        width: 140,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: KColors.primaryColor,
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+
+                    ],
+                  )
                 ],
               ),
             ),
           ],
         ),
-      ),
+      );
+  },
+),
     );
   }
 }

@@ -15,6 +15,11 @@ class GetTotalRatingEvent extends RatingEvent {
 }
 class sendDeliveryRatingPendingEvent extends RatingEvent {
   final DeliveryRatingPending deliveryRatingPending;
-
   sendDeliveryRatingPendingEvent({required this.deliveryRatingPending});
+}
+
+class nextPageEvent extends RatingEvent {
+
+}
+class previousPageEvent extends RatingEvent {
 }

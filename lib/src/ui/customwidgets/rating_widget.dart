@@ -22,14 +22,18 @@ Widget RatingWidget({required  BuildContext context,required Widget ratingTextAn
     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5.0), width: MediaQuery.of(context).size.width*0.87,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ratingTextAndIcon,
         Container(
-          width: rate_id==DeliveryRatingType.ratingAricle?MediaQuery.of(context).size.width*.8: 150,
+            alignment: Alignment.topLeft,
+            height:rate_id==DeliveryRatingType.ratingAricle?0: 40,
+            width:rate_id==DeliveryRatingType.ratingAricle?0:120,child: ratingTextAndIcon
+        ),
+        Container(
+          width: rate_id==DeliveryRatingType.ratingAricle?210: 170,
           height:rate_id==DeliveryRatingType.ratingAricle?80: 40,
-
+          alignment: Alignment.center,
           child: ListView.builder(
-              itemExtent: 80,
               itemCount: 5,
               scrollDirection: Axis.horizontal,
               physics: NeverScrollableScrollPhysics(),
@@ -49,8 +53,8 @@ Widget RatingWidget({required  BuildContext context,required Widget ratingTextAn
                             );
                           },
                           child:Container(
-                            width:  selectedRating==index+1 ?35:30,
-                            height:  selectedRating==index+1 ?35:30,
+                            width:  selectedRating==index+1 ?25:20,
+                            height:  selectedRating==index+1 ?25:20,
                             decoration: BoxDecoration(
                               color: selectedRating==index+1 ? KColors.primaryColor : Colors.white,
                               shape: BoxShape.circle,
@@ -61,7 +65,6 @@ Widget RatingWidget({required  BuildContext context,required Widget ratingTextAn
                             ),
                             child: Center(
                               child: Text(
-
                                 (index + 1).toString(),
                                 style: TextStyle(fontSize: 16, color:Colors.white),
                               ),

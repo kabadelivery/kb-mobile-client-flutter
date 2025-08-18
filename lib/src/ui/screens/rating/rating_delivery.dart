@@ -25,11 +25,18 @@ class _RatingDeliveryState extends State<RatingDelivery> {
   int groomingOfDeliveryMan = 3;
   double totalRating = 3;
   int cumulRating = 12;
+  TextEditingController commentController = TextEditingController();
   @override
   void initState(){
     super.initState();
     livreurImage = widget.deliveryRatingPending.delivery_man_image!;
     livreurName = widget.deliveryRatingPending.delivery_man_name!;
+    speedRating = widget.deliveryRatingPending.speedRating ?? 3;
+    respectOfGeolocation = widget.deliveryRatingPending.respectOfGeolocation ?? 3;
+    attidudeOfDeliveryMan = widget.deliveryRatingPending.attidudeOfDeliveryMan ?? 3;
+    groomingOfDeliveryMan = widget.deliveryRatingPending.groomingOfDeliveryMan ?? 3;
+    cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
+    totalRating = cumulRating / 4;
   }
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
             // Moved this out of Container and into Stack
             Positioned(
               top: 40,
-              left: (MediaQuery.of(context).size.width -120)/2,
+              left: 100,
               child: Container(
                 width: 120,
                 height: 120,
@@ -176,7 +183,6 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                     ),
                     rate_id: DeliveryRatingType.groomingOfDeliveryMan,
                   ),
-                  const SizedBox(height: 10),
                   BlocSelector<RatingBloc, RatingState, RatingState>(
                     selector: (state) => state,
                     builder: (context, state) {
@@ -193,7 +199,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(totalRating<3?FontAwesomeIcons.faceFrown:FontAwesomeIcons.faceSmile, weight: .5, size:19,color: KColors.primaryColor),
+                            Icon(totalRating<3?FontAwesomeIcons.faceFrown:totalRating>=3&& totalRating<4?FontAwesomeIcons.faceSmile:totalRating>=4&& totalRating<5?FontAwesomeIcons.faceSmileWink:totalRating>=5?FontAwesomeIcons.faceSmileBeam:FontAwesomeIcons.faceSmileBeam, weight: .5, size:19,color: KColors.primaryColor),
                             const SizedBox(width: 5),
                             const Flexible(child: Text("Note Totale :", style: TextStyle(fontSize:14,color: Colors.black87))),
                             const SizedBox(width: 5),
@@ -212,6 +218,79 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         ),
                       );
                     },
+                  ),
+
+                   Container(
+                    width:MediaQuery.of(context).size.width * 0.8,
+                    child:Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(child: TextFormField(
+                          maxLines: 1,
+                          controller: commentController,
+                          decoration: InputDecoration(
+
+                            hintText: "Ajouter un commentaire",
+                            hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                            ),
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    onPressed: (){
+                      DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending();
+                      deliveryRatingPending = widget.deliveryRatingPending;
+                      deliveryRatingPending.delivery_rating = totalRating;
+                      deliveryRatingPending.delivery_comment = commentController.text;
+                      deliveryRatingPending.speedRating = speedRating;
+                      deliveryRatingPending.respectOfGeolocation = respectOfGeolocation;
+                      deliveryRatingPending.attidudeOfDeliveryMan = attidudeOfDeliveryMan;
+                      deliveryRatingPending.groomingOfDeliveryMan = groomingOfDeliveryMan;
+                      BlocProvider.of<RatingBloc>(context).add(
+                        sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
+                      );
+
+                      BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
+                    },
+                    child: Text("Confirmer et continuer",
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: KColors.primaryColor),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: KColors.primaryColor,
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        width: 140,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),

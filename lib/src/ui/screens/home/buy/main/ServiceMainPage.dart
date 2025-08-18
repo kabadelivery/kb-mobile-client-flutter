@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:KABA/src/StateContainer.dart';
+import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/service_category_contract.dart';
@@ -29,6 +30,7 @@ import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -91,15 +93,19 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool isPickLocation = false;
 
   CurrentLocationTile? _myCurrentTile;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
     widget.presenter!.serviceMainView = this;
+    _pageController = PageController();
 
     if (widget.available_services == null) widget.available_services = [];
+
     if (widget.coming_soon_services == null) widget.coming_soon_services = [];
+
     hasSystemError = false;
     hasNetworkError = false;
     isLoading = false;
@@ -150,17 +156,40 @@ class ServiceMainPageState extends State<ServiceMainPage>
           builder: (context) {
             return Dialog(
               insetPadding: const EdgeInsets.all(20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: SizedBox(
-                height: 600,
-                width: 400,
-                child: PageView(
-                  children: [
-                    RatingArticle(deliveryRatingPending:deliveryRatingPending),
-                    RatingDelivery(deliveryRatingPending: deliveryRatingPending),
-                  ],
+              backgroundColor: Colors.transparent, // transparent outer dialog
+              child: ClipRRect(                     // clip children to rounded shape
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  color: Colors.white, // actual visible background
+                  height: 600,
+                  width: 400,
+                  child: BlocSelector<RatingBloc, RatingState, RatingState>(
+                      selector: (state) {
+                       return state;
+                      },
+                      builder: (context, state) {
+                        if(state is NextPageState){
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                        if(state is PreviousPageState){
+                          _pageController.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                        return PageView(
+                                        controller: _pageController,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        children: [
+                                          RatingDelivery(deliveryRatingPending: deliveryRatingPending),
+                                          RatingArticle(deliveryRatingPending: deliveryRatingPending),
+                                        ],
+                                      );
+                      },
+                  ),
                 ),
               ),
             );
@@ -168,9 +197,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
         );
 
 
+
         if(!isUpdateSeen){showNewFeature(context, code);}
       }
     });
+  }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
   void showNewFeature(BuildContext context, String version) {
     OverlayState overlayState = Overlay.of(context);
