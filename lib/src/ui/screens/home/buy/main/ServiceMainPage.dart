@@ -16,6 +16,7 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
+import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -39,6 +40,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../../microservices/kaba_chine/presentation/page_holder.dart';
+import '../../../../../models/DeliveryRatingPending.dart';
 import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
@@ -47,6 +49,8 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../rating/dialogPage.dart';
+import '../../../rating/rating_article.dart';
 import '../../_home/InfoPage.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -95,9 +99,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
-
     if (widget.coming_soon_services == null) widget.coming_soon_services = [];
-
     hasSystemError = false;
     hasNetworkError = false;
     isLoading = false;
@@ -141,6 +143,31 @@ class ServiceMainPageState extends State<ServiceMainPage>
         CustomerUtils utils = CustomerUtils();
         bool isUpdateSeen = await utils.getViewUpdate();
         xrint("isUpdateSeen $isUpdateSeen");
+        DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SizedBox(
+                height: 600,
+                width: 400,
+                child: PageView(
+                  children: [
+                    RatingArticle(deliveryRatingPending:deliveryRatingPending),
+                    RatingDelivery(deliveryRatingPending: deliveryRatingPending),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+
+
         if(!isUpdateSeen){showNewFeature(context, code);}
       }
     });

@@ -2,14 +2,18 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/history_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/ui/screens/rating/rating_article.dart';
+import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -76,6 +80,9 @@ Future<void> main() async {
               ),
               BlocProvider<ChatBloc>(
                 create: (context) => ChatBloc(),
+              ),
+              BlocProvider<RatingBloc>(
+                create: (context) => RatingBloc(),
               ),
         ], child: MyApp(appLanguage: appLanguage))))
     );
@@ -231,7 +238,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     /* precache logo of the splashPage */
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
-
+    DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
@@ -296,8 +303,9 @@ class _MyAppState extends State<MyApp> {
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
-              home: SplashPage(
-                  analytics: widget.analytics, observer: widget.observer),
+
+              home:  //RatingArticle(deliveryRatingPending:deliveryRatingPending ,),
+               SplashPage(   analytics: widget.analytics, observer: widget.observer),
               // home: DeleteAccountSuccessfulPage(),
               // home: DeleteAccountFixPropositionPage(),
               /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
