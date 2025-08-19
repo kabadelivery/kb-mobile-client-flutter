@@ -769,30 +769,29 @@
   "choose_your_payment_method": "选择您的付款方式",
   "to": "到",
   "order": "在阿里巴巴、淘宝、拼多多等平台下单...",
-  "warehouse_instruction": "KABA 会提供其在中国的仓库地址。点击此处将其告知您的供应商/卖家",
+  "warehouse_instruction": "KABA 将提供其在中国的供应商/卖家",
+  "click_here": "请点击此处 👉",
   "delivery_request": "在“申请”标签中提交送货请求，KABA 会将货物送到您在洛美的家中",
   "customer_service": "我们的客服会联系您进行定期跟进",
   "office_address": "我们在洛美的办公室：319 Rue Aziabor, Agbalépédogan, Kaba 大楼",
   "calculate_shipping_cost": "计算您的运费",
   "shipping_title": "计算您的运费",
-
   "shipping_intro_1": "我们根据您的包裹在中国仓库收货后的尺寸来计算运费。",
   "shipping_intro_2": "我们使用每立方米（CBM）的价格来计算体积。",
-
   "shipping_supplier_note_1": "您也可以根据供应商提供的尺寸来估算运费。",
   "shipping_supplier_note_2": "但是，以KABA在仓库收货后测量的数据为准。",
   "shipping_supplier_note_3": "尺寸以厘米（cm）为单位。",
-
   "shipping_example_intro": "示例：",
   "shipping_example_step_1": "在我们中国仓库收取的包裹尺寸为：50 cm × 70 cm × 40 cm。",
   "shipping_example_step_2": "将每个尺寸转换为米：0.50 m × 0.70 m × 0.40 m。",
   "shipping_example_step_3": "相乘：0.50 × 0.70 × 0.40 = 0.14 → 等于 0.14 CBM。",
   "shipping_example_step_4": "将结果四舍五入为 0.14 CBM。",
-
   "shipping_final_calc": "将最终的CBM结果乘以230,000（每立方米的费用）即可得出运费。",
-
   "shipping_payment_info_1": "计算完成后，运费将显示在您的请求中。",
   "shipping_payment_info_2": "您可以通过Kaba的手机支付（Mobile Money）支付全部或部分费用，点击“开始付款”即可。",
   "see_bill": "参见账单",
-  "close_bill":"关闭账单"
+  "close_bill":"关闭账单",
+  "delivery_history": "送货历史",
+  "retry": "重试",
+  "no_delivery_found": "未找到送货"
 }

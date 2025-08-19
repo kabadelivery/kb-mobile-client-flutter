@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+import '../core/utils.dart';
 import '../data/order/delivery_model.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 
@@ -61,6 +62,24 @@ void showInstructionsPopup(BuildContext context) {
               Text("• "+AppLocalizations.of(context)!.translate('order')),
               const SizedBox(height: 8),
               Text("• "+AppLocalizations.of(context)!.translate('warehouse_instruction')),
+
+              GestureDetector(onTap: (){
+
+              },
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color:KabaChineColors.primary,
+                    borderRadius: BorderRadius.circular(5),
+                   ),
+                  child: Text(AppLocalizations.of(context)!.translate('click_here'),
+                      style: TextStyle(
+                        color: Colors.white,
+
+                        fontSize: 12,
+                      )),
+                ),
+              ),
               const SizedBox(height: 8),
               Text("• "+AppLocalizations.of(context)!.translate('delivery_request')),
               const SizedBox(height: 8),

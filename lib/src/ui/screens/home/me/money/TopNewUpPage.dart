@@ -949,7 +949,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     else
       amount_ = double.parse(amount);
 
-    return ((_getFees().toDouble() * amount_.toDouble()) ~/ 100);
+    return ((amount_.toDouble() * _getFees()) / 100).round();
   }
 
   _getFeesFromTotal() {

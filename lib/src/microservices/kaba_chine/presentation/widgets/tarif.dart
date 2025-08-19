@@ -275,7 +275,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                      "${AppLocalizations.of(context)!.translate('large_packages_accepted')}",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize:12,
+                        fontSize:10,
                       ),
                     ),
                   ],

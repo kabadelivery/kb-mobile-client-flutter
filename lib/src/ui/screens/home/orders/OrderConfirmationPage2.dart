@@ -385,19 +385,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           decoration: BoxDecoration(
               color: KColors.new_gray,
               borderRadius: BorderRadius.all(Radius.circular(5))),
-          margin: EdgeInsets.only(left: 10, right: 10),
           padding: EdgeInsets.all(10),
           child: Container(
             padding: EdgeInsets.all(10),
             child: Column(children: <Widget>[
-              Container(
-                  height: 40.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(Utils.inflateLink(
-                              NetworkImages.kaba_promotion_gif))))),
+              //Container(
+              //                   height: 40.0,
+              //                   decoration: BoxDecoration(
+              //                       shape: BoxShape.rectangle,
+              //                       image: new DecorationImage(
+              //                           fit: BoxFit.cover,
+              //                           image: CachedNetworkImageProvider(Utils.inflateLink(
+              //                               NetworkImages.kaba_promotion_gif))))),
               Container(),
               /* content */
               Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -519,8 +518,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
               color: KColors.new_gray,
               borderRadius: BorderRadius.all(Radius.circular(5))),
-          margin: EdgeInsets.only(left: 10, right: 10),
-          padding: EdgeInsets.all(10),
+
           child: Container(
             padding: EdgeInsets.all(10),
             child: Column(children: <Widget>[
@@ -644,7 +642,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                       "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
-                      style: TextStyle(fontSize: 12, color: Colors.black)),
+                      style: TextStyle(fontSize: 11, color: Colors.black)),
                 ),
               ),
               SizedBox(height: 10),
@@ -1007,13 +1005,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     splashColor: Colors.white,
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.directions_bike, color: Colors.white),
+                        Icon(Icons.directions_bike, color: Colors.white,size:14),
                         SizedBox(width: 5),
                         Text(
                             "${AppLocalizations.of(context)!.translate('pay_at_delivery')}",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -1619,7 +1617,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       onChanged: _handleOrderTypeRadioValueChange),
                   Expanded(
                       child: Container(
-                          margin: EdgeInsets.only(left: 10, right: 10),
                           child: Text(
                               "${AppLocalizations.of(context)!.translate('order_get_delivered_now_hint')}",
                               style: TextStyle(
@@ -1642,7 +1639,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       onChanged: _handleOrderTypeRadioValueChange),
                   Expanded(
                       child: Container(
-                          margin: EdgeInsets.only(left: 10, right: 10),
                           child: Text(
                               "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
                               style: TextStyle(
@@ -1663,7 +1659,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           onChanged: _handleOrderTypeRadioValueChange),
                       Expanded(
                           child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
                               child: Text(
                                   "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
                                   style: TextStyle(
@@ -1685,12 +1680,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   /* pre order button */
   _buildPreOrderButton() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
       child: InkWell(
         onTap: () => _payPreorder(false),
         child: Card(
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(top:10),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -1702,7 +1696,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       Text(
                           "${AppLocalizations.of(context)!.translate('confirm_preorder')}",
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: KColors.new_black,
                               fontWeight: FontWeight.bold)),
                     ],
@@ -1711,7 +1705,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   Text(
                       "${AppLocalizations.of(context)!.translate('delivery_discount')} (-${_orderBillConfiguration.discount}%)",
                       style:
-                          TextStyle(fontSize: 16, color: KColors.primaryColor)),
+                          TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   SizedBox(height: 10),
                   Container(
                     child: Text(
@@ -1736,10 +1730,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   /* order and pay now */
   _buildOrderNowButton() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
       child: InkWell(
         onTap: () => _payNow(),
         child: Container(
+
           decoration: BoxDecoration(
               color: KColors.primaryColor,
               borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -1750,23 +1744,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(FontAwesomeIcons.wallet, color: Colors.white),
+                    Icon(FontAwesomeIcons.wallet, color: Colors.white,size: 15),
                     SizedBox(width: 10),
                     Text(
                         "${AppLocalizations.of(context)!.translate('pay_now')}",
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
                             color: Colors.white,
                             fontWeight: FontWeight.w500)),
                   ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
                 Container(
                   child: Text(
                       "${AppLocalizations.of(context)!.translate('pay_with_kaba_balance')}",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: Colors.white)),
-                  margin: EdgeInsets.only(left: 10, right: 10),
+                      style: TextStyle(fontSize: 11, color: Colors.white)),
+
                 ),
               ]),
         ),
@@ -1781,11 +1775,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             decoration: BoxDecoration(
                 color: KColors.primaryColor.withAlpha(30),
                 borderRadius: BorderRadius.all(Radius.circular(5))),
-            margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
             child: InkWell(
               onTap: () => _payAtDelivery(false),
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -1793,24 +1786,24 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Icon(Icons.directions_bike,
-                              color: KColors.primaryColor),
+                              color: KColors.primaryColor,size: 16),
                           SizedBox(width: 5),
                           Text(
                               "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 12,
                                 color: KColors.primaryColor,
                                 fontWeight: FontWeight.w500,
                               )),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Container(
                         child: Text(
                             "${AppLocalizations.of(context)!.translate('pay_with_cash_at_delivery')}",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 12, color: KColors.primaryColor)),
+                                fontSize: 10, color: KColors.primaryColor)),
                         margin: EdgeInsets.only(left: 10, right: 10),
                       ),
                     ]),
@@ -2483,8 +2476,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       decoration: BoxDecoration(
           color: KColors.new_gray,
           borderRadius: BorderRadius.all(Radius.circular(5))),
-      margin: EdgeInsets.only(left: 10, right: 10),
-      padding: EdgeInsets.all(10),
       child: Column(
         children: [
           /* discount points available*/
@@ -2492,46 +2483,27 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               splashColor: Colors.white,
               child: Container(
                   padding: EdgeInsets.only(top: 10, bottom: 5),
-                  child: Row(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        Flexible(
-                          fit: FlexFit.tight,
-                          flex: 3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: 20),
-                              Text(
-                                  "${AppLocalizations.of(context)!.translate('discount_point_available')}",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: KColors.new_black,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.tight,
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                  child: Text(
-                                      "${_orderBillConfiguration!.kaba_point?.can_use_amount}",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: KColors.primaryColor))),
-                              SizedBox(width: 20),
-                            ],
-                          ),
-                        )
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('discount_point_available')}",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: 5),
+                        Container(
+                            child: Text(
+                                "${_orderBillConfiguration!.kaba_point?.can_use_amount}",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: KColors.primaryColor)))
                       ])),
               onTap: () {
                 // _pickDeliveryAddress();
               }),
-          SizedBox(height: 10),
+          SizedBox(height: 5),
           Container(
             child: Text(
                 "${AppLocalizations.of(context)!.translate(_orderBillConfiguration.kaba_point!.is_eligible! ? (_orderBillConfiguration.kaba_point!.can_be_used! ? 'use_of_kaba_points' : 'kaba_points_monthly_limit_reached') : 'use_of_kaba_points_not_eligible')}",
@@ -2555,7 +2527,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         child: Row(children: <Widget>[
                           Flexible(
                             fit: FlexFit.tight,
-                            flex: 3,
+                            flex: 2,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -2568,7 +2540,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                             "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
                                         style: TextStyle(
                                             color: KColors.new_black,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
                                         text:
@@ -2666,7 +2638,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             content:Column(
               mainAxisSize: MainAxisSize.min,
                 children:[
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   _orderBillConfiguration != null &&
                       _orderBillConfiguration!.isBillBuilt == true
                       ?
@@ -2680,38 +2652,45 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         ? _buildPointDiscountOption()
                         : Container(),
 
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
                     _buildBill(),
                     SizedBox(height: 10),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       color: Colors.white,
-                      padding: EdgeInsets.only(
-                          left: 20, right: 10, top: 20, bottom: 20),
-                      child: Row(
+                      padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
+                      child: Column(
                         mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(
-                              "${AppLocalizations.of(context)!.translate('your_balance')}",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(width: 10),
-                          Text(
-                              "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                              style: TextStyle(
-                                  color: KColors.primaryColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  "${AppLocalizations.of(context)!.translate('your_balance')}",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                              SizedBox(width: 10),
+                              Text(
+                                  "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                                  style: TextStyle(
+                                      color: KColors.primaryColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                          SizedBox(height: 5),
                           Container(
+                              width: MediaQuery.of(context).size.width,
+                              alignment:Alignment.center,
                               padding: EdgeInsets.only(
                                   left: 15,
                                   right: 15,
                                   top: 10,
                                   bottom: 10),
                               decoration: BoxDecoration(
-                                  color: KColors.primaryColor,
+                                  color: KColors.primaryColor.withOpacity(0.7),
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(5))),
                               child: InkWell(
@@ -2728,14 +2707,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       ),
                     ),
                     _isPreorderSelected()
-                        ? SizedBox(height: 10)
+                        ? SizedBox(height: 5)
                         : Container(),
                     // purchase buttons are becoming cards.
                     _isPreorderSelected()
                         ? _buildPreOrderButton()
                         : Container(),
                     !_isPreorderSelected()
-                        ? SizedBox(height: 10)
+                        ? SizedBox(height: 5)
                         : Container(),
                     !_isPreorderSelected()
                         ? _buildOrderNowButton()
@@ -2746,7 +2725,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     !_isPreorderSelected()
                         ? _buildOrderPayAtArrivalButton()
                         : Container(),
-                    SizedBox(height: 30),
+                    SizedBox(height: 15),
                   ]))
                       : Container(),
                 ]

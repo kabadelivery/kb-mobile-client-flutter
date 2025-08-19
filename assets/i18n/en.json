@@ -774,8 +774,9 @@
   "conditions": "Conditions",
   "choose_your_payment_method": "Please Choose your payment method",
   "to": "to",
-  "order": "Order on Alibaba, Taobao, PinDuoduo...",
-  "warehouse_instruction": "KABA will give you its warehouse address in China. Share it with your supplier/vendor by clicking here",
+  "order": "Order yourself on Alibaba, Taobao, PinDuoduo...",
+  "warehouse_instruction": "KABA will give you its warehouse address in China. Share it with your supplier/vendor by ",
+  "click_here": "clicking here 👉",
   "delivery_request": "Make a delivery request in the 'request' tab and KABA will deliver to your home in Lomé",
   "customer_service": "Our customer service will contact you for regular follow-up",
   "office_address": "Our office in Lomé: 319 Rue Aziabor, Agbalépédogan, Kaba Building",
@@ -795,5 +796,8 @@
   "shipping_payment_info_2": "You can pay all or part via Mobile Money in Kaba by clicking 'Initialize payment'.",
   "calculate_shipping_cost": "Calculate shipping cost",
   "see_bill": "See bill",
-  "close_bill": "Close bill"
+  "close_bill": "Close bill",
+  "delivery_history": "Delivery history",
+  "retry": "Retry",
+  "no_delivery_found": "No delivery found"
 }

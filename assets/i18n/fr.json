@@ -772,8 +772,9 @@
   "conditions": "Conditions",
   "choose_your_payment_method": "Veuillez choir votre moyen de paiement",
   "to": "à",
-  "order": "Commandez sur Alibaba, Taobao, PinDuoduo...",
-  "warehouse_instruction": "KABA vous donne son adresse d'entrepôt en Chine. Communiquez-le à votre fournisseur/vendeur en cliquant ici",
+  "order": "Commandez vous-même sur Alibaba, Taobao, PinDuoduo...",
+  "warehouse_instruction": "KABA vous donne son adresse d'entrepôt en Chine. Communiquez-le à votre fournisseur/vendeur en ",
+  "click_here": "cliquant ici 👉",
   "delivery_request": "Faites une demande de livraison dans l'onglet \"demande\" et KABA vous livre à domicile à Lomé",
   "customer_service": "Notre service client vous contactera pour un suivi régulier",
   "office_address": "Notre bureau à Lomé: 319 Rue Aziabor, Agbalépédogan, Immeuble Kaba",
@@ -793,5 +794,8 @@
   "shipping_payment_info_1": "Une fois calculé, le coût d'expédition apparaîtra sur votre demande.",
   "shipping_payment_info_2": "Vous pouvez payer la totalité ou une partie via Mobile Money dans Kaba en cliquant sur 'Initialiser le paiement'.",
   "see_bill": "Voir la facture",
-  "close_bill": "Fermer la facture"
+  "close_bill": "Fermer la facture",
+  "delivery_history": "Historique de livraison",
+  "retry": "Réessayer",
+  "no_delivery_found": "Aucune livraison trouvée"
 }
