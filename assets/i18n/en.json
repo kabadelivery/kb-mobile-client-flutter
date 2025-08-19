@@ -799,5 +799,6 @@
   "close_bill": "Close bill",
   "delivery_history": "Delivery history",
   "retry": "Retry",
-  "no_delivery_found": "No delivery found"
+  "no_delivery_found": "No delivery found",
+  "location": "Location"
 }

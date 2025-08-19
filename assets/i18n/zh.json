@@ -793,5 +793,6 @@
   "close_bill":"关闭账单",
   "delivery_history": "送货历史",
   "retry": "重试",
-  "no_delivery_found": "未找到送货"
+  "no_delivery_found": "未找到送货",
+  "location": "位置"
 }

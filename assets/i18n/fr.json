@@ -797,5 +797,6 @@
   "close_bill": "Fermer la facture",
   "delivery_history": "Historique de livraison",
   "retry": "Réessayer",
-  "no_delivery_found": "Aucune livraison trouvée"
+  "no_delivery_found": "Aucune livraison trouvée",
+  "location": "Emplacement"
 }
