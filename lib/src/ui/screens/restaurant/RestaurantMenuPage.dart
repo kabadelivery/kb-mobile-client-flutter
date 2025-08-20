@@ -145,7 +145,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   @override
   Widget build(BuildContext context) {
-    xrint("widget?.restaurant!.is_certified ${widget?.restaurant!.is_certified}");
     if (MAX_CHIP_FOR_SCREEN < 0) {
       MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
     }
@@ -188,6 +187,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                       SizedBox(width:10),
+                      widget?.restaurant!=null?
                       widget?.restaurant!.is_certified==true?   GestureDetector(
                         onTap:(){
                           showCertificationTutorial(context:context);
@@ -196,7 +196,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             width: 20,
                             height: 20,
                             fit: BoxFit.cover),
-                      ):Container(),
+                      ):Container():Container(),
                     ],
                   )),
             ),
@@ -355,8 +355,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                                             ),
                                                           ),
                                                     SizedBox(width: 10),
+                                                    widget
+                                                        .restaurant!=null?
                                                     ShippingFeeTag(widget
-                                                        .restaurant!.distance),
+                                                        .restaurant!.distance):Container(),
                                                   ],
                                                 ),
                                           GestureDetector(

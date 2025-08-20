@@ -1456,21 +1456,33 @@ NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
 
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
-  final String bigPictureUrl = notificationItem.image_link.toString();
-  final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/bigImage.jpg';
-  final response = await http.get(Uri.parse(bigPictureUrl));
-  final file = File(filePath);
-  await file.writeAsBytes(response.bodyBytes);
+  final String? bigPictureUrl = notificationItem.image_link?.toString();
+  String? filePath;
+  if (bigPictureUrl != null && bigPictureUrl.isNotEmpty) {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      filePath = '${directory.path}/bigImage.jpg';
+      final response = await http.get(Uri.parse(bigPictureUrl));
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+    } catch (e) {
+      debugPrint("Failed to download notification image: $e");
+      filePath = null;
+    }
+  }
 
-  final BigPictureStyleInformation bigPictureStyleInformation =
-  BigPictureStyleInformation(
+  // Android style information
+  final BigPictureStyleInformation? bigPictureStyleInformation =
+  (filePath != null)
+      ? BigPictureStyleInformation(
     FilePathAndroidBitmap(filePath),
-    contentTitle: notificationItem?.title,
-    summaryText: notificationItem?.body,
+    contentTitle: notificationItem.title,
+    summaryText: notificationItem.body,
     htmlFormatContentTitle: true,
     htmlFormatSummaryText: true,
-  );
+  )
+      : null;
+
   final androidPlatformChannelSpecifics = AndroidNotificationDetails(
     AppConfig.CHANNEL_ID,
     AppConfig.CHANNEL_NAME,
@@ -1479,13 +1491,17 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     priority: Priority.max,
     ticker: notificationItem.title,
     styleInformation: bigPictureStyleInformation,
-    largeIcon: filePath != null ? FilePathAndroidBitmap(filePath) : null,
+    largeIcon: (filePath != null) ? FilePathAndroidBitmap(filePath) : null,
   );
 
-  final iOSAttachment = DarwinNotificationAttachment(filePath);
+  // iOS style information
+  final List<DarwinNotificationAttachment> iOSAttachments = [];
+  if (filePath != null) {
+    iOSAttachments.add(DarwinNotificationAttachment(filePath));
+  }
 
   final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
-    attachments: [iOSAttachment],
+    attachments: iOSAttachments,
     categoryIdentifier: "plainCategory",
     threadIdentifier: "thread1",
     presentAlert: true,
@@ -1493,10 +1509,18 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     presentSound: true,
     sound: "default",
   );
+
   var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics);
-  return flutterLocalNotificationsPlugin!.show(notificationItem.hashCode,
-      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString());
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  return flutterLocalNotificationsPlugin!.show(
+    notificationItem.hashCode,
+    notificationItem.title,
+    notificationItem.body,
+    platformChannelSpecifics,
+    payload: notificationItem.destination?.toSpecialString(),
+  );
 }
+
