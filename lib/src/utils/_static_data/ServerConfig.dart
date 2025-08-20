@@ -4,7 +4,7 @@ class ServerConfig {
   static const String ip_address = "app.kaba-delivery.com"; // prod server
   static const String pay_ip_address = "pay.kaba-delivery.com";
   static const String stat_ip_address = "stats.kaba-delivery.com"; //prod
-  static const String kaba_chine ="";
+  //static const String kaba_chine ="";
   //DEV//
 
     //static const String ip_address = "dev.kaba-delivery.com"; // dev server
