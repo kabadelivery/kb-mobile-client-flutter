@@ -1751,8 +1751,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               Navigator.of(context).pop();
               _payNow();
             },
-            child: Container(
-
+            child:AnimatedContainer(
+              duration: Duration(milliseconds: 300),
               decoration: BoxDecoration(
                   color: pay_now_button_pressed==false? KColors.primaryColor.withAlpha(30): KColors.primaryColor,
 
@@ -1795,7 +1795,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     return StatefulBuilder(
       builder: (context, setState) {
         return _orderBillConfiguration.pay_at_delivery == true
-            ? Container(
+            ? AnimatedContainer(
+          duration: Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                     color: pay_at_delivery_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
                     borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -2735,7 +2736,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     topup_button_pressed=false;
                                   });
                                   },
-                                  child:   Container(
+                                  child:   AnimatedContainer(
+                                  duration: Duration(milliseconds: 300),
                                   width: MediaQuery.of(context).size.width,
                                   alignment:Alignment.center,
                                   padding: EdgeInsets.only(

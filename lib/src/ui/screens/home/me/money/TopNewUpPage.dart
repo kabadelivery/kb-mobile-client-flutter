@@ -278,7 +278,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                              width: MediaQuery.of(context).size.width*0.95,
-                              height: (momoPaymentModes.length / 4).ceil() * 57.0,
+                              height: (momoPaymentModes.length / 4).ceil() * 60.0,
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
@@ -295,11 +295,16 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                   return GestureDetector(
 
                                     onTap: () {
-                                      if(momoPaymentModes[index]['id'] == "wave" || momoPaymentModes[index]['id'] == "orange_money"|| momoPaymentModes[index]['id'] == "mtn"){
-                                        CherryToast.info(
-                                          title: Text("${AppLocalizations.of(context)!.translate('t_unavailable')}"),
-                                             animationDuration: Duration(seconds: 2),
-                                        ).show(context);
+                                      if(momoPaymentModes[index]['id'] == "orange_money"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('orange_payment_not_available')}");
+                                        return;
+                                      }
+                                      if(momoPaymentModes[index]['id'] == "mtn"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('mtn_payment_not_available')}");
+                                        return;
+                                      }
+                                      if(momoPaymentModes[index]['id'] == "wave"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('wave_payment_not_available')}");
                                         return;
                                       }
                                       setState(() {

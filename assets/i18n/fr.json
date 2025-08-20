@@ -802,5 +802,8 @@
   "city_china": "Guangzhou, Chine",
   "adresse_china": "75, rue Qianjin Nord, quartier Yuexiu, parc créatif Yaotai, bâtiment G113",
   "name_adresse_china": "Rong Shula",
-  "telephone_afalika_chine": "(86) 18688424896"
+  "telephone_afalika_chine": "(86) 18688424896",
+  "wave_payment_not_available":"Le paiement Wave money n'est pas disponible pour le moment",
+  "mtn_payment_not_available": "Le paiement MTN money n'est pas disponible pour le moment",
+  "orange_payment_not_available": "Le paiement Orange money n'est pas disponible pour le moment"
 }

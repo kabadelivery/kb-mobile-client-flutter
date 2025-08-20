@@ -803,5 +803,8 @@
   "location": "Location",
   "city_china": "Guangzhou, China",
   "adresse_china": "No. 75, Qianjin North Street, Yuexiu District, Yaotai Creative Park, G113",
-  "name_adresse_china": "Rong Shula"
+  "name_adresse_china": "Rong Shula",
+  "wave_payment_not_available": "Wave money payment is not available for now",
+  "mtn_payment_not_available": "MTN money payment is not available for now",
+  "orange_payment_not_available": "Orange money money payment is not available for now"
 }

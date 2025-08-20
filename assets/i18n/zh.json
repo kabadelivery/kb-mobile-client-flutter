@@ -797,5 +797,8 @@
   "location": "位置",
   "city_china": "广州，中国",
   "adresse_china": "广东省广州市越秀区前进北街道75号瑶台创意园G113",
-  "name_adresse_china": "容书拉"
+  "name_adresse_china": "容书拉",
+  "wave_payment_not_available":"Wave 付款方式不可用",
+  "mtn_payment_not_available": "MTN 付款方式不可用",
+  "orange_payment_not_available": "Orange 付款方式不可用"
 }
