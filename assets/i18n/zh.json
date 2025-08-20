@@ -794,5 +794,8 @@
   "delivery_history": "送货历史",
   "retry": "重试",
   "no_delivery_found": "未找到送货",
-  "location": "位置"
+  "location": "位置",
+  "city_china": "广州，中国",
+  "adresse_china": "广东省广州市越秀区前进北街道75号瑶台创意园G113",
+  "name_adresse_china": "容书拉"
 }

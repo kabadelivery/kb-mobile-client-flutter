@@ -295,6 +295,13 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                   return GestureDetector(
 
                                     onTap: () {
+                                      if(momoPaymentModes[index]['id'] == "wave" || momoPaymentModes[index]['id'] == "orange_money"|| momoPaymentModes[index]['id'] == "mtn"){
+                                        CherryToast.info(
+                                          title: Text("${AppLocalizations.of(context)!.translate('t_unavailable')}"),
+                                             animationDuration: Duration(seconds: 2),
+                                        ).show(context);
+                                        return;
+                                      }
                                       setState(() {
                                         momo_picked_id = momoPaymentModes[index]['id'];
                                         dropdownValue = momoPaymentModes[index]['name'];

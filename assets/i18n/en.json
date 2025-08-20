@@ -800,5 +800,8 @@
   "delivery_history": "Delivery history",
   "retry": "Retry",
   "no_delivery_found": "No delivery found",
-  "location": "Location"
+  "location": "Location",
+  "city_china": "Guangzhou, China",
+  "adresse_china": "No. 75, Qianjin North Street, Yuexiu District, Yaotai Creative Park, G113",
+  "name_adresse_china": "Rong Shula"
 }

@@ -798,5 +798,9 @@
   "delivery_history": "Historique de livraison",
   "retry": "Réessayer",
   "no_delivery_found": "Aucune livraison trouvée",
-  "location": "Emplacement"
+  "location": "Emplacement",
+  "city_china": "Guangzhou, Chine",
+  "adresse_china": "75, rue Qianjin Nord, quartier Yuexiu, parc créatif Yaotai, bâtiment G113",
+  "name_adresse_china": "Rong Shula",
+  "telephone_afalika_chine": "(86) 18688424896"
 }

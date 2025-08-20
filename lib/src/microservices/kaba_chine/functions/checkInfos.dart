@@ -150,13 +150,13 @@ void showAddressPopup(BuildContext context) {
               ),
               const SizedBox(height: 16),
 
-              _buildAddressRow(context, Icons.location_on, "${AppLocalizations.of(context)!.translate('location')}", "广州、中国"),
+              _buildAddressRow(context, Icons.location_on, "${AppLocalizations.of(context)!.translate('location')}", "${AppLocalizations.of(context)!.translate('city_china')}"),
               const SizedBox(height: 12),
 
-              _buildAddressRow(context, Icons.home, "${AppLocalizations.of(context)!.translate('address')}", "广东省广州市越秀区前进北街道75号瑶台创意园G113容舒拉"),
+              _buildAddressRow(context, Icons.home, "${AppLocalizations.of(context)!.translate('address')}",  "${AppLocalizations.of(context)!.translate('adresse_china')}"),
               const SizedBox(height: 12),
 
-              _buildAddressRow(context, Icons.person, "${AppLocalizations.of(context)!.translate('name')}", "容书拉"),
+              _buildAddressRow(context, Icons.person, "${AppLocalizations.of(context)!.translate('name')}", "${AppLocalizations.of(context)!.translate('name_adresse_china')}"),
               const SizedBox(height: 12),
 
               _buildAddressRow(context, Icons.phone, "${AppLocalizations.of(context)!.translate('contact')}", "(86) 18688424896"),
@@ -180,7 +180,10 @@ Widget _buildAddressRow(BuildContext context, IconData icon, String title, Strin
           children: [
             Text(
               title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
+
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
