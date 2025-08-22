@@ -14,6 +14,9 @@ import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/DeliveryRatingPending.dart';
+import '../utils/functions/new_rating_feature.dart';
+
 class OrderConfirmationContract {
 
 //  void login (String password, String phoneCode){}
@@ -132,8 +135,13 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = true;
     try {
 //      _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchPreorderOrder(customer, foods, selectedAddress, mCode, infos, start, end);
-      _orderConfirmationView.launchOrderResponse(error);
+      Map data = await provider.launchPreorderOrder(customer, foods, selectedAddress, mCode, infos, start, end);
+      if(data["error"]==0){
+        debugPrint("order data ${data}");
+        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+        saveRatePendingInCache(json.encode(deliveryRatingPending.toJson()));
+      }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
     } catch (_) {
       /* login failure */
       xrint("error ${_}");

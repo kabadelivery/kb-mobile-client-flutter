@@ -1,9 +1,13 @@
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
+
+import '../models/CustomerModel.dart';
+import '../utils/functions/new_rating_feature.dart';
 
 class ServiceMainContract {
   void fetchServiceCategoryFromLocation(Position location) {}
@@ -18,6 +22,7 @@ class ServiceMainView {
 
   void networkError() {}
   void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
+  void showOrderRating (DeliveryRatingPending deliveryRatingPending) {}
   void inflateServiceCategory(List<ServiceMainEntity> data) {}
 
 }
@@ -123,5 +128,18 @@ class ServiceMainPresenter implements ServiceMainContract {
       /* RestaurantReview failure */
       xrint("error ${_}");
     }
+  }
+  Future<void> showOrderRating() async {
+  try {
+      DeliveryRatingPending? orderRating = await getRatePendingFromCache();
+      CustomerModel customer = await CustomerUtils.getCustomer();
+      DeliveryRatingPending deliveryRatingPending = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating!.command_id.toString());
+      if(deliveryRatingPending!=null){
+        _serviceMainView.showOrderRating(deliveryRatingPending);
+      }
+    } catch (_) {
+      xrint("error ${_}");
+    }
+
   }
 }

@@ -112,7 +112,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
   @override
   void checkVersion(
-      String code, int force, String cl_en, String cl_fr, String cl_zh) {
+      String code, int force, String cl_en, String cl_fr, String cl_zh)
+  {
     String mCode = code.replaceAll(new RegExp(r'\.'), "");
 
     String defaultLocale = Platform.localeName;
@@ -149,58 +150,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
         CustomerUtils utils = CustomerUtils();
         bool isUpdateSeen = await utils.getViewUpdate();
         xrint("isUpdateSeen $isUpdateSeen");
-        DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
-
-        showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              insetPadding: const EdgeInsets.all(20),
-              backgroundColor: Colors.transparent, // transparent outer dialog
-              child: ClipRRect(                     // clip children to rounded shape
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: Colors.white, // actual visible background
-                  height: 600,
-                  width: 400,
-                  child: BlocSelector<RatingBloc, RatingState, RatingState>(
-                      selector: (state) {
-                       return state;
-                      },
-                      builder: (context, state) {
-                        if(state is NextPageState){
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                        if(state is PreviousPageState){
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                        return PageView(
-                                        controller: _pageController,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        children: [
-                                          RatingDelivery(deliveryRatingPending: deliveryRatingPending),
-                                          RatingArticle(deliveryRatingPending: deliveryRatingPending),
-                                        ],
-                                      );
-                      },
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-
-
-
         if(!isUpdateSeen){showNewFeature(context, code);}
       }
     });
+  }
+
+  @override
+  void showOrderRating(DeliveryRatingPending deliveryRatingPending){
+
   }
   @override
   void dispose() {

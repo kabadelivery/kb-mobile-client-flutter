@@ -29,7 +29,7 @@ void initState() {
     super.initState();
     sellerImage = widget.deliveryRatingPending.seller_image!;
     sellerName = widget.deliveryRatingPending.seller_name!;
-    articleName = widget.deliveryRatingPending.article_name!;
+    articleName = widget.deliveryRatingPending.articles![0]['name']!;
     deliveryRatingPending = widget.deliveryRatingPending;
   }
   @override
