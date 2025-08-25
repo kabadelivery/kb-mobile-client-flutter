@@ -22,7 +22,7 @@ class ServiceMainView {
 
   void networkError() {}
   void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
-  void showOrderRating (DeliveryRatingPending deliveryRatingPending) {}
+  void showOrderRating (List<DeliveryRatingPending> deliveryRatingPending) {}
   void inflateServiceCategory(List<ServiceMainEntity> data) {}
 
 }
@@ -131,11 +131,19 @@ class ServiceMainPresenter implements ServiceMainContract {
   }
   Future<void> showOrderRating() async {
   try {
-      DeliveryRatingPending? orderRating = await getRatePendingFromCache();
+      List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
+      List<DeliveryRatingPending>? deliveriesRatingPending=[];
       CustomerModel customer = await CustomerUtils.getCustomer();
-      DeliveryRatingPending deliveryRatingPending = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating!.command_id.toString());
-      if(deliveryRatingPending!=null){
-        _serviceMainView.showOrderRating(deliveryRatingPending);
+      for(var orderRating in ordersRating??[]){
+        try{
+          DeliveryRatingPending deliveryRatingPending = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+          deliveriesRatingPending.add(deliveryRatingPending);
+        }catch(_){
+          xrint("error fetching rating for order ${orderRating.command_id} : ${_}");
+        }
+      }
+      if(deliveriesRatingPending!=null){
+        _serviceMainView.showOrderRating(deliveriesRatingPending);
       }
     } catch (_) {
       xrint("error ${_}");

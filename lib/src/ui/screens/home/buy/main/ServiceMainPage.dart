@@ -29,6 +29,7 @@ import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,6 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
+import '../../../../../blocs/rating/rating_bloc.dart';
 import '../../../../../microservices/kaba_chine/presentation/page_holder.dart';
 import '../../../../../models/DeliveryRatingPending.dart';
 import '../../../../../utils/_static_data/ServerConfig.dart';
@@ -49,6 +51,8 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../rating/rating_article.dart';
+import '../../../rating/rating_delivery.dart';
 import '../../_home/InfoPage.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -84,7 +88,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool? hasSystemError;
 
   DeliveryAddressModel? _selectedAddress;
-
+  PageController _pageController = PageController();
   late SharedPreferences prefs;
 
   bool isPickLocation = false;
@@ -98,7 +102,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
     super.initState();
     this.widget.presenter!.checkVersion();
 
-
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -110,7 +113,154 @@ class ServiceMainPageState extends State<ServiceMainPage>
     isLoading = false;
   }
   @override
-  void showOrderRating(DeliveryRatingPending deliveryRatingPending){}
+  void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
+    if (deliveriesRatingPending.isEmpty) return;
+    if (deliveriesRatingPending.length == 1) {
+      _showRatingDialog(deliveriesRatingPending.first);
+    } else {
+      final choice = await _askUserChoice(context);
+      if (choice == "one") {
+        final latest = deliveriesRatingPending.reduce((a, b) {
+          final idA = int.tryParse(a.command_id.toString()) ?? 0;
+          final idB = int.tryParse(b.command_id.toString()) ?? 0;
+          return idA > idB ? a : b;
+        });
+        _showRatingDialog(latest);
+      } else if (choice == "all") {
+        for (final delivery in deliveriesRatingPending) {
+          await _showRatingDialog(delivery);
+        }
+      }
+    }
+  }
+  Future<String?> _askUserChoice(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.shopping_bag, size: 50, color: KColors.primaryColor),
+                const SizedBox(height: 15),
+                Text(
+                  "Plusieurs commandes détectées",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Voulez-vous noter uniquement la plus récente ou toutes vos commandes ?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: Color(0xffffdae3),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: Icon(Icons.check_circle, color: KColors.primaryColor),
+                        label: Text("Une seule", style: TextStyle(color: KColors.primaryColor)),
+                        onPressed: () => Navigator.pop(context, "one"),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+
+                        icon: Icon(Icons.all_inclusive, color: Colors.white),
+                        label: Text("Toutes"),
+                        onPressed: () => Navigator.pop(context, "all"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showRatingDialog(DeliveryRatingPending delivery) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(20),
+          backgroundColor: Colors.transparent,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              color: Colors.white,
+              height: 600,
+              width: 400,
+              child: BlocSelector<RatingBloc, RatingState, RatingState>(
+                selector: (state) => state,
+                builder: (context, state) {
+                  if (state is NextPageState) {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                  if (state is PreviousPageState) {
+                    _pageController.previousPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                  return PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      RatingDelivery(deliveryRatingPending: delivery),
+                      RatingArticle(deliveryRatingPending: delivery),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void checkVersion(
       String code, int force, String cl_en, String cl_fr, String cl_zh) {
@@ -153,6 +303,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
+          this.widget.presenter!.showOrderRating();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _getLastKnowLocation(jumpToBuyPageDetails: false);
           });

@@ -72,7 +72,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> launchOrder(
+  Future<Map> launchOrder(
       bool isPayAtDelivery,
       CustomerModel? customer,
       Map<ShopProductModel, int> foods,
@@ -161,7 +161,7 @@ class OrderApiProvider {
 
       if (response.statusCode == 200) {
         // if ok, send true or false
-        return mJsonDecode(response.data)["error"];
+        return mJsonDecode(response.data);
       } else
         throw Exception(-1); // there is an error in your request
     } else {

@@ -88,20 +88,21 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     if (isWorking)
       return;
     isWorking = true;
-    try {
-
-      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
-      _orderConfirmationView.launchOrderResponse(error);
-    } catch (_) {
-      /* login failure */
-      xrint("error ${_}");
-      if (_ == -2) {
-        _orderConfirmationView.systemError();
-      } else {
-        _orderConfirmationView.networkError();
+      Map data = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+      if(data["error"]==0){
+        debugPrint("order data ${data}");
+        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+        List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        if(deliveriesRatingPending!=null){
+          deliveriesRatingPending.add(deliveryRatingPending);
+          saveRatePendingInCache(json.encode(deliveriesRatingPending.map((DeliveryRatingPending e) => e.toJson()).toList()));
+        }
+        else{
+          saveRatePendingInCache(json.encode([deliveryRatingPending].map((DeliveryRatingPending e) => e.toJson()).toList()));
+        }
       }
-      _orderConfirmationView.launchOrderResponse(-1);
-    }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
+
     isWorking = false;
   }
 
@@ -112,8 +113,20 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = true;
     try {
       _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
-      _orderConfirmationView.launchOrderResponse(error);
+      Map data = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+      if(data["error"]==0){
+        debugPrint("order data ${data}");
+        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+        List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        if(deliveriesRatingPending!=null){
+          deliveriesRatingPending.add(deliveryRatingPending);
+          saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
+        }
+        else{
+          saveRatePendingInCache(json.encode([deliveryRatingPending].map((e) => e.toJson()).toList()));
+        }
+      }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
     } catch (_) {
       /* login failure */
       xrint("error ${_}");
@@ -139,7 +152,14 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
       if(data["error"]==0){
         debugPrint("order data ${data}");
         DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
-        saveRatePendingInCache(json.encode(deliveryRatingPending.toJson()));
+        List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        if(deliveriesRatingPending!=null){
+          deliveriesRatingPending.add(deliveryRatingPending);
+          saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
+        }
+        else{
+          saveRatePendingInCache(json.encode([deliveryRatingPending].map((e) => e.toJson()).toList()));
+        }
       }
       _orderConfirmationView.launchOrderResponse(data["error"]);
     } catch (_) {

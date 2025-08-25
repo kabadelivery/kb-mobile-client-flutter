@@ -30,24 +30,28 @@ class DeliveryRatingPending{
       this.groomingOfDeliveryMan,
 });
 
-  factory DeliveryRatingPending.fromJson(Map<String?, dynamic> json) {
-   return DeliveryRatingPending(
-     command_id: json['command_id'] as int,
-     delivery_man_image: json['delivery_man_image'] as String?,
-     delivery_man_name: json['delivery_man_name'] as String?,
-     articles: json['article_name'] as List<Map<String,dynamic>>?,
-     seller_name: json['seller_name'] as String?,
-     seller_image: json['seller_image'] as String?,
-     delivery_rating: (json['delivery_rating'] as num).toDouble(),
-     article_rating: (json['article_rating'] as num).toDouble(),
-     article_comment: json['article_comment'] as String?,
-     delivery_comment: json['delivery_comment'] as String?,
-      speedRating: json['speedRating'] as int?,
-      respectOfGeolocation: json['respectOfGeolocation'] as int?,
-      attidudeOfDeliveryMan: json['attidudeOfDeliveryMan'] as int?,
-      groomingOfDeliveryMan: json['groomingOfDeliveryMan'] as int?,
-   ) ;
+  factory DeliveryRatingPending.fromJson(Map<String, dynamic> json) {
+    return DeliveryRatingPending(
+      command_id: int.parse(json['command_id'].toString() ?? ''),
+      delivery_man_image: json['delivery_man_image'] as String? ?? '',
+      delivery_man_name: json['delivery_man_name'] as String? ?? '',
+      articles: (json['articles'] as List<dynamic>?)
+          ?.map((item) => item as Map<String, dynamic>)
+          .toList()
+          ?? [],
+      seller_name: json['seller_name'] as String? ?? '',
+      seller_image: json['seller_image'] as String? ?? '',
+      delivery_rating: (json['delivery_rating'] as num?)?.toDouble() ?? 0.0,
+      article_rating: (json['article_rating'] as num?)?.toDouble() ?? 0.0,
+      article_comment: json['article_comment'] as String? ?? '',
+      delivery_comment: json['delivery_comment'] as String? ?? '',
+      speedRating: json['speedRating'] as int? ?? 0,
+      respectOfGeolocation: json['respectOfGeolocation'] as int? ?? 0,
+      attidudeOfDeliveryMan: json['attidudeOfDeliveryMan'] as int? ?? 0,
+      groomingOfDeliveryMan: json['groomingOfDeliveryMan'] as int? ?? 0,
+    );
   }
+
 
   Map<String?, dynamic> toJson() {
     return {

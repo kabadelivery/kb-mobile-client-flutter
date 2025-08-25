@@ -514,13 +514,9 @@ class AppApiProvider {
     var response = await dio.post(url, data: _data);
     xrint("001 _ " + response.data.toString());
     if (response.statusCode == 200) {
-      try{
-        Map<String,dynamic>? data =mJsonDecode(response.data);
+        Map<String,dynamic>? data =json.decode(response.data)["data"];
         DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending.fromJson(data!);
         return deliveryRatingPending;
-      }catch(_){
-        throw Exception("Error parsing response: ${_.toString()}");
-      }
     } else
       throw Exception(-1);
   }
