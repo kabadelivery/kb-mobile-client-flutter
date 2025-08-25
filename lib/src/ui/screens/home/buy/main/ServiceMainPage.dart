@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:KABA/src/StateContainer.dart';
-import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/contracts/restaurant_list_contract.dart';
 import 'package:KABA/src/contracts/restaurant_list_food_proposal_contract.dart';
 import 'package:KABA/src/contracts/service_category_contract.dart';
@@ -17,7 +17,6 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopListPageRefined.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
-import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -25,12 +24,11 @@ import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
-    as Pp;
+as Pp;
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -51,8 +49,6 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../rating/dialogPage.dart';
-import '../../../rating/rating_article.dart';
 import '../../_home/InfoPage.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -71,7 +67,8 @@ class ServiceMainPage extends StatefulWidget {
   List<ServiceMainEntity>? coming_soon_services = [];
 
   Position? initialLocation;
-
+  var samePositionCount = 0;
+  bool? hasGps = false;
   ServiceMainPage({Key? key, this.presenter}) : super(key: key);
 
   @override
@@ -93,14 +90,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool isPickLocation = false;
 
   CurrentLocationTile? _myCurrentTile;
-  late PageController _pageController;
+  StreamSubscription<Position>? positionStream;
+  Position? tmpLocation;
 
   @override
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
+
+
     widget.presenter!.serviceMainView = this;
-    _pageController = PageController();
 
     if (widget.available_services == null) widget.available_services = [];
 
@@ -111,9 +110,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
     isLoading = false;
   }
   @override
+  void showOrderRating(DeliveryRatingPending deliveryRatingPending){}
+  @override
   void checkVersion(
-      String code, int force, String cl_en, String cl_fr, String cl_zh)
-  {
+      String code, int force, String cl_en, String cl_fr, String cl_zh) {
     String mCode = code.replaceAll(new RegExp(r'\.'), "");
 
     String defaultLocale = Platform.localeName;
@@ -150,19 +150,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
         CustomerUtils utils = CustomerUtils();
         bool isUpdateSeen = await utils.getViewUpdate();
         xrint("isUpdateSeen $isUpdateSeen");
-        if(!isUpdateSeen){showNewFeature(context, code);}
+        if(!isUpdateSeen){
+          showNewFeature(context, code);
+        }else{
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _getLastKnowLocation(jumpToBuyPageDetails: false);
+          });
+        }
       }
     });
-  }
-
-  @override
-  void showOrderRating(DeliveryRatingPending deliveryRatingPending){
-
-  }
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
   void showNewFeature(BuildContext context, String version) {
     OverlayState overlayState = Overlay.of(context);
@@ -207,6 +203,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     CustomerUtils utils = CustomerUtils();
                     await utils.setViewUpdate(enable: true);
                     overlayEntry!.remove();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _getLastKnowLocation(jumpToBuyPageDetails: false);
+                    });
                   },
                 )
               ],
@@ -437,19 +436,19 @@ class ServiceMainPageState extends State<ServiceMainPage>
               onPressed: () {
                 _jumpToInfoPage();
               }),
-            actions: <Widget>[
+          actions: <Widget>[
             InkWell(
-            onTap: () => _showBottomContactSheet(),
-                child: Container(
+              onTap: () => _showBottomContactSheet(),
+              child: Container(
                 width: 70,
                 height: 42,
                 child: IconButton(
-                icon: Icon(Icons.phone, color: Colors.white),
-                onPressed: () => _showBottomContactSheet(),
+                  icon: Icon(Icons.phone, color: Colors.white),
+                  onPressed: () => _showBottomContactSheet(),
                 ),
-                ),
-    ),
-            ],
+              ),
+            ),
+          ],
           title: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -474,10 +473,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       child: isLoading!
                           ? Center(child: MyLoadingProgressWidget())
                           : (hasNetworkError!
-                              ? Center(child: MyLoadingProgressWidget())
-                              : hasSystemError!
-                                  ? _buildSysErrorPage()
-                                  : _buildServicePage())),
+                          ? Center(child: MyLoadingProgressWidget())
+                          : hasSystemError!
+                          ? _buildSysErrorPage()
+                          : _buildServicePage())),
                 ))));
   }
 
@@ -513,33 +512,33 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   SizedBox(height: 20),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
-                          onTap: () {
-                            showPlacePicker(context);
-                          },
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: Text(
-                                "${AppLocalizations.of(context)!.translate("current_address_tile_hint")}",
-                                textAlign: TextAlign.center,
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 12),
-                              )),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                child:
-                                    Lottie.asset(LottieAssets.hint_direction),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                            ],
-                          ),
-                        )
+                    onTap: () {
+                      showPlacePicker(context);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Text(
+                              "${AppLocalizations.of(context)!.translate("current_address_tile_hint")}",
+                              textAlign: TextAlign.center,
+                              style:
+                              TextStyle(color: Colors.grey, fontSize: 12),
+                            )),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          child:
+                          Lottie.asset(LottieAssets.hint_direction),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  )
                       : Container(),
                   GestureDetector(
                     onTap: () {
@@ -549,62 +548,62 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       children: [
                         StateContainer?.of(context)?.location == null
                             ? Container(
-                                margin: EdgeInsets.only(
-                                    left: 20, right: 20, top: 20, bottom: 15),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    color: KColors.mBlue.withAlpha(10),
-                                    borderRadius: BorderRadius.circular(5)),
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                            child: Icon(Icons.location_on,
-                                                color: KColors.mBlue, size: 15),
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: KColors.mBlue
-                                                    .withAlpha(30)),
-                                            padding: EdgeInsets.all(5)),
-                                        SizedBox(width: 10),
-                                        Text(
-                                            Utils.capitalize(
-                                                "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.grey)),
-                                      ],
-                                    ),
-                                    Container(
-                                        child: Icon(Icons.add,
-                                            color: KColors.primaryColor,
-                                            size: 15),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: KColors.primaryColor
-                                                .withAlpha(30)),
-                                        padding: EdgeInsets.all(5)),
-                                  ],
-                                ),
-                              )
+                          margin: EdgeInsets.only(
+                              left: 20, right: 20, top: 20, bottom: 15),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              color: KColors.mBlue.withAlpha(10),
+                              borderRadius: BorderRadius.circular(5)),
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                      child: Icon(Icons.location_on,
+                                          color: KColors.mBlue, size: 15),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: KColors.mBlue
+                                              .withAlpha(30)),
+                                      padding: EdgeInsets.all(5)),
+                                  SizedBox(width: 10),
+                                  Text(
+                                      Utils.capitalize(
+                                          "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey)),
+                                ],
+                              ),
+                              Container(
+                                  child: Icon(Icons.add,
+                                      color: KColors.primaryColor,
+                                      size: 15),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: KColors.primaryColor
+                                          .withAlpha(30)),
+                                  padding: EdgeInsets.all(5)),
+                            ],
+                          ),
+                        )
                             : getCurrentTile(),
                         isPickLocation
                             ? Positioned(
-                                top: 35,
-                                right: 70,
-                                child: SizedBox(
-                                    height: 15,
-                                    width: 15,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.green,
-                                      strokeWidth: 2,
-                                    )))
+                            top: 35,
+                            right: 70,
+                            child: SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  color: Colors.green,
+                                  strokeWidth: 2,
+                                )))
                             : Container()
                       ],
                     ),
@@ -612,7 +611,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   InkWell(
                       child: SearchStatelessWidget(
                           title:
-                              "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
+                          "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
                       onTap: () {
                         _jumpToSearchPage("all");
                       }),
@@ -632,7 +631,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                             await Permission.camera.status;
+                            await Permission.camera.status;
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => OutOfAppOrderPage(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -651,16 +650,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                  color: KColors.buy_category_button_bg,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                               Container(
-                                   width: 40,
-                                   height: 40,
-                                   child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('out_of_app')}",
@@ -684,12 +683,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             if(cachedDistricts != null && cachedDistricts.isNotEmpty){
                               districts = cachedDistricts;
                             }else{
-                          try{
-                            districts  = await showLoadingDialog(context);
-                            xrint("districts $districts");
-                          }catch(e) {
-                            xrint("error $e");
-                          }
+                              try{
+                                districts  = await showLoadingDialog(context);
+                                xrint("districts $districts");
+                              }catch(e) {
+                                xrint("error $e");
+                              }
                             }
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(districts: districts),
@@ -710,16 +709,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                  color: KColors.buy_category_button_bg,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                               Container(
-                                   width: 40,
-                                   height: 40,
-                                   child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('package')}",
@@ -779,46 +778,46 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
                       ),
                     ]..addAll(widget.available_services
-                        !.map((e) => BuyCategoryWidget(e,
-                            available: true,
-                            mDialog: mDialog,
-                            showPlacePicker: showPlacePicker))
+                    !.map((e) => BuyCategoryWidget(e,
+                        available: true,
+                        mDialog: mDialog,
+                        showPlacePicker: showPlacePicker))
                         .toList()),
                   ),
                   SizedBox(height: 30),
                   widget.coming_soon_services!.length! > 0
                       ? Opacity(
-                          opacity: 0.5,
-                          child: Container(
-                            child: Column(children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      padding: EdgeInsets.only(left: 30),
-                                      child: Text(
-                                          "${AppLocalizations.of(context)!.translate('coming_soon')}")),
-                                ],
-                              ),
-                              GridView(
-                                physics: BouncingScrollPhysics(),
-                                padding: const EdgeInsets.all(20),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 2.7,
-                                ),
-                                shrinkWrap: true,
-                                children: []..addAll(widget.coming_soon_services
-                                    !.map((e) => BuyCategoryWidget(e,
-                                        available: false, mDialog: mDialog))
-                                    .toList()),
-                              ),
-                            ]),
+                    opacity: 0.5,
+                    child: Container(
+                      child: Column(children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                                padding: EdgeInsets.only(left: 30),
+                                child: Text(
+                                    "${AppLocalizations.of(context)!.translate('coming_soon')}")),
+                          ],
+                        ),
+                        GridView(
+                          physics: BouncingScrollPhysics(),
+                          padding: const EdgeInsets.all(20),
+                          gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: 2,
+                            childAspectRatio: 2.7,
                           ),
-                        )
+                          shrinkWrap: true,
+                          children: []..addAll(widget.coming_soon_services
+                          !.map((e) => BuyCategoryWidget(e,
+                              available: false, mDialog: mDialog))
+                              .toList()),
+                        ),
+                      ]),
+                    ),
+                  )
                       : Container(),
                   SizedBox(height: 160)
                 ],
@@ -834,7 +833,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
                         width: 160,
                         height: 160, errorBuilder: (BuildContext context,
-                            Object error, StackTrace? stackTrace) {
+                        Object error, StackTrace? stackTrace) {
                       return Container();
                     }),
                   ),
@@ -876,7 +875,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             actions: <Widget>[
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context)!.translate('refuse')}"),
+                Text("${AppLocalizations.of(context)!.translate('refuse')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(
@@ -885,13 +884,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           context: context,
                           type: type,
                           foodProposalPresenter:
-                              RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+                          RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
                           restaurantListPresenter: RestaurantListPresenter(RestaurantListView())));
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context)!.translate('accept')}"),
+                Text("${AppLocalizations.of(context)!.translate('accept')}"),
                 onPressed: () {
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs!.setString("_has_accepted_gps", "ok");
@@ -924,7 +923,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
+          CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
@@ -983,10 +982,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   void _showDialog(
       {String? svgIcons,
-      Icon? icon,
-      var message,
-      bool isYesOrNo = false,
-      Function? actionIfYes}) {
+        Icon? icon,
+        var message,
+        bool isYesOrNo = false,
+        Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -997,8 +996,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons!,
-                        )
+                    svgIcons!,
+                  )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -1007,40 +1006,40 @@ class ServiceMainPageState extends State<ServiceMainPage>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ]
                 : <Widget>[
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ]);
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]);
       },
     );
   }
@@ -1111,7 +1110,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           await Geolocator.requestPermission();
         } else {
           bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
+          await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
             await Geolocator.openLocationSettings();
           } else {
@@ -1203,6 +1202,282 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
     setState(() {
       isPickLocation = false;
+    });
+  }
+  Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
+    SharedPreferences.getInstance().then((value) async {
+      prefs = value;
+
+      String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
+      /* no need to commit */
+      /* expiration date in 3months */
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context)!.translate('request')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                            image: new DecorationImage(
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
+                  onPressed: () {
+                    prefs!.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      _getLastKnowLocation(
+                          jumpToBuyPageDetails: jumpToBuyPageDetails);
+                    });
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
+        // permission has been accepted
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.deniedForever) {
+          /*  ---- */
+          // await Geolocator.openAppSettings();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              image: new DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.openAppSettings();
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          /* ---- */
+        } else if (permission == LocationPermission.denied) {
+          /* ---- */
+          // Geolocator.requestPermission();
+          /* ---- */
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                    "${AppLocalizations.of(context)!.translate('permission_')}"
+                        .toUpperCase(),
+                    style: TextStyle(color: KColors.primaryColor)),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      /* add an image*/
+                      // location_permission
+                      Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              image: new DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                image: new AssetImage(ImageAssets.address),
+                              ))),
+                      SizedBox(height: 10),
+                      Text(
+                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14))
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('refuse')}"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('accept')}"),
+                    onPressed: () async {
+                      /* */
+                      await Geolocator.requestPermission();
+                      LocationPermission permission2 =
+                      await Geolocator.checkPermission();
+                      if (permission2 == LocationPermission.always ||
+                          permission2 == LocationPermission.whileInUse) {
+                        _getLastKnowLocation(
+                            jumpToBuyPageDetails: jumpToBuyPageDetails);
+                      }
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        } else {
+          bool isLocationServiceEnabled =
+          await Geolocator.isLocationServiceEnabled();
+          if (!isLocationServiceEnabled) {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                      "${AppLocalizations.of(context)!.translate('permission_')}"
+                          .toUpperCase(),
+                      style: TextStyle(color: KColors.primaryColor)),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                image: new DecorationImage(
+                                  fit: BoxFit.fitHeight,
+                                  image: new AssetImage(
+                                      ImageAssets.location_permission),
+                                ))),
+                        SizedBox(height: 10),
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('request_location_activation_permission')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14))
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context)!.translate('refuse')}"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                          "${AppLocalizations.of(context)!.translate('accept')}"),
+                      onPressed: () async {
+                        /* */
+                        Navigator.of(context).pop();
+                        await Geolocator.openLocationSettings();
+                      },
+                    )
+                  ],
+                );
+              },
+            );
+            /* ---- */
+          } else {
+            /* show loading dialog until this finishes then close */
+
+            // switch to page two
+            if (jumpToBuyPageDetails) {
+              setState(() {
+                StateContainer.of(context).updateTabPosition(tabPosition: 1);
+              });
+            }
+
+            positionStream =
+                Geolocator.getPositionStream().listen((Position position) {
+                  /* compare current and old position */
+                  if (position?.latitude != null &&
+                      tmpLocation?.latitude != null &&
+                      (position.latitude * 100).round() ==
+                          (tmpLocation!.latitude! * 100).round() &&
+                      (position.longitude * 100).round() ==
+                          (tmpLocation!.longitude * 100).round()) {
+                    widget.samePositionCount++;
+                  } else {
+                    widget.samePositionCount = 0;
+                    tmpLocation = StateContainer.of(context).location;
+                    if (position != null && mounted) {
+                      widget.hasGps = true;
+                      setState(() {
+                        StateContainer.of(context)
+                            .updateLocation(location: position);
+                      });
+                    }
+                  }
+                  if (widget.samePositionCount >= 3 || widget.hasGps!)
+                    positionStream?.cancel();
+                });
+          }
+        }
+      }
     });
   }
 

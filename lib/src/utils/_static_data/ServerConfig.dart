@@ -9,14 +9,14 @@ class ServerConfig {
 
     static const String ip_address = "dev.kaba-delivery.com"; // dev server
     static const String pay_ip_address = "dev.pay.kaba-delivery.com";
-    static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
-  static const String kaba_chine ="https://148.230.85.247.nip.io";
+    //static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
+    static const String kaba_chine ="https://148.230.85.247.nip.io";
 
   //LOCAL
 
   //static const String ip_address = "moldova-blocked-maintained-period.trycloudflare.com"; // dev server
-  //static const String pay_ip_address = "0324fa4165a6.ngrok-free.app";
-  //static const String stat_ip_address="b13b-2c0f-f0f8-704-ec00-3543-942a-7d39-7a4e.ngrok-free.app"; //dev
+  //static const String pay_ip_address = "8b5523ac7a6e.ngrok-free.app";
+  static const String stat_ip_address="8b5523ac7a6e.ngrok-free.app";//dev
 
   //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;
