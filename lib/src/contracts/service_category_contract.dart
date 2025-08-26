@@ -134,9 +134,10 @@ class ServiceMainPresenter implements ServiceMainContract {
       List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
       List<DeliveryRatingPending>? deliveriesRatingPending=[];
       CustomerModel customer = await CustomerUtils.getCustomer();
-      for(var orderRating in ordersRating??[]){
+      for(DeliveryRatingPending orderRating in ordersRating??[]){
         try{
-          DeliveryRatingPending deliveryRatingPending = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+            DeliveryRatingPending     deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+
           deliveriesRatingPending.add(deliveryRatingPending);
         }catch(_){
           xrint("error fetching rating for order ${orderRating.command_id} : ${_}");

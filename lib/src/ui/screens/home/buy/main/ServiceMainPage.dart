@@ -116,7 +116,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
     if (deliveriesRatingPending.isEmpty) return;
     if (deliveriesRatingPending.length == 1) {
-      _showRatingDialog(deliveriesRatingPending.first);
+      _showRatingDialog(deliveriesRatingPending.first, true);
     } else {
       final choice = await _askUserChoice(context);
       if (choice == "one") {
@@ -125,10 +125,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
           final idB = int.tryParse(b.command_id.toString()) ?? 0;
           return idA > idB ? a : b;
         });
-        _showRatingDialog(latest);
+        _showRatingDialog(latest,true);
       } else if (choice == "all") {
         for (final delivery in deliveriesRatingPending) {
-          await _showRatingDialog(delivery);
+          await _showRatingDialog(delivery,false);
         }
       }
     }
@@ -216,7 +216,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     );
   }
 
-  Future<void> _showRatingDialog(DeliveryRatingPending delivery) {
+  Future<void> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -249,7 +249,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       RatingDelivery(deliveryRatingPending: delivery),
-                      RatingArticle(deliveryRatingPending: delivery),
+                      RatingArticle(deliveryRatingPending: delivery,canRateFood: delivery.articles!.length>1?false:true, deleteAll: deleteAll,),
                     ],
                   );
                 },

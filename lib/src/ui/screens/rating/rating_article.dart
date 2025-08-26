@@ -1,3 +1,4 @@
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,13 +6,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../blocs/rating/rating_bloc.dart';
 import '../../../models/DeliveryRatingPending.dart';
+import '../../../resources/order_api_provider.dart';
 import '../../../utils/Enums/DeliveryRatingType.dart';
 import '../../../utils/_static_data/KTheme.dart';
+import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/functions/Utils.dart';
+import '../../../utils/functions/new_rating_feature.dart';
 import '../../customwidgets/rating_widget.dart';
 
 class RatingArticle extends StatefulWidget {
   final DeliveryRatingPending deliveryRatingPending;
-  const RatingArticle({required this.deliveryRatingPending, super.key});
+  final bool canRateFood;
+  final bool deleteAll;
+  const RatingArticle({required this.deliveryRatingPending,required this.canRateFood, required this.deleteAll, super.key});
 
   @override
   State<RatingArticle> createState() => _RatingArticleState();
@@ -85,7 +92,7 @@ void initState() {
                     color: Colors.white,
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage("$sellerImage")),
+                        image: NetworkImage("https://app.kaba-delivery.com/resto_pic/$sellerImage")),
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: KColors.primaryColor,
@@ -121,79 +128,84 @@ void initState() {
                     ],
                   ),
 
-                  const SizedBox(height: 10),
-                   Container(
-                     width: 350,
-                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                     child: GestureDetector(
-                       onTap: (){
-                         BlocProvider.of<RatingBloc>(context).add(previousPageEvent());
-
-                       },
-                       child: Row(
-                         children: [
-                           Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
-                           Flexible(
-                             child: Text(
-                              "Que pensez-vous de votre dernier achat chez $sellerName?",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
-                             ),
-                           ),
-                         ],
-                       ),
-                     ),
-                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                 widget.canRateFood? Column(
                     children: [
-                      Icon(Icons.shopping_cart_outlined, size: 15, color: Colors.black87),
-                      const SizedBox(width: 5),
-                      Text(
-                        "${articleName}",
-                        style: TextStyle(fontWeight: FontWeight.normal,
-                            fontSize: 12,
-                            color: Colors.black87),
 
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  RatingWidget(
-                    context: context,
-                    ratingTextAndIcon: Container(),
-                    rate_id: DeliveryRatingType.ratingAricle,
-                  ),
-                  Container(
-                    width:MediaQuery.of(context).size.width * 0.8,
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(child: TextFormField(
-                          maxLines: 1,
-                          controller: commentController,
-                          decoration: InputDecoration(
-                            hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
-                            hintText: "Ajouter un commentaire sur l'article",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: 350,
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: GestureDetector(
+                          onTap: (){
+                            BlocProvider.of<RatingBloc>(context).add(previousPageEvent());
+
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
+                              Flexible(
+                                child: Text(
+                                  "Que pensez-vous de votre dernier achat chez $sellerName?",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
-                            ),
+                            ],
                           ),
-                        ))
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.shopping_cart_outlined, size: 15, color: Colors.black87),
+                          const SizedBox(width: 5),
+                          Text(
+                            "${articleName}",
+                            style: TextStyle(fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                                color: Colors.black87),
+
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      RatingWidget(
+                        context: context,
+                        ratingTextAndIcon: Container(),
+                        rate_id: DeliveryRatingType.ratingAricle,
+                      ),
+                      Container(
+                        width:MediaQuery.of(context).size.width * 0.8,
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(child: TextFormField(
+                              maxLines: 1,
+                              controller: commentController,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
+                                hintText: "Ajouter un commentaire sur l'article",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                                ),
+                              ),
+                            ))
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ):Container(),
                   GestureDetector(
                     onTap: (){
                       deliveryRatingPending.article_comment = commentController.text;
@@ -225,10 +237,31 @@ void initState() {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50.0),
                      ),
-                    onPressed: (){
+                    onPressed: ()async{
                       deliveryRatingPending.article_comment = commentController.text;
                       deliveryRatingPending.article_rating = totalRating.toDouble();
+                      if(widget.deliveryRatingPending.articles!.length>1){
+                        widget.deliveryRatingPending.article_rating=0.0;
+                        deliveryRatingPending.articles=    widget.deliveryRatingPending.articles!.map((el){
+                          el["rating"]=0;
+                          return el;
+                        }).toList();
+                      }else{
+                        deliveryRatingPending.articles!.first={
+                          "id": widget.deliveryRatingPending.articles!.first['id'],
+                          "name": widget.deliveryRatingPending.articles!.first['name'],
+                          "rating": totalRating,
+                        };
+                      }
                       debugPrint("Article Rating: ${deliveryRatingPending.toJson()}");
+                      OrderApiProvider provider = OrderApiProvider();
+                      CustomerModel customer =await CustomerUtils.getCustomer();
+                      provider.sendFeedback(customer,deliveryRatingPending);
+                      if(widget.deleteAll){
+                        deleteRatePendingFromCache();
+                      }else{
+                        removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                      }
                       Navigator.pop(context);
                     },
                     child: Text("Retour au menu d'achat",

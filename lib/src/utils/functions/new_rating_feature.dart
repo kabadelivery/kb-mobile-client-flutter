@@ -16,7 +16,7 @@ Future<List<DeliveryRatingPending>?> getRatePendingFromCache() async {
   String? deliveryRatingPending = prefs.getString("DeliveryRatingPending");
   List<DeliveryRatingPending> deliveriesRatingPending = [];
   var  deliveryRatingPendingList = jsonDecode(deliveryRatingPending ?? '[]');
-  debugPrint("Delivery Rating Pending from cache: ${deliveryRatingPendingList}");
+  debugPrint("Delivery Rating Pending from cache: ${deliveryRatingPending}");
   for (var deliveryRatingPending in deliveryRatingPendingList) {
     deliveriesRatingPending.add(DeliveryRatingPending.fromJson(deliveryRatingPending));
   }
