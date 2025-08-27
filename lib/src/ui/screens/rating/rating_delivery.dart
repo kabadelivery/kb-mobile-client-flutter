@@ -5,13 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../blocs/rating/rating_bloc.dart';
+import '../../../localizations/AppLocalizations.dart';
+import '../../../models/CustomerModel.dart';
 import '../../../models/DeliveryRatingPending.dart';
+import '../../../resources/order_api_provider.dart';
 import '../../../utils/Enums/DeliveryRatingType.dart';
+import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/functions/new_rating_feature.dart';
 import '../../customwidgets/rating_widget.dart';
 
 class RatingDelivery extends StatefulWidget {
   final DeliveryRatingPending deliveryRatingPending;
-  const RatingDelivery({required this.deliveryRatingPending, super.key});
+  final bool deleteAll;
+  const RatingDelivery({required this.deliveryRatingPending, required this.deleteAll, super.key});
   @override
   State<RatingDelivery> createState() => _RatingDeliveryState();
 }
@@ -101,8 +107,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Livreur",
+                       Text(
+                        "${AppLocalizations.of(context)!.translate("delivery_person")}",
                         style: TextStyle(fontWeight: FontWeight.normal,
                             fontSize: 10,
                             color: Colors.black87),
@@ -118,8 +124,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   ),
 
                   const SizedBox(height: 10),
-                  const Text(
-                    "Comment s'est passé votre dernière livraison ?",
+                   Text(
+                     "${AppLocalizations.of(context)!.translate("delivery_feedback")}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -128,56 +134,52 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                     ),
                   ),
                   RatingWidget(
-                    context: context,
                     ratingTextAndIcon: SizedBox(
                       width: 120,
                       child: Row(
                         children:  [
                           Icon(CupertinoIcons.time, weight: .5, color: Colors.black87),
                           SizedBox(width: 5),
-                          Flexible(child: Text("Rapidité", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                          Flexible(child: Text( "${AppLocalizations.of(context)!.translate("delivery_speed")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
                         ],
                       ),
                     ),
                     rate_id: DeliveryRatingType.speedRating,
                   ),
                   RatingWidget(
-                    context: context,
                     ratingTextAndIcon: SizedBox(
                       width: 120,
                       child: Row(
                         children:  [
                           Icon(Icons.location_on_outlined, weight: 100, color: Colors.black87),
                           SizedBox(width: 5),
-                          Flexible(child: Text("Respect de la géolocalisation", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_geolocation")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
                         ],
                       ),
                     ),
                     rate_id: DeliveryRatingType.respectOfGeolocation,
                   ),
                   RatingWidget(
-                    context: context,
                     ratingTextAndIcon: SizedBox(
                       width: 100,
                       child: Row(
                         children:  [
                           Icon(CupertinoIcons.smiley, weight: .5, color: Colors.black87),
                           SizedBox(width: 5),
-                          Flexible(child: Text("Attitude du livreur", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_attitude")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
                         ],
                       ),
                     ),
                     rate_id: DeliveryRatingType.attidudeOfDeliveryMan,
                   ),
                   RatingWidget(
-                    context: context,
                     ratingTextAndIcon: SizedBox(
                       width: 100,
                       child: Row(
                         children:  [
                           Icon(CupertinoIcons.person, weight: 0.1, color: Colors.black87),
                           SizedBox(width: 5),
-                          Flexible(child: Text("Tenue du livreur", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_uniform")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
                         ],
                       ),
                     ),
@@ -187,11 +189,20 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                     selector: (state) => state,
                     builder: (context, state) {
                       if (state is RateDeliveryTypeState) {
-                        speedRating = state.deliveryRatingType == DeliveryRatingType.speedRating ? state.rating : speedRating;
-                        respectOfGeolocation = state.deliveryRatingType == DeliveryRatingType.respectOfGeolocation ? state.rating : respectOfGeolocation;
-                        attidudeOfDeliveryMan = state.deliveryRatingType == DeliveryRatingType.attidudeOfDeliveryMan ? state.rating : attidudeOfDeliveryMan;
-                        groomingOfDeliveryMan = state.deliveryRatingType == DeliveryRatingType.groomingOfDeliveryMan ? state.rating : groomingOfDeliveryMan;
-                        cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
+
+                        if(state.deliveryRatingType == DeliveryRatingType.speedRating) {
+                          speedRating = state.rating;
+                        }
+                        if(state.deliveryRatingType == DeliveryRatingType.respectOfGeolocation) {
+                          respectOfGeolocation = state.rating;
+                        }
+                        if(state.deliveryRatingType == DeliveryRatingType.attidudeOfDeliveryMan) {
+                          attidudeOfDeliveryMan = state.rating;
+                        }
+                        if(state.deliveryRatingType == DeliveryRatingType.groomingOfDeliveryMan) {
+                          groomingOfDeliveryMan = state.rating;
+                        }
+                         cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
                         totalRating = cumulRating / 4;
                       }
                       return Container(
@@ -201,7 +212,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                           children: [
                             Icon(totalRating<3?FontAwesomeIcons.faceFrown:totalRating>=3&& totalRating<4?FontAwesomeIcons.faceSmile:totalRating>=4&& totalRating<5?FontAwesomeIcons.faceSmileWink:totalRating>=5?FontAwesomeIcons.faceSmileBeam:FontAwesomeIcons.faceSmileBeam, weight: .5, size:19,color: KColors.primaryColor),
                             const SizedBox(width: 5),
-                            const Flexible(child: Text("Note Totale :", style: TextStyle(fontSize:14,color: Colors.black87))),
+                             Flexible(child: Text("${AppLocalizations.of(context)!.translate("total_score")}", style: TextStyle(fontSize:14,color: Colors.black87))),
                             const SizedBox(width: 5),
                             Container(
                               width: 50,
@@ -230,7 +241,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                           controller: commentController,
                           decoration: InputDecoration(
 
-                            hintText: "Ajouter un commentaire",
+                            hintText: "${AppLocalizations.of(context)!.translate("add_comment")}",
                             hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -249,7 +260,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50.0),
                     ),
-                    onPressed: (){
+                    onPressed: ()async {
                       DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending();
                       deliveryRatingPending = widget.deliveryRatingPending;
                       deliveryRatingPending.delivery_rating = totalRating;
@@ -258,13 +269,41 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       deliveryRatingPending.respectOfGeolocation = respectOfGeolocation;
                       deliveryRatingPending.attidudeOfDeliveryMan = attidudeOfDeliveryMan;
                       deliveryRatingPending.groomingOfDeliveryMan = groomingOfDeliveryMan;
-                      BlocProvider.of<RatingBloc>(context).add(
-                        sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
-                      );
 
-                      BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
+                      if(widget.deliveryRatingPending.articles!.length>1){
+                        deliveryRatingPending.article_comment = commentController.text;
+                        deliveryRatingPending.article_rating = totalRating.toDouble();
+                        if(widget.deliveryRatingPending.articles!.length>1){
+                          widget.deliveryRatingPending.article_rating=0.0;
+                          deliveryRatingPending.articles=    widget.deliveryRatingPending.articles!.map((el){
+                            el["rating"]=0;
+                            return el;
+                          }).toList();
+                        }else{
+                          deliveryRatingPending.articles!.first={
+                            "id": widget.deliveryRatingPending.articles!.first['id'],
+                            "name": widget.deliveryRatingPending.articles!.first['name'],
+                            "rating": totalRating,
+                          };
+                        }
+                        debugPrint("Article Rating: ${deliveryRatingPending.toJson()}");
+                        OrderApiProvider provider = OrderApiProvider();
+                        CustomerModel customer =await CustomerUtils.getCustomer();
+                        provider.sendFeedback(customer,deliveryRatingPending);
+                        Navigator.pop(context);
+                        if(widget.deleteAll){
+                          deleteRatePendingFromCache();
+                        }else{
+                          removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                        }
+                      }else{
+                        BlocProvider.of<RatingBloc>(context).add(
+                          sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
+                        );
+                        BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
+                      }
                     },
-                    child: Text("Confirmer et continuer",
+                    child: Text( "${AppLocalizations.of(context)!.translate("confirm_continue")}",
                       style: TextStyle(fontWeight: FontWeight.bold,
                           fontSize: 14,
                           color: KColors.primaryColor),

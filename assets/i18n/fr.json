@@ -793,5 +793,29 @@
   "shipping_payment_info_1": "Une fois calculé, le coût d'expédition apparaîtra sur votre demande.",
   "shipping_payment_info_2": "Vous pouvez payer la totalité ou une partie via Mobile Money dans Kaba en cliquant sur 'Initialiser le paiement'.",
   "see_bill": "Voir la facture",
-  "close_bill": "Fermer la facture"
+  "close_bill": "Fermer la facture",
+  "merchant": "Marchant",
+  "purchase_feedback": "Que pensez-vous de votre dernier achat chez",
+  "add_item_comment": "Ajouter un commentaire sur l'article",
+  "reorder": "Repasser la même commande",
+  "back_to_shop_menu": "Retour au menu d'achat",
+  "rating_poor": "Médiocre",
+  "rating_fair": "Acceptable",
+  "rating_good": "Satisfait",
+  "rating_excellent": "Très satisfait",
+
+  "delivery_person": "Livreur",
+  "delivery_feedback": "Comment s'est passé votre dernière livraison ?",
+  "delivery_speed": "Rapidité",
+  "delivery_geolocation": "Respect de la géolocalisation",
+  "delivery_attitude": "Attitude du livreur",
+  "delivery_uniform": "Tenue du livreur",
+  "total_score": "Note Totale :",
+  "add_comment": "Ajouter un commentaire",
+  "confirm_continue": "Confirmer et continuer",
+
+  "rate_orders_all": "Toutes",
+  "rate_orders_one": "Une seule",
+  "rate_orders_question": "Voulez-vous noter uniquement la plus récente ou toutes vos commandes ?",
+  "multiple_orders_detected": "Plusieurs commandes détectées"
 }

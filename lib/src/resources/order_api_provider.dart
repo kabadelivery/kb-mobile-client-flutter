@@ -251,10 +251,11 @@ class OrderApiProvider {
         };
       };
       xrint(deliveryRatingPending.toJson().toString());
+      Map<String?, dynamic> json = deliveryRatingPending.toJson();
+      json.remove("food");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_SEND_ORDER_FEEDBACK).toString(),
-          data:deliveryRatingPending.toJson());
-
+          data:json);
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return mJsonDecode(response.data)["error"];

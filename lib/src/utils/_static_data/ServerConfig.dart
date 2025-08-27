@@ -16,7 +16,7 @@ class ServerConfig {
 
   //static const String ip_address = "moldova-blocked-maintained-period.trycloudflare.com"; // dev server
   //static const String pay_ip_address = "8b5523ac7a6e.ngrok-free.app";
-  static const String stat_ip_address="144a7415e41c.ngrok-free.app";//dev
+  static const String stat_ip_address="f7ba82e27e31.ngrok-free.app";//dev
 
   //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;

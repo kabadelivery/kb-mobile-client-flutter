@@ -1,3 +1,5 @@
+import 'ShopProductModel.dart';
+
 class DeliveryRatingPending{
   int?  command_id;
   String? delivery_man_image;
@@ -13,6 +15,7 @@ class DeliveryRatingPending{
   int? respectOfGeolocation;
   int? attidudeOfDeliveryMan;
   int? groomingOfDeliveryMan;
+  ShopProductModel? food;
   DeliveryRatingPending({
      this.command_id,
      this.delivery_man_image,
@@ -22,12 +25,13 @@ class DeliveryRatingPending{
      this.seller_image,
      this.delivery_rating,
      this.article_rating,
-      this.article_comment,
-      this.delivery_comment,
-      this.speedRating,
-      this.respectOfGeolocation,
-      this.attidudeOfDeliveryMan,
-      this.groomingOfDeliveryMan,
+    this.article_comment,
+    this.delivery_comment,
+    this.speedRating,
+    this.respectOfGeolocation,
+    this.attidudeOfDeliveryMan,
+    this.groomingOfDeliveryMan,
+    this.food
 });
 
   factory DeliveryRatingPending.fromJson(Map<String, dynamic> json) {
@@ -49,6 +53,7 @@ class DeliveryRatingPending{
       respectOfGeolocation: json['respectOfGeolocation'] as int? ?? 0,
       attidudeOfDeliveryMan: json['attidudeOfDeliveryMan'] as int? ?? 0,
       groomingOfDeliveryMan: json['groomingOfDeliveryMan'] as int? ?? 0,
+      food: json['food'] != null ? ShopProductModel.fromJson(json['food']) : null,
     );
   }
 
@@ -69,6 +74,7 @@ class DeliveryRatingPending{
       'respectOfGeolocation': respectOfGeolocation,
       'attidudeOfDeliveryMan': attidudeOfDeliveryMan,
       'groomingOfDeliveryMan': groomingOfDeliveryMan,
+      'food': food?.toJson(),
     };
   }
   DeliveryRatingPending fake(){

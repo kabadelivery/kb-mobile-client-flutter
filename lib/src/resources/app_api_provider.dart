@@ -515,10 +515,18 @@ class AppApiProvider {
     xrint("001 _ " + response.data.toString());
     if (response.statusCode == 200) {
         Map<String,dynamic>? data =json.decode(response.data)["data"];
-        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending.fromJson(data!);
-        return deliveryRatingPending;
-    } else
+        if(json.decode(response.data)['error']==0) {
+          DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending
+              .fromJson(data!);
+          return deliveryRatingPending;
+        }else{
+          DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
+          deliveryRatingPending.command_id=0;
+          return deliveryRatingPending;
+        }
+    } else {
       throw Exception(-1);
+    }
   }
 
 }

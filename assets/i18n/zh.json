@@ -775,24 +775,41 @@
   "office_address": "我们在洛美的办公室：319 Rue Aziabor, Agbalépédogan, Kaba 大楼",
   "calculate_shipping_cost": "计算您的运费",
   "shipping_title": "计算您的运费",
-
   "shipping_intro_1": "我们根据您的包裹在中国仓库收货后的尺寸来计算运费。",
   "shipping_intro_2": "我们使用每立方米（CBM）的价格来计算体积。",
-
   "shipping_supplier_note_1": "您也可以根据供应商提供的尺寸来估算运费。",
   "shipping_supplier_note_2": "但是，以KABA在仓库收货后测量的数据为准。",
   "shipping_supplier_note_3": "尺寸以厘米（cm）为单位。",
-
   "shipping_example_intro": "示例：",
   "shipping_example_step_1": "在我们中国仓库收取的包裹尺寸为：50 cm × 70 cm × 40 cm。",
   "shipping_example_step_2": "将每个尺寸转换为米：0.50 m × 0.70 m × 0.40 m。",
   "shipping_example_step_3": "相乘：0.50 × 0.70 × 0.40 = 0.14 → 等于 0.14 CBM。",
   "shipping_example_step_4": "将结果四舍五入为 0.14 CBM。",
-
   "shipping_final_calc": "将最终的CBM结果乘以230,000（每立方米的费用）即可得出运费。",
-
   "shipping_payment_info_1": "计算完成后，运费将显示在您的请求中。",
   "shipping_payment_info_2": "您可以通过Kaba的手机支付（Mobile Money）支付全部或部分费用，点击“开始付款”即可。",
   "see_bill": "参见账单",
-  "close_bill":"关闭账单"
+  "close_bill":"关闭账单",
+  "merchant": "商家",
+  "purchase_feedback": "您对最近的一次购买有何看法",
+  "add_item_comment": "为商品添加评论",
+  "reorder": "再次下同样的订单",
+  "back_to_shop_menu": "返回购物菜单",
+  "rating_poor": "差",
+  "rating_fair": "一般",
+  "rating_good": "满意",
+  "rating_excellent": "非常满意",
+  "delivery_person": "送货员",
+  "delivery_feedback": "您最近一次的配送体验如何？",
+  "delivery_speed": "配送速度",
+  "delivery_geolocation": "定位准确性",
+  "delivery_attitude": "送货员态度",
+  "delivery_uniform": "送货员着装",
+  "total_score": "总评分：",
+  "add_comment": "添加评论",
+  "confirm_continue": "确认并继续",
+  "rate_orders_all": "全部",
+  "rate_orders_one": "仅一个",
+  "rate_orders_question": "您想评价最近的一单还是所有订单？",
+  "multiple_orders_detected": "检测到多个订单"
 }

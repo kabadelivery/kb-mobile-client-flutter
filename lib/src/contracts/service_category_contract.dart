@@ -136,9 +136,14 @@ class ServiceMainPresenter implements ServiceMainContract {
       CustomerModel customer = await CustomerUtils.getCustomer();
       for(DeliveryRatingPending orderRating in ordersRating??[]){
         try{
-            DeliveryRatingPending     deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+            DeliveryRatingPending deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+            deliveryRatingPending.food=orderRating.food;
+            if(deliveryRatingPending.command_id==0){
+              continue;
+            }else{
+              deliveriesRatingPending.add(deliveryRatingPending);
+            }
 
-          deliveriesRatingPending.add(deliveryRatingPending);
         }catch(_){
           xrint("error fetching rating for order ${orderRating.command_id} : ${_}");
         }

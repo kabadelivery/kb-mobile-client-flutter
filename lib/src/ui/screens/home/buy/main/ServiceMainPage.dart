@@ -128,6 +128,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         _showRatingDialog(latest,true);
       } else if (choice == "all") {
         for (final delivery in deliveriesRatingPending) {
+          await Future.delayed(Duration(seconds: 1));
           await _showRatingDialog(delivery,false);
         }
       }
@@ -154,7 +155,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 Icon(Icons.shopping_bag, size: 50, color: KColors.primaryColor),
                 const SizedBox(height: 15),
                 Text(
-                  "Plusieurs commandes détectées",
+                  "${AppLocalizations.of(context)!.translate("multiple_orders_detected")}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -164,7 +165,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "Voulez-vous noter uniquement la plus récente ou toutes vos commandes ?",
+                  "${AppLocalizations.of(context)!.translate("rate_orders_question")}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
@@ -185,7 +186,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                         icon: Icon(Icons.check_circle, color: KColors.primaryColor),
-                        label: Text("Une seule", style: TextStyle(color: KColors.primaryColor)),
+                        label: Text("${AppLocalizations.of(context)!.translate("rate_orders_one")}", style: TextStyle(color: KColors.primaryColor)),
                         onPressed: () => Navigator.pop(context, "one"),
                       ),
                     ),
@@ -202,7 +203,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
 
                         icon: Icon(Icons.all_inclusive, color: Colors.white),
-                        label: Text("Toutes"),
+                        label: Text("${AppLocalizations.of(context)!.translate("rate_orders_all")}"),
                         onPressed: () => Navigator.pop(context, "all"),
                       ),
                     ),
@@ -233,22 +234,30 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 selector: (state) => state,
                 builder: (context, state) {
                   if (state is NextPageState) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if(_pageController.hasClients){
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    });
                   }
                   if (state is PreviousPageState) {
-                    _pageController.previousPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
+                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                     if(_pageController.hasClients){
+                       _pageController.previousPage(
+                         duration: const Duration(milliseconds: 300),
+                         curve: Curves.easeInOut,
+                       );
+                     }
+                   });
                   }
-                  return PageView(
+                  return  PageView(
                     controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      RatingDelivery(deliveryRatingPending: delivery),
+                      RatingDelivery(deliveryRatingPending: delivery,deleteAll: deleteAll),
                       RatingArticle(deliveryRatingPending: delivery,canRateFood: delivery.articles!.length>1?false:true, deleteAll: deleteAll,),
                     ],
                   );

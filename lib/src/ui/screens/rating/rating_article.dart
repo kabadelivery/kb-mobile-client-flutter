@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../blocs/rating/rating_bloc.dart';
+import '../../../localizations/AppLocalizations.dart';
 import '../../../models/DeliveryRatingPending.dart';
 import '../../../resources/order_api_provider.dart';
 import '../../../utils/Enums/DeliveryRatingType.dart';
@@ -13,6 +14,7 @@ import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/functions/Utils.dart';
 import '../../../utils/functions/new_rating_feature.dart';
 import '../../customwidgets/rating_widget.dart';
+import '../home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 
 class RatingArticle extends StatefulWidget {
   final DeliveryRatingPending deliveryRatingPending;
@@ -113,7 +115,7 @@ void initState() {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Marchant",
+                        "${AppLocalizations.of(context)!.translate("merchant")}",
                         style: TextStyle(fontWeight: FontWeight.normal,
                             fontSize: 12,
                             color: Colors.black87),
@@ -145,7 +147,7 @@ void initState() {
                               Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
                               Flexible(
                                 child: Text(
-                                  "Que pensez-vous de votre dernier achat chez $sellerName?",
+                                  "${AppLocalizations.of(context)!.translate("purchase_feedback")} $sellerName?",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 16,
@@ -175,7 +177,6 @@ void initState() {
                       ),
                       SizedBox(height: 10,),
                       RatingWidget(
-                        context: context,
                         ratingTextAndIcon: Container(),
                         rate_id: DeliveryRatingType.ratingAricle,
                       ),
@@ -189,7 +190,7 @@ void initState() {
                               controller: commentController,
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
-                                hintText: "Ajouter un commentaire sur l'article",
+                                hintText: "${AppLocalizations.of(context)!.translate("add_item_comment")}",
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
@@ -206,10 +207,46 @@ void initState() {
                       const SizedBox(height: 10),
                     ],
                   ):Container(),
-                  GestureDetector(
-                    onTap: (){
+                  deliveryRatingPending.articles!.length==1?  GestureDetector(
+                    onTap: ()async{
                       deliveryRatingPending.article_comment = commentController.text;
                       deliveryRatingPending.article_rating = totalRating.toDouble();
+                      if(widget.deliveryRatingPending.articles!.length>1){
+                        widget.deliveryRatingPending.article_rating=0.0;
+                        deliveryRatingPending.articles=    widget.deliveryRatingPending.articles!.map((el){
+                          el["rating"]=0;
+                          return el;
+                        }).toList();
+                      }else{
+                        deliveryRatingPending.articles!.first={
+                          "id": widget.deliveryRatingPending.articles!.first['id'],
+                          "name": widget.deliveryRatingPending.articles!.first['name'],
+                          "rating": totalRating,
+                        };
+                      }
+                      debugPrint("Article Rating: ${deliveryRatingPending.toJson()}");
+                      OrderApiProvider provider = OrderApiProvider();
+                      CustomerModel customer =await CustomerUtils.getCustomer();
+                      provider.sendFeedback(customer,deliveryRatingPending);
+                      if(widget.deleteAll){
+                        deleteRatePendingFromCache();
+                      }else{
+                        removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                      }
+                      Navigator.pop(context);
+                      Navigator.of(context).push(PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) =>
+                              ShopFlowerDetailsPage(food: widget.deliveryRatingPending.food),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var begin = Offset(1.0, 0.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end);
+                            var curvedAnimation =
+                            CurvedAnimation(parent: animation, curve: curve);
+                            return SlideTransition(
+                                position: tween.animate(curvedAnimation), child: child);
+                          }));
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.8,
@@ -223,7 +260,7 @@ void initState() {
                         children: [
                           Icon(FontAwesomeIcons.refresh, size: 20, color: Colors.white),
                           const SizedBox(width: 5),
-                          Text("Repasser la même commande",
+                          Text( "${AppLocalizations.of(context)!.translate("reorder")}",
                             style: TextStyle(fontWeight: FontWeight.normal,
                                 fontSize: 14,
                                 color: Colors.white),
@@ -231,7 +268,7 @@ void initState() {
                         ],
                       ),
                     ),
-                  ),
+                  ):Container(),
                   const SizedBox(height: 10),
                   MaterialButton(
                     shape: RoundedRectangleBorder(
@@ -264,7 +301,7 @@ void initState() {
                       }
                       Navigator.pop(context);
                     },
-                    child: Text("Retour au menu d'achat",
+                    child: Text("${AppLocalizations.of(context)!.translate("back_to_shop_menu")}",
                       style: TextStyle(fontWeight: FontWeight.normal,
                           fontSize: 14,
                           color: KColors.primaryColor),

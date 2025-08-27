@@ -93,6 +93,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
         debugPrint("order data ${data}");
         DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
         List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        deliveryRatingPending.food=foods.keys.first;
         if(deliveriesRatingPending!=null){
           deliveriesRatingPending.add(deliveryRatingPending);
           saveRatePendingInCache(json.encode(deliveriesRatingPending.map((DeliveryRatingPending e) => e.toJson()).toList()));
@@ -118,6 +119,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
         debugPrint("order data ${data}");
         DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
         List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        deliveryRatingPending.food=foods.keys.first;
         if(deliveriesRatingPending!=null){
           deliveriesRatingPending.add(deliveryRatingPending);
           saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
@@ -153,6 +155,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
         debugPrint("order data ${data}");
         DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
         List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        deliveryRatingPending.food=foods.keys.first;
         if(deliveriesRatingPending!=null){
           deliveriesRatingPending.add(deliveryRatingPending);
           saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
