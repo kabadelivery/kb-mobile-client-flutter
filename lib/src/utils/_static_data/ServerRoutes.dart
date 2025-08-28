@@ -352,7 +352,7 @@ class ServerRoutes {
   static const String KKIAPAY_CONFIRM_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/confirm";
 
   static const String LINK_GET_DELIVERY_RATING_PENDING =
-      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/delivery_rating_pending/v4/get";
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =
       ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
 }

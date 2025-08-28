@@ -16,7 +16,7 @@ class ShopProductModel {
   double? stars;
   int? promotion;
   bool? is_addon = false;
-
+  double? rating=3;
   /* restaurant entity */
   ShopModel? restaurant_entity;
 
@@ -33,7 +33,9 @@ class ShopProductModel {
       this.is_favorite,
       this.stars,
       this.promotion,
-      this.restaurant_entity});
+      this.restaurant_entity,
+      this.rating
+      });
 
   ShopProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,7 +57,7 @@ class ShopProductModel {
     is_favorite = json['is_favorite'];
     stars = json['stars'];
     promotion = json['promotion'];
-
+    rating = (json['rating'] != null) ? double.parse("${json['rating']}") : 3;
     try {
       restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
     } catch (_) {
@@ -77,6 +79,7 @@ class ShopProductModel {
         "stars": stars,
         "promotion": promotion,
         "restaurant_entity": restaurant_entity,
+        "rating": rating
       };
 
   @override
@@ -94,7 +97,7 @@ class ShopProductModel {
     food.restaurant_id = 17;
     food.description = "Something worth it";
     food.is_favorite = 0;
-
+    food.stars = 3;
     return food;
   }
 }

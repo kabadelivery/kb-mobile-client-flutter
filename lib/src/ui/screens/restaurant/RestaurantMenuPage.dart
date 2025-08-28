@@ -32,6 +32,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:toast/toast.dart';
 
 import '../../../utils/functions/show_tutorials.dart';
+import '../../customwidgets/notation.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
@@ -912,14 +913,22 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${Utils.capitalize(food!.name!.trim())}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: KColors.new_black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text("${Utils.capitalize(food!.name!.trim())}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          color: KColors.new_black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                                Notation("${food!.rating}")
+                              ],
+                            ),
                             SizedBox(height: 5),
                             Text(
                                 "${Utils.capitalize(Utils.replaceNewLineBy(food!.description!.trim(), " / "))}",

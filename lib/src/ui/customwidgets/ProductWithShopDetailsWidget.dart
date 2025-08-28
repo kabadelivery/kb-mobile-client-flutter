@@ -11,6 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'notation.dart';
+
 class ProductWithShopDetailsWidget extends StatefulWidget {
   ShopProductModel? food;
 
@@ -181,11 +183,9 @@ class _ProductWithShopDetailsWidgetState
                                                         FontWeight.w500,
                                                     color: KColors.new_black,
                                                     fontSize: 14)),
-                                            SizedBox(height: 5),
-                                        
-                                            SizedBox(height: 5),
-                                            getRating(widget
-                                                .food!.restaurant_entity!)
+
+
+                                            Notation("${widget.food!.rating}")
                                           ],
                                         ),
                                       ]),
