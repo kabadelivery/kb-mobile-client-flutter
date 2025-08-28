@@ -252,6 +252,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                        );
                      }
                    });
+                   delivery = state.deliveryRatingPending;
                   }
                   return  PageView(
                     controller: _pageController,

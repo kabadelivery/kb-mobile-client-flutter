@@ -55,6 +55,10 @@ void initState() {
     if (state is SendDeliveryRatingPendingState) {
       deliveryRatingPending = state.deliveryRatingPending;
     }
+    if (state is NextPageState) {
+      commentController.text = deliveryRatingPending.article_comment!;
+      totalRating = deliveryRatingPending.article_rating!.toInt();
+    }
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -129,37 +133,36 @@ void initState() {
                       ),
                     ],
                   ),
-
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 350,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: GestureDetector(
+                      onTap: (){
+                        deliveryRatingPending.article_comment = commentController.text;
+                        deliveryRatingPending.article_rating = totalRating.toDouble();
+                        BlocProvider.of<RatingBloc>(context).add(previousPageEvent(deliveryRatingPending: deliveryRatingPending));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
+                          Flexible(
+                            child: Text(
+                              "${AppLocalizations.of(context)!.translate("purchase_feedback")} $sellerName?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                  widget.canRateFood? Column(
                     children: [
-
-                      const SizedBox(height: 10),
-                      Container(
-                        width: 350,
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        child: GestureDetector(
-                          onTap: (){
-                            BlocProvider.of<RatingBloc>(context).add(previousPageEvent());
-
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.arrow_back_ios, size: 15, color: Colors.black87),
-                              Flexible(
-                                child: Text(
-                                  "${AppLocalizations.of(context)!.translate("purchase_feedback")} $sellerName?",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -177,36 +180,40 @@ void initState() {
                       ),
                       SizedBox(height: 10,),
                       RatingWidget(
+                        rate: totalRating,
                         ratingTextAndIcon: Container(),
                         rate_id: DeliveryRatingType.ratingAricle,
                       ),
-                      Container(
-                        width:MediaQuery.of(context).size.width * 0.8,
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(child: TextFormField(
-                              maxLines: 1,
-                              controller: commentController,
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
-                                hintText: "${AppLocalizations.of(context)!.translate("add_item_comment")}",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
-                                ),
-                              ),
-                            ))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
+
                     ],
-                  ):Container(),
+                  ):Container(
+                   height:  105,
+                 ),
+                  Container(
+                    width:MediaQuery.of(context).size.width * 0.8,
+                    child:Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(child: TextFormField(
+                          maxLines: 1,
+                          controller: commentController,
+                          decoration: InputDecoration(
+                            hintStyle: TextStyle(color: Colors.black54, fontSize: 12),
+                            hintText: "${AppLocalizations.of(context)!.translate("add_item_comment")}",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: KColors.primaryColor, width: 1.0),
+                            ),
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   deliveryRatingPending.articles!.length==1?  GestureDetector(
                     onTap: ()async{
                       deliveryRatingPending.article_comment = commentController.text;
@@ -268,7 +275,9 @@ void initState() {
                         ],
                       ),
                     ),
-                  ):Container(),
+                  ):Container(
+                    height: 40,
+                  ),
                   const SizedBox(height: 10),
                   MaterialButton(
                     shape: RoundedRectangleBorder(
@@ -307,7 +316,7 @@ void initState() {
                           color: KColors.primaryColor),
                     ),
                   ),
-                  const SizedBox(height: 23),
+                  const SizedBox(height: 3),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

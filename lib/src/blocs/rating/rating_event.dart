@@ -22,4 +22,6 @@ class nextPageEvent extends RatingEvent {
 
 }
 class previousPageEvent extends RatingEvent {
+  final DeliveryRatingPending deliveryRatingPending;
+  previousPageEvent({required this.deliveryRatingPending});
 }

@@ -17,8 +17,14 @@ class CommandsApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        ..headers = Utils.getHeadersWithToken(customer.token!)
-        ..connectTimeout = 10000;
+        ..headers = {
+          ...Utils.getHeadersWithToken(customer.token!),
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        }
+        ..connectTimeout =  10000; // updated in Dio v5
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -26,13 +32,21 @@ class CommandsApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+
       var response = await dio.post(
         Uri.parse(
-            is_out_of_app_order==false?
-            ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT:
-            ServerRoutes.LINK_OUT_OF_APP_MY_COMMANDS_GET_CURRENT
+          is_out_of_app_order == false
+              ? ServerRoutes.LINK_MY_COMMANDS_GET_CURRENT
+              : ServerRoutes.LINK_OUT_OF_APP_MY_COMMANDS_GET_CURRENT,
         ).toString(),
         data: json.encode({}),
+        options: Options(
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        ),
       );
 
       xrint(customer?.toJson()?.toString());
@@ -107,9 +121,8 @@ class CommandsApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(
+      var response = await dio.get(
         Uri.parse(ServerRoutes.LINK_GET_ALL_COMMAND_LIST).toString(),
-        data: json.encode({}),
       );
 
       xrint(response.data.toString());

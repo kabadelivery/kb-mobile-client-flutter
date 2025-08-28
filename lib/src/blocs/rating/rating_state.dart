@@ -21,4 +21,7 @@ class SendDeliveryRatingPendingState extends RatingState {
   SendDeliveryRatingPendingState({required this.deliveryRatingPending});
 }
 class NextPageState extends RatingState {}
-class PreviousPageState extends RatingState {}
+class PreviousPageState extends RatingState {
+  final DeliveryRatingPending deliveryRatingPending;
+  PreviousPageState({required this.deliveryRatingPending});
+}

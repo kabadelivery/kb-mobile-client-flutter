@@ -11,9 +11,11 @@ import '../../utils/_static_data/KTheme.dart';
 class RatingWidget extends StatefulWidget {
   final Widget ratingTextAndIcon;
   final DeliveryRatingType rate_id;
+  final int rate;
   RatingWidget({
     required  this.ratingTextAndIcon,
     required this.rate_id,
+    required this.rate,
     super.key});
 
   @override
@@ -26,7 +28,7 @@ class _RatingWidgetState extends State<RatingWidget> {
   @override
   void initState() {
     super.initState();
-    selectedRating = 3;
+    selectedRating = widget.rate;
   }
   @override
   Widget build(BuildContext context) {

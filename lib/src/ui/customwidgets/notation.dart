@@ -16,7 +16,7 @@ Widget Notation(String text) {
         Icon(Icons.star,
           color: Color(0xf7ff7300), size: 16,),
         SizedBox(width: 3),
-        Text(note<1?"3.0":text,style: TextStyle(color: Color(0xf7ff7300)),)
+        Text(note<1?"3.0":text.substring(0,3),style: TextStyle(color: Color(0xf7ff7300)),)
       ],
     ) ,
   );

@@ -145,6 +145,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       ),
                     ),
                     rate_id: DeliveryRatingType.speedRating,
+                    rate: speedRating,
+
                   ),
                   RatingWidget(
                     ratingTextAndIcon: SizedBox(
@@ -157,6 +159,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         ],
                       ),
                     ),
+                    rate: respectOfGeolocation,
                     rate_id: DeliveryRatingType.respectOfGeolocation,
                   ),
                   RatingWidget(
@@ -170,6 +173,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         ],
                       ),
                     ),
+                    rate: attidudeOfDeliveryMan,
                     rate_id: DeliveryRatingType.attidudeOfDeliveryMan,
                   ),
                   RatingWidget(
@@ -183,6 +187,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         ],
                       ),
                     ),
+                    rate: groomingOfDeliveryMan,
                     rate_id: DeliveryRatingType.groomingOfDeliveryMan,
                   ),
                   BlocSelector<RatingBloc, RatingState, RatingState>(
@@ -204,6 +209,16 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                         }
                          cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
                         totalRating = cumulRating / 4;
+                      }
+                      if(state is PreviousPageState){
+                        speedRating = state.deliveryRatingPending.speedRating ?? 3;
+                        respectOfGeolocation = state.deliveryRatingPending.respectOfGeolocation ?? 3;
+                        attidudeOfDeliveryMan = state.deliveryRatingPending.attidudeOfDeliveryMan ?? 3;
+                        groomingOfDeliveryMan = state.deliveryRatingPending.groomingOfDeliveryMan ?? 3;
+                        cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
+                        totalRating = cumulRating / 4;
+                        commentController.text=state.deliveryRatingPending.delivery_comment??"";
+
                       }
                       return Container(
                         width: MediaQuery.of(context).size.width*0.8,
@@ -286,23 +301,12 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                             "rating": totalRating,
                           };
                         }
-                        debugPrint("Article Rating: ${deliveryRatingPending.toJson()}");
-                        OrderApiProvider provider = OrderApiProvider();
-                        CustomerModel customer =await CustomerUtils.getCustomer();
-                        provider.sendFeedback(customer,deliveryRatingPending);
-                        Navigator.pop(context);
-                        if(widget.deleteAll){
-                          deleteRatePendingFromCache();
-                        }else{
-                          removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
-                        }
-                      }else{
-                        BlocProvider.of<RatingBloc>(context).add(
-                          sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
-                        );
-                        BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
-                      }
-                    },
+                    }
+                      BlocProvider.of<RatingBloc>(context).add(
+                        sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
+                      );
+                      BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
+                      },
                     child: Text( "${AppLocalizations.of(context)!.translate("confirm_continue")}",
                       style: TextStyle(fontWeight: FontWeight.bold,
                           fontSize: 14,
