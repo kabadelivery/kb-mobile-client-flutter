@@ -150,7 +150,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                       SizedBox(width: 5),
-                                            Notation("${widget?.shopModel?.stars}"
+                                            Notation(text:"${widget?.shopModel?.stars}"
                                                          .length >
                                                          3
                                                          ? "${widget?.shopModel?.stars}"

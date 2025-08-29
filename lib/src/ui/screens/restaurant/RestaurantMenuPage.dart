@@ -926,7 +926,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500)),
                                 ),
-                                Notation("${food!.rating}")
+                                Notation(text: "${food!.rating}",count: food!.articles_rating.length,food: .food)
+
                               ],
                             ),
                             SizedBox(height: 5),

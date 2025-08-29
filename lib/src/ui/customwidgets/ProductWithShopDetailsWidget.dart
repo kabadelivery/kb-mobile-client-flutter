@@ -36,6 +36,7 @@ class _ProductWithShopDetailsWidgetState
 
   @override
   Widget build(BuildContext context) {
+
     return (InkWell(
         child: Container(
             key: widget.key,
@@ -185,7 +186,7 @@ class _ProductWithShopDetailsWidgetState
                                                     fontSize: 14)),
 
 
-                                            Notation("${widget.food!.rating}")
+                                            Notation(text: "${widget.food!.rating}",count: widget.food!.review_count,food: widget.food)
                                           ],
                                         ),
                                       ]),
