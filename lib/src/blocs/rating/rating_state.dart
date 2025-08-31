@@ -3,7 +3,7 @@ part of 'rating_bloc.dart';
 @immutable
 sealed class RatingState {}
 
-final class RatingInitial extends RatingState {}
+class RatingInitial extends RatingState {}
 class RateDeliveryTypeState extends RatingState {
   final DeliveryRatingType deliveryRatingType;
   final int rating;

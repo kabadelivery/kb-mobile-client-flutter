@@ -8,6 +8,7 @@ class RateDeliveryTypeEvent extends RatingEvent{
 
   RateDeliveryTypeEvent({required this.deliveryRatingType, required this.rating});
 }
+class initialEvent extends RatingEvent {}
 class GetTotalRatingEvent extends RatingEvent {
   final double totalRating;
 

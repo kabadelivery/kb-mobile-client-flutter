@@ -29,7 +29,9 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
       else if (event is previousPageEvent) {
         emit(PreviousPageState(deliveryRatingPending: event.deliveryRatingPending));
       }
-
+      else if(event is initialEvent){
+        emit(RatingInitial());
+      }
     });
   }
 }

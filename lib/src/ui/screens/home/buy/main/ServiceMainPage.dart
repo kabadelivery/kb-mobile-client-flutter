@@ -112,6 +112,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasNetworkError = false;
     isLoading = false;
   }
+
   @override
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
     if (deliveriesRatingPending.isEmpty) return;
@@ -131,7 +132,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
       } else if (choice == "all") {
         for (final delivery in deliveriesRatingPending) {
           await Future.delayed(Duration(seconds: 1));
-          await _showRatingDialog(delivery,false);
+          context.read<RatingBloc>().add(initialEvent());
+          _pageController = PageController(initialPage: 0);
+          Map<String, dynamic>? result =await _showRatingDialog(delivery,false);
+          if(result!=null && result['def_close']==true)
+            return;
+          else
+            continue;
+
         }
       }
     }
@@ -219,7 +227,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     );
   }
 
-  Future<void> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
+  Future<Map<String,dynamic>?> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
 
     return showDialog(
       context: context,
@@ -236,9 +244,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
               child: BlocSelector<RatingBloc, RatingState, RatingState>(
                 selector: (state) => state,
                 builder: (context, state) {
-                   if (state is NextPageState) {
+                  debugPrint('state $state');
+                  if (state is NextPageState && _pageController.page == 0) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if(_pageController.hasClients){
+                      if (_pageController.hasClients) {
                         _pageController.nextPage(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
@@ -246,6 +255,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       }
                     });
                   }
+
                   if (state is PreviousPageState) {
                    WidgetsBinding.instance.addPostFrameCallback((_) {
                      if(_pageController.hasClients){

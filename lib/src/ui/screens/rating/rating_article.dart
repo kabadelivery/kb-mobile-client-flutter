@@ -251,11 +251,13 @@ void initState() {
                       CustomerModel customer =await CustomerUtils.getCustomer();
                       provider.sendFeedback(customer,deliveryRatingPending);
                       if(widget.deleteAll){
-                        //deleteRatePendingFromCache();
+                        BlocProvider.of<RatingBloc>(context).add(initialEvent());
+                        deleteRatePendingFromCache();
                       }else{
-                        //removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                        BlocProvider.of<RatingBloc>(context).add(initialEvent());
+                        removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
                       }
-                      Navigator.pop(context);
+                      Navigator.of(context).pop({"def_close":true});
                       Navigator.of(context).push(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) =>
                               OrderConfirmationPage2(presenter:OrderConfirmationPresenter(OrderConfirmationView()),address:deliveryRatingPending.address!.name! ==AppLocalizations.of(context)!.translate('choose_actual_location').toString()?null:deliveryRatingPending.address, foods: deliveryRatingPending.foods,restaurant: deliveryRatingPending.restaurant,),
@@ -318,6 +320,7 @@ void initState() {
                       provider.sendFeedback(customer,deliveryRatingPending);
                       if(widget.deleteAll){
                         deleteRatePendingFromCache();
+
                       }else{
                         removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
                       }
