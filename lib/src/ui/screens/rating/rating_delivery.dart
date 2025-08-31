@@ -164,7 +164,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   ),
                   RatingWidget(
                     ratingTextAndIcon: SizedBox(
-                      width: 100,
+                      width: 140,
                       child: Row(
                         children:  [
                           Icon(CupertinoIcons.smiley, weight: .5, color: Colors.black87),
@@ -178,7 +178,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   ),
                   RatingWidget(
                     ratingTextAndIcon: SizedBox(
-                      width: 100,
+                      width: 140,
                       child: Row(
                         children:  [
                           Icon(CupertinoIcons.person, weight: 0.1, color: Colors.black87),
@@ -286,7 +286,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       deliveryRatingPending.groomingOfDeliveryMan = groomingOfDeliveryMan;
 
                       if(widget.deliveryRatingPending.articles!.length>1){
-                        deliveryRatingPending.article_comment = commentController.text;
+                        deliveryRatingPending.article_comment = deliveryRatingPending.article_comment??"";
                         deliveryRatingPending.article_rating = totalRating.toDouble();
                         if(widget.deliveryRatingPending.articles!.length>1){
                           widget.deliveryRatingPending.article_rating=0.0;

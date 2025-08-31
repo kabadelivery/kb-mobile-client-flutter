@@ -64,9 +64,10 @@ class OrderConfirmationPage2 extends StatefulWidget {
   ShopModel? restaurant;
 
   int? orderTimeRangeSelected = 0;
+  DeliveryAddressModel ? address;
 
   OrderConfirmationPage2(
-      {Key? key, this.presenter, this.foods, this.addons, this.restaurant})
+      {Key? key, this.presenter, this.foods, this.addons, this.restaurant,this.address})
       : super(key: key);
 
   @override
@@ -111,7 +112,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // check opening state of the restaurant
-      widget.presenter!.checkOpeningStateOf(customer!, widget.restaurant!);
+      widget.presenter!.checkOpeningStateOf(customer!, widget.restaurant!).then((_){
+        if(widget.address!=null){
+          _pickDeliveryAddress(address: widget.address);
+        }
+      });
     });
 
     /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
@@ -193,7 +198,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 widget.customer!, widget.restaurant!)))));
   }
 
-  Future _pickDeliveryAddress() async {
+  Future _pickDeliveryAddress({DeliveryAddressModel? address}) async {
     setState(() {
 //      _orderBillConfiguration = null;
       _orderBillConfiguration.isBillBuilt = false;
@@ -202,24 +207,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     });
 
     /* jump and get it */
-    Map results = await Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(
-                pick: true, presenter: AddressPresenter(AddressView())),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end);
-          var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(
-              position: tween.animate(curvedAnimation), child: child);
-        }));
-
-    if (results != null && results.containsKey('selection')) {
+    if(address!=null){
       setState(() {
-        _selectedAddress = results['selection'];
+        _selectedAddress =address;
       });
       /* update / refresh this page */
       this.widget.presenter!.orderConfirmationView = this;
@@ -234,9 +224,42 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           Scrollable.ensureVisible(poweredByKey.currentContext!);
         });
       });
+    }else{
+      Map results = await Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              MyAddressesPage(
+                  pick: true, presenter: AddressPresenter(AddressView())),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+            CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
+
+      if (results != null && results.containsKey('selection') || address!=null) {
+        setState(() {
+          _selectedAddress = results['selection'];
+        });
+        /* update / refresh this page */
+        this.widget.presenter!.orderConfirmationView = this;
+        CustomerUtils.getCustomer().then((customer) {
+          widget.customer = customer;
+
+          // launch request for retrieving the delivery prices and so on.
+          widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
+              widget.foods!, _selectedAddress!, _selectedVoucher, _usePoint);
+          showLoading(true);
+          Future.delayed(Duration(seconds: 1), () {
+            Scrollable.ensureVisible(poweredByKey.currentContext!);
+          });
+        });
+      }
     }
   }
-
   _buildAddress(DeliveryAddressModel? selectedAddress) {
     if (selectedAddress == null)
       return Container();
@@ -1242,7 +1265,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 _selectedVoucher??VoucherModel(),
-                _usePoint);
+                _usePoint,
+                widget.restaurant!);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
@@ -1314,7 +1338,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 _selectedVoucher,
-                _usePoint);
+                _usePoint,
+                widget.restaurant!
+            );
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
@@ -1380,7 +1406,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 selectedFrame.start!,
-                selectedFrame.end!
+                selectedFrame.end!,
+                widget.restaurant!
             );
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");

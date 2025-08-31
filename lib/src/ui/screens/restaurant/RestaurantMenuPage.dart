@@ -33,6 +33,7 @@ import 'package:toast/toast.dart';
 
 import '../../../utils/functions/show_tutorials.dart';
 import '../../customwidgets/notation.dart';
+import '../rating/article_review.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
   static var routeName = "/RestaurantMenuPage";
@@ -926,15 +927,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500)),
                                 ),
-                                Notation(text: "${food!.rating}",count: food!.articles_rating.length,food: .food)
+
 
                               ],
                             ),
-                            SizedBox(height: 5),
+                           
                             Text(
                                 "${Utils.capitalize(Utils.replaceNewLineBy(food!.description!.trim(), " / "))}",
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                                maxLines: 1,
                                 textAlign: TextAlign.start,
                                 style: TextStyle(
                                     color: Colors.grey,
@@ -942,6 +943,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     fontWeight: FontWeight.w400)),
                           ],
                         ),
+                        GestureDetector(
+                            onTap: ()async{
+                              if(food!.review_count!.toInt() <1){
+
+                              }else{
+                               Map? result =await showReviewDialog(context,RatingReview(food:food!));
+                               if(result!=null){
+                                 if(result['add_to_basket']){
+                                   _addFoodToChart(
+                                       food, foodIndex!, menuIndex!);
+                                 }
+                               }
+                              }
+                            },
+                            child: Notation(text: "${food!.rating}",count: food!.review_count,food: food)),
                         Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -987,7 +1003,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     food, foodIndex!, menuIndex!),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: KColors.primaryColor.withAlpha(30),
+                                      color: KColors.primaryColor,
                                       borderRadius: BorderRadius.circular(10)),
                                   padding: EdgeInsets.only(
                                       top: 5, bottom: 5, right: 8, left: 8),
@@ -996,10 +1012,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                         "${AppLocalizations.of(context)!.translate('add_to_basket')}",
                                         style: TextStyle(
                                             fontSize: 12,
-                                            color: KColors.primaryColor)),
+                                            color: Colors.white)),
                                     SizedBox(width: 5),
-                                    Icon(Icons.add_shopping_cart,
-                                        color: KColors.primaryColor, size: 12),
+                                    Icon(Icons.shopping_cart_checkout,
+                                        color: Colors.white, size: 14),
                                   ]),
                                 ),
                               ),

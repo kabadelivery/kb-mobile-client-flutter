@@ -116,6 +116,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
     if (deliveriesRatingPending.isEmpty) return;
     if (deliveriesRatingPending.length == 1) {
+
       _showRatingDialog(deliveriesRatingPending.first, true);
     } else {
       final choice = await _askUserChoice(context);
@@ -125,6 +126,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           final idB = int.tryParse(b.command_id.toString()) ?? 0;
           return idA > idB ? a : b;
         });
+        xrint("address of del ${latest.address!.toJson()}");
         _showRatingDialog(latest,true);
       } else if (choice == "all") {
         for (final delivery in deliveriesRatingPending) {
@@ -218,6 +220,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   Future<void> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
+
     return showDialog(
       context: context,
       builder: (context) {
@@ -229,11 +232,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
             child: Container(
               color: Colors.white,
               height: 600,
-              width: 400,
+              width: 410,
               child: BlocSelector<RatingBloc, RatingState, RatingState>(
                 selector: (state) => state,
                 builder: (context, state) {
-                  if (state is NextPageState) {
+                   if (state is NextPageState) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if(_pageController.hasClients){
                         _pageController.nextPage(

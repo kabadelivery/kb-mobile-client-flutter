@@ -1,3 +1,5 @@
+import 'DeliveryAddressModel.dart';
+import 'ShopModel.dart';
 import 'ShopProductModel.dart';
 
 class DeliveryRatingPending{
@@ -15,7 +17,10 @@ class DeliveryRatingPending{
   int? respectOfGeolocation;
   int? attidudeOfDeliveryMan;
   int? groomingOfDeliveryMan;
-  ShopProductModel? food;
+  Map<ShopProductModel,int>? foods;
+  ShopModel? restaurant;
+  DeliveryAddressModel? address;
+
   DeliveryRatingPending({
      this.command_id,
      this.delivery_man_image,
@@ -31,7 +36,9 @@ class DeliveryRatingPending{
     this.respectOfGeolocation,
     this.attidudeOfDeliveryMan,
     this.groomingOfDeliveryMan,
-    this.food
+    this.foods,
+    this.restaurant,
+    this.address,
 });
 
   factory DeliveryRatingPending.fromJson(Map<String, dynamic> json) {
@@ -53,7 +60,17 @@ class DeliveryRatingPending{
       respectOfGeolocation: json['respectOfGeolocation'] as int? ?? 0,
       attidudeOfDeliveryMan: json['attidudeOfDeliveryMan'] as int? ?? 0,
       groomingOfDeliveryMan: json['groomingOfDeliveryMan'] as int? ?? 0,
-      food: json['food'] != null ? ShopProductModel.fromJson(json['food']) : null,
+
+      foods: (json['foods'] as List<dynamic>?)?.map((item){
+        final food = ShopProductModel.fromJson(item['food']);
+        final index = item['index'] as int;
+        return MapEntry(food,index);
+      }).fold<Map<ShopProductModel,int>>({}, (map,entry){
+        map[entry.key] = entry.value;
+        return map;
+      })??{},
+      restaurant: json['restaurant'] != null ? ShopModel.fromJson(json['restaurant']) : null,
+      address:json['address']!=null?DeliveryAddressModel.fromJson(json['address']):null,
     );
   }
 
@@ -74,7 +91,12 @@ class DeliveryRatingPending{
       'respectOfGeolocation': respectOfGeolocation,
       'attidudeOfDeliveryMan': attidudeOfDeliveryMan,
       'groomingOfDeliveryMan': groomingOfDeliveryMan,
-      'food': food?.toJson(),
+      'foods': foods!.entries.map((entry)=>{
+      "food":entry.key.toJson(),
+      "index":entry.value
+      }).toList(),
+      "restaurant": restaurant?.toJson(),
+      "address": address?.toJson(),
     };
   }
   DeliveryRatingPending fake(){

@@ -186,7 +186,15 @@ class _ProductWithShopDetailsWidgetState
                                                     fontSize: 14)),
 
 
-                                            Notation(text: "${widget.food!.rating}",count: widget.food!.review_count,food: widget.food)
+                                            GestureDetector(
+                                                onTap: () => _jumpToRestaurantDetails(
+                                                    context,
+                                                    widget.food!
+                                                        .restaurant_entity!),
+                                                child: Notation(text:
+                                                "${widget.food!.rating}",
+                                                count: widget.food!.review_count,
+                                                food: widget.food))
                                           ],
                                         ),
                                       ]),

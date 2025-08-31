@@ -25,3 +25,7 @@ class PreviousPageState extends RatingState {
   final DeliveryRatingPending deliveryRatingPending;
   PreviousPageState({required this.deliveryRatingPending});
 }
+class showMoreReviewState extends RatingState {
+  final bool showMore;
+  showMoreReviewState({required this.showMore});
+}

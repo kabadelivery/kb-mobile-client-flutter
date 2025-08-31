@@ -1,10 +1,13 @@
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../blocs/rating/rating_bloc.dart';
+import '../../../contracts/order_contract.dart';
 import '../../../localizations/AppLocalizations.dart';
 import '../../../models/DeliveryRatingPending.dart';
 import '../../../resources/order_api_provider.dart';
@@ -40,6 +43,18 @@ void initState() {
     sellerName = widget.deliveryRatingPending.seller_name!;
     articleName = widget.deliveryRatingPending.articles![0]['name']!;
     deliveryRatingPending = widget.deliveryRatingPending;
+    bool areSameArticle = true;
+    Map<String,dynamic> articleFirst = widget.deliveryRatingPending.articles![0];
+    for(var article in deliveryRatingPending.articles!){
+      if(article['id']!=articleFirst['id']){
+        areSameArticle = false;
+        break;
+      }
+    }
+    if(areSameArticle==true){
+      deliveryRatingPending.articles = [];
+      deliveryRatingPending.articles!.add(articleFirst);
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -48,7 +63,7 @@ void initState() {
       selector: (state) {
         return state;
       },
-  builder: (context, state) {
+    builder: (context, state) {
     if (state is RateDeliveryTypeState) {
       totalRating = state.rating;
     }
@@ -214,7 +229,7 @@ void initState() {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  deliveryRatingPending.articles!.length==1?  GestureDetector(
+                  GestureDetector(
                     onTap: ()async{
                       deliveryRatingPending.article_comment = commentController.text;
                       deliveryRatingPending.article_rating = totalRating.toDouble();
@@ -236,14 +251,14 @@ void initState() {
                       CustomerModel customer =await CustomerUtils.getCustomer();
                       provider.sendFeedback(customer,deliveryRatingPending);
                       if(widget.deleteAll){
-                        deleteRatePendingFromCache();
+                        //deleteRatePendingFromCache();
                       }else{
-                        removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                        //removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
                       }
                       Navigator.pop(context);
                       Navigator.of(context).push(PageRouteBuilder(
                           pageBuilder: (context, animation, secondaryAnimation) =>
-                              ShopFlowerDetailsPage(food: widget.deliveryRatingPending.food),
+                              OrderConfirmationPage2(presenter:OrderConfirmationPresenter(OrderConfirmationView()),address:deliveryRatingPending.address!.name! ==AppLocalizations.of(context)!.translate('choose_actual_location').toString()?null:deliveryRatingPending.address, foods: deliveryRatingPending.foods,restaurant: deliveryRatingPending.restaurant,),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             var begin = Offset(1.0, 0.0);
                             var end = Offset.zero;
@@ -275,8 +290,6 @@ void initState() {
                         ],
                       ),
                     ),
-                  ):Container(
-                    height: 40,
                   ),
                   const SizedBox(height: 10),
                   MaterialButton(

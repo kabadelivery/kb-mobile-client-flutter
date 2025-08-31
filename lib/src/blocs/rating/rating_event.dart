@@ -25,3 +25,7 @@ class previousPageEvent extends RatingEvent {
   final DeliveryRatingPending deliveryRatingPending;
   previousPageEvent({required this.deliveryRatingPending});
 }
+class showMoreReviewEvent extends RatingEvent {
+  final bool showMore;
+  showMoreReviewEvent({required this.showMore});
+}
