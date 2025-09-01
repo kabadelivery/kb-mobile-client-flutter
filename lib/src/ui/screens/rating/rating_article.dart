@@ -251,11 +251,9 @@ void initState() {
                       CustomerModel customer =await CustomerUtils.getCustomer();
                       provider.sendFeedback(customer,deliveryRatingPending);
                       if(widget.deleteAll){
-                        BlocProvider.of<RatingBloc>(context).add(initialEvent());
-                        deleteRatePendingFromCache();
+                       await  deleteRatePendingFromCache();
                       }else{
-                        BlocProvider.of<RatingBloc>(context).add(initialEvent());
-                        removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
+                      await removeSingleRatePendingFromCache(deliveryRatingPending.command_id.toString());
                       }
                       Navigator.of(context).pop({"def_close":true});
                       Navigator.of(context).push(PageRouteBuilder(

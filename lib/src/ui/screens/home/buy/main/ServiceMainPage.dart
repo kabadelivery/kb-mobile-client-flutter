@@ -255,7 +255,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       }
                     });
                   }
-
                   if (state is PreviousPageState) {
                    WidgetsBinding.instance.addPostFrameCallback((_) {
                      if(_pageController.hasClients){

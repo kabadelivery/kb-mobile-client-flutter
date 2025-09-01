@@ -27,11 +27,11 @@ Future<List<DeliveryRatingPending>?> getRatePendingFromCache() async {
     return null;
   }
 }
-void removeSingleRatePendingFromCache(String commandId) async {
+Future<void> removeSingleRatePendingFromCache(String commandId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<DeliveryRatingPending>? deliveriesRatingPending = await getRatePendingFromCache();
   if (deliveriesRatingPending != null) {
-    deliveriesRatingPending.removeWhere((element) => element.command_id == commandId);
+    deliveriesRatingPending.removeWhere((element) => element.command_id == int.parse(commandId));
     if(deliveriesRatingPending.isEmpty){
       await prefs.remove("DeliveryRatingPending");
       print("All Delivery Rating Pending removed from cache.");
@@ -43,7 +43,7 @@ void removeSingleRatePendingFromCache(String commandId) async {
     print("No Delivery Rating Pending found to remove.");
   }
 }
-void deleteRatePendingFromCache() async {
+Future<void> deleteRatePendingFromCache() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool removed = await prefs.remove("DeliveryRatingPending");
   if (removed) {
