@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-   // get_token();
+    get_token();
 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

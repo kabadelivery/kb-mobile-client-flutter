@@ -817,5 +817,6 @@
   "rate_orders_all": "Toutes",
   "rate_orders_one": "Une seule",
   "rate_orders_question": "Voulez-vous noter uniquement la plus récente ou toutes vos commandes ?",
-  "multiple_orders_detected": "Plusieurs commandes détectées"
+  "multiple_orders_detected": "Plusieurs commandes détectées",
+  "expedition": "Expédition"
 }

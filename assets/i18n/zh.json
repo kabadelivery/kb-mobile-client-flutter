@@ -811,5 +811,6 @@
   "rate_orders_all": "全部",
   "rate_orders_one": "仅一个",
   "rate_orders_question": "您想评价最近的一单还是所有订单？",
-  "multiple_orders_detected": "检测到多个订单"
+  "multiple_orders_detected": "检测到多个订单",
+  "expedition": "快递"
 }
