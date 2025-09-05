@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../kaba_chine/presentation/widgets/package_form_info.dart';
+import '../../core/utils.dart';
 
 class EstimationForm extends StatefulWidget {
   const EstimationForm({super.key});
@@ -43,7 +44,7 @@ class _EstimationFormState extends State<EstimationForm> {
               padding: EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft:Radius.circular(10) ),
-                  color: KabaChineColors.primary.withOpacity(0.1)
+                  color: KabaExpeditionColor.primary.withOpacity(0.1)
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -53,9 +54,9 @@ class _EstimationFormState extends State<EstimationForm> {
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: KabaChineColors.primary.withOpacity(0.1)
+                        color: Color(0xFFCD1F45).withOpacity(0.1)
                     ),
-                    child: Icon(FontAwesomeIcons.calculator,color: KabaChineColors.primary.withOpacity(.8),),
+                    child: Icon(FontAwesomeIcons.calculator,color: Color(0xFFCD1F45).withOpacity(.8),),
                   ),
                   SizedBox(width: 10,),
                   Column(
@@ -77,16 +78,16 @@ class _EstimationFormState extends State<EstimationForm> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Ville de départ", icon: Icon(Icons.location_on_outlined,color: KabaChineColors.primary,)),
+                    child: FormTitleWithIcon(title: "Ville de départ", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
                     height: 40,
                     decoration: BoxDecoration(
-                        color: KabaChineColors.primary.withOpacity(0.1),
+                        color: Color(0xFFCD1F45).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(5),
-                        border: Border.all(width: 1,color: KabaChineColors.primary.withOpacity(0.6),
+                        border: Border.all(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6),
                         )),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: DropdownButton<String>(
@@ -97,7 +98,7 @@ class _EstimationFormState extends State<EstimationForm> {
                       underline: Container(
                         height: 0,
                       ),
-                      icon: Icon(Icons.keyboard_arrow_down_outlined,color: KabaChineColors.primary,),
+                      icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
                       items: map_of_town.map((town){
                         return DropdownMenuItem<String>(
                             value: town['name'],
@@ -118,16 +119,16 @@ class _EstimationFormState extends State<EstimationForm> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(Icons.add_circle_outline,color: KabaChineColors.primary,)),
+                    child: FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
                     height: 40,
                     decoration: BoxDecoration(
-                        color: KabaChineColors.primary.withOpacity(0.1),
+                        color: Color(0xFFCD1F45).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(5),
-                        border: Border.all(width: 1,color: KabaChineColors.primary.withOpacity(0.6),
+                        border: Border.all(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6),
                         )),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: DropdownButton<String>(
@@ -138,7 +139,7 @@ class _EstimationFormState extends State<EstimationForm> {
                       underline: Container(
                         height: 0,
                       ),
-                      icon: Icon(Icons.keyboard_arrow_down_outlined,color: KabaChineColors.primary,),
+                      icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
                       items: map_of_town.map((town){
                         return DropdownMenuItem<String>(
                             value: town['name'],
@@ -159,7 +160,7 @@ class _EstimationFormState extends State<EstimationForm> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: KabaChineColors.primary,)),
+                    child: FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
                   ),
                   SizedBox(height: 10,),
                   Container(
@@ -188,20 +189,20 @@ class _EstimationFormState extends State<EstimationForm> {
                           hintText: "Ex: 2.5",
                           hintStyle: TextStyle(fontSize: 12,color: Colors.black54),
                           filled: _weight.text.isNotEmpty?true:false,
-                          fillColor: KabaChineColors.primary.withOpacity(0.1),
+                          fillColor: Color(0xFFCD1F45).withOpacity(0.1),
                           focusColor: Colors.grey.withOpacity(0.1),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
 
-                            borderSide: BorderSide(width: 1,color: KabaChineColors.primary.withOpacity(0.6)),
+                            borderSide: BorderSide(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(width: 1,color: KabaChineColors.primary.withOpacity(0.6)),
+                            borderSide: BorderSide(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6)),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(width: 1,color: KabaChineColors.primary.withOpacity(0.6)),
+                            borderSide: BorderSide(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6)),
                           ),
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
 

@@ -1,3 +1,4 @@
+import 'package:KABA/src/microservices/expedition/presentation/pages/billing.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
 import '../../Enums/expedition_type.dart';
+import '../../core/utils.dart';
 import '../widget/estimation_math.dart';
 import '../widget/expedition_detail_form.dart';
 
@@ -41,7 +43,7 @@ class _ExpeditionState extends State<Expedition> {
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
                             bottomRight: Radius.circular(30)),
-                        color: KabaChineColors.primary)
+                        color: KabaExpeditionColor.primary)
                 ,child: Row(
                   children: [
                     Icon(Icons.arrow_back_sharp,color: Colors.white,size: 19,),
@@ -82,7 +84,7 @@ class _ExpeditionState extends State<Expedition> {
                           width: 35,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: KabaChineColors.primary,
+                            color: KabaExpeditionColor.primary,
                             shape: BoxShape.circle,
 
                           ),
@@ -96,9 +98,9 @@ class _ExpeditionState extends State<Expedition> {
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                               colors: [
-                                KabaChineColors.primary,
+                                KabaExpeditionColor.primary,
 
-                               step==2?KabaChineColors.primary: Colors.grey.withOpacity(0.7),
+                               step==2?KabaExpeditionColor.primary: Colors.grey.withOpacity(0.7),
                               ]
                             ),
                             borderRadius: BorderRadius.circular(2)
@@ -109,7 +111,7 @@ class _ExpeditionState extends State<Expedition> {
                           width: 35,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              color: step==2? KabaChineColors.primary:Colors.grey.withOpacity(0.3),
+                              color: step==2? KabaExpeditionColor.primary:Colors.grey.withOpacity(0.3),
                               shape: BoxShape.circle
                           ),
                           child: Text("2",style: TextStyle(color:step==2?Colors.white:
@@ -125,12 +127,12 @@ class _ExpeditionState extends State<Expedition> {
                             width: 60,
                             child: Text("Détails du colis",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10,color: KabaChineColors.primary,fontWeight: FontWeight.bold),)),
+                              style: TextStyle(fontSize: 10,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
                         Container(
                             width: 60,
                             child: Text("Destination & Poids",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10,color: step==2? KabaChineColors.primary: Colors.black54,fontWeight: FontWeight.bold),)),
+                              style: TextStyle(fontSize: 10,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
 
                       ],
                     )
@@ -150,7 +152,7 @@ class _ExpeditionState extends State<Expedition> {
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
                               BoxShadow(
-                                color:KabaChineColors.primary.withOpacity(0.1),
+                                color:KabaExpeditionColor.primary.withOpacity(0.1),
                                 spreadRadius: 5,
                                 blurRadius: 5,
                                 offset: Offset(0, 3), // changes position of shadow
@@ -175,7 +177,7 @@ class _ExpeditionState extends State<Expedition> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.info_outline,color: KabaChineColors.primary,),
+                                Icon(Icons.info_outline,color: KabaExpeditionColor.primary,),
                                 SizedBox(width: 10,),
                                 Text("Important",style: TextStyle(fontWeight: FontWeight.bold),)
                                 ],
@@ -228,13 +230,13 @@ class _ExpeditionState extends State<Expedition> {
                                   height: 45,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                      color: Color(0xFFCD1F45),
+                                      color: KabaExpeditionColor.primary,
                                       borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(step==1?"Continuer":"Terminer",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                                      Text(step==1?"Continuer":"Finaliser",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
                                       SizedBox(width: 5,),
                                       Icon(Icons.arrow_forward,color: Colors.white,size: 15,)
                                     ],
@@ -253,10 +255,48 @@ class _ExpeditionState extends State<Expedition> {
            :Expanded(child: SingleChildScrollView(
              child: Column(
                children: [
-                 ExpeditionDetailForm()
+                 ExpeditionDetailForm(),
+                 SizedBox(height: 10,),
+                 Container(
+                   width: 330,
+                   child: MaterialButton(
+                     color: KabaExpeditionColor.primary,
+                     shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(10)
+
+                     ),
+                     elevation: 0,
+                     onPressed: (){
+                       Navigator.of(context).push(PageRouteBuilder(
+                           pageBuilder: (context, animation, secondaryAnimation) => BillingPage(),
+                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                             var begin = Offset(1.0, 0.0);
+                             var end = Offset.zero;
+                             var curve = Curves.ease;
+                             var tween = Tween(begin: begin, end: end);
+                             var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                             return SlideTransition(
+                                 position: tween.animate(curvedAnimation),
+                                 child: child
+                             );
+                           }
+                       ));
+                     },
+                     child: Container(
+                       child: Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Text("Finaliser",style: TextStyle(color: Colors.white,),),
+                           ],
+                       ),
+                     ),
+                   ),
+                 ),
+                 SizedBox(height: 20,),
                ],
              ),
-           ))
+           )),
+
 
             ]
             )

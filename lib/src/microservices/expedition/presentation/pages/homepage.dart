@@ -1,4 +1,5 @@
 import 'package:KABA/src/microservices/expedition/Enums/expedition_type.dart';
+import 'package:KABA/src/microservices/expedition/presentation/pages/tracking_package.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,22 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                         IconButton(onPressed: (){}, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                         MaterialButton(
                           elevation: 0,
-                          onPressed: (){},child: Text("Suivre son colis",style: TextStyle(color: Colors.white,fontSize: 11),),
+                          onPressed: (){
+                            Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => TrackingPackage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          },child: Text("Suivre son colis",style: TextStyle(color: Colors.white,fontSize: 11),),
                           minWidth: 80,height: 30,
                           shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(20)),)
                       ],

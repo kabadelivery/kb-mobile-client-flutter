@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
 import '../../../kaba_chine/core/utils.dart';
+import '../../core/utils.dart';
 
 Widget ExpeditionInternationalBox({required BuildContext context}){
   return   Container(
@@ -33,7 +34,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
           padding:EdgeInsets.all(15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color:Color(0xFFCD1F45),
+            color:KabaExpeditionColor.primary,
           ),
           child: Icon(Icons.local_shipping_outlined,color: Colors.white,size: 30,),
         ),
@@ -42,7 +43,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
           children: [
             Row(
               children: [
-                Icon(Icons.local_shipping_outlined,color: KabaChineColors.primary,size: 16,),
+                Icon(Icons.local_shipping_outlined,color: KabaExpeditionColor.primary,size: 16,),
                 SizedBox(width: 5,),
                 Text("Par voie terrestre",style: TextStyle(fontSize: 11,color: Colors.black87,fontFamily: 'Inter'),),
 
@@ -50,7 +51,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
             ),
             Row(
               children: [
-                Icon(FontAwesomeIcons.earthAfrica,color: KabaChineColors.primary,size: 16,),
+                Icon(FontAwesomeIcons.earthAfrica,color: KabaExpeditionColor.primary,size: 16,),
                 SizedBox(width: 5,),
                 Text("7 pays disponibles",style: TextStyle(fontSize: 11,color: Colors.black87,fontFamily: 'Inter'),),
 
