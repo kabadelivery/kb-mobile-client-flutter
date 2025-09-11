@@ -64,7 +64,6 @@ class _ExpeditionState extends State<Expedition> {
       } else if (state is chooseFetchTimeState) {
         createExpedition.heureCollecte = state.hour;
       }
-
     });
     return Scaffold(
         backgroundColor: Colors.white,

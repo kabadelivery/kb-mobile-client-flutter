@@ -1009,11 +1009,10 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                     SizedBox(width: 10,),
                     //Toggle button
                     Switch(
-                        thumbColor: MaterialStateProperty.all( kaba_fetch_the_package? KabaExpeditionColor.primary:Color(0xff48444e)),
+                        thumbColor: MaterialStateProperty.all( kaba_fetch_the_package? Colors.white:Color(0xff48444e)),
                         activeTrackColor: KabaExpeditionColor.primary.withOpacity(0.3),
-
-                        thumbIcon: MaterialStateProperty.all(Icon(Icons.circle,color: kaba_fetch_the_package? KabaExpeditionColor.primary:Color(0xff48444e),size: 15,)),
-                        trackColor: MaterialStateProperty.all( kaba_fetch_the_package? KabaExpeditionColor.primary.withOpacity(.2):Color(0xffe4dee7)),
+                        thumbIcon: MaterialStateProperty.all(Icon(Icons.circle,color: kaba_fetch_the_package?Colors.white:Color(0xff48444e),size: 15,)),
+                        trackColor: MaterialStateProperty.all( kaba_fetch_the_package? KabaExpeditionColor.primary:Color(0xffe4dee7)),
                         padding: EdgeInsets.all(0),
                         value: kaba_fetch_the_package,
                         activeColor: KabaExpeditionColor.primary,
@@ -1243,11 +1242,11 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                     SizedBox(width: 10,),
                     //Toggle button
                     Switch(
-                        thumbColor: MaterialStateProperty.all( deposit_of_the_package? KabaExpeditionColor.primary:Color(0xff48444e)),
+                        thumbColor: MaterialStateProperty.all( deposit_of_the_package?Colors.white:Color(0xff48444e)),
                         activeTrackColor: KabaExpeditionColor.primary.withOpacity(0.3),
 
-                        thumbIcon: MaterialStateProperty.all(Icon(Icons.circle,color: deposit_of_the_package? KabaExpeditionColor.primary:Color(0xff48444e),size: 15,)),
-                        trackColor: MaterialStateProperty.all( deposit_of_the_package? KabaExpeditionColor.primary.withOpacity(.2):Color(0xffe4dee7)),
+                        thumbIcon: MaterialStateProperty.all(Icon(Icons.circle,color: deposit_of_the_package? Colors.white:Color(0xff48444e),size: 15,)),
+                        trackColor: MaterialStateProperty.all( deposit_of_the_package? KabaExpeditionColor.primary:Color(0xffe4dee7)),
                         padding: EdgeInsets.all(0),
                         value: deposit_of_the_package,
                         activeColor: KabaExpeditionColor.primary,
